@@ -12,6 +12,22 @@ if str(_REPO_ROOT) not in sys.path:
 
 from scripts.ci import session_wrapup_autofix as swa
 
+
+def test_accountability_report_targets_active_report():
+    assert swa.ACCOUNTABILITY_REPORT == (
+        _REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+    )
+
+
+def test_accountability_report_is_current_when_recent_entry_is_at_top(tmp_path, monkeypatch):
+    report = tmp_path / "AGENT_ACCOUNTABILITY_REPORT.md"
+    today = swa.datetime.now(tz=swa.timezone.utc).strftime("%Y-%m-%d")
+    report.write_text(f"## Session: {today} — current session\n" + "older\n" * 200)
+    monkeypatch.setattr(swa, "ACCOUNTABILITY_REPORT", report)
+
+    assert swa._accountability_report_is_current()
+
+
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"

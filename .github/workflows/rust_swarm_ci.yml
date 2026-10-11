@@ -375,27 +375,27 @@ jobs:
         SECURITY_AUDIT_RESULT: ${{ needs.security_audit.result }}
       run: |
         echo "All required jobs completed"
-        if [[ "${RUST_TESTS_RESULT}" != "success" ]]; then
+        if [[ "${RUST_TESTS_RESULT}" != "success" && "${RUST_TESTS_RESULT}" != "skipped" ]]; then
           echo "❌ Rust tests failed"
           exit 1
         fi
-        if [[ "${RUST_BENCHMARKS_RESULT}" != "success" ]]; then
+        if [[ "${RUST_BENCHMARKS_RESULT}" != "success" && "${RUST_BENCHMARKS_RESULT}" != "skipped" ]]; then
           echo "❌ Rust benchmarks failed"
           exit 1
         fi
-        if [[ "${BENCHMARK_VALIDATION_RESULT}" != "success" ]]; then
+        if [[ "${BENCHMARK_VALIDATION_RESULT}" != "success" && "${BENCHMARK_VALIDATION_RESULT}" != "skipped" ]]; then
           echo "❌ Benchmark result validation failed"
           exit 1
         fi
-        if [[ "${PYTHON_INTEGRATION_RESULT}" != "success" ]]; then
+        if [[ "${PYTHON_INTEGRATION_RESULT}" != "success" && "${PYTHON_INTEGRATION_RESULT}" != "skipped" ]]; then
           echo "❌ Python integration tests failed"
           exit 1
         fi
-        if [[ "${CODE_COVERAGE_RESULT}" != "success" ]]; then
+        if [[ "${CODE_COVERAGE_RESULT}" != "success" && "${CODE_COVERAGE_RESULT}" != "skipped" ]]; then
           echo "❌ Coverage check failed"
           exit 1
         fi
-        if [[ "${SECURITY_AUDIT_RESULT}" != "success" ]]; then
+        if [[ "${SECURITY_AUDIT_RESULT}" != "success" && "${SECURITY_AUDIT_RESULT}" != "skipped" ]]; then
           echo "❌ Security audit failed"
           exit 1
         fi

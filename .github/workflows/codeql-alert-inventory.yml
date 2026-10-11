@@ -1,6 +1,6 @@
 name: Art_CodeQL Alert Inventory
 
-on:
+'on':
   workflow_dispatch:
     inputs:
       state:

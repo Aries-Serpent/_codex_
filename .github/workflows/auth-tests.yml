@@ -117,22 +117,34 @@ jobs:
         python scripts/ci/test_codex_master_key_scopes.py --report-json .codex/scope_report.json
     - name: Run comprehensive CODEX_MASTER_KEY tests
       env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
       run: |
         set -euo pipefail
-        pytest tests/github/test_repo_variables_comprehensive.py -v --cov=scripts/ci --cov-report=term -k "codex_master"
-        pytest tests/github/test_secrets_management.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master"
-        pytest tests/github/test_workflow_approval_dispatch.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master"
+        pytest tests/github/test_repo_variables_comprehensive.py -v --cov=scripts/ci --cov-report=term
+        pytest tests/github/test_secrets_management.py -v --cov=scripts/ci --cov-append --cov-report=term
+        pytest tests/github/test_workflow_approval_dispatch.py -v --cov=scripts/ci --cov-append --cov-report=term
         pytest tests/github/test_webhooks.py -v --cov=scripts/ci --cov-append --cov-report=term
-        pytest tests/github/test_github_comprehensive_phase7a.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master"
+        pytest tests/github/test_github_comprehensive_phase7a.py -v --cov=scripts/ci --cov-append --cov-report=term
     - name: Generate CODEX_MASTER_KEY coverage report
       env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
       run: |
         set -euo pipefail
-        pytest tests/github/ -k "codex_master" --cov=scripts/ci --cov-report=json:coverage.json --cov-report=term
+        pytest \
+          tests/github/test_repo_variables_comprehensive.py \
+          tests/github/test_secrets_management.py \
+          tests/github/test_workflow_approval_dispatch.py \
+          tests/github/test_webhooks.py \
+          tests/github/test_github_comprehensive_phase7a.py \
+          --cov=scripts/ci \
+          --cov-report=json:coverage.json \
+          --cov-report=term
     - name: Upload scope report
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       if: always()
@@ -196,14 +208,14 @@ jobs:
        echo "✓ Security scan completed successfully"
        echo "Report location: auth-security-report.json"
     - name: Verify security report exists before upload
-      if: always() && steps.security_scan.outcome == 'success'
+      if: always()
       run: "if [ ! -f auth-security-report.json ]; then\n  echo \"ERROR: auth-security-report.json\
         \ not found before artifact upload\" >&2\n  ls -la auth-security-report.json\
         \ 2>&1 || true\n  exit 1\nfi\necho \"\u2713 Security report verified and ready\
         \ for upload\"\nls -lh auth-security-report.json\n"
     - name: Upload security report
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-      if: always() && steps.security_scan.outcome == 'success'
+      if: always()
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

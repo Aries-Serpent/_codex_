@@ -573,8 +573,8 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     # Auto-mark tests as slow based on patterns
     slow_marker = pytest.mark.slow
     slow_patterns = [
-        "docker", "deployment", "comprehensive", "e2e", "integration",
-        "phase", "batch", "dataset", "training", "checkpointing"
+        "docker", "deployment", "comprehensive", "e2e",
+        "phase", "batch", "dataset",
     ]
 
     for item in items:
@@ -582,12 +582,17 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         if "slow" in item.keywords:
             continue
 
-        # Check if test path or name contains slow patterns
-        test_path = str(item.fspath).lower() if hasattr(item, "fspath") else ""
+        # Mark integration-suite tests independently of whether they are slow.
+        test_path = _ImportHookPath(str(item.fspath)) if hasattr(item, "fspath") else None
+        if test_path and "integration" in {part.lower() for part in test_path.parts}:
+            item.add_marker(pytest.mark.integration)
+
+        # Check the test file name or test name, not parent suite directories.
+        test_file = test_path.name.lower() if test_path else ""
         test_name = item.name.lower()
 
         for pattern in slow_patterns:
-            if pattern in test_path or pattern in test_name:
+            if pattern in test_file or pattern in test_name:
                 item.add_marker(slow_marker)
                 break
 

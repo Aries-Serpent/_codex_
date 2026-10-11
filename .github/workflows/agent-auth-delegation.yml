@@ -626,37 +626,60 @@ jobs:
         GIT_SHA: ${{ github.sha }}
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-      run: "set -euo pipefail\n\necho \"### \U0001F527 Auto-Fix: Session Wrap-Up Compliance\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\n\n#\
-        \ Determine which fixes are needed\nFIX_ACCT=\"\"\nFIX_CL=\"\"\nif [ \"${{\
-        \  steps.accountability_check.outcome }}\" = \"failure\" ]; then\n  FIX_ACCT=\"\
-        --fix-accountability\"\n  echo \"- REQ-4 (accountability report): **needs\
-        \ fix**\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\nif [ \"${{ steps.changelog_check.outcome\
-        \  }}\" = \"failure\" ]; then\n  FIX_CL=\"--fix-changelog\"\n  echo \"- REQ-5\
-        \ (CHANGELOG): **needs fix**\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\n\n# Run the\
-        \ auto-fix script\npython3 scripts/ci/session_wrapup_autofix.py \\\n  --pr-number\
-        \ \"${PR_NUMBER:-unknown}\" \\\n  --sha \"${GIT_SHA:0:8}\" \\\n  --run-url\
-        \ \"${RUN_URL}\" \\\n  ${FIX_ACCT} ${FIX_CL}\n\n# Resolve TARGET_BRANCH via\
-        \ API when event context lacks head.ref\nif [ -z \"${TARGET_BRANCH}\" ] &&\
-        \ [ -n \"${PR_NUMBER}\" ]; then\n  TARGET_BRANCH=$(gh pr view \"${PR_NUMBER}\"\
-        \ --json headRefName -q .headRefName 2>/dev/null || true)\nfi\nif [ -z \"\
-        ${TARGET_BRANCH}\" ] || echo \"${TARGET_BRANCH}\" | grep -qE '^[0-9]+/merge$';\
-        \ then\n  echo \"\u26A0\uFE0F Could not resolve target branch ('${TARGET_BRANCH}')\
-        \ \u2014 auto-fix files written but not committed.\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  echo \"::warning::Auto-fix: could not resolve branch for commit-back.\
-        \ Files updated locally only.\"\n  exit 0\nfi\n\n# Commit and push the auto-fixed\
-        \ files back to the branch\ngit config user.name  \"github-actions[bot]\"\n\
-        git config user.email \"github-actions[bot]@users.noreply.github.com\"\ngit\
-        \ add \\\n  docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md \\\n  CHANGELOG.md\
-        \ 2>/dev/null || true\nif git diff --cached --quiet; then\n  echo \"- No file\
-        \ changes to commit (files may already have been correct).\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \nelse\n  git commit -m \"fix(docs): auto-update accountability report + CHANGELOG\
-        \ [cognitive-preflight][skip ci]\"\n  git pull --rebase --autostash origin\
-        \ \"${TARGET_BRANCH}\" || true\n  git push origin HEAD:refs/heads/\"${TARGET_BRANCH}\"\
-        \n  echo \"- \u2705 Auto-fix commit pushed to \\`${TARGET_BRANCH}\\`.\" >>\
-        \ \"$GITHUB_STEP_SUMMARY\"\n  echo \"- Next cognitive-preflight run will pass\
-        \ REQ-4/REQ-5.\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n"
+      run: |
+        set -euo pipefail
+
+        echo "### 🔧 Auto-Fix: Session Wrap-Up Compliance" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+
+        # Determine which fixes are needed
+        FIX_ACCT=""
+        FIX_CL=""
+        if [ "${{  steps.accountability_check.outcome }}" = "failure" ]; then
+          FIX_ACCT="--fix-accountability"
+          echo "- REQ-4 (accountability report): **needs fix**" >> "$GITHUB_STEP_SUMMARY"
+        fi
+        if [ "${{ steps.changelog_check.outcome  }}" = "failure" ]; then
+          FIX_CL="--fix-changelog"
+          echo "- REQ-5 (CHANGELOG): **needs fix**" >> "$GITHUB_STEP_SUMMARY"
+        fi
+
+        # Run the auto-fix script
+        python3 scripts/ci/session_wrapup_autofix.py \
+          --pr-number "${PR_NUMBER:-unknown}" \
+          --sha "${GIT_SHA:0:8}" \
+          --run-url "${RUN_URL}" \
+          ${FIX_ACCT} ${FIX_CL}
+
+        # Resolve TARGET_BRANCH via API when event context lacks head.ref
+        if [ -z "${TARGET_BRANCH}" ] || echo "${TARGET_BRANCH}" | grep -qE '^[0-9]+/merge$'; then
+          if [ -n "${PR_NUMBER}" ]; then
+            TARGET_BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName -q .headRefName 2>/dev/null || true)
+          fi
+        fi
+        if [ -z "${TARGET_BRANCH}" ] || echo "${TARGET_BRANCH}" | grep -qE '^[0-9]+/merge$'; then
+          echo "⚠️ Could not resolve target branch ('${TARGET_BRANCH}') — auto-fix files written but not committed." >> "$GITHUB_STEP_SUMMARY"
+          echo "::warning::Auto-fix: could not resolve branch for commit-back. Files updated locally only."
+          exit 0
+        fi
+
+        # Commit and push the auto-fixed files back to the branch
+        git config user.name  "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add \
+          docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md \
+          CHANGELOG.md 2>/dev/null || true
+        if git diff --cached --quiet; then
+          echo "- No file changes to commit (files may already have been correct)." >> "$GITHUB_STEP_SUMMARY"
+        else
+          git commit -m "fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][skip ci]"
+          git pull --rebase --autostash origin "${TARGET_BRANCH}" || true
+          git push origin HEAD:refs/heads/"${TARGET_BRANCH}"
+          echo "- ✅ Auto-fix commit pushed to \`${TARGET_BRANCH}\`." >> "$GITHUB_STEP_SUMMARY"
+          echo "- Next cognitive-preflight run will pass REQ-4/REQ-5." >> "$GITHUB_STEP_SUMMARY"
+        fi
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+
     - name: Ensure Workflow Execution Checklist in PR body
       id: inject-wec
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
@@ -1052,23 +1075,36 @@ jobs:
           || '' }}
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-      run: "# S932 rebasing guard:\n# During active PR iteration, avoid writing housekeeping\
-        \ commits to the PR branch.\n# This prevents churn/rebase loops caused by\
-        \ repeated auth-token refresh commits.\nif [ \"${{ github.event_name }}\"\
-        \ = \"pull_request\" ]; then\n  echo \"\u2139\uFE0F Skipping session-token\
-        \ commit on pull_request to avoid branch churn.\"\n  exit 0\nfi\n\n# Resolve\
-        \ TARGET_BRANCH \u2014 fall back to API lookup when event context lacks head.ref\n\
-        if [ -z \"${TARGET_BRANCH}\" ] && [ -n \"${PR_NUMBER}\" ]; then\n  TARGET_BRANCH=$(gh\
-        \ pr view \"${PR_NUMBER}\" --json headRefName -q .headRefName 2>/dev/null\
-        \ || true)\nfi\nif [ -z \"${TARGET_BRANCH}\" ] || echo \"${TARGET_BRANCH}\"\
-        \ | grep -qE '^[0-9]+/merge$'; then\n  echo \"::warning::Could not resolve\
-        \ target branch (got '${TARGET_BRANCH}'). Skipping commit.\"\n  exit 0\nfi\n\
-        git config user.name  \"github-actions[bot]\"\ngit config user.email \"github-actions[bot]@users.noreply.github.com\"\
-        \ngit add .codex/agent_auth_session.json\nif git diff --cached --quiet; then\n\
-        \  echo \"No changes to commit\"\nelse\n  git commit -m \"chore(auth): write\
-        \ provenance session token [skip ci]\"\n  git pull --rebase --autostash origin\
-        \ \"${TARGET_BRANCH}\" || true\n  git push origin HEAD:refs/heads/${TARGET_BRANCH}\n\
-        fi\n"
+      run: |
+        # S932 rebasing guard:
+        # During active PR iteration, avoid writing housekeeping commits to the PR branch.
+        # This prevents churn/rebase loops caused by repeated auth-token refresh commits.
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          echo "ℹ️ Skipping session-token commit on pull_request to avoid branch churn."
+          exit 0
+        fi
+
+        # Resolve TARGET_BRANCH — fall back to API lookup when event context lacks head.ref
+        if [ -z "${TARGET_BRANCH}" ] || echo "${TARGET_BRANCH}" | grep -qE '^[0-9]+/merge$'; then
+          if [ -n "${PR_NUMBER}" ]; then
+            TARGET_BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName -q .headRefName 2>/dev/null || true)
+          fi
+        fi
+        if [ -z "${TARGET_BRANCH}" ] || echo "${TARGET_BRANCH}" | grep -qE '^[0-9]+/merge$'; then
+          echo "::warning::Could not resolve target branch (got '${TARGET_BRANCH}'). Skipping commit."
+          exit 0
+        fi
+        git config user.name  "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add .codex/agent_auth_session.json
+        if git diff --cached --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "chore(auth): write provenance session token [skip ci]"
+          git pull --rebase --autostash origin "${TARGET_BRANCH}" || true
+          git push origin HEAD:refs/heads/${TARGET_BRANCH}
+        fi
+
     - name: Dispatch GitHub Guru (maintainer verification)
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
