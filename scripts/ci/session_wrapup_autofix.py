@@ -1794,11 +1794,8 @@ def select_merge_required_workflows(
       - scheduled-archival.yml           Scheduled archival
       - scheduled-dependency-audit.yml   Dependency audit
 
-    Not auto-checked by this function (_WEC_NEVER_CHECK; skipped at runtime):
-      - iterative-self-healing-ci.yml    Iterative self-healing CI loop (manual activation only)
-      - pre-merge-validation.yml         Legacy disabled gate (not on the active baseline)
-      - comment-review-gate.yml          Legacy disabled gate (not on the active baseline)
-      - unified-copilot-management.yml   Legacy disabled gate (not on the active baseline)
+    No workflows are currently in _WEC_NEVER_CHECK; the set stays empty until an
+    active workflow requires an explicit never-auto-activate guard.
 
     Cognitive Brain Pattern
     -----------------------

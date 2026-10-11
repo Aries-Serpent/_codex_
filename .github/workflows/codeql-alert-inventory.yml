@@ -71,7 +71,8 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}" ]; then
-            echo "::warning::No CODEX_MASTER_KEY / CODEX_BACKUP_KEY secret is available; falling back to GITHUB_TOKEN, which may not have security_events scope."
+            echo "::warning::No CODEX_MASTER_KEY / CODEX_BACKUP_KEY secret is available; falling back to" \
+              "GITHUB_TOKEN, which may not have security_events scope."
             echo "token_available=false" >> "$GITHUB_OUTPUT"
           else
             echo "token_available=true" >> "$GITHUB_OUTPUT"
@@ -95,7 +96,8 @@ jobs:
             --top-n "$TOP_N" \
             --out-dir .codex/security/code_scanning_inventory
           if [ "${MAX_PAGES}" = "10" ] && [ "$STATE" != "open" ]; then
-            echo "::error::Workflow input max_pages=10 would truncate a page-limited CodeQL inventory; expand the cap or run the fetcher with a higher max-pages value."
+            echo "::error::Workflow input max_pages=10 would truncate a page-limited CodeQL inventory;" \
+              "expand the cap or run the fetcher with a higher max-pages value."
             exit 1
           fi
 
