@@ -156,6 +156,7 @@ jobs:
         python examples/authentication/03_token_management.py
         python examples/authentication/04_complete_flow.py
     - name: Security scan
+      id: security_scan
       run: |
        set -euo pipefail
        pip install bandit>=1.7.5
@@ -195,14 +196,14 @@ jobs:
        echo "✓ Security scan completed successfully"
        echo "Report location: auth-security-report.json"
     - name: Verify security report exists before upload
-      if: always()
+      if: always() && steps.security_scan.outcome == 'success'
       run: "if [ ! -f auth-security-report.json ]; then\n  echo \"ERROR: auth-security-report.json\
         \ not found before artifact upload\" >&2\n  ls -la auth-security-report.json\
         \ 2>&1 || true\n  exit 1\nfi\necho \"\u2713 Security report verified and ready\
         \ for upload\"\nls -lh auth-security-report.json\n"
     - name: Upload security report
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-      if: always()
+      if: always() && steps.security_scan.outcome == 'success'
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
