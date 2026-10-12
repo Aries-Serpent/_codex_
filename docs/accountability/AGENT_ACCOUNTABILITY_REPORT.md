@@ -1,3 +1,30 @@
+## Session: 2026-10-12 — PR #5695 CI rescue remediation
+
+**Objective:** Investigate the CI rescue findings for commit `09972c66` and resolve reproducible failures in the current PR branch.
+
+**Status:** ✅ Corrected the reported stale links and trailing whitespace; current-head hosted validation remains gated as `action_required` and has not run jobs.
+
+**Actions:**
+1. Retrieved Validation Pipeline run `38214145539` and Agent Token Delegation run `38185304014`, both on `09972c665ec20d0dd50ed35fdc2f17f405b1c48c`. Fast Validation failed the trailing-whitespace hook in `docs/ops/SAR_METHODOLOGY.md` and both internal-link hooks on references in `docs/evolution/COGNITIVE_CODEBASE_MAP.md` and `docs/evolution/INDEX.md`.
+2. Corrected both relative links to the repository-root `.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md` and removed trailing whitespace with the configured hook.
+3. Agent Token Delegation failed its commit-specific REQ-4 check because the accountability report was absent from that commit. Its attempted auto-fix could not commit because GitHub returned HTTP 403. The post-delegation approval job succeeded; auto-approve dispatch was skipped.
+4. Updated this report and `CHANGELOG.md` in the current session commit. The run against current SHA `22321a95` is `action_required` with zero jobs, so it does not establish hosted CI success.
+
+**Validation:**
+- `pre-commit run trailing-whitespace --files docs/ops/SAR_METHODOLOGY.md` → passed after applying the hook's cleanup.
+- `pre-commit run validate-internal-links --files docs/evolution/COGNITIVE_CODEBASE_MAP.md docs/evolution/INDEX.md` → passed.
+- `pre-commit run check-cross-references --files docs/evolution/COGNITIVE_CODEBASE_MAP.md docs/evolution/INDEX.md` → passed.
+- Full configured pre-commit on the documentation files passed the affected documentation, security, lint, and schema hooks; its informational `mypy-src` hook failed because the generated shell command split its flags into separate commands.
+- `git diff --check` → passed. Current-head hosted Validation Pipeline run `38263388416` is `action_required` with zero jobs.
+
+**Governance:** The live PR WEC selections were preserved. No secrets were detected in the previous code-change scan; this session changed documentation only.
+
+### Agents Used
+- [x] `ci-log-retrieval-agent` — retrieved and summarized the historical Validation Pipeline logs
+- [x] `ci-testing-agent` — triaged historical CI failures and current-head status
+
+---
+
 ## Session: 2026-10-11 — PR #5693 security report and CI recovery
 
 **Objective:** Resume the interrupted PR #5693 session, address review feedback on security-report verification, resolve current CI failures, and audit workflow status across all five PR commits.
