@@ -169,13 +169,13 @@ jobs:
       shell: bash
       env:
         IN_SCAN_TYPE: ${{ inputs.scan-type || 'all' }}
-        IN_SCAN_CODEQL: ${{ github.event.inputs.scan_codeql || 'true' }}
-        IN_SCAN_SEMGREP: ${{ github.event.inputs.scan_semgrep || 'true' }}
-        IN_SCAN_CONTAINERS: ${{ github.event.inputs.scan_containers || 'true' }}
-        IN_SCAN_CVE: ${{ github.event.inputs.scan_cve || 'true' }}
-        IN_SCAN_DEPENDENCY: ${{ github.event.inputs.scan_dependency || 'true' }}
-        IN_SCAN_SECRETS: ${{ github.event.inputs.scan_secrets || 'true' }}
-        IN_SCAN_SBOM: ${{ github.event.inputs.scan_sbom || 'true' }}
+        IN_SCAN_CODEQL: ${{ inputs.scan_codeql }}
+        IN_SCAN_SEMGREP: ${{ inputs.scan_semgrep }}
+        IN_SCAN_CONTAINERS: ${{ inputs.scan_containers }}
+        IN_SCAN_CVE: ${{ inputs.scan_cve }}
+        IN_SCAN_DEPENDENCY: ${{ inputs.scan_dependency }}
+        IN_SCAN_SECRETS: ${{ inputs.scan_secrets }}
+        IN_SCAN_SBOM: ${{ inputs.scan_sbom }}
         IN_LANE_ID: ${{ github.event.inputs.lane-id || inputs.lane-id || 'lane-security'
           }}
         IN_SHARD_ID: ${{ github.event.inputs.shard-id || inputs.shard-id || 'shard-0'
@@ -722,8 +722,8 @@ jobs:
           echo "# Container Security Scan Report"
           echo "- **Dockerfile:** ${{ matrix.dockerfile }}"
           echo "- **Scan outcome:** ${{ job.status }}"
-          echo "- **Lane ID:** `${{ needs.lane-metadata-contract.outputs.lane_id }}`"
-          echo "- **Shard ID:** `${{ needs.lane-metadata-contract.outputs.shard_id }}`"
+          echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+          echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`"
           if [ -f "docker-build-${{ strategy.job-index }}.log" ]; then
             echo "## Docker Build Log"
             echo '```'
@@ -848,7 +848,7 @@ jobs:
           echo "# CVE & Dependency Audit Report"
           echo "- **Ecosystem:** ${{ matrix.ecosystem }}"
           echo "- **Scan outcome:** ${{ job.status }}"
-          echo "- **Lane ID:** `${{ needs.lane-metadata-contract.outputs.lane_id }}`"
+          echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
         } > "cve-scan-summary-${{ matrix.ecosystem }}.md"
 
         cat > ".codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json" <<EOF
@@ -1064,8 +1064,8 @@ jobs:
         {
           echo "# Secret Scan Report"
           echo "- **Secrets found:** ${{ steps.detect-secrets.outputs.secrets_found || 0 }}"
-          echo "- **Lane ID:** `${{ needs.lane-metadata-contract.outputs.lane_id }}`"
-          echo "- **Input Lock SHA:** `${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}`"
+          echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+          echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`"
         } > secret-scan-summary.md
         cat secret-scan-summary.md >> "$GITHUB_STEP_SUMMARY"
 
@@ -1390,7 +1390,6 @@ jobs:
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Fetch all existing code-scanning alerts
       if: contains(needs.lane-metadata-contract.outputs.selected_scans, 'codeql')
-      continue-on-error: true
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
@@ -1482,6 +1481,12 @@ jobs:
         }
         with open("security/artifact-provenance.json", "w", encoding="utf-8") as handle:
             json.dump(provenance, handle, indent=2)
+        remediation_lock = {
+            "schema_version": "1.0.0",
+            "remediation_input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+        }
+        with open("security/remediation-input-lock.json", "w", encoding="utf-8") as handle:
+            json.dump(remediation_lock, handle, indent=2)
         PY
 
         python - <<'PY' >> "${GITHUB_OUTPUT}"

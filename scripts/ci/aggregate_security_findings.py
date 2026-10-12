@@ -138,7 +138,13 @@ class ArtifactCatalog:
                 if isinstance(scan, str) and scan in self.SCAN_ARTIFACTS
             }
 
-        manifest = self.artifacts_dir / "security-suite-lane-contract" / "lane-manifest.json"
+        manifest = (
+            self.artifacts_dir
+            / "security-suite-lane-contract"
+            / ".codex"
+            / "contracts"
+            / "lane-manifest.json"
+        )
         if manifest.is_file():
             try:
                 with manifest.open(encoding="utf-8") as handle:
@@ -468,11 +474,7 @@ class FindingsAggregator:
                         severity="CRITICAL",
                         package=dependency.get("name"),
                         version=dependency.get("installed_version"),
-                        remediation_url=(
-                            vulnerability.get("fix_versions", [None])[0]
-                            if vulnerability.get("fix_versions")
-                            else vulnerability.get("advisory_url")
-                        ),
+                        remediation_url=vulnerability.get("advisory_url"),
                         rule_id=vuln_id,
                     )
                 )

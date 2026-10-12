@@ -100,7 +100,14 @@ def test_aggregates_each_successful_scanner_format(tmp_path):
                     {
                         "name": "package-a",
                         "installed_version": "1.0",
-                        "vulns": [{"id": "PYSEC-1", "description": "Python issue"}],
+                        "vulns": [
+                            {
+                                "id": "PYSEC-1",
+                                "description": "Python issue",
+                                "advisory_url": "https://example.com/advisory/PYSEC-1",
+                                "fix_versions": ["2.0.1"],
+                            }
+                        ],
                     }
                 ]
             }
@@ -186,6 +193,23 @@ def test_aggregates_each_successful_scanner_format(tmp_path):
     }
     assert report["scan_status"]["sbom"]["status"] == "skipped"
     assert report["scan_status"]["secrets"]["status"] == "success"
+    pip_finding = next(
+        finding for finding in report["finding_index"] if finding["tool"] == "pip-audit"
+    )
+    assert pip_finding["remediation_url"] == "https://example.com/advisory/PYSEC-1"
+
+
+def test_reads_selected_scans_from_downloaded_lane_manifest(tmp_path):
+    contract = tmp_path / "security-suite-lane-contract" / ".codex" / "contracts"
+    contract.mkdir(parents=True)
+    (contract / "lane-manifest.json").write_text(
+        json.dumps({"selected_scans": ["semgrep"]}), encoding="utf-8"
+    )
+
+    aggregator = _aggregator(tmp_path)
+
+    assert aggregator.selected_scans == {"semgrep"}
+    assert aggregator.scan_status["codeql"]["status"] == "skipped"
 
 
 def test_failed_contract_is_incomplete_and_not_aggregated(tmp_path):
