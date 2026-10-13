@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5695 CI rescue findings (2026-10-12)
+- Corrected the two evolution-document links to the repository-root cognitive-brain map and removed trailing whitespace reported by Fast Validation on SHA `09972c66`.
+- Recorded the commit-specific REQ-4 failure and its resolution in the active accountability report. Current-head hosted Validation remains `action_required` with zero jobs; no hosted pass is claimed.
+
 ### Fixed — PR #5693 security report and CI recovery (2026-10-11)
 - Keep security-report verification and artifact upload unconditional so failed scans still surface missing reports; reflow overlong workflow YAML lines for strict yamllint.
 - Repair the current training test mismatches and Zendesk test-package shadowing, record today's PDA/accountability evidence, and audit workflow outcomes across all five PR commits. Focused tests pass; fresh CI results are still required.

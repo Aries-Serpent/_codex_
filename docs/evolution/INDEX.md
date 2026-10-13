@@ -84,4 +84,4 @@ docs/evolution/
 - [Project Roadmap](../ROADMAP.md) — Unified project roadmap
 - [Documentation Index](../DOCUMENTATION_INDEX.md) — Complete documentation catalog
 - [GitHub Pages Status](../status/GITHUB_PAGES_STATUS.md) — Deployment health
-- [Agent Evolution Map](../.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Agent lineage tracking
+- [Agent Evolution Map](../../.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Agent lineage tracking

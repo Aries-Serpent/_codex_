@@ -342,24 +342,24 @@ flowchart LR
 ### 4.3 Search Commands
 
 ```bash
-# Layer 1: Source Code 
+# Layer 1: Source Code
 python -m ruff check src/ tests/ --select F401,F811,E741 -q # dead imports
 python -m pytest --cov=src --cov-fail-under=80 -q # coverage gate
 pip-audit --format json --output .codex/sar/dep_audit.json # CVE scan
 
-# Layer 2: CI/CD Pipeline 
+# Layer 2: CI/CD Pipeline
 grep -rL "setup-python-cached\|actions/cache" .github/workflows/*.yml \
  | xargs grep -l "pip install" 2>/dev/null # missing cache
 grep -rn "actions/cache@v4" .github/ # stale cache@v4
 
-# Layer 3: Configuration 
+# Layer 3: Configuration
 python scripts/tools/variable_audit_cli.py diff # missing vars
 python scripts/tools/variable_audit_cli.py rotate-check --days 90 # rotation due
 
-# Layer 4: ML Models 
+# Layer 4: ML Models
 python scripts/tools/codex_experiment_index.py --check-staleness # stale index
 
-# Layer 5: Cognitive Brain 
+# Layer 5: Cognitive Brain
 python -m codex.logging.query_logs --stale-ltm --days 90 # stale LTM
 python scripts/cognitive/pattern_health_check.py --min-confidence 0.75
 ```
