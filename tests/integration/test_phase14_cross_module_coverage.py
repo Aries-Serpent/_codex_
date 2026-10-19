@@ -11,6 +11,7 @@ Created: 2026-01-18 (Phase 14.3)
 
 from __future__ import annotations
 
+import os
 import tempfile
 from pathlib import Path
 
