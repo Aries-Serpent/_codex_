@@ -175,7 +175,7 @@ jobs:
         PY
     - name: Upload CodeQL results artifact
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: codeql-ga-sarif-${{ github.run_id }}
         path: |
@@ -301,7 +301,7 @@ jobs:
         \ \"Audit trail recorded: $AUDIT_LOG\"\n"
     - name: Upload Gate Audit Logs
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: codeql-ga-gate-audit-${{ github.run_id }}
         path: .codex/security/gate_audit/

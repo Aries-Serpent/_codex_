@@ -106,7 +106,7 @@ jobs:
         \nfi\n"
     - name: Upload validation results
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         path: 'reports/validation/*.json
 
@@ -291,7 +291,7 @@ jobs:
         \ $GITHUB_STEP_SUMMARY\n  exit 1\nfi\n"
     - name: Upload determinism reports
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         path: 'determinism_pass1.log
 
@@ -348,7 +348,7 @@ jobs:
         '
     - name: Upload DVC status artifact
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         path: workbench/evidence/dvc_status.json
         if-no-files-found: ignore
