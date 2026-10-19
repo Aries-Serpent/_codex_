@@ -13,6 +13,7 @@ Output: Observable state snapshot (JSON, immutable)
 import asyncio
 import json
 import logging
+import re
 import subprocess
 import time
 from dataclasses import asdict, dataclass, field
@@ -34,7 +35,7 @@ class RepositoryState:
     test_status: str  # passing, failing, unknown
     test_count: int
     test_failures: int
-    ci_status: str  # success, failure, pending
+    ci_status: str  # success, failure, pending, unknown, unavailable, error
     last_commit_timestamp: datetime
     recent_commits: list[dict[str, Any]] = field(default_factory=list)
 
@@ -163,8 +164,99 @@ class Observable:
 class RepositoryObserver:
     """Observes repository state."""
 
-    def __init__(self, repo_path: Path = Path(".")):
+    def __init__(
+        self,
+        repo_path: Path = Path("."),
+        collect_test_status: bool = False,
+        collect_ci_status: bool = False,
+        test_command: Optional[list[str]] = None,
+        test_timeout_seconds: int = 300,
+    ):
         self.repo_path = repo_path
+        self.collect_test_status = collect_test_status
+        self.collect_ci_status = collect_ci_status
+        self.test_command = test_command or [
+            "python",
+            "-m",
+            "pytest",
+            "--collect-only",
+            "-q",
+        ]
+        self.test_timeout_seconds = test_timeout_seconds
+
+    def _collect_test_status(self) -> tuple[str, int, int]:
+        """Measure test status via pytest, or report it as unavailable.
+
+        Returns (status, collected, failures). ``unavailable`` means no
+        measurement was attempted; ``unknown`` means one was attempted but
+        the summary could not be parsed. Neither is reported as healthy.
+        """
+        if not self.collect_test_status:
+            return ("unavailable", 0, 0)
+        try:
+            result = subprocess.run(
+                self.test_command,
+                cwd=self.repo_path,
+                capture_output=True,
+                text=True,
+                timeout=self.test_timeout_seconds,
+            )
+            collected = failures = 0
+            match = re.search(r"(\d+)\s+tests? collected", result.stdout)
+            if match:
+                collected = int(match.group(1))
+            err_match = re.search(r"(\d+)\s+errors?", result.stdout + result.stderr)
+            if err_match:
+                failures = int(err_match.group(1))
+            if result.returncode == 0:
+                return ("passing", collected, 0)
+            return ("failing", collected, max(failures, 1))
+        except subprocess.TimeoutExpired:
+            return ("failing", 0, 1)
+        except FileNotFoundError:
+            logger.warning("pytest not available; test status unknown")
+            return ("unknown", 0, 0)
+        except Exception as e:  # noqa: BLE001 - observation must not raise
+            logger.error(f"Test status collection failed: {e}")
+            return ("error", 0, 0)
+
+    def _collect_ci_status(self, branch: str) -> str:
+        """Measure CI status via the GitHub CLI, or report it unavailable."""
+        if not self.collect_ci_status:
+            return "unavailable"
+        try:
+            result = subprocess.run(
+                [
+                    "gh",
+                    "run",
+                    "list",
+                    "--branch",
+                    branch,
+                    "--limit",
+                    "1",
+                    "--json",
+                    "status,conclusion",
+                ],
+                cwd=self.repo_path,
+                capture_output=True,
+                text=True,
+                timeout=15,
+            )
+            if result.returncode != 0:
+                return "unavailable"
+            runs = json.loads(result.stdout or "[]")
+            if not runs:
+                return "unavailable"
+            run = runs[0]
+            if run.get("status") != "completed":
+                return "pending"
+            return "success" if run.get("conclusion") == "success" else "failure"
+        except FileNotFoundError:
+            logger.warning("gh CLI not available; CI status unavailable")
+            return "unavailable"
+        except Exception as e:  # noqa: BLE001 - observation must not raise
+            logger.error(f"CI status collection failed: {e}")
+            return "error"
 
     def observe(self) -> RepositoryState:
         """Collect current repository state."""
@@ -233,15 +325,18 @@ class RepositoryObserver:
             else:
                 last_commit_time = datetime.now()
 
+            test_status, test_count, test_failures = self._collect_test_status()
+            ci_status = self._collect_ci_status(current_branch)
+
             return RepositoryState(
                 current_branch=current_branch,
                 commit_hash=commit_hash,
                 uncommitted_changes=uncommitted,
                 staged_changes=staged,
-                test_status="unknown",
-                test_count=0,
-                test_failures=0,
-                ci_status="unknown",
+                test_status=test_status,
+                test_count=test_count,
+                test_failures=test_failures,
+                ci_status=ci_status,
                 last_commit_timestamp=last_commit_time,
                 recent_commits=recent_commits,
             )
@@ -261,34 +356,53 @@ class RepositoryObserver:
 
 
 class AgentEcosystemObserver:
-    """Observes agent ecosystem state."""
+    """Observes agent ecosystem state.
+
+    Reads the local agent registry file when present. When no registry is
+    available the observer reports zero agents rather than inventing
+    representative entries; per-agent health metrics require a registry
+    that supplies them and are otherwise left at their zero defaults.
+    """
 
     def __init__(self, agent_registry_path: Path = Path(".codex/agent_registry.json")):
         self.agent_registry_path = agent_registry_path
 
     def observe(self) -> AgentEcosystemState:
-        """Collect current agent ecosystem state."""
+        """Collect current agent ecosystem state from the registry."""
         try:
-            # In production, this would query actual agent health endpoints
-            # For now, we return a representative structure
+            if not self.agent_registry_path.exists():
+                logger.info(
+                    "Agent registry not found at %s; reporting empty ecosystem",
+                    self.agent_registry_path,
+                )
+                return AgentEcosystemState(
+                    total_agents=0,
+                    healthy_agents=0,
+                    degraded_agents=0,
+                    failing_agents=0,
+                )
 
-            agents = []
+            registry = json.loads(self.agent_registry_path.read_text(encoding="utf-8"))
+            entries = registry.get("agents", registry if isinstance(registry, list) else [])
+
+            agents: list[AgentStatus] = []
             healthy_count = 0
             degraded_count = 0
             failing_count = 0
             total_queue_depth = 0
-            total_success_rate = 0.0
-            total_latency_ms = 0.0
 
-            # Sample agent statuses (in production, fetch from registry)
-            sample_agents = [
-                ("ci-auto-healer", 0.94, 42.5),
-                ("test-pattern-guardian", 0.91, 38.2),
-                ("semantic-router", 0.98, 12.3),
-            ]
+            for entry in entries:
+                name = str(entry.get("name") or entry.get("id") or "unknown")
+                # Registry entries that do not report a measured success
+                # rate are counted but not assigned fabricated metrics.
+                measured = "success_rate" in entry
+                success_rate = float(entry.get("success_rate", 0.0))
+                latency = float(entry.get("avg_latency_ms", 0.0))
+                queue_depth = int(entry.get("queue_depth", 0))
 
-            for agent_name, success_rate, latency in sample_agents:
-                if success_rate > 0.95:
+                if not measured:
+                    status = "unknown"
+                elif success_rate > 0.95:
                     status = "healthy"
                     healthy_count += 1
                 elif success_rate > 0.85:
@@ -298,30 +412,34 @@ class AgentEcosystemObserver:
                     status = "failing"
                     failing_count += 1
 
-                queue_depth = hash(agent_name) % 10  # Pseudo-random
                 agents.append(
                     AgentStatus(
-                        agent_id=agent_name.lower().replace("-", "_"),
-                        name=agent_name,
+                        agent_id=name.lower().replace("-", "_"),
+                        name=name,
                         status=status,
                         queue_depth=queue_depth,
                         success_rate=success_rate,
                         avg_latency_ms=latency,
-                        last_execution=datetime.now(),
-                        error_count=int((1 - success_rate) * 100),
+                        last_execution=None,
+                        error_count=int(entry.get("error_count", 0)),
                     )
                 )
                 total_queue_depth += queue_depth
-                total_success_rate += success_rate
-                total_latency_ms += latency
 
-            # Calculate averages
-            agent_count = len(agents)
-            avg_success_rate = total_success_rate / agent_count if agent_count > 0 else 0.0
-            avg_latency = total_latency_ms / agent_count if agent_count > 0 else 0.0
+            measured_agents = [a for a in agents if a.status != "unknown"]
+            avg_success_rate = (
+                sum(a.success_rate for a in measured_agents) / len(measured_agents)
+                if measured_agents
+                else 0.0
+            )
+            avg_latency = (
+                sum(a.avg_latency_ms for a in measured_agents) / len(measured_agents)
+                if measured_agents
+                else 0.0
+            )
 
             return AgentEcosystemState(
-                total_agents=145,
+                total_agents=len(agents),
                 healthy_agents=healthy_count,
                 degraded_agents=degraded_count,
                 failing_agents=failing_count,
@@ -333,7 +451,7 @@ class AgentEcosystemObserver:
         except Exception as e:
             logger.error(f"Failed to observe agent ecosystem: {e}")
             return AgentEcosystemState(
-                total_agents=145,
+                total_agents=0,
                 healthy_agents=0,
                 degraded_agents=0,
                 failing_agents=0,
@@ -341,41 +459,79 @@ class AgentEcosystemObserver:
 
 
 class TaskQueueObserver:
-    """Observes task queue state."""
+    """Observes task queue state.
+
+    When a queue path is configured the observer counts real task records
+    (one JSON object per line). Without a live queue it reports empty
+    counts rather than representative placeholders.
+    """
+
+    def __init__(self, queue_path: Optional[Path] = None):
+        self.queue_path = queue_path
 
     def observe(self) -> TaskQueueState:
-        """Collect current task queue state."""
+        """Collect current task queue state from the configured queue."""
         try:
-            # In production, query actual task queue
-            # For now, return representative state
+            if self.queue_path is None or not self.queue_path.exists():
+                return TaskQueueState(
+                    pending_count=0,
+                    active_count=0,
+                    completed_count=0,
+                    failed_count=0,
+                    oldest_pending_age_seconds=0,
+                )
+
             now = datetime.now()
-            tasks = [
-                TaskInfo(
-                    task_id="task_001",
-                    priority=1,
-                    status="active",
-                    created_at=now,
-                    age_seconds=120,
-                    dependencies=[],
-                    owner="ci-auto-healer",
-                ),
-                TaskInfo(
-                    task_id="task_002",
-                    priority=2,
-                    status="pending",
-                    created_at=now,
-                    age_seconds=60,
-                    dependencies=["task_001"],
-                    owner="test-pattern-guardian",
-                ),
-            ]
+            tasks: list[TaskInfo] = []
+            pending = active = completed = failed = 0
+            oldest_pending_age = 0
+
+            with open(self.queue_path, encoding="utf-8") as handle:
+                for line in handle:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    record = json.loads(line)
+                    status = str(record.get("status", "pending"))
+                    created_raw = record.get("created_at")
+                    try:
+                        created_at = (
+                            datetime.fromisoformat(str(created_raw).replace("Z", "+00:00"))
+                            if created_raw
+                            else now
+                        )
+                    except ValueError:
+                        created_at = now
+                    age_seconds = max(0, int((now - created_at).total_seconds()))
+
+                    if status == "pending":
+                        pending += 1
+                        oldest_pending_age = max(oldest_pending_age, age_seconds)
+                    elif status == "active":
+                        active += 1
+                    elif status == "completed":
+                        completed += 1
+                    elif status == "failed":
+                        failed += 1
+
+                    tasks.append(
+                        TaskInfo(
+                            task_id=str(record.get("task_id", f"task_{len(tasks)}")),
+                            priority=int(record.get("priority", 5)),
+                            status=status,
+                            created_at=created_at,
+                            age_seconds=age_seconds,
+                            dependencies=list(record.get("dependencies", [])),
+                            owner=record.get("owner"),
+                        )
+                    )
 
             return TaskQueueState(
-                pending_count=1,
-                active_count=1,
-                completed_count=42,
-                failed_count=2,
-                oldest_pending_age_seconds=60,
+                pending_count=pending,
+                active_count=active,
+                completed_count=completed,
+                failed_count=failed,
+                oldest_pending_age_seconds=oldest_pending_age,
                 tasks=tasks,
             )
         except Exception as e:

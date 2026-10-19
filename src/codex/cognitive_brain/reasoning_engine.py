@@ -548,6 +548,12 @@ class ImprovementLayer:
         self.category_accuracy: Dict[str, List[bool]] = defaultdict(list)
         self.brier_scores: Dict[str, List[float]] = defaultdict(list)
         self.improvement_history: List[Dict[str, Any]] = []
+        # Decisions registered for confidence lookup during calibration.
+        self._decision_index: List[Decision] = []
+
+    def register_decisions(self, decisions: List[Decision]) -> None:
+        """Register decisions so outcomes can be scored against confidence."""
+        self._decision_index.extend(decisions)
 
     def learn_from_outcomes(
         self,
@@ -621,13 +627,31 @@ class ImprovementLayer:
         return improvement_record
 
     def _calculate_brier_score(self, outcomes: List[DecisionOutcome]) -> float:
-        """Calculate Brier score (mean squared error of confidence)."""
+        """Calculate the Brier score against the recorded decision confidence.
+
+        The Brier score is the mean squared error between the predicted
+        probability of success (the decision's calibrated confidence) and
+        the realized outcome (1.0 for success, 0.0 for failure). Lower is
+        better: a confident success scores near 0, a confident failure
+        scores near 1. Outcomes whose originating decision confidence
+        cannot be resolved are skipped rather than scored with a
+        fabricated prediction.
+        """
         if not outcomes:
             return 0.0
 
-        squared_errors = [
-            (1.0 if o.success else 0.0 - (1.0 if o.success else 0.0)) ** 2 for o in outcomes
-        ]
+        squared_errors: List[float] = []
+        for outcome in outcomes:
+            decision = next(
+                (d for d in self._decision_index if d.id == outcome.decision_id), None
+            )
+            if decision is None:
+                continue
+            realized = 1.0 if outcome.success else 0.0
+            squared_errors.append((float(decision.confidence) - realized) ** 2)
+
+        if not squared_errors:
+            return 0.0
         return float(np.mean(squared_errors))
 
     def get_improvement_metrics(self) -> Dict[str, Any]:
@@ -772,6 +796,7 @@ class ReasoningEngine:
         Returns:
             Improvement metrics
         """
+        self.improvement.register_decisions(self.decision_history)
         return self.improvement.learn_from_outcomes(self.feedback, self.reasoning, self.calibrator)
 
     def get_metrics(self) -> Dict[str, Any]:
