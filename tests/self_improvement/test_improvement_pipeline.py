@@ -45,7 +45,7 @@ def _pipeline(tmp_path: Path) -> ImprovementPipeline:
     return ImprovementPipeline(
         repo="Aries-Serpent/_codex_",
         ref="refs/heads/main",
-        sha="cd47831318fe",
+        sha="cd47831318fe",  # pragma: allowlist secret
         brain_interface=_brain(tmp_path),
         authority=AuthorityEnvelope(require_human_approval=False),
     )

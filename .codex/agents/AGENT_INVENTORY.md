@@ -19,8 +19,10 @@ treated as the live registry.
 ## Runtime observers
 
 `AgentEcosystemObserver` no longer reports a hard-coded total (formerly
-145). It reads `.codex/agent_registry.json` when present and otherwise
-reports an empty ecosystem — missing data is never rendered as healthy.
+145). It reads measured per-agent health from `.codex/agent_registry.json`
+when present, otherwise reports the truthful subsystem count from
+`.codex/AGENT_REGISTRY.yaml` (4) without fabricating health metrics —
+missing data is never rendered as healthy.
 
 ## Honesty rule
 

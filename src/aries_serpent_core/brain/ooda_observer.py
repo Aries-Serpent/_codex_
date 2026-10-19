@@ -23,6 +23,11 @@ from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
+try:  # Optional; the observer degrades to "unavailable" without it.
+    import yaml  # type: ignore
+except ImportError:  # pragma: no cover - depends on environment
+    yaml = None
+
 
 @dataclass
 class RepositoryState:
@@ -367,23 +372,60 @@ class AgentEcosystemObserver:
     def __init__(self, agent_registry_path: Path = Path(".codex/agent_registry.json")):
         self.agent_registry_path = agent_registry_path
 
+    @staticmethod
+    def _yaml_fallback_count(path: Path) -> int:
+        """Count ``agents:`` mapping keys without a YAML parser."""
+        try:
+            in_agents = False
+            count = 0
+            for line in path.read_text(encoding="utf-8").splitlines():
+                if line.startswith("agents:"):
+                    in_agents = True
+                    continue
+                if in_agents:
+                    if line and not line.startswith((" ", "-")):
+                        break
+                    if re.match(r"^  \S", line):
+                        count += 1
+            return count
+        except OSError:
+            return 0
+
+    def _load_registry_entries(self) -> list[dict[str, Any]]:
+        """Load agent entries from JSON or YAML registry, or empty list."""
+        # JSON registry with measured per-agent health takes precedence.
+        if self.agent_registry_path.exists():
+            registry = json.loads(self.agent_registry_path.read_text(encoding="utf-8"))
+            entries = registry.get("agents", registry if isinstance(registry, list) else [])
+            return [dict(e) for e in entries]
+
+        # Fall back to the YAML subsystem registry for a truthful *count*
+        # (no fabricated per-agent health metrics).
+        yaml_path = Path(".codex/AGENT_REGISTRY.yaml")
+        if not yaml_path.exists():
+            return []
+        if yaml is not None:
+            data = yaml.safe_load(yaml_path.read_text(encoding="utf-8")) or {}
+            agents = data.get("agents") or {}
+            return [
+                {"name": key, **(value if isinstance(value, dict) else {})}
+                for key, value in agents.items()
+            ]
+        count = self._yaml_fallback_count(yaml_path)
+        return [{"name": f"subsystem_{i}"} for i in range(count)]
+
     def observe(self) -> AgentEcosystemState:
         """Collect current agent ecosystem state from the registry."""
         try:
-            if not self.agent_registry_path.exists():
-                logger.info(
-                    "Agent registry not found at %s; reporting empty ecosystem",
-                    self.agent_registry_path,
-                )
+            entries = self._load_registry_entries()
+            if not entries:
+                logger.info("No agent registry found; reporting empty ecosystem")
                 return AgentEcosystemState(
                     total_agents=0,
                     healthy_agents=0,
                     degraded_agents=0,
                     failing_agents=0,
                 )
-
-            registry = json.loads(self.agent_registry_path.read_text(encoding="utf-8"))
-            entries = registry.get("agents", registry if isinstance(registry, list) else [])
 
             agents: list[AgentStatus] = []
             healthy_count = 0
