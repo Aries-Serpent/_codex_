@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed — Dependabot consolidation PR preparation (2026-10-16)
+- Prepared the consolidated Cargo and npm dependency updates for review on `copilot/consolidate-dependabot-prs`; the existing DOMPurify 3.4.17 lock entry matches Dependabot PR #5699. The source PR is linked for closure when the consolidated PR merges.
+- Verified npm audits report zero vulnerabilities in both workspaces, cognitive_app tests and build pass, and the documented fast validation passes.
+
 ### Fixed — PR #5695 CI rescue findings (2026-10-12)
 - Corrected the two evolution-document links to the repository-root cognitive-brain map and removed trailing whitespace reported by Fast Validation on SHA `09972c66`.
 - Recorded the commit-specific REQ-4 failure and its resolution in the active accountability report. Current-head hosted Validation remains `action_required` with zero jobs; no hosted pass is claimed.
