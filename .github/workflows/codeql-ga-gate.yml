@@ -337,9 +337,9 @@ jobs:
           const issueTitle = `🔐 CodeQL Security Alert: ${critical} Critical + ${high} High`;
           const issueBody = `## CodeQL Security Alert
 
-          **Branch**: `${{ github.ref }}`  
-          **Commit**: `${{ github.sha }}`  
-          **Author**: @${{ github.actor }}  
+          **Branch**: \`${{ github.ref }}\`
+          **Commit**: \`${{ github.sha }}\`
+          **Author**: @${{ github.actor }}
 
           ### Alert Summary
           - **Critical Alerts**: ${critical}
