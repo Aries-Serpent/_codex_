@@ -24,6 +24,20 @@ _OUTCOME_TO_FEEDBACK = {
 }
 
 
+def store_outcome_source(store: Any) -> Callable[[str], Optional[Mapping[str, Any]]]:
+    """Adapt an :class:`EvidenceStore` into an OutcomeTracker outcome source.
+
+    The returned callable reads the recorded post-merge outcome for an
+    event ID from the store, so ``OutcomeTracker`` consumes only outcomes
+    that were actually persisted (the verified-outcome seam).
+    """
+
+    def _source(event_id: str) -> Optional[Mapping[str, Any]]:
+        return store.outcome_for(event_id)
+
+    return _source
+
+
 @dataclass(frozen=True, slots=True)
 class ConfidenceUpdate:
     """Traceable record of a confidence change."""

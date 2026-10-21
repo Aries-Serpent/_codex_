@@ -170,6 +170,19 @@ class EvidenceStore:
 
         return self._outcomes.get(event_id)
 
+    def record(self, kind: str, event_id: str, payload: Mapping[str, Any]) -> None:
+        """Persist an auxiliary evidence record (execution, pr, confidence).
+
+        These kinds complete the audit trail the evaluator inspects; the
+        payload always carries the originating ``event_id`` so the trail
+        stays linked end-to-end. Idempotency is enforced on ``event``.
+        """
+
+        if not event_id:
+            raise ValueError("evidence record requires an event_id")
+        body = {"event_id": event_id, **dict(payload)}
+        self._append(kind, body)
+
     def seen(self, event_id: str) -> bool:
         return event_id in self._event_ids
 
