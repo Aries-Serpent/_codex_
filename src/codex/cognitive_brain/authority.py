@@ -59,11 +59,15 @@ class AuthorityEnvelope:
 
         violations = []
         for path in paths:
-            if any(fnmatch.fnmatch(path, pat) for pat in self.denied_path_globs):
-                violations.append(f"path denied by policy: {path}")
-                continue
-            if not any(fnmatch.fnmatch(path, pat) for pat in self.allowed_path_globs):
+            if not path or path.startswith("/"):
                 violations.append(f"path outside allowlist: {path}")
+                continue
+            normalized = path.replace("\\", "/")
+            if any(fnmatch.fnmatch(normalized, pat) for pat in self.denied_path_globs):
+                violations.append(f"path denied by policy: {normalized}")
+                continue
+            if not any(fnmatch.fnmatch(normalized, pat) for pat in self.allowed_path_globs):
+                violations.append(f"path outside allowlist: {normalized}")
         return tuple(violations)
 
     def check_diff_size(self, diff_lines: int, file_count: int) -> Tuple[str, ...]:

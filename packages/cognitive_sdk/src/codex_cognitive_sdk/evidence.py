@@ -18,7 +18,6 @@ used for tamper-evidence across trust boundaries.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from datetime import datetime
 from typing import Any, Dict, Mapping, Optional, Tuple
 
 # Bump when a breaking change is made to the event/result schema.
@@ -370,6 +369,11 @@ def make_event_id(
 ) -> str:
     """Derive a deterministic idempotency key from the event's identity."""
 
+    proposal_target = None
+    if proposal is not None:
+        files = tuple(proposal.files or ())
+        proposal_target = files[0] if len(files) == 1 else tuple(files)
+
     return content_hash(
         {
             "repo": repo,
@@ -381,6 +385,7 @@ def make_event_id(
                 "summary": signal.summary,
             },
             "pattern_id": pattern.pattern_id if pattern else None,
+            "proposal_target": proposal_target,
             "patch_hash": proposal.patch_hash if proposal else None,
         }
     )
