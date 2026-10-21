@@ -1,3 +1,26 @@
+## Session: 2026-10-21 — PR #5706 CI rescue remediation
+
+**Objective:** Resolve the named Fast Validation, Cognitive Pre-flight, and no-deferral check findings on PR #5706.
+
+**Status:** The reported setup-workflow whitespace is corrected and current-session evidence is recorded. The latest completed no-deferral / owner-reason run passed; hosted validation of the new commit is pending.
+
+**Actions:**
+1. Retrieved Actions logs for the failures on `f9e9400d3de86492a9c8aa1312294158dfc11cc7`. Fast Validation stopped at seven trailing-whitespace findings in `.github/workflows/copilot-setup-steps.yml`; Cognitive Pre-flight reported that this report was unchanged in the required commit.
+2. Removed the reported trailing whitespace and updated the active and archived accountability reports, `CHANGELOG.md`, and `.codex/aftermath/pda_iterations.jsonl`.
+3. Checked Strict No-Deferral Security Gate run `39542960867`; both language and owner/reason checks passed, so no change to that gate was needed.
+
+**Validation:**
+- `bash scripts/ci/validate_setup_steps_yaml.sh` → all five setup-step checks passed.
+- `python scripts/ci/session_wrapup_autofix.py --check --pr-number 5706` → REQ-4, REQ-5, and REQ-14 passed.
+- `git diff --check` and PDA JSONL parsing → passed.
+
+### Agents Used
+- [x] `ci-triage-pipeline-agent`
+- [x] `ci-testing-agent`
+- [x] `ci-auto-healer-agent`
+
+---
+
 ## Session: 2026-10-12 — PR #5695 CI rescue remediation
 
 **Objective:** Investigate the CI rescue findings for commit `09972c66` and resolve reproducible failures in the current PR branch.
