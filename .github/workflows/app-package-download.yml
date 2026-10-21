@@ -241,7 +241,7 @@ jobs:
           ls -l .artifacts/zip_verify
 
       - name: Upload runtime ZIP artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: offline-zip-keymaster-gui-${{ github.run_id }}
           path: release/run_offline_zip_keymaster_self_contained.zip
@@ -362,7 +362,7 @@ jobs:
             build_bundle_manifest.json
 
       - name: Upload build bundle artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: offline-zip-keymaster-build-${{ github.run_id }}
           path: release/offline_zip_keymaster_build_bundle.zip

@@ -318,7 +318,7 @@ jobs:
         fail_ci_if_error: false
         name: rag-coverage-${{ matrix.python-version }}
     - name: Upload HTML coverage report
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       if: always()
       with:
         path: htmlcov/
@@ -421,7 +421,7 @@ jobs:
         \ \u26A0\uFE0F  generate_cache_keys.py not found (skipping detailed check)\"\
         \nfi\n \necho \"[CACHE-HEALTH] \u2705 Cache health report complete\"\n"
     - name: Upload security report
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       if: always()
       with:
         path: bandit-report.txt
