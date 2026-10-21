@@ -85,18 +85,18 @@ jobs:
             esac
 
             ZIP_SOURCE="$(python - "$WORKSPACE_ROOT" "$ZIP_PATH" <<'PY'
-import os
-import sys
-from pathlib import Path
+            import os
+            import sys
+            from pathlib import Path
 
-root = Path(sys.argv[1]).resolve()
-relative = Path(sys.argv[2])
-path = (root / relative).resolve()
-if os.path.commonpath([str(root), str(path)]) != str(root):
-    raise SystemExit(2)
-print(path)
-PY
-)" || {
+            root = Path(sys.argv[1]).resolve()
+            relative = Path(sys.argv[2])
+            path = (root / relative).resolve()
+            if os.path.commonpath([str(root), str(path)]) != str(root):
+                raise SystemExit(2)
+            print(path)
+            PY
+            )" || {
               echo "ZIP path escapes the repository workspace: ${ZIP_PATH}" >&2
               exit 1
             }
