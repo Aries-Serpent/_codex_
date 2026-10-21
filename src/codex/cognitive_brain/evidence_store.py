@@ -152,6 +152,9 @@ class EvidenceStore:
     ) -> None:
         """Persist a measured post-merge outcome for an event."""
 
+        if event_id in self._outcomes:
+            return
+
         payload = {
             "event_id": event_id,
             "merged": merged,

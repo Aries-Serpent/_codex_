@@ -134,8 +134,8 @@ class ImprovementPipeline:
 
         signal.validate()
 
-        if signal.availability is not DataAvailability.MEASURED:
-            return self._inactionable(signal, f"signal not measured: {signal.availability.value}")
+        if signal.availability != DataAvailability.MEASURED:
+            return self._inactionable(signal, f"signal not measured: {signal.availability}")
         if signal.kind in _NON_ACTIONABLE_KINDS:
             return self._inactionable(signal, f"non-actionable signal kind: {signal.kind}")
 
