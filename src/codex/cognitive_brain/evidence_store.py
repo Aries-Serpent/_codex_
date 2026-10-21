@@ -90,6 +90,7 @@ class EvidenceStore:
     _event_ids: set = field(default_factory=set)
     _outcomes: Dict[str, Mapping[str, Any]] = field(default_factory=dict)
     _breakers: Dict[str, CircuitBreaker] = field(default_factory=dict)
+    _pattern_events: Dict[str, set[str]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         self.path = Path(self.path)
@@ -111,7 +112,11 @@ class EvidenceStore:
             if record.get("kind") == "event":
                 self._event_ids.add(record["payload"]["event_id"])
             elif record.get("kind") == "outcome":
-                self._outcomes[record["payload"]["event_id"]] = record["payload"]
+                payload = record["payload"]
+                self._outcomes[payload["event_id"]] = payload
+                pat = payload.get("pattern_id")
+                if pat:
+                    self._pattern_events.setdefault(pat, set()).add(payload["event_id"])
 
     def _append(self, kind: str, payload: Mapping[str, Any]) -> None:
         record = {
@@ -150,23 +155,42 @@ class EvidenceStore:
         patch_hash: Optional[str] = None,
         details: Optional[Mapping[str, Any]] = None,
     ) -> None:
-        """Persist a measured post-merge outcome for an event."""
+        """Persist a measured post-merge outcome for an event.
 
-        if event_id in self._outcomes:
-            return
+        Identical measurements are deduplicated, while an explicit transition
+        from a pending/unmerged state to a final outcome still updates the
+        record. This keeps the outcome store authoritative without discarding
+        later measurements for the same event.
+        """
 
-        payload = {
-            "event_id": event_id,
-            "merged": merged,
-            "outcome": outcome,
-            "pattern_id": pattern_id,
-            "patch_hash": patch_hash,
-            "details": dict(details or {}),
-        }
-        self._outcomes[event_id] = payload
-        self._append("outcome", payload)
+        existing = self._outcomes.get(event_id)
+        if existing is not None:
+            if existing.get("outcome") == outcome and existing.get("merged") == merged:
+                return
+            payload = {
+                "event_id": event_id,
+                "merged": merged,
+                "outcome": outcome,
+                "pattern_id": pattern_id,
+                "patch_hash": patch_hash,
+                "details": dict(details or {}),
+            }
+            self._outcomes[event_id] = payload
+            self._append("outcome", payload)
+        else:
+            payload = {
+                "event_id": event_id,
+                "merged": merged,
+                "outcome": outcome,
+                "pattern_id": pattern_id,
+                "patch_hash": patch_hash,
+                "details": dict(details or {}),
+            }
+            self._outcomes[event_id] = payload
+            self._append("outcome", payload)
         if pattern_id and merged:
             self.breaker(pattern_id).record(outcome)
+            self._pattern_events.setdefault(pattern_id, set()).add(event_id)
 
     def outcome_for(self, event_id: str) -> Optional[Mapping[str, Any]]:
         """Return the recorded outcome for an event (read-only)."""

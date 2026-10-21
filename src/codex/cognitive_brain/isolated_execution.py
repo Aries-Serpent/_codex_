@@ -128,6 +128,7 @@ class IsolatedExecutor:
         files: Sequence[str],
         diff_lines: int,
         human_approved: bool = False,
+        base_sha: Optional[str] = None,
     ) -> ExecutionOutcome:
         """Authorize, apply, and gate a proposal. Fails closed throughout."""
 
@@ -135,6 +136,17 @@ class IsolatedExecutor:
             return ExecutionOutcome(
                 event_id=event_id, status="duplicate", reason="event already executed"
             )
+
+        if base_sha:
+            resolved_base = self._resolve_base_sha(base_sha)
+            if resolved_base is None:
+                return ExecutionOutcome(
+                    event_id=event_id,
+                    status="rejected",
+                    reason=f"base commit {base_sha!r} is unavailable in repository",
+                )
+        else:
+            resolved_base = "HEAD"
 
         decision = self.authority.evaluate(
             paths=tuple(files),
@@ -157,7 +169,14 @@ class IsolatedExecutor:
             tempfile.mkdtemp(prefix="improvement-", dir=str(self.work_root) if self.work_root else None)
         )
         try:
-            return self._execute_in(work_dir, event_id, patch_content, files, decision)
+            return self._execute_in(
+                work_dir,
+                event_id,
+                patch_content,
+                files,
+                decision,
+                resolved_base,
+            )
         finally:
             shutil.rmtree(work_dir, ignore_errors=True)
 
@@ -172,12 +191,13 @@ class IsolatedExecutor:
         patch_content: str,
         files: Sequence[str],
         decision: AuthorityDecision,
+        base_sha: str,
     ) -> ExecutionOutcome:
         env = scrub_environment()
         checkout = work_dir / "tree"
         try:
             subprocess.run(
-                ["git", "worktree", "add", "--detach", str(checkout), "HEAD"],
+                ["git", "worktree", "add", "--detach", str(checkout), base_sha],
                 cwd=self.repo_path,
                 env=env,
                 capture_output=True,
@@ -242,6 +262,7 @@ class IsolatedExecutor:
                 gate_logs=tuple(gate_logs),
                 artifact_hash=artifact_hash,
                 authority=decision,
+                reason=f"base={base_sha}",
             )
             self.ledger.record(outcome)
             return outcome
@@ -288,23 +309,47 @@ class IsolatedExecutor:
 
         start = time.time()
         try:
-            result = subprocess.run(
+            proc = subprocess.Popen(
                 list(command),
                 cwd=cwd,
                 env=dict(env),
-                capture_output=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 text=True,
-                timeout=self.authority.limits.timeout_seconds,
+                start_new_session=True,
             )
-            output = result.stdout + result.stderr
+            try:
+                stdout, stderr = proc.communicate(timeout=self.authority.limits.timeout_seconds)
+            except subprocess.TimeoutExpired:
+                try:
+                    os.killpg(proc.pid, 15)
+                except ProcessLookupError:
+                    pass
+                try:
+                    proc.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    try:
+                        os.killpg(proc.pid, 9)
+                    except ProcessLookupError:
+                        pass
+                    proc.wait(timeout=10)
+                stdout, stderr = proc.communicate()
+                return GateLog(
+                    name=name,
+                    command=tuple(command),
+                    returncode=124,
+                    duration_ms=(time.time() - start) * 1000,
+                    output_hash=hashlib.sha256(b"timeout").hexdigest(),
+                )
+            output = (stdout or "") + (stderr or "")
             return GateLog(
                 name=name,
                 command=tuple(command),
-                returncode=result.returncode,
+                returncode=proc.returncode,
                 duration_ms=(time.time() - start) * 1000,
                 output_hash=hashlib.sha256(output.encode("utf-8")).hexdigest(),
             )
-        except subprocess.TimeoutExpired:
+        except (OSError, ValueError):
             return GateLog(
                 name=name,
                 command=tuple(command),
@@ -312,6 +357,21 @@ class IsolatedExecutor:
                 duration_ms=(time.time() - start) * 1000,
                 output_hash=hashlib.sha256(b"timeout").hexdigest(),
             )
+
+    def _resolve_base_sha(self, base_sha: str) -> Optional[str]:
+        if not base_sha:
+            return None
+        resolved = subprocess.run(
+            ["git", "rev-parse", "--verify", base_sha],
+            cwd=self.repo_path,
+            env=scrub_environment(),
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if resolved.returncode != 0:
+            return None
+        return resolved.stdout.strip() or None
 
     @staticmethod
     def _hash_paths(root: Path, files: Sequence[str]) -> str:

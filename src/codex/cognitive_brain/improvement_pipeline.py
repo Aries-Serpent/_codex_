@@ -40,7 +40,8 @@ try:
         make_event_id,
     )
 except ImportError:  # pragma: no cover - exercised only outside the repo
-    _sdk_src = str(Path(__file__).resolve().parents[4] / "packages" / "cognitive_sdk" / "src")
+    _repo_root = Path(__file__).resolve().parents[3]
+    _sdk_src = str(_repo_root / "packages" / "cognitive_sdk" / "src")
     if _sdk_src not in sys.path:
         sys.path.append(_sdk_src)
     from codex_cognitive_sdk.evidence import (  # type: ignore[no-redef]
