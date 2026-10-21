@@ -273,14 +273,15 @@ jobs:
         \ this config isolates the RAG module.)\n \necho \"[TEST-RUN] ========== Starting\
         \ Test Execution ==========\"\nTEST_START=$(date +%s)\nTEST_START_ISO=$(date\
         \ -u +'%Y-%m-%d %H:%M:%S UTC')\necho \"[TEST-RUN] Start time: $TEST_START_ISO\"\
-        \necho \"\"\n \n# Skip tests that download/load heavy embedding models in CI to avoid timeouts.\n# The model-cache step already validates the all-MiniLM-L6-v2 artifact; unit\n# tests cover the rest of the RAG surface.\nexport CODEX_SKIP_EMBEDDING_MODEL_LOAD=1\n\n# Run tests with comprehensive output\nif timeout 2700 \"\
-        $PYTHON_BIN\" -m pytest tests/test_rag_*.py tests/rag/ \\\n  -v \\\n  --tb=short\
-        \ \\\n  --timeout=300 \\\n  --timeout-method=signal \\\n  --cov=src/codex/rag\
-        \ \\\n  --cov-config=tests/rag/.coveragerc \\\n  --cov-report=xml \\\n  --cov-report=html\
-        \ \\\n  --cov-report=term-missing 2>&1 | tee /tmp/test_output.log; then\n\
-        \  TEST_EXIT=0\n  TEST_STATUS=\"PASSED\"\n  echo \"[TEST-RUN] \u2705 Tests\
-        \ PASSED\"\nelse\n  TEST_EXIT=$?\n  TEST_STATUS=\"FAILED\"\n  echo \"[TEST-RUN]\
-        \ \u274C Tests FAILED with exit code $TEST_EXIT\"\nfi\nTEST_END=$(date +%s)\n\
+        \necho \"\"\n \n# Skip tests that download/load heavy embedding models in CI to avoid
+# timeouts. The model-cache step already validates the all-MiniLM-L6-v2
+# artifact; unit tests cover the rest of the RAG surface.
+export CODEX_SKIP_EMBEDDING_MODEL_LOAD=1
+
+# Run tests with comprehensive output
+if timeout 2700   "$PYTHON_BIN" -m pytest tests/test_rag_*.py tests/rag/   -v   --tb=short   --timeout=300   --timeout-method=signal   --cov=src/codex/rag   --cov-config=tests/rag/.coveragerc   --cov-report=xml   --cov-report=html   --cov-report=term-missing 2>&1 | tee /tmp/test_output.log; then
+  TEST_EXIT=0
+TEST_END=$(date +%s)\n\
         TEST_END_ISO=$(date -u +'%Y-%m-%d %H:%M:%S UTC')\nTEST_DURATION=$((TEST_END\
         \ - TEST_START))\nTEST_DURATION_MIN=$((TEST_DURATION / 60))\nTEST_DURATION_SEC=$((TEST_DURATION\
         \ % 60))\n \necho \"\"\necho \"[TEST-RUN] ========== Test Execution Summary\

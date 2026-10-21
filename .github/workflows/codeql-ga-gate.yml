@@ -78,7 +78,8 @@ jobs:
       run: |
         set -euo pipefail
         if ! find results -name '*.sarif' -type f | grep -q .; then
-          echo "No CodeQL SARIF artifacts were produced in the current analysis results; treating this as a workflow failure instead of a silent pass."
+          echo "No CodeQL SARIF artifacts were produced in the current analysis results;"
+          echo "treating this as a workflow failure instead of a silent pass."
           echo "This usually indicates a CodeQL analysis error, timeout, or no-build scenario." >&2
           exit 1
         fi
@@ -118,7 +119,11 @@ jobs:
             return str(value or '').strip().lower()
 
         if not sarif_files:
-            print('::error::No SARIF files were produced after CodeQL analysis in results/; refusing to treat this as a no-alert result because it can mask a silent scanner failure.')
+            print(
+                '::error::No SARIF files were produced after CodeQL analysis '
+                'in results/; refusing to treat this as a no-alert result '
+                'because it can mask a silent scanner failure.'
+            )
             raise SystemExit(1)
 
         valid_sarif_count = 0
@@ -151,7 +156,11 @@ jobs:
                         medium += 1
 
         if valid_sarif_count == 0:
-            print('::error::No valid SARIF documents were parsed from the CodeQL results output; this would silently hide the repository alert inventory.')
+            print(
+                '::error::No valid SARIF documents were parsed from the '
+                'CodeQL results output; this would silently hide the '
+                'repository alert inventory.'
+            )
             raise SystemExit(1)
 
         with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as fh:
@@ -321,20 +330,49 @@ jobs:
     - name: Create Security Alert Issue
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
-        script: "const critical = '${{ needs.codeql-analysis.outputs.critical_count\
-          \ }}';\nconst high = '${{ needs.codeql-analysis.outputs.high_count }}';\n\
-          \nconst issueTitle = `\U0001F510 CodeQL Security Alert: ${critical} Critical\
-          \ + ${high} High`;\n\nconst issueBody = `## CodeQL Security Alert\n\n**Branch**:\
-          \ \\`${{ github.ref }}\\`  \n**Commit**: \\`${{ github.sha }}\\`  \n**Author**:\
-          \ @${{ github.actor }}  \n\n### Alert Summary\n- **Critical Alerts**: ${critical}\n\
-          - **High Alerts**: ${high}\n- **Timestamp**: ${new Date().toISOString()}\n\
-          \n### Required Actions\n1. Fix or suppress all critical/high alerts\n2.\
-          \ Run local CodeQL scan to verify\n3. Update PR with remediation\n4. Request\
-          \ approval from @${{ github.repository_owner }} if suppression needed\n\n### Resources\n- [Security inventory](.codex/security/code_scanning_inventory/api_inventory_summary.json)\n- [Security enforcement guide](docs/ci/SECURITY_ENFORCEMENT_GATES.md)\n- [Security Dashboard](https://github.com/${{ github.repository }}/security/code-scanning)\n\n### SLA\n- **Critical**: 1 hour resolution\n- **High**: 4 hours resolution\n\
-          \n---\n*Automated by CodeQL GA Security Gate (Phase 6 Lane 1)*`;\n\nconst\
-          \ issue = await github.rest.issues.create({\n  owner: context.repo.owner,\n\
-          \  repo: context.repo.repo,\n  title: issueTitle,\n  body: issueBody,\n\
-          \  labels: ['\U0001F510 security', 'codeql', 'blocking'],\n  });\n\nconsole.log(`Created issue: ${issue.data.html_url}`);\n"
+        script: |
+          const critical = '${{ needs.codeql-analysis.outputs.critical_count }}';
+          const high = '${{ needs.codeql-analysis.outputs.high_count }}';
+
+          const issueTitle = `🔐 CodeQL Security Alert: ${critical} Critical + ${high} High`;
+          const issueBody = `## CodeQL Security Alert
+
+          **Branch**: `${{ github.ref }}`  
+          **Commit**: `${{ github.sha }}`  
+          **Author**: @${{ github.actor }}  
+
+          ### Alert Summary
+          - **Critical Alerts**: ${critical}
+          - **High Alerts**: ${high}
+          - **Timestamp**: ${new Date().toISOString()}
+
+          ### Required Actions
+          1. Fix or suppress all critical/high alerts
+          2. Run local CodeQL scan to verify
+          3. Update PR with remediation
+          4. Request approval from @${{ github.repository_owner }} if suppression needed
+
+          ### Resources
+          - [Security inventory](.codex/security/code_scanning_inventory/api_inventory_summary.json)
+          - [Security enforcement guide](docs/ci/SECURITY_ENFORCEMENT_GATES.md)
+          - [Security Dashboard](https://github.com/${{ github.repository }}/security/code-scanning)
+
+          ### SLA
+          - **Critical**: 1 hour resolution
+          - **High**: 4 hours resolution
+
+          ---
+          *Automated by CodeQL GA Security Gate (Phase 6 Lane 1)*`;
+
+          const issue = await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: issueTitle,
+            body: issueBody,
+            labels: ['🔐 security', 'codeql', 'blocking'],
+          });
+
+          console.log(`Created issue: ${issue.data.html_url}`);
     timeout-minutes: 30
   report-summary:
     name: Summary Report
