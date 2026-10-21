@@ -8,11 +8,12 @@ The reported setup-workflow whitespace is corrected and current-session evidence
 
 ### Actions
 1. Retrieved Actions logs for the failures on `f9e9400d3de86492a9c8aa1312294158dfc11cc7`. Fast Validation stopped at seven trailing-whitespace findings in `.github/workflows/copilot-setup-steps.yml`; Cognitive Pre-flight reported that this report was unchanged in the required commit.
-2. Removed the reported trailing whitespace and updated the active and archived accountability reports, `CHANGELOG.md`, and `.codex/aftermath/pda_iterations.jsonl`.
+2. Removed the reported trailing whitespace, converted the performance instrumentation command to a YAML block scalar without changing its decoded contents, and updated the active and archived accountability reports, `CHANGELOG.md`, and `.codex/aftermath/pda_iterations.jsonl`.
 3. Checked Strict No-Deferral Security Gate run `39542960867`; both language and owner/reason checks passed, so no change to that gate was needed.
 
 ### Validation
 - `bash scripts/ci/validate_setup_steps_yaml.sh` → all five setup-step checks passed.
+- `yamllint -c .yamllint.yml --strict -f parsable .github/workflows/copilot-setup-steps.yml` → passed.
 - `python scripts/ci/session_wrapup_autofix.py --check --pr-number 5706` → REQ-4, REQ-5, and REQ-14 passed.
 - `git diff --check` and PDA JSONL parsing → passed.
 

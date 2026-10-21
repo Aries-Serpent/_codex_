@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 ### Fixed — PR #5706 CI rescue findings (2026-10-21)
-- Removed trailing whitespace reported by Fast Validation in `.github/workflows/copilot-setup-steps.yml`.
+- Removed the reported trailing whitespace and converted the performance instrumentation command to a YAML block scalar without changing its decoded contents; strict yamllint passes.
 - Refreshed the current-session accountability records and PDA entry after Cognitive Pre-flight reported missing REQ-4 evidence; the latest completed no-deferral enforcement run passed.
 
 ### Changed — Dependabot consolidation PR preparation (2026-10-16)
