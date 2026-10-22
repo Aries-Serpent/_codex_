@@ -30,6 +30,11 @@ IDs are **unknown**; this report cannot claim an exact added/removed-ID diff.
 The existing main-session supplemental `logs/snapshot-nodeids-collection.log`
 contains **44,053 actual snapshot node IDs**, preserved in
 `collection-comparison.json`. There is no fabricated base-ID reconstruction.
+The parent supplied its exact supplemental command:
+`python -m pytest tests/ --collect-only -q -v`, with a 180 s interrupt bound;
+one `-v` counteracts the configured/requested double quiet setting.
+Its exit record is `logs/snapshot-nodeids-collection.exit`. This supplement
+does not replace the separately recorded required collection command.
 
 ## Historical comparison limit
 
@@ -84,7 +89,8 @@ be inferred from the collected-item total alone.
 Raw logs: `logs/base-collection.log` and `logs/snapshot-collection.log`; exact
 freezes and Python records accompany each. Detailed invocation metadata is in
 `base-run-metadata.json` and `snapshot-collection-metadata.json`.
-Base ran in an equivalent detached project-local worktree because temporary
-directory writes were prohibited. Snapshot collection ran in the assigned main
+Base ran in the detached project-local worktree
+`/home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree`.
+Snapshot collection ran in the assigned main
 checkout; concurrent main commits/dirty runtime artifacts are recorded in its
 metadata. See `test-comparison.md` for incomplete full-suite and coverage gates.

@@ -17,10 +17,10 @@ must not be added or treated as satisfying the gate.
 - Base: `71613ee000808ab758cc2f8ddb07a05c5101f731`.
 - Snapshot collection: `f507214f5d560762384eda29166d97b420d95948`, with
   concurrent dirty runtime artifacts recorded in `snapshot-collection-metadata.json`.
-- Working-directory deviation: temporary-directory writes were prohibited, so
-  this worker created an equivalent detached base worktree at
-  `recovery/bfe2456b/base-worktree`, rather than running pytest in the requested
-  `/tmp/bfe2456b-outcome-base`. Only the newly created local worktree is cleaned up.
+- Actual base-run worktree:
+  `/home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree`, detached at
+  the recorded base commit and removed after evidence was copied. The parent's
+  separately prepared `/tmp/bfe2456b-outcome-base` worktree was preserved.
 - The same installed interpreter was used, without reinstalling between sides.
   Pytest's configured `pythonpath = src agents/codex_client` selects the local
   checkout's source. Editable distributions still reference the main checkout;
@@ -60,9 +60,12 @@ Commands below use the interpreter above as `python`. Raw output is in `logs/`.
 | Snapshot | `python -m pytest tests/ --collect-only -q` | exit **0**, **40.628 s**, **44,053** collected items, no collection errors |
 | Snapshot | `python -m pytest tests/ --cov=src --junitxml=recovery/bfe2456b/validation/junit-snapshot.xml -q` | existing main-session evidence: interrupted with SIGINT at **572 s** to preserve XML before the 600 s bound, exit **2** |
 
-This worker did not independently start the snapshot full run: the
-`REC_FIX_READY` message had not reached it when main-session full-run evidence
-was discovered. The snapshot invocation and interruption attribution above derive from
+The parent executed the snapshot full run in the same installed environment;
+this worker executed snapshot collection and supplementary shards. The recursion
+agent reports readiness was repeatedly sent
+directly since 22:44 UTC; those confirmations are project evidence, regardless
+of when this worker processed queued messages. No source/test edit was pending.
+The snapshot invocation and interruption attribution above derive from
 the existing log, XML, freeze and `snapshot-full-interruption.txt`, not an invented
 second invocation. Collection errors were never treated as passes; the full
 base command was attempted despite its collection failures.
@@ -84,7 +87,7 @@ duration and available XML. Eight extra root selectors were chosen explicitly
 from modules with existing snapshot outcomes to obtain comparable identities;
 this is partial evidence, not an unbiased complete-suite sample.
 
-After the initial handoff, `REC_FIX_READY` arrived from recursion-diagnosis:
+After the initial handoff, this worker processed `REC_FIX_READY` from recursion-diagnosis:
 no source/test edit was justified. This worker then ran the snapshot split
 fallback with **two workers**, **45 s** per selector and a **300 s** total budget
 (actual 300.051 s). The snapshot inventory contains **219** directories and
@@ -163,7 +166,7 @@ are under `paired_shards` in `outcome-comparison.json`.
 ## Historical 306 errors and remaining work
 
 No complete historical 306-ID artifact was available under the repository to this
-worker. It did not access temporary-directory historical artifacts. A subsequent
+worker. A subsequent
 parent-transcript handoff supplies **11 historical error → skip identifiers and
 reasons**; the other **295 identities/dispositions remain UNKNOWN**. The present
 195 base collection errors are a separate observation.
