@@ -1,0 +1,14 @@
+
+==================================== ERRORS ====================================
+___ ERROR collecting tests/codex_ml/test_training_helper_import_contracts.py ___
+tests/codex_ml/test_training_helper_import_contracts.py:17: in <module>
+    ???
+torch/__init__.py:254: in __getattr__
+    raise AttributeError(f"module 'torch' has no attribute {name!r}")
+E   AttributeError: module 'torch' has no attribute 'long'
+------------------------------- Captured stderr --------------------------------
+✓ Determinism bootstrap complete
+=========================== short test summary info ============================
+ERROR tests/codex_ml/test_training_helper_import_contracts.py - AttributeError: module 'torch' has no attribute 'long'
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!

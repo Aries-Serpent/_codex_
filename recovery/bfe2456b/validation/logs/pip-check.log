@@ -1,0 +1,7 @@
+opentelemetry-instrumentation 0.58b0 has requirement opentelemetry-semantic-conventions==0.58b0, but you have opentelemetry-semantic-conventions 0.66b1.
+semgrep 1.182.1 has requirement opentelemetry-api~=1.37.0, but you have opentelemetry-api 1.45.1.
+semgrep 1.182.1 has requirement opentelemetry-sdk~=1.37.0, but you have opentelemetry-sdk 1.45.1.
+opentelemetry-instrumentation-requests 0.58b0 has requirement opentelemetry-semantic-conventions==0.58b0, but you have opentelemetry-semantic-conventions 0.66b1.
+opentelemetry-exporter-otlp-proto-http 1.37.0 has requirement opentelemetry-exporter-otlp-proto-common==1.37.0, but you have opentelemetry-exporter-otlp-proto-common 1.45.1.
+opentelemetry-exporter-otlp-proto-http 1.37.0 has requirement opentelemetry-proto==1.37.0, but you have opentelemetry-proto 1.45.1.
+opentelemetry-exporter-otlp-proto-http 1.37.0 has requirement opentelemetry-sdk~=1.37.0, but you have opentelemetry-sdk 1.45.1.

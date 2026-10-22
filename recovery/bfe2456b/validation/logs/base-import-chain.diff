@@ -1,0 +1,605 @@
+diff --git a/src/codex_ml/_train_init_helpers.py b/src/codex_ml/_train_init_helpers.py
+index 80fd634c..71731a97 100644
+--- a/src/codex_ml/_train_init_helpers.py
++++ b/src/codex_ml/_train_init_helpers.py
+@@ -10,10 +10,21 @@
+ import os
+ import time
+ from pathlib import Path
+-from typing import Any, Optional
++from typing import Any, Literal, Optional, TypedDict
+ 
+ logger = logging.getLogger(__name__)
+ 
++_PrivacyFloatField = Literal["epsilon", "delta", "noise_multiplier", "max_grad_norm"]
++
++
++class _PrivacyKwargs(TypedDict, total=False):
++    enabled: bool
++    epsilon: float
++    delta: float
++    noise_multiplier: float
++    max_grad_norm: float
++    secure_rng: bool
++
+ 
+ def setup_differential_privacy_config(dp_config: Any, env_prefix: str = "CODEX_DP_") -> Any:
+     """Extract and setup differential privacy configuration.
+@@ -52,13 +63,14 @@ def setup_differential_privacy_config(dp_config: Any, env_prefix: str = "CODEX_D
+         return None
+ 
+     # Build DP kwargs from environment
+-    dp_kwargs: dict[str, bool | float] = {"enabled": True}
+-    for field_name, env_name in (
++    dp_kwargs: _PrivacyKwargs = {"enabled": True}
++    env_fields: tuple[tuple[_PrivacyFloatField, str], ...] = (
+         ("epsilon", f"{env_prefix}EPSILON"),
+         ("delta", f"{env_prefix}DELTA"),
+         ("noise_multiplier", f"{env_prefix}NOISE_MULTIPLIER"),
+         ("max_grad_norm", f"{env_prefix}MAX_GRAD_NORM"),
+-    ):
++    )
++    for field_name, env_name in env_fields:
+         raw = os.getenv(env_name)
+         if raw is None:
+             continue
+@@ -423,8 +435,7 @@ def setup_dataset_and_loader(
+     Reduces complexity by extracting dataset initialization logic (15+ branches).
+     """
+     try:
+-        from codex_ml.training.collate import _make_casting_collate
+-        from codex_ml.training.toy_dataset import ToyDataset
++        from codex_ml.train_loop import ToyDataset, _make_casting_collate
+         from torch.utils.data import DataLoader
+     except ImportError:
+         logger.debug("PyTorch or dataset utilities not available")
+@@ -471,6 +482,7 @@ def _first_param_dtype(model: Any) -> Optional[str]:
+             return str(param.dtype)
+     except Exception:
+         return None
++    return None
+ 
+ 
+ def _select_parameters_for_optimization(model: Any) -> Any:
+@@ -508,7 +520,7 @@ def setup_optimizer_with_dp(
+     """
+     try:
+         import torch.optim as optim
+-        from codex_ml.training.dp import make_private_model
++        from codex_ml.training.dp_config import make_private_model
+     except ImportError:
+         logger.debug("PyTorch optim or DP not available")
+         return None, None
+diff --git a/src/codex_ml/train_loop.py b/src/codex_ml/train_loop.py
+index 51e38b12..f5a5b62e 100644
+--- a/src/codex_ml/train_loop.py
++++ b/src/codex_ml/train_loop.py
+@@ -41,7 +41,7 @@
+ import random
+ import sys
+ import time
+-from collections.abc import Callable, Mapping, Sequence
++from collections.abc import Callable, Iterable, Mapping, Sequence
+ from dataclasses import asdict, dataclass, is_dataclass
+ from datetime import UTC, datetime
+ from pathlib import Path
+@@ -89,7 +89,9 @@
+     from codex_ml.utils.repro import record_dataset_checksums
+ except (ImportError, AttributeError):
+ 
+-    def record_dataset_checksums(*_, **__) -> dict[str, Any]:
++    def record_dataset_checksums(
++        files: Iterable[Path], out_path: Path, *, dataset_name: str | None = None
++    ) -> dict[str, str]:
+         return {}
+ 
+ 
+@@ -97,7 +99,7 @@ def record_dataset_checksums(*_, **__) -> dict[str, Any]:
+     from codex_ml.utils.seeding import set_reproducible
+ except (ImportError, AttributeError):
+ 
+-    def set_reproducible(*_, **__) -> None:
++    def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> None:
+         return None
+ 
+ 
+@@ -105,7 +107,7 @@ def set_reproducible(*_, **__) -> None:
+     from codex_ml.telemetry import start_metrics_server
+ except (ImportError, AttributeError):
+ 
+-    def start_metrics_server(*_, **__) -> None:
++    def start_metrics_server(port: int = 8000, addr: str = "127.0.0.1") -> bool | None:
+         return None
+ 
+ 
+@@ -200,7 +202,13 @@ def set_cudnn_deterministic(enable: bool, benchmark: bool = False) -> None:
+     from codex_ml.utils.retention import prune_checkpoints
+ except (ImportError, AttributeError):
+ 
+-    def prune_checkpoints(*args, **kwargs) -> dict[str, Any]:
++    def prune_checkpoints(
++        checkpoint_dir: str | Path,
++        keep_last: int | None = None,
++        keep_every: int | None = None,
++        max_epochs: int | None = None,
++        dry_run: bool = False,
++    ) -> dict[str, object]:
+         return {"dry_run": True}
+ 
+ 
+@@ -656,7 +664,7 @@ def _assert_bf16_capability(
+     want_bf16 = False
+     try:
+         import torch as _torch
+-    except (ConnectionError, TimeoutError) as exc:  # pragma: no cover - environment dependent
++    except ImportError as exc:  # pragma: no cover - environment dependent
+         if requested_dtype and str(requested_dtype).lower() in {"bf16", "bfloat16"}:
+             raise RuntimeError("bf16 required but PyTorch is not installed") from exc
+         return
+@@ -675,22 +683,21 @@ def _assert_bf16_capability(
+         a = _torch.ones((2, 2), dtype=bf16)
+         b = _torch.ones((2, 2), dtype=bf16)
+         if device is not None:
+-            try:
+-                a = a.to(device)
+-                b = b.to(device)
+-            except (ValueError, TypeError, RuntimeError):
+-                # If placement fails, let the matmul attempt occur on default device.
+-                logger.debug(
+-                    "Suppressed exception in handler", exc_info=True
+-                )  # codeql[py/clear-text-logging-sensitive-data]
++            a = a.to(device)
++            b = b.to(device)
+         _ = a @ b
+     except (
+         IOError,
+         OSError,
+         ModuleNotFoundError,
+         ImportError,
++        ValueError,
++        TypeError,
++        RuntimeError,
+     ) as exc:  # pragma: no cover - runtime check
+-        raise RuntimeError("bf16 required but runtime cannot construct bfloat16 tensors") from exc
++        raise RuntimeError(
++            "bf16 required but runtime cannot execute bfloat16 matmul on the requested device"
++        ) from exc
+ 
+ 
+ def _attempt_resume(model, optimizer, scheduler, checkpoint_dir: str | Path):
+@@ -1264,7 +1271,10 @@ def run_training(
+         checksum_target = (
+             (art_dir_path / "dataset_checksums.json") if art_dir_path is not None else None
+         )
+-        recorded = record_dataset_checksums(paths, checksum_target)
++        if checksum_target is not None:
++            recorded = record_dataset_checksums(paths, checksum_target)
++        else:
++            recorded = {path.name: sha256sum(path) for path in paths if path.exists()}
+         if isinstance(recorded, dict):
+             dataset_checksum_map = recorded
+             dataset_checksums = list(recorded.values())
+@@ -1470,7 +1480,15 @@ def run_training(
+     for cb in cb_list:
+         try:
+             cb.on_train_start(state)
+-        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
++        except (
++            IOError,
++            OSError,
++            ModuleNotFoundError,
++            ImportError,
++            ValueError,
++            TypeError,
++            RuntimeError,
++        ) as e:
+             cb.record_error("on_train_start", e, state)
+             logger.warning(
+                 "Callback on_train_start error: %s", e
+@@ -1802,11 +1820,11 @@ def _persist_control_surface_artifacts() -> None:
+     # ------------------------------------------------------------------
+     # Model drift detector (Gap 18) — imported lazily; never crashes training.
+     # ------------------------------------------------------------------
+-    _drift_detector = None
++    _model_drift_detector = None
+     try:
+         from codex_ml.monitoring.model_drift import ModelDriftDetector as _DriftDet
+ 
+-        _drift_detector = _DriftDet()
++        _model_drift_detector = _DriftDet()
+     except (ImportError, AttributeError):  # pragma: no cover — optional dependency
+         logger.debug(
+             "ModelDriftDetector unavailable; drift monitoring disabled."
+@@ -1816,7 +1834,7 @@ def _persist_control_surface_artifacts() -> None:
+     # Data drift detector — initialised once per run; called after the
+     # performance monitor block inside the epoch loop.
+     # ------------------------------------------------------------------
+-    _drift_detector = _DataDriftDetector()
++    _data_drift_detector = _DataDriftDetector()
+     _drift_reference: list[float] | None = None  # set on first epoch
+ 
+     # ------------------------------------------------------------------
+@@ -2110,7 +2128,7 @@ def _persist_control_surface_artifacts() -> None:
+                         "Data drift: reference distribution seeded at epoch %d", epoch
+                     )  # codeql[py/clear-text-logging-sensitive-data]
+                 else:
+-                    _drift_results = _drift_detector.check_epoch(
++                    _drift_results = _data_drift_detector.check_epoch(
+                         _drift_reference,
+                         _loss_dist,
+                         epoch=epoch,
+@@ -2138,7 +2156,7 @@ def _persist_control_surface_artifacts() -> None:
+                 )  # codeql[py/clear-text-logging-sensitive-data]
+ 
+             # Model drift detection (Gap 18) — must never crash training.
+-            if _drift_detector is not None:
++            if _model_drift_detector is not None:
+                 try:
+                     # Derive per-step confidence proxies from the synthetic loss values
+                     # collected during this epoch: confidence ≈ exp(-loss), clipped to [0,1].
+@@ -2151,11 +2169,13 @@ def _persist_control_surface_artifacts() -> None:
+                     )
+ 
+                     if _epoch_conf_scores:
+-                        if not _drift_detector.has_baseline():
++                        if not _model_drift_detector.has_baseline():
+                             # First epoch always becomes the baseline reference.
+-                            _drift_detector.update_baseline(_epoch_conf_scores)
++                            _model_drift_detector.update_baseline(_epoch_conf_scores)
+                         else:
+-                            _drift_result = _drift_detector.check(_epoch_conf_scores, epoch=epoch)
++                            _drift_result = _model_drift_detector.check(
++                                _epoch_conf_scores, epoch=epoch
++                            )
+                             if _drift_result.drift_detected:
+                                 logger.warning(
+                                     "Model drift detected at epoch %d: %s",
+@@ -2312,6 +2332,12 @@ def main(argv: Sequence[str] | None = None) -> None:
+     parser.add_argument("--epochs", type=int, default=1, help="Number of training epochs")
+     parser.add_argument("--grad-accum", type=int, default=1, help="Gradient accumulation steps")
+     parser.add_argument("--seed", type=int, default=42, help="Random seed")
++    parser.add_argument(
++        "--model-name",
++        type=str,
++        default=None,
++        help="Registered model name to instantiate",
++    )
+     parser.add_argument(
+         "--art-dir",
+         type=str,
+@@ -2325,6 +2351,7 @@ def main(argv: Sequence[str] | None = None) -> None:
+         grad_accum=args.grad_accum,
+         seed=args.seed,
+         art_dir=args.art_dir,
++        model_name=args.model_name,
+     )
+ 
+ 
+diff --git a/tests/conftest.py b/tests/conftest.py
+index f766c60f..e43a9569 100644
+--- a/tests/conftest.py
++++ b/tests/conftest.py
+@@ -16,7 +16,7 @@
+ class _CanonicalPackageFinder(importlib.abc.MetaPathFinder):
+     """Prefer repo src packages even when test files inject scripts/tests onto sys.path."""
+ 
+-    _CANONICAL_NAMES = {"agents", "deploy", "services", "tools", "training", "utils"}
++    _CANONICAL_NAMES = {"agents", "codex_ml", "deploy", "services", "tools", "training", "utils"}
+ 
+     def find_spec(self, fullname, path=None, target=None):
+         if fullname not in self._CANONICAL_NAMES:
+@@ -152,10 +152,12 @@ def find_spec(self, fullname, path, target=None):
+ # Import determinism bootstrap early to ensure deterministic test execution
+ try:
+     import importlib as _importlib
+-    _importlib.import_module('tests._bootstrap_determinism')
++
++    _importlib.import_module("tests._bootstrap_determinism")
+ except (ImportError, ModuleNotFoundError, AttributeError):
+     pass  # Bootstrap may not be available in all test environments
+ 
++
+ # Respect existing user setting; default to disabling plugin autoload for determinism.
+ # Keep autoload enabled when the caller explicitly requests xdist so worker processes
+ # can parse `-n/--numprocesses` correctly.
+@@ -237,7 +239,11 @@ def _strip_shadow_roots() -> None:
+     if _mod is None:
+         continue
+     _origin = getattr(_mod, "__file__", "") or ""
+-    if _origin and not _origin.startswith(str(_SRC_DIR)) and not _origin.startswith(str(_PROJECT_ROOT)):
++    if (
++        _origin
++        and not _origin.startswith(str(_SRC_DIR))
++        and not _origin.startswith(str(_PROJECT_ROOT))
++    ):
+         for _key in list(_sys.modules):
+             if _key == _legacy_name or _key.startswith(f"{_legacy_name}."):
+                 _sys.modules.pop(_key, None)
+@@ -264,14 +270,11 @@ def _strip_shadow_roots() -> None:
+ def _ensure_project_cwd():
+     """Guarantee each test executes from the repository root."""
+ 
+-    prev = _Path.cwd()
+-    if prev != _PROJECT_ROOT:
+-        _os.chdir(_PROJECT_ROOT)
++    _os.chdir(_PROJECT_ROOT)
+     try:
+         yield
+     finally:
+-        if _Path.cwd() != _PROJECT_ROOT:
+-            _os.chdir(_PROJECT_ROOT)
++        _os.chdir(_PROJECT_ROOT)
+ 
+ 
+ @pytest.fixture(autouse=True)
+@@ -409,6 +412,7 @@ def _fix_torch_stubs_for_cli_tests():
+     # Try to replace stub with real torch
+     try:
+         from pathlib import Path
++
+         site_packages = (
+             Path(sys.executable).resolve().parent.parent
+             / f"lib/python{sys.version_info.major}.{sys.version_info.minor}/site-packages"
+@@ -538,6 +542,7 @@ def pytest_collect_file(file_path: pathlib.Path, parent):  # type: ignore[overri
+ 
+     return None
+ 
++
+ def pytest_ignore_collect(collection_path: pathlib.Path, config):  # type: ignore[override]
+     # Skip P19 shadow import affected files
+     _P19_SHADOW_IMPORT_AFFECTED = [
+@@ -573,8 +578,13 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
+     # Auto-mark tests as slow based on patterns
+     slow_marker = pytest.mark.slow
+     slow_patterns = [
+-        "docker", "deployment", "comprehensive", "e2e",
+-        "phase", "batch", "dataset",
++        "docker",
++        "deployment",
++        "comprehensive",
++        "e2e",
++        "phase",
++        "batch",
++        "dataset",
+     ]
+ 
+     for item in items:
+@@ -672,7 +682,9 @@ def pytest_runtest_logreport(report: pytest.TestReport) -> None:  # type: ignore
+             pass  # best-effort
+ 
+ 
+-def pytest_terminal_summary(terminalreporter: object, exitstatus: int, config: pytest.Config) -> None:
++def pytest_terminal_summary(
++    terminalreporter: object, exitstatus: int, config: pytest.Config
++) -> None:
+     """Print HF skip summary so the coverage gap is always visible."""
+     if _hf_skip_count:
+         terminalreporter.write_sep(  # type: ignore[attr-defined]
+@@ -697,7 +709,10 @@ def pytest_terminal_summary(terminalreporter: object, exitstatus: int, config: p
+ # This handles top-level modules in src/
+ # Note: We only register modules that don't have complex dependencies
+ _safe_modules = [
+-    "utils", "common", "config", "aries_serpent_core",
++    "utils",
++    "common",
++    "config",
++    "aries_serpent_core",
+ ]
+ 
+ for _mod in _safe_modules:
+diff --git a/src/codex_ml/__init__.py b/src/codex_ml/__init__.py
+index 938c913a..690b8044 100644
+--- a/src/codex_ml/__init__.py
++++ b/src/codex_ml/__init__.py
+@@ -74,110 +74,6 @@ def __call__(self, *args, **kwargs) -> None:  # pragma: no cover - defensive
+     TrainingWeights = _MissingConfig("TrainingWeights")  # type: ignore[misc,assignment]
+     ValidationThresholds = _MissingConfig("ValidationThresholds")  # type: ignore[misc,assignment]
+ 
+-try:  # pragma: no cover - optional dependency tree
+-    from .pipeline import run_codex_pipeline
+-except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when configs missing
+-
+-    def run_codex_pipeline(*_args, **_kwargs) -> None:  # type: ignore[misc]
+-        raise RuntimeError("Optional dependencies for run_codex_pipeline are missing")
+-
+-
+-try:  # pragma: no cover - optional metrics dependency
+-    from .metrics.api import (
+-        get_metric,
+-        list_metrics,
+-        register_metric,
+-        summarize_ndjson_logs,
+-    )
+-    from .metrics.metric_implementations import (
+-        BLEUScore,
+-        F1Score,
+-        MetricRegistry,
+-        RecallScore,
+-        TokenAccuracy,
+-    )
+-except (
+-    ImportError,
+-    AttributeError,
+-):  # pragma: no cover - degrade gracefully when metrics extras missing
+-
+-    class _MissingMetric:
+-        def __init__(self, name: str):
+-            self._name = name
+-
+-        def __call__(self, *_args, **_kwargs) -> None:  # pragma: no cover - defensive
+-            raise RuntimeError(f"Metrics module unavailable; {self._name} requires optional extras")
+-
+-        def __getattr__(self, _item: str) -> None:  # pragma: no cover - defensive
+-            msg = f"Metrics module unavailable; {self._name} requires optional extras"
+-            raise AttributeError(msg)
+-
+-    MetricRegistry = _MissingMetric("MetricRegistry")  # type: ignore[misc,assignment]
+-    F1Score = _MissingMetric("F1Score")  # type: ignore[misc,assignment]
+-    RecallScore = _MissingMetric("RecallScore")  # type: ignore[misc,assignment]
+-    BLEUScore = _MissingMetric("BLEUScore")  # type: ignore[misc,assignment]
+-    TokenAccuracy = _MissingMetric("TokenAccuracy")  # type: ignore[misc,assignment]
+-    get_metric = _MissingMetric("get_metric")  # type: ignore[assignment]
+-    register_metric = _MissingMetric("register_metric")  # type: ignore[assignment]
+-    list_metrics = _MissingMetric("list_metrics")  # type: ignore[assignment]
+-    summarize_ndjson_logs = _MissingMetric("summarize_ndjson_logs")  # type: ignore[assignment]
+-
+-if MetricRegistry.__class__.__name__ != "_MissingMetric":
+-    __all__ += [
+-        "BLEUScore",
+-        "F1Score",
+-        "MetricRegistry",
+-        "RecallScore",
+-        "TokenAccuracy",
+-        "get_metric",
+-        "list_metrics",
+-        "register_metric",
+-        "summarize_ndjson_logs",
+-    ]
+-
+-
+-# Optional imports: symbolic pipeline requires tokenizer/transformers; guard for environments
+-# without heavy ML deps.
+-try:  # pragma: no cover - optional path
+-    from .symbolic_pipeline import (
+-        ModelHandle,
+-        PretrainCfg,
+-        RewardModelCfg,
+-        RewardModelHandle,
+-        RLHFCfg,
+-        SFTCfg,
+-        Weights,
+-        run_codex_symbolic_pipeline,
+-    )
+-except (
+-    ImportError,
+-    AttributeError,
+-):  # pragma: no cover - degrade gracefully when symbolic deps missing
+-
+-    class _MissingSymbolic:
+-        def __init__(self, name: str):
+-            self._name = name
+-
+-        def __getattr__(self, item: str) -> None:  # pragma: no cover - defensive
+-            raise AttributeError(
+-                f"Optional dependency for '{self._name}' is missing; install codex-ml[symbolic]"
+-            )
+-
+-        def __call__(self, *_args, **_kwargs) -> None:  # pragma: no cover - defensive
+-            raise RuntimeError(
+-                f"Optional dependency for '{self._name}' is missing; install codex-ml[symbolic]"
+-            )
+-
+-    run_codex_symbolic_pipeline = _MissingSymbolic("run_codex_symbolic_pipeline")  # type: ignore[assignment]
+-    Weights = _MissingSymbolic("Weights")  # type: ignore[misc,assignment]
+-    PretrainCfg = _MissingSymbolic("PretrainCfg")  # type: ignore[misc,assignment]
+-    SFTCfg = _MissingSymbolic("SFTCfg")  # type: ignore[misc,assignment]
+-    RewardModelCfg = _MissingSymbolic("RewardModelCfg")  # type: ignore[misc,assignment]
+-    RLHFCfg = _MissingSymbolic("RLHFCfg")  # type: ignore[misc,assignment]
+-    ModelHandle = _MissingSymbolic("ModelHandle")  # type: ignore[misc,assignment]
+-    RewardModelHandle = _MissingSymbolic("RewardModelHandle")  # type: ignore[misc,assignment]
+-
+-
+ _EXPORT_MAP = {
+     # Existing exports
+     "run_codex_pipeline": ("codex_ml.pipeline", "run_codex_pipeline"),
+@@ -197,6 +93,15 @@ def __call__(self, *_args, **_kwargs) -> None:  # pragma: no cover - defensive
+     "RLHFCfg": ("codex_ml.symbolic_pipeline", "RLHFCfg"),
+     "ModelHandle": ("codex_ml.symbolic_pipeline", "ModelHandle"),
+     "RewardModelHandle": ("codex_ml.symbolic_pipeline", "RewardModelHandle"),
++    "get_metric": ("codex_ml.metrics.api", "get_metric"),
++    "list_metrics": ("codex_ml.metrics.api", "list_metrics"),
++    "register_metric": ("codex_ml.metrics.api", "register_metric"),
++    "summarize_ndjson_logs": ("codex_ml.metrics.api", "summarize_ndjson_logs"),
++    "BLEUScore": ("codex_ml.metrics.metric_implementations", "BLEUScore"),
++    "F1Score": ("codex_ml.metrics.metric_implementations", "F1Score"),
++    "MetricRegistry": ("codex_ml.metrics.metric_implementations", "MetricRegistry"),
++    "RecallScore": ("codex_ml.metrics.metric_implementations", "RecallScore"),
++    "TokenAccuracy": ("codex_ml.metrics.metric_implementations", "TokenAccuracy"),
+     # P1 - CLI-Critical Exports (BLOCKING) - Successfully implemented
+     "set_reproducible": ("codex_ml.utils.repro", "set_reproducible"),
+     "load_tokenizer": ("codex_ml.tokenization", "load_tokenizer"),
+diff --git a/src/codex_ml/utils/__init__.py b/src/codex_ml/utils/__init__.py
+index 02852460..e065d9d0 100644
+--- a/src/codex_ml/utils/__init__.py
++++ b/src/codex_ml/utils/__init__.py
+@@ -17,30 +17,57 @@
+ 
+ from __future__ import annotations
+ 
+-from . import (
+-    checkpoint_core,
+-    checkpointing,
+-    error_log,
+-)
++from importlib import import_module
++from typing import TYPE_CHECKING, Any
++
++if TYPE_CHECKING:
++    from . import checkpoint_core, checkpointing, error_log, modeling, provenance
++    from .atomic_io import safe_write_bytes, safe_write_text
++    from .checkpointing import CheckpointManager
++    from .provenance import environment_summary
++    from .repro import (
++        record_dataset_checksums,
++        restore_rng_state,
++        set_deterministic,
++        set_seed,
++        snapshot_rng_state,
++    )
++    from .seed import deterministic_shuffle
++    from .seeding import set_reproducible
++    from .storage import FSSpecStorage, StorageProvider
++
++_EXPORTS = {
++    "CheckpointManager": ("checkpointing", "CheckpointManager"),
++    "FSSpecStorage": ("storage", "FSSpecStorage"),
++    "StorageProvider": ("storage", "StorageProvider"),
++    "checkpoint_core": ("checkpoint_core", None),
++    "checkpointing": ("checkpointing", None),
++    "deterministic_shuffle": ("seed", "deterministic_shuffle"),
++    "environment_summary": ("provenance", "environment_summary"),
++    "error_log": ("error_log", None),
++    "modeling": ("modeling", None),
++    "provenance": ("provenance", None),
++    "record_dataset_checksums": ("repro", "record_dataset_checksums"),
++    "restore_rng_state": ("repro", "restore_rng_state"),
++    "safe_write_bytes": ("atomic_io", "safe_write_bytes"),
++    "safe_write_text": ("atomic_io", "safe_write_text"),
++    "set_deterministic": ("repro", "set_deterministic"),
++    "set_reproducible": ("seeding", "set_reproducible"),
++    "set_seed": ("repro", "set_seed"),
++    "snapshot_rng_state": ("repro", "snapshot_rng_state"),
++}
++
++
++def __getattr__(name: str) -> Any:
++    """Resolve utility exports without loading ML backends for unrelated helpers."""
++    if name not in _EXPORTS:
++        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
++    module_name, attribute = _EXPORTS[name]
++    module = import_module(f".{module_name}", __name__)
++    value = getattr(module, attribute) if attribute is not None else module
++    globals()[name] = value
++    return value
+ 
+-try:  # pragma: no cover - optional torch dependency
+-    from . import modeling
+-except (ImportError, OSError, AttributeError):  # pragma: no cover - allow utilities without torch
+-    modeling = None  # type: ignore[assignment]
+-from . import provenance
+-from .atomic_io import safe_write_bytes, safe_write_text
+-from .checkpointing import CheckpointManager
+-from .provenance import environment_summary
+-from .repro import (
+-    record_dataset_checksums,
+-    restore_rng_state,
+-    set_deterministic,
+-    set_seed,
+-    snapshot_rng_state,
+-)
+-from .seed import deterministic_shuffle
+-from .seeding import set_reproducible
+-from .storage import FSSpecStorage, StorageProvider
+ 
+ __all__ = [
+     "CheckpointManager",

@@ -1,0 +1,25 @@
+timestamp: 2026-10-22T22:41:11.806037+00:00
+interpreter: /home/runner/work/_codex_/_codex_/.venv_ci/bin/python
+python: 3.12.10 (main, Apr  8 2025, 22:38:13) [GCC 13.3.0]
+pytest origin: /home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/pytest/__init__.py
+pytest distribution: 9.1.1
+pytest import: OK version: 9.1.1 file: /home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/pytest/__init__.py
+torch origin: /home/runner/work/_codex_/_codex_/torch/__init__.py
+torch distribution: MISSING
+torch import: OK version: stub file: /home/runner/work/_codex_/_codex_/torch/__init__.py
+torch.long available: False
+transformers origin: /home/runner/work/_codex_/_codex_/transformers/__init__.py
+transformers distribution: MISSING
+transformers import: ModuleNotFoundError The repo-local 'transformers' directory is not a Python package. Install the real 'transformers' library or use pytest.importorskip('transformers') for optional-dependency tests.
+hydra origin: /home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/hydra/__init__.py
+hydra distribution: 1.3.7
+hydra import: OK version: 1.3.7 file: /home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/hydra/__init__.py
+omegaconf origin: /home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/omegaconf/__init__.py
+omegaconf distribution: 2.3.1
+omegaconf import: OK version: 2.3.1 file: /home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/omegaconf/__init__.py
+accelerate origin: None
+accelerate distribution: MISSING
+accelerate import: ModuleNotFoundError No module named 'accelerate'
+datasets origin: /home/runner/work/_codex_/_codex_/datasets/__init__.py
+datasets distribution: MISSING
+datasets import: ModuleNotFoundError The repo-local 'datasets' directory is not a Python package. Install the real 'datasets' library or use pytest.importorskip('datasets') for optional-dependency tests.
