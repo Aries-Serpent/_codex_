@@ -62,9 +62,7 @@ def run_from_pda(
         authority=authority,
     )
     signals = load_pda_signals(Path(jsonl_path))
-    return [
-        pipeline.process_signal(signal, human_approved=human_approved) for signal in signals
-    ]
+    return [pipeline.process_signal(signal, human_approved=human_approved) for signal in signals]
 
 
 def _load_signals_tolerant(jsonl_path: Path) -> Tuple[List[Any], List[str]]:
@@ -105,7 +103,9 @@ def _build_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument("jsonl_path", type=Path, help="Path to the PDA failure-log JSONL file.")
-    parser.add_argument("--repo", required=True, help="Repository slug, e.g. 'Aries-Serpent/_codex_'.")
+    parser.add_argument(
+        "--repo", required=True, help="Repository slug, e.g. 'Aries-Serpent/_codex_'."
+    )
     parser.add_argument("--ref", required=True, help="Git ref the signals were observed on.")
     parser.add_argument("--sha", required=True, help="Commit SHA the signals were observed on.")
     parser.add_argument(

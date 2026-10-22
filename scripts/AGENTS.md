@@ -45,7 +45,7 @@ logger.info(f"Input: {sanitize_log(user_data)}")
 
 ---
 
-**See**: [Main .codex/archive/deprecated/AGENTS.md](../.codex/archive/deprecated/AGENTS.md) | [Security Guidelines](../docs/security/SECURITY_GUIDELINES.md)
+**See**: [Current agency policy](../.codex/CODEBASE_AGENCY_POLICY.md) | [Security Guidelines](../docs/security/SECURITY_GUIDELINES.md)
 
 ---
 

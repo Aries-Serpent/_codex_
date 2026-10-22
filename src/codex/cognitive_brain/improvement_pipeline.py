@@ -154,7 +154,9 @@ class ImprovementPipeline:
 
         proposal = self._build_proposal(signal, best)
         if proposal is None:
-            return self._inactionable(signal, "matched pattern carries no applicable fix", pattern_ref)
+            return self._inactionable(
+                signal, "matched pattern carries no applicable fix", pattern_ref
+            )
 
         decision = self.authority.evaluate(
             paths=proposal.files,

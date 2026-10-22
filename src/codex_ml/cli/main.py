@@ -44,14 +44,12 @@ def _load_typer():
 
 typer = _load_typer()
 
-# Hoist evaluate_datasets to module scope so it can be patched by tests via
-# monkeypatch.setattr("codex_ml.cli.main.evaluate_datasets", ...).
-try:  # pragma: no cover - evaluation is optional
-    from codex_ml.eval.eval_runner import evaluate_datasets
-except (ImportError, AttributeError):  # pragma: no cover
 
-    def evaluate_datasets(*args, **kwargs) -> None:
-        return None
+def evaluate_datasets(*args: Any, **kwargs: Any) -> Any:
+    """Load optional evaluation backends only when an evaluation is requested."""
+    from codex_ml.eval.eval_runner import evaluate_datasets as evaluate
+
+    return evaluate(*args, **kwargs)
 
 
 if typer is not None:
@@ -491,9 +489,11 @@ if typer is not None:
             code = e.code if isinstance(e.code, int) else 0
             return code if code is not None else 0
 
-    cli = _typer_cli_wrapper
+    def cli(argv: Optional[list[str]] = None) -> int:
+        """Dispatch the installed CLI without loading optional training backends."""
+        return _typer_cli_wrapper(argv)
 
-    def run_training(cfg, output_dir=None) -> None:
+    def run_training(cfg: Any, output_dir: Optional[str] = None) -> None:
         """Module-level stub for patching in tests (typer branch).
 
         The typer ``train`` command implements training directly; this stub
@@ -523,16 +523,26 @@ else:
         hydra = None
 
     try:
-        from omegaconf import DictConfig, OmegaConf  # pragma: no cover - optional
+        from omegaconf import DictConfig  # pragma: no cover - optional
+        from omegaconf import OmegaConf as _OmegaConf
+
+        OmegaConf: type[_OmegaConf] | None = _OmegaConf
     except (ImportError, AttributeError):  # pragma: no cover - optional
-        DictConfig = Any
         OmegaConf = None
     try:  # pragma: no cover - optional dependency
         from codex_digest.error_capture import log_error as _log_error
     except (ImportError, AttributeError):  # pragma: no cover
 
-        def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:
-            return None
+        def _log_error(
+            step_no: str,
+            step_desc: str,
+            msg: str,
+            ctx: str,
+            *,
+            errors_path: Path | None = None,
+        ) -> str:
+            get_default_logger().error(f"{step_no}: {step_desc}: {msg} ({ctx})")
+            return msg
 
     # Module-level variable to cache functional training main for testing/mocking
     _functional_training_main = None
@@ -552,7 +562,7 @@ else:
                 _functional_training_main = _functional_training
         return _functional_training_main
 
-    def run_training(cfg: Optional[DictConfig], output_dir: Optional[str] = None) -> None:
+    def run_training(cfg: Any, output_dir: Optional[str] = None) -> None:
         main_fn = _load_functional_training_main()
         if main_fn is None:  # pragma: no cover - safety fallback
             raise RuntimeError("codex.training.main is unavailable")
@@ -567,7 +577,10 @@ else:
         if cfg is None or OmegaConf is None:
             cfg_dict = dict(cfg or {}) if isinstance(cfg, dict) else {}
         else:
-            cfg_dict = dict(OmegaConf.to_container(cfg, resolve=True))
+            container = OmegaConf.to_container(cfg, resolve=True)
+            if not isinstance(container, dict):
+                raise ValueError("Training configuration must be a mapping")
+            cfg_dict = container
         texts = cfg_dict.pop("texts", None)
         val_texts = cfg_dict.pop("val_texts", None)
         cfg_output = cfg_dict.pop("output_dir", None) or output_dir
@@ -598,6 +611,8 @@ else:
 
         @hydra.main(version_base="1.3", config_path="../../../configs", config_name="config")
         def main(cfg: DictConfig) -> None:  # pragma: no cover - simple dispatcher
+            if OmegaConf is None:
+                raise ImportError("omegaconf is required for the Hydra-managed pipeline")
             logger = init_json_logging()
             arg_list = sys.argv[1:]
             with capture_exceptions(logger):
@@ -631,15 +646,13 @@ else:
                                 run_codex_pipeline_from_config,
                             )
                         except (ImportError, ModuleNotFoundError) as e:
-                            error_msg = textwrap.dedent(
-                                """\
+                            error_msg = textwrap.dedent("""\
                                 Pipeline module is not available.
                                 Ensure you have installed codex-ml with the full profile:
                                   pip install codex-ml[full]
                                   or
                                   pip install codex-ml[runtime]
-                                """
-                            )
+                                """)
                             get_default_logger().error(f"{error_msg}\nOriginal error: {e}")
                             raise ImportError(error_msg) from e
 
@@ -649,14 +662,19 @@ else:
                             if pipeline_cfg is not None
                             else None
                         )
+                        if pipeline_block is not None and not isinstance(pipeline_block, dict):
+                            raise ValueError("Pipeline configuration must be a mapping")
                         if not pipeline_block or "inputs" not in pipeline_block:
                             print(
                                 "Pipeline inputs not found; skipping pipeline step",
                                 file=sys.stderr,
                             )
                             continue
+                        inputs = pipeline_block["inputs"]
+                        if not isinstance(inputs, dict):
+                            raise ValueError("Pipeline inputs must be a mapping")
                         summary = run_codex_pipeline_from_config(
-                            pipeline_block["inputs"],
+                            inputs,
                             seed=pipeline_block.get("seed"),
                             summary_path=pipeline_block.get("summary_path"),
                             log_summary=pipeline_block.get("log_summary"),

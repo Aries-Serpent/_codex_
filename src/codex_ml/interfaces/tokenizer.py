@@ -176,6 +176,19 @@ class WhitespaceTokenizer(TokenizerAdapter):
         return {"input_ids": encoded}
 
     def encode(self, text: str, *, add_special_tokens: bool = True) -> list[int]:
+        """Return encounter-order IDs for whitespace tokens, extending vocabulary.
+
+        Lowercase text when configured. Append EOS (1) only when both
+        add_special_tokens and append_eos are true; PAD remains 0. IDs depend on
+        this instance's prior inputs, unlike the hashing tokenizer in tokenization.
+
+        Example:
+            >>> tokenizer = WhitespaceTokenizer(lowercase=True)
+            >>> tokenizer.encode("Hello hello")
+            [2, 2, 1]
+            >>> tokenizer.decode([2, 1, 0])
+            'hello'
+        """
         tokens = [tok for tok in self._prepare(text).split() if tok]
         ids: list[int] = []
         for tok in tokens:
@@ -189,6 +202,12 @@ class WhitespaceTokenizer(TokenizerAdapter):
         return ids
 
     def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
+        """Join vocabulary words for ``ids``, converting each ID with int.
+
+        Omit PAD/EOS by default; preserve their labels when skip_special_tokens
+        is false. Unknown IDs contribute empty text and outer whitespace is
+        stripped. Conversion errors propagate; the vocabulary is not modified.
+        """
         tokens: list[str] = []
         for idx in ids:
             token = self._id_to_token.get(int(idx), "")
@@ -198,21 +217,38 @@ class WhitespaceTokenizer(TokenizerAdapter):
         return " ".join(tokens).strip()
 
     def convert_ids_to_tokens(self, idx: int) -> str:
+        """Return the vocabulary label for int-convertible ``idx``, or empty text.
+
+        PAD/EOS are returned as labels rather than filtered. Integer conversion
+        errors propagate; unknown IDs are not added to the vocabulary.
+        """
         return self._id_to_token.get(int(idx), "")
 
     def convert_tokens_to_string(self, tokens: Iterable[str]) -> str:
+        """Join ``tokens`` with spaces and strip outer whitespace.
+
+        Do not resolve IDs, filter special labels, or change case. Return text;
+        str.join raises TypeError if an element is not a string.
+        """
         return " ".join(tokens).strip()
 
     @property
     def vocab_size(self) -> int:
+        """Return vocabulary size including PAD/EOS as an int also callable for int.
+
+        Starts at two and grows with new words encountered by encode. Reading
+        this property neither freezes nor modifies the vocabulary.
+        """
         return _CallableInt(len(self._token_to_id))
 
     @property
     def pad_token_id(self) -> int:
+        """Return PAD's fixed ID 0 as an integer that also supports a zero-arg call."""
         return _CallableInt(self._token_to_id["[PAD]"])
 
     @property
     def eos_token_id(self) -> int:
+        """Return EOS's fixed ID 1 as an integer that also supports a zero-arg call."""
         return _CallableInt(self._token_to_id["[EOS]"])
 
 
@@ -253,6 +289,13 @@ class TokenizerProtocol(Protocol):
         truncation: bool | str = False,
         **kwargs: Any,
     ) -> list[int]:
+        """Specify single-text encoding to a list of integer token IDs.
+
+        Implementations interpret add_special_tokens, max_length, padding, and
+        truncation according to their backend and may accept extra kwargs.
+        Vocabulary growth, validation, and errors belong to the implementation;
+        this protocol stub performs no encoding and implicitly returns None.
+        """
         pass
 
     def decode(
@@ -262,20 +305,47 @@ class TokenizerProtocol(Protocol):
         skip_special_tokens: bool = True,
         **kwargs: Any,
     ) -> str:
+        """Specify decoding ``ids`` to text, optionally skipping special tokens.
+
+        Concrete adapters define kwargs, unknown-ID handling, and errors.
+        This structural contract supplies no decoder; its stub returns None
+        rather than the annotated string when reached directly.
+        """
         pass
 
     def batch_encode(self, texts: Sequence[str], **kwargs: Any) -> list[list[int]]:
+        """Specify ordered encoding of ``texts`` to one ID list per string.
+
+        Encoding options in kwargs and batch padding are implementation-defined.
+        The protocol body does not iterate inputs or call encode; direct stub
+        execution returns None.
+        """
         pass
 
     def batch_decode(self, batch_ids: Sequence[Sequence[int]], **kwargs: Any) -> list[str]:
+        """Specify one decoded string per input ID sequence, preserving order.
+
+        Concrete implementations interpret kwargs and decoding errors. This
+        protocol stub performs no conversion and directly returns None.
+        """
         pass
 
     @property
     def vocab_size(self) -> int:
+        """Specify an integer vocabulary size reported by a concrete tokenizer.
+
+        Whether added tokens are included depends on the backend. This property
+        is a structural stub, not a computed size; its body returns None.
+        """
         pass
 
     @property
     def pad_token_id(self) -> int | None:
+        """Specify the padding token ID, or None when no padding token is defined.
+
+        No padding token is created by the protocol. The stub itself returns
+        None; concrete implementations supply metadata without encoding text.
+        """
         pass
 
 
@@ -300,6 +370,13 @@ class TokenizerProtocolGuard(TokenizerProtocol):
         truncation: bool | str = False,
         **kwargs: Any,
     ) -> list[int]:
+        """Reject encoding ``text`` until a concrete implementation is supplied.
+
+        Accept the protocol's special-token/length/padding/truncation options and
+        kwargs only for signature compatibility. Always raise RuntimeError after
+        registry discovery; entry-point loading is enabled by
+        CODEX_PLUGINS_ENTRYPOINTS=1. Return no token IDs.
+        """
         _protocol_guard("encode")
 
     def decode(
@@ -309,20 +386,46 @@ class TokenizerProtocolGuard(TokenizerProtocol):
         skip_special_tokens: bool = True,
         **kwargs: Any,
     ) -> str:
+        """Reject decoding ``ids`` with a registry-guided RuntimeError.
+
+        skip_special_tokens and kwargs are accepted but unused. Registry
+        discovery may load enabled entry points before the error; no text is
+        decoded and there is no return value.
+        """
         _protocol_guard("decode")
 
     def batch_encode(self, texts: Sequence[str], **kwargs: Any) -> list[list[int]]:
+        """Raise RuntimeError instead of encoding ``texts`` or interpreting kwargs.
+
+        Discover registered adapters for the diagnostic, optionally loading
+        entry points when enabled by environment. Inputs are not consumed.
+        """
         _protocol_guard("batch_encode")
 
     def batch_decode(self, batch_ids: Sequence[Sequence[int]], **kwargs: Any) -> list[str]:
+        """Raise RuntimeError instead of decoding ``batch_ids``; ignore kwargs.
+
+        Adapter discovery supplies the error's registry hint and may load
+        explicitly enabled entry points. No input sequences are decoded.
+        """
         _protocol_guard("batch_decode")
 
     @property
     def vocab_size(self) -> int:
+        """Raise RuntimeError with adapter discovery hints, never return a size.
+
+        Registry lookup may load environment-enabled entry points; a concrete
+        tokenizer must override this guard to expose vocabulary metadata.
+        """
         _protocol_guard("vocab_size")
 
     @property
     def pad_token_id(self) -> int | None:
+        """Raise RuntimeError rather than assuming a padding ID or returning None.
+
+        The diagnostic discovers adapters, loading entry points only when
+        enabled. A concrete implementation must supply this property.
+        """
         _protocol_guard("pad_token_id")
 
 
@@ -680,11 +783,21 @@ class HFTokenizer(TokenizerAdapter):
     # Backwards-compatible aliases
     @property
     def pad_id(self) -> int:
+        """Return pad_token_id, replacing a missing/falsy value with zero.
+
+        The result is int-compatible and also callable without arguments.
+        This legacy alias does not add a padding token to the backend.
+        """
         v = self.pad_token_id
         return _CallableInt(v or 0)
 
     @property
     def eos_id(self) -> int:
+        """Return eos_token_id, replacing a missing/falsy value with zero.
+
+        The result is int-compatible and callable without arguments; zero is a
+        compatibility fallback, not proof that the backend defines EOS at zero.
+        """
         v = self.eos_token_id
         return _CallableInt(v or 0)
 

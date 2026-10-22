@@ -19,15 +19,53 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Mapping, Sequence
+from contextlib import AbstractContextManager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Protocol, TypeVar
 
 from omegaconf import DictConfig, OmegaConf
 
 from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
 
 logger = logging.getLogger(__name__)
+
+if TYPE_CHECKING:
+    from hydra.errors import MissingConfigException as _HydraMissingConfigException
+
+_Key = TypeVar("_Key")
+
+
+class _Compose(Protocol):
+    def __call__(
+        self,
+        config_name: str | None = None,
+        overrides: list[str] | None = None,
+        return_hydra_config: bool = False,
+        strict: bool | None = None,
+    ) -> DictConfig: ...
+
+
+class _InitializeConfigDir(Protocol):
+    def __call__(
+        self,
+        config_dir: str,
+        job_name: str = "app",
+        version_base: str | None = None,
+    ) -> AbstractContextManager[object]: ...
+
+
+class _FallbackMissingConfigException(RuntimeError):
+    """Fallback error used when Hydra is unavailable."""
+
+    def __init__(self, *, missing_cfg_file: str, message: str) -> None:
+        super().__init__(message)
+        self.missing_cfg_file = missing_cfg_file
+
+
+compose: _Compose | None
+initialize_config_dir: _InitializeConfigDir | None
+MissingConfigException: type[_HydraMissingConfigException] | type[_FallbackMissingConfigException]
 
 
 def _flatten_training_section(cfg: Mapping[str, Any]) -> dict[str, Any]:
@@ -40,34 +78,41 @@ def _flatten_training_section(cfg: Mapping[str, Any]) -> dict[str, Any]:
 # Hydra import with robust fallbacks to support offline environments
 try:  # pragma: no cover - optional dependency
     try:
-        from hydra import compose, initialize_config_dir
-        from hydra.errors import MissingConfigException
+        from hydra import compose as _hydra_compose
+        from hydra import initialize_config_dir as _hydra_initialize
+        from hydra.errors import MissingConfigException as _hydra_missing
+
+        compose = _hydra_compose
+        initialize_config_dir = _hydra_initialize
+        MissingConfigException = _hydra_missing
     except ImportError as e:
         error_type = type(e).__name__
         logger.debug("ImportError: <ERROR_TYPE>")
         logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
-        from config_legacy import compose, initialize_config_dir
-        from config_legacy.errors import MissingConfigException
+        from config_legacy import compose as _legacy_compose
+        from config_legacy import initialize_config_dir as _legacy_initialize
+        from config_legacy.errors import MissingConfigException as _legacy_missing
+
+        compose = _legacy_compose
+        initialize_config_dir = _legacy_initialize
+        MissingConfigException = _legacy_missing
 
     _HYDRA_AVAILABLE = True
 except (ImportError, AttributeError):  # pragma: no cover - import guard
     try:
-        from hydra_core import compose, initialize_config_dir
-        from hydra_core.errors import MissingConfigException
+        from hydra_core import compose as _core_compose
+        from hydra_core import initialize_config_dir as _core_initialize
+        from hydra_core.errors import MissingConfigException as _core_missing
+
+        compose = _core_compose
+        initialize_config_dir = _core_initialize
+        MissingConfigException = _core_missing
 
         _HYDRA_AVAILABLE = True
     except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - import guard
         compose = None
-
         initialize_config_dir = None
-
-        class MissingConfigException(RuntimeError):  # type: ignore[no-redef]
-            """Fallback error used when Hydra is unavailable."""
-
-            def __init__(self, *, missing_cfg_file: str, message: str) -> None:
-                super().__init__(message)
-                self.missing_cfg_file = missing_cfg_file
-
+        MissingConfigException = _FallbackMissingConfigException
         _HYDRA_AVAILABLE = False
 
 
@@ -85,9 +130,9 @@ _CFG_DIR = _find_cfg_dir()
 _PRIMARY = "base"
 
 
-def _normalize_training_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
+def _normalize_training_payload(payload: Mapping[_Key, Any]) -> dict[_Key | str, Any]:
     """Normalize common training aliases and expose convenient top-level fields."""
-    data = dict(payload)
+    data: dict[_Key | str, Any] = {key: value for key, value in payload.items()}
     training = data.get("training")
     if isinstance(training, Mapping):
         training_map = dict(training)
@@ -161,7 +206,7 @@ class _AttrDictConfig(DictConfig):
     Used when OmegaConf's DictConfig attribute access is unavailable in the environment.
     """
 
-    def __init__(self, initial: Mapping[str, Any] | None = None) -> None:
+    def __init__(self, initial: Mapping[_Key, Any] | None = None) -> None:
         super().__init__(content=initial or {})
 
     @staticmethod
@@ -192,7 +237,7 @@ class _AttrDictConfig(DictConfig):
         super().__setitem__(key, self._wrap(value))
 
 
-def _to_config_object(mapping: Mapping[str, Any]) -> DictConfig:
+def _to_config_object(mapping: Mapping[_Key, Any]) -> DictConfig:
     """Create a DictConfig, normalizing training payload and ensuring attribute access."""
     normalized = _normalize_training_payload(mapping)
     if _DICTCONFIG_SUPPORTS_ATTR:
@@ -288,9 +333,13 @@ def load_training_cfg(
 
     cfg_dir = _CFG_DIR
     config_file = cfg_dir / f"{_PRIMARY}.yaml"
-    hydra_ready = _HYDRA_AVAILABLE
-
-    if hydra_ready and cfg_dir.is_dir() and config_file.is_file():
+    if (
+        _HYDRA_AVAILABLE
+        and initialize_config_dir is not None
+        and compose is not None
+        and cfg_dir.is_dir()
+        and config_file.is_file()
+    ):
         # Hydra Compose API: https://hydra.cc/docs/advanced/compose_api/
         with initialize_config_dir(version_base=None, config_dir=str(cfg_dir)):
             hydra_cfg = compose(config_name=_PRIMARY, overrides=overrides)
@@ -342,7 +391,7 @@ def load_config(*, config_path: str) -> DictConfig:
         raise TypeError("Config must be a mapping")
 
     # Create as-is, then add convenience keys
-    cfg = OmegaConf.create(data)
+    cfg = OmegaConf.create(dict(data))
 
     # Flatten the training section for convenience keys
     flattened = _flatten_training_section(data)

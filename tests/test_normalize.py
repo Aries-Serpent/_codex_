@@ -1,9 +1,61 @@
 """Tests for normalized duplicate detection."""
 
+import ast
 import tempfile
 from pathlib import Path
 
+import pytest
+
 from codex.logging.structured_logger import logger
+from tools.dupinv.normalize import PythonNormalizer
+
+
+@pytest.mark.parametrize(
+    ("outer", "inner", "deep"),
+    [
+        ("  ", "    ", "      "),
+        ("    ", "        ", "            "),
+        ("        ", "                ", "                        "),
+        ("\t", "\t\t", "\t\t\t"),
+        ("  ", "      ", "          "),
+    ],
+)
+def test_python_normalizer_canonicalizes_nesting_depth(outer: str, inner: str, deep: str) -> None:
+    code = (
+        "def process(items):\n"
+        f"{outer}for item in items:\n"
+        f"{inner}if item:\n"
+        f"{deep}use(item)\n"
+        f"{inner}else:\n"
+        f"{deep}skip(item)\n"
+        f"{outer}finish()\n"
+        "next_task()\n"
+    )
+    expected = (
+        "def process(items):\n"
+        "    for item in items:\n"
+        "        if item:\n"
+        "            use(item)\n"
+        "        else:\n"
+        "            skip(item)\n"
+        "    finish()\n"
+        "next_task()"
+    )
+    assert ast.dump(ast.parse(code)) == ast.dump(ast.parse(expected))
+    assert PythonNormalizer().normalize(code) == expected
+
+
+def test_normalized_detector_preserves_block_structure(tmp_path: Path) -> None:
+    inside = "def process(item):\n  if item:\n    use(item)\n    finish()\n"
+    outside = "def process(item):\n  if item:\n    use(item)\n  finish()\n"
+    assert ast.dump(ast.parse(inside)) != ast.dump(ast.parse(outside))
+    assert PythonNormalizer().normalize(inside) != PythonNormalizer().normalize(outside)
+    (tmp_path / "inside.py").write_text(inside, encoding="utf-8")
+    (tmp_path / "outside.py").write_text(outside, encoding="utf-8")
+
+    from tools.dupinv.normalize import NormalizedDetector
+
+    assert NormalizedDetector(tmp_path).scan() == []
 
 
 def test_normalized_detector_ignores_comments():

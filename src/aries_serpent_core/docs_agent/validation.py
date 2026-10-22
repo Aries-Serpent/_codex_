@@ -90,9 +90,7 @@ class LinkValidator:
             link_type = (
                 "external"
                 if url.startswith(("http://", "https://"))
-                else "anchor"
-                if url.startswith("#")
-                else "internal"
+                else "anchor" if url.startswith("#") else "internal"
             )
 
             links.append(

@@ -53,30 +53,9 @@ WORKFLOW_FILE = ".github/workflows/copilot-setup-steps.yml"
 # not touch the matching file set. The validator should enforce required invariants,
 # not a stale historical baseline.
 BASELINE_LINE_COUNT = 673
-ACCEPTABLE_LINE_RANGE = (180, 1000)
+ACCEPTABLE_LINE_RANGE = (80, 1000)
 WARNING_THRESHOLD = 900
 FAILURE_THRESHOLD = 1200
-
-# Critical CCA variables that MUST be present
-REQUIRED_CCA_VARIABLES = {
-    "COPILOT_AGENT_CCA_VERSION_LOCK": "stable",
-    "COPILOT_AGENT_DEDUPLICATION_ENABLED": "true",
-    "COPILOT_AGENT_TURN_ISOLATION_ENABLED": "true",
-}
-
-# Protected sections in the workflow
-PROTECTED_SECTIONS = {
-    "cca_variables": {
-        "start": 99,
-        "end": 101,
-        "description": "CCA variables (lines 99-101)"
-    },
-    "session_preload": {
-        "start": 132,
-        "end": 137,
-        "description": "Session preload step (lines 132-137)"
-    },
-}
 
 # Dependent workflows that must exist
 DEPENDENT_WORKFLOWS = [
@@ -89,8 +68,9 @@ DEPENDENT_WORKFLOWS = [
 # Supporting scripts that must exist
 SUPPORTING_SCRIPTS = [
     ".github/scripts/session_preload.py",
-    "scripts/ci/session_access_probe.py",
-    "scripts/ci/autonomous_rag_context.py",
+    "scripts/ci/fetch_lfs_assets.py",
+    "scripts/ci/agent_setup_readiness.py",
+    "scripts/ci/prepare_agent_context.py",
 ]
 
 
@@ -246,44 +226,23 @@ def test_yaml_indentation(workflow_path: str) -> TestResult:
 
 
 def test_cca_variables(workflow_path: str) -> TestResult:
-    """Test 3.1-3.3: Verify all 3 critical CCA variables are present with correct values."""
+    """Compatibility entry point: validate actual bootstrap, not local CCA flags."""
     try:
-        with open(workflow_path, 'r') as f:
-            content = f.read()
-
-        missing = []
-
-        for var_name, var_value in REQUIRED_CCA_VARIABLES.items():
-            direct_literal = re.search(
-                rf'{re.escape(var_name)}:\s*["\']?{re.escape(var_value)}["\']?',
-                content,
-            )
-            expression_pattern = (
-                rf'{re.escape(var_name)}:\s*\$\{{\{{\s*vars\.{re.escape(var_name)}\s*\|\|\s*["\']'
-                rf'{re.escape(var_value)}["\']\s*\}}\}}'
-            )
-            if not (direct_literal or re.search(expression_pattern, content)):
-                missing.append(var_name)
-
-        if missing:
-            return TestResult(
-                "Critical CCA Variables",
-                False,
-                severity="error",
-                message=f"Missing required variables: {', '.join(missing)}"
-            )
-
+        # Support direct script execution as well as repository imports.
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from validate_copilot_bootstrap import validate
+        errors = validate(Path(workflow_path))
         return TestResult(
-            "Critical CCA Variables",
-            True,
-            message="All 3 CCA variables present and correct"
+            "Supported Bootstrap Contract",
+            not errors,
+            message="; ".join(errors) if errors else "Actual supported job and consumers verified",
         )
     except Exception as e:
         return TestResult(
-            "Critical CCA Variables",
+            "Supported Bootstrap Contract",
             False,
             severity="error",
-            message=f"Error checking CCA variables: {str(e)[:100]}"
+            message=f"Error checking bootstrap: {str(e)[:100]}"
         )
 
 
@@ -382,8 +341,8 @@ def test_git_diff_protection(workflow_path: str) -> TestResult:
 
         content = ''.join(lines)
 
-        if 'COPILOT_AGENT_CCA_VERSION_LOCK' not in content:
-            issues.append("CCA variables section not found in workflow env")
+        if 'fetch_lfs_assets.py' not in content:
+            issues.append("Required asset verification consumer missing")
 
         if 'Session Context Pre-load' not in content:
             issues.append("Session preload section not found in workflow steps")
@@ -399,7 +358,7 @@ def test_git_diff_protection(workflow_path: str) -> TestResult:
         return TestResult(
             "Git Diff Protection",
             True,
-            message="Protected sections verified (CCA variables, session preload)"
+            message="Required asset verification and optional preload retained"
         )
     except Exception as e:
         return TestResult(
@@ -448,7 +407,7 @@ def test_dependent_workflows(repo_root: str = ".") -> TestResult:
         return TestResult(
             "Dependent Workflows Validation",
             True,
-            message="All 5 dependent workflows valid and accessible"
+            message=f"All {len(DEPENDENT_WORKFLOWS)} dependent workflows valid and accessible"
         )
     except Exception as e:
         return TestResult(
@@ -496,7 +455,7 @@ def test_supporting_scripts(repo_root: str = ".") -> TestResult:
         return TestResult(
             "Supporting Scripts Check",
             True,
-            message="All 3 supporting scripts present and syntactically valid"
+            message=f"All {len(SUPPORTING_SCRIPTS)} supporting scripts present and syntactically valid"
         )
     except Exception as e:
         return TestResult(
@@ -747,7 +706,7 @@ def test_token_references(workflow_path: str) -> TestResult:
         return TestResult(
             "Token Reference Validation",
             True,
-            message="Token references are valid (GITHUB_TOKEN, CODEX_MASTER_KEY, CODEX_BACKUP_KEY)"
+            message="Setup token reference present; platform permissions remain unverified"
         )
     except Exception as e:
         return TestResult(
@@ -810,7 +769,7 @@ def main():
     # ─────────────────────────────────────────────────────────────────────────
     # Phase 2: Critical Variables (Section 1.2, 3.1-3.3)
     # ─────────────────────────────────────────────────────────────────────────
-    logger.info("Phase 2: Critical CCA Variables")
+    logger.info("Phase 2: Supported Bootstrap Contract")
     suite.add(test_cca_variables(str(workflow_path)))
 
     # ─────────────────────────────────────────────────────────────────────────

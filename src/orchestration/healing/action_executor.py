@@ -258,9 +258,9 @@ class ActionExecutor:
 
                 result = ExecutionResult(
                     action_id=action_id,
-                    status=ExecutionStatus.ROLLED_BACK
-                    if rollback_success
-                    else ExecutionStatus.FAILURE,
+                    status=(
+                        ExecutionStatus.ROLLED_BACK if rollback_success else ExecutionStatus.FAILURE
+                    ),
                     strategy_id=strategy_id,
                     duration_sec=duration,
                     error=str(e),

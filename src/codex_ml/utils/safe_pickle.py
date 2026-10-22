@@ -255,7 +255,9 @@ def safe_pickle_load_bytes(
     # 1. The bytes were created by the current process or trusted local code
     # 2. The bytes came from a secure location with proper access controls
     # 3. The caller validated the source and integrity before calling this helper
-    return pickle.loads(data)  # nosec B301 # nosemgrep: semgrep.unsafe-pickle-loads, semgrep_rules.py-pickle-load, python.lang.security.deserialization.pickle.avoid-pickle
+    return pickle.loads(
+        data
+    )  # nosec B301 # nosemgrep: semgrep.unsafe-pickle-loads, semgrep_rules.py-pickle-load, python.lang.security.deserialization.pickle.avoid-pickle
 
 
 def _unpicklable_marker(obj: Any) -> Any:
@@ -374,15 +376,19 @@ def _decrypt_pickle_payload(data: bytes, secret_key: bytes) -> bytes:
         # canonical base64url representation explicitly to detect appended garbage.
         base64.b64decode(token, altchars=b"-_", validate=True)
     except (ValueError, binascii.Error) as exc:
-        raise ValueError("HMAC signature verification failed - file may be tampered. "
-                         "Ensure the same secret key was used for saving and loading.") from exc
+        raise ValueError(
+            "HMAC signature verification failed - file may be tampered. "
+            "Ensure the same secret key was used for saving and loading."
+        ) from exc
 
     fernet = Fernet(_coerce_fernet_key(secret_key))
     try:
         return fernet.decrypt(token)
     except InvalidToken as exc:
-        raise ValueError("HMAC signature verification failed - file may be tampered. "
-                         "Ensure the same secret key was used for saving and loading.") from exc
+        raise ValueError(
+            "HMAC signature verification failed - file may be tampered. "
+            "Ensure the same secret key was used for saving and loading."
+        ) from exc
 
 
 def _build_signed_pickle(pickled_data: bytes, secret_key: bytes) -> bytes:

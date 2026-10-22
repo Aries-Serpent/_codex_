@@ -93,7 +93,9 @@ def _safe_repo_component(value: str, *, field_name: str) -> str:
     if cleaned.startswith("/") or cleaned.endswith("/") or "//" in cleaned:
         raise ValueError(f"GitHub client URL {field_name} must be a relative path component")
     if cleaned in {".", ".."} or ".." in cleaned:
-        raise ValueError(f"GitHub client URL {field_name} contains invalid path traversal characters")
+        raise ValueError(
+            f"GitHub client URL {field_name} contains invalid path traversal characters"
+        )
 
     if field_name == "path":
         segments = [segment for segment in cleaned.split("/") if segment]
@@ -101,7 +103,9 @@ def _safe_repo_component(value: str, *, field_name: str) -> str:
             raise ValueError(f"GitHub client URL {field_name} cannot be empty")
         for segment in segments:
             if segment in {".", ".."}:
-                raise ValueError(f"GitHub client URL {field_name} contains invalid path traversal characters")
+                raise ValueError(
+                    f"GitHub client URL {field_name} contains invalid path traversal characters"
+                )
             if any(ch in segment for ch in rejected_chars):
                 raise ValueError(f"GitHub client URL {field_name} contains invalid characters")
         return "/".join(segments)
@@ -161,7 +165,9 @@ def get_text(owner: str, repo: str, ref: str, path: str) -> str:
     r = requests.get(_validated_url(raw), timeout=30)
     if r.status_code == 200 and r.text:
         return r.text
-    meta = gh_get(f"{BASE}/repos/{safe_owner}/{safe_repo}/contents/{quote(safe_path, safe='/')}?ref={quote(safe_ref)}")
+    meta = gh_get(
+        f"{BASE}/repos/{safe_owner}/{safe_repo}/contents/{quote(safe_path, safe='/')}?ref={quote(safe_ref)}"
+    )
     if isinstance(meta, dict) and meta.get("encoding") == "base64":
         return base64.b64decode(meta["content"]).decode("utf-8", errors="replace")
     return json.dumps(meta, ensure_ascii=False)

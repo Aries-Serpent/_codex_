@@ -179,3 +179,44 @@ def test_main_propagates_grad_accum_and_determinism(monkeypatch, tmp_path: Path)
     ft.main(["--output-dir", str(tmp_path), "--engine", "hf"])
     assert captured["gradient_accumulation_steps"] == 5, "Condition must be true"
     assert captured["deterministic"] is True, "Condition must be true"
+
+
+def test_main_accepts_plain_training_mapping(monkeypatch):
+    monkeypatch.setattr(ft, "load_training_cfg", lambda **kwargs: {"training": {"texts": ["hi"]}})
+    captured = {}
+    monkeypatch.setattr(ft, "run_hf_trainer", lambda **kwargs: captured.update(kwargs))
+
+    ft.main(["--engine", "hf"])
+
+    assert captured["texts"] == ["hi"]
+    assert captured["hydra_cfg"] == {"texts": ["hi"]}
+
+
+@pytest.mark.parametrize("engine", ["hf", "custom"])
+@pytest.mark.parametrize(
+    "config",
+    [
+        None,
+        [],
+        "invalid",
+        {"training": None},
+        {"training": ["invalid"]},
+        {"training": {"lora": None}},
+        {"training": {"reproducibility": ["invalid"]}},
+    ],
+)
+def test_main_rejects_non_mapping_configuration_before_training(monkeypatch, engine, config):
+    monkeypatch.setattr(ft, "load_training_cfg", lambda **kwargs: config)
+
+    def unexpected_training(*args, **kwargs):
+        pytest.fail("Invalid configuration must not start training")
+
+    monkeypatch.setattr(ft, "run_hf_trainer", unexpected_training)
+    monkeypatch.setattr(ft, "run_custom_trainer", unexpected_training)
+    with pytest.raises(ValueError, match="must be a mapping"):
+        ft.main(["--engine", engine])
+
+
+def test_training_config_section_resolves_interpolation():
+    config = OmegaConf.create({"seed": 123, "training": {"seed": "${seed}"}})
+    assert ft._training_config_section(config) == {"seed": 123}

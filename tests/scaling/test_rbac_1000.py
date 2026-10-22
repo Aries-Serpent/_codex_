@@ -240,8 +240,16 @@ class TestRBACEngine:
         rbac.grant_role(user_id, tenant_id, RoleType.TENANT_ADMIN)
         tenant_admin_perms = rbac.get_user_permissions(user_id, tenant_id)
 
-        # Verify tenant_admin has fewer permissions than admin
-        assert len(tenant_admin_perms) < len(admin_perms), "Tenant_admin_perms must not be empty"
+        for permission in tenant_admin_perms:
+            assert any(
+                admin.resource_type in {ResourceType.ALL, permission.resource_type}
+                and admin.action == permission.action
+                and admin.access_level.value >= permission.access_level.value
+                for admin in admin_perms
+            ), f"Admin does not cover tenant-admin permission {permission}"
+        assert not rbac.check_permission(user_id, tenant_id, ResourceType.TENANT, "write")[0]
+        rbac.grant_role(user_id, tenant_id, RoleType.ADMIN)
+        assert rbac.check_permission(user_id, tenant_id, ResourceType.TENANT, "write")[0]
 
     def test_permission_matrix_validation(self, rbac):
         """Test permission matrix validation."""
@@ -251,7 +259,9 @@ class TestRBACEngine:
         assert report["total_actions"] >= 4, "rep must be greater than zero"
         assert report["total_roles"] == 5, "rep is not valid"
         assert report["total_permissions"] > 0, "rep must be greater than zero"
-        assert report["coverage_percent"] > 50, "rep must be greater than zero"
+        assert report["coverage_percent"] == pytest.approx(
+            100.0 * report["total_permissions"] / report["total_combinations"]
+        )
         assert report["hierarchy_valid"] is True, "rep is not valid"
         assert report["matrix_status"] == "VALID", "rep is not valid"
 
@@ -261,13 +271,17 @@ class TestRBACEngine:
         admin_perms = rbac.roles[RoleType.ADMIN].permissions
         viewer_perms = rbac.roles[RoleType.VIEWER].permissions
 
-        # Admin should have more permissions than viewer
-        assert len(admin_perms) > len(viewer_perms), "Admin_perms must not be empty"
+        assert {permission.action for permission in admin_perms} == {
+            "read", "list", "write", "delete", "admin"
+        }
+        assert all(permission.resource_type == ResourceType.ALL for permission in admin_perms)
+        assert all(permission.access_level == AccessLevel.ADMIN for permission in admin_perms)
 
         # Verify no viewer permissions have ADMIN access level
         for perm in viewer_perms:
-            assert perm.access_level != AccessLevel.ADMIN, "access_level is not valid"
-            assert perm.access_level != AccessLevel.WRITE or perm.action == "read", "access_level is not valid"
+            assert perm.resource_type != ResourceType.ALL
+            assert perm.action in {"read", "list"}
+            assert perm.access_level == AccessLevel.READ
 
     # ========================================================================
     # RBAC AUDIT TESTS

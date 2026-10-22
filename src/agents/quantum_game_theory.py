@@ -27,6 +27,7 @@ import logging
 import math
 from dataclasses import dataclass, field
 from enum import Enum
+from types import ModuleType
 from typing import Any, Optional
 
 # Initialize logger before use in exception handlers
@@ -43,10 +44,13 @@ except ImportError as e:
     # Provide minimal numpy-like interface for type hints
     NUMPY_AVAILABLE = False
 
-    class _NumpyStub:
+    class _NumpyStub(ModuleType):
         """Minimal numpy stub for when numpy is not available."""
 
         ndarray = list  # Type hint fallback
+
+        def __init__(self) -> None:
+            super().__init__("numpy")
 
         @staticmethod
         def ones(n, dtype=None) -> None:
@@ -373,6 +377,8 @@ class QuantumGameState:
                 if hasattr(self.red_state, "wavefunction")
                 else np.asarray(self.red_state, dtype=float)
             )
+            if blue_wf is None or red_wf is None:
+                raise ValueError("Both team wavefunctions are required to form a joint state")
             self.joint_wavefunction = np.outer(blue_wf, red_wf).flatten()
 
         self.normalize()
@@ -386,7 +392,13 @@ class QuantumGameState:
         return len(np.asarray(self.blue_state)) * len(np.asarray(self.red_state))
 
     def normalize(self) -> None:
-        """Normalize joint wavefunction"""
+        """Normalize the joint amplitudes in place.
+
+        Zero-norm states are left unchanged. Raises ValueError if a caller has
+        cleared ``joint_wavefunction`` after construction.
+        """
+        if self.joint_wavefunction is None:
+            raise ValueError("A joint wavefunction is required for normalization")
         norm = np.sqrt(np.vdot(self.joint_wavefunction, self.joint_wavefunction).real)
         if norm > 1e-10:
             self.joint_wavefunction = self.joint_wavefunction / norm
@@ -394,6 +406,8 @@ class QuantumGameState:
     def to_density_matrix(self) -> np.ndarray:
         """Convert pure state to density matrix: ρ = |ψ⟩⟨ψ|"""
         psi = self.joint_wavefunction
+        if psi is None:
+            raise ValueError("A joint wavefunction is required for a density matrix")
         return np.outer(psi, np.conj(psi))
 
     def apply_entangling_gate(self, strength: float = 0.5) -> None:
@@ -457,6 +471,8 @@ class QuantumGameState:
             New QuantumGameState with entanglement_strength=0 and product state
         """
         # Create new product state from current team states
+        if self.blue_state.wavefunction is None or self.red_state.wavefunction is None:
+            raise ValueError("Both team wavefunctions are required to break entanglement")
         product_wavefunction = np.outer(
             self.blue_state.wavefunction, self.red_state.wavefunction
         ).flatten()
@@ -811,6 +827,8 @@ class QuantumInspiredGameEngine:
         n = self.red_state.num_strategies
 
         # Product state
+        if self.blue_state.wavefunction is None or self.red_state.wavefunction is None:
+            raise ValueError("Both team wavefunctions are required for entanglement")
         psi_product = np.outer(self.blue_state.wavefunction, self.red_state.wavefunction).flatten()
 
         # Simple entangled state (Bell-like for min dimensions)
@@ -874,7 +892,13 @@ class QuantumInspiredGameEngine:
         self.game_state.normalize()
 
     def expected_payoff(self, team: TeamType) -> float:
-        """Calculate expected payoff for a team: ⟨ψ|Û|ψ⟩"""
+        """Calculate expected payoff for a team: ⟨ψ|Û|ψ⟩.
+
+        Uses the current joint amplitudes without renormalizing them. Raises
+        ValueError if a caller has cleared the joint wavefunction.
+        """
+        if self.game_state.joint_wavefunction is None:
+            raise ValueError("A joint wavefunction is required to calculate payoff")
         if team == TeamType.BLUE:
             return self.U_blue.expected_value(self.game_state.joint_wavefunction)
         return self.U_red.expected_value(self.game_state.joint_wavefunction)
@@ -1210,6 +1234,9 @@ class BlueRedTeamSimulator:
                 TeamType.RED, self.risk_aversion
             )
 
+            joint_wavefunction = self.quantum_engine.game_state.joint_wavefunction
+            if joint_wavefunction is None:
+                raise ValueError("A joint wavefunction is required for measurement")
             results.update(
                 {
                     "blue_expected_payoff": blue_payoff,
@@ -1219,9 +1246,7 @@ class BlueRedTeamSimulator:
                     "blue_risk_adjusted_utility": blue_risk_adj,
                     "red_risk_adjusted_utility": red_risk_adj,
                     "entanglement_strength": self.quantum_engine.game_state.entanglement_strength,
-                    "measurement_probabilities": np.abs(
-                        self.quantum_engine.game_state.joint_wavefunction
-                    ).tolist(),
+                    "measurement_probabilities": np.abs(joint_wavefunction).tolist(),
                 }
             )
 
@@ -1275,10 +1300,13 @@ class BlueRedTeamSimulator:
     ) -> dict[str, Any]:
         """Run multi-round simulation with learning.
 
-        Both teams update their strategies based on outcomes.
+        Both teams update their strategies based on outcomes. Final payoffs
+        describe the last round, or zero when no rounds are requested.
         """
         if not NUMPY_AVAILABLE:
             raise TypeError("BlueRedTeamSimulator requires numpy for simulation")
+        if num_rounds < 0:
+            raise ValueError("num_rounds must be non-negative")
 
         # After NUMPY_AVAILABLE check, engines are definitely not None
         assert self.classical_engine is not None
@@ -1324,8 +1352,8 @@ class BlueRedTeamSimulator:
             "num_rounds": num_rounds,
             "learning_rate": learning_rate,
             "rounds": round_results,
-            "final_blue_payoff": round_results[-1]["blue_payoff"],
-            "final_red_payoff": round_results[-1]["red_payoff"],
+            "final_blue_payoff": round_results[-1]["blue_payoff"] if round_results else 0.0,
+            "final_red_payoff": round_results[-1]["red_payoff"] if round_results else 0.0,
         }
 
 

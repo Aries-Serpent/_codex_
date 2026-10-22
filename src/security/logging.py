@@ -204,9 +204,13 @@ def sanitize_for_logging(value: Any) -> str:
     )
     for pattern in TOKEN_PATTERNS:
         if pattern.endswith("))"):
-            sanitized = re.sub(pattern, lambda m: redact_token(m.group(0)), sanitized, flags=re.IGNORECASE)
+            sanitized = re.sub(
+                pattern, lambda m: redact_token(m.group(0)), sanitized, flags=re.IGNORECASE
+            )
         else:
-            sanitized = re.sub(pattern, lambda m: redact_token(m.group(0)), sanitized, flags=re.IGNORECASE)
+            sanitized = re.sub(
+                pattern, lambda m: redact_token(m.group(0)), sanitized, flags=re.IGNORECASE
+            )
     for pattern in PASSWORD_PATTERNS:
         sanitized = re.sub(pattern, "[REDACTED_PASSWORD]", sanitized, flags=re.IGNORECASE)
     return sanitized.strip()
@@ -248,7 +252,8 @@ def create_log_filter() -> logging.Filter:
                             record.args[key] = self._redact_string(value)
                 elif isinstance(record.args, (list, tuple)):
                     record.args = tuple(
-                        self._redact_string(arg) if isinstance(arg, str) else arg for arg in record.args
+                        self._redact_string(arg) if isinstance(arg, str) else arg
+                        for arg in record.args
                     )
             except Exception:
                 record.msg = "[REDACTED]"
@@ -341,7 +346,7 @@ if __name__ == "__main__":
     print(f"Token hash: {hash_token(test_token)}")
     print()
 
-    test_password = "MyS3cur3P@ssw0rd!"  # nosec  # Test example only
+    test_password = "MyS3cur3P@ssw0rd!"  # nosec  # pragma: allowlist secret -- synthetic demo value
 
     print(f"Original password: {test_password}")  # nosec
     print(f"Redacted password: {redact_password(test_password)}")

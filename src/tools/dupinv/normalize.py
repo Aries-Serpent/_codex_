@@ -40,13 +40,20 @@ class PythonNormalizer:
 
         # Normalize whitespace (consistent indentation)
         normalized_lines = []
+        indent_widths = [0]
         for line in lines:
             # Replace multiple spaces with single space, preserve indentation structure
             stripped = line.lstrip()
             if stripped:
-                indent_level = len(line) - len(stripped)
-                # Normalize to 4-space indents
-                normalized_indent = (indent_level // 4) * "    "
+                prefix = line[: len(line) - len(stripped)]
+                indent_width = len(prefix.expandtabs(8))
+                # Canonicalize nesting depth, not physical indent width.
+                # Two spaces, four spaces and tabs can express the same suite.
+                while indent_width < indent_widths[-1]:
+                    indent_widths.pop()
+                if indent_width > indent_widths[-1]:
+                    indent_widths.append(indent_width)
+                normalized_indent = (len(indent_widths) - 1) * "    "
                 normalized_lines.append(normalized_indent + " ".join(stripped.split()))
 
         return "\n".join(normalized_lines)
@@ -118,7 +125,7 @@ class NormalizedDetector:
     def __init__(
         self,
         root_path: Path,
-        exclude_patterns: list[str] = None,
+        exclude_patterns: list[str] | None = None,
         respect_gitignore: bool = True,
         normalize_identifiers: bool = False,
     ):
@@ -140,7 +147,7 @@ class NormalizedDetector:
         self.exact_detector = ExactDetector(root_path, exclude_patterns, respect_gitignore)
 
         # Language-specific normalizers
-        self.normalizers = {
+        self.normalizers: dict[str, PythonNormalizer | JavaScriptNormalizer | GenericNormalizer] = {
             "python": PythonNormalizer(),
             "javascript": JavaScriptNormalizer(),
             "typescript": JavaScriptNormalizer(),  # Same as JS

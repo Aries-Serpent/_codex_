@@ -8,7 +8,7 @@ from typing import Any, Optional
 
 from codex.retrieval import RetrievalEngine
 
-from src.utils.log_sanitizer import sanitize_log_input
+from utils.log_sanitizer import sanitize_log_input
 
 logger = logging.getLogger(__name__)
 
