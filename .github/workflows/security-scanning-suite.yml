@@ -296,7 +296,7 @@ jobs:
         ,\n  \"sha\": \"${GITHUB_SHA}\"\n}\nEOF\n\necho \"input_lock_sha256=${SHA}\"\
         \ >> \"$GITHUB_OUTPUT\"\n"
     - name: Upload lane contract artifact
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: security-suite-lane-contract
         path: |
@@ -441,7 +441,7 @@ jobs:
         EOF
     - name: Upload CodeQL artifacts
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: security-suite-codeql-${{ matrix.language }}
         path: |
@@ -632,7 +632,7 @@ jobs:
         EOF
     - name: Upload Semgrep results artifact
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: security-suite-semgrep
         path: |
@@ -750,7 +750,7 @@ jobs:
         EOF
     - name: Upload container scan artifacts
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: security-suite-container-${{ strategy.job-index }}
         path: |
@@ -867,7 +867,7 @@ jobs:
         EOF
     - name: Upload CVE scan artifacts
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: security-suite-cve-${{ matrix.ecosystem }}
         path: |
@@ -987,7 +987,7 @@ jobs:
         EOF
     - name: Upload dependency artifacts
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: security-suite-dependency
         path: |
@@ -1087,7 +1087,7 @@ jobs:
         EOF
     - name: Upload secret scan artifacts
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: security-suite-secrets
         path: |
@@ -1154,7 +1154,7 @@ jobs:
         \    \"sbom-summary.md\"\n  ],\n  \"status\": \"${{ job.status }}\"\n}\nEOF\n"
     - name: Upload SBOM artifact
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: security-suite-sbom
         path: |
@@ -1183,7 +1183,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Download all security-suite artifacts
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
       continue-on-error: true
       with:
         path: security-suite-artifacts/
@@ -1350,7 +1350,7 @@ jobs:
         EOF
     - name: Upload consolidated summary
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: security-suite-summary
         path: |
@@ -1376,7 +1376,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Download all security-suite artifacts
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
       continue-on-error: true
       with:
         path: security-suite-artifacts/
@@ -1501,7 +1501,7 @@ jobs:
         PY
     - name: Upload comprehensive findings artifact
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: security-suite-comprehensive-findings
         path: |
@@ -1550,7 +1550,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - name: Download comprehensive findings artifact
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
       continue-on-error: false
       with:
         name: security-suite-comprehensive-findings
@@ -1588,7 +1588,7 @@ jobs:
         \ >> \"$GITHUB_STEP_SUMMARY\"\n"
     - name: Upload contract report
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: security-suite-artifact-contract-report
         path: security-artifact-contract-report.md
@@ -1613,7 +1613,7 @@ jobs:
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
     - name: Download comprehensive findings
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
       continue-on-error: true
       with:
         name: security-suite-comprehensive-findings
@@ -1629,7 +1629,7 @@ jobs:
         \n"
     - name: Upload Cache Artifacts
       if: success()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: security-cache
         path: .codex/security-cache/
@@ -1637,7 +1637,7 @@ jobs:
         retention-days: 90
     - name: Upload Trend Report
       if: success()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: security-findings-trend-report
         path: .codex/security-findings-trend-report.md
