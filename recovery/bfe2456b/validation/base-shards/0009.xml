@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="4" failures="7" skipped="0" tests="131" time="34.834" timestamp="2026-10-22T23:03:54.251504+00:00" hostname="runnervm8k3b6"><testcase classname="tests.ast.test_delta" name="test_detect_removed_files" time="0.009" /><testcase classname="tests.ast.test_delta" name="test_analyze_file" time="0.006" /><testcase classname="tests.ast.test_delta" name="test_delta_result_total_changes" time="0.002" /><testcase classname="tests.ast.test_delta" name="test_detect_added_files" time="0.005" /><testcase classname="tests.ast.test_delta" name="test_detect_unchanged_files" time="0.005" /><testcase classname="tests.ast.test_delta" name="test_detect_modified_files" time="0.005" /><testcase classname="tests.ast.test_delta" name="test_delta_result_has_changes" time="0.002" /><testcase classname="tests.ast.test_delta" name="test_delta_result_summary" time="0.002" /><testcase classname="tests.ast.test_visualize.TestHTMLVisualizer" name="test_node_to_dict" time="0.007" /><testcase classname="tests.ast.test_visualize.TestHTMLVisualizer" name="test_tree_depth_reflected_in_node_children_count" time="0.002" /><testcase classname="tests.ast.test_visualize.TestHTMLVisualizer" name="test_node_rendering_includes_function_and_class_counts" time="0.005" /><testcase classname="tests.ast.test_visualize.TestHTMLVisualizer" name="test_render_html_with_empty_nodes" time="0.002" /><testcase classname="tests.ast.test_visualize.TestHTMLVisualizer" name="test_css_output_contains_required_selectors" time="0.004" /><testcase classname="tests.ast.test_visualize.TestHTMLVisualizer" name="test_render_html" time="0.003" /><testcase classname="tests.ast.test_metrics" name="test_correlation" time="0.002" /><testcase classname="tests.ast.test_metrics" name="test_metrics_aggregation" time="0.002" /><testcase classname="tests.ast.test_metrics" name="test_correlation_insufficient_data" time="0.003" /><testcase classname="tests.ast.test_metrics" name="test_correlation_valid_inputs" time="0.002" /><testcase classname="tests.ast.test_metrics" name="test_to_dict" time="0.002" /><testcase classname="tests.ast.test_metrics" name="test_correlation_mismatched_lengths" time="0.003" /><testcase classname="tests.ast.test_metrics" name="test_quality_tier" time="0.002" /><testcase classname="tests.ast.test_metrics" name="test_store_and_summary" time="0.002" /><testcase classname="tests.ast.test_metrics" name="test_empty_aggregation" time="0.002" /><testcase classname="tests.ast.test_ast_similarity.TestASTSignatureSimilarity" name="test_signature_similarity_identical" time="0.002" /><testcase classname="tests.ast.test_ast_similarity.TestASTSignatureSimilarity" name="test_extract_ast_signature_invalid_code" time="0.003" /><testcase classname="tests.ast.test_ast_similarity.TestASTSignatureSimilarity" name="test_extract_ast_signature_valid_code" time="0.002" /><testcase classname="tests.ast.test_ast_similarity.TestASTSignatureSimilarity" name="test_compute_uniqueness_different_files" time="0.002" /><testcase classname="tests.ast.test_ast_similarity.TestASTSignatureSimilarity" name="test_compute_uniqueness_single_file" time="0.002" /><testcase classname="tests.ast.test_ast_similarity.TestASTSignatureSimilarity" name="test_compute_uniqueness_identical_files" time="0.003"><failure message="AssertionError: uniqueness is not valid&#10;assert 1.0 &lt; 0.5">self = &lt;tests.ast.test_ast_similarity.TestASTSignatureSimilarity object at 0x7f065a988d70&gt;
+
+    def test_compute_uniqueness_identical_files(self):
+        """Test uniqueness computation with identical files."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path1 = Path(tmpdir) / "test1.py"
+            path2 = Path(tmpdir) / "test2.py"
+    
+            code = "def foo(): return 42"
+            path1.write_text(code)
+            path2.write_text(code)
+    
+            uniqueness = compute_uniqueness([path1, path2])
+            # Identical files should have low uniqueness (close to 0)
+&gt;           assert uniqueness &lt; 0.5, "uniqueness is not valid"
+E           AssertionError: uniqueness is not valid
+E           assert 1.0 &lt; 0.5
+
+tests/ast/test_ast_similarity.py:89: AssertionError</failure></testcase><testcase classname="tests.ast.test_ast_similarity.TestASTSignatureSimilarity" name="test_extract_ast_signature_empty_code" time="0.002" /><testcase classname="tests.ast.test_ast_similarity.TestASTSignatureSimilarity" name="test_compute_uniqueness_min_nodes_filter" time="0.003" /><testcase classname="tests.ast.test_ast_similarity.TestASTSignatureSimilarity" name="test_signature_similarity_different" time="0.002" /><testcase classname="tests.ast.test_ast_cli" name="test_diff_invalid_arg" time="0.356" /><testcase classname="tests.ast.test_ast_cli" name="test_ast_cli_help" time="0.012" /><testcase classname="tests.ast.test_ast_cli" name="test_analyze_json" time="0.004" /><testcase classname="tests.ast.test_baseline" name="test_clear_all" time="0.008" /><testcase classname="tests.ast.test_baseline" name="test_update_baseline" time="0.006" /><testcase classname="tests.ast.test_baseline" name="test_delete_baseline" time="0.006" /><testcase classname="tests.ast.test_baseline" name="test_save_and_retrieve" time="0.006" /><testcase classname="tests.ast.test_baseline" name="test_list_baselines" time="0.006" /><testcase classname="tests.ast.test_baseline" name="test_baseline_init" time="0.004" /><testcase classname="tests.ast.test_streaming.TestStreamingParser" name="test_parse_directory" time="0.004" /><testcase classname="tests.ast.test_streaming.TestStreamingParser" name="test_parse_nonexistent_file" time="0.002" /><testcase classname="tests.ast.test_streaming.TestStreamingParser" name="test_parse_small_file" time="0.003" /><testcase classname="tests.ast.test_streaming.TestStreamingParser" name="test_parse_large_file" time="0.606" /><testcase classname="tests.ast.test_node" name="test_tree_traversal" time="0.002" /><testcase classname="tests.ast.test_node" name="test_source_location_str" time="0.002"><failure message="NameError: name 'os' is not defined. Did you forget to import 'os'">def test_source_location_str():
+        """Test SourceLocation string representation."""
+&gt;       loc = SourceLocation(Path(os.path.join(tempfile.gettempdir(), "test.py")), 10, 5, 15, 20)
+                                  ^^
+E       NameError: name 'os' is not defined. Did you forget to import 'os'
+
+tests/ast/test_node.py:75: NameError</failure></testcase><testcase classname="tests.ast.test_node" name="test_parent_child_relationship" time="0.002" /><testcase classname="tests.ast.test_node" name="test_node_creation" time="0.002" /><testcase classname="tests.ast.test_node" name="test_node_serialization" time="0.002" /><testcase classname="tests.ast.test_integration" name="test_complete_workflow" time="0.002" /><testcase classname="tests.ast.test_integration" name="test_metrics_across_modules" time="0.002" /><testcase classname="tests.ast.test_integration" name="test_node_to_graph" time="0.002" /><testcase classname="tests.ast.test_integration" name="test_serialization_roundtrip" time="0.002" /><testcase classname="tests.ast.test_integration" name="test_multiple_cycles_detection" time="0.002" /><testcase classname="tests.ast.test_integration" name="test_empty_metrics_summary" time="0.002" /><testcase classname="tests.ast.test_integration" name="test_cycle_detection_with_nodes" time="0.002" /><testcase classname="tests.ast.test_smells.TestDetectSmellsFunction" name="test_detect_from_file" time="0.003" /><testcase classname="tests.ast.test_smells.TestDetectSmellsFunction" name="test_detect_from_string" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_non_pep8_function_name" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_directory" time="0.003" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_non_pep8_class_name" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_skip_private_docstring_check" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_deep_nesting" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_directory_with_exclusions" time="0.003" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_bare_except" time="0.003"><failure message="AssertionError: Except_smells must not be empty&#10;assert 0 &gt;= 1&#10; +  where 0 = len([])">self = &lt;tests.ast.test_smells.TestCodeSmellDetector object at 0x7f065a84d070&gt;
+
+        def test_detect_bare_except(self):
+            """Test detection of bare except clauses."""
+            code = """
+    try:
+        risky()
+    except (AssertionError, ValueError, TypeError, RuntimeError):  # noqa: BLE001
+        _ = None
+    """
+            detector = CodeSmellDetector()
+            smells = detector.detect_string(code)
+    
+            except_smells = [s for s in smells if s.rule_id == "SMELL-S002"]
+&gt;           assert len(except_smells) &gt;= 1, "Except_smells must not be empty"
+E           AssertionError: Except_smells must not be empty
+E           assert 0 &gt;= 1
+E            +  where 0 = len([])
+
+tests/ast/test_smells.py:130: AssertionError</failure></testcase><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_god_class" time="0.005" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_many_arguments" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_allowed_numbers_not_flagged" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_enable_rule" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_missing_docstring" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_nonexistent_file" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_file" time="0.003" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_disable_rule" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_long_function" time="0.007" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_syntax_error_handling" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_smell_to_dict" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_method_self_not_counted" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_magic_numbers" time="0.002" /><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_pass_only_except" time="0.002"><failure message="AssertionError: Except_smells must not be empty&#10;assert 0 &gt;= 1&#10; +  where 0 = len([])">self = &lt;tests.ast.test_smells.TestCodeSmellDetector object at 0x7f065a84d4c0&gt;
+
+        def test_detect_pass_only_except(self):
+            """Test detection of pass-only except handlers."""
+            code = """
+    try:
+        risky()
+    except (AssertionError, ValueError, TypeError, RuntimeError):  # noqa: BLE001
+        _ = None
+    """
+            detector = CodeSmellDetector()
+            smells = detector.detect_string(code)
+    
+            except_smells = [s for s in smells if s.rule_id == "SMELL-S002"]
+&gt;           assert len(except_smells) &gt;= 1, "Except_smells must not be empty"
+E           AssertionError: Except_smells must not be empty
+E           assert 0 &gt;= 1
+E            +  where 0 = len([])
+
+tests/ast/test_smells.py:144: AssertionError</failure></testcase><testcase classname="tests.ast.test_smells.TestCodeSmellDetector" name="test_detect_short_name" time="0.002" /><testcase classname="tests.ast.test_graph" name="test_transitive_deps" time="0.002" /><testcase classname="tests.ast.test_graph" name="test_add_node" time="0.002" /><testcase classname="tests.ast.test_graph" name="test_topological_sort_with_cycle" time="0.002" /><testcase classname="tests.ast.test_graph" name="test_complex_cycle" time="0.002" /><testcase classname="tests.ast.test_graph" name="test_self_loop_topological_sort_fails" time="0.002" /><testcase classname="tests.ast.test_graph" name="test_no_false_positives_for_isolated_nodes" time="0.002" /><testcase classname="tests.ast.test_graph" name="test_no_cycles" time="0.002" /><testcase classname="tests.ast.test_graph" name="test_multiple_self_loops" time="0.002" /><testcase classname="tests.ast.test_graph" name="test_simple_cycle" time="0.002" /><testcase classname="tests.ast.test_graph" name="test_self_loop_detected" time="0.002" /><testcase classname="tests.ast.test_graph" name="test_mixed_cycles_and_self_loops" time="0.003" /><testcase classname="tests.ast.test_graph" name="test_topological_sort" time="0.002" /><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_parse_syntax_error_strict" time="0.002"><failure message="libcst._exceptions.ParserSyntaxError: Syntax Error @ 1:1.&#10;parser error: error at 1:12: expected one of ), *, **, NAME&#10;&#10;def broken(:&#10;^">self = &lt;tests.ast.test_parser.TestUniversalParser object at 0x7f065a9d3590&gt;
+
+    def test_parse_syntax_error_strict(self):
+        """Test strict mode raises error for syntax errors."""
+        code = "def broken(:"
+        parser = UniversalParser(strict=True)
+        with pytest.raises(ParseError):
+&gt;           parser.parse_string(code)
+
+tests/ast/test_parser.py:149: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/aries_serpent_core/ast/parser.py:111: in parse_string
+    return self._parse_with_libcst(code, file_path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/aries_serpent_core/ast/parser.py:117: in _parse_with_libcst
+    tree = cst.parse_module(code)
+           ^^^^^^^^^^^^^^^^^^^^^^
+../../../.venv_ci/lib/python3.12/site-packages/libcst/_parser/entrypoints.py:65: in parse_module
+    result = _parse(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+entrypoint = 'file_input', source = 'def broken(:'
+config = PartialParserConfig(), detect_trailing_newline = True
+detect_default_newline = True
+
+    def _parse(
+        entrypoint: str,
+        source: Union[str, bytes],
+        config: PartialParserConfig,
+        *,
+        detect_trailing_newline: bool,
+        detect_default_newline: bool,
+    ) -&gt; CSTNode:
+    
+        encoding, source_str = convert_to_utf8(source, partial=config)
+    
+        from libcst import native
+    
+        if entrypoint == "file_input":
+            parse = partial(native.parse_module, encoding=encoding)
+        elif entrypoint == "stmt_input":
+            parse = native.parse_statement
+        elif entrypoint == "expression_input":
+            parse = native.parse_expression
+        else:
+            raise ValueError(f"Unknown parser entry point: {entrypoint}")
+    
+&gt;       return parse(source_str)
+               ^^^^^^^^^^^^^^^^^
+E       libcst._exceptions.ParserSyntaxError: Syntax Error @ 1:1.
+E       parser error: error at 1:12: expected one of ), *, **, NAME
+E       
+E       def broken(:
+E       ^
+
+../../../.venv_ci/lib/python3.12/site-packages/libcst/_parser/entrypoints.py:47: ParserSyntaxError</failure></testcase><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_fallback_to_ast" time="0.002" /><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_source_location" time="0.002" /><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_parse_with_decorators" time="0.003" /><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_parse_syntax_error" time="0.002"><failure message="libcst._exceptions.ParserSyntaxError: Syntax Error @ 1:1.&#10;parser error: error at 1:12: expected one of ), *, **, NAME&#10;&#10;def broken(:&#10;^">self = &lt;tests.ast.test_parser.TestUniversalParser object at 0x7f065a9d3140&gt;
+
+    def test_parse_syntax_error(self):
+        """Test handling of syntax errors."""
+        code = "def broken(:"
+        parser = UniversalParser()
+&gt;       result = parser.parse_string(code)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/ast/test_parser.py:141: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/aries_serpent_core/ast/parser.py:111: in parse_string
+    return self._parse_with_libcst(code, file_path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/aries_serpent_core/ast/parser.py:117: in _parse_with_libcst
+    tree = cst.parse_module(code)
+           ^^^^^^^^^^^^^^^^^^^^^^
+../../../.venv_ci/lib/python3.12/site-packages/libcst/_parser/entrypoints.py:65: in parse_module
+    result = _parse(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+entrypoint = 'file_input', source = 'def broken(:'
+config = PartialParserConfig(), detect_trailing_newline = True
+detect_default_newline = True
+
+    def _parse(
+        entrypoint: str,
+        source: Union[str, bytes],
+        config: PartialParserConfig,
+        *,
+        detect_trailing_newline: bool,
+        detect_default_newline: bool,
+    ) -&gt; CSTNode:
+    
+        encoding, source_str = convert_to_utf8(source, partial=config)
+    
+        from libcst import native
+    
+        if entrypoint == "file_input":
+            parse = partial(native.parse_module, encoding=encoding)
+        elif entrypoint == "stmt_input":
+            parse = native.parse_statement
+        elif entrypoint == "expression_input":
+            parse = native.parse_expression
+        else:
+            raise ValueError(f"Unknown parser entry point: {entrypoint}")
+    
+&gt;       return parse(source_str)
+               ^^^^^^^^^^^^^^^^^
+E       libcst._exceptions.ParserSyntaxError: Syntax Error @ 1:1.
+E       parser error: error at 1:12: expected one of ), *, **, NAME
+E       
+E       def broken(:
+E       ^
+
+../../../.venv_ci/lib/python3.12/site-packages/libcst/_parser/entrypoints.py:47: ParserSyntaxError</failure></testcase><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_parse_async_function" time="0.003" /><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_parse_file" time="0.003" /><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_parse_nonexistent_file" time="0.002" /><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_parse_nonexistent_file_strict" time="0.002" /><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_parse_simple_function" time="0.003" /><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_parse_with_type_hints" time="0.002" /><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_node_metadata" time="0.002" /><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_parse_class" time="0.004" /><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_parse_imports" time="0.002"><failure message="AssertionError: result must be initialized&#10;assert None is not None">self = &lt;tests.ast.test_parser.TestUniversalParser object at 0x7f065a9d1730&gt;
+
+        def test_parse_imports(self):
+            """Test parsing import statements."""
+            code = """
+            import os
+            from pathlib import Path
+    """
+            parser = UniversalParser(use_libcst=False)  # Use ast for import parsing
+            result = parser.parse_string(code)
+    
+&gt;           assert result is not None, "result must be initialized"
+E           AssertionError: result must be initialized
+E           assert None is not None
+
+tests/ast/test_parser.py:76: AssertionError</failure></testcase><testcase classname="tests.ast.test_parser.TestUniversalParser" name="test_node_id_uniqueness" time="0.003" /><testcase classname="tests.ast.test_parser.TestParseFunction" name="test_parse_string" time="0.002" /><testcase classname="tests.ast.test_parser.TestParseFunction" name="test_parse_path_string" time="0.003" /><testcase classname="tests.ast.test_parser.TestParseFunction" name="test_parse_file" time="0.003" /><testcase classname="tests.ast.test_parallel.TestParallelParser" name="test_thread_safe_node_ids" time="0.013" /><testcase classname="tests.ast.test_parallel.TestParallelParser" name="test_parse_multiple_files" time="0.011" /><testcase classname="tests.ast.test_parallel.TestParallelParser" name="test_progress_callback" time="0.018" /><testcase classname="tests.ast.test_parallel.TestParallelParser" name="test_parse_directory_parallel" time="0.012" /><testcase classname="tests.ast.test_plugins.TestPythonPlugin" name="test_parse_python_code" time="0.009" /><testcase classname="tests.ast.test_plugins.TestPythonPlugin" name="test_plugin_validation" time="0.007" /><testcase classname="tests.ast.test_plugins.TestPythonPlugin" name="test_can_parse_python_file" time="0.003" /><testcase classname="tests.ast.test_plugins.TestPythonPlugin" name="test_plugin_metadata" time="0.003" /><testcase classname="tests.ast.test_plugins.TestPluginLoader" name="test_discover_plugins" time="0.125" /><testcase classname="tests.ast.test_plugins.TestPluginLoader" name="test_get_plugin_for_python_file" time="0.091" /><testcase classname="tests.ast.test_plugins.TestPluginLoader" name="test_get_plugin_by_language" time="0.066" /><testcase classname="tests.ast.test_plugins.TestPluginLoader" name="test_no_plugin_for_unknown_file" time="0.051" /><testcase classname="tests.ast.test_export.TestExportKnowledgeGraphFunction" name="test_export_basic" time="0.001"><error message="failed on setup with &quot;file /home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py, line 329&#10;      def test_export_basic(self, sample_nodes):&#10;E       fixture 'sample_nodes' not found&#10;&gt;       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _default_subprocess_cwd, _ensure_project_cwd, _fix_torch_stubs_for_cli_tests, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_faker, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, api_errors, api_headers, audit_log_path, audit_logger, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, cov, doctest_namespace, event_loop_policy, faker, faker_seed, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, gh_api_base, github_token, hydra_restore_singletons, hydra_sweep_runner, hydra_task_runner, mock_rate_limit_headers, mock_variable_response, mock_workflow_run_response, mocker, module_mocker, monkeypatch, no_cover, org_name, package_mocker, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, repo_name, repo_owner, sample_graph, sample_location, sample_metrics, sample_node, session_mocker, subtests, test_branch_name, test_var_name_base, test_var_name_org, test_webhook_url, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;/home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py:329&quot;">file /home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py, line 329
+      def test_export_basic(self, sample_nodes):
+E       fixture 'sample_nodes' not found
+&gt;       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _default_subprocess_cwd, _ensure_project_cwd, _fix_torch_stubs_for_cli_tests, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_faker, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, api_errors, api_headers, audit_log_path, audit_logger, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, cov, doctest_namespace, event_loop_policy, faker, faker_seed, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, gh_api_base, github_token, hydra_restore_singletons, hydra_sweep_runner, hydra_task_runner, mock_rate_limit_headers, mock_variable_response, mock_workflow_run_response, mocker, module_mocker, monkeypatch, no_cover, org_name, package_mocker, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, repo_name, repo_owner, sample_graph, sample_location, sample_metrics, sample_node, session_mocker, subtests, test_branch_name, test_var_name_base, test_var_name_org, test_webhook_url, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py:329</error></testcase><testcase classname="tests.ast.test_export.TestExportKnowledgeGraphFunction" name="test_export_different_formats" time="0.001"><error message="failed on setup with &quot;file /home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py, line 363&#10;      def test_export_different_formats(self, sample_nodes):&#10;E       fixture 'sample_nodes' not found&#10;&gt;       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _default_subprocess_cwd, _ensure_project_cwd, _fix_torch_stubs_for_cli_tests, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_faker, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, api_errors, api_headers, audit_log_path, audit_logger, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, cov, doctest_namespace, event_loop_policy, faker, faker_seed, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, gh_api_base, github_token, hydra_restore_singletons, hydra_sweep_runner, hydra_task_runner, mock_rate_limit_headers, mock_variable_response, mock_workflow_run_response, mocker, module_mocker, monkeypatch, no_cover, org_name, package_mocker, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, repo_name, repo_owner, sample_graph, sample_location, sample_metrics, sample_node, session_mocker, subtests, test_branch_name, test_var_name_base, test_var_name_org, test_webhook_url, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;/home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py:363&quot;">file /home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py, line 363
+      def test_export_different_formats(self, sample_nodes):
+E       fixture 'sample_nodes' not found
+&gt;       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _default_subprocess_cwd, _ensure_project_cwd, _fix_torch_stubs_for_cli_tests, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_faker, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, api_errors, api_headers, audit_log_path, audit_logger, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, cov, doctest_namespace, event_loop_policy, faker, faker_seed, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, gh_api_base, github_token, hydra_restore_singletons, hydra_sweep_runner, hydra_task_runner, mock_rate_limit_headers, mock_variable_response, mock_workflow_run_response, mocker, module_mocker, monkeypatch, no_cover, org_name, package_mocker, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, repo_name, repo_owner, sample_graph, sample_location, sample_metrics, sample_node, session_mocker, subtests, test_branch_name, test_var_name_base, test_var_name_org, test_webhook_url, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py:363</error></testcase><testcase classname="tests.ast.test_export.TestExportKnowledgeGraphFunction" name="test_export_with_graph_and_metrics" time="0.001"><error message="failed on setup with &quot;file /home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py, line 336&#10;      def test_export_with_graph_and_metrics(self, sample_nodes, sample_graph, sample_metrics):&#10;E       fixture 'sample_nodes' not found&#10;&gt;       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _default_subprocess_cwd, _ensure_project_cwd, _fix_torch_stubs_for_cli_tests, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_faker, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, api_errors, api_headers, audit_log_path, audit_logger, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, cov, doctest_namespace, event_loop_policy, faker, faker_seed, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, gh_api_base, github_token, hydra_restore_singletons, hydra_sweep_runner, hydra_task_runner, mock_rate_limit_headers, mock_variable_response, mock_workflow_run_response, mocker, module_mocker, monkeypatch, no_cover, org_name, package_mocker, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, repo_name, repo_owner, sample_graph, sample_location, sample_metrics, sample_node, session_mocker, subtests, test_branch_name, test_var_name_base, test_var_name_org, test_webhook_url, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;/home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py:336&quot;">file /home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py, line 336
+      def test_export_with_graph_and_metrics(self, sample_nodes, sample_graph, sample_metrics):
+E       fixture 'sample_nodes' not found
+&gt;       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _default_subprocess_cwd, _ensure_project_cwd, _fix_torch_stubs_for_cli_tests, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_faker, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, api_errors, api_headers, audit_log_path, audit_logger, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, cov, doctest_namespace, event_loop_policy, faker, faker_seed, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, gh_api_base, github_token, hydra_restore_singletons, hydra_sweep_runner, hydra_task_runner, mock_rate_limit_headers, mock_variable_response, mock_workflow_run_response, mocker, module_mocker, monkeypatch, no_cover, org_name, package_mocker, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, repo_name, repo_owner, sample_graph, sample_location, sample_metrics, sample_node, session_mocker, subtests, test_branch_name, test_var_name_base, test_var_name_org, test_webhook_url, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py:336</error></testcase><testcase classname="tests.ast.test_export.TestExportKnowledgeGraphFunction" name="test_export_to_file" time="0.001"><error message="failed on setup with &quot;file /home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py, line 350&#10;      def test_export_to_file(self, sample_nodes, tmp_path):&#10;E       fixture 'sample_nodes' not found&#10;&gt;       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _default_subprocess_cwd, _ensure_project_cwd, _fix_torch_stubs_for_cli_tests, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_faker, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, api_errors, api_headers, audit_log_path, audit_logger, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, cov, doctest_namespace, event_loop_policy, faker, faker_seed, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, gh_api_base, github_token, hydra_restore_singletons, hydra_sweep_runner, hydra_task_runner, mock_rate_limit_headers, mock_variable_response, mock_workflow_run_response, mocker, module_mocker, monkeypatch, no_cover, org_name, package_mocker, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, repo_name, repo_owner, sample_graph, sample_location, sample_metrics, sample_node, session_mocker, subtests, test_branch_name, test_var_name_base, test_var_name_org, test_webhook_url, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;/home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py:350&quot;">file /home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py, line 350
+      def test_export_to_file(self, sample_nodes, tmp_path):
+E       fixture 'sample_nodes' not found
+&gt;       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _default_subprocess_cwd, _ensure_project_cwd, _fix_torch_stubs_for_cli_tests, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_faker, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, api_errors, api_headers, audit_log_path, audit_logger, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, cov, doctest_namespace, event_loop_policy, faker, faker_seed, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, gh_api_base, github_token, hydra_restore_singletons, hydra_sweep_runner, hydra_task_runner, mock_rate_limit_headers, mock_variable_response, mock_workflow_run_response, mocker, module_mocker, monkeypatch, no_cover, org_name, package_mocker, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, repo_name, repo_owner, sample_graph, sample_location, sample_metrics, sample_node, session_mocker, subtests, test_branch_name, test_var_name_base, test_var_name_org, test_webhook_url, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree/tests/ast/test_export.py:350</error></testcase><testcase classname="tests.ast.test_language_registry" name="test_unsupported_language" time="0.002" /><testcase classname="tests.ast.test_language_registry" name="test_is_supported" time="0.002" /><testcase classname="tests.ast.test_language_registry" name="test_clear_cache" time="0.004" /><testcase classname="tests.ast.test_language_registry" name="test_supported_languages" time="0.002" /></testsuite></testsuites>

@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="35.059" timestamp="2026-10-22T23:13:01.220232+00:00" hostname="runnervm8k3b6"><testcase classname="tests.test_checkpoint_system_meta" name="test_checkpoint_writes_system_meta" time="3.618" /></testsuite></testsuites>

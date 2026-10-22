@@ -1,0 +1,12 @@
+{
+  "interpreter": "/home/runner/work/_codex_/_codex_/.venv_ci/bin/python",
+  "python": "3.12.10 (main, Apr  8 2025, 22:38:13) [GCC 13.3.0]",
+  "cwd": "/home/runner/work/_codex_/_codex_",
+  "commit": "f507214f5d560762384eda29166d97b420d95948",
+  "dirty_status": " M .codex/errors.ndjson\n M runs/default/provenance/environment.json\n M runs/default/provenance/environment.ndjson\n M runs/default/provenance/pip-freeze.txt\n?? .codex/logs/session_0d79c23d-fc57-49b0-8ec3-492cbd675a81.jsonl\n?? .codex/logs/session_37cb13cd-7370-47ac-a6f1-ad506c1a3af6.jsonl\n?? .codex/logs/session_93143dab-0786-45ef-87d4-8861e24878d9.jsonl\n?? .codex/logs/session_a89524db-8a9e-4eff-abb9-d27eb9dcff83.jsonl\n?? .codex/logs/session_d5ea7fa0-ea13-4b4a-8122-a0c9f2a0dca8.jsonl\n?? .codex/logs/session_de387e23-c376-482c-9a77-91b871204a35.jsonl\n?? .codex/rbac_audit.jsonl\n?? .codex/reports/errors_2026-10-22.md\n?? .codex/workflows/\n?? audit_artifacts/capabilities.json\n?? audit_artifacts/capabilities_scored.json\n?? audit_artifacts/facets.json\n?? audit_artifacts/file_index.json\n?? recovery/bfe2456b/validation/base-run-metadata.json\n?? recovery/bfe2456b/validation/junit-snapshot.xml\n?? recovery/bfe2456b/validation/logs/base-collection.exit\n?? recovery/bfe2456b/validation/logs/base-full-pip-freeze.txt\n?? recovery/bfe2456b/validation/logs/base-full-python.txt\n?? recovery/bfe2456b/validation/logs/snapshot-collection-pip-freeze.txt\n?? recovery/bfe2456b/validation/logs/snapshot-collection-python.txt\n?? recovery/bfe2456b/validation/logs/snapshot-collection.exit\n?? recovery/bfe2456b/validation/logs/snapshot-full-interruption.txt\n?? recovery/bfe2456b/validation/logs/snapshot-full-pip-freeze.txt\n?? recovery/bfe2456b/validation/logs/snapshot-full-python.txt\n?? recovery/bfe2456b/validation/logs/snapshot-full.exit\n",
+  "started": "2026-10-22T22:59:13.666228+00:00",
+  "command": "python -m pytest tests/ --collect-only -q",
+  "exit": 0,
+  "timeout": false,
+  "seconds": 40.628
+}

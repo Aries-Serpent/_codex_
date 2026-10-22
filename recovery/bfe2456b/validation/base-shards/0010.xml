@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="126" time="36.233" timestamp="2026-10-22T23:04:29.250534+00:00" hostname="runnervm8k3b6"><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_parse_with_comments" time="0.006" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_extract_metadata_mapping" time="0.002" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_find_nodes_empty_adapter" time="0.002" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_get_keys_wrong_type" time="0.002" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_yaml_with_comments" time="0.002" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_complex_nested_structure" time="0.003" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_parse_simple_mapping" time="0.002" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_init" time="0.002" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_extract_metadata_sequence" time="0.003" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_extract_metadata_scalar" time="0.003" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_find_nodes_by_type" time="0.003" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_parent_child_relationships" time="0.003" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_get_value_at_path_not_found" time="0.003" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_parse_mixed_types" time="0.003" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_traverse_empty_adapter" time="0.002" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_metadata_extraction" time="0.003" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_parse_nested_mapping" time="0.003" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_invalid_yaml" time="0.003" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_parse_empty_document" time="0.002" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_get_value_at_path" time="0.003" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_traverse" time="0.003" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_get_keys_empty" time="0.002" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_parse_sequence" time="0.003" /><testcase classname="tests.ast_adapters.test_yaml_adapter.TestYAMLASTAdapter" name="test_get_keys" time="0.003" /><testcase classname="tests.ast_adapters.test_python_adapter" name="test_python_adapter_extract_docstring" time="0.004" /><testcase classname="tests.ast_adapters.test_python_adapter" name="test_python_adapter_parse_invalid_syntax" time="0.002" /><testcase classname="tests.ast_adapters.test_python_adapter" name="test_python_adapter_real_file" time="0.016" /><testcase classname="tests.ast_adapters.test_python_adapter" name="test_python_adapter_parse_assignments" time="0.003" /><testcase classname="tests.ast_adapters.test_python_adapter" name="test_python_adapter_traverse" time="0.003" /><testcase classname="tests.ast_adapters.test_python_adapter" name="test_python_adapter_parse_simple_function" time="0.002" /><testcase classname="tests.ast_adapters.test_python_adapter" name="test_python_adapter_get_stats" time="0.003" /><testcase classname="tests.ast_adapters.test_python_adapter" name="test_python_adapter_parse_with_type_hints" time="0.003" /><testcase classname="tests.ast_adapters.test_python_adapter" name="test_python_adapter_initialization" time="0.002" /><testcase classname="tests.ast_adapters.test_python_adapter" name="test_python_adapter_parse_imports" time="0.002"><failure message="SyntaxError: Python syntax error: Syntax Error @ 3:5.&#10;parser error: error at 2:4: expected one of (, *, +, -, ..., AWAIT, EOF, False, NAME, NUMBER, None, True, [, break, continue, lambda, match, not, pass, ~&#10;&#10;    import sys&#10;    ^">self = &lt;codex.ast_adapters.python_adapter.PythonASTAdapter object at 0x7fcbe3699f10&gt;
+source_code = '\n    import os\n    import sys\n    from pathlib import Path\n    from typing import Dict, List\n    from codex.logging.structured_logger import logger\n'
+
+    def parse(self, source_code: str) -&gt; StandardizedASTNode:
+        """
+        Parse Python source code using libcst.
+    
+        Args:
+            source_code: Python source code string
+    
+        Returns:
+            Root node of standardized AST
+    
+        Raises:
+            SyntaxError: If Python code has syntax errors
+        """
+        try:
+&gt;           self._cst_tree = cst.parse_module(source_code)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/aries_serpent_core/ast_adapters/python_adapter.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../.venv_ci/lib/python3.12/site-packages/libcst/_parser/entrypoints.py:65: in parse_module
+    result = _parse(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+entrypoint = 'file_input'
+source = '\n    import os\n    import sys\n    from pathlib import Path\n    from typing import Dict, List\n    from codex.logging.structured_logger import logger\n'
+config = PartialParserConfig(), detect_trailing_newline = True
+detect_default_newline = True
+
+    def _parse(
+        entrypoint: str,
+        source: Union[str, bytes],
+        config: PartialParserConfig,
+        *,
+        detect_trailing_newline: bool,
+        detect_default_newline: bool,
+    ) -&gt; CSTNode:
+    
+        encoding, source_str = convert_to_utf8(source, partial=config)
+    
+        from libcst import native
+    
+        if entrypoint == "file_input":
+            parse = partial(native.parse_module, encoding=encoding)
+        elif entrypoint == "stmt_input":
+            parse = native.parse_statement
+        elif entrypoint == "expression_input":
+            parse = native.parse_expression
+        else:
+            raise ValueError(f"Unknown parser entry point: {entrypoint}")
+    
+&gt;       return parse(source_str)
+               ^^^^^^^^^^^^^^^^^
+E       libcst._exceptions.ParserSyntaxError: Syntax Error @ 3:5.
+E       parser error: error at 2:4: expected one of (, *, +, -, ..., AWAIT, EOF, False, NAME, NUMBER, None, True, [, break, continue, lambda, match, not, pass, ~
+E       
+E           import sys
+E           ^
+
+../../../.venv_ci/lib/python3.12/site-packages/libcst/_parser/entrypoints.py:47: ParserSyntaxError
+
+The above exception was the direct cause of the following exception:
+
+    def test_python_adapter_parse_imports():
+        """Test parsing import statements."""
+        source = """
+        import os
+        import sys
+        from pathlib import Path
+        from typing import Dict, List
+        from codex.logging.structured_logger import logger
+    """
+    
+        adapter = PythonASTAdapter()
+&gt;       adapter.parse(source)
+
+tests/ast_adapters/test_python_adapter.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;codex.ast_adapters.python_adapter.PythonASTAdapter object at 0x7fcbe3699f10&gt;
+source_code = '\n    import os\n    import sys\n    from pathlib import Path\n    from typing import Dict, List\n    from codex.logging.structured_logger import logger\n'
+
+    def parse(self, source_code: str) -&gt; StandardizedASTNode:
+        """
+        Parse Python source code using libcst.
+    
+        Args:
+            source_code: Python source code string
+    
+        Returns:
+            Root node of standardized AST
+    
+        Raises:
+            SyntaxError: If Python code has syntax errors
+        """
+        try:
+            self._cst_tree = cst.parse_module(source_code)
+        except cst.ParserSyntaxError as e:
+&gt;           raise SyntaxError(f"Python syntax error: {e}") from e
+E           SyntaxError: Python syntax error: Syntax Error @ 3:5.
+E           parser error: error at 2:4: expected one of (, *, +, -, ..., AWAIT, EOF, False, NAME, NUMBER, None, True, [, break, continue, lambda, match, not, pass, ~
+E           
+E               import sys
+E               ^
+
+src/aries_serpent_core/ast_adapters/python_adapter.py:63: SyntaxError</failure></testcase><testcase classname="tests.ast_adapters.test_python_adapter" name="test_python_adapter_parse_with_decorators" time="0.002" /><testcase classname="tests.ast_adapters.test_python_adapter" name="test_python_adapter_extract_class_bases" time="0.002" /><testcase classname="tests.ast_adapters.test_python_adapter" name="test_python_adapter_parse_class" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_extract_metadata" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_init" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_array_indexing_in_path" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_parse_mixed_types" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_parse_simple_object" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_parse_invalid_json" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_deeply_nested_json" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_get_stats" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_unicode_and_escapes" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_parse_empty_array" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_parse_nested_object" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_extract_metadata_array" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_parse_with_file_path" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_parse_nested_arrays" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_parse_array" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_get_value_at_path_simple" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_traverse" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_extract_metadata_primitive" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_get_value_at_path_nested" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_complex_mixed_structure" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_large_array" time="0.020" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_get_value_at_path_not_found" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_special_json_values" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_parse_empty_object" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_find_nodes_by_type" time="0.002" /><testcase classname="tests.ast_adapters.test_json_adapter.TestJSONASTAdapter" name="test_path_on_empty_adapter" time="0.002" /><testcase classname="tests.ast_adapters.test_integration.TestCrossAdapterIntegration" name="test_yaml_and_json_similar_structure" time="0.002" /><testcase classname="tests.ast_adapters.test_integration.TestCrossAdapterIntegration" name="test_all_adapters_support_traverse" time="0.002" /><testcase classname="tests.ast_adapters.test_integration.TestCrossAdapterIntegration" name="test_path_based_navigation_consistency" time="0.002" /><testcase classname="tests.ast_adapters.test_integration.TestCrossAdapterIntegration" name="test_all_adapters_produce_standardized_nodes" time="0.002" /><testcase classname="tests.ast_adapters.test_integration.TestCrossAdapterIntegration" name="test_all_adapters_support_get_stats" time="0.002" /><testcase classname="tests.ast_adapters.test_integration.TestCrossAdapterIntegration" name="test_all_adapters_support_find_nodes_by_type" time="0.002" /><testcase classname="tests.ast_adapters.test_integration.TestRealWorldUsage" name="test_parse_json_api_response" time="0.002" /><testcase classname="tests.ast_adapters.test_integration.TestRealWorldUsage" name="test_parse_yaml_config_file" time="0.003" /><testcase classname="tests.ast_adapters.test_integration.TestRealWorldUsage" name="test_error_handling_across_adapters" time="0.002" /><testcase classname="tests.ast_adapters.test_integration.TestRealWorldUsage" name="test_parse_python_file_with_docstrings" time="0.002" /><testcase classname="tests.ast_adapters.test_integration.TestPerformanceBenchmarks" name="test_python_adapter_performance" time="0.002" /><testcase classname="tests.ast_adapters.test_integration.TestPerformanceBenchmarks" name="test_yaml_adapter_performance" time="0.003" /><testcase classname="tests.ast_adapters.test_integration.TestPerformanceBenchmarks" name="test_json_adapter_performance" time="0.002" /><testcase classname="tests.ast_adapters.test_integration.TestPerformanceBenchmarks" name="test_large_json_parsing" time="0.023" /><testcase classname="tests.ast_adapters.test_performance.TestMemoryEfficiency" name="test_sql_memory_efficient" time="0.351" /><testcase classname="tests.ast_adapters.test_performance.TestMemoryEfficiency" name="test_json_memory_efficient" time="0.017" /><testcase classname="tests.ast_adapters.test_performance.TestMemoryEfficiency" name="test_python_memory_efficient" time="0.043" /><testcase classname="tests.ast_adapters.test_performance.TestMemoryEfficiency" name="test_yaml_memory_efficient" time="0.072" /><testcase classname="tests.ast_adapters.test_performance.TestSQLPerformance" name="test_complex_sql_queries" time="0.171" /><testcase classname="tests.ast_adapters.test_performance.TestSQLPerformance" name="test_large_sql_schema" time="0.138" /><testcase classname="tests.ast_adapters.test_performance.TestJSONPerformance" name="test_deeply_nested_json" time="0.002" /><testcase classname="tests.ast_adapters.test_performance.TestJSONPerformance" name="test_large_json_array" time="1.057" /><testcase classname="tests.ast_adapters.test_performance.TestPythonPerformance" name="test_deeply_nested_python" time="0.004" /><testcase classname="tests.ast_adapters.test_performance.TestPythonPerformance" name="test_large_python_file" time="0.118" /><testcase classname="tests.ast_adapters.test_performance.TestYAMLPerformance" name="test_deeply_nested_yaml" time="0.004" /><testcase classname="tests.ast_adapters.test_performance.TestYAMLPerformance" name="test_large_yaml_file" time="0.088" /><testcase classname="tests.ast_adapters.test_performance.TestConcurrentParsing" name="test_multiple_adapters_simultaneously" time="0.003" /><testcase classname="tests.ast_adapters.test_base_adapter" name="test_standardized_ast_node_with_parent" time="0.002" /><testcase classname="tests.ast_adapters.test_base_adapter" name="test_standardized_ast_node_full_name" time="0.002" /><testcase classname="tests.ast_adapters.test_base_adapter" name="test_base_adapter_traverse" time="0.001" /><testcase classname="tests.ast_adapters.test_base_adapter" name="test_base_adapter_generate_node_id" time="0.001" /><testcase classname="tests.ast_adapters.test_base_adapter" name="test_standardized_ast_node_creation" time="0.001" /><testcase classname="tests.ast_adapters.test_base_adapter" name="test_standardized_ast_node_to_dict" time="0.002" /><testcase classname="tests.ast_adapters.test_base_adapter" name="test_base_adapter_parse" time="0.002" /><testcase classname="tests.ast_adapters.test_base_adapter" name="test_base_adapter_get_stats" time="0.002" /><testcase classname="tests.ast_adapters.test_base_adapter" name="test_base_adapter_initialization" time="0.001" /><testcase classname="tests.ast_adapters.test_base_adapter" name="test_base_adapter_find_nodes_by_type" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_get_tables" time="0.004" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_init" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_select_multiple_tables" time="0.003" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_complex_select" time="0.005" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_alter_table" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_large_query_performance" time="0.013" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_insert" time="0.003" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_find_nodes_by_type" time="0.003" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_whitespace_only" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_extract_metadata_statement" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_get_stats" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_case_insensitive" time="0.003" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_update" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_select_with_where" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_select_simple" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_create_index" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_empty_sql" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_multiple_statements" time="0.003" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_traverse" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_select_with_join" time="0.004" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_delete" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_get_columns" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_drop_table" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_with_file_path" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_extract_metadata_document" time="0.002" /><testcase classname="tests.ast_adapters.test_sql_adapter.TestSQLASTAdapter" name="test_parse_create_table" time="0.004" /></testsuite></testsuites>

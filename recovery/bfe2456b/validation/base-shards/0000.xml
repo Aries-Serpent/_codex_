@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="35.927" timestamp="2026-10-22T23:00:57.088542+00:00" hostname="runnervm8k3b6"><testcase classname="tests.addons.test_metrics_collector_mlflow" name="test_metrics_collector_enforces_local_mlflow" time="4.745" /></testsuite></testsuites>

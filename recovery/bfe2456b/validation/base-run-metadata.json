@@ -1,0 +1,19 @@
+{
+  "interpreter": "/home/runner/work/_codex_/_codex_/.venv_ci/bin/python",
+  "python": "3.12.10 (main, Apr  8 2025, 22:38:13) [GCC 13.3.0]",
+  "base_commit": "71613ee000808ab758cc2f8ddb07a05c5101f731",
+  "cwd": "/home/runner/work/_codex_/_codex_/recovery/bfe2456b/base-worktree",
+  "started": "2026-10-22T22:42:55.132784+00:00",
+  "collection": {
+    "command": "python -m pytest tests/ --collect-only -q",
+    "exit": 2,
+    "timeout": false,
+    "seconds": 426.216
+  },
+  "full": {
+    "command": "python -m pytest tests/ --cov=src --junitxml=recovery/bfe2456b/validation/junit-base.xml -q",
+    "exit": 124,
+    "timeout": true,
+    "seconds": 600.064
+  }
+}
