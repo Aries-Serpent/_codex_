@@ -1,0 +1,10 @@
+{
+  "scope": "snapshot",
+  "tree_commit": "053409ad98ff3dc40243d1e132a1139e83ffaef7",
+  "command": "/tmp/pypi-venv/bin/python -m ruff check .",
+  "status": "finished",
+  "log": "/tmp/codex-nonworkflow-validation-f17775fa/snapshot-ruff.log",
+  "pid": 2712,
+  "exit_status": 0,
+  "elapsed_seconds": 0.41
+}

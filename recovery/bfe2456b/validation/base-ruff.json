@@ -1,0 +1,10 @@
+{
+  "scope": "base",
+  "tree_commit": "71613ee000808ab758cc2f8ddb07a05c5101f731",
+  "command": "/tmp/pypi-venv/bin/python -m ruff check .",
+  "status": "finished",
+  "log": "/tmp/codex-nonworkflow-validation-f17775fa/base-ruff.log",
+  "pid": 2689,
+  "exit_status": 1,
+  "elapsed_seconds": 0.5
+}
