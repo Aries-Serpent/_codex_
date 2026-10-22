@@ -4,3 +4,9 @@
 {"event": "429_hit", "session": "S923", "hit_count": 2, "reset_minutes": 365, "cooldown_minutes": 380, "ts": "2026-09-23T18:33:07.403789+00:00"}
 {"event": "cooldown_set_429", "cooldown_until_utc": "2026-09-24T00:53Z", "minutes": 380, "ts": "2026-09-23T18:33:09.165179+00:00"}
 {"event": "429_hit", "session": "rl-202609231833", "hit_count": 3, "reset_minutes": 365, "cooldown_minutes": 380, "ts": "2026-09-23T18:33:09.316931+00:00"}
+{"event": "cooldown_set_429", "cooldown_until_utc": "2026-10-21T11:28Z", "minutes": 380, "ts": "2026-10-21T05:08:47.015403+00:00"}
+{"event": "429_hit", "session": "rl-202610210508", "hit_count": 4, "reset_minutes": 365, "cooldown_minutes": 380, "ts": "2026-10-21T05:08:47.436372+00:00"}
+{"event": "cooldown_set_429", "cooldown_until_utc": "2026-10-21T11:28Z", "minutes": 380, "ts": "2026-10-21T05:08:50.014444+00:00"}
+{"event": "429_hit", "session": "rl-202610210508", "hit_count": 5, "reset_minutes": 365, "cooldown_minutes": 380, "ts": "2026-10-21T05:08:50.490666+00:00"}
+{"event": "cooldown_set_429", "cooldown_until_utc": "2026-10-21T11:28Z", "minutes": 380, "ts": "2026-10-21T05:08:52.881880+00:00"}
+{"event": "429_hit", "session": "S923", "hit_count": 6, "reset_minutes": 365, "cooldown_minutes": 380, "ts": "2026-10-21T05:08:53.351963+00:00"}

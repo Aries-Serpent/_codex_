@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5706 CI rescue findings (2026-10-21)
+- Removed the reported trailing whitespace and converted the performance instrumentation command to a YAML block scalar without changing its decoded contents; strict yamllint passes.
+- Refreshed the current-session accountability records and PDA entry after Cognitive Pre-flight reported missing REQ-4 evidence; the latest completed no-deferral enforcement run passed.
+
 ### Changed — Dependabot consolidation PR preparation (2026-10-16)
 - Prepared the consolidated Cargo and npm dependency updates for review on `copilot/consolidate-dependabot-prs`; the existing DOMPurify 3.4.17 lock entry matches Dependabot PR #5699. The source PR is linked for closure when the consolidated PR merges.
 - Verified npm audits report zero vulnerabilities in both workspaces, cognitive_app tests and build pass, and the documented fast validation passes.

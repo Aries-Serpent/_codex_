@@ -396,7 +396,10 @@ jobs:
         python3 scripts/ci/require_wec_auto_approve.py --pr-number "$TARGET_PR" --repo "$REPO"
     - name: Approve workflow run(s)
       id: approve
-      if: ${{ needs.evaluate-approval.outputs.should_proceed == 'true' && needs.evaluate-approval.outputs.approval_decision == 'APPROVE' && steps.label_check.outcome == 'success' }}
+      if: >-
+        ${{ needs.evaluate-approval.outputs.should_proceed == 'true' &&
+        needs.evaluate-approval.outputs.approval_decision == 'APPROVE' &&
+        steps.label_check.outcome == 'success' }}
       env:
         GH_TOKEN: ${{ steps.token.outputs.token }}
         RUN_ID: ${{ github.event.inputs.target_run_id }}
@@ -456,8 +459,13 @@ jobs:
 
         cat >> .codex/approvals.jsonl << EOF
 
-        {"approval_id":"$APPROVAL_ID","timestamp":"$(date -u +''%Y-%m-%dT%H:%M:%S.%3NZ'')","run_id":"${{
-        github.event.inputs.target_run_id }}","pr_number":"$TARGET_PR","approval_source":"$APPROVAL_SOURCE","rule_matched":"$RULE_MATCHED","confidence":$CONFIDENCE}
+        {"approval_id":"$APPROVAL_ID",
+        "timestamp":"$(date -u +''%Y-%m-%dT%H:%M:%S.%3NZ'')",
+        "run_id":"${{ github.event.inputs.target_run_id }}",
+        "pr_number":"$TARGET_PR",
+        "approval_source":"$APPROVAL_SOURCE",
+        "rule_matched":"$RULE_MATCHED",
+        "confidence":$CONFIDENCE}
 
         EOF
 
@@ -536,7 +544,11 @@ jobs:
 
         cat >> .codex/metrics/hourly.jsonl << EOF
 
-        {"timestamp":"$(date -u +''%Y-%m-%dT%H:%M:%S.%3NZ'')","approval_source":"$APPROVAL_SOURCE","rule_matched":"$RULE_MATCHED","decision":"$DECISION","confidence":$CONFIDENCE}
+        {"timestamp":"$(date -u +''%Y-%m-%dT%H:%M:%S.%3NZ'')",
+        "approval_source":"$APPROVAL_SOURCE",
+        "rule_matched":"$RULE_MATCHED",
+        "decision":"$DECISION",
+        "confidence":$CONFIDENCE}
 
         EOF
 
@@ -564,7 +576,7 @@ jobs:
     steps:
     - name: Generate Cognitive Brain App token
       id: app-token
-      uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1
+      uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510
       continue-on-error: true
       with:
         app-id: ${{ secrets._GITHUB_APP_ID }}

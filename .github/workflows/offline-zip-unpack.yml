@@ -84,7 +84,19 @@ jobs:
                 ;;
             esac
 
-            ZIP_SOURCE="$(python -c 'import os, sys; from pathlib import Path; root = Path(sys.argv[1]).resolve(); relative = Path(sys.argv[2]); path = (root / relative).resolve(); sys.exit(2) if os.path.commonpath([str(root), str(path)]) != str(root) else None; print(path)' "$WORKSPACE_ROOT" "$ZIP_PATH")" || {
+            ZIP_SOURCE="$(python - "$WORKSPACE_ROOT" "$ZIP_PATH" <<'PY'
+            import os
+            import sys
+            from pathlib import Path
+
+            root = Path(sys.argv[1]).resolve()
+            relative = Path(sys.argv[2])
+            path = (root / relative).resolve()
+            if os.path.commonpath([str(root), str(path)]) != str(root):
+                raise SystemExit(2)
+            print(path)
+            PY
+            )" || {
               echo "ZIP path escapes the repository workspace: ${ZIP_PATH}" >&2
               exit 1
             }
@@ -180,7 +192,7 @@ jobs:
           PY
 
       - name: Upload extracted archive contents
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: ${{ inputs.artifact_name || steps.resolve.outputs.archive_stem }}
           path: ${{ inputs.output_dir }}/${{ steps.resolve.outputs.archive_stem }}

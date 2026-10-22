@@ -85,7 +85,9 @@ class ContextData:
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
-        return asdict(self)
+        data = asdict(self)
+        data["degradation_level"] = self.degradation_level.value
+        return data
 
 
 @dataclass
@@ -393,38 +395,57 @@ class OODAExecutor:
         """Phase 2: Inject context and assess situation (target < 50ms)."""
         start_time = datetime.now()
 
-        # Determine degradation level and get context
+        # Determine degradation level from what actually loaded, tracking
+        # each context source independently so a partial failure degrades
+        # to the correct level instead of collapsing to no-context.
         context = ContextData()
-        degradation_level = DegradationLevel.FULL_CONTEXT
+        has_patterns = False
+        has_sessions = False
 
-        try:
-            # Try to get context from all sources
-            if self.context_provider:
+        if self.context_provider is None:
+            degradation_level = DegradationLevel.NO_CONTEXT
+        else:
+            try:
                 patterns = await asyncio.wait_for(
                     self.context_provider.get_patterns(observation, top_k=5),
                     timeout=0.03
                 )
-                context.patterns = patterns
+                context.patterns = patterns or []
+                has_patterns = len(context.patterns) > 0
+            except asyncio.TimeoutError:
+                logger.warning("Pattern context injection timed out")
+            except Exception as e:
+                logger.warning(f"Pattern context injection failed: {e}")
 
+            try:
                 sessions = await asyncio.wait_for(
                     self.context_provider.get_sessions(observation.task.get("type", ""), limit=3),
                     timeout=0.03
                 )
-                context.sessions = sessions
+                context.sessions = sessions or []
+                has_sessions = len(context.sessions) > 0
+            except asyncio.TimeoutError:
+                logger.warning("Session context injection timed out")
+            except Exception as e:
+                logger.warning(f"Session context injection failed: {e}")
 
+            try:
                 external = await asyncio.wait_for(
                     self.context_provider.get_external_context(),
                     timeout=0.02
                 )
-                context.external = external
+                context.external = external or {}
+            except asyncio.TimeoutError:
+                logger.warning("External context injection timed out")
+            except Exception as e:
+                logger.warning(f"External context injection failed: {e}")
+
+            if has_patterns and has_sessions:
+                degradation_level = DegradationLevel.FULL_CONTEXT
+            elif has_patterns:
+                degradation_level = DegradationLevel.PATTERN_ONLY
             else:
                 degradation_level = DegradationLevel.NO_CONTEXT
-        except asyncio.TimeoutError:
-            logger.warning("Context injection timeout - degrading to pattern-only mode")
-            degradation_level = DegradationLevel.PATTERN_ONLY
-        except Exception as e:
-            logger.warning(f"Context injection failed: {e} - degrading to no-context mode")
-            degradation_level = DegradationLevel.NO_CONTEXT
 
         context.degradation_level = degradation_level
 
