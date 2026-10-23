@@ -1,0 +1,176 @@
+F...FF...F.......                                                        [100%]
+=================================== FAILURES ===================================
+____________ TestMainFunction.test_main_uses_environment_variables _____________
+
+self = <tests.agents.test_autonomous_runner.TestMainFunction object at 0x7f5900399e20>
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-12/test_main_uses_environment_var0')
+
+    @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    async def test_main_uses_environment_variables(self, tmp_path):
+        """Test that main reads from environment variables."""
+        try:
+            import os
+    
+            from agents.autonomous_runner import main
+    
+            with (
+                patch.dict(
+                    os.environ,
+                    {
+                        "AGENT_TASK": "Custom test task",
+                        "MODEL_PREFERENCE": "gpt-4",
+                    },
+                ),
+                patch("src.agents.autonomous_runner.AutonomousAgent") as mock_agent,
+            ):
+                mock_instance = MagicMock()
+                mock_instance.execute = AsyncMock(
+                    return_value=MagicMock(
+                        success=True,
+                        response="Test response",
+                    )
+                )
+                mock_instance.client.get_usage_summary.return_value = {}
+                mock_agent.return_value = mock_instance
+    
+                with patch("builtins.print"):
+                    await main()
+    
+>               mock_instance.execute.assert_called_once()
+E               AssertionError: Expected 'execute' to have been called once. Called 0 times.
+
+tests/agents/test_autonomous_runner.py:422: AssertionError
+----------------------------- Captured stdout call -----------------------------
+2026-10-23 04:10:37,399 - codex.clients.openai_client - WARNING - OPENAI_API_KEY or GITHUB_CODEX not found. Agent will operate in dry-run mode.
+------------------------------ Captured log call -------------------------------
+WARNING  codex.clients.openai_client:openai_client.py:166 OPENAI_API_KEY or GITHUB_CODEX not found. Agent will operate in dry-run mode.
+__________________ TestEdgeCases.test_execute_with_auto_model __________________
+
+self = <tests.agents.test_autonomous_runner.TestEdgeCases object at 0x7f590039ae10>
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-12/test_execute_with_auto_model0')
+
+    @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    async def test_execute_with_auto_model(self, tmp_path):
+        """Test execution with auto model selection."""
+        try:
+            from agents.autonomous_runner import AutonomousAgent
+    
+            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+                mock_client_instance = MagicMock()
+                mock_client_instance.select_model.return_value = "gpt-4"
+                mock_client_instance._dry_run = True
+                mock_client_instance.log_execution = MagicMock()
+                mock_client.return_value = mock_client_instance
+    
+                agent = AutonomousAgent(reports_dir=tmp_path)
+    
+                await agent.execute("Test", model_preference="auto")
+    
+>               mock_client_instance.select_model.assert_called_with(preferred_model=None)
+E               AssertionError: expected call not found.
+E               Expected: select_model(preferred_model=None)
+E                 Actual: not called.
+
+tests/agents/test_autonomous_runner.py:517: AssertionError
+----------------------------- Captured stdout call -----------------------------
+2026-10-23 04:10:37,632 - codex.clients.openai_client - WARNING - OPENAI_API_KEY or GITHUB_CODEX not found. Agent will operate in dry-run mode.
+------------------------------ Captured log call -------------------------------
+WARNING  codex.clients.openai_client:openai_client.py:166 OPENAI_API_KEY or GITHUB_CODEX not found. Agent will operate in dry-run mode.
+_______________ TestEdgeCases.test_execute_with_model_preference _______________
+
+self = <tests.agents.test_autonomous_runner.TestEdgeCases object at 0x7f590039a8d0>
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-12/test_execute_with_model_prefer0')
+
+    @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    async def test_execute_with_model_preference(self, tmp_path):
+        """Test execution with specific model preference."""
+        try:
+            from agents.autonomous_runner import AutonomousAgent
+    
+            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+                mock_client_instance = MagicMock()
+                mock_client_instance.select_model.return_value = "gpt-4-turbo"
+                mock_client_instance._dry_run = True
+                mock_client_instance.log_execution = MagicMock()
+                mock_client.return_value = mock_client_instance
+    
+                agent = AutonomousAgent(reports_dir=tmp_path)
+    
+                await agent.execute("Test", model_preference="gpt-4-turbo")
+    
+>               mock_client_instance.select_model.assert_called_with(preferred_model="gpt-4-turbo")
+E               AssertionError: expected call not found.
+E               Expected: select_model(preferred_model='gpt-4-turbo')
+E                 Actual: not called.
+
+tests/agents/test_autonomous_runner.py:487: AssertionError
+----------------------------- Captured stdout call -----------------------------
+2026-10-23 04:10:37,666 - codex.clients.openai_client - WARNING - OPENAI_API_KEY or GITHUB_CODEX not found. Agent will operate in dry-run mode.
+------------------------------ Captured log call -------------------------------
+WARNING  codex.clients.openai_client:openai_client.py:166 OPENAI_API_KEY or GITHUB_CODEX not found. Agent will operate in dry-run mode.
+____________ TestAutonomousAgentExecute.test_execute_logs_execution ____________
+
+self = <tests.agents.test_autonomous_runner.TestAutonomousAgentExecute object at 0x7f5900398fe0>
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-12/test_execute_logs_execution0')
+
+    @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
+    async def test_execute_logs_execution(self, tmp_path):
+        """Test that execution is logged."""
+        try:
+            from agents.autonomous_runner import AutonomousAgent
+    
+            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+                mock_client_instance = MagicMock()
+                mock_client_instance.select_model.return_value = "gpt-4"
+                mock_client_instance._dry_run = True
+                mock_client_instance.log_execution = MagicMock()
+                mock_client.return_value = mock_client_instance
+    
+                agent = AutonomousAgent(reports_dir=tmp_path)
+    
+                await agent.execute("Test task")
+    
+>               mock_client_instance.log_execution.assert_called_once()
+E               AssertionError: Expected 'log_execution' to have been called once. Called 0 times.
+
+tests/agents/test_autonomous_runner.py:217: AssertionError
+----------------------------- Captured stdout call -----------------------------
+2026-10-23 04:10:37,734 - codex.clients.openai_client - WARNING - OPENAI_API_KEY or GITHUB_CODEX not found. Agent will operate in dry-run mode.
+------------------------------ Captured log call -------------------------------
+WARNING  codex.clients.openai_client:openai_client.py:166 OPENAI_API_KEY or GITHUB_CODEX not found. Agent will operate in dry-run mode.

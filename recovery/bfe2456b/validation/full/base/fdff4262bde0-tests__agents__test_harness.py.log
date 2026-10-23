@@ -1,0 +1,11 @@
+
+=============================== warnings summary ===============================
+tests/agents/test_harness.py:42
+  /tmp/bfe2456b-full-base/tests/agents/test_harness.py:42: PytestCollectionWarning: cannot collect test class 'TestPhase' because it has a __init__ constructor (from: tests/agents/test_harness.py)
+    class TestPhase(Enum):
+
+tests/agents/test_harness.py:68
+  /tmp/bfe2456b-full-base/tests/agents/test_harness.py:68: PytestCollectionWarning: cannot collect test class 'TestResult' because it has a __init__ constructor (from: tests/agents/test_harness.py)
+    @dataclass
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

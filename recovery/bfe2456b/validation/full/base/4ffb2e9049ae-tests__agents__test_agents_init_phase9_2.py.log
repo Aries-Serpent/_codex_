@@ -1,0 +1,2028 @@
+FFFFFFFFFFFFFF....F.......FFFFF....FFFFFF....FFFFF                       [100%]
+=================================== FAILURES ===================================
+_____________ TestQuantumPhysicsExports.test_quantum_state_import ______________
+
+name = 'QuantumState'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.QuantumState', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.QuantumState'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestQuantumPhysicsExports object at 0x7fd5b411c560>
+
+    def test_quantum_state_import(self) -> None:
+        """Test QuantumState can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.QuantumState is not None, "QuantumState must be initialized"
+               ^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:141: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'QuantumState'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'QuantumState'. Did you mean: 'QuantumGameState'?
+
+src/agents/__init__.py:117: AttributeError
+_____________ TestQuantumPhysicsExports.test_pinn_validator_import _____________
+
+name = 'PINNValidator'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.PINNValidator', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.PINNValidator'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestQuantumPhysicsExports object at 0x7fd5b411d250>
+
+    def test_pinn_validator_import(self) -> None:
+        """Test PINNValidator can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.PINNValidator is not None, "PINNValidator must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:159: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'PINNValidator'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'PINNValidator'
+
+src/agents/__init__.py:117: AttributeError
+_________ TestQuantumPhysicsExports.test_superposition_explorer_import _________
+
+name = 'SuperpositionExplorer'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.SuperpositionExplorer', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.SuperpositionExplorer'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestQuantumPhysicsExports object at 0x7fd5b411ce00>
+
+    def test_superposition_explorer_import(self) -> None:
+        """Test SuperpositionExplorer can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.SuperpositionExplorer is not None, "SuperpositionExplorer must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'SuperpositionExplorer'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'SuperpositionExplorer'
+
+src/agents/__init__.py:117: AttributeError
+______ TestQuantumPhysicsExports.test_quantum_physics_orchestrator_import ______
+
+name = 'QuantumPhysicsOrchestrator'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.QuantumPhysicsOrchestrator', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.QuantumPhysicsOrchestrator'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestQuantumPhysicsExports object at 0x7fd5b411c110>
+
+    def test_quantum_physics_orchestrator_import(self) -> None:
+        """Test QuantumPhysicsOrchestrator can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.QuantumPhysicsOrchestrator is not None, "QuantumPhysicsOrchestrator must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:135: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'QuantumPhysicsOrchestrator'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'QuantumPhysicsOrchestrator'. Did you mean: 'HybridPhysicsOrchestrator'?
+
+src/agents/__init__.py:117: AttributeError
+_________ TestQuantumPhysicsExports.test_quantum_walk_explorer_import __________
+
+name = 'QuantumWalkExplorer'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.QuantumWalkExplorer', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.QuantumWalkExplorer'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestQuantumPhysicsExports object at 0x7fd5b411c9b0>
+
+    def test_quantum_walk_explorer_import(self) -> None:
+        """Test QuantumWalkExplorer can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.QuantumWalkExplorer is not None, "QuantumWalkExplorer must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:147: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'QuantumWalkExplorer'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'QuantumWalkExplorer'
+
+src/agents/__init__.py:117: AttributeError
+_________ TestPhysicsCalculatorExports.test_hamiltonian_evolver_import _________
+
+name = 'HamiltonianEvolver'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.HamiltonianEvolver', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.HamiltonianEvolver'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestPhysicsCalculatorExports object at 0x7fd5b411e3c0>
+
+    def test_hamiltonian_evolver_import(self) -> None:
+        """Test HamiltonianEvolver can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.HamiltonianEvolver is not None, "HamiltonianEvolver must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:187: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'HamiltonianEvolver'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'HamiltonianEvolver'
+
+src/agents/__init__.py:117: AttributeError
+______ TestPhysicsCalculatorExports.test_physics_calculator_suite_import _______
+
+name = 'PhysicsCalculatorSuite'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.PhysicsCalculatorSuite', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.PhysicsCalculatorSuite'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestPhysicsCalculatorExports object at 0x7fd5bf5e79e0>
+
+    def test_physics_calculator_suite_import(self) -> None:
+        """Test PhysicsCalculatorSuite can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.PhysicsCalculatorSuite is not None, "PhysicsCalculatorSuite must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'PhysicsCalculatorSuite'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'PhysicsCalculatorSuite'
+
+src/agents/__init__.py:117: AttributeError
+______ TestPhysicsCalculatorExports.test_conservation_law_checker_import _______
+
+name = 'ConservationLawChecker'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.ConservationLawChecker', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.ConservationLawChecker'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestPhysicsCalculatorExports object at 0x7fd5b411db20>
+
+    def test_conservation_law_checker_import(self) -> None:
+        """Test ConservationLawChecker can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.ConservationLawChecker is not None, "ConservationLawChecker must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'ConservationLawChecker'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'ConservationLawChecker'
+
+src/agents/__init__.py:117: AttributeError
+__________ TestPhysicsCalculatorExports.test_quantum_operator_import ___________
+
+name = 'QuantumOperator'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.QuantumOperator', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.QuantumOperator'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestPhysicsCalculatorExports object at 0x7fd5b411d6d0>
+
+    def test_quantum_operator_import(self) -> None:
+        """Test QuantumOperator can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.QuantumOperator is not None, "QuantumOperator must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:169: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'QuantumOperator'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'QuantumOperator'
+
+src/agents/__init__.py:117: AttributeError
+______ TestPhysicsCalculatorExports.test_path_integral_calculator_import _______
+
+name = 'PathIntegralCalculator'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.PathIntegralCalculator', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.PathIntegralCalculator'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestPhysicsCalculatorExports object at 0x7fd5b411df70>
+
+    def test_path_integral_calculator_import(self) -> None:
+        """Test PathIntegralCalculator can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.PathIntegralCalculator is not None, "PathIntegralCalculator must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'PathIntegralCalculator'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'PathIntegralCalculator'
+
+src/agents/__init__.py:117: AttributeError
+_____________ TestWorkflowNavigatorExports.test_step_status_import _____________
+
+name = 'StepStatus'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.StepStatus', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.StepStatus'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestWorkflowNavigatorExports object at 0x7fd5b411d3a0>
+
+    def test_step_status_import(self) -> None:
+        """Test StepStatus can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.StepStatus is not None, "StepStatus must be initialized"
+               ^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:311: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'StepStatus'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'StepStatus'
+
+src/agents/__init__.py:117: AttributeError
+____________ TestWorkflowNavigatorExports.test_workflow_step_import ____________
+
+name = 'WorkflowStep'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.WorkflowStep', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.WorkflowStep'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestWorkflowNavigatorExports object at 0x7fd5b411ecc0>
+
+    def test_workflow_step_import(self) -> None:
+        """Test WorkflowStep can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.WorkflowStep is not None, "WorkflowStep must be initialized"
+               ^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:305: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'WorkflowStep'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'WorkflowStep'
+
+src/agents/__init__.py:117: AttributeError
+_________ TestWorkflowNavigatorExports.test_workflow_navigator_import __________
+
+name = 'WorkflowNavigator'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.WorkflowNavigator', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.WorkflowNavigator'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestWorkflowNavigatorExports object at 0x7fd5b411fb90>
+
+    def test_workflow_navigator_import(self) -> None:
+        """Test WorkflowNavigator can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.WorkflowNavigator is not None, "WorkflowNavigator must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:293: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'WorkflowNavigator'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'WorkflowNavigator'. Did you mean: 'workflow_navigator'?
+
+src/agents/__init__.py:117: AttributeError
+______________ TestWorkflowNavigatorExports.test_workflow_import _______________
+
+name = 'Workflow'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.Workflow', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.Workflow'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestWorkflowNavigatorExports object at 0x7fd5b411f260>
+
+    def test_workflow_import(self) -> None:
+        """Test Workflow can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.Workflow is not None, "Workflow must be initialized"
+               ^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:299: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'Workflow'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'Workflow'
+
+src/agents/__init__.py:117: AttributeError
+_____ TestAgentsPackageDocumentation.test_docstring_mentions_orchestration _____
+
+self = <tests.agents.test_agents_init_phase9_2.TestAgentsPackageDocumentation object at 0x7fd5b4135dc0>
+
+    def test_docstring_mentions_orchestration(self) -> None:
+        """Test docstring mentions orchestration."""
+        # Arrange & Act
+    
+        # Assert
+>       assert "orchestrat" in agents_doc.lower(), "Condition must be true"
+E       AssertionError: Condition must be true
+E       assert 'orchestrat' in 'compatibility package for the repo-root `agents` namespace.\n\nthe repo keeps a src-first pytest config (`pythonpath ...tall. this shim preserves the historical public api and\nprevents collection from failing on package-boundary drift.\n'
+E        +  where 'compatibility package for the repo-root `agents` namespace.\n\nthe repo keeps a src-first pytest config (`pythonpath ...tall. this shim preserves the historical public api and\nprevents collection from failing on package-boundary drift.\n' = <built-in method lower of str object at 0x7fd5c8380220>()
+E        +    where <built-in method lower of str object at 0x7fd5c8380220> = 'Compatibility package for the repo-root `agents` namespace.\n\nThe repo keeps a src-first pytest config (`pythonpath ...tall. This shim preserves the historical public API and\nprevents collection from failing on package-boundary drift.\n'.lower
+
+tests/agents/test_agents_init_phase9_2.py:369: AssertionError
+________ TestAdvancedPhysicsPatternExports.test_energy_landscape_import ________
+
+name = 'EnergyLandscape'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.EnergyLandscape', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.EnergyLandscape'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestAdvancedPhysicsPatternExports object at 0x7fd5bf5e6810>
+
+    def test_energy_landscape_import(self) -> None:
+        """Test EnergyLandscape can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.EnergyLandscape is not None, "EnergyLandscape must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'EnergyLandscape'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'EnergyLandscape'
+
+src/agents/__init__.py:117: AttributeError
+________ TestAdvancedPhysicsPatternExports.test_reflection_loop_import _________
+
+name = 'ReflectionLoop'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.ReflectionLoop', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.ReflectionLoop'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestAdvancedPhysicsPatternExports object at 0x7fd5bf5e7c50>
+
+    def test_reflection_loop_import(self) -> None:
+        """Test ReflectionLoop can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.ReflectionLoop is not None, "ReflectionLoop must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:125: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'ReflectionLoop'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'ReflectionLoop'
+
+src/agents/__init__.py:117: AttributeError
+_______ TestAdvancedPhysicsPatternExports.test_swarm_intelligence_import _______
+
+name = 'SwarmIntelligence'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.SwarmIntelligence', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.SwarmIntelligence'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestAdvancedPhysicsPatternExports object at 0x7fd5bf5e5e20>
+
+    def test_swarm_intelligence_import(self) -> None:
+        """Test SwarmIntelligence can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.SwarmIntelligence is not None, "SwarmIntelligence must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'SwarmIntelligence'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'SwarmIntelligence'
+
+src/agents/__init__.py:117: AttributeError
+________ TestAdvancedPhysicsPatternExports.test_task_decomposer_import _________
+
+name = 'TaskDecomposer'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.TaskDecomposer', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.TaskDecomposer'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestAdvancedPhysicsPatternExports object at 0x7fd5bf5e5670>
+
+    def test_task_decomposer_import(self) -> None:
+        """Test TaskDecomposer can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.TaskDecomposer is not None, "TaskDecomposer must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'TaskDecomposer'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'TaskDecomposer'
+
+src/agents/__init__.py:117: AttributeError
+______ TestAdvancedPhysicsPatternExports.test_diffusion_flow_model_import ______
+
+name = 'DiffusionFlowModel'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.DiffusionFlowModel', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.DiffusionFlowModel'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestAdvancedPhysicsPatternExports object at 0x7fd5bf5e7140>
+
+    def test_diffusion_flow_model_import(self) -> None:
+        """Test DiffusionFlowModel can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.DiffusionFlowModel is not None, "DiffusionFlowModel must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:101: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'DiffusionFlowModel'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'DiffusionFlowModel'
+
+src/agents/__init__.py:117: AttributeError
+____________ TestPhysicsOrchestratorExports.test_action_type_import ____________
+
+name = 'ActionType'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.ActionType', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.ActionType'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestPhysicsOrchestratorExports object at 0x7fd5bf5e6bd0>
+
+    def test_action_type_import(self) -> None:
+        """Test ActionType can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.ActionType is not None, "ActionType must be initialized"
+               ^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'ActionType'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'ActionType'
+
+src/agents/__init__.py:117: AttributeError
+___ TestPhysicsOrchestratorExports.test_import_migration_orchestrator_import ___
+
+name = 'ImportMigrationOrchestrator'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.ImportMigrationOrchestrator', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.ImportMigrationOrchestrator'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestPhysicsOrchestratorExports object at 0x7fd5bf5e77a0>
+
+    def test_import_migration_orchestrator_import(self) -> None:
+        """Test ImportMigrationOrchestrator can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.ImportMigrationOrchestrator is not None, "ImportMigrationOrchestrator must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:91: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'ImportMigrationOrchestrator'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'ImportMigrationOrchestrator'
+
+src/agents/__init__.py:117: AttributeError
+__________ TestPhysicsOrchestratorExports.test_decision_state_import ___________
+
+name = 'DecisionState'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.DecisionState', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.DecisionState'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestPhysicsOrchestratorExports object at 0x7fd5bf5e6fc0>
+
+    def test_decision_state_import(self) -> None:
+        """Test DecisionState can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.DecisionState is not None, "DecisionState must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:79: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'DecisionState'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'DecisionState'
+
+src/agents/__init__.py:117: AttributeError
+_______ TestPhysicsOrchestratorExports.test_physics_orchestrator_import ________
+
+name = 'PhysicsInspiredOrchestrator'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.PhysicsInspiredOrchestrator', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.PhysicsInspiredOrchestrator'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestPhysicsOrchestratorExports object at 0x7fd5bf5e63f0>
+
+    def test_physics_orchestrator_import(self) -> None:
+        """Test PhysicsInspiredOrchestrator can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.PhysicsInspiredOrchestrator is not None, "PhysicsInspiredOrchestrator must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'PhysicsInspiredOrchestrator'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'PhysicsInspiredOrchestrator'
+
+src/agents/__init__.py:117: AttributeError
+____________ TestPhysicsOrchestratorExports.test_action_path_import ____________
+
+name = 'ActionPath'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.ActionPath', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.ActionPath'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestPhysicsOrchestratorExports object at 0x7fd5bf5e67e0>
+
+    def test_action_path_import(self) -> None:
+        """Test ActionPath can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.ActionPath is not None, "ActionPath must be initialized"
+               ^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'ActionPath'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'ActionPath'
+
+src/agents/__init__.py:117: AttributeError
+___________ TestPhysicsOrchestratorExports.test_force_vector_import ____________
+
+name = 'ForceVector'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.ForceVector', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.ForceVector'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestPhysicsOrchestratorExports object at 0x7fd5bf5e73b0>
+
+    def test_force_vector_import(self) -> None:
+        """Test ForceVector can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.ForceVector is not None, "ForceVector must be initialized"
+               ^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'ForceVector'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'ForceVector'
+
+src/agents/__init__.py:117: AttributeError
+_______________ TestMentalMappingExports.test_mental_edge_import _______________
+
+name = 'MentalEdge'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.MentalEdge', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.MentalEdge'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestMentalMappingExports object at 0x7fd5b411fda0>
+
+    def test_mental_edge_import(self) -> None:
+        """Test MentalEdge can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.MentalEdge is not None, "MentalEdge must be initialized"
+               ^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:271: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'MentalEdge'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'MentalEdge'
+
+src/agents/__init__.py:117: AttributeError
+________________ TestMentalMappingExports.test_node_type_import ________________
+
+name = 'NodeType'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.NodeType', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.NodeType'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestMentalMappingExports object at 0x7fd5b4134230>
+
+    def test_node_type_import(self) -> None:
+        """Test NodeType can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.NodeType is not None, "NodeType must be initialized"
+               ^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:277: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'NodeType'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'NodeType'
+
+src/agents/__init__.py:117: AttributeError
+__________ TestMentalMappingExports.test_mental_mapping_model_import ___________
+
+name = 'MentalMappingModel'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.MentalMappingModel', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.MentalMappingModel'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestMentalMappingExports object at 0x7fd5b411f500>
+
+    def test_mental_mapping_model_import(self) -> None:
+        """Test MentalMappingModel can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.MentalMappingModel is not None, "MentalMappingModel must be initialized"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:259: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'MentalMappingModel'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'MentalMappingModel'
+
+src/agents/__init__.py:117: AttributeError
+________________ TestMentalMappingExports.test_edge_type_import ________________
+
+name = 'EdgeType'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.EdgeType', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.EdgeType'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestMentalMappingExports object at 0x7fd5b4134680>
+
+    def test_edge_type_import(self) -> None:
+        """Test EdgeType can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.EdgeType is not None, "EdgeType must be initialized"
+               ^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:283: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'EdgeType'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'EdgeType'
+
+src/agents/__init__.py:117: AttributeError
+_______________ TestMentalMappingExports.test_mental_node_import _______________
+
+name = 'MentalNode'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+>           module = import_module(f"{__name__}.{name}")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/agents/__init__.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'agents.MentalNode', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+>       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'agents.MentalNode'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.agents.test_agents_init_phase9_2.TestMentalMappingExports object at 0x7fd5b411f950>
+
+    def test_mental_node_import(self) -> None:
+        """Test MentalNode can be imported."""
+        # Arrange & Act
+        # Assert
+>       assert agents.MentalNode is not None, "MentalNode must be initialized"
+               ^^^^^^^^^^^^^^^^^
+
+tests/agents/test_agents_init_phase9_2.py:265: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'MentalNode'
+
+    def __getattr__(name: str):
+        """Lazily resolve historically expected agent modules from the repo-root package."""
+        if name.startswith("_"):
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+        try:
+            module = import_module(f"{__name__}.{name}")
+        except ModuleNotFoundError as exc:
+>           raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from exc
+E           AttributeError: module 'agents' has no attribute 'MentalNode'
+
+src/agents/__init__.py:117: AttributeError

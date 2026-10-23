@@ -1,5 +1,160 @@
 # Test outcome comparison
 
+## Pinned resumable comparison: 2026-10-23
+
+The new execution evidence is under `full/`. Earlier observations below remain
+historical; they are not substituted for execution at the requested pinned
+snapshot. Neither a missing outcome nor a collection error establishes a pass.
+
+- Base: `71613ee000808ab758cc2f8ddb07a05c5101f731`.
+- Snapshot: `70798e17f0bb4463413684eddddd62358faa89d6`.
+- Publication branch: `copilot/recover-unpushed-session-commits-again`; no PR.
+- Remote publication HEAD at task start was `722c1352db5ee7a217d4cea246d43a7e93a26ca5`,
+  not the pinned snapshot. Tests still target the requested snapshot.
+- Requested old-to-new comparison: `955cd9974eac713333331482928d9b7d04fe5cf1`
+  to `70798e17f0bb4463413684eddddd62358faa89d6`.
+- Commits: `dae88aea`, `91759b88`, `f507214f`, `d368aaba`, `70798e17`.
+- Changed paths: **164** (two `.codex` files and 162 validation files).
+  **Zero `src/` or `tests/` changes**; zero workflow changes.
+  Exact commit subjects, SHAs, and every path are in `full/head-change.json`.
+- Initial worktree modification: startup-packet timestamp only. It is restored
+  to the base version for publication; existing evidence is preserved.
+
+Shard evidence must include root-level test files as well as immediate
+directories. A timed-out directory is split by file on both sides, with its
+parent outcomes excluded from leaf aggregation. Empty shards (pytest exit 5) are
+not passes. Collection-error shards and unexecuted selectors remain incomplete.
+Repository-defined optional-dependency exclusions are not added or changed.
+
+Fresh environments use independent, non-editable installations from their
+respective detached worktrees, outside the publication checkout. Both contain
+243 distributions with identical versions, and both `pip check` commands exit
+0. This is not the old shared 292-line environment. First installation attempts
+hit a 300-second limit during unpacking; one cached retry per side exits 0.
+`full/environment-comparison.json`, per-side import provenance, freezes, install
+logs, and `full/pinned-run-manifest.json` record the actual new executions.
+
+The authoritative new run manifest is `full/pinned-run-manifest.json`.
+`full/delegated-setup-attempt.json` describes a cancelled preliminary setup
+with no test execution; its temporary runtime directories were removed.
+No copied source trees or virtual environments are published.
+
+`coverage debug config` selects each tree's existing `.coveragerc`, including
+`source = src`, its omissions, and `parallel = True`. Actual shard data files
+therefore carry additional process suffixes; these are preserved and mapped
+back to selectors. Superseded or unfinished shard data must be excluded from
+any later complete-run combination.
+
+Coverage is **unknown** for any incomplete side. The repository's configured
+34% threshold does not replace the requested 80% acceptance threshold. Partial
+coverage files are checkpoint evidence, never an estimated full-suite result.
+Only a complete side may run `coverage combine` followed by
+`coverage report --fail-under=80`; exact executed commands belong in its manifest.
+
+### Report for the new pinned execution
+
+**INCOMPLETE: no readiness claim.** The execution window was 900 seconds, with
+45 seconds per shard and five seconds of interrupt grace. `tests/agents`
+exceeded its directory limit and was split into the same 109 file selectors
+on both sides. Its parent XML is excluded from totals. The complete paired
+plan has 870 selectors per side, of which 869 are aggregate leaves.
+
+| Section | New pinned execution evidence |
+|---|---|
+| Head change | Five commits and 164 paths; exact subjects/paths in `full/head-change.json`; no `src/`, `tests/`, or workflow changes in the requested head interval. |
+| Base full run | **Not complete. Observed only:** 1,818 named IDs: 1,746 passed, 42 failed, 0 errored, 30 skipped, 0 xfailed, 0 identified xpassed. 61 completed leaf shards, two empty leaves, one absent union selector, one unfinished leaf, 804 NOT_RUN leaves. |
+| Snapshot full run | **Not complete. Observed only:** 1,826 named IDs: 1,795 passed, one failed, 0 errored, 30 skipped, 0 xfailed, 0 identified xpassed. 62 completed leaf shards, two empty leaves, one unfinished leaf, 804 NOT_RUN leaves. |
+| Outcome classification | 1,745 pass→pass; **one regression; 42 improvements**; zero observed pre-existing failures; 30 skipped/xfailed on either side; zero observed only on base; eight observed only on snapshot. Every observed ID and its XML provenance is in `full/outcome-table.csv`; exact regression/improvement ID lists are in `full/outcome-summary.json`. These are not complete-suite counts or inferred deletions. |
+| Base collection errors | Of the **195 historical base `RecursionError` modules**, fresh pinned snapshot evidence shows **164 collecting, 28 still reporting `RecursionError`, zero proven deletions/moves, and three module skips**. The three skips cannot honestly be forced into the requested collect/delete/error categories. Per-module evidence: `full/base-195-fresh-classification.json`. |
+| Historical IDs | Eleven supplied historical names remain identifiable; **295 identities remain unavailable**, each explicitly documented as an unknown placeholder in `historical-ids.md`, never fabricated as an actual test ID. |
+| Coverage | **Base UNKNOWN; snapshot UNKNOWN at 80%.** Neither side completed; no combine/report command was executed and no partial percentage is reported. Actual data-file hashes and deferred exact commands are in `full/pinned-run-manifest.json` and `full/coverage-status.json`. |
+| Workflow check | The requested `git diff --name-only origin/0D_base_ HEAD -- .github/workflows/` has empty output. All four held-back files remain at base. |
+| Push result | Publication is restricted to `copilot/recover-unpushed-session-commits-again`; final pushed SHA/result is reported in the session response. No PR is opened. |
+| Blocked items | Full runs, complete per-ID classification, 80% coverage verification, 295 historical identities, three skipped baseline-error modules, one observed regression, fresh collection errors, and the unavailable automated review wrapper remain unresolved. |
+
+The remaining 804 leaves on each side comprise **216 directory selectors,
+541 root test files, and 47 split files**. The same unfinished leaf on each
+side is
+`tests/agents/test_phase2_deep_coverage_batch14_exception_handling.py`.
+The union selector `tests/agents/test_memory_connection_lifetime.py` does not
+exist in the base Git tree: its original pytest exit 4 is preserved, with an
+explicit absence proof, rather than counted as a base test error or pass.
+The eight snapshot-only observed IDs are from this file.
+
+Observed regression (actual JUnit `classname::name` identity):
+
+- `tests.agents.test_edge_cases_phase9_4.TestBlueRedTeamSimulatorEdgeCases::test_run_simulation_zero_rounds_raises`
+  — snapshot assertion: `DID NOT RAISE any of (IndexError, Exception)`.
+
+The **42 improvement identities** are listed individually in
+`full/outcome-summary.json` under `improvements` and in CSV rows classified
+`improvement`; no classification is inferred from a missing outcome.
+The 1,826-row CSV excludes superseded parent XML and anonymous cases.
+Nonstrict XPASS identification uses the added `-rX` terminal output; no observed
+passing record has unresolved XPASS status. Missing execution outcomes still
+remain unknown, including any unexecuted XPASS tests.
+
+### Fresh collection diagnostics are also incomplete
+
+After shard execution, each isolated environment additionally ran:
+`python -m pytest tests/ --collect-only -q -v -rs -p no:cacheprovider`.
+Each had a 180-second limit and five-second interrupt grace. These commands
+execute **no test bodies** and contribute nothing to the outcome CSV or coverage.
+
+- Base: **11,114 printed node IDs, 70 observed `RecursionError` headers**;
+  interrupted, process exit 2, 184.18 seconds including shutdown.
+- Snapshot: **43,501 printed node IDs, 31 observed `RecursionError` headers**;
+  interrupted, process exit -9 after interrupt grace, 185.09 seconds.
+
+These are partial observations, **not completed collection totals**. In
+particular, the historical 44,053/zero-error snapshot collection must not be
+reused as proof that the fresh isolated environment collects cleanly.
+Metadata, node IDs, error header/exception line references, and skip reasons
+are preserved in `full/fresh-collection-observations.json` and per-side logs.
+Of the 195 historical baseline-error modules, the three explicit fresh skips
+are `tests/codex_ml/test_cli_train_config_bridge.py` (mlflow absent),
+`tests/config/test_override_propagation.py` (Hydra override-file path unavailable),
+and `tests/data/test_dataset_loaders_extended.py` (h5py absent).
+
+Maintainer continuation: use the pinned revisions, per-side freezes and exact
+manifest commands; resume the 804 NOT_RUN leaves and unfinished leaf on each
+side without reusing older partial evidence as completion. Existing completed
+leaves are reusable only with matching source/environment/configuration.
+Investigate the observed regression and recursion errors separately before any
+readiness decision. Recover the original historical identity artifact to resolve
+the 295 missing identities. Only after all valid leaf bodies complete may the
+recorded side-specific combine/report commands establish the 80% gate.
+
+The historical 295 missing identities are documented in `historical-ids.md`;
+placeholder rows are explicitly not test IDs and cannot establish improvements.
+
+The required automated validation wrapper was attempted during this execution
+but failed before review with:
+`GitError: timeout git error: Command killed by signal SIGPIPE: git -c core.quotePath=false diff --no-renames --irreversible-delete -U0 71613ee000808ab758cc2f8ddb07a05c5101f731`.
+This is not a successful review or CodeQL result.
+
+A separate scoped read-only evidence review found **no significant issues**.
+CSV identity/class totals, 295 placeholder rows, 195 module records, paired
+selector symmetry, coverage-file uniqueness/hashes, base startup restoration,
+and the empty workflow diff were checked successfully. Both worktrees began
+clean and ended without tracked-file changes; no copied runtime is published.
+An initial placeholder-count assertion used the wrong row pattern; the
+corrected format-specific check passed without changing any evidence rows.
+
+The mandatory secret-scanning tool passed on explicitly listed reports and
+major raw logs. The existing local `detect_secrets scan --no-verify --all-files`
+also scanned the complete evidence tree: **157 candidates**, all reviewed as
+155 Git/evidence hashes or known artifact/source paths and two synthetic
+test-assertion strings; **zero unresolved secrets**. See
+`full/secret-scan-summary.json`. No credential verification network call was used.
+
+`git diff --cached --check` exits **2** on 477 whitespace diagnostics in
+preserved raw `.log` and `.xml` tracebacks. These outputs are kept verbatim,
+not silently edited. The same check excluding raw log/XML/CSV files exits
+**0**; there are no metadata/documentation whitespace findings.
+
+### Earlier execution evidence (not a completed pinned comparison)
+
 ## Result: INCOMPLETE; acceptance gates not established
 
 The complete-suite regression count is **unknown**, not zero. The base full run

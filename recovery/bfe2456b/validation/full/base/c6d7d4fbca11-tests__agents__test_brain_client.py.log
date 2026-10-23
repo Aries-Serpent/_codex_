@@ -1,0 +1,190 @@
+.............................FF.F..........                              [100%]
+=================================== FAILURES ===================================
+_______________ TestAuthHeader.test_whitespace_only_key_ignored ________________
+
+self = <tests.agents.test_brain_client.TestAuthHeader object at 0x7fd88646f500>
+
+    def test_whitespace_only_key_ignored(self) -> None:
+        env_copy = {k: v for k, v in os.environ.items() if k not in _AUTH_ENV_VARS}
+        env_copy.update({"CODEX_MASTER_KEY": "   ", "CODEX_BACKUP_KEY": ""})
+        with patch.dict(os.environ, env_copy, clear=True):
+            b = BrainClient(base_url="http://x")
+>           hdr = b._auth_header()
+                  ^^^^^^^^^^^^^^^^
+
+tests/agents/test_brain_client.py:145: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/aries_serpent_core/agents/brain_client.py:202: in _auth_header
+    get_token(required_elevated=True)[0]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+required_elevated = True
+
+    def get_token(required_elevated: bool = False) -> Tuple[Optional[str], str]:
+        """Return the best available token with validation.
+    
+        Scans environment variables in CANONICAL_HIERARCHY order and returns
+        the first available token. If required_elevated is True, github.token
+        (insufficient scope) will not be returned.
+    
+        Args:
+            required_elevated: If True, only tokens with elevated scope are returned.
+                              This excludes GH_TOKEN and GITHUB_TOKEN variants.
+    
+        Returns:
+            Tuple of (token_value, token_source_name)
+    
+        Raises:
+            TokenResolutionError: If no suitable token is available.
+        """
+        # Determine which sources are acceptable
+        acceptable_sources = CANONICAL_HIERARCHY
+        if required_elevated:
+            acceptable_sources = CANONICAL_HIERARCHY[:2]  # Only CODEX keys
+    
+        # Scan hierarchy
+        for env_var in acceptable_sources:
+            token = os.environ.get(env_var)
+            if token:
+                is_valid, msg = validate_token(token)
+                if is_valid:
+                    return token, env_var
+    
+        # No token found
+        if required_elevated:
+>           raise TokenResolutionError(
+                "No elevated token available. Required scopes: "
+                "repo, workflow, actions:write, security_events. "
+                "Please set CODEX_MASTER_KEY or CODEX_BACKUP_KEY."
+            )
+E           scripts.ci._token_resolver.TokenResolutionError: No elevated token available. Required scopes: repo, workflow, actions:write, security_events. Please set CODEX_MASTER_KEY or CODEX_BACKUP_KEY.
+
+scripts/ci/_token_resolver.py:121: TokenResolutionError
+____________________ TestAuthHeader.test_empty_when_no_keys ____________________
+
+self = <tests.agents.test_brain_client.TestAuthHeader object at 0x7fd88646f110>
+
+    def test_empty_when_no_keys(self) -> None:
+        env_copy = {k: v for k, v in os.environ.items() if k not in _AUTH_ENV_VARS}
+        with patch.dict(os.environ, env_copy, clear=True):
+            b = BrainClient(base_url="http://x")
+>           hdr = b._auth_header()
+                  ^^^^^^^^^^^^^^^^
+
+tests/agents/test_brain_client.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/aries_serpent_core/agents/brain_client.py:202: in _auth_header
+    get_token(required_elevated=True)[0]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+required_elevated = True
+
+    def get_token(required_elevated: bool = False) -> Tuple[Optional[str], str]:
+        """Return the best available token with validation.
+    
+        Scans environment variables in CANONICAL_HIERARCHY order and returns
+        the first available token. If required_elevated is True, github.token
+        (insufficient scope) will not be returned.
+    
+        Args:
+            required_elevated: If True, only tokens with elevated scope are returned.
+                              This excludes GH_TOKEN and GITHUB_TOKEN variants.
+    
+        Returns:
+            Tuple of (token_value, token_source_name)
+    
+        Raises:
+            TokenResolutionError: If no suitable token is available.
+        """
+        # Determine which sources are acceptable
+        acceptable_sources = CANONICAL_HIERARCHY
+        if required_elevated:
+            acceptable_sources = CANONICAL_HIERARCHY[:2]  # Only CODEX keys
+    
+        # Scan hierarchy
+        for env_var in acceptable_sources:
+            token = os.environ.get(env_var)
+            if token:
+                is_valid, msg = validate_token(token)
+                if is_valid:
+                    return token, env_var
+    
+        # No token found
+        if required_elevated:
+>           raise TokenResolutionError(
+                "No elevated token available. Required scopes: "
+                "repo, workflow, actions:write, security_events. "
+                "Please set CODEX_MASTER_KEY or CODEX_BACKUP_KEY."
+            )
+E           scripts.ci._token_resolver.TokenResolutionError: No elevated token available. Required scopes: repo, workflow, actions:write, security_events. Please set CODEX_MASTER_KEY or CODEX_BACKUP_KEY.
+
+scripts/ci/_token_resolver.py:121: TokenResolutionError
+_________ TestAuthHeaderSentOnRequests.test_no_auth_header_when_no_key _________
+
+self = <tests.agents.test_brain_client.TestAuthHeaderSentOnRequests object at 0x7fd886493680>
+
+    def test_no_auth_header_when_no_key(self) -> None:
+        captured, fake = self._capture_headers({"status": "ok"})
+        env_copy = {k: v for k, v in os.environ.items() if k not in _AUTH_ENV_VARS}
+        with patch.dict(os.environ, env_copy, clear=True):
+            b = BrainClient(base_url="http://x")
+            with patch("urllib.request.urlopen", side_effect=fake):
+>               b.health()
+
+tests/agents/test_brain_client.py:551: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/aries_serpent_core/agents/brain_client.py:266: in health
+    return self._get("/api/health")
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+src/aries_serpent_core/agents/brain_client.py:215: in _get
+    headers.update(self._auth_header())
+                   ^^^^^^^^^^^^^^^^^^^
+src/aries_serpent_core/agents/brain_client.py:202: in _auth_header
+    get_token(required_elevated=True)[0]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+required_elevated = True
+
+    def get_token(required_elevated: bool = False) -> Tuple[Optional[str], str]:
+        """Return the best available token with validation.
+    
+        Scans environment variables in CANONICAL_HIERARCHY order and returns
+        the first available token. If required_elevated is True, github.token
+        (insufficient scope) will not be returned.
+    
+        Args:
+            required_elevated: If True, only tokens with elevated scope are returned.
+                              This excludes GH_TOKEN and GITHUB_TOKEN variants.
+    
+        Returns:
+            Tuple of (token_value, token_source_name)
+    
+        Raises:
+            TokenResolutionError: If no suitable token is available.
+        """
+        # Determine which sources are acceptable
+        acceptable_sources = CANONICAL_HIERARCHY
+        if required_elevated:
+            acceptable_sources = CANONICAL_HIERARCHY[:2]  # Only CODEX keys
+    
+        # Scan hierarchy
+        for env_var in acceptable_sources:
+            token = os.environ.get(env_var)
+            if token:
+                is_valid, msg = validate_token(token)
+                if is_valid:
+                    return token, env_var
+    
+        # No token found
+        if required_elevated:
+>           raise TokenResolutionError(
+                "No elevated token available. Required scopes: "
+                "repo, workflow, actions:write, security_events. "
+                "Please set CODEX_MASTER_KEY or CODEX_BACKUP_KEY."
+            )
+E           scripts.ci._token_resolver.TokenResolutionError: No elevated token available. Required scopes: repo, workflow, actions:write, security_events. Please set CODEX_MASTER_KEY or CODEX_BACKUP_KEY.
+
+scripts/ci/_token_resolver.py:121: TokenResolutionError

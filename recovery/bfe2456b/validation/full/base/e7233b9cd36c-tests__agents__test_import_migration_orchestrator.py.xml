@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="21" time="7.350" timestamp="2026-10-23T04:16:00.078955+00:00" hostname="runnervm8k3b6"><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator" name="test_assess_imports_skips_already_migrated" time="0.016"><failure message="AssertionError: Module3_migrations must not be empty&#10;assert 2 == 0&#10; +  where 2 = len([ImportMigration(file_path='/tmp/tmpaminv_7u/module3.py', old_import='from training.model import Model', new_import='f...omentum=0.9, friction=0.3, impact=0.6, confidence=0.95, risk=0.1, urgency=0.8, optimization_score=0.02511188811188811)])">self = &lt;tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator object at 0x7fcf44f1c260&gt;
+orchestrator = &lt;agents.physics_orchestrator.ImportMigrationOrchestrator object at 0x7fcf44f1ecf0&gt;
+temp_repo = PosixPath('/tmp/tmpaminv_7u')
+
+    def test_assess_imports_skips_already_migrated(self, orchestrator, temp_repo):
+        """Test assessment skips files with already migrated imports."""
+        orchestrator.assess_imports(temp_repo)
+    
+        # module3.py should not contribute any migrations
+        module3_migrations = [m for m in orchestrator.migrations if "module3.py" in m.file_path]
+&gt;       assert len(module3_migrations) == 0, "Module3_migrations must not be empty"
+E       AssertionError: Module3_migrations must not be empty
+E       assert 2 == 0
+E        +  where 2 = len([ImportMigration(file_path='/tmp/tmpaminv_7u/module3.py', old_import='from training.model import Model', new_import='f...omentum=0.9, friction=0.3, impact=0.6, confidence=0.95, risk=0.1, urgency=0.8, optimization_score=0.02511188811188811)])
+
+tests/agents/test_import_migration_orchestrator.py:188: AssertionError</failure></testcase><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator" name="test_execute_migrations_actual" time="0.011" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator" name="test_execute_migrations_groups_by_file" time="0.009" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator" name="test_optimize_migration_plan_within_budget" time="0.010" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator" name="test_assess_imports" time="0.008" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator" name="test_optimize_migration_plan_minimal_budget" time="0.009" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator" name="test_migration_map_content" time="0.005" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator" name="test_deliberate_migrations" time="0.009" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator" name="test_execute_migrations_dry_run" time="0.009" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator" name="test_deliberate_migrations_empty_list" time="0.005" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator" name="test_orchestrator_initialization" time="0.005" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator" name="test_assess_imports_finds_correct_count" time="0.009"><failure message="AssertionError: Condition must be true&#10;assert 8 == 6">self = &lt;tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator object at 0x7fcf540e3e00&gt;
+orchestrator = &lt;agents.physics_orchestrator.ImportMigrationOrchestrator object at 0x7fcf44f1ec00&gt;
+temp_repo = PosixPath('/tmp/tmp72hz44ou')
+
+    def test_assess_imports_finds_correct_count(self, orchestrator, temp_repo):
+        """Test assessment finds correct number of deprecated imports."""
+        assessment = orchestrator.assess_imports(temp_repo)
+    
+        # module1.py has 3 deprecated imports
+        # module2.py has 2 deprecated imports
+        # module3.py has 0 (already migrated)
+        # nested.py has 1 deprecated import
+        # Total: 6 deprecated imports
+&gt;       assert assessment["deprecated_found"] == 6, "Condition must be true"
+E       AssertionError: Condition must be true
+E       assert 8 == 6
+
+tests/agents/test_import_migration_orchestrator.py:180: AssertionError</failure></testcase><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator" name="test_optimize_migration_plan_unlimited_budget" time="0.009" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationOrchestrator" name="test_assess_imports_handles_nested_directories" time="0.010" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigration" name="test_import_migration_initialization" time="0.005" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigration" name="test_properties_different_lengths" time="0.005" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigration" name="test_calculate_properties" time="0.005" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationWorkflow" name="test_workflow_with_no_deprecated_imports" time="0.006"><failure message="AssertionError: Condition must be true&#10;assert 2 == 0">self = &lt;tests.agents.test_import_migration_orchestrator.TestImportMigrationWorkflow object at 0x7fcf44f1e000&gt;
+
+        def test_workflow_with_no_deprecated_imports(self):
+            """Test workflow when repository has no deprecated imports."""
+            temp_dir = tempfile.mkdtemp()
+            repo_path = Path(temp_dir)
+    
+            # Create file with only modern imports
+            (repo_path / "modern.py").write_text("""
+            from training.model import Model
+            from models.classifier import Classifier
+    
+    def test():
+        pass
+    """)
+    
+            orchestrator = ImportMigrationOrchestrator()
+    
+            try:
+                # ASSESS
+                assessment = orchestrator.assess_imports(repo_path)
+&gt;               assert assessment["deprecated_found"] == 0, "Condition must be true"
+E               AssertionError: Condition must be true
+E               assert 2 == 0
+
+tests/agents/test_import_migration_orchestrator.py:401: AssertionError</failure></testcase><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationWorkflow" name="test_end_to_end_migration_workflow" time="0.010" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationWorkflow" name="test_workflow_preserves_file_structure" time="0.010" /><testcase classname="tests.agents.test_import_migration_orchestrator.TestImportMigrationWorkflow" name="test_multiple_migrations_same_file" time="0.010" /></testsuite></testsuites>

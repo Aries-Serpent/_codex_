@@ -1,0 +1,55 @@
+..........F...                                                           [100%]
+=================================== FAILURES ===================================
+___________ TestConcurrentMemoryAccess.test_concurrent_memory_reads ____________
+
+self = <tests.agents.test_load_and_concurrent.TestConcurrentMemoryAccess object at 0x7f36c1f080e0>
+temp_db = PosixPath('/tmp/tmparlgiv_w.db')
+
+    def test_concurrent_memory_reads(self, temp_db):
+        """Test multiple threads reading memories simultaneously."""
+        if not hasattr(AgentMemory, "__init__"):
+            pytest.skip("AgentMemory API not available")
+    
+        memory = AgentMemory(db_path=str(temp_db))
+    
+        # Pre-populate with data
+        if hasattr(memory, "add_memory"):
+            for i in range(100):
+                entry = MemoryEntry(
+                    memory_id=f"read_test_{i}",
+                    category="fact",
+                    content=f"Content {i}",
+                    context={},
+                )
+                memory.add_memory(entry)
+    
+        errors = []
+        results = []
+    
+        def read_memories(thread_id, count=50):
+            try:
+                for i in range(count):
+                    memory_id = f"read_test_{i % 100}"
+                    if hasattr(memory, "get_memory"):
+                        result = memory.get_memory(memory_id)
+                        results.append((thread_id, result))
+            except (IOError, OSError) as e:
+                errors.append(e)
+    
+        # Run 10 threads reading simultaneously
+        threads = []
+        for i in range(10):
+            t = threading.Thread(target=read_memories, args=(i,))
+            threads.append(t)
+            t.start()
+    
+        for t in threads:
+            t.join(timeout=30)
+    
+        assert len(errors) == 0, "Errors must not be empty"
+>       assert len(results) > 0, "Results must not be empty"
+E       AssertionError: Results must not be empty
+E       assert 0 > 0
+E        +  where 0 = len([])
+
+tests/agents/test_load_and_concurrent.py:113: AssertionError

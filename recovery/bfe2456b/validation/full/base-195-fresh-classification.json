@@ -1,0 +1,1886 @@
+{
+  "scope": "Fresh pinned PARTIAL collection evidence for each of the 195 historically reported baseline-error modules. Valid observations, not a completed collection or test-body execution.",
+  "counts": {
+    "collects_on_snapshot": 164,
+    "still_errors_on_snapshot": 28,
+    "unresolved_skipped_on_snapshot": 3
+  },
+  "modules": [
+    {
+      "module": "tests/analysis/test_audit_pipeline.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/analysis/test_external_search.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/analysis/test_external_web_search.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 8
+    },
+    {
+      "module": "tests/analysis/test_providers.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/atomic_diffs/test_track_a.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 43504,
+        "exception_line": 45689
+      }
+    },
+    {
+      "module": "tests/business_logic/test_continuous_learning_business_logic.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 41
+    },
+    {
+      "module": "tests/business_logic/test_workflow_orchestration_core.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 49
+    },
+    {
+      "module": "tests/callbacks/test_ndjson_logger.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/chaos/test_chaos_pipeline.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 14
+    },
+    {
+      "module": "tests/checkpoint/test_checkpoint_integrity_wiring.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/checkpoint/test_checkpoint_load_roundtrip.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/checkpoint/test_checkpoint_peft_state.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 45690,
+        "exception_line": 46916
+      }
+    },
+    {
+      "module": "tests/checkpoint/test_runmeta_enrichment.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/checkpointing/test_atomic_io.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/checkpointing/test_atomic_write.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/checkpointing/test_bestk.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 7
+    },
+    {
+      "module": "tests/checkpointing/test_canonical_json.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 4
+    },
+    {
+      "module": "tests/checkpointing/test_checkpoint_core_io.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/checkpointing/test_checkpoint_retention.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/checkpointing/test_checkpoint_schema_and_compat.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/checkpointing/test_meta_schema.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/checkpointing/test_resume_optimizer_rng_equivalence.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/checkpointing/test_retention_and_digest.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/checkpointing/test_rng_state_roundtrip.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/checkpointing/test_schema_v2_jcs_numbers.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/checkpointing/test_schema_v2_upgrade.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/cli/test_ast_cli.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 46917,
+        "exception_line": 48078
+      }
+    },
+    {
+      "module": "tests/cli/test_cli_checkpoint_validate.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/cli/test_cli_edge_cases_phase26.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 52
+    },
+    {
+      "module": "tests/cli/test_cli_manifest.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/cli/test_cli_manifest_init.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/cli/test_cli_manifest_validate.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/cli/test_cli_rag_comprehensive.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 48079,
+        "exception_line": 49262
+      }
+    },
+    {
+      "module": "tests/cli/test_cli_rag_enhancements.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 49263,
+        "exception_line": 50446
+      }
+    },
+    {
+      "module": "tests/cli/test_cli_tracking_decide.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/cli/test_codex_export_env.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/cli/test_codex_train_cli.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/cli/test_evaluate_comprehensive.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 50447,
+        "exception_line": 51622
+      }
+    },
+    {
+      "module": "tests/cli/test_evaluation_cli.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/cli/test_infer_cli_lora.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 51623,
+        "exception_line": 52828
+      }
+    },
+    {
+      "module": "tests/cli/test_main_comprehensive.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 33
+    },
+    {
+      "module": "tests/cli/test_metrics_cli_comprehensive.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 23
+    },
+    {
+      "module": "tests/cli/test_metrics_cli_duckdb_missing_dependency.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/cli/test_metrics_validate_tail_badge.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/cli/test_monitoring_cli.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/cli/test_ndjson_summary_cli.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/cli/test_plugins_cli.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 4
+    },
+    {
+      "module": "tests/cli/test_subcommands.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/cli/test_system_metrics_flag.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/cli/test_tokenizer_cli.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 5
+    },
+    {
+      "module": "tests/cli/test_train_cli.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/cli/test_train_comprehensive.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 52829,
+        "exception_line": 54010
+      }
+    },
+    {
+      "module": "tests/codex/test_training.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 54011,
+        "exception_line": 55205
+      }
+    },
+    {
+      "module": "tests/codex_ml/ast/core/test_config.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 81
+    },
+    {
+      "module": "tests/codex_ml/ast/core/test_exceptions.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 61
+    },
+    {
+      "module": "tests/codex_ml/ast/core/test_node.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 108
+    },
+    {
+      "module": "tests/codex_ml/ast/test_analyzers.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 22
+    },
+    {
+      "module": "tests/codex_ml/ast/test_config.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 15
+    },
+    {
+      "module": "tests/codex_ml/ast/test_graph.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 23
+    },
+    {
+      "module": "tests/codex_ml/ast/test_node.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 25
+    },
+    {
+      "module": "tests/codex_ml/ast/test_storage.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 12
+    },
+    {
+      "module": "tests/codex_ml/data/test_csv.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/data/test_jsonl.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/eval/test_datasets.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 55206,
+        "exception_line": 55868
+      }
+    },
+    {
+      "module": "tests/codex_ml/eval/test_fallback.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 25
+    },
+    {
+      "module": "tests/codex_ml/eval/test_runner.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 55869,
+        "exception_line": 56531
+      }
+    },
+    {
+      "module": "tests/codex_ml/events/test_base.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 25
+    },
+    {
+      "module": "tests/codex_ml/logging/test_experiment.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/logging/test_permissions.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 6
+    },
+    {
+      "module": "tests/codex_ml/logging/test_run_logger.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/codex_ml/logging/test_run_metadata.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/codex_ml/logging/test_session_logger.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/codex_ml/logging/test_unified_logger.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/metrics/test_base.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 10
+    },
+    {
+      "module": "tests/codex_ml/metrics/test_classification.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 32
+    },
+    {
+      "module": "tests/codex_ml/metrics/test_reward.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 24
+    },
+    {
+      "module": "tests/codex_ml/metrics/test_streaming.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 13
+    },
+    {
+      "module": "tests/codex_ml/metrics/test_unified_api.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 57
+    },
+    {
+      "module": "tests/codex_ml/registry/test_base.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/codex_ml/registry/test_mlflow_registry.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/codex_ml/registry/test_registry_models.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 56532,
+        "exception_line": 57719
+      }
+    },
+    {
+      "module": "tests/codex_ml/registry/test_tokenizers.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/codex_ml/test_batching.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 15
+    },
+    {
+      "module": "tests/codex_ml/test_caching.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 21
+    },
+    {
+      "module": "tests/codex_ml/test_checkpoint_core.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 6
+    },
+    {
+      "module": "tests/codex_ml/test_checkpoint_utils.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/test_cli_train_config_bridge.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "unresolved_skipped_on_snapshot",
+      "skip": {
+        "reason": "could not import 'mlflow': No module named 'mlflow'",
+        "line": 85019
+      }
+    },
+    {
+      "module": "tests/codex_ml/test_cli_utils_run_context.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/test_codex_env_cli.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 4
+    },
+    {
+      "module": "tests/codex_ml/test_codex_structured_logging.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 28
+    },
+    {
+      "module": "tests/codex_ml/test_config_loader.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/test_config_schema.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/codex_ml/test_data_comprehensive.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 60
+    },
+    {
+      "module": "tests/codex_ml/test_data_registry_entrypoints.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/codex_ml/test_data_utils_and_datasets.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/codex_ml/test_dataloader_determinism.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/test_env_check_cli.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/test_eval_minimal_cli.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/test_eval_smoke.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 57720,
+        "exception_line": 58941
+      }
+    },
+    {
+      "module": "tests/codex_ml/test_experiment_logging.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/codex_ml/test_hf_loader.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 58942,
+        "exception_line": 60160
+      }
+    },
+    {
+      "module": "tests/codex_ml/test_inference_integration.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 17
+    },
+    {
+      "module": "tests/codex_ml/test_inference_server.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 35
+    },
+    {
+      "module": "tests/codex_ml/test_ingest.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 30
+    },
+    {
+      "module": "tests/codex_ml/test_logging_registry.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/test_main.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 31
+    },
+    {
+      "module": "tests/codex_ml/test_metrics_base.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 28
+    },
+    {
+      "module": "tests/codex_ml/test_metrics_comprehensive.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 66
+    },
+    {
+      "module": "tests/codex_ml/test_metrics_core_and_eval_tool.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 5
+    },
+    {
+      "module": "tests/codex_ml/test_metrics_logger.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/test_mlflow_wrapper_stub.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/test_model_factory.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 60161,
+        "exception_line": 61365
+      }
+    },
+    {
+      "module": "tests/codex_ml/test_rag_comprehensive.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 61366,
+        "exception_line": 62581
+      }
+    },
+    {
+      "module": "tests/codex_ml/test_registry_basic.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/test_reproducibility_utils.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/codex_ml/test_resilience.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 19
+    },
+    {
+      "module": "tests/codex_ml/test_simple_dataset.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 62582,
+        "exception_line": 63769
+      }
+    },
+    {
+      "module": "tests/codex_ml/test_tokenization_adapters.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 63770,
+        "exception_line": 65956
+      }
+    },
+    {
+      "module": "tests/codex_ml/test_tokenization_basic.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 65957,
+        "exception_line": 67158
+      }
+    },
+    {
+      "module": "tests/codex_ml/test_train_minimal_cli.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/codex_ml/tokenization/test_api.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 70732,
+        "exception_line": 71928
+      }
+    },
+    {
+      "module": "tests/codex_ml/tokenization/test_protocols.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/codex_ml/tokenization/test_types.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/config/test_config_schema.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/config/test_config_settings.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/config/test_deprecation.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 10
+    },
+    {
+      "module": "tests/config/test_override_propagation.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "unresolved_skipped_on_snapshot",
+      "skip": {
+        "reason": "--override-file requires the Hydra CLI path; typer CLI is active",
+        "line": 85024
+      }
+    },
+    {
+      "module": "tests/config/test_training_config_yaml.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/config/test_validate_config.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 5
+    },
+    {
+      "module": "tests/configuration/test_config_audit_helpers.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 6
+    },
+    {
+      "module": "tests/configuration/test_hydra_override_propagation.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/configuration/test_hydra_validation.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 7
+    },
+    {
+      "module": "tests/connectors/test_local_connector.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/connectors/test_registry.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/connectors/test_remote.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/data/test_cache.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 5
+    },
+    {
+      "module": "tests/data/test_data_cache.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/data/test_data_loaders_comprehensive.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 37
+    },
+    {
+      "module": "tests/data/test_data_shard_integrity.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/data/test_datamodule_determinism.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/data/test_dataset_loaders_extended.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "unresolved_skipped_on_snapshot",
+      "skip": {
+        "reason": "could not import 'h5py': No module named 'h5py'",
+        "line": 85028
+      }
+    },
+    {
+      "module": "tests/data/test_dataset_validation.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 8
+    },
+    {
+      "module": "tests/data/test_load_dataset.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/data/test_loader_comprehensive.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 25
+    },
+    {
+      "module": "tests/data/test_loaders.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 5
+    },
+    {
+      "module": "tests/data/test_local_files.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 9
+    },
+    {
+      "module": "tests/data/test_make_splits.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/data/test_manifest.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/data/test_migration.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 21
+    },
+    {
+      "module": "tests/data/test_prepare_data_reproducible.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/data/test_registry_manifest.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/data/test_safety_filter.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/data/test_safety_filter_split.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/data/test_split_comprehensive.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 26
+    },
+    {
+      "module": "tests/data/test_split_dataset.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/data/test_split_dataset_checksum.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/data/test_split_dataset_deterministic.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/data/test_split_manifest.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/data/test_split_seed.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/data/test_streaming_datamodule.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/data/test_validation_comprehensive.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 26
+    },
+    {
+      "module": "tests/data/test_validator.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 3
+    },
+    {
+      "module": "tests/deployment/test_api_integration.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 71929,
+        "exception_line": 73115
+      }
+    },
+    {
+      "module": "tests/deployment/test_cloud.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/detectors/test_aggregate.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/detectors/test_capability_detectors.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 25
+    },
+    {
+      "module": "tests/detectors/test_core.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/detectors/test_integration_card.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/detectors/test_unified_training.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/distributed/test_ddp_env_optin_smoke.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/distributed/test_minimal_distributed.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/docs_agent/test_integration.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 73116,
+        "exception_line": 74308
+      }
+    },
+    {
+      "module": "tests/eval/test_bleu_rouge_fallbacks.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 74311,
+        "exception_line": 76259
+      }
+    },
+    {
+      "module": "tests/eval/test_datasets_hf_disk.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 76260,
+        "exception_line": 78208
+      }
+    },
+    {
+      "module": "tests/eval/test_eval_cli_passthrough.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/eval/test_eval_provenance_capture.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/eval/test_eval_runner_max_samples.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 78209,
+        "exception_line": 80157
+      }
+    },
+    {
+      "module": "tests/eval/test_eval_runner_smoke.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 80158,
+        "exception_line": 82106
+      }
+    },
+    {
+      "module": "tests/eval/test_evaluate_dataloader_helper.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 82107,
+        "exception_line": 83328
+      }
+    },
+    {
+      "module": "tests/eval/test_evaluation_metrics.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/eval/test_evaluation_reproducible.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/eval/test_metric_registry_registration.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/eval/test_metrics_correctness.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 4
+    },
+    {
+      "module": "tests/eval/test_metrics_text_values.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/eval/test_reasoning_metrics.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 15
+    },
+    {
+      "module": "tests/eval/test_registry_determinism.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/eval/test_run_unit_tests.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/eval/test_synthetic_alignment.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 1
+    },
+    {
+      "module": "tests/features/test_feature_store_complete.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 10
+    },
+    {
+      "module": "tests/github/test_gh_api_pagination_cache.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/inference/test_inference_pipeline.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "still_errors_on_snapshot",
+      "error": {
+        "type": "RecursionError",
+        "header_line": 83329,
+        "exception_line": 84545
+      }
+    },
+    {
+      "module": "tests/ingestion/test_file_ingestor.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    },
+    {
+      "module": "tests/ingestion/test_io_text.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 8
+    },
+    {
+      "module": "tests/ingestion/test_split.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 6
+    },
+    {
+      "module": "tests/ingestion/test_utils.py",
+      "historical_base_error": "RecursionError",
+      "snapshot_revision": "70798e17f0bb4463413684eddddd62358faa89d6",
+      "evidence": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "fresh_collection_complete": false,
+      "classification": "collects_on_snapshot",
+      "actual_node_count": 2
+    }
+  ]
+}

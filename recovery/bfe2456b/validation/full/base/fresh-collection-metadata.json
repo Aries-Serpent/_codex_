@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/tmp/bfe2456b-full-base-venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/",
+    "--collect-only",
+    "-q",
+    "-v",
+    "-rs",
+    "-p",
+    "no:cacheprovider"
+  ],
+  "worktree": "/tmp/bfe2456b-full-base",
+  "timeout_seconds": 180,
+  "kind": "collection_only_not_test_execution",
+  "log": "recovery/bfe2456b/validation/full/base/fresh-collection.log",
+  "exit": 2,
+  "status": "UNFINISHED",
+  "seconds": 184.18
+}
