@@ -1,0 +1,65 @@
+{
+  "commits_after_8e057df0": [
+    {
+      "sha": "39c082bc2a2df123d4f1bb6549f18af8224c4a7c",
+      "author": "copilot-swe-agent[bot]",
+      "author_date": "2026-10-23T18:28:52Z",
+      "subject": "Apply remaining changes",
+      "parents": "8e057df0788dc59a8a516756c5d386a5320d658f",
+      "files": [
+        ".codex/campaign_metrics.jsonl",
+        ".codex/session_startup_packet.json",
+        "recovery/bfe2456b/validation/focused/junit.xml"
+      ],
+      "touches_workflows": false,
+      "touches_src": false,
+      "touches_tests": false
+    },
+    {
+      "sha": "dfa79dc6df45b9dc29ea7e0658296df174f7105a",
+      "author": "copilot-swe-agent[bot]",
+      "author_date": "2026-10-23T18:57:53Z",
+      "subject": "Apply remaining changes",
+      "parents": "39c082bc2a2df123d4f1bb6549f18af8224c4a7c",
+      "files": [
+        ".codex/session_startup_packet.json"
+      ],
+      "touches_workflows": false,
+      "touches_src": false,
+      "touches_tests": false
+    },
+    {
+      "sha": "be91ba824ccd2a6b6a9b155b415daee4f96b7933",
+      "author": "copilot-swe-agent[bot]",
+      "author_date": "2026-10-23T20:54:29Z",
+      "subject": "Fix tautological CLI initialization assertions by requiring callable exports",
+      "parents": "dfa79dc6df45b9dc29ea7e0658296df174f7105a",
+      "files": [
+        "recovery/bfe2456b/validation/focused/junit-p1.xml",
+        "tests/test_code_quality_fixes.py"
+      ],
+      "touches_workflows": false,
+      "touches_src": false,
+      "touches_tests": true
+    },
+    {
+      "sha": "dd8bc37bac2329450095604a1e0e9e78a3f0b9db",
+      "author": "copilot-swe-agent[bot]",
+      "author_date": "2026-10-23T20:55:10Z",
+      "subject": "Apply remaining changes",
+      "parents": "be91ba824ccd2a6b6a9b155b415daee4f96b7933",
+      "files": [
+        ".codex/campaign_metrics.jsonl",
+        ".codex/session_startup_packet.json"
+      ],
+      "touches_workflows": false,
+      "touches_src": false,
+      "touches_tests": false
+    }
+  ],
+  "head_change_39c082bc_to_dfa79dc6": "dfa79dc6df45b9dc29ea7e0658296df174f7105a changed only .codex/session_startup_packet.json (one insertion, one deletion).",
+  "current_head_at_start": "dd8bc37bac2329450095604a1e0e9e78a3f0b9db",
+  "tested_revision": "be91ba824ccd2a6b6a9b155b415daee4f96b7933",
+  "current_head_differs_only_in": "dd8bc37b changed .codex/campaign_metrics.jsonl and .codex/session_startup_packet.json; no source/test/workflow changes.",
+  "attribution_limit": "Git records bot author and GitHub committer; it does not establish which external mechanism produced Apply remaining changes commits."
+}

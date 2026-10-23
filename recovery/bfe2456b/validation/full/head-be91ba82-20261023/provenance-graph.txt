@@ -1,0 +1,27 @@
+* be91ba82 Fix tautological CLI initialization assertions by requiring callable exports
+* dfa79dc6 Apply remaining changes
+* 39c082bc Apply remaining changes
+* 8e057df0 Apply remaining changes
+* 9dd45078 Apply remaining changes
+* 5eb6f635 Record continuation review results and background execution limits
+* 168b65a3 Publish regression diagnosis and frozen checkpoint of detached full-suite continuation
+* b64a17c8 Plan resumed full-suite execution and regression diagnosis
+* af4d19ac Publish pinned resumable shard evidence with explicit incomplete runs and coverage
+* 2b7a7a58 Plan pinned resumable full-suite comparison and coverage accounting
+* 722c1352 Apply remaining changes
+* 5c5f73f4 Apply remaining changes
+* 70798e17 Apply remaining changes
+* d368aaba Publish bounded base and snapshot test evidence with incomplete comparison gates
+* f507214f Record restored dependencies and isolated import diagnostics; restore startup baseline
+* 91759b88 Plan dependency restoration and base versus snapshot test comparison
+* dae88aea Apply remaining changes
+* 955cd997 Include exact base and snapshot static validation output
+* 91d0c1b2 Record non-workflow snapshot dependencies and base comparison
+*   e27434bb Preserve existing assigned-branch history alongside recovered snapshot
+|\
+| * a3f6e0a1 Apply remaining changes
+| * 4f69a9a5 Apply remaining changes
+| * d416cca9 Apply remaining changes
+| * d5233835 Apply remaining changes
+| * b7669de7 Apply remaining changes
+* 053409ad Snapshot non-workflow changes from session bfe2456b
