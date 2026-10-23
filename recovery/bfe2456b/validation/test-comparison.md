@@ -126,6 +126,27 @@ restored to base, on `copilot/recover-unpushed-session-commits-again`, with no P
 The workflow diff must remain empty. CI `action_required` runs were inspected
 read-only; none were approved or retried.
 
+### Continuation validation
+
+`full/resume-20261023/validation-results.json` records the exact checks and
+limits. Unique CSV identities/class counts, side totals, all 28 diagnostic
+records, paired selector symmetry, unchanged staged artifacts, publication scope,
+and startup/workflow invariants passed. All 243 distribution versions match
+the prior environment, with both dependency checks passing.
+
+A full local scan of all 649 frozen evidence/restoration files reported 61
+non-secret candidates: 14 Git hashes, 44 encoded Hypothesis statistics
+properties, and three synthetic fixture assertions. All were reviewed; the
+mandatory secret-scanning tool also passed. A scoped independent read-only
+review found **no significant issues**. The automated parallel wrapper instead
+failed before review with SIGTERM while generating the full branch diff; no
+CodeQL success is claimed.
+
+The full raw-evidence whitespace check exits 2 on 796 preserved log/XML/first40/
+source-diff diagnostics; structured metadata/documents pass with exit 0.
+These raw outputs are not silently cleaned. Background progress after the
+frozen checkpoint is deliberately not included in the published counts.
+
 ## Pinned resumable comparison: 2026-10-23
 
 The new execution evidence is under `full/`. Earlier observations below remain
