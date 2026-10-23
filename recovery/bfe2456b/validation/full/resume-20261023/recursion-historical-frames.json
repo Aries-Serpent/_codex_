@@ -1,0 +1,2078 @@
+{
+  "modules": [
+    {
+      "module": "tests/atomic_diffs/test_track_a.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        43504,
+        45689
+      ],
+      "first40": [
+        "_____________ ERROR collecting tests/atomic_diffs/test_track_a.py ______________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/atomic_diffs/test_track_a.py:16: in <module>",
+        "    pytest.importorskip(\"transformers\")",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "<frozen importlib._bootstrap>:1387: in _gcd_import",
+        "    ???",
+        "<frozen importlib._bootstrap>:1360: in _find_and_load",
+        "    ???",
+        "<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap>:935: in _load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???",
+        "transformers/__init__.py:61: in <module>"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 119
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 119
+        },
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 119
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 118
+        },
+        {
+          "frame": "transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/checkpoint/test_checkpoint_peft_state.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        45690,
+        46916
+      ],
+      "first40": [
+        "_______ ERROR collecting tests/checkpoint/test_checkpoint_peft_state.py ________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/checkpoint/test_checkpoint_peft_state.py:29: in <module>",
+        "    pytest.importorskip(\"peft\")",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "<frozen importlib._bootstrap>:1387: in _gcd_import",
+        "    ???",
+        "<frozen importlib._bootstrap>:1360: in _find_and_load",
+        "    ???",
+        "<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap>:935: in _load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/peft/__init__.py:17: in <module>",
+        "    from .auto import (",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/peft/auto.py:21: in <module>",
+        "    from transformers import (",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 118
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 117
+        },
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 117
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 117
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/cli/test_ast_cli.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        46917,
+        48078
+      ],
+      "first40": [
+        "__________________ ERROR collecting tests/cli/test_ast_cli.py __________________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/cli/test_ast_cli.py:12: in <module>",
+        "    from codex.cli.ast_cli import get_adapter, main",
+        "src/codex/cli/__init__.py:16: in <module>",
+        "    from aries_serpent_core.cli import (  # noqa: F401",
+        "src/aries_serpent_core/cli/__init__.py:61: in <module>",
+        "    cli = _load_click_cli()",
+        "          ^^^^^^^^^^^^^^^^^",
+        "src/aries_serpent_core/cli/__init__.py:54: in _load_click_cli",
+        "    spec.loader.exec_module(module)",
+        "src/aries_serpent_core/cli.py:2998: in <module>",
+        "    _register_external_cli()",
+        "src/aries_serpent_core/cli.py:2153: in _register_external_cli",
+        "    _register_typer_app(",
+        "src/aries_serpent_core/cli.py:364: in _register_typer_app",
+        "    module = importlib.import_module(module_path)",
+        "             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/codex/cli_rag.py:8: in <module>",
+        "    _target = importlib.import_module(\"aries_serpent_core.cli_rag\")",
+        "              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/aries_serpent_core/cli_rag.py:31: in <module>",
+        "    from aries_serpent_core.rag.indexer import RAGIndexer",
+        "src/aries_serpent_core/rag/__init__.py:33: in <module>",
+        "    from .retriever import CachedRetriever, LRUCache, MultiIndexRetriever, Retriever",
+        "src/aries_serpent_core/rag/retriever.py:18: in <module>",
+        "    from sentence_transformers import SentenceTransformer",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/__init__.py:10: in <module>",
+        "    from sentence_transformers.backend import ("
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 111
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 110
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 110
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 110
+        },
+        {
+          "frame": "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/__init__.py:10: in <module>",
+          "count": 1
+        },
+        {
+          "frame": "transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/cli/test_cli_rag_comprehensive.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        48079,
+        49262
+      ],
+      "first40": [
+        "___________ ERROR collecting tests/cli/test_cli_rag_comprehensive.py ___________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/cli/test_cli_rag_comprehensive.py:27: in <module>",
+        "    from codex.cli_rag import _format_bytes, _validate_files, app",
+        "src/codex/cli_rag.py:8: in <module>",
+        "    _target = importlib.import_module(\"aries_serpent_core.cli_rag\")",
+        "              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/aries_serpent_core/cli_rag.py:46: in <module>",
+        "    from aries_serpent_core.rag.retriever import Retriever as RAGRetriever",
+        "src/aries_serpent_core/rag/__init__.py:33: in <module>",
+        "    from .retriever import CachedRetriever, LRUCache, MultiIndexRetriever, Retriever",
+        "src/aries_serpent_core/rag/retriever.py:18: in <module>",
+        "    from sentence_transformers import SentenceTransformer",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/__init__.py:10: in <module>",
+        "    from sentence_transformers.backend import (",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/backend/__init__.py:3: in <module>",
+        "    from .load import load_onnx_model, load_openvino_model",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/backend/load.py:7: in <module>",
+        "    from transformers.configuration_utils import PretrainedConfig",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 113
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 113
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 113
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 112
+        },
+        {
+          "frame": "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/__init__.py:10: in <module>",
+          "count": 1
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/cli/test_cli_rag_enhancements.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        49263,
+        50446
+      ],
+      "first40": [
+        "___________ ERROR collecting tests/cli/test_cli_rag_enhancements.py ____________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/cli/test_cli_rag_enhancements.py:22: in <module>",
+        "    from codex.cli_rag import app",
+        "src/codex/cli_rag.py:8: in <module>",
+        "    _target = importlib.import_module(\"aries_serpent_core.cli_rag\")",
+        "              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/aries_serpent_core/cli_rag.py:46: in <module>",
+        "    from aries_serpent_core.rag.retriever import Retriever as RAGRetriever",
+        "src/aries_serpent_core/rag/__init__.py:33: in <module>",
+        "    from .retriever import CachedRetriever, LRUCache, MultiIndexRetriever, Retriever",
+        "src/aries_serpent_core/rag/retriever.py:18: in <module>",
+        "    from sentence_transformers import SentenceTransformer",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/__init__.py:10: in <module>",
+        "    from sentence_transformers.backend import (",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/backend/__init__.py:3: in <module>",
+        "    from .load import load_onnx_model, load_openvino_model",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/backend/load.py:7: in <module>",
+        "    from transformers.configuration_utils import PretrainedConfig",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 113
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 113
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 113
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 112
+        },
+        {
+          "frame": "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/__init__.py:10: in <module>",
+          "count": 1
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/cli/test_evaluate_comprehensive.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        50447,
+        51622
+      ],
+      "first40": [
+        "__________ ERROR collecting tests/cli/test_evaluate_comprehensive.py ___________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/cli/test_evaluate_comprehensive.py:20: in <module>",
+        "    import codex_ml.cli.evaluate as evaluate",
+        "src/codex_ml/cli/evaluate.py:29: in <module>",
+        "    from codex_ml.registry.models import get_model",
+        "src/codex_ml/registry/models.py:5: in <module>",
+        "    from codex_ml.models.registry import (",
+        "src/codex_ml/models/registry.py:11: in <module>",
+        "    from codex_ml.peft.peft_adapter import apply_lora",
+        "src/codex_ml/peft/__init__.py:14: in <module>",
+        "    from .peft_adapter import DEFAULT_CFG, apply_lora",
+        "src/codex_ml/peft/peft_adapter.py:39: in <module>",
+        "    from peft import LoraConfig, get_peft_model",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/peft/__init__.py:17: in <module>",
+        "    from .auto import (",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/peft/auto.py:21: in <module>",
+        "    from transformers import (",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 114
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 114
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 114
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 113
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/cli/test_infer_cli_lora.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        51623,
+        52828
+      ],
+      "first40": [
+        "______________ ERROR collecting tests/cli/test_infer_cli_lora.py _______________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/cli/test_infer_cli_lora.py:13: in <module>",
+        "    import codex_ml.cli.infer as infer",
+        "src/codex_ml/cli/infer.py:41: in <module>",
+        "    from codex_ml.modeling.codex_model_loader import load_model_with_optional_lora",
+        "src/codex_ml/modeling/__init__.py:23: in <module>",
+        "    from .codex_model import CodexModel, LoraOptions",
+        "src/codex_ml/modeling/codex_model.py:15: in <module>",
+        "    from codex_ml.modeling.codex_model_loader import load_model_with_optional_lora",
+        "src/codex_ml/modeling/codex_model_loader.py:34: in <module>",
+        "    transformers, _HAS_TRANSFORMERS = optional_import(\"transformers\")",
+        "                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/codex_ml/utils/optional.py:36: in optional_import",
+        "    return importlib.import_module(name), True",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 116
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 115
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 115
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 115
+        },
+        {
+          "frame": "transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/cli/test_train_comprehensive.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        52829,
+        54010
+      ],
+      "first40": [
+        "____________ ERROR collecting tests/cli/test_train_comprehensive.py ____________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/cli/test_train_comprehensive.py:22: in <module>",
+        "    from codex_ml.cli import train",
+        "src/codex_ml/cli/train.py:41: in <module>",
+        "    from codex_ml.train_loop import run_training",
+        "src/codex_ml/train_loop.py:145: in <module>",
+        "    from codex_ml.models.registry import get_model as instantiate_model",
+        "src/codex_ml/models/registry.py:11: in <module>",
+        "    from codex_ml.peft.peft_adapter import apply_lora",
+        "src/codex_ml/peft/__init__.py:14: in <module>",
+        "    from .peft_adapter import DEFAULT_CFG, apply_lora",
+        "src/codex_ml/peft/peft_adapter.py:39: in <module>",
+        "    from peft import LoraConfig, get_peft_model",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/peft/__init__.py:17: in <module>",
+        "    from .auto import (",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/peft/auto.py:21: in <module>",
+        "    from transformers import (",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 114
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 113
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 113
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 113
+        },
+        {
+          "frame": "transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/codex/test_training.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        54011,
+        55205
+      ],
+      "first40": [
+        "________________ ERROR collecting tests/codex/test_training.py _________________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/codex/test_training.py:13: in <module>",
+        "    importlib.import_module(",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "<frozen importlib._bootstrap>:1387: in _gcd_import",
+        "    ???",
+        "<frozen importlib._bootstrap>:1360: in _find_and_load",
+        "    ???",
+        "<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap>:935: in _load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???",
+        "src/aries_serpent_core/training.py:50: in <module>",
+        "    from codex_ml.symbolic_pipeline import (  # noqa: E402",
+        "src/codex_ml/symbolic_pipeline.py:34: in <module>",
+        "    from codex_ml.tokenization import TokenizerAdapter",
+        "src/codex_ml/tokenization/__init__.py:10: in <module>",
+        "    from .api import _load_export as _lazy_load_export",
+        "src/codex_ml/tokenization/api.py:18: in <module>",
+        "    from codex_ml.interfaces.contracts import validate_tokenizer_contract  # noqa: E402",
+        "    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/codex_ml/interfaces/__init__.py:20: in <module>",
+        "    from .tokenizer import (",
+        "src/codex_ml/interfaces/tokenizer.py:38: in <module>",
+        "    from transformers import AutoTokenizer as _AutoTokenizer",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 115
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 114
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 114
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 114
+        },
+        {
+          "frame": "transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/codex_ml/eval/test_datasets.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        55206,
+        55868
+      ],
+      "first40": [
+        "____________ ERROR collecting tests/codex_ml/eval/test_datasets.py _____________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/codex_ml/eval/test_datasets.py:17: in <module>",
+        "    from codex_ml.eval.datasets import (",
+        "src/codex_ml/eval/__init__.py:26: in <module>",
+        "    from . import eval_runner",
+        "src/codex_ml/eval/eval_runner.py:38: in <module>",
+        "    from codex_ml.eval.datasets import DatasetBundle, load_dataset  # noqa: E402",
+        "    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/codex_ml/eval/datasets.py:31: in <module>",
+        "    from datasets import (  # type: ignore[attr-defined]",
+        "datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "datasets/__init__.py:65: in <module>",
+          "count": 155
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+          "count": 154
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/datasets/__init__.py:18: in <module>",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/codex_ml/eval/test_runner.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        55869,
+        56531
+      ],
+      "first40": [
+        "_____________ ERROR collecting tests/codex_ml/eval/test_runner.py ______________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/codex_ml/eval/test_runner.py:17: in <module>",
+        "    from codex_ml.eval.runner import (",
+        "src/codex_ml/eval/__init__.py:26: in <module>",
+        "    from . import eval_runner",
+        "src/codex_ml/eval/eval_runner.py:38: in <module>",
+        "    from codex_ml.eval.datasets import DatasetBundle, load_dataset  # noqa: E402",
+        "    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/codex_ml/eval/datasets.py:31: in <module>",
+        "    from datasets import (  # type: ignore[attr-defined]",
+        "datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "datasets/__init__.py:65: in <module>",
+          "count": 155
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+          "count": 154
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/datasets/__init__.py:18: in <module>",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/codex_ml/registry/test_registry_models.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        56532,
+        57719
+      ],
+      "first40": [
+        "_______ ERROR collecting tests/codex_ml/registry/test_registry_models.py _______",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/codex_ml/registry/test_registry_models.py:7: in <module>",
+        "    from codex_ml.registry import models",
+        "src/codex_ml/registry/models.py:5: in <module>",
+        "    from codex_ml.models.registry import (",
+        "src/codex_ml/models/registry.py:11: in <module>",
+        "    from codex_ml.peft.peft_adapter import apply_lora",
+        "src/codex_ml/peft/__init__.py:14: in <module>",
+        "    from .peft_adapter import DEFAULT_CFG, apply_lora",
+        "src/codex_ml/peft/peft_adapter.py:39: in <module>",
+        "    from peft import LoraConfig, get_peft_model",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/peft/__init__.py:17: in <module>",
+        "    from .auto import (",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/peft/auto.py:21: in <module>",
+        "    from transformers import (",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 114
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 114
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 114
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 113
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/codex_ml/test_eval_smoke.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        57720,
+        58941
+      ],
+      "first40": [
+        "______________ ERROR collecting tests/codex_ml/test_eval_smoke.py ______________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/codex_ml/test_eval_smoke.py:7: in <module>",
+        "    from codex_ml.eval import evaluator",
+        "src/codex_ml/eval/evaluator.py:24: in <module>",
+        "    transformers, _HAS_TRANSFORMERS = optional_import(\"transformers\")",
+        "                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/codex_ml/utils/optional.py:36: in optional_import",
+        "    return importlib.import_module(name), True",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 118
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 118
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 118
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 117
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/codex_ml/test_hf_loader.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        58942,
+        60160
+      ],
+      "first40": [
+        "______________ ERROR collecting tests/codex_ml/test_hf_loader.py _______________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/codex_ml/test_hf_loader.py:21: in <module>",
+        "    from codex_ml import hf_loader",
+        "<frozen importlib._bootstrap>:1412: in _handle_fromlist",
+        "    ???",
+        "src/codex_ml/__init__.py:135: in __getattr__",
+        "    return import_module(f\"codex_ml.{name}\")",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/codex_ml/hf_loader.py:39: in <module>",
+        "    transformers, _HAS_TRANSFORMERS = optional_import(\"transformers\")",
+        "                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/codex_ml/utils/optional.py:36: in optional_import",
+        "    return importlib.import_module(name), True",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 118
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 118
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 118
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 117
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/codex_ml/test_model_factory.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        60161,
+        61365
+      ],
+      "first40": [
+        "____________ ERROR collecting tests/codex_ml/test_model_factory.py _____________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/codex_ml/test_model_factory.py:7: in <module>",
+        "    from codex_ml.modeling import model_factory",
+        "src/codex_ml/modeling/__init__.py:23: in <module>",
+        "    from .codex_model import CodexModel, LoraOptions",
+        "src/codex_ml/modeling/codex_model.py:15: in <module>",
+        "    from codex_ml.modeling.codex_model_loader import load_model_with_optional_lora",
+        "src/codex_ml/modeling/codex_model_loader.py:34: in <module>",
+        "    transformers, _HAS_TRANSFORMERS = optional_import(\"transformers\")",
+        "                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/codex_ml/utils/optional.py:36: in optional_import",
+        "    return importlib.import_module(name), True",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 117
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 117
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 117
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 116
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/codex_ml/test_rag_comprehensive.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        61366,
+        62581
+      ],
+      "first40": [
+        "__________ ERROR collecting tests/codex_ml/test_rag_comprehensive.py ___________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/codex_ml/test_rag_comprehensive.py:17: in <module>",
+        "    importlib.import_module(\"codex.rag\")",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "<frozen importlib._bootstrap>:1387: in _gcd_import",
+        "    ???",
+        "<frozen importlib._bootstrap>:1360: in _find_and_load",
+        "    ???",
+        "<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap>:935: in _load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???",
+        "src/codex/rag/__init__.py:13: in <module>",
+        "    _target = importlib.import_module(\"aries_serpent_core.rag\")",
+        "              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "<frozen importlib._bootstrap>:1387: in _gcd_import",
+        "    ???",
+        "<frozen importlib._bootstrap>:1360: in _find_and_load",
+        "    ???"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 114
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 114
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 114
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 113
+        },
+        {
+          "frame": "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/__init__.py:10: in <module>",
+          "count": 1
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/codex_ml/test_simple_dataset.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        62582,
+        63769
+      ],
+      "first40": [
+        "____________ ERROR collecting tests/codex_ml/test_simple_dataset.py ____________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/codex_ml/test_simple_dataset.py:7: in <module>",
+        "    from codex_ml.data.simple_dataset import Sample, SimpleDataset",
+        "src/codex_ml/data/simple_dataset.py:17: in <module>",
+        "    from codex_ml.tokenization import base as token_base",
+        "src/codex_ml/tokenization/__init__.py:10: in <module>",
+        "    from .api import _load_export as _lazy_load_export",
+        "src/codex_ml/tokenization/api.py:18: in <module>",
+        "    from codex_ml.interfaces.contracts import validate_tokenizer_contract  # noqa: E402",
+        "    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/codex_ml/interfaces/__init__.py:20: in <module>",
+        "    from .tokenizer import (",
+        "src/codex_ml/interfaces/tokenizer.py:38: in <module>",
+        "    from transformers import AutoTokenizer as _AutoTokenizer",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 116
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 115
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 115
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 115
+        },
+        {
+          "frame": "transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/codex_ml/test_tokenization_adapters.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        63770,
+        65956
+      ],
+      "first40": [
+        "________ ERROR collecting tests/codex_ml/test_tokenization_adapters.py _________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/codex_ml/test_tokenization_adapters.py:14: in <module>",
+        "    transformers = pytest.importorskip(\"transformers\", reason=\"transformers not installed\")",
+        "                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "<frozen importlib._bootstrap>:1387: in _gcd_import",
+        "    ???",
+        "<frozen importlib._bootstrap>:1360: in _find_and_load",
+        "    ???",
+        "<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap>:935: in _load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 119
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 119
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 119
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 118
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/codex_ml/test_tokenization_basic.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        65957,
+        67158
+      ],
+      "first40": [
+        "__________ ERROR collecting tests/codex_ml/test_tokenization_basic.py __________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/codex_ml/test_tokenization_basic.py:7: in <module>",
+        "    from codex_ml.tokenization import base",
+        "src/codex_ml/tokenization/__init__.py:10: in <module>",
+        "    from .api import _load_export as _lazy_load_export",
+        "src/codex_ml/tokenization/api.py:18: in <module>",
+        "    from codex_ml.interfaces.contracts import validate_tokenizer_contract  # noqa: E402",
+        "    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/codex_ml/interfaces/__init__.py:20: in <module>",
+        "    from .tokenizer import (",
+        "src/codex_ml/interfaces/tokenizer.py:38: in <module>",
+        "    from transformers import AutoTokenizer as _AutoTokenizer",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 116
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 116
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 116
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 115
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/codex_ml/tokenization/test_api.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        70732,
+        71928
+      ],
+      "first40": [
+        "___________ ERROR collecting tests/codex_ml/tokenization/test_api.py ___________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/codex_ml/tokenization/test_api.py:3: in <module>",
+        "    from codex_ml.tokenization.api import (",
+        "src/codex_ml/tokenization/__init__.py:10: in <module>",
+        "    from .api import _load_export as _lazy_load_export",
+        "src/codex_ml/tokenization/api.py:18: in <module>",
+        "    from codex_ml.interfaces.contracts import validate_tokenizer_contract  # noqa: E402",
+        "    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/codex_ml/interfaces/__init__.py:20: in <module>",
+        "    from .tokenizer import (",
+        "src/codex_ml/interfaces/tokenizer.py:38: in <module>",
+        "    from transformers import AutoTokenizer as _AutoTokenizer",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 116
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 115
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 115
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 115
+        },
+        {
+          "frame": "transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/deployment/test_api_integration.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        71929,
+        73115
+      ],
+      "first40": [
+        "__________ ERROR collecting tests/deployment/test_api_integration.py ___________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/deployment/test_api_integration.py:13: in <module>",
+        "    from services.api.main import app",
+        "src/services/api/main.py:111: in <module>",
+        "    from codex_ml.peft.peft_adapter import apply_lora",
+        "src/codex_ml/peft/__init__.py:14: in <module>",
+        "    from .peft_adapter import DEFAULT_CFG, apply_lora",
+        "src/codex_ml/peft/peft_adapter.py:39: in <module>",
+        "    from peft import LoraConfig, get_peft_model",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/peft/__init__.py:17: in <module>",
+        "    from .auto import (",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/peft/auto.py:21: in <module>",
+        "    from transformers import (",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 116
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 115
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 115
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 115
+        },
+        {
+          "frame": "transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/docs_agent/test_integration.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        73116,
+        74310
+      ],
+      "first40": [
+        "____________ ERROR collecting tests/docs_agent/test_integration.py _____________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/docs_agent/test_integration.py:16: in <module>",
+        "    from codex.docs_agent import (",
+        "src/aries_serpent_core/docs_agent/__init__.py:14: in <module>",
+        "    from . import (",
+        "src/aries_serpent_core/docs_agent/semantic_indexer.py:27: in <module>",
+        "    from sentence_transformers import SentenceTransformer",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/__init__.py:10: in <module>",
+        "    from sentence_transformers.backend import (",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/backend/__init__.py:3: in <module>",
+        "    from .load import load_onnx_model, load_openvino_model",
+        "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/backend/load.py:7: in <module>",
+        "    from transformers.configuration_utils import PretrainedConfig",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 115
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 115
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 115
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 114
+        },
+        {
+          "frame": "../bfe2456b-full-snapshot-venv/lib/python3.12/site-packages/sentence_transformers/__init__.py:10: in <module>",
+          "count": 1
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/eval/test_bleu_rouge_fallbacks.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        74311,
+        76259
+      ],
+      "first40": [
+        "___________ ERROR collecting tests/eval/test_bleu_rouge_fallbacks.py ___________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/eval/test_bleu_rouge_fallbacks.py:13: in <module>",
+        "    pytest.importorskip(\"datasets\")",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "<frozen importlib._bootstrap>:1387: in _gcd_import",
+        "    ???",
+        "<frozen importlib._bootstrap>:1360: in _find_and_load",
+        "    ???",
+        "<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap>:935: in _load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???",
+        "datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???",
+        "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "datasets/__init__.py:65: in <module>",
+          "count": 158
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+          "count": 158
+        },
+        {
+          "frame": "datasets/__init__.py:18: in <module>",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/eval/test_datasets_hf_disk.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        76260,
+        78208
+      ],
+      "first40": [
+        "_____________ ERROR collecting tests/eval/test_datasets_hf_disk.py _____________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/eval/test_datasets_hf_disk.py:11: in <module>",
+        "    pytest.importorskip(\"datasets\")",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "<frozen importlib._bootstrap>:1387: in _gcd_import",
+        "    ???",
+        "<frozen importlib._bootstrap>:1360: in _find_and_load",
+        "    ???",
+        "<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap>:935: in _load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???",
+        "datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???",
+        "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "datasets/__init__.py:65: in <module>",
+          "count": 158
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+          "count": 158
+        },
+        {
+          "frame": "datasets/__init__.py:18: in <module>",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/eval/test_eval_runner_max_samples.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        78209,
+        80157
+      ],
+      "first40": [
+        "_________ ERROR collecting tests/eval/test_eval_runner_max_samples.py __________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/eval/test_eval_runner_max_samples.py:12: in <module>",
+        "    pytest.importorskip(\"datasets\")",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "<frozen importlib._bootstrap>:1387: in _gcd_import",
+        "    ???",
+        "<frozen importlib._bootstrap>:1360: in _find_and_load",
+        "    ???",
+        "<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap>:935: in _load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???",
+        "datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???",
+        "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "datasets/__init__.py:65: in <module>",
+          "count": 158
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+          "count": 158
+        },
+        {
+          "frame": "datasets/__init__.py:18: in <module>",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/eval/test_eval_runner_smoke.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        80158,
+        82106
+      ],
+      "first40": [
+        "____________ ERROR collecting tests/eval/test_eval_runner_smoke.py _____________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/eval/test_eval_runner_smoke.py:17: in <module>",
+        "    pytest.importorskip(\"datasets\")",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "<frozen importlib._bootstrap>:1387: in _gcd_import",
+        "    ???",
+        "<frozen importlib._bootstrap>:1360: in _find_and_load",
+        "    ???",
+        "<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap>:935: in _load_unlocked",
+        "    ???",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???",
+        "datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???",
+        "<frozen importlib._bootstrap>:488: in _call_with_frames_removed",
+        "    ???",
+        "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+        "    _real_spec.loader.exec_module(module)",
+        "<frozen importlib._bootstrap_external>:999: in exec_module",
+        "    ???"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "datasets/__init__.py:65: in <module>",
+          "count": 158
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/datasets/__init__.py:65: in <module>",
+          "count": 158
+        },
+        {
+          "frame": "datasets/__init__.py:18: in <module>",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/eval/test_evaluate_dataloader_helper.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        82107,
+        83328
+      ],
+      "first40": [
+        "________ ERROR collecting tests/eval/test_evaluate_dataloader_helper.py ________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/eval/test_evaluate_dataloader_helper.py:13: in <module>",
+        "    from codex_ml.eval import evaluator",
+        "src/codex_ml/eval/evaluator.py:24: in <module>",
+        "    transformers, _HAS_TRANSFORMERS = optional_import(\"transformers\")",
+        "                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "src/codex_ml/utils/optional.py:36: in optional_import",
+        "    return importlib.import_module(name), True",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/importlib/__init__.py:90: in import_module",
+        "    return _bootstrap._gcd_import(name[level:], package, level)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 118
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 118
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 118
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 117
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    },
+    {
+      "module": "tests/inference/test_inference_pipeline.py",
+      "historical_log": "recovery/bfe2456b/validation/full/snapshot/fresh-collection.log",
+      "line_interval": [
+        83329,
+        85125
+      ],
+      "first40": [
+        "_________ ERROR collecting tests/inference/test_inference_pipeline.py __________",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:441: in __str__",
+        "    return self._str",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_str'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:555: in drive",
+        "    return self._drv",
+        "           ^^^^^^^^^",
+        "E   AttributeError: 'PosixPath' object has no attribute '_drv'",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "tests/inference/test_inference_pipeline.py:15: in <module>",
+        "    from scripts import inference_pipeline as pipeline",
+        "scripts/inference_pipeline.py:63: in <module>",
+        "    from transformers import AutoModelForCausalLM, AutoTokenizer",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^",
+        "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+        "    spec.loader.exec_module(module)",
+        "transformers/__init__.py:61: in <module>",
+        "    _real = _load_real_module()",
+        "            ^^^^^^^^^^^^^^^^^^^"
+      ],
+      "repeated_frames": [
+        {
+          "frame": "transformers/__init__.py:61: in <module>",
+          "count": 119
+        },
+        {
+          "frame": "transformers/__init__.py:40: in _load_real_module",
+          "count": 118
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:61: in <module>",
+          "count": 118
+        },
+        {
+          "frame": "/home/runner/work/_codex_/_codex_/transformers/__init__.py:40: in _load_real_module",
+          "count": 118
+        },
+        {
+          "frame": "transformers/__init__.py:21: in _load_real_module",
+          "count": 1
+        }
+      ],
+      "publication_checkout_frame_observed": true,
+      "relative_worktree_frame_observed": true,
+      "interpretation": "Repeated root compatibility-shim imports across checkout roots; not proof of a circular import inside src/. Lazy pathlib cache misses are incidental to deep recursion."
+    }
+  ],
+  "count": 28,
+  "scope": "Historical repeated frames, not falsely presented as new isolated traceback."
+}

@@ -1,0 +1,47 @@
+..................F.FE.                                                  [100%]
+==================================== ERRORS ====================================
+____ ERROR at setup of TestRunTraining.test_run_training_called_with_config ____
+
+    @pytest.fixture
+    def mock_hydra_config():
+        """Create mock Hydra config."""
+        return {
+            "model": {"name": "test-model", "hidden_size": 128},
+            "training": {"epochs": 5, "batch_size": 16, "learning_rate": 1e-4},
+            "data": {"train_path": "/data/train.jsonl", "val_path": "/data/val.jsonl"},
+            "seed": 42,
+>           "output_dir": os.path.join(tempfile.gettempdir(), "output"),
+                          ^^
+        }
+E       NameError: name 'os' is not defined. Did you forget to import 'os'
+
+tests/cli/test_train_comprehensive.py:35: NameError
+=================================== FAILURES ===================================
+______________________ TestToPath.test_to_path_with_path _______________________
+
+self = <tests.cli.test_train_comprehensive.TestToPath object at 0x7f1745ec2b10>
+
+    def test_to_path_with_path(self):
+        """Test _to_path with Path returns Path."""
+        if hasattr(train, "_to_path"):
+>           result = train._to_path(Path(os.path.join(tempfile.gettempdir(), "test")))
+                                         ^^
+E           NameError: name 'os' is not defined. Did you forget to import 'os'
+
+tests/cli/test_train_comprehensive.py:73: NameError
+_____________________ TestToPath.test_to_path_with_string ______________________
+
+self = <tests.cli.test_train_comprehensive.TestToPath object at 0x7f1745ec2720>
+
+    def test_to_path_with_string(self):
+        """Test _to_path with string returns Path."""
+        if hasattr(train, "_to_path"):
+>           result = train._to_path(os.path.join(tempfile.gettempdir(), "test"))
+                                    ^^
+E           NameError: name 'os' is not defined. Did you forget to import 'os'
+
+tests/cli/test_train_comprehensive.py:67: NameError
+=========================== short test summary info ============================
+FAILED tests/cli/test_train_comprehensive.py::TestToPath::test_to_path_with_path - NameError: name 'os' is not defined. Did you forget to import 'os'
+FAILED tests/cli/test_train_comprehensive.py::TestToPath::test_to_path_with_string - NameError: name 'os' is not defined. Did you forget to import 'os'
+ERROR tests/cli/test_train_comprehensive.py::TestRunTraining::test_run_training_called_with_config - NameError: name 'os' is not defined. Did you forget to import 'os'

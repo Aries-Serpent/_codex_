@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="39" time="1.621" timestamp="2026-10-23T15:11:59.223631+00:00" hostname="runnervm8k3b6"><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestValidationSummary" name="test_cleanup_validation_ready" time="0.004"><failure message="AssertionError: Documentation files missing&#10;assert False">self = &lt;tests.cleanup_validation.test_cleanup_validation.TestValidationSummary object at 0x7feb338c42f0&gt;
+
+    def test_cleanup_validation_ready(self):
+        """Verify cleanup validation infrastructure is ready."""
+        # Verify test suite
+        assert Path("tests/cleanup_validation").is_dir(), "Condition must be true"
+        assert Path("tests/cleanup_validation/test_cleanup_validation.py").exists(), "Condition must be true"
+    
+        # Verify scripts
+        scripts_ok = all(
+            Path(s).exists() and (Path(s).stat().st_mode &amp; 0o111)
+            for s in [
+                "scripts/validate_cleanup.sh",
+                "scripts/pre_cleanup_validation.sh",
+                "scripts/post_cleanup_validation.sh",
+            ]
+        )
+        assert scripts_ok, "Some scripts missing or not executable"
+    
+        # Verify documentation
+        docs_ok = all(
+            Path(d).exists()
+            for d in [
+                "docs/cleanup_validation_guide.md",
+                "CLEANUP_VALIDATION_INFRASTRUCTURE.md",
+            ]
+        )
+&gt;       assert docs_ok, "Documentation files missing"
+E       AssertionError: Documentation files missing
+E       assert False
+
+tests/cleanup_validation/test_cleanup_validation.py:331: AssertionError</failure></testcase><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationContent" name="test_requirements_dev_not_empty" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationContent" name="test_pyproject_has_project_name" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationContent" name="test_pytest_ini_valid_format" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationContent" name="test_mypy_ini_valid_format" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationContent" name="test_pyproject_has_dependencies" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationContent" name="test_requirements_not_empty" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestValidationScripts" name="test_post_cleanup_validation_script_exists" time="0.001" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestValidationScripts" name="test_pre_cleanup_script_executable" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestValidationScripts" name="test_post_cleanup_script_executable" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestValidationScripts" name="test_pre_cleanup_validation_script_exists" time="0.001" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestValidationScripts" name="test_validate_cleanup_script_executable" time="0.001" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestValidationScripts" name="test_validate_cleanup_script_exists" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestCleanupValidationIntegration" name="test_validation_infrastructure_complete" time="0.002"><failure message="AssertionError: Documentation not found: CLEANUP_VALIDATION_INFRASTRUCTURE.md&#10;assert False&#10; +  where False = exists()&#10; +    where exists = PosixPath('CLEANUP_VALIDATION_INFRASTRUCTURE.md').exists&#10; +      where PosixPath('CLEANUP_VALIDATION_INFRASTRUCTURE.md') = Path('CLEANUP_VALIDATION_INFRASTRUCTURE.md')">self = &lt;tests.cleanup_validation.test_cleanup_validation.TestCleanupValidationIntegration object at 0x7feb3386f9b0&gt;
+
+    def test_validation_infrastructure_complete(self):
+        """Verify validation infrastructure is complete."""
+        # Check test suite
+        test_file = Path("tests/cleanup_validation/test_cleanup_validation.py")
+        assert test_file.exists(), "Condition must be true"
+        content = test_file.read_text()
+        assert "def test_" in content, "No tests found in validation file"
+    
+        # Check scripts
+        scripts = [
+            "scripts/validate_cleanup.sh",
+            "scripts/pre_cleanup_validation.sh",
+            "scripts/post_cleanup_validation.sh",
+        ]
+        for script in scripts:
+            path = Path(script)
+            assert path.exists(), f"Script not found: {script}"
+            assert path.stat().st_mode &amp; 0o111, f"Script not executable: {script}"
+    
+        # Check documentation
+        docs = [
+            "docs/cleanup_validation_guide.md",
+            "CLEANUP_VALIDATION_INFRASTRUCTURE.md",
+        ]
+        for doc in docs:
+&gt;           assert Path(doc).exists(), f"Documentation not found: {doc}"
+E           AssertionError: Documentation not found: CLEANUP_VALIDATION_INFRASTRUCTURE.md
+E           assert False
+E            +  where False = exists()
+E            +    where exists = PosixPath('CLEANUP_VALIDATION_INFRASTRUCTURE.md').exists
+E            +      where PosixPath('CLEANUP_VALIDATION_INFRASTRUCTURE.md') = Path('CLEANUP_VALIDATION_INFRASTRUCTURE.md')
+
+tests/cleanup_validation/test_cleanup_validation.py:280: AssertionError</failure></testcase><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestCleanupValidationIntegration" name="test_all_critical_files_exist" time="0.002"><failure message="AssertionError: Missing critical files: ['CLEANUP_VALIDATION_INFRASTRUCTURE.md']&#10;assert not ['CLEANUP_VALIDATION_INFRASTRUCTURE.md']">self = &lt;tests.cleanup_validation.test_cleanup_validation.TestCleanupValidationIntegration object at 0x7feb3386f560&gt;
+
+    def test_all_critical_files_exist(self):
+        """Verify all critical files for cleanup validation exist."""
+        critical_files = [
+            "pytest.ini",
+            "mypy.ini",
+            "pyproject.toml",
+            "requirements.txt",
+            ".editorconfig",
+            ".pre-commit-config.yaml",
+            "tests/cleanup_validation/__init__.py",
+            "tests/cleanup_validation/test_cleanup_validation.py",
+            "scripts/validate_cleanup.sh",
+            "scripts/pre_cleanup_validation.sh",
+            "scripts/post_cleanup_validation.sh",
+            "docs/cleanup_validation_guide.md",
+            "CLEANUP_VALIDATION_INFRASTRUCTURE.md",
+        ]
+    
+        missing = [f for f in critical_files if not Path(f).exists()]
+&gt;       assert not missing, f"Missing critical files: {missing}"
+E       AssertionError: Missing critical files: ['CLEANUP_VALIDATION_INFRASTRUCTURE.md']
+E       assert not ['CLEANUP_VALIDATION_INFRASTRUCTURE.md']
+
+tests/cleanup_validation/test_cleanup_validation.py:253: AssertionError</failure></testcase><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestCleanupValidationIntegration" name="test_directory_structure_valid" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationLoading" name="test_pytest_ini_has_markers" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationLoading" name="test_mypy_ini_exists" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationLoading" name="test_pre_commit_config_exists" time="0.001" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationLoading" name="test_mypy_ini_has_python_version" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationLoading" name="test_pytest_ini_exists" time="0.001" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationLoading" name="test_pyproject_toml_exists" time="0.001" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationLoading" name="test_requirements_dev_exists" time="0.001" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationLoading" name="test_pyproject_toml_has_build_system" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationLoading" name="test_pytest_ini_has_pythonpath" time="0.001" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationLoading" name="test_editorconfig_exists" time="0.001" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationLoading" name="test_requirements_txt_exists" time="0.001" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestConfigurationLoading" name="test_requirements_test_exists" time="0.001" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestDirectoryStructure" name="test_docs_directory_exists" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestDirectoryStructure" name="test_tests_directory_exists" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestDirectoryStructure" name="test_src_directory_exists" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestDirectoryStructure" name="test_cleanup_validation_directory_exists" time="0.001" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestDirectoryStructure" name="test_src_has_init" time="0.002"><failure message="AssertionError: src/__init__.py not found&#10;assert False&#10; +  where False = exists()&#10; +    where exists = PosixPath('src/__init__.py').exists&#10; +      where PosixPath('src/__init__.py') = Path('src/__init__.py')">self = &lt;tests.cleanup_validation.test_cleanup_validation.TestDirectoryStructure object at 0x7feb3386d700&gt;
+
+    def test_src_has_init(self):
+        """Verify src/ has __init__.py."""
+&gt;       assert Path("src/__init__.py").exists(), "src/__init__.py not found"
+E       AssertionError: src/__init__.py not found
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('src/__init__.py').exists
+E        +      where PosixPath('src/__init__.py') = Path('src/__init__.py')
+
+tests/cleanup_validation/test_cleanup_validation.py:149: AssertionError</failure></testcase><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestDirectoryStructure" name="test_cleanup_validation_tests_exist" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestDirectoryStructure" name="test_scripts_directory_exists" time="0.001" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestDocumentation" name="test_cleanup_validation_guide_has_content" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestDocumentation" name="test_cleanup_validation_infrastructure_doc_exists" time="0.002"><failure message="AssertionError: Condition must be true&#10;assert False&#10; +  where False = exists()&#10; +    where exists = PosixPath('CLEANUP_VALIDATION_INFRASTRUCTURE.md').exists&#10; +      where PosixPath('CLEANUP_VALIDATION_INFRASTRUCTURE.md') = Path('CLEANUP_VALIDATION_INFRASTRUCTURE.md')">self = &lt;tests.cleanup_validation.test_cleanup_validation.TestDocumentation object at 0x7feb3386e870&gt;
+
+    def test_cleanup_validation_infrastructure_doc_exists(self):
+        """Verify cleanup infrastructure doc exists."""
+&gt;       assert Path("CLEANUP_VALIDATION_INFRASTRUCTURE.md").exists(), "Condition must be true"
+E       AssertionError: Condition must be true
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('CLEANUP_VALIDATION_INFRASTRUCTURE.md').exists
+E        +      where PosixPath('CLEANUP_VALIDATION_INFRASTRUCTURE.md') = Path('CLEANUP_VALIDATION_INFRASTRUCTURE.md')
+
+tests/cleanup_validation/test_cleanup_validation.py:213: AssertionError</failure></testcase><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestDocumentation" name="test_cleanup_validation_guide_exists" time="0.002" /><testcase classname="tests.cleanup_validation.test_cleanup_validation.TestDocumentation" name="test_infrastructure_doc_has_content" time="0.002"><failure message="FileNotFoundError: [Errno 2] No such file or directory: 'CLEANUP_VALIDATION_INFRASTRUCTURE.md'">self = &lt;tests.cleanup_validation.test_cleanup_validation.TestDocumentation object at 0x7feb3386f110&gt;
+
+    def test_infrastructure_doc_has_content(self):
+        """Verify infrastructure doc has meaningful content."""
+&gt;       content = Path("CLEANUP_VALIDATION_INFRASTRUCTURE.md").read_text()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/cleanup_validation/test_cleanup_validation.py:222: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('CLEANUP_VALIDATION_INFRASTRUCTURE.md'), mode = 'r'
+buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+&gt;       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'CLEANUP_VALIDATION_INFRASTRUCTURE.md'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:1013: FileNotFoundError</failure></testcase></testsuite></testsuites>

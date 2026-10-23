@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "<string>", line 3, in <module>
+  File "/tmp/bfe2456b-resume-base/src/agents/quantum_game_theory.py", line 1327, in run_simulation
+    "final_blue_payoff": round_results[-1]["blue_payoff"],
+                         ~~~~~~~~~~~~~^^^^
+IndexError: list index out of range

@@ -1,0 +1,10 @@
+{
+  "returned": {
+    "mode": "quantum",
+    "num_rounds": 0,
+    "learning_rate": 0.1,
+    "rounds": [],
+    "final_blue_payoff": 0.0,
+    "final_red_payoff": 0.0
+  }
+}

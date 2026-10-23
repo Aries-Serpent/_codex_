@@ -1,5 +1,131 @@
 # Test outcome comparison
 
+## Latest continuation: 2026-10-23 (detached execution)
+
+**Not ready. Neither full run is established complete.** New evidence is under
+`full/resume-20261023/`. Its `checkpoint-summary.json` and
+`checkpoint-background-manifest.json` describe the frozen publication checkpoint;
+later local background progress is not silently represented as published evidence.
+The earlier sections below remain historical.
+
+| Section | Frozen continuation checkpoint |
+|---|---|
+| Regression | Reproduces: base pytest exit 0, snapshot exit 1. Source/test zero-round contract mismatch introduced by `053409ad`; no fix commit in this task. |
+| Base full run | **Incomplete.** Cumulative observed 3,125 IDs: 3,016 passed, 52 failed, 0 errored, 57 skipped, 0 xfailed, 0 identified xpassed. This continuation has 40 completed test shards, six empty shards, and one absent union target; 758 originally incomplete targets remain pending/running, plus 64 prior-complete targets queued for revalidation. |
+| Snapshot full run | **Incomplete.** Cumulative observed 3,160 IDs: 3,095 passed, eight failed, 0 errored, 57 skipped, 0 xfailed, 0 identified xpassed. This continuation has 41 completed test shards and six empty shards; 758 originally incomplete targets remain pending/running, plus 64 prior-complete targets queued for revalidation. |
+| Outcome comparison | 3,015 paired passes, one regression, 44 improvements, seven pre-existing fail/error observations, 57 skipped/xfailed observations, one base-only and 36 snapshot-only observations. “Only” means observed on one side, not proven addition/deletion. |
+| Recursion modules | 25 completed isolated commands without recurrence (19 passing, six failing for other reasons); three unresolved timeouts; zero demonstrated `src/` circular-import or test-level re-import causes. |
+| Coverage | **UNKNOWN on both sides.** No partial percentage or readiness assertion. |
+| Workflow check | Empty diff; no workflow edits, approvals, retries, or PR. |
+| Push result | Final published SHA/result is recorded in the session response. Only frozen evidence and base startup restoration may be published. |
+| Blocked items | Full runs and coverage still pending in detached execution, three diagnostic timeouts, unresolved test-contract mismatch, previously missing 295 historical identities. |
+
+The checkpoint names **every pending/running leaf and its last available line**
+in `checkpoint-summary.json`, along with the exact UTC checkpoint timestamp.
+It separates the 758 originally incomplete targets from 64 optional revalidation
+targets, so cached results are neither dropped nor incorrectly counted twice.
+At this checkpoint each side has 821 queued new-attempt leaves and one running
+leaf; this includes the 64 revalidation targets. An unstarted shard has no log
+line, recorded as null rather than fabricated output. The per-side exact PID,
+exit and coverage artifact mappings are in the frozen background manifest.
+
+### Regression diagnosis
+
+The exact test is
+`tests/agents/test_edge_cases_phase9_4.py::TestBlueRedTeamSimulatorEdgeCases::test_run_simulation_zero_rounds_raises`.
+A fresh standalone pytest command passes on base (exit 0) and fails on snapshot
+(exit 1, `DID NOT RAISE any of (IndexError, Exception)`).
+The first differing implementation frame is base
+`src/agents/quantum_game_theory.py:1327`: an empty `round_results[-1]` raises
+`IndexError`. Snapshot lines 1355–1356 instead return final payoffs of `0.0`.
+The introducing snapshot commit is
+`053409ad98ff3dc40243d1e132a1139e83ffaef7`.
+
+This is a **source/test semantic mismatch, not an environment-only failure**:
+the snapshot docstring explicitly specifies zero payoffs for zero rounds,
+and `test_quantum_game_core_flows.py` also expects graceful zero-round returns.
+The unchanged edge-case test still asserts the incidental old exception.
+No source or test was changed, and there is **no fix commit in this task**.
+Maintainers must reconcile that expectation with the documented contract in a
+separately authorized patch. Exact commands, pytest output, a direct-call
+traceback exposing the exception caught on base, and the source diff are in
+`regression-diagnosis.json`, `regression-first-frame.json`,
+`regression-source-diff.txt`, and per-side `regression-alone.log`.
+
+### All 28 recursion modules rechecked individually
+
+`recursion-classification.json` accounts for every module, its fresh first
+40 log lines, exit/status, last line, and historical repeated frames:
+
+- **25 environment-specific/import-order-dependent observations:** completed
+  isolated commands do not reproduce recursion; 19 commands pass and six fail
+  for other reasons. These are not 25 passing modules or proven permanent fixes.
+- **Three unresolved timeouts:** `tests/cli/test_cli_rag_comprehensive.py`,
+  `tests/codex_ml/test_rag_comprehensive.py`, and
+  `tests/docs_agent/test_integration.py`. Each exceeded 90 seconds plus eight
+  seconds of interrupt grace and exited -9; absence of recursion before timeout
+  is not a cause classification.
+- **Zero demonstrated circular imports within `src/`; zero demonstrated
+  test-level re-import causes.** Unsupported classifications are not invented.
+
+All 28 historical traces alternate publication-checkout and detached-worktree
+`transformers` shims. A discovery-only `PathFinder` probe confirms that a shim
+excluding only its own root can select the other checkout's shim; removing the
+other checkout selects the actual installed package. This supports the observed
+environment/import-order condition. It does not make incidental lazy `pathlib`
+cache misses a root cause. Historical and fresh evidence are explicitly separate
+in `recursion-historical-frames.json` and `shim-pathfinder-probe.json`.
+No recursion-limit changes, deselections, added skips, xfails, or source fixes
+were applied.
+
+### Resumption and coverage
+
+The old **804 NOT_RUN entries are shard selectors, not individual tests**.
+The exact original 805 incomplete targets per side, including the one timeout,
+are listed with last output lines in `remaining-at-start.json`.
+The previously unfinished
+`tests/agents/test_phase2_deep_coverage_batch14_exception_handling.py`
+now completes with exit 0 on **both sides**.
+
+The pinned trees remain base `71613ee000808ab758cc2f8ddb07a05c5101f731`
+and snapshot `70798e17f0bb4463413684eddddd62358faa89d6`. Separate non-editable
+environments were recreated with all 243 prior distribution versions matched;
+both `pip check` commands exit 0. Subprocess `PATH` now explicitly starts with
+the appropriate environment. Because the prior run did not record its
+subprocess PATH, prior completed leaves are preserved and also scheduled for
+revalidation after the previously incomplete targets, rather than assumed
+equivalent for a final coverage claim.
+
+The detached runner has two pytest workers overall, a 12-hour safety bound,
+90 seconds per directory and 120 seconds per file, plus eight seconds of
+interrupt grace. Directory timeouts/collection errors cause identical file
+splits on both sides, with parent outcomes excluded. Every attempt has an
+exact command, log, JUnit, PID/start-tick identity, and exit file. Tests run under
+separate coverage data prefixes from the start; no coverage-free execution is
+silently used to complete the coverage gate. Existing completed artifacts are
+not overwritten. Supplemental diagnostic commands are not merged into suite totals.
+
+**Coverage remains unknown while any valid leaf is pending, running, timed out,
+or fails collection/execution.** A separately detached watcher combines only
+explicit completed leaf coverage files after a side genuinely finishes, and
+runs `coverage report --fail-under=80`. No percentage is estimated at this
+checkpoint. The effective existing `.coveragerc` omissions remain disclosed.
+The report is configured-source coverage, not proof that excluded files were traced.
+
+The background tools are detached and survive the tool-session shutdown, but
+they cannot guarantee survival of host reclamation. PIDs are host-local and
+must be verified against process start ticks, not reused blindly. At publication,
+only immutable completed artifacts and a frozen manifest are staged; live
+manifests/logs remain local until a later secret-scanned checkpoint. Resume/poll
+using the runtime paths recorded in the checkpoint; if the host is replaced,
+recreate the pinned environments and use the published evidence instead of
+assuming that the processes or `/tmp` paths still exist.
+
+Publication remains restricted to validation evidence and the startup packet
+restored to base, on `copilot/recover-unpushed-session-commits-again`, with no PR.
+The workflow diff must remain empty. CI `action_required` runs were inspected
+read-only; none were approved or retried.
+
 ## Pinned resumable comparison: 2026-10-23
 
 The new execution evidence is under `full/`. Earlier observations below remain

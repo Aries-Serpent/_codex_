@@ -1,0 +1,18 @@
+{
+  "base": {
+    "status": "UNKNOWN",
+    "percentage": null,
+    "threshold": 80,
+    "reason": "New-run valid leaves are pending/running/unfinished; no partial percentage estimated.",
+    "unfinished_shards_record": "recovery/bfe2456b/validation/full/resume-20261023/checkpoint-summary.json",
+    "watcher_shell_id": "resume-coverage-watcher"
+  },
+  "snapshot": {
+    "status": "UNKNOWN",
+    "percentage": null,
+    "threshold": 80,
+    "reason": "New-run valid leaves are pending/running/unfinished; no partial percentage estimated.",
+    "unfinished_shards_record": "recovery/bfe2456b/validation/full/resume-20261023/checkpoint-summary.json",
+    "watcher_shell_id": "resume-coverage-watcher"
+  }
+}

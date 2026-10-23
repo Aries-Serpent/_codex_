@@ -1,0 +1,1293 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="13" skipped="0" tests="23" time="4.283" timestamp="2026-10-23T14:55:58.094072+00:00" hostname="runnervm8k3b6"><testcase classname="tests.cli.test_ast_cli.TestQueryCommand" name="test_query_json_objects" time="0.004"><failure message="json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">self = &lt;tests.cli.test_ast_cli.TestQueryCommand object at 0x7f368e48b110&gt;
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-2/test_query_json_objects0')
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7f368e499cd0&gt;
+
+    def test_query_json_objects(self, tmp_path, capsys):
+        """Test querying for JSON objects."""
+        test_file = tmp_path / "test.json"
+        test_file.write_text('{"user": {"name": "Alice", "age": 30}}')
+    
+        exit_code = main(["query", str(test_file), "-l", "json", "-t", "object"])
+    
+        assert exit_code == 0, "exit_code is not valid"
+        captured = capsys.readouterr()
+&gt;       result = json.loads(captured.out)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/cli/test_ast_cli.py:227: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = '', cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+                raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+            s = s.decode(detect_encoding(s), 'surrogatepass')
+    
+        if (cls is None and object_hook is None and
+                parse_int is None and parse_float is None and
+                parse_constant is None and object_pairs_hook is None and not kw):
+&gt;           return _default_decoder.decode(s)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/__init__.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = ''
+_w = &lt;built-in method match of re.Pattern object at 0x7f37afa9acf0&gt;
+
+    def decode(self, s, _w=WHITESPACE.match):
+        """Return the Python representation of ``s`` (a ``str`` instance
+        containing a JSON document).
+    
+        """
+&gt;       obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:338: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+&gt;           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:356: JSONDecodeError</failure></testcase><testcase classname="tests.cli.test_ast_cli.TestQueryCommand" name="test_query_with_metadata" time="0.004"><failure message="json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">self = &lt;tests.cli.test_ast_cli.TestQueryCommand object at 0x7f368e48a7b0&gt;
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-2/test_query_with_metadata0')
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7f368e49bd40&gt;
+
+    def test_query_with_metadata(self, tmp_path, capsys):
+        """Test querying with metadata included."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text("def hello():\n    '''A greeting function.'''\n    pass\n")
+    
+        exit_code = main(["query", str(test_file), "-l", "python", "-t", "function", "-m"])
+    
+        assert exit_code == 0, "exit_code is not valid"
+        captured = capsys.readouterr()
+&gt;       result = json.loads(captured.out)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/cli/test_ast_cli.py:202: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = '', cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+                raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+            s = s.decode(detect_encoding(s), 'surrogatepass')
+    
+        if (cls is None and object_hook is None and
+                parse_int is None and parse_float is None and
+                parse_constant is None and object_pairs_hook is None and not kw):
+&gt;           return _default_decoder.decode(s)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/__init__.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = ''
+_w = &lt;built-in method match of re.Pattern object at 0x7f37afa9acf0&gt;
+
+    def decode(self, s, _w=WHITESPACE.match):
+        """Return the Python representation of ``s`` (a ``str`` instance
+        containing a JSON document).
+    
+        """
+&gt;       obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:338: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+&gt;           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:356: JSONDecodeError</failure></testcase><testcase classname="tests.cli.test_ast_cli.TestQueryCommand" name="test_query_python_functions" time="0.002"><failure message="json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">self = &lt;tests.cli.test_ast_cli.TestQueryCommand object at 0x7f368e48a300&gt;
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-2/test_query_python_functions0')
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7f368e498320&gt;
+
+    def test_query_python_functions(self, tmp_path, capsys):
+        """Test querying for Python functions."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text("def hello():\n    pass\n\n" "def world():\n    pass\n")
+    
+        exit_code = main(["query", str(test_file), "-l", "python", "-t", "function"])
+    
+        assert exit_code == 0, "exit_code is not valid"
+        captured = capsys.readouterr()
+&gt;       result = json.loads(captured.out)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/cli/test_ast_cli.py:187: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = '', cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+                raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+            s = s.decode(detect_encoding(s), 'surrogatepass')
+    
+        if (cls is None and object_hook is None and
+                parse_int is None and parse_float is None and
+                parse_constant is None and object_pairs_hook is None and not kw):
+&gt;           return _default_decoder.decode(s)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/__init__.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = ''
+_w = &lt;built-in method match of re.Pattern object at 0x7f37afa9acf0&gt;
+
+    def decode(self, s, _w=WHITESPACE.match):
+        """Return the Python representation of ``s`` (a ``str`` instance
+        containing a JSON document).
+    
+        """
+&gt;       obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:338: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+&gt;           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:356: JSONDecodeError</failure></testcase><testcase classname="tests.cli.test_ast_cli.TestQueryCommand" name="test_query_yaml_mappings" time="0.002"><failure message="json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">self = &lt;tests.cli.test_ast_cli.TestQueryCommand object at 0x7f368e48ac60&gt;
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-2/test_query_yaml_mappings0')
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7f368e499490&gt;
+
+    def test_query_yaml_mappings(self, tmp_path, capsys):
+        """Test querying for YAML mappings."""
+        test_file = tmp_path / "test.yaml"
+        test_file.write_text("config:\n  database:\n    host: localhost\n")
+    
+        exit_code = main(["query", str(test_file), "-l", "yaml", "-t", "mapping"])
+    
+        assert exit_code == 0, "exit_code is not valid"
+        captured = capsys.readouterr()
+&gt;       result = json.loads(captured.out)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/cli/test_ast_cli.py:215: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = '', cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+                raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+            s = s.decode(detect_encoding(s), 'surrogatepass')
+    
+        if (cls is None and object_hook is None and
+                parse_int is None and parse_float is None and
+                parse_constant is None and object_pairs_hook is None and not kw):
+&gt;           return _default_decoder.decode(s)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/__init__.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = ''
+_w = &lt;built-in method match of re.Pattern object at 0x7f37afa9acf0&gt;
+
+    def decode(self, s, _w=WHITESPACE.match):
+        """Return the Python representation of ``s`` (a ``str`` instance
+        containing a JSON document).
+    
+        """
+&gt;       obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:338: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+&gt;           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:356: JSONDecodeError</failure></testcase><testcase classname="tests.cli.test_ast_cli.TestMainFunction" name="test_stats_help" time="0.002" /><testcase classname="tests.cli.test_ast_cli.TestMainFunction" name="test_query_help" time="0.002" /><testcase classname="tests.cli.test_ast_cli.TestMainFunction" name="test_no_command" time="0.002" /><testcase classname="tests.cli.test_ast_cli.TestMainFunction" name="test_parse_help" time="0.002" /><testcase classname="tests.cli.test_ast_cli.TestMainFunction" name="test_help_flag" time="0.002" /><testcase classname="tests.cli.test_ast_cli.TestParseCommand" name="test_parse_nonexistent_file" time="0.002"><failure message="AssertionError: Error should be raised or set&#10;assert 'Error: File not found' in ''&#10; +  where '' = CaptureResult(out='', err='').err">self = &lt;tests.cli.test_ast_cli.TestParseCommand object at 0x7f368e488ec0&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7f368e4ba3f0&gt;
+
+    def test_parse_nonexistent_file(self, capsys):
+        """Test error when file doesn't exist."""
+        exit_code = main(["parse", "/nonexistent/file.py", "-l", "python"])
+    
+        assert exit_code == 1, "exit_code is not valid"
+        captured = capsys.readouterr()
+&gt;       assert "Error: File not found" in captured.err, "Error should be raised or set"
+E       AssertionError: Error should be raised or set
+E       assert 'Error: File not found' in ''
+E        +  where '' = CaptureResult(out='', err='').err
+
+tests/cli/test_ast_cli.py:111: AssertionError</failure></testcase><testcase classname="tests.cli.test_ast_cli.TestParseCommand" name="test_parse_yaml_file" time="0.002"><failure message="json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">self = &lt;tests.cli.test_ast_cli.TestParseCommand object at 0x7f368e488d40&gt;
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-2/test_parse_yaml_file0')
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7f368e4b8080&gt;
+
+    def test_parse_yaml_file(self, tmp_path, capsys):
+        """Test parsing a YAML file."""
+        test_file = tmp_path / "test.yaml"
+        test_file.write_text("key: value\nnested:\n  inner: data\n")
+    
+        exit_code = main(["parse", str(test_file), "-l", "yaml"])
+    
+        assert exit_code == 0, "exit_code is not valid"
+        captured = capsys.readouterr()
+&gt;       result = json.loads(captured.out)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/cli/test_ast_cli.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = '', cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+                raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+            s = s.decode(detect_encoding(s), 'surrogatepass')
+    
+        if (cls is None and object_hook is None and
+                parse_int is None and parse_float is None and
+                parse_constant is None and object_pairs_hook is None and not kw):
+&gt;           return _default_decoder.decode(s)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/__init__.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = ''
+_w = &lt;built-in method match of re.Pattern object at 0x7f37afa9acf0&gt;
+
+    def decode(self, s, _w=WHITESPACE.match):
+        """Return the Python representation of ``s`` (a ``str`` instance
+        containing a JSON document).
+    
+        """
+&gt;       obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:338: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+&gt;           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:356: JSONDecodeError</failure></testcase><testcase classname="tests.cli.test_ast_cli.TestParseCommand" name="test_parse_sql_file" time="0.005"><failure message="json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">self = &lt;tests.cli.test_ast_cli.TestParseCommand object at 0x7f368e44f6b0&gt;
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-2/test_parse_sql_file0')
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7f368e4bbe00&gt;
+
+    def test_parse_sql_file(self, tmp_path, capsys):
+        """Test parsing a SQL file."""
+        test_file = tmp_path / "test.sql"
+        test_file.write_text("SELECT * FROM users WHERE active = 1;")
+    
+        exit_code = main(["parse", str(test_file), "-l", "sql"])
+    
+        assert exit_code == 0, "exit_code is not valid"
+        captured = capsys.readouterr()
+&gt;       result = json.loads(captured.out)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/cli/test_ast_cli.py:101: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = '', cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+                raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+            s = s.decode(detect_encoding(s), 'surrogatepass')
+    
+        if (cls is None and object_hook is None and
+                parse_int is None and parse_float is None and
+                parse_constant is None and object_pairs_hook is None and not kw):
+&gt;           return _default_decoder.decode(s)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/__init__.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = ''
+_w = &lt;built-in method match of re.Pattern object at 0x7f37afa9acf0&gt;
+
+    def decode(self, s, _w=WHITESPACE.match):
+        """Return the Python representation of ``s`` (a ``str`` instance
+        containing a JSON document).
+    
+        """
+&gt;       obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:338: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+&gt;           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:356: JSONDecodeError</failure></testcase><testcase classname="tests.cli.test_ast_cli.TestParseCommand" name="test_parse_json_file" time="0.002"><failure message="json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">self = &lt;tests.cli.test_ast_cli.TestParseCommand object at 0x7f368e489190&gt;
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-2/test_parse_json_file0')
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7f368e4bb770&gt;
+
+    def test_parse_json_file(self, tmp_path, capsys):
+        """Test parsing a JSON file."""
+        test_file = tmp_path / "test.json"
+        test_file.write_text('{"key": "value", "number": 42}')
+    
+        exit_code = main(["parse", str(test_file), "-l", "json"])
+    
+        assert exit_code == 0, "exit_code is not valid"
+        captured = capsys.readouterr()
+&gt;       result = json.loads(captured.out)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/cli/test_ast_cli.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = '', cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+                raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+            s = s.decode(detect_encoding(s), 'surrogatepass')
+    
+        if (cls is None and object_hook is None and
+                parse_int is None and parse_float is None and
+                parse_constant is None and object_pairs_hook is None and not kw):
+&gt;           return _default_decoder.decode(s)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/__init__.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = ''
+_w = &lt;built-in method match of re.Pattern object at 0x7f37afa9acf0&gt;
+
+    def decode(self, s, _w=WHITESPACE.match):
+        """Return the Python representation of ``s`` (a ``str`` instance
+        containing a JSON document).
+    
+        """
+&gt;       obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:338: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+&gt;           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:356: JSONDecodeError</failure></testcase><testcase classname="tests.cli.test_ast_cli.TestParseCommand" name="test_parse_python_file" time="0.002"><failure message="json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">self = &lt;tests.cli.test_ast_cli.TestParseCommand object at 0x7f368e4888f0&gt;
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-2/test_parse_python_file0')
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7f368e3ab260&gt;
+
+    def test_parse_python_file(self, tmp_path, capsys):
+        """Test parsing a Python file."""
+        # Create test file
+        test_file = tmp_path / "test.py"
+        test_file.write_text("def hello():\n    pass\n")
+    
+        # Run parse command
+        exit_code = main(["parse", str(test_file), "-l", "python"])
+    
+        assert exit_code == 0, "exit_code is not valid"
+        captured = capsys.readouterr()
+&gt;       result = json.loads(captured.out)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/cli/test_ast_cli.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = '', cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+                raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+            s = s.decode(detect_encoding(s), 'surrogatepass')
+    
+        if (cls is None and object_hook is None and
+                parse_int is None and parse_float is None and
+                parse_constant is None and object_pairs_hook is None and not kw):
+&gt;           return _default_decoder.decode(s)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/__init__.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = ''
+_w = &lt;built-in method match of re.Pattern object at 0x7f37afa9acf0&gt;
+
+    def decode(self, s, _w=WHITESPACE.match):
+        """Return the Python representation of ``s`` (a ``str`` instance
+        containing a JSON document).
+    
+        """
+&gt;       obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:338: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+&gt;           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:356: JSONDecodeError</failure></testcase><testcase classname="tests.cli.test_ast_cli.TestGetAdapter" name="test_python_adapter" time="0.001" /><testcase classname="tests.cli.test_ast_cli.TestGetAdapter" name="test_json_adapter" time="0.001" /><testcase classname="tests.cli.test_ast_cli.TestGetAdapter" name="test_sql_adapter" time="0.001" /><testcase classname="tests.cli.test_ast_cli.TestGetAdapter" name="test_unsupported_language" time="0.001" /><testcase classname="tests.cli.test_ast_cli.TestGetAdapter" name="test_yaml_adapter" time="0.001" /><testcase classname="tests.cli.test_ast_cli.TestStatsCommand" name="test_stats_yaml_file" time="0.002"><failure message="json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">self = &lt;tests.cli.test_ast_cli.TestStatsCommand object at 0x7f368e489520&gt;
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-2/test_stats_yaml_file0')
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7f368e3a8f20&gt;
+
+    def test_stats_yaml_file(self, tmp_path, capsys):
+        """Test getting statistics for a YAML file."""
+        test_file = tmp_path / "test.yaml"
+        test_file.write_text("key1: value1\nkey2: value2\nlist:\n  - item1\n  - item2\n")
+    
+        exit_code = main(["stats", str(test_file), "-l", "yaml"])
+    
+        assert exit_code == 0, "exit_code is not valid"
+        captured = capsys.readouterr()
+&gt;       result = json.loads(captured.out)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/cli/test_ast_cli.py:143: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = '', cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+                raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+            s = s.decode(detect_encoding(s), 'surrogatepass')
+    
+        if (cls is None and object_hook is None and
+                parse_int is None and parse_float is None and
+                parse_constant is None and object_pairs_hook is None and not kw):
+&gt;           return _default_decoder.decode(s)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/__init__.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = ''
+_w = &lt;built-in method match of re.Pattern object at 0x7f37afa9acf0&gt;
+
+    def decode(self, s, _w=WHITESPACE.match):
+        """Return the Python representation of ``s`` (a ``str`` instance
+        containing a JSON document).
+    
+        """
+&gt;       obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:338: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+&gt;           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:356: JSONDecodeError</failure></testcase><testcase classname="tests.cli.test_ast_cli.TestStatsCommand" name="test_stats_json_file" time="0.002"><failure message="json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">self = &lt;tests.cli.test_ast_cli.TestStatsCommand object at 0x7f368e4899a0&gt;
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-2/test_stats_json_file0')
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7f368e3ab410&gt;
+
+    def test_stats_json_file(self, tmp_path, capsys):
+        """Test getting statistics for a JSON file."""
+        test_file = tmp_path / "test.json"
+        test_file.write_text('{"users": [{"name": "Alice"}, {"name": "Bob"}]}')
+    
+        exit_code = main(["stats", str(test_file), "-l", "json"])
+    
+        assert exit_code == 0, "exit_code is not valid"
+        captured = capsys.readouterr()
+&gt;       result = json.loads(captured.out)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/cli/test_ast_cli.py:156: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = '', cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+                raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+            s = s.decode(detect_encoding(s), 'surrogatepass')
+    
+        if (cls is None and object_hook is None and
+                parse_int is None and parse_float is None and
+                parse_constant is None and object_pairs_hook is None and not kw):
+&gt;           return _default_decoder.decode(s)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/__init__.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = ''
+_w = &lt;built-in method match of re.Pattern object at 0x7f37afa9acf0&gt;
+
+    def decode(self, s, _w=WHITESPACE.match):
+        """Return the Python representation of ``s`` (a ``str`` instance
+        containing a JSON document).
+    
+        """
+&gt;       obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:338: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+&gt;           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:356: JSONDecodeError</failure></testcase><testcase classname="tests.cli.test_ast_cli.TestStatsCommand" name="test_stats_sql_file" time="0.002"><failure message="json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">self = &lt;tests.cli.test_ast_cli.TestStatsCommand object at 0x7f368e489e50&gt;
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-2/test_stats_sql_file0')
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7f368e346840&gt;
+
+    def test_stats_sql_file(self, tmp_path, capsys):
+        """Test getting statistics for a SQL file."""
+        test_file = tmp_path / "test.sql"
+        test_file.write_text(
+            "CREATE TABLE users (id INT, name VARCHAR(100));\n" "SELECT * FROM users;\n"
+        )
+    
+        exit_code = main(["stats", str(test_file), "-l", "sql"])
+    
+        assert exit_code == 0, "exit_code is not valid"
+        captured = capsys.readouterr()
+&gt;       result = json.loads(captured.out)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/cli/test_ast_cli.py:171: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = '', cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+                raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+            s = s.decode(detect_encoding(s), 'surrogatepass')
+    
+        if (cls is None and object_hook is None and
+                parse_int is None and parse_float is None and
+                parse_constant is None and object_pairs_hook is None and not kw):
+&gt;           return _default_decoder.decode(s)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/__init__.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = ''
+_w = &lt;built-in method match of re.Pattern object at 0x7f37afa9acf0&gt;
+
+    def decode(self, s, _w=WHITESPACE.match):
+        """Return the Python representation of ``s`` (a ``str`` instance
+        containing a JSON document).
+    
+        """
+&gt;       obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:338: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+&gt;           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:356: JSONDecodeError</failure></testcase><testcase classname="tests.cli.test_ast_cli.TestStatsCommand" name="test_stats_python_file" time="0.002"><failure message="json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">self = &lt;tests.cli.test_ast_cli.TestStatsCommand object at 0x7f368e488560&gt;
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-2/test_stats_python_file0')
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7f368e3456a0&gt;
+
+    def test_stats_python_file(self, tmp_path, capsys):
+        """Test getting statistics for a Python file."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            "def hello():\n    pass\n\n" "class MyClass:\n    def method(self):\n        pass\n"
+        )
+    
+        exit_code = main(["stats", str(test_file), "-l", "python"])
+    
+        assert exit_code == 0, "exit_code is not valid"
+        captured = capsys.readouterr()
+&gt;       result = json.loads(captured.out)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/cli/test_ast_cli.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = '', cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+                raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+            s = s.decode(detect_encoding(s), 'surrogatepass')
+    
+        if (cls is None and object_hook is None and
+                parse_int is None and parse_float is None and
+                parse_constant is None and object_pairs_hook is None and not kw):
+&gt;           return _default_decoder.decode(s)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/__init__.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = ''
+_w = &lt;built-in method match of re.Pattern object at 0x7f37afa9acf0&gt;
+
+    def decode(self, s, _w=WHITESPACE.match):
+        """Return the Python representation of ``s`` (a ``str`` instance
+        containing a JSON document).
+    
+        """
+&gt;       obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:338: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.decoder.JSONDecoder object at 0x7f37af8ef500&gt;, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+&gt;           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/json/decoder.py:356: JSONDecodeError</failure></testcase></testsuite></testsuites>

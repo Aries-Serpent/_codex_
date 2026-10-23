@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="4.805" timestamp="2026-10-23T14:55:49.505865+00:00" hostname="runnervm8k3b6"><testcase classname="tests.checkpoint.test_checkpoint_peft_state" name="test_checkpoint_includes_lora_state" time="0.010" /></testsuite></testsuites>

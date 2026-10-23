@@ -1,0 +1,7 @@
+...............................................                          [100%]
+=============================== warnings summary ===============================
+tests/agents/test_phase2_deep_coverage_batch4.py::TestPhase2_QuantumOperatorAlgebra::test_operator_eigendecomposition
+  /tmp/bfe2456b-resume-snapshot/tests/agents/test_phase2_deep_coverage_batch4.py:356: ComplexWarning: Casting complex values to real discards the imaginary part
+    assert set(np.round(eigenvalues).astype(int)) == {-1, 1}
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

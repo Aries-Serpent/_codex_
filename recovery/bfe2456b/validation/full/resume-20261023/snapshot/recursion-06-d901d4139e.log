@@ -1,0 +1,129 @@
+.................F....                                                   [100%]
+=================================== FAILURES ===================================
+_______________ TestEvaluationFunctions.test_metric_computation ________________
+
+args = (<tests.cli.test_evaluate_comprehensive.TestEvaluationFunctions object at 0x7f9baac65c70>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/unittest/mock.py:1393: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <contextlib._GeneratorContextManager object at 0x7f9baac87bc0>
+
+    def __enter__(self):
+        # do not keep args and kwds alive unnecessarily
+        # they are only needed for recreation, which is not possible anymore
+        del self.args, self.kwds, self.func
+        try:
+>           return next(self.gen)
+                   ^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/contextlib.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f9baae36630>
+patched = <function TestEvaluationFunctions.test_metric_computation at 0x7f9baac5c180>
+args = (<tests.cli.test_evaluate_comprehensive.TestEvaluationFunctions object at 0x7f9baac65c70>,)
+keywargs = {}
+
+    @contextlib.contextmanager
+    def decoration_helper(self, patched, args, keywargs):
+        extra_args = []
+        with contextlib.ExitStack() as exit_stack:
+            for patching in patched.patchings:
+>               arg = exit_stack.enter_context(patching)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/unittest/mock.py:1375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <contextlib.ExitStack object at 0x7f9baac87bf0>
+cm = <unittest.mock._patch object at 0x7f9baae36630>
+
+    def enter_context(self, cm):
+        """Enters the supplied context manager.
+    
+        If successful, also pushes its __exit__ method as a callback and
+        returns the result of the __enter__ method.
+        """
+        # We look up the special methods on the type to match the with
+        # statement.
+        cls = type(cm)
+        try:
+            _enter = cls.__enter__
+            _exit = cls.__exit__
+        except AttributeError:
+            raise TypeError(f"'{cls.__module__}.{cls.__qualname__}' object does "
+                            f"not support the context manager protocol") from None
+>       result = _enter(cm)
+                 ^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/contextlib.py:526: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f9baae36630>
+
+    def __enter__(self):
+        """Perform the patch."""
+        if self.is_started:
+            raise RuntimeError("Patch is already started")
+    
+        new, spec, spec_set = self.new, self.spec, self.spec_set
+        autospec, kwargs = self.autospec, self.kwargs
+        new_callable = self.new_callable
+        self.target = self.getter()
+    
+        # normalise False to None
+        if spec is False:
+            spec = None
+        if spec_set is False:
+            spec_set = None
+        if autospec is False:
+            autospec = None
+    
+        if spec is not None and autospec is not None:
+            raise TypeError("Can't specify spec and autospec")
+        if ((spec is not None or autospec is not None) and
+            spec_set not in (True, None)):
+            raise TypeError("Can't provide explicit spec_set *and* spec or autospec")
+    
+>       original, local = self.get_original()
+                          ^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/unittest/mock.py:1467: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f9baae36630>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'codex_ml.cli.evaluate' from '/tmp/bfe2456b-resume-snapshot/src/codex_ml/cli/evaluate.py'> does not have the attribute 'accuracy'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/unittest/mock.py:1437: AttributeError
+=========================== short test summary info ============================
+FAILED tests/cli/test_evaluate_comprehensive.py::TestEvaluationFunctions::test_metric_computation - AttributeError: <module 'codex_ml.cli.evaluate' from '/tmp/bfe2456b-resume-snapshot/src/codex_ml/cli/evaluate.py'> does not have the attribute 'accuracy'

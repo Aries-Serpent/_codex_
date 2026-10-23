@@ -1,0 +1,66 @@
+..F............................................                          [100%]
+=================================== FAILURES ===================================
+________ TestPhase2_OptimizationMethods.test_path_integral_optimization ________
+
+self = <tests.agents.test_phase2_deep_coverage_batch4.TestPhase2_OptimizationMethods object at 0x7fc9f849a2a0>
+
+    def test_path_integral_optimization(self):
+        """Test path integral optimization"""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+    
+        orchestrator = PhysicsInspiredOrchestrator()
+        if hasattr(orchestrator, "optimize_path"):
+            try:
+>               result = orchestrator.optimize_path({"x": 0.0}, {"x": 1.0})
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agents/test_phase2_deep_coverage_batch4.py:514: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <agents.physics_orchestrator.PhysicsInspiredOrchestrator object at 0x7fc9f84c3470>
+ranked_paths = {'x': 0.0}, state = {'x': 1.0}
+
+    def optimize_path(
+        self, ranked_paths: list[ActionPath], state: DecisionState
+    ) -> Optional[ActionPath]:
+        """
+        OPTIMIZE: Select the best path based on constraints and optimization
+    
+        Returns the optimal path or None if no path meets criteria
+        """
+        print(f"\n{'=' * 60}")
+        print("OPTIMIZATION PHASE")
+        print(f"{'=' * 60}")
+    
+        # Apply constraints
+        energy_budget = self.config["energy_budget"]
+        confidence_threshold = self.config["confidence_threshold"]
+        risk_tolerance = self.config["risk_tolerance"]
+    
+        print("Constraints:")
+        print(f"  Energy Budget: {energy_budget:.1f}")
+        print(f"  Confidence Threshold: {confidence_threshold:.2f}")
+        print(f"  Risk Tolerance: {risk_tolerance:.2f}")
+    
+        # Find first path that satisfies constraints
+        for path in ranked_paths:
+>           meets_energy = path.total_energy <= energy_budget
+                           ^^^^^^^^^^^^^^^^^
+E           AttributeError: 'str' object has no attribute 'total_energy'
+
+src/agents/physics_orchestrator.py:388: AttributeError
+----------------------------- Captured stdout call -----------------------------
+
+============================================================
+OPTIMIZATION PHASE
+============================================================
+Constraints:
+  Energy Budget: 100.0
+  Confidence Threshold: 0.60
+  Risk Tolerance: 0.50
+=============================== warnings summary ===============================
+tests/agents/test_phase2_deep_coverage_batch4.py::TestPhase2_QuantumOperatorAlgebra::test_operator_eigendecomposition
+  /tmp/bfe2456b-resume-base/tests/agents/test_phase2_deep_coverage_batch4.py:356: ComplexWarning: Casting complex values to real discards the imaginary part
+    assert set(np.round(eigenvalues).astype(int)) == {-1, 1}
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

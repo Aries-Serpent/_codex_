@@ -1,0 +1,40 @@
+.................F....                                                   [100%]
+=================================== FAILURES ===================================
+_______________ TestEvaluationFunctions.test_metric_computation ________________
+
+args = (<tests.cli.test_evaluate_comprehensive.TestEvaluationFunctions object at 0x7f9baac65c70>,)
+keywargs = {}
+
+    @wraps(func)
+    def patched(*args, **keywargs):
+>       with self.decoration_helper(patched,
+                                    args,
+                                    keywargs) as (newargs, newkeywargs):
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/unittest/mock.py:1393: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <contextlib._GeneratorContextManager object at 0x7f9baac87bc0>
+
+    def __enter__(self):
+        # do not keep args and kwds alive unnecessarily
+        # they are only needed for recreation, which is not possible anymore
+        del self.args, self.kwds, self.func
+        try:
+>           return next(self.gen)
+                   ^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/contextlib.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f9baae36630>
+patched = <function TestEvaluationFunctions.test_metric_computation at 0x7f9baac5c180>
+args = (<tests.cli.test_evaluate_comprehensive.TestEvaluationFunctions object at 0x7f9baac65c70>,)
+keywargs = {}
+
+    @contextlib.contextmanager
+    def decoration_helper(self, patched, args, keywargs):
+        extra_args = []
+        with contextlib.ExitStack() as exit_stack:
+            for patching in patched.patchings:
+>               arg = exit_stack.enter_context(patching)

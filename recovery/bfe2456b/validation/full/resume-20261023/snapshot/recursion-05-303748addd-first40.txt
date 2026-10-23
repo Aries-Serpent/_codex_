@@ -1,0 +1,40 @@
+....FFFFF.......F......F.F....                                           [100%]
+=================================== FAILURES ===================================
+_________________ TestCLIRAGBoundary.test_merge_single_source __________________
+
+self = <tests.cli.test_cli_rag_enhancements.TestCLIRAGBoundary object at 0x7f13fbe1f830>
+runner = <typer.testing.CliRunner object at 0x7f13fade2e40>
+
+    def test_merge_single_source(self, runner):
+        """Test merge with single source."""
+>       with patch("codex.rag.merge_indices"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/cli/test_cli_rag_enhancements.py:516: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7f13fad08440>
+
+    def __enter__(self):
+        """Perform the patch."""
+        if self.is_started:
+            raise RuntimeError("Patch is already started")
+    
+        new, spec, spec_set = self.new, self.spec, self.spec_set
+        autospec, kwargs = self.autospec, self.kwargs
+        new_callable = self.new_callable
+        self.target = self.getter()
+    
+        # normalise False to None
+        if spec is False:
+            spec = None
+        if spec_set is False:
+            spec_set = None
+        if autospec is False:
+            autospec = None
+    
+        if spec is not None and autospec is not None:
+            raise TypeError("Can't specify spec and autospec")
+        if ((spec is not None or autospec is not None) and
+            spec_set not in (True, None)):
+            raise TypeError("Can't provide explicit spec_set *and* spec or autospec")
