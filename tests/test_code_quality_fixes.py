@@ -112,8 +112,9 @@ class TestUnusedGlobalsRemoved:
         import codex.cli
 
         # Should be able to access primary exports without issues
-        assert codex.cli.app is not None or codex.cli.app is None, "app must be initialized"
-        assert codex.cli.main is not None or codex.cli.main is None, "main must be initialized"
+        for name in ("app", "main", "cli", "auth_group", "chronicle"):
+            assert hasattr(codex.cli, name), f"{name} must be initialized"
+            assert callable(getattr(codex.cli, name)), f"{name} must be callable"
 
 
 class TestResourceManagementImprovements:
@@ -409,10 +410,9 @@ class TestRegressionPrevention:
         from codex.cli import app, cli, main
 
         # All primary entry points should be available
-        assert app is not None, "Typer app should be available"
-        assert main is not None, "main function should be available"
-        # cli might be None if Click module fails to load, which is acceptable
-        assert cli is None or cli is not None, "cli must be initialized"
+        assert callable(app), "Typer app should be callable"
+        assert callable(main), "main function should be callable"
+        assert callable(cli), "Click CLI should be callable"
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
