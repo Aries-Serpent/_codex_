@@ -30,6 +30,12 @@
   preflight distinguish metadata completeness from semantic understanding.
 - **Tests:** `tests/institutional/test_foundation.py`, also the implementer-owned
   external wheel harness. Independent verification and final approval remain pending.
+- **Iteration 002:** `src/codex/institutional/authority.py` adds an injectable
+  denial-preserving typed provider boundary; the CLI cannot load fixture providers.
+  `git_capture.py` bounds combined native Git output and wall-clock execution.
+  `tests/institutional/test_authority.py` and `test_git_capture.py` exercise binding,
+  separation, UTC validity/revocation, non-activation, resource and platform failures.
+  Successor evidence is under `iteration-002/`; no duplicate registry was created.
 
 ## Documentation Link Fixer
 

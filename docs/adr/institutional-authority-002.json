@@ -1,0 +1,57 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001/iteration-002",
+  "status": "inactive-development-decision",
+  "source_head": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+  "historical_candidate": "592e882f516744937957a2287fd93ad9d0c870ee",
+  "hypothesis": "A typed, explicitly unavailable authority provider can validate fixture binding, identity evidence, separation, validity and revocation mechanics without granting activation authority; bounded Git capture prevents unbounded output accumulation.",
+  "expected_observations": [
+    "A fixture attestation passes mechanics only for exactly bound requests and four distinct evidenced identities.",
+    "Missing/unavailable/malformed providers, collisions, drift, expiry and revocation produce deterministic reasons; every result denies activation.",
+    "Git output above the combined stdout/stderr budget terminates with BLOCKED_RESOURCE_LIMIT rather than fallback or partial inventory.",
+    "Existing 40-case wire/CLI expectations remain passing in source and installed wheel."
+  ],
+  "reproduction_before_changes": {
+    "original_wheel": "NOT_RUN: no retained original wheel in the bounded available temporary locations",
+    "source_retrieval": "Fetched immutable candidate once through configured origin.",
+    "source_rebuild": "40 historical harness cases pass outside checkout; new wheel SHA256 085fc8312e53379d8b0bad002963748bdd8f2d51dff8c942b8ff78aa5b01d054 differs from historical bytes.",
+    "failure_preserved": "Registry dependency installation failed for unpublished codex-contracts; declared local contracts wheel supplied for successful installation.",
+    "independence": "Coordinator-owned reproduction after delegated lane reported its own workspace constraint. No independent verifier or final approval established; G5 NOT_RUN."
+  },
+  "alternatives": [
+    {"choice": "Directly reuse AuthorityEnvelope", "assessment": "Caller-supplied human_approved boolean, path limits and secret-environment checks do not authenticate four identities or exact approved artifacts; retain existing scope, do not elevate it."},
+    {"choice": "Reuse RBAC/approval routing as authentication", "assessment": "Role labels and decision workflow records are leads, not proof of trusted identity or independently bound approval. Inspect without adopting as authority."},
+    {"choice": "Typed provider with default unavailable", "assessment": "Selected; installed protocol and validation mechanics, no credentials required, fixtures confined to tests."},
+    {"choice": "Continue only denial diagnostics", "assessment": "Safest existing baseline but insufficient to exercise future integration contract."}
+  ],
+  "contradictions_and_dissent": [
+    "Typed objects and fixture identities cannot establish real-world trust; passing mechanics is not authorization.",
+    "A new narrow interface adds maintenance, but replacing established approval services without identity provenance would overclaim compatibility.",
+    "Git capture bounds output memory, not all child-process memory, filesystem census growth or total host resources."
+  ],
+  "compatibility": "Keep all prior v1 contracts unchanged; additive authority-evaluation.v1 diagnostics and explicit unsupported provider versions. No migration/downgrade. Experience outcomes/confidence remain unknown.",
+  "acceptance": {
+    "N1": "Record actual source, dirty bytes, structural validity separately from drift and census.",
+    "N2": "Report original artifact availability separately from immutable-source rebuild observations.",
+    "N3": "Observe external imports/resources and declared dependencies.",
+    "N4": "Keep G5 NOT_RUN without adequate independent assurance.",
+    "N5": "Source-grounded reuse and contradictory evidence.",
+    "N6": "Typed provider/fixture tests; no production fixture loading; activation denied.",
+    "N7": "Bounded semantic cohort, source references and recommended dispositions.",
+    "N8": "Bounded-output/time failure tests, scanner results and platform limits.",
+    "N9": "Focused source tests and installed committed-wheel parity.",
+    "N10": "Append successor evidence, experience and predecessor-bound checkpoint."
+  },
+  "template_adaptation": {
+    "reference": ".github/prompts/sprint_execution_plan/TEMPLATE.md",
+    "steps": ["reconcile/reproduce", "reuse/semantic investigation", "provider/capture implementation", "source/security validation", "wheel validation/checkpoint"],
+    "testing": "Retain original assertions; existing pytest/coverage/Black/isort/Ruff/mypy/compile/Bandit. No new dependencies.",
+    "budget": "Two investigation lanes, two retries per unchanged error, 120 seconds per pip operation; 8 MiB combined Git output, 20 second runtime timeout. Host hard telemetry unknown.",
+    "rollback": "Reviewed revert of only iteration changes; preserve user bytes and historical evidence. No destructive target cleanup or governance changes.",
+    "troubleshooting": "Persist actual errors; stop only dependent actions. Do not weaken gates or invent independence."
+  },
+  "next_three_cycles": [
+    "Independent retained-artifact verification and trusted provider integration design; no activation without applicable authority.",
+    "Decision/dissent and knowledge supersession supporting an exercised workflow.",
+    "Evidence-backed ecology analysis and portable capability compatibility."
+  ]
+}

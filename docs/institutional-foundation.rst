@@ -205,3 +205,61 @@ These surfaces are not implemented. Maintain baseline assertions rather than
 weakening safety to get a passing run. Keep source and wheel observations separate.
 Next deterministic cycles and rollback/troubleshooting conventions are in the ADR.
 No package publication, governance activation or program-completion claim is made.
+
+Iteration 002: inactive authority-provider boundary
+--------------------------------------------------
+
+``codex-institutional authority --root /absolute/target --input /absolute/candidate.json``
+performs candidate validation and returns a ``codex.authority-evaluation.v1`` Draft
+record with explicit ``unavailable`` provider status and exit 3. The installed
+command does not load providers, identities, Python module names or approval claims
+from imported JSON, environment variables or labels. ``activate`` still denies.
+There is no new persistent agent or registry.
+
+Trusted application code may inject an ``AuthorityProvider`` into
+``codex.institutional.authority.evaluate``. This is a Python Protocol, not an
+identity service or operational authorization adapter. The default provider is
+unavailable. Provider failures are unavailable without leaking exception details;
+malformed responses, missing identity evidence, unsupported provider versions,
+scope/binding mismatches and colliding actors have explicit deterministic reasons.
+Four exact roles require distinct, provider-evidenced authenticated identities.
+Validity uses an injected aware clock, inclusive start and exclusive expiration;
+revocation evidence must be non-revoked and checked within five minutes, not in
+the future. The five-minute rule is a candidate validation rule, not adopted policy.
+
+Provider attestations use ``codex.authority-provider.v1`` typed Python values and
+are not imported wire records. Passing mechanics reports ``valid-mechanics``;
+``activation_allowed`` remains false for both fixture and externally asserted
+assurance. A provider claiming externally verified identity is still not a
+policy-accepted operational trust source. Real authentication, approval adoption
+and trust provenance remain unsupported. Fixture providers live only in tests and
+cannot be selected through the production CLI. No valid-mechanics result grants
+rights or satisfies independent approval.
+
+The new authority-evaluation wire contract is additive; prior v1 resources and
+experience outcome/confidence semantics are unchanged. Unknown/unsupported provider
+or wire versions do not become authority. Migration/downgrade remain unsupported.
+The protocol currently supports one exact target/artifact request rather than
+wildcards, role inheritance, delegation chains or institution-wide policy.
+
+Git capture now drains stdout and stderr concurrently and counts both against an
+8 MiB total budget before retaining stdout. A maximum 64 KiB read and bounded
+accumulator replace unbounded ``capture_output``. The 20-second deadline and output
+overflow terminate the child and report exit 4 ``BLOCKED_RESOURCE_LIMIT``; partial
+inventory and silent filesystem fallback are prohibited on resource exhaustion.
+Ordinary Git command errors/missing Git still permit the documented filesystem
+baseline. This bounds captured output, not all child-process/host memory. POSIX
+selector/pipe behavior is exercised; other platforms are not claimed tested.
+Inherited Git configuration, working-tree overrides, credentials and loader
+variables are not forwarded. System/global Git configuration is disabled and
+target hooks/fsmonitor/transports remain disabled. The local executable is still
+resolved through the caller's PATH: a trusted local Python/Git/toolchain is an
+explicit precondition, not established by record hashes.
+
+Reproduction, semantic cohort and iteration-specific acceptance evidence are
+appended under ``.codex/evidence/institutional-foundation/iteration-002``; original
+reports and checkpoints remain historical records. The ADR is
+``docs/adr/institutional-authority-002.json``. Candidate-source rebuild validation
+must not be mislabeled original-wheel evaluation or independent reproduction.
+Source, externally installed-wheel tests and review lanes are implementation
+evidence only unless an independent assurance basis is separately established.

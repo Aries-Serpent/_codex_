@@ -1,0 +1,457 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001/iteration-002",
+  "collected_at": "2026-10-24T21:39:55Z",
+  "source_sha": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+  "cohort_size": 6,
+  "entries": [
+    {
+      "id": "component:fca78bde754d0f2d187ff45e53cd42260116758f6a43218a0b91a1416b51d7bc",
+      "kind": "governance",
+      "source_path": "src/codex/cognitive_brain/authority.py",
+      "source_sha": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+      "source_digest": "86cb6e470f6c0eba89a561010769088ab6e48f98e180f0466269d7a6e7985df8",
+      "depth": "full_text",
+      "declared_purpose": "AuthorityEnvelope checks caller-supplied paths, diff size, environment and approval boolean; returns AuthorityDecision reasons.",
+      "observed_behavior": "source-declared behavior only; runtime not_observed",
+      "inputs_outputs": "paths/diff/env/human_approved -> AuthorityDecision",
+      "dependencies": "stdlib fnmatch/hashlib/json/os/re; no authenticated identity provider",
+      "invoked_workflows": "not_observed",
+      "memory_read_written": "none observed",
+      "tests": "tests/self_improvement/test_authority.py",
+      "test_observation": "not executed by investigation; changed-slice source/wheel evidence recorded separately",
+      "package_inclusion": "Source package discovered under codex*, aries_serpent_core* or codex_ml* include rules; wheel contents subsequently checked",
+      "declared_authority": "domain-specific caller policy inputs",
+      "verified_authority": "unknown",
+      "effective_authority": {},
+      "authority_evidence": [],
+      "authority_expiry": "unknown",
+      "revocation": "unknown",
+      "unresolved_authority_conflicts": [
+        "Authority boolean is not independently authenticated approval; no expiry or revocation check in evaluate."
+      ],
+      "overlap": [
+        "Domain authority/approval/evidence mechanisms have distinct trust boundaries; no integrated chain established."
+      ],
+      "known_gaps": [
+        "Authority boolean is not independently authenticated approval; no expiry or revocation check in evaluate."
+      ],
+      "disposition": "enhance",
+      "rationale": "Retain path/resource checks; compose only after trusted identity/artifact/validity evidence is supplied.",
+      "confidence": "source-grounded recommendation; runtime effectiveness unknown",
+      "evidence": [
+        "codex.trust-evidence.v1:bd960f7240b523ba7e330f18574f95d19598aa0a44ed210b0dba05b79835b593"
+      ],
+      "institutional_mapping": "Human Authority Gateway: proposed enhancement; actual authentication absent",
+      "test_path_exists": true
+    },
+    {
+      "id": "component:8b9bdbae296930f31f1365cd2fe75c64d99e885736767604f47dc555fca679e1",
+      "kind": "governance",
+      "source_path": "src/aries_serpent_core/governance/rbac.py",
+      "source_sha": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+      "source_digest": "c759f5cc26dd46eb28eb6ade99de3bf4818917d3c373e91ff8c294d01d34f198",
+      "depth": "targeted_sections",
+      "declared_purpose": "Maps CodexRole/resource/action to permission decisions; role assignment and revocation update audit logger entries.",
+      "observed_behavior": "source-declared behavior only; runtime not_observed",
+      "inputs_outputs": "user/role/resource/action -> permission decision or PermissionDeniedError",
+      "dependencies": "RoleManager, PermissionValidator and audit logger; caller role assignments, not independent actor authentication",
+      "invoked_workflows": "not_observed",
+      "memory_read_written": "audit_logger._data entries at 382-384 and 400-402",
+      "tests": "tests/test_governance_rbac.py",
+      "test_observation": "not executed by investigation; changed-slice source/wheel evidence recorded separately",
+      "package_inclusion": "Source package discovered under codex*, aries_serpent_core* or codex_ml* include rules; wheel contents subsequently checked",
+      "declared_authority": "domain-specific caller policy inputs",
+      "verified_authority": "unknown",
+      "effective_authority": {},
+      "authority_evidence": [],
+      "authority_expiry": "unknown",
+      "revocation": "unknown",
+      "unresolved_authority_conflicts": [
+        "No evidence here that role labels bind an independently approved candidate digest; hosted enforcement unobserved."
+      ],
+      "overlap": [
+        "Domain authority/approval/evidence mechanisms have distinct trust boundaries; no integrated chain established."
+      ],
+      "known_gaps": [
+        "No evidence here that role labels bind an independently approved candidate digest; hosted enforcement unobserved."
+      ],
+      "disposition": "compose",
+      "rationale": "Reuse permission mechanics within their domain, not as proof of institutional identity or artifact approval.",
+      "confidence": "source-grounded recommendation; runtime effectiveness unknown",
+      "evidence": [
+        "codex.trust-evidence.v1:af73dc1a8beabbecbd3cca84059750975af10382cec403476810dc4dc84f5239"
+      ],
+      "institutional_mapping": "Trust evaluator: existing role-check mechanics; independent institutional auditor absent",
+      "test_path_exists": true
+    },
+    {
+      "id": "component:775c270fb3ff03025b766b8f37ef9aae93b0d999cda2db4e21234ad1c915f036",
+      "kind": "governance",
+      "source_path": "src/aries_serpent_core/governance/approval_service.py",
+      "source_sha": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+      "source_digest": "6914af93a0f8fae38738d3dc763ace111f4daf02ac95df9915148cefec5d533f",
+      "depth": "targeted_sections",
+      "declared_purpose": "Queues requests, computes SLA/escalation and records manual or automatic approval states.",
+      "observed_behavior": "source-declared behavior only; runtime not_observed",
+      "inputs_outputs": "policy/requester/approvers/context -> ApprovalRequest and decisions",
+      "dependencies": "time, threading, request models, SLA policies, in-memory request/availability maps",
+      "invoked_workflows": "not_observed",
+      "memory_read_written": "_requests and decision/audit lists; durable downstream persistence not established",
+      "tests": "tests/test_governance_approval_service.py",
+      "test_observation": "not executed by investigation; changed-slice source/wheel evidence recorded separately",
+      "package_inclusion": "Source package discovered under codex*, aries_serpent_core* or codex_ml* include rules; wheel contents subsequently checked",
+      "declared_authority": "domain-specific caller policy inputs",
+      "verified_authority": "unknown",
+      "effective_authority": {},
+      "authority_evidence": [],
+      "authority_expiry": "unknown",
+      "revocation": "unknown",
+      "unresolved_authority_conflicts": [
+        "Auto-approval exists at 390-423, contradicting blanket denial assumptions. No RBAC check visible in this method; exploitability/end-to-end enforcement not established. Ticket method records text, not a verified GitHub ticket."
+      ],
+      "overlap": [
+        "Domain authority/approval/evidence mechanisms have distinct trust boundaries; no integrated chain established."
+      ],
+      "known_gaps": [
+        "Auto-approval exists at 390-423, contradicting blanket denial assumptions. No RBAC check visible in this method; exploitability/end-to-end enforcement not established. Ticket method records text, not a verified GitHub ticket."
+      ],
+      "disposition": "retain",
+      "rationale": "Keep operational state machine isolated; do not adopt automatic approval as institutional final approval.",
+      "confidence": "source-grounded recommendation; runtime effectiveness unknown",
+      "evidence": [
+        "codex.trust-evidence.v1:da6c24706eef81732b9bcfc051acac33c018b702eb55a07b177d043bac2dc367"
+      ],
+      "institutional_mapping": "Human Authority Gateway: existing workflow state only, not established human consent",
+      "test_path_exists": true
+    },
+    {
+      "id": "component:5b957fe583ba7b2cb8a6e85b447e5fbdaf7586bbcd6e6e217ebf02b8ff0e7f0e",
+      "kind": "other",
+      "source_path": "src/codex/cognitive_brain/evidence_store.py",
+      "source_sha": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+      "source_digest": "c8f0913e6d86c307e1defe074b694b4b7cf3f162551f6887d9c6f73faad6ef95",
+      "depth": "targeted_sections",
+      "declared_purpose": "Persists events/outcomes in JSONL and provides in-memory circuit-breaker state.",
+      "observed_behavior": "source-declared behavior only; runtime not_observed",
+      "inputs_outputs": "event/outcome mappings -> JSONL records and lookup state",
+      "dependencies": "dataclasses, json, datetime, pathlib; schema 1.0.0",
+      "invoked_workflows": "not_observed",
+      "memory_read_written": "Default .codex/improvement/evidence.jsonl; _load rebuilds event IDs/outcomes, not breakers in inspected sections",
+      "tests": "tests/self_improvement/test_evidence_store.py",
+      "test_observation": "not executed by investigation; changed-slice source/wheel evidence recorded separately",
+      "package_inclusion": "Source package discovered under codex*, aries_serpent_core* or codex_ml* include rules; wheel contents subsequently checked",
+      "declared_authority": "domain-specific caller policy inputs",
+      "verified_authority": "unknown",
+      "effective_authority": {},
+      "authority_evidence": [],
+      "authority_expiry": "unknown",
+      "revocation": "unknown",
+      "unresolved_authority_conflicts": [
+        "JSONL append is not a demonstrated atomic multi-writer transaction. Breaker persistence/replay needs separate tests before relying on restart state."
+      ],
+      "overlap": [
+        "Domain authority/approval/evidence mechanisms have distinct trust boundaries; no integrated chain established."
+      ],
+      "known_gaps": [
+        "JSONL append is not a demonstrated atomic multi-writer transaction. Breaker persistence/replay needs separate tests before relying on restart state."
+      ],
+      "disposition": "compose",
+      "rationale": "Retain domain event history; consider explicit provenance adapter instead of a second general memory system.",
+      "confidence": "source-grounded recommendation; runtime effectiveness unknown",
+      "evidence": [
+        "codex.trust-evidence.v1:c67355d90ed6087a494aa33df2916390351584ecc57eb47bb80caadfa95afb4a"
+      ],
+      "institutional_mapping": "Experience Curator: existing event/outcome persistence; Trust evaluator: provenance enhancement proposed",
+      "test_path_exists": true
+    },
+    {
+      "id": "component:f8bfd146c46d0f9977b07430d227137dc81fcbd0adbd237012ad32328d6383fc",
+      "kind": "knowledge",
+      "source_path": "src/codex_ml/utils/checkpointing.py",
+      "source_sha": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+      "source_digest": "84ab574754195b5c32c7490851924ef222adfdcb852c20320bda0756a98e7501",
+      "depth": "targeted_sections",
+      "declared_purpose": "StateDictProvider defines state_dict/load_state_dict protocol for framework state extraction/restoration.",
+      "observed_behavior": "source-declared behavior only; runtime not_observed",
+      "inputs_outputs": "wrapped state objects -> mapping; protocol methods themselves do not serialize",
+      "dependencies": "Larger module has optional model/framework machinery; protocol shape alone is framework-neutral",
+      "invoked_workflows": "not_observed",
+      "memory_read_written": "Checkpoint state persistence belongs to concrete implementation, not protocol stubs",
+      "tests": "tests/checkpoint/ (discovery lead; exact related tests not executed in this investigation)",
+      "test_observation": "not executed by investigation; changed-slice source/wheel evidence recorded separately",
+      "package_inclusion": "Source package discovered under codex*, aries_serpent_core* or codex_ml* include rules; wheel contents subsequently checked",
+      "declared_authority": "domain-specific caller policy inputs",
+      "verified_authority": "unknown",
+      "effective_authority": {},
+      "authority_evidence": [],
+      "authority_expiry": "unknown",
+      "revocation": "unknown",
+      "unresolved_authority_conflicts": [
+        "Source docstring explicitly says method bodies are placeholders; no authority guard is established. Read-only institutional development does not require adding authority checks to all checkpoint reads."
+      ],
+      "overlap": [
+        "Domain authority/approval/evidence mechanisms have distinct trust boundaries; no integrated chain established."
+      ],
+      "known_gaps": [
+        "Source docstring explicitly says method bodies are placeholders; no authority guard is established. Read-only institutional development does not require adding authority checks to all checkpoint reads."
+      ],
+      "disposition": "retain",
+      "rationale": "Reuse the narrow Protocol pattern, not ML checkpoint persistence for institutional approval.",
+      "confidence": "source-grounded recommendation; runtime effectiveness unknown",
+      "evidence": [
+        "codex.trust-evidence.v1:77ca152a9e083fdf0fe92378feea4eaec7a7ba45469f63e5016cabbc3b51d791"
+      ],
+      "institutional_mapping": "Continuation support: contract-only design pattern; not institutional authority",
+      "test_path_exists": "unverified discovery lead"
+    },
+    {
+      "id": "component:4ee8eb2584f78086527a3caf76602944eaf69d442d493b8f74e625251aa69248",
+      "kind": "other",
+      "source_path": "src/codex/institutional/core.py",
+      "source_sha": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+      "source_digest": "ffb9a9df8095ee693bd77ba2349f014cdf6f4612fd76f22088cbfc171148dfd6",
+      "depth": "targeted_sections",
+      "declared_purpose": "Validates Draft envelopes, generates inventory/evidence/experience and checks candidate references/source drift.",
+      "observed_behavior": "source-declared behavior only; runtime not_observed",
+      "inputs_outputs": "root/records/clock -> inactive records and structural findings",
+      "dependencies": "stdlib plus installed jsonschema/contracts; narrow Git adapter",
+      "invoked_workflows": "not_observed",
+      "memory_read_written": "Candidate records preserved by separate storage module; no operational approval or general knowledge lifecycle",
+      "tests": "tests/institutional/test_foundation.py",
+      "test_observation": "not executed by investigation; changed-slice source/wheel evidence recorded separately",
+      "package_inclusion": "Source package discovered under codex*, aries_serpent_core* or codex_ml* include rules; wheel contents subsequently checked",
+      "declared_authority": "domain-specific caller policy inputs",
+      "verified_authority": "unknown",
+      "effective_authority": {},
+      "authority_evidence": [],
+      "authority_expiry": "unknown",
+      "revocation": "unknown",
+      "unresolved_authority_conflicts": [
+        "Structural schema and hash checks cannot authenticate producers; role names do not establish independent audit; activation remains separately denied."
+      ],
+      "overlap": [
+        "Domain authority/approval/evidence mechanisms have distinct trust boundaries; no integrated chain established."
+      ],
+      "known_gaps": [
+        "Structural schema and hash checks cannot authenticate producers; role names do not establish independent audit; activation remains separately denied."
+      ],
+      "disposition": "enhance",
+      "rationale": "Extend compatible contracts and compose typed authority diagnostics without permitting activation.",
+      "confidence": "source-grounded recommendation; runtime effectiveness unknown",
+      "evidence": [
+        "codex.trust-evidence.v1:26c3e401b1f690f61bcab84c1976349ddc1aee437e822fba0d488f0cb2420392"
+      ],
+      "institutional_mapping": "Architect/Auditor: existing inactive construction and structural checking, not independently operating agents",
+      "test_path_exists": true
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:bd960f7240b523ba7e330f18574f95d19598aa0a44ed210b0dba05b79835b593",
+      "created_at": "2026-10-24T21:39:55Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "src/codex/cognitive_brain/authority.py:21-55,57-123",
+        "source_sha": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+        "digest": "86cb6e470f6c0eba89a561010769088ab6e48f98e180f0466269d7a6e7985df8",
+        "method": "manual source tracing plus bounded delegated source leads",
+        "observation": "AuthorityEnvelope checks caller-supplied paths, diff size, environment and approval boolean; returns AuthorityDecision reasons.",
+        "limitations": [
+          "Source declarations, not runtime execution or hosted enforcement.",
+          "No independently authenticated producer identity."
+        ],
+        "predecessor": null
+      },
+      "integrity": "edae9f465e6fdba10084dae083150bff8caed9470e285285b2570f8e907a81bd"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:af73dc1a8beabbecbd3cca84059750975af10382cec403476810dc4dc84f5239",
+      "created_at": "2026-10-24T21:39:55Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "src/aries_serpent_core/governance/rbac.py:100-235,350-405,470-495",
+        "source_sha": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+        "digest": "c759f5cc26dd46eb28eb6ade99de3bf4818917d3c373e91ff8c294d01d34f198",
+        "method": "manual source tracing plus bounded delegated source leads",
+        "observation": "Maps CodexRole/resource/action to permission decisions; role assignment and revocation update audit logger entries.",
+        "limitations": [
+          "Source declarations, not runtime execution or hosted enforcement.",
+          "No independently authenticated producer identity."
+        ],
+        "predecessor": null
+      },
+      "integrity": "f17de1bc48ee7b893e5155fe6c2f94a4728751d7fa0a7c6bc64f292da094de5d"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:da6c24706eef81732b9bcfc051acac33c018b702eb55a07b177d043bac2dc367",
+      "created_at": "2026-10-24T21:39:55Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "src/aries_serpent_core/governance/approval_service.py:182-225,276-430",
+        "source_sha": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+        "digest": "6914af93a0f8fae38738d3dc763ace111f4daf02ac95df9915148cefec5d533f",
+        "method": "manual source tracing plus bounded delegated source leads",
+        "observation": "Queues requests, computes SLA/escalation and records manual or automatic approval states.",
+        "limitations": [
+          "Source declarations, not runtime execution or hosted enforcement.",
+          "No independently authenticated producer identity."
+        ],
+        "predecessor": null
+      },
+      "integrity": "6579c3b6ad6b1396c3a6e14787b6c823d6d7d6decb45a2c6f4828abcfd74c596"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:c67355d90ed6087a494aa33df2916390351584ecc57eb47bb80caadfa95afb4a",
+      "created_at": "2026-10-24T21:39:55Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "src/codex/cognitive_brain/evidence_store.py:29-34,41-117,119-190",
+        "source_sha": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+        "digest": "c8f0913e6d86c307e1defe074b694b4b7cf3f162551f6887d9c6f73faad6ef95",
+        "method": "manual source tracing plus bounded delegated source leads",
+        "observation": "Persists events/outcomes in JSONL and provides in-memory circuit-breaker state.",
+        "limitations": [
+          "Source declarations, not runtime execution or hosted enforcement.",
+          "No independently authenticated producer identity."
+        ],
+        "predecessor": null
+      },
+      "integrity": "d369491dfcb1838934a83949c244366d1e2840a9ca8c32a456555796059efe26"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:77ca152a9e083fdf0fe92378feea4eaec7a7ba45469f63e5016cabbc3b51d791",
+      "created_at": "2026-10-24T21:39:55Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "src/codex_ml/utils/checkpointing.py:186-210",
+        "source_sha": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+        "digest": "84ab574754195b5c32c7490851924ef222adfdcb852c20320bda0756a98e7501",
+        "method": "manual source tracing plus bounded delegated source leads",
+        "observation": "StateDictProvider defines state_dict/load_state_dict protocol for framework state extraction/restoration.",
+        "limitations": [
+          "Source declarations, not runtime execution or hosted enforcement.",
+          "No independently authenticated producer identity."
+        ],
+        "predecessor": null
+      },
+      "integrity": "6559b433da3b334c411c897e18e4cab671a9c587724286ae62520544c69940ba"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:26c3e401b1f690f61bcab84c1976349ddc1aee437e822fba0d488f0cb2420392",
+      "created_at": "2026-10-24T21:39:55Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "src/codex/institutional/core.py:36-180,340-405,540-594 (source-head sections; later working-tree line shifts recorded separately)",
+        "source_sha": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+        "digest": "ffb9a9df8095ee693bd77ba2349f014cdf6f4612fd76f22088cbfc171148dfd6",
+        "method": "manual source tracing plus bounded delegated source leads",
+        "observation": "Validates Draft envelopes, generates inventory/evidence/experience and checks candidate references/source drift.",
+        "limitations": [
+          "Source declarations, not runtime execution or hosted enforcement.",
+          "No independently authenticated producer identity."
+        ],
+        "predecessor": null
+      },
+      "integrity": "e29cc553254f7795f1f8f4764797101f2ee7a666a383bcdecc7587a38ceda3e4"
+    }
+  ],
+  "coverage": {
+    "source_paths": 6,
+    "runtime_observed_paths": 0,
+    "test_observed_paths": 0,
+    "historical_denominators": "33320 paths and 13147 relevant lexical candidates at iteration source HEAD; cohort is bounded, not exhaustive.",
+    "in_lexical_relevant_set": 4
+  },
+  "agent_profiles": "inaccessible under environment boundary; no profiles modified, created, composed, deprecated or retired",
+  "raw_agent_disposition": {
+    "raw_files": [
+      "raw-agent-investigation.json",
+      "raw-agent-summary.txt"
+    ],
+    "assurance": "unverified investigation leads retained as historical dissent, not operational instructions",
+    "rejected_claims": [
+      "No integrated four-layer trust chain was demonstrated; source modules cannot establish deployment or fail-closed enforcement across layers.",
+      "Approval auto-approval exists; blanket all-production-denied conclusion is not established.",
+      "Checkpoint Protocol is not a new authority provider and does not require retroactive authority gating for ordinary source development.",
+      "Production is not a supported institutional lifecycle transition; Draft cannot be promoted merely by editing a record.",
+      "JSONL append has no demonstrated atomic/multi-writer guarantee.",
+      "Approximate agent test counts were not accepted as observed execution evidence."
+    ]
+  },
+  "alternative_cause": "The institutional gap is portable trust integration, not demonstrated ineffectiveness of existing agents.",
+  "out_of_scope_findings": [
+    {
+      "finding": "Approval idempotency, in-memory audit/breaker reconstruction and auto-approval boundaries need domain-specific review.",
+      "owner": "Existing governance/evidence maintainers",
+      "mitigation": "No automatic approval service is adapted into institutional activation.",
+      "next_action": "Review concrete call sites and existing domain tests before asserting vulnerability or proposing behavior changes."
+    }
+  ],
+  "reuse_decision": "Typed unavailable provider boundary; retain prior activation denial. No duplicate registry/memory system."
+}

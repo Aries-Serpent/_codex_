@@ -5,10 +5,11 @@ from __future__ import annotations
 import argparse
 import errno
 import sys
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
-from . import core, storage
+from . import authority, core, storage
 
 
 def execute(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
@@ -45,6 +46,18 @@ def execute(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
     if args.command == "disengage":
         return storage.disengage(root), 0
     value = core.load(Path(args.input))
+    if args.command == "authority":
+        findings = core.inspect_candidate(value)
+        if findings:
+            raise core.Rejected("INVALID_CANDIDATE:" + ",".join(findings))
+        request = authority.AuthorityRequest("activate", str(root.resolve()), core.digest(value))
+        result = authority.evaluate(request)
+        evaluation = core.record(
+            "codex.authority-evaluation.v1",
+            {**asdict(result), "reasons": list(result.reasons), "request": asdict(request)},
+            evidence=[value["id"]],
+        )
+        return evaluation, 6 if result.status == "unsupported" else 3
     if args.command == "assess":
         return core.assess(value), 0
     if args.command in ("challenge", "verify", "status"):
@@ -95,6 +108,7 @@ def main(argv: list[str] | None = None) -> int:
             "export",
             "disengage",
             "activate",
+            "authority",
             "migrate",
             "downgrade",
         ],

@@ -2,6 +2,27 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "contract_version": "1",
   "implemented": {
+    "codex.authority-evaluation.v1": {
+      "type": "object",
+      "required": ["status", "reasons", "provider_assurance", "activation_allowed", "request"],
+      "properties": {
+        "status": {"enum": ["valid-mechanics", "invalid", "unavailable", "unsupported", "malformed"]},
+        "reasons": {"type": "array", "minItems": 1, "contains": {"const": "ACTIVATION_DISABLED"}, "items": {"type": "string"}},
+        "provider_assurance": {"enum": ["unknown", "fixture", "externally-verified"]},
+        "activation_allowed": {"const": false},
+        "request": {
+          "type": "object",
+          "required": ["operation", "target", "artifact"],
+          "properties": {
+            "operation": {"type": "string", "minLength": 1},
+            "target": {"type": "string", "minLength": 1},
+            "artifact": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
     "codex.agent-role.v1": {
       "type": "object",
       "required": ["purpose", "capability", "authority"],

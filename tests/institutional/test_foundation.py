@@ -251,9 +251,9 @@ def test_git_transport_and_optional_writes_are_disabled(target, monkeypatch):
         assert env["GIT_NO_LAZY_FETCH"] == "1"
         assert env["GIT_OPTIONAL_LOCKS"] == "0"
         assert env["GIT_TERMINAL_PROMPT"] == "0"
-        return subprocess.CompletedProcess(command, 0, stdout=b"observed")
+        return b"observed"
 
-    monkeypatch.setattr(subprocess, "run", observed)
+    monkeypatch.setattr(core, "capture", observed)
     assert core.git(target, "rev-parse", "HEAD") == "observed"
 
 

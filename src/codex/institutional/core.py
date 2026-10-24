@@ -16,6 +16,8 @@ from typing import Any, Callable
 
 from jsonschema import Draft202012Validator, FormatChecker
 
+from .git_capture import CaptureLimit, capture
+
 MAX_PATHS = 50000
 MAX_BYTES = 64 * 1024 * 1024
 NAMESPACE = ".codex/institutional"
@@ -207,14 +209,17 @@ def classify(path: str) -> str:
 
 def git(root: Path, *args: str) -> str | None:
     env = {
-        **os.environ,
+        "PATH": os.environ.get("PATH", os.defpath),
+        "LC_ALL": "C",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": os.devnull,
         "GIT_NO_LAZY_FETCH": "1",
         "GIT_ALLOW_PROTOCOL": "",
         "GIT_OPTIONAL_LOCKS": "0",
         "GIT_TERMINAL_PROMPT": "0",
     }
     try:
-        result = subprocess.run(
+        result = capture(
             [
                 "git",
                 "-c",
@@ -225,12 +230,11 @@ def git(root: Path, *args: str) -> str | None:
                 str(root),
                 *args,
             ],
-            capture_output=True,
-            check=True,
-            timeout=20,
             env=env,
         )
-        return result.stdout.decode("utf-8", errors="surrogateescape").strip()
+        return result.decode("utf-8", errors="surrogateescape").rstrip("\n")
+    except CaptureLimit as exc:
+        raise Rejected("BLOCKED_RESOURCE_LIMIT:" + str(exc), 4) from exc
     except (OSError, subprocess.SubprocessError):
         return None
 
