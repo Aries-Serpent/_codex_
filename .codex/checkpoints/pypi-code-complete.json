@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "checkpoint": "pypi-code-complete",
+  "generated_at": "2026-10-22T08:48:06Z",
+  "phase": 2,
+  "status": "in_progress",
+  "completed": false,
+  "wrapup": {
+    "recorded_at": "2026-10-22T14:09:33Z",
+    "current_authorization": "Save all work and push commits to the current branch.",
+    "suite_status": "Interrupted: no pytest process, exit marker or terminal result; last log near 20%. No repository-wide coverage acceptance.",
+    "agent_status": "Three round-4 lanes failed HTTP 402 monthly quota exhausted; no completed turns or implementation credited.",
+    "resume_from": "pypi-phase2-triage.json#/execution_round4",
+    "save_and_push": "Implementation and non-rewriting remote integration are committed locally on 0D_base_. GitHub rejects the push because this session's GitHub App lacks workflows permission for copilot-setup-steps.yml. A workflow-write-authorized session/credential or manual push is required; no remote success claimed.",
+    "phase2_completed": false,
+    "phase3_release_ready": false,
+    "phase4_started": false
+  },
+  "execution_round4": {
+    "details": "pypi-phase2-triage.json#/execution_round4",
+    "previous_clean_full_suite": "Exited 137 at the nested-MagicMock ingest boundary; incremental events are not final counts and no final coverage survived. The repaired five-module ingest cohort passed 234.",
+    "current_full_suite": "Running on an immutable 328-path snapshot without an outer timeout; single process, --cov=src, periodic raw saves. No terminal result or accepted repository-wide coverage yet.",
+    "full_source_mypy": "Complete scan: 1055 errors in 323 files, 1972 checked, exit 1; baseline unchanged.",
+    "public_api_docstrings": "Original direct AST method: 9991/12206 (81.853187%). Explicit inherited-MCP sensitivity: 10018/12233 (81.893240%). All 30 public facade methods were documented before and after; denominator shrinkage is not documentation progress. Gate remains below 90%.",
+    "global_style": "Repository Ruff and full-source Black passed on the frozen snapshot; configured hooks still require fresh integrated validation.",
+    "separate_acceptance": "Core CLI follow-up: all original 123 cases pass and 39 scoped type errors removed. Auth identity/MFA/lifecycle: 48 pass; expanded complete phase-7/API-email cohort: 245 pass. MCP module: 132 pass. Overlapping counts are not additive.",
+    "phase2_completed": false,
+    "phase3_release_ready": false,
+    "phase4_started": false
+  },
+  "execution_round3": {
+    "details": "pypi-phase2-triage.json#/execution_round3",
+    "status": "Remediation is active; no global gate or phase completion is claimed.",
+    "clean_full_suite": "Historical run exited 137 without final coverage. See execution_round4 for its replacement immutable full-suite run and current measurements.",
+    "implemented": "Clock-state validation, pattern-index replacement, atomic ingest uniqueness, real training-provider imports and optimizer updates, classification shape checks, malformed-policy warning/default protection, canonical mock targets and resource-safe exact threshold tests.",
+    "parallel_progress": "Scoped tool mypy 74 to zero; scoped agent mypy 86 to zero; 36 tool and 177 ML public docstrings added. These are not a fresh global count.",
+    "cohort_counts_are_not_additive": true,
+    "global_typing_documentation_and_hooks_require_remeasurement": true,
+    "phase2_completed": false,
+    "phase3_release_ready": false,
+    "phase4_started": false
+  },
+  "continuation_evidence": {
+    "details": "pypi-phase2-triage.json#/continuation",
+    "fresh_chronicle_and_prior_failure_cohort": "365 passed, zero failures/skips; 87.80% cost/analytics-only coverage",
+    "cross_lane_integration": "1607 passed, zero failures/errors, six skips; coverage disabled. Includes Chronicle, prior cohort, CLI compatibility and dependent lane repairs; does not establish full-suite success.",
+    "concurrent_memory_repair": "Full-transaction instance serialization; deterministic regression and 500 persisted concurrent writes",
+    "unbounded_full_suite": "Frozen run terminated with exit 3/internal errors after 44 minutes: terminal reports 6105 passed, 386 failed, 276 skipped, 50 xfailed and 56209 non-disjoint errors. Logger/cwd pollution caused large cascades and coverage finalization failed; no global coverage is available. Later infrastructure repairs passed selected integration but still require a clean broad rerun.",
+    "integrated_mypy_progress": "Final sequential scan: 1263 errors in 339 files, down from 1386 in 362. A concurrent attempt was killed with exit 137, then retried successfully as a complete failed type check.",
+    "defined_public_api_docstrings": "9688/12233 = 79.195618%; below 90%, presence only",
+    "registry_dependency": "codex-contracts unavailable; local wheelhouse installs do not unblock registry installation",
+    "version_collision": "Public codex-ml 0.3.0 artifacts already exist; authorized later version decision required",
+    "runtime_dependency_audit": "47 public packages: no known vulnerabilities reported by pip-audit; two local distributions unauditable; OSV DNS failure and missing Safety remain explicit",
+    "configured_hooks": "265 changed paths checked; AST SMELL-S001 remains failed for GitHubMCPPoster (38 methods, limit 20). Other applicable hooks pass, not including the independent failed global mypy/docstring gates.",
+    "phase2_completed": false,
+    "phase3_release_ready": false,
+    "phase4_started": false
+  },
+  "details": "pypi-phase2-triage.json",
+  "acceptance_criteria": {
+    "chronicle_regressions_repaired": true,
+    "focused_regressions_pass": true,
+    "repository_tests_all_pass": false,
+    "repository_coverage_at_least_80_percent": null,
+    "repository_ruff_has_zero_errors": true,
+    "repository_black_passes": null,
+    "full_source_black_passes": true,
+    "repository_mypy_passes": false,
+    "public_api_docstrings_at_least_90_percent": false,
+    "standalone_registry_dependency_resolution_passes": false,
+    "full_security_validation_complete": false,
+    "configured_hooks_all_pass": false,
+    "changelog_updated": true
+  },
+  "latest_selected_regression": {
+    "passed": 1607,
+    "failed": 0,
+    "skipped": 6,
+    "selected_coverage_percent": null,
+    "coverage_measured": false,
+    "repository_wide": false,
+    "evidence": "pypi-resume/integrated-regression.xml",
+    "historical_selected_result": {
+      "passed": 700,
+      "skipped": 5,
+      "selected_coverage_percent": 86.08,
+      "evidence": "pypi-phase2/current-integration.xml"
+    }
+  },
+  "recovery_2026_10_24": {
+    "recorded_at": "2026-10-24T04:43:42Z",
+    "scope": "PR #5708 R1-R4 remediation; this recovery status supplements, and does not rewrite, the historical measurements above.",
+    "base_commit": "71613ee00080",
+    "pre_cleanup_evidence_commit": "see recovery manifest for exact immutable ID",
+    "status": "incomplete; not merge-ready",
+    "R1": "Blocked: the required instruction-contract selector reports 67 passed and 2 failed because the held workflows lack --warn-only. No workflow changes or weakened acceptance. Requested reviewer @mbaetiong must confirm the workflow owner and authorize companion integration.",
+    "R2": "Cleanup was pushed. An independent post-push fetch verified the pre-cleanup evidence commit remains an ancestor and reverified all 1425 paths, modes, blob IDs, sizes and SHA-256 values. Retention is Git history, not an independent archive.",
+    "R3": "The 16 synthetic campaign records and timestamp-only startup diff are absent against base. Campaign telemetry tests passed twice (43 each); original dirty startup bytes are preserved separately.",
+    "R4": "Ordinary workflow compatibility is distinguished from hosted setup validation; legacy filtered environment output is reported, new broad dumps are rejected, and cloud setup checks are deferred.",
+    "current_full_source_mypy": "855 errors in 278 files, 1972 checked, exit 1. Base invocation exits 2 during package discovery on the invalid self-healing package name; no comparable delta or waiver.",
+    "pre_commit": "Exit 1 on five existing AST class-size findings; all other applicable hooks passed, including detect-secrets, bandit, pip-audit and gitleaks.",
+    "codeql": "Analysis skipped because the database size is too large; no CodeQL result is claimed.",
+    "hosted_checks": "Runs on the pushed commit are action_required. Validation Pipeline, Copilot Setup Steps Validation and Nox each have zero jobs; no executed success is claimed and no approval/dispatch was performed.",
+    "open_gates": [
+      "R1 authorized companion workflow integration and passing tests",
+      "Complete applicable suite and repository-wide coverage acceptance",
+      "Required full-source type acceptance/disposition",
+      "CodeQL analysis with an available database and disposition of five AST findings",
+      "Authorized execution and successful required hosted checks"
+    ],
+    "verified_cleanup_commit": "see recovery manifest for exact immutable ID",
+    "full_commit_ids": "recovery/bfe2456b/nonworkflow-manifest.md",
+    "details": "recovery/bfe2456b/CONTEXT.md and recovery/bfe2456b/nonworkflow-manifest.md"
+  },
+  "resolved_since_original_checkpoint": [
+    "BrainClient optional authentication, covered by 46 standalone tests and selected integration",
+    "15 broad-run failures repaired and their files passed in selected integration; broad rerun remains necessary",
+    "82 source formatting repairs and source-layout discovery",
+    "Documentation-metric semantics and regressions"
+  ],
+  "next_required_gate": "Collect the active clean immutable full-suite run and global coverage, integrate remaining lanes and validate round-3 roots, then remeasure and close actual global typing/documentation/hooks/security/dependency gates. The prior complete 1263-error mypy scan and 79.195618% doc inventory predate round 3. Do not add overlapping shard counts or declare Phase 2 complete.",
+  "publication_authorized_by_checkpoint": false
+}

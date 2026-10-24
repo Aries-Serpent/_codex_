@@ -36,7 +36,7 @@ class ChronicleAnalytics:
     def __init__(self, db: SessionDatabase) -> None:
         """Initialize chronicle analytics with database instance."""
         self.db = db
-        self.sessions = []
+        self.sessions: list[dict[str, Any]] = []
         self._load_sessions()
 
     def _load_sessions(self) -> None:
@@ -54,9 +54,7 @@ class ChronicleAnalytics:
                 created_column = (
                     "created_at"
                     if "created_at" in columns
-                    else "timestamp"
-                    if "timestamp" in columns
-                    else None
+                    else "timestamp" if "timestamp" in columns else None
                 )
                 if id_column is None or created_column is None:
                     raise sqlite3.OperationalError(
@@ -136,7 +134,7 @@ class ChronicleAnalytics:
 
         # Sessions per day (last 7 days)
         today = datetime.utcnow().date()
-        last_7_days = defaultdict(int)
+        last_7_days: defaultdict[str, int] = defaultdict(int)
         for s in self.sessions:
             try:
                 session_date = datetime.fromisoformat(s["created_at"].replace("Z", "+00:00")).date()
@@ -214,8 +212,8 @@ class ChronicleAnalytics:
 
     def _analyze_time_patterns(self) -> dict[str, Any]:
         """Analyze time-based activity patterns."""
-        hour_counter = Counter()
-        day_counter = Counter()
+        hour_counter: Counter[int] = Counter()
+        day_counter: Counter[str] = Counter()
 
         for s in self.sessions:
             try:

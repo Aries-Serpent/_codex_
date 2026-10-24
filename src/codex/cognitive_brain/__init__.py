@@ -141,6 +141,7 @@ def __getattr__(name: str):
 def __dir__() -> list[str]:
     return sorted(set(globals()) | set(__all__))
 
+
 __all__ = [
     # Authority envelope (Stage 1)
     "AuthorityDecision",

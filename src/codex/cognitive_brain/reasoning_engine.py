@@ -580,11 +580,7 @@ class ImprovementLayer:
         improvements: List[Dict[str, Any]] = []
 
         for strategy in DecisionStrategy:
-            strategy_outcomes = [
-                o
-                for o in outcomes
-                if o.decision_id  # Simplified for outcomes
-            ]
+            strategy_outcomes = [o for o in outcomes if o.decision_id]  # Simplified for outcomes
 
             if strategy_outcomes:
                 accuracy = sum(1 for o in strategy_outcomes if o.success) / len(strategy_outcomes)
@@ -642,9 +638,7 @@ class ImprovementLayer:
 
         squared_errors: List[float] = []
         for outcome in outcomes:
-            decision = next(
-                (d for d in self._decision_index if d.id == outcome.decision_id), None
-            )
+            decision = next((d for d in self._decision_index if d.id == outcome.decision_id), None)
             if decision is None:
                 continue
             realized = 1.0 if outcome.success else 0.0

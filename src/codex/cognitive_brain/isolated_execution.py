@@ -91,9 +91,7 @@ def scrub_environment(env: Optional[Mapping[str, str]] = None) -> dict[str, str]
     """Return a minimal environment with no inherited secrets."""
 
     base = env if env is not None else os.environ
-    scrubbed = {
-        key: value for key, value in base.items() if not _SECRET_ENV.search(key)
-    }
+    scrubbed = {key: value for key, value in base.items() if not _SECRET_ENV.search(key)}
     scrubbed["GIT_TERMINAL_PROMPT"] = "0"
     scrubbed["GIT_ASKPASS"] = "true"
     scrubbed.pop("SSH_ASKPASS", None)
@@ -166,7 +164,9 @@ class IsolatedExecutor:
             return outcome
 
         work_dir = Path(
-            tempfile.mkdtemp(prefix="improvement-", dir=str(self.work_root) if self.work_root else None)
+            tempfile.mkdtemp(
+                prefix="improvement-", dir=str(self.work_root) if self.work_root else None
+            )
         )
         try:
             return self._execute_in(
@@ -293,9 +293,7 @@ class IsolatedExecutor:
                 timeout=60,
             )
 
-    def _reject(
-        self, event_id: str, decision: AuthorityDecision, reason: str
-    ) -> ExecutionOutcome:
+    def _reject(self, event_id: str, decision: AuthorityDecision, reason: str) -> ExecutionOutcome:
         outcome = ExecutionOutcome(
             event_id=event_id, status="rejected", authority=decision, reason=reason
         )

@@ -75,13 +75,9 @@ class AuthorityEnvelope:
 
         violations = []
         if diff_lines > self.limits.max_diff_lines:
-            violations.append(
-                f"diff too large: {diff_lines} > {self.limits.max_diff_lines} lines"
-            )
+            violations.append(f"diff too large: {diff_lines} > {self.limits.max_diff_lines} lines")
         if file_count > self.limits.max_files:
-            violations.append(
-                f"too many files: {file_count} > {self.limits.max_files}"
-            )
+            violations.append(f"too many files: {file_count} > {self.limits.max_files}")
         return tuple(violations)
 
     def check_environment(self, env: Mapping[str, str]) -> Tuple[str, ...]:

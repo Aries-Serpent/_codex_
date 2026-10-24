@@ -61,6 +61,13 @@ def _session_log_dir() -> Path:
 
 
 def get_session_id() -> str:
+    """Return the current context's session identifier, creating one if needed.
+
+    A truthy cached identifier wins; otherwise CODEX_SESSION_ID is cached when
+    set, or a new UUID string is generated. No logger/file is created and the
+    environment is not modified. Later environment changes do not replace a
+    truthy cached ID; use set_session_id to select another session explicitly.
+    """
     session_id = _session_id_ctx.get()
     if session_id:
         return session_id
@@ -74,6 +81,22 @@ def get_session_id() -> str:
 
 
 def set_session_id(session_id: str, *, log_dir: Path | str | None = None) -> str:
+    """Select a context-local session and initialize its SessionLogger.
+
+    Args:
+        session_id: Identifier coerced to str and cached before logger creation.
+            Use a safe filename component: it contributes to the session filename.
+        log_dir: Optional directory, with ~ expanded; otherwise
+            CODEX_SESSION_LOG_DIR or the SessionLogger default is used.
+
+    Returns:
+        String identifier. Logger-construction OSError is logged and disables
+        session-file logging in this context rather than raising it.
+
+    Creating a SessionLogger can create directories and prune old session files
+    under its retention policy. Repeated calls replace the context's logger;
+    they do not update CODEX_SESSION_ID or reconfigure Python log handlers.
+    """
     resolved = str(session_id)
     _session_id_ctx.set(resolved)
     directory = Path(log_dir).expanduser() if log_dir is not None else _session_log_dir()
@@ -88,6 +111,16 @@ def set_session_id(session_id: str, *, log_dir: Path | str | None = None) -> str
 
 
 def get_session_logger() -> SessionLogger:
+    """Return the context's cached SessionLogger or lazily construct one.
+
+    Uses get_session_id and the configured session log directory. Construction
+    can create directories and prune old session files; the logger is cached.
+
+    Raises:
+        RuntimeError: If logging was disabled by a prior construction OSError,
+            or construction now fails with OSError. The latter is chained and
+            caches a disabled sentinel; set_session_id can retry initialization.
+    """
     session_logger = _session_logger_ctx.get()
     if isinstance(session_logger, SessionLogger):
         return session_logger
@@ -132,7 +165,30 @@ def _utc_iso(ts: float | None = None) -> str:
 
 
 class JsonFormatter(logging.Formatter):
+    """Format standard logging records as a single Unicode JSON object.
+
+    Dict messages overlay base timestamp/level/message fields. Eligible record
+    extras, exception details, and a default context session.id are included.
+    Values are not recursively sanitized or redacted: callers must provide
+    JSON-serializable, non-sensitive payloads. Formatting needs only stdlib,
+    although importing this module also imports the local SessionLogger.
+    """
+
     def format(self, record: logging.LogRecord) -> str:
+        """Serialize record fields, exception information, and eligible extras.
+
+        Args:
+            record: LogRecord whose dict message may override base fields. Extras
+                cannot replace fields already present in the payload.
+
+        Returns:
+            JSON string without a trailing newline, using ensure_ascii=False.
+            Missing session.id is filled using get_session_id, not a file logger.
+
+        Raises:
+            TypeError: If a payload value is not JSON serializable.
+            ValueError: If JSON serialization detects a circular container.
+        """
         payload: dict[str, Any] = {
             "timestamp": _utc_iso(record.created),
             "log.level": record.levelname,
@@ -195,6 +251,21 @@ def init_json_logging(
     session_id: str | None = None,
     session_log_dir: Path | str | None = None,
 ) -> logging.Logger:
+    """Replace root handlers with one stderr JSON handler and choose a session.
+
+    Args:
+        level_env: Environment variable containing the logging level name.
+        default_level: Fallback level name; unrecognized names resolve to INFO.
+        session_id: Truthy explicit ID, then CODEX_SESSION_ID, then the context ID.
+        session_log_dir: Directory forwarded to set_session_id, which may create
+            directories or prune session history through SessionLogger.
+
+    Returns:
+        Logger named codex, propagating to the newly configured root logger.
+
+    Existing root handlers are removed, not closed. Calling again replaces the
+    handler again. Failure to initialize session files via OSError is nonfatal.
+    """
     resolved_session = session_id or os.environ.get(_SESSION_ID_ENV) or get_session_id()
     set_session_id(str(resolved_session), log_dir=session_log_dir)
     level_name = os.environ.get(level_env, default_level).upper()
@@ -210,6 +281,22 @@ def init_json_logging(
 
 
 def log_event(logger: logging.Logger, event: str, **fields: Any) -> Any:
+    """Emit a structured INFO record and best-effort session-file event.
+
+    Args:
+        logger: Python logger receiving the dict record through info.
+        event: Session event type and default event.name in the record.
+        **fields: Event fields; may override event.name and supply session.id.
+            Keep values non-sensitive and JSON serializable for JsonFormatter.
+
+    Returns:
+        None, despite the permissive return annotation.
+
+    The file copy converts unsupported values to strings and uses SessionLogger's
+    redaction. The regular log record keeps original values and is not redacted
+    here. ValueError, TypeError, and RuntimeError during session lookup/writing
+    are suppressed; other errors, including session write OSError, propagate.
+    """
     rec = {"event.name": event}
     rec.update(fields)
     rec.setdefault("session.id", get_session_id())
@@ -310,6 +397,18 @@ class ArgparseJSONParser(argparse.ArgumentParser):
         super().__init__(*a, **k)
 
     def error(self, message: str) -> Any:
+        """Log a cli.argparse_error event and terminate parsing with exit code 2.
+
+        Args:
+            message: Parser error text included in the event and stderr output.
+
+        Raises:
+            SystemExit: With code 2 after usage and error text are written to stderr,
+                unless an earlier logging operation raises.
+
+        No value is returned; logging uses this parser's codex logger and may
+        lazily initialize session-file logging.
+        """
         usage = self.format_usage().strip()
         log_event(
             self._logger,

@@ -185,18 +185,53 @@ if TORCH_AVAILABLE:
 
 @runtime_checkable
 class StateDictProvider(Protocol):
+    """Structural interface for extracting and restoring checkpoint mappings.
+
+    Concrete providers bridge optional model/optimizer/scheduler/scaler objects.
+    The protocol itself neither imports a framework nor copies tensors; its
+    method bodies are placeholders rather than working serialization routines.
+    """
+
     def state_dict(self) -> Mapping[str, Any]:
+        """Specify extraction of a string-keyed state mapping.
+
+        Implementations define copying and framework errors. This protocol stub
+        returns None if reached directly and does not capture state.
+        """
         pass
 
     def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
+        """Specify restoring ``state_dict`` into a provider's wrapped object.
+
+        ``strict`` requests key matching where supported; return semantics and
+        errors are implementation-specific. The stub returns None without
+        mutation and supplies no default restoration behavior.
+        """
         pass
 
 
 @dataclass
 class ModuleStateDictProvider(StateDictProvider):
+    """Adapt optional ``module`` objects exposing state_dict/load_state_dict.
+
+    None or missing methods yield empty/no-op results. No torch type is required:
+    compatible objects may supply the methods. Extraction is a shallow dict
+    copy, and loading retries without strict if the first call raises TypeError.
+    """
+
     module: Optional[Any]
 
     def state_dict(self) -> Mapping[str, Any]:
+        """Return a shallow dictionary copy of the wrapped module's state.
+
+        Return {} for None, a missing callable, or a result lacking Mapping/items
+        support. Tensor/value objects are shared, not cloned. Getter and
+        dict-conversion errors propagate.
+
+        Example:
+            >>> ModuleStateDictProvider(None).state_dict()
+            {}
+        """
         if self.module is None:
             return {}
         state_fn = getattr(self.module, "state_dict", None)
@@ -209,6 +244,13 @@ class ModuleStateDictProvider(StateDictProvider):
         return {}
 
     def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
+        """Load ``state_dict`` into the module, passing ``strict`` when supported.
+
+        Return the loader's result, or None for an absent module/callable. Any
+        TypeError from the first call is logged and triggers a retry without
+        strict, even if unrelated to the keyword; partial mutations may therefore
+        precede the retry. Other errors and retry errors propagate.
+        """
         if self.module is None:
             return None
         loader = getattr(self.module, "load_state_dict", None)
@@ -227,9 +269,22 @@ class ModuleStateDictProvider(StateDictProvider):
 
 @dataclass
 class OptimizerStateDictProvider(StateDictProvider):
+    """Adapt an optional ``optimizer`` without requiring a torch optimizer type.
+
+    Extract a shallow state mapping or {}, and restore through load_state_dict
+    when present. The provider accepts strict for interface compatibility but
+    does not forward it to optimizer loaders.
+    """
+
     optimizer: Optional[Any]
 
     def state_dict(self) -> Mapping[str, Any]:
+        """Return a shallow dict of optimizer state, retaining nested references.
+
+        Return {} when the optimizer/callable is absent or its result has neither
+        Mapping nor items support. Getter and conversion exceptions propagate;
+        no device transfer or serialization is performed.
+        """
         if self.optimizer is None:
             return {}
         state_fn = getattr(self.optimizer, "state_dict", None)
@@ -242,6 +297,11 @@ class OptimizerStateDictProvider(StateDictProvider):
         return {}
 
     def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
+        """Restore ``state_dict`` through the optimizer's loader, ignoring strict.
+
+        Mutate the wrapped optimizer and return the loader result. Return None
+        when no optimizer/callable exists; loader errors propagate unchanged.
+        """
         if self.optimizer is None:
             return None
         loader = getattr(self.optimizer, "load_state_dict", None)
@@ -252,9 +312,22 @@ class OptimizerStateDictProvider(StateDictProvider):
 
 @dataclass
 class SchedulerStateDictProvider(StateDictProvider):
+    """Adapt an optional ``scheduler`` with best-effort state restoration.
+
+    State extraction is shallow and requires only state_dict duck typing.
+    Loading ignores strict and logs/suppresses ValueError, TypeError, and
+    RuntimeError; an absent scheduler is a supported no-op.
+    """
+
     scheduler: Optional[Any]
 
     def state_dict(self) -> Mapping[str, Any]:
+        """Return a shallow scheduler-state dict, or {} when no usable getter exists.
+
+        Mapping results or objects with items are converted without copying
+        nested values. Getter and conversion exceptions propagate rather than
+        using the best-effort policy of load_state_dict.
+        """
         if self.scheduler is None:
             return {}
         state_fn = getattr(self.scheduler, "state_dict", None)
@@ -267,6 +340,13 @@ class SchedulerStateDictProvider(StateDictProvider):
         return {}
 
     def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
+        """Restore scheduler ``state_dict`` when possible; ignore ``strict``.
+
+        Return the loader result or None for an absent scheduler/callable.
+        Log/suppress ValueError, TypeError, and RuntimeError from loading and
+        return None; other exceptions propagate. Failed loaders may have already
+        mutated the scheduler and are not rolled back.
+        """
         if self.scheduler is None:
             return None
         loader = getattr(self.scheduler, "load_state_dict", None)
@@ -283,9 +363,22 @@ class SchedulerStateDictProvider(StateDictProvider):
 
 @dataclass
 class GradScalerStateDictProvider(StateDictProvider):
+    """Adapt optional mixed-precision ``scaler`` state by duck typing.
+
+    No torch/AMP class is required by the wrapper. None or absent methods give
+    empty/no-op results; extraction is shallow and loader strictness is ignored.
+    Framework initialization and device handling remain the caller's responsibility.
+    """
+
     scaler: Optional[Any]
 
     def state_dict(self) -> Mapping[str, Any]:
+        """Return a shallow dictionary of scaler state without cloning values.
+
+        Return {} for an absent scaler/getter or nonmapping result without
+        items. Getter and dict-conversion errors propagate; no scaling operation
+        or framework initialization occurs.
+        """
         if self.scaler is None:
             return {}
         state_fn = getattr(self.scaler, "state_dict", None)
@@ -298,6 +391,11 @@ class GradScalerStateDictProvider(StateDictProvider):
         return {}
 
     def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
+        """Restore ``state_dict`` through the scaler loader, ignoring ``strict``.
+
+        Return the loader result or None if the scaler/callable is absent.
+        Loading mutates the scaler; exceptions propagate without rollback.
+        """
         if self.scaler is None:
             return None
         loader = getattr(self.scaler, "load_state_dict", None)
@@ -426,7 +524,9 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
                 kwargs["map_location"] = map_location
             if "weights_only" in inspect.signature(torch.load).parameters:
                 kwargs["weights_only"] = False
-            return torch.load(path, **kwargs)  # nosec B614 - weights_only=False required for optimizer/RNG state
+            return torch.load(
+                path, **kwargs
+            )  # nosec B614 - weights_only=False required for optimizer/RNG state
         except (
             IOError,
             OSError,
@@ -1355,6 +1455,37 @@ class CheckpointManager:
         config: Optional[dict[str, Any]] = None,
         metrics: Optional[dict[str, Any]] = None,
     ) -> Path:
+        """Write an epoch checkpoint, update markers/rankings, and prune old epochs.
+
+        Args:
+            epoch: Number interpolated into the epoch-{epoch} directory name.
+            model: Optional model; with functional torch, serialize state_dict.
+                Otherwise the fallback stores its __dict__.
+            optimizer: Optional state_dict source for optimizer state.
+            scheduler: Optional state_dict source for scheduler state.
+            tokenizer: Optional save_pretrained source or pickle fallback;
+                tokenizer-save errors are suppressed.
+            config: Optional configuration, written as YAML when possible,
+                otherwise JSON after caught I/O/import failures.
+            metrics: Optional ranking metadata; lower val_loss ranks first,
+                then higher score, otherwise later epoch.
+
+        Returns:
+            Epoch directory Path. Metadata, environment, RNG, state, and checksum
+            files are written, last is overwritten, and best.json is updated for
+            truthy metrics. Existing epoch files may be overwritten; saving is
+            not transactional. Retention runs before a best-effort remote upload
+            when storage and remote_prefix are configured.
+
+        Raises:
+            OSError: On unsuppressed local filesystem failures.
+            TypeError: On unsupported serialization values.
+            RuntimeError: On unsuppressed torch serialization failures.
+
+        Other state getter/serializer errors propagate. Torch is optional:
+        state.pt is used with torch and a model, otherwise safe_pickle_dump
+        writes state.pkl. Configuration YAML support is also optional.
+        """
         ep_dir = self.root / f"epoch-{epoch}"
         ep_dir.mkdir(parents=True, exist_ok=True)
 
@@ -1554,6 +1685,36 @@ class CheckpointManager:
         optimizer: Optional[Any] = None,
         scheduler: Optional[Any] = None,
     ) -> dict[str, Any]:
+        """Restore compatible state and RNG from checkpoint directory ``path``.
+
+        Verify the checksum manifest before loading. Prefer state.pt when torch
+        is functional, load it on CPU, and restore supplied model/optimizer/
+        scheduler objects. Model keys/shapes are verified; scheduler load errors
+        are suppressed. Otherwise use restricted state.pkl loading; that branch
+        only attempts model restoration, suppressing its loader errors.
+        Restore RNG from rng.json when present, affecting process-global streams.
+
+        Args:
+            path: Concrete checkpoint directory, not a last-marker file.
+            model: Optional target for saved model state.
+            optimizer: Optional target used only by the torch branch.
+            scheduler: Optional target used only by the torch branch.
+
+        Returns:
+            Dictionary with meta (decoded meta.json or {}) and state (the
+            truthiness of the loaded payload, not proof all targets restored).
+
+        Raises:
+            FileNotFoundError: If path does not exist.
+            ValueError: For model-state mismatches or wrapped
+                optimizer I/O/import failures.
+            RuntimeError: For checksum failures, no compatible state, or caught
+                RNG I/O/import failures that prevent restoration.
+
+        Deserialization, metadata parsing, and other loader errors propagate.
+        This does not restore tokenizer/config artifacts or roll back partial
+        object/RNG changes after a failure.
+        """
         path = Path(path)
         if not path.exists():  # pragma: no cover
             raise FileNotFoundError(f"resume path not found: {path}")
@@ -1766,6 +1927,15 @@ class CheckpointManager:
     # Retention
     # ------------------------------------------------------------------
     def apply_retention(self) -> None:
+        """Remove unprotected epoch directories under root and return None.
+
+        Keep the highest-numbered max(1, keep_last) epochs plus every path
+        basename listed in best.json, regardless of keep_best at this stage.
+        Delete other epoch-* directories recursively, suppressing deletion
+        errors. Do not update last/best markers or delete remote artifacts.
+        Invalid numeric epoch suffixes raise ValueError; best.json read/parse
+        errors propagate. This operation is destructive and not transactional.
+        """
         entries = [p for p in self.root.glob("epoch-*") if p.is_dir()]
         entries.sort(key=lambda p: int(p.name.split("-")[-1]), reverse=True)
         keep = {e.name for e in entries[: max(1, self.keep_last)]}

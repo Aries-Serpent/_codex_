@@ -37,7 +37,12 @@ pytestmark = pytest.mark.xfail(reason="Decorators not yet implemented", strict=F
 def mock_logger(monkeypatch):
     """Mock logger for testing."""
     mock = MagicMock()
-    monkeypatch.setattr(logging, "getLogger", lambda name: mock)
+    get_logger = logging.getLogger
+    monkeypatch.setattr(
+        logging,
+        "getLogger",
+        lambda name=None: mock if name == "codex.security" else get_logger(name),
+    )
     return mock
 
 
@@ -254,7 +259,7 @@ class TestRateLimit:
         with pytest.raises(Exception):
             func()
 
-        # After timeout, should work again
+            # After timeout, should work again
             import time
 
         time.sleep(1.1)

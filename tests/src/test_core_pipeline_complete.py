@@ -12,6 +12,7 @@ Complete test coverage for Phase 9.1 - 100 comprehensive tests
 
 import importlib
 import json
+import os
 import tempfile
 from pathlib import Path
 

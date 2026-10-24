@@ -17,6 +17,7 @@ Tests: 55+ comprehensive gap coverage tests
 """
 
 import os
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -43,15 +44,36 @@ class TestGapCoverageFileSystemOperations:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             restricted_file = Path(tmpdir) / "restricted.txt"
-            restricted_file.write_text("secret content")
+            restricted_file.write_text("permission test")
+            os.chmod(tmpdir, 0o755)
+            identity = (
+                {"user": 65534, "group": 65534, "extra_groups": []} if os.geteuid() == 0 else {}
+            )
+            command = [
+                sys.executable,
+                "-I",
+                "-S",
+                "-c",
+                "from pathlib import Path; import sys; print(Path(sys.argv[1]).read_text())",
+                str(restricted_file),
+            ]
 
             try:
+                os.chmod(restricted_file, 0o644)
+                readable = subprocess.run(
+                    command, capture_output=True, text=True, check=False, **identity
+                )
+                assert readable.returncode == 0, readable.stderr
+                assert readable.stdout.strip() == "permission test"
                 os.chmod(restricted_file, 0o000)
-                with pytest.raises(PermissionError):
-                    restricted_file.read_text()
+                denied = subprocess.run(
+                    command, capture_output=True, text=True, check=False, **identity
+                )
+                assert denied.returncode != 0
+                assert "PermissionError" in denied.stderr
             finally:
-                # Use secure permissions (owner read/write only)
                 os.chmod(restricted_file, 0o600)
+                os.chmod(tmpdir, 0o700)
 
     def test_symbolic_link_handling(self):
         """Test handling of symbolic links."""
@@ -75,7 +97,7 @@ class TestGapCoverageFileSystemOperations:
         with tempfile.TemporaryDirectory() as tmpdir:
             large_file = Path(tmpdir) / "large.txt"
             # Write 10MB equivalent
-            with large_file.open('w') as f:
+            with large_file.open("w") as f:
                 for i in range(100000):
                     f.write("x" * 100 + "\n")
 
@@ -106,11 +128,12 @@ class TestGapCoverageStringOperations:
     def test_unicode_normalization(self):
         """Test unicode normalization."""
         import unicodedata
+
         text1 = "café"  # é as single character
         text2 = "cafe\u0301"  # e + combining acute
 
-        norm1 = unicodedata.normalize('NFC', text1)
-        norm2 = unicodedata.normalize('NFC', text2)
+        norm1 = unicodedata.normalize("NFC", text1)
+        norm2 = unicodedata.normalize("NFC", text2)
         assert norm1 == norm2, "norm1 is not valid"
 
     def test_string_encoding_edge_cases(self):
@@ -124,13 +147,14 @@ class TestGapCoverageStringOperations:
         ]
 
         for text in texts:
-            encoded = text.encode('utf-8')
-            decoded = encoded.decode('utf-8')
+            encoded = text.encode("utf-8")
+            decoded = encoded.decode("utf-8")
             assert decoded == text, "decoded is not valid"
 
     def test_regex_special_characters(self):
         """Test regex with special characters."""
         import re
+
         special = r".*+?[]{}()|^$\\"
         pattern = re.escape(special)
         assert re.search(pattern, special) is not None
@@ -183,6 +207,7 @@ class TestGapCoverageErrorHandling:
 
     def test_custom_exception_init(self):
         """Test custom exception initialization."""
+
         class CustomError(Exception):
             def __init__(self, code, message):
                 self.code = code
@@ -198,8 +223,8 @@ class TestGapCoverageErrorHandling:
         try:
             raise ValueError("test error")
         except ValueError:
-            tb_lines = traceback.format_exc().split('\n')
-            assert "ValueError" in ''.join(tb_lines), "Value must be initialized"
+            tb_lines = traceback.format_exc().split("\n")
+            assert "ValueError" in "".join(tb_lines), "Value must be initialized"
 
 
 class TestGapCoverageCollectionsOperations:
@@ -210,23 +235,23 @@ class TestGapCoverageCollectionsOperations:
         from collections import defaultdict
 
         d = defaultdict(list)
-        d['key'].append('value')
-        assert 'key' in d, "Condition must be true"
-        assert d['key'] == ['value'], "Value must be initialized"
+        d["key"].append("value")
+        assert "key" in d, "Condition must be true"
+        assert d["key"] == ["value"], "Value must be initialized"
 
     def test_counter_operations(self):
         """Test Counter operations."""
         from collections import Counter
 
-        c = Counter(['a', 'b', 'a', 'c', 'b', 'a'])
-        assert c['a'] == 3, "Condition must be true"
-        assert c.most_common(1) == [('a', 3)]
+        c = Counter(["a", "b", "a", "c", "b", "a"])
+        assert c["a"] == 3, "Condition must be true"
+        assert c.most_common(1) == [("a", 3)]
 
     def test_namedtuple_creation(self):
         """Test namedtuple creation and usage."""
         from collections import namedtuple
 
-        Point = namedtuple('Point', ['x', 'y'])
+        Point = namedtuple("Point", ["x", "y"])
         p = Point(3, 4)
         assert p.x == 3, "x is not valid"
         assert p[1] == 4, "Condition must be true"
@@ -245,11 +270,11 @@ class TestGapCoverageCollectionsOperations:
         from collections import OrderedDict
 
         od = OrderedDict()
-        od['a'] = 1
-        od['b'] = 2
-        od['c'] = 3
+        od["a"] = 1
+        od["b"] = 2
+        od["c"] = 3
         keys = list(od.keys())
-        assert keys == ['a', 'b', 'c']
+        assert keys == ["a", "b", "c"]
 
     def test_set_operations_edge_cases(self):
         """Test set operations edge cases."""
@@ -263,8 +288,8 @@ class TestGapCoverageCollectionsOperations:
 
     def test_dict_comprehension_complex(self):
         """Test complex dict comprehension."""
-        d = {k: v for k, v in [(1, 'a'), (2, 'b'), (3, 'c')] if v != 'b'}
-        assert d == {1: 'a', 3: 'c'}
+        d = {k: v for k, v in [(1, "a"), (2, "b"), (3, "c")] if v != "b"}
+        assert d == {1: "a", 3: "c"}
 
     def test_list_slice_edge_cases(self):
         """Test list slicing edge cases."""
@@ -288,21 +313,21 @@ class TestGapCoverageIterationPatterns:
     def test_zip_operations(self):
         """Test zip operations."""
         a = [1, 2, 3]
-        b = ['a', 'b', 'c']
+        b = ["a", "b", "c"]
         z = list(zip(a, b))
-        assert z == [(1, 'a'), (2, 'b'), (3, 'c')]
+        assert z == [(1, "a"), (2, "b"), (3, "c")]
 
     def test_enumerate_with_start(self):
         """Test enumerate with start parameter."""
-        items = ['a', 'b', 'c']
+        items = ["a", "b", "c"]
         result = list(enumerate(items, start=1))
-        assert result == [(1, 'a'), (2, 'b'), (3, 'c')]
+        assert result == [(1, "a"), (2, "b"), (3, "c")]
 
     def test_map_filter_operations(self):
         """Test map and filter."""
         numbers = [1, 2, 3, 4, 5]
 
-        squared = list(map(lambda x: x ** 2, numbers))
+        squared = list(map(lambda x: x**2, numbers))
         assert squared == [1, 4, 9, 16, 25]
 
         evens = list(filter(lambda x: x % 2 == 0, numbers))
@@ -355,17 +380,19 @@ class TestGapCoverageTypeChecking:
 
     def test_hasattr_getattr_setattr(self):
         """Test attribute access functions."""
+
         class Obj:
             x = 10
 
         obj = Obj()
-        assert hasattr(obj, 'x')
-        assert getattr(obj, 'x') == 10
-        setattr(obj, 'y', 20)
+        assert hasattr(obj, "x")
+        assert getattr(obj, "x") == 10
+        setattr(obj, "y", 20)
         assert obj.y == 20, "Object must be initialized"
 
     def test_callable_check(self):
         """Test callable type checking."""
+
         def func():
             pass
 
@@ -411,7 +438,7 @@ class TestGapCoverageComparisonOperations:
         assert None is None, "None is not valid"
         assert None is None, "None is not valid"
         assert None != 0, "None is not valid"
-        assert None, "None is not valid"
+        assert None is not False
         assert None != "", "None is not valid"
 
     def test_comparison_with_different_types(self):
@@ -496,6 +523,7 @@ class TestGapCoverageContextManagers:
 
     def test_context_manager_exception(self):
         """Test context manager with exception."""
+
         class MyContext:
             def __enter__(self):
                 return self
@@ -509,6 +537,7 @@ class TestGapCoverageContextManagers:
 
     def test_context_manager_return_value(self):
         """Test context manager return value."""
+
         class ValueContext:
             def __enter__(self):
                 return "context_value"
@@ -525,9 +554,11 @@ class TestGapCoverageDecoratorPatterns:
 
     def test_simple_decorator(self):
         """Test simple decorator."""
+
         def decorator(func):
             def wrapper(*args, **kwargs):
                 return func(*args, **kwargs) * 2
+
             return wrapper
 
         @decorator
@@ -538,6 +569,7 @@ class TestGapCoverageDecoratorPatterns:
 
     def test_decorator_with_arguments(self):
         """Test decorator with arguments."""
+
         def repeat(times):
             def decorator(func):
                 def wrapper(*args, **kwargs):
@@ -545,7 +577,9 @@ class TestGapCoverageDecoratorPatterns:
                     for _ in range(times):
                         results.append(func(*args, **kwargs))
                     return results
+
                 return wrapper
+
             return decorator
 
         @repeat(3)
@@ -556,9 +590,11 @@ class TestGapCoverageDecoratorPatterns:
 
     def test_class_decorator(self):
         """Test class decorator."""
+
         def add_method(cls):
             def new_method(self):
                 return "added"
+
             cls.added_method = new_method
             return cls
 
@@ -575,6 +611,7 @@ class TestGapCoverageInputValidation:
 
     def test_validate_positive_numbers(self):
         """Test validation of positive numbers."""
+
         def validate_positive(value):
             if not isinstance(value, (int, float)):
                 raise TypeError("Must be number")
@@ -590,6 +627,7 @@ class TestGapCoverageInputValidation:
 
     def test_validate_string_length(self):
         """Test validation of string length."""
+
         def validate_length(s, min_len, max_len):
             if not isinstance(s, str):
                 raise TypeError("Must be string")
@@ -606,7 +644,7 @@ class TestGapCoverageInputValidation:
         import re
 
         def validate_email(email):
-            pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
             if not re.match(pattern, email):
                 raise ValueError("Invalid email")
             return email
@@ -664,7 +702,7 @@ class TestGapCoverageMemoryAndPerformance:
 
     def test_dict_with_many_keys(self):
         """Test dict with many keys."""
-        large_dict = {i: i*2 for i in range(10000)}
+        large_dict = {i: i * 2 for i in range(10000)}
         assert len(large_dict) == 10000, "Large_dict must not be empty"
         assert large_dict[5000] == 10000, "Condition must be true"
 
@@ -678,9 +716,9 @@ class TestGapCoverageMemoryAndPerformance:
 
     def test_list_comprehension_vs_loop(self):
         """Test list comprehension efficiency."""
-        comp = [x*2 for x in range(1000)]
+        comp = [x * 2 for x in range(1000)]
         loop = []
         for x in range(1000):
-            loop.append(x*2)
+            loop.append(x * 2)
 
         assert comp == loop, "comp is not valid"

@@ -26,7 +26,6 @@ import pytest
 
 from codex.ingest.adapter import (
     MAX_FILE_SIZE_MB,
-    MAX_FILES_COUNT,
     MAX_TOTAL_SIZE_MB,
     Snapshot,
     _check_size_bounds,
@@ -79,7 +78,7 @@ def artifacts_dir(tmp_path, monkeypatch):
     """Temporarily override ARTIFACTS_DIR for testing."""
     artifacts = tmp_path / "artifacts"
     artifacts.mkdir()
-    monkeypatch.setattr("src.codex.ingest.adapter.ARTIFACTS_DIR", artifacts)
+    monkeypatch.setattr("aries_serpent_core.ingest.adapter.ARTIFACTS_DIR", artifacts)
     return artifacts
 
 
@@ -98,13 +97,13 @@ class TestSnapshotDataclass:
             snapshot_id="test-snap-001",
             source_path="/path/to/source",
             snapshot_dir=snapshot_dir,
-            content_hash="abc123def456",
+            content_hash="abc123def456",  # pragma: allowlist secret - synthetic content identifier
             created_at=datetime.now(timezone.utc),
         )
         assert snapshot.snapshot_id == "test-snap-001", "snapshot_id is not valid"
         assert snapshot.source_path == "/path/to/source", "source_path is not valid"
         assert snapshot.snapshot_dir == snapshot_dir, "snapshot_dir is not valid"
-        assert snapshot.content_hash == "abc123def456", "Content must not be empty"
+        assert snapshot.content_hash == "abc123def456"  # pragma: allowlist secret
 
     def test_snapshot_creation_with_manifest(self):
         """Test snapshot with optional manifest."""
@@ -154,14 +153,17 @@ class TestSnapshotDataclass:
             snapshot_id="test-snap-001",
             source_path="/path/to/source.py",
             snapshot_dir=snapshot_dir,
-            content_hash="abc123def456",
+            content_hash="abc123def456",  # pragma: allowlist secret
             created_at=now,
             metadata={"key": "value"},
         )
         result = snapshot.to_dict()
         assert result["snapshot_id"] == "test-snap-001", "Result must not be empty"
         assert result["source_path"] == "/path/to/source.py", "Result must not be empty"
-        assert result["content_hash"] == "abc123def456", "Result must not be empty"
+        assert (
+            # pragma: allowlist nextline secret - synthetic digest fixture
+            result["content_hash"] == "abc123def456"
+        ), "Result must not be empty"  # pragma: allowlist secret
         assert result["metadata"] == {"key": "value"}, "Result must not be empty"
         assert result["created_at"] == now.isoformat(), "Result must not be empty"
 
@@ -322,7 +324,8 @@ class TestCheckSizeBounds:
         large_file = tmp_path / "large.bin"
         # Write slightly more than MAX_FILE_SIZE_MB
         size_bytes = int(MAX_FILE_SIZE_MB * 1024 * 1024) + 1000
-        large_file.write_bytes(b"x" * size_bytes)
+        with large_file.open("wb") as stream:
+            stream.truncate(size_bytes)
 
         with pytest.raises(ValueError, match="exceeds limit"):
             _check_size_bounds(large_file)
@@ -339,25 +342,26 @@ class TestCheckSizeBounds:
 
         # Create files totaling more than MAX_TOTAL_SIZE_MB
         size_bytes = int(MAX_TOTAL_SIZE_MB * 1024 * 1024) + 1000
-        (large_dir / "file1.bin").write_bytes(b"x" * (size_bytes // 2))
-        (large_dir / "file2.bin").write_bytes(b"x" * (size_bytes // 2))
+        for name in ("file1.bin", "file2.bin"):
+            with (large_dir / name).open("wb") as stream:
+                stream.truncate(size_bytes // 2)
 
         with pytest.raises(ValueError, match="exceeds limit"):
             _check_size_bounds(large_dir)
 
-    def test_check_size_directory_exceeds_file_count(self, tmp_path):
+    def test_check_size_directory_exceeds_file_count(self, tmp_path, monkeypatch):
         """Test that directory exceeding file count is rejected."""
         large_dir = tmp_path / "large"
         large_dir.mkdir()
 
-        # Create more than MAX_FILES_COUNT files
-        for i in range(min(100, MAX_FILES_COUNT + 1)):
+        limit = 10
+        monkeypatch.setattr("aries_serpent_core.ingest.adapter.MAX_FILES_COUNT", limit)
+        for i in range(limit):
             (large_dir / f"file{i}.txt").write_text(f"content {i}")
-
-        if (large_dir).stat().st_size // (1024 * 1024) < MAX_TOTAL_SIZE_MB:
-            # Only test file count if total size is within limits
-            with pytest.raises(ValueError, match="exceeds limit"):
-                _check_size_bounds(large_dir)
+        _check_size_bounds(large_dir)
+        (large_dir / "extra.txt").write_text("one beyond the limit")
+        with pytest.raises(ValueError, match="File count 11 exceeds limit 10"):
+            _check_size_bounds(large_dir)
 
 
 # =====================================================================
@@ -414,32 +418,70 @@ class TestExtractTar:
 # =====================================================================
 
 
-@patch("src.codex.ingest.adapter._clone_git_repo")
+@patch("subprocess.run")
 class TestCloneGitRepo:
     """Test Git repository cloning."""
 
-    def test_clone_git_repo_valid_url(self, mock_clone):
+    @pytest.fixture(autouse=True)
+    def git_executable(self, tmp_path, monkeypatch):
+        executable = tmp_path / "git"
+        executable.touch()
+        monkeypatch.setattr(
+            "aries_serpent_core.ingest.adapter.shutil.which", lambda name: str(executable)
+        )
+        return executable
+
+    def test_clone_git_repo_valid_url(self, mock_clone, git_executable):
         """Test cloning from valid Git URL."""
         # Mock successful clone
         mock_clone.return_value = None
         dest_dir = Path("dest")
 
         _clone_git_repo("https://github.com/user/repo.git", None, dest_dir)
-        mock_clone.assert_called_once()
+        mock_clone.assert_called_once_with(
+            [
+                str(git_executable),
+                "clone",
+                "--depth",
+                "1",
+                "https://github.com/user/repo.git",
+                str(dest_dir),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=300,
+            check=True,
+        )
 
     def test_clone_git_repo_invalid_scheme(self, mock_clone):
         """Test that invalid URL schemes are rejected."""
         dest_dir = Path("dest")
         with pytest.raises(ValueError, match="Unsupported.*scheme"):
             _clone_git_repo("ftp://invalid.com/repo", None, dest_dir)
+        mock_clone.assert_not_called()
 
-    def test_clone_git_repo_with_ref(self, mock_clone):
+    def test_clone_git_repo_with_ref(self, mock_clone, git_executable):
         """Test cloning with specific reference."""
         mock_clone.return_value = None
         dest_dir = Path("dest")
 
         _clone_git_repo("https://github.com/user/repo.git", "main", dest_dir)
-        mock_clone.assert_called_once()
+        mock_clone.assert_called_once_with(
+            [
+                str(git_executable),
+                "clone",
+                "--depth",
+                "1",
+                "--branch",
+                "main",
+                "https://github.com/user/repo.git",
+                str(dest_dir),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=300,
+            check=True,
+        )
 
 
 # =====================================================================
@@ -511,7 +553,7 @@ class TestIngestFunction:
         source_dir = snapshot.snapshot_dir / "source"
         assert (source_dir / "file1.py").exists(), "Condition must be true"
 
-    @patch("src.codex.ingest.adapter._clone_git_repo")
+    @patch("aries_serpent_core.ingest.adapter._clone_git_repo")
     def test_ingest_git_url(self, mock_clone, artifacts_dir):
         """Test ingesting from Git URL."""
         mock_clone.side_effect = lambda url, ref, dest: (dest / "cloned_file.py").write_text(
@@ -546,10 +588,26 @@ class TestIngestIntegration:
         assert source_file.read_text() == original_content, "Content must not be empty"
 
     def test_ingest_multiple_creates_different_ids(self, temp_source_file, artifacts_dir):
-        """Test that multiple ingests create different snapshot IDs."""
-        snapshot1 = ingest(temp_source_file)
-        snapshot2 = ingest(temp_source_file)
+        """Identical input at the same instant still gets isolated snapshot IDs."""
+        with patch("aries_serpent_core.ingest.adapter.datetime") as clock:
+            clock.now.return_value = datetime(2026, 1, 1, tzinfo=timezone.utc)
+            snapshot1 = ingest(temp_source_file)
+            snapshot2 = ingest(temp_source_file)
         assert snapshot1.snapshot_id != snapshot2.snapshot_id, "snapshot_id is not valid"
+        assert snapshot1.content_hash == snapshot2.content_hash
+        assert snapshot1.snapshot_id.startswith("20260101-000000-")
+        assert snapshot2.snapshot_id.startswith("20260101-000000-")
+
+    def test_ingest_duplicate_custom_id_preserves_existing_snapshot(
+        self, temp_source_file, artifacts_dir
+    ):
+        """Explicit ID reuse must fail without changing an immutable snapshot."""
+        snapshot = ingest(temp_source_file, snapshot_id="fixed-id")
+        saved = (snapshot.get_source_dir() / temp_source_file.name).read_text()
+        temp_source_file.write_text("changed input")
+        with pytest.raises(FileExistsError):
+            ingest(temp_source_file, snapshot_id="fixed-id")
+        assert (snapshot.get_source_dir() / temp_source_file.name).read_text() == saved
 
     def test_ingest_content_hash_consistent(self, temp_source_file, artifacts_dir):
         """Test that content hash is consistent across multiple ingests."""

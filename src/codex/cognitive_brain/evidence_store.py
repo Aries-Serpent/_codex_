@@ -56,9 +56,7 @@ class CircuitBreaker:
             self._consecutive_failures += 1
             if self._consecutive_failures >= self.max_consecutive_failures:
                 self._disabled = True
-                self._disable_reason = (
-                    f"{self._consecutive_failures} consecutive failing outcomes"
-                )
+                self._disable_reason = f"{self._consecutive_failures} consecutive failing outcomes"
 
     def check_stale(self, last_used_iso: str) -> bool:
         """Disable when the pattern has been idle beyond the staleness window."""
@@ -244,9 +242,7 @@ class EvidenceStore:
 
         if event_id is None:
             return list(self._records)
-        return [
-            r for r in self._records if r.get("payload", {}).get("event_id") == event_id
-        ]
+        return [r for r in self._records if r.get("payload", {}).get("event_id") == event_id]
 
     def backup(self, destination: Path) -> Path:
         """Copy the store to *destination* (restore by pointing at the copy)."""
@@ -264,7 +260,5 @@ class EvidenceStore:
             "path": str(self.path),
             "events": len(self._event_ids),
             "outcomes": len(self._outcomes),
-            "disabled_patterns": [
-                pid for pid, b in self._breakers.items() if b.disabled
-            ],
+            "disabled_patterns": [pid for pid, b in self._breakers.items() if b.disabled],
         }

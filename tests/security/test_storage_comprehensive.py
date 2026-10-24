@@ -126,10 +126,10 @@ class TestGenerateKey:
         """Test that generated key is base64-encoded."""
         key = generate_key()
         # Base64 keys should be decodable
-        from base64 import b64decode
+        from base64 import urlsafe_b64decode
 
-        decoded = b64decode(key)
-        assert isinstance(decoded, bytes)
+        decoded = urlsafe_b64decode(key)
+        assert len(decoded) == 32
 
     def test_generate_key_unique(self):
         """Test that each generated key is unique."""
@@ -178,7 +178,7 @@ class TestDeriveKeyFromPassword:
 
     def test_same_password_same_salt_same_key(self):
         """Test deterministic key derivation with same salt."""
-        password = "test_password"
+        password = "test_password"  # pragma: allowlist secret - synthetic KDF fixture
         key1, salt1 = derive_key_from_password(password)
         key2, salt2 = derive_key_from_password(password, salt=salt1)
         assert key1 == key2, "key1 is not valid"
@@ -186,7 +186,7 @@ class TestDeriveKeyFromPassword:
 
     def test_same_password_different_salt_different_key(self):
         """Test that different salts produce different keys."""
-        password = "test_password"
+        password = "test_password"  # pragma: allowlist secret - synthetic KDF fixture
         key1, salt1 = derive_key_from_password(password)
         key2, salt2 = derive_key_from_password(password)
         assert key1 != key2, "key1 is not valid"
@@ -374,7 +374,7 @@ class TestFileStorage:
 
     def test_store_and_load_secret(self, fernet_storage, temp_dir):
         """Test storing and loading a secret."""
-        secret = "my_secret_value"
+        secret = "my_secret_value"  # pragma: allowlist secret - synthetic encrypted payload
         filepath = os.path.join(temp_dir, "secret.enc")
 
         fernet_storage.store_secret(filepath, secret)
@@ -420,7 +420,7 @@ class TestFileStorage:
 
     def test_store_unicode_secret(self, fernet_storage, temp_dir):
         """Test storing unicode secret."""
-        secret = "Secret: 世界 🌍"
+        secret = "Secret: 世界 🌍"  # pragma: allowlist secret - synthetic Unicode payload
         filepath = os.path.join(temp_dir, "unicode_secret.enc")
 
         fernet_storage.store_secret(filepath, secret)
@@ -555,7 +555,7 @@ class TestStorageIntegration:
 
         # Store secret
         filepath = os.path.join(temp_dir, "workflow_secret.enc")
-        secret = "my_important_secret"
+        secret = "my_important_secret"  # pragma: allowlist secret - synthetic encrypted payload
         storage.store_secret(filepath, secret)
 
         # Load secret
@@ -565,7 +565,7 @@ class TestStorageIntegration:
 
     def test_password_based_workflow(self, temp_dir):
         """Test workflow using password-based key derivation."""
-        password = "MySecurePassword123!"
+        password = "MySecurePassword123!"  # pragma: allowlist secret - synthetic KDF fixture
 
         # Derive key
         key, salt = derive_key_from_password(password)
@@ -573,7 +573,7 @@ class TestStorageIntegration:
         # Create storage and store secret
         storage = SecureStorage(key=key, algorithm="fernet")
         filepath = os.path.join(temp_dir, "password_secret.enc")
-        secret = "database_password"
+        secret = "database_password"  # pragma: allowlist secret - synthetic encrypted payload
         storage.store_secret(filepath, secret)
 
         # Recreate key from password and salt
@@ -587,7 +587,7 @@ class TestStorageIntegration:
 
     def test_multi_algorithm_storage(self, encryption_key, temp_dir):
         """Test storing with one algorithm, attempting load with another."""
-        secret = "test_secret"
+        secret = "test_secret"  # pragma: allowlist secret - synthetic algorithm fixture
         filepath = os.path.join(temp_dir, "secret.enc")
 
         # Store with Fernet

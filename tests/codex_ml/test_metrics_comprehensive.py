@@ -103,7 +103,7 @@ class TestAccuracyFunction:
         preds = np.array([1, 0, 1, -1, 0])
         labels = np.array([1, 0, 0, -1, 1])
         acc = accuracy(preds, labels, ignore_index=-1)
-        assert acc == 0.75, "acc is not valid"
+        assert acc == 0.5
 
     def test_accuracy_single_sample(self):
         """Test accuracy with single sample."""
@@ -111,11 +111,12 @@ class TestAccuracyFunction:
         assert accuracy(np.array([1]), np.array([0])) == 0.0
 
     def test_accuracy_float_predictions(self):
-        """Test accuracy with float predictions (rounded to int)."""
+        """Accuracy compares supplied labels exactly, without thresholding floats."""
         preds = np.array([0.9, 0.1, 0.8, 0.2])
         labels = np.array([1, 0, 1, 0])
         acc = accuracy(preds, labels)
-        assert 0.5 <= acc <= 1.0, "5 is not valid"
+        assert acc == 0.0
+        assert accuracy(np.rint(preds), labels) == 1.0
 
     def test_accuracy_large_batch(self):
         """Test accuracy with large batch of data."""
@@ -523,11 +524,24 @@ class TestErrorHandling:
         score = f1(preds, labels)
         assert score == 0.0, "score is not valid"
 
-    def test_streaming_accuracy_mismatched_shapes(self):
-        """Test streaming accuracy with mismatched shapes."""
-        metric = StreamingAccuracy()
-        with pytest.raises(ValueError):
+    @pytest.mark.parametrize("ignore_index", [None, -1])
+    def test_streaming_accuracy_mismatched_shapes(self, ignore_index):
+        """Reject broadcastable shapes without changing either streaming counter."""
+        metric = StreamingAccuracy(ignore_index=ignore_index)
+        metric.update(np.array([1, 0]), np.array([1, 1]))
+        with pytest.raises(ValueError, match="Shape mismatch"):
             metric.update(np.array([1, 0]), np.array([1]))
+        assert metric.compute() == 0.5
+        metric.update(np.array([1]), np.array([1]))
+        assert metric.compute() == pytest.approx(2 / 3)
+
+    @pytest.mark.parametrize("metric", [accuracy, precision, recall, f1])
+    @pytest.mark.parametrize("tensor", [False, True])
+    def test_classification_rejects_broadcastable_shape_mismatch(self, metric, tensor):
+        """All classification metrics enforce the same label-shape contract."""
+        convert = torch.tensor if tensor else np.array
+        with pytest.raises(ValueError, match="Shape mismatch"):
+            metric(convert([[1], [0]]), convert([1, 0]))
 
     def test_registry_unknown_metric(self, metric_registry):
         """Test registry raises error for unknown metric."""
@@ -536,9 +550,8 @@ class TestErrorHandling:
 
     def test_registry_compute_unknown_metric(self, metric_registry):
         """Test registry compute with unknown metric name."""
-        # This should handle gracefully or raise
-        metric_registry.compute(["unknown"], labels=[1, 0], predictions=[1, 0])
-        # Implementation dependent - just test it doesn't crash
+        with pytest.raises(KeyError, match="Unknown metric: unknown"):
+            metric_registry.compute(["unknown"], labels=[1, 0], predictions=[1, 0])
 
 
 # ============================================================================

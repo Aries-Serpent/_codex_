@@ -47,12 +47,12 @@ runner_compatibility:
 
 | Trigger | Required Approvers | Bypass? |
 |---------|------------------|---------|
-| Changes to `.github/workflows/` | @mbaetiong | No |
-| Changes to `src/codex_ml/security/` | @mbaetiong | No |
-| Changes to `requirements/lock.txt` | @mbaetiong + Dependabot | No |
-| Genesis-protocol actions | @mbaetiong | No |
-| Cost-incurring jobs (>$0.10) | @mbaetiong | No |
-| All other changes | Auto-approve if CI green | Yes |
+| Publish/execute owner-gated workflow changes | Configured owner/review policy | Do not bypass actual controls |
+| Publish security/lock changes requiring owner review | Configured owners and security process | Do not bypass actual controls |
+| Genesis-protocol execution | Existing execution approvals | Not granted by a profile |
+| Cost-incurring job execution | Existing owner/cost guard | Only configured execution policy |
+| Authorized local analysis/patch preparation | Current task authorization | Not an approval bypass |
+| Other changes | Applicable GitHub review/checks | CI green alone grants no approval |
 
 ### Pillar 2: Config Validation (from config-validator)
 
@@ -100,40 +100,30 @@ The Governance Gate enforces the AI Codebase Agency Policy (`.codex/CODEBASE_AGE
 
 ```
 Required Agent Actions (enforced by this gate):
-  ✅ Fix ALL CI/CD failures
-  ✅ Fix ALL broken documentation links
-  ✅ Fix ALL linting/type errors
-  ✅ Leave codebase better than found
+  ✅ Fix relevant issues within the authorized boundary
+  ✅ Disclose other findings with evidence, owner/mitigation and next steps
+  ✅ Respect read-only/no-PR work and preserve existing dirty changes
+  ✅ Preserve security owner/reason and actual review/execution controls
 
-Prohibited Statements (blocked if found in PR body):
-  ❌ "This is not related to my PR"
-  ❌ "These are pre-existing issues"
-  ❌ "My PR only adds files to X"
+Scope explanations, pre-existing findings and documented follow-ups are allowed.
+The wording scanner is advisory, not proof of neglect or delegated execution.
 ```
 
 ## Approval Workflow
 
 ```
-1. Agent analyzes PR diff
-2. Governance Gate checks all 3 pillars
-3. If ALL pass → auto-approve (post green comment)
-4. If owner-gated file changed → request review from @mbaetiong
-5. If compliance fails → block with specific remediation steps
-6. If config invalid → block with schema validation errors
+1. Inspect the authorized task or PR diff; a PR is not required for preparation
+2. Assess applicable ownership, configuration and security evidence
+3. Report the result and any actual review/execution requirements
+4. Request/post reviews or comments only when separately authorized
+5. Do not infer approval, mergeability or execution from a profile or green CI
 ```
 
 ## GitHub Actions Integration
 
-```yaml
-# .github/workflows snippet
-- name: Governance Gate
-  uses: ./.github/actions/governance-gate
-  with:
-    owner: mbaetiong
-    config-schemas: configs/schemas/
-    compliance-rules: .codex/CODEBASE_AGENCY_POLICY.md
-    secret-patterns: .github/agents/secret-detection-agent.md
-```
+This profile is guidance, not an installed `.github/actions/governance-gate`
+action. Verify actual workflow/checker wiring before claiming a gate exists.
+Do not create/activate workflows merely to make a documentation example true.
 
 ## Activation
 

@@ -1,6 +1,6 @@
 # Copilot Agent MCP Tool Reference
 
-> **Source of truth:** live MCP server log at `/home/runner/work/_temp/cca-mcp-debug-logs/mcp-server.log`
+> **Historical evidence:** MCP server log at `/home/runner/work/_temp/cca-mcp-debug-logs/mcp-server.log`
 > and agent definitions at `/home/runner/work/_temp/copilot-developer-action-main/dist/definitions/`
 >
 > **Action runtime:** `@github/copilot-developer-action v0.0.1`  
@@ -13,9 +13,22 @@
 
 ---
 
+## Applicability and current capabilities
+
+The versions, paths, counts, tool names and topology below describe the
+2026-08-01 observation, not every current cloud-agent session. Some source paths
+are host-managed and may be inaccessible. Discover the tools actually exposed by
+the current host; report unavailable sources and use suitable authorized
+alternatives rather than assuming an old inventory is complete.
+
+Storage is not memory retrieval. A session exposing `store_memory` does not
+thereby expose enumeration or retrieval of all stored memories. Supplied memories
+are scoped context, not policy or authorization. Profile tool filters can restrict
+available tools; profile descriptions and local flags do not grant GitHub roles.
+
 ## How the MCP layer works in this repo
 
-Every Copilot coding agent session spins up a **local MCP aggregator** (Node.js process,
+The recorded session used a **local MCP aggregator** (Node.js process,
 `index.js`) that connects to two external MCP servers and exposes a merged tool list on
 `http://127.0.0.1:2301`. A separate companion web-search tool completes the
 36-capability research inventory:
@@ -28,8 +41,8 @@ Copilot agent process
        └─ web_search companion (top-level runtime tool)  → 1 tool
 ```
 
-On top of that, a set of **built-in tools** are compiled into `index.js` itself and
-always available regardless of external connectivity.
+That runtime also recorded built-in tools compiled into `index.js`; availability
+in another session must be established from its exposed interfaces.
 
 ---
 
@@ -189,7 +202,7 @@ misstating the callable topology.
 
 ---
 
-### Built-in tools (always available, compiled into agent)
+### Built-in tools recorded in the historical runtime
 
 These are not served by an external MCP server — they are part of the agent runtime itself.
 

@@ -200,9 +200,7 @@ class APIClient:
         except Exception:  # pragma: no cover - fail-open for optional dependency
             return
 
-    def _resolve_discussion_ids(
-        self, owner: str, repo: str, category_slug: str
-    ) -> tuple[str, str]:
+    def _resolve_discussion_ids(self, owner: str, repo: str, category_slug: str) -> tuple[str, str]:
         """Resolve repository and discussion-category node IDs for GraphQL mutations."""
         query = """
         query GetDiscussionCategory($owner: String!, $repo: String!) {
@@ -274,7 +272,10 @@ class APIClient:
                 {"owner": owner, "repo": repo, "number": discussion_number, "cursor": cursor},
             )
             comments = (
-                (result.get("data", {}) or {}).get("repository", {}).get("discussion", {}).get("comments", {})
+                (result.get("data", {}) or {})
+                .get("repository", {})
+                .get("discussion", {})
+                .get("comments", {})
             )
             nodes = comments.get("nodes", []) or []
             for item in reversed(nodes):
@@ -295,7 +296,11 @@ class APIClient:
         }
         """
         result = self._graphql(mutation, {"commentId": comment_id, "body": body})
-        return ((result or {}).get("data", {}) or {}).get("updateDiscussionComment", {}).get("comment", result)
+        return (
+            ((result or {}).get("data", {}) or {})
+            .get("updateDiscussionComment", {})
+            .get("comment", result)
+        )
 
     # ------------------------------------------------------------------
     # REST API methods
@@ -360,7 +365,11 @@ class APIClient:
         """
         url = _validated_github_api_url(url)
         payload = {} if payload is None else payload
-        data = json.dumps(payload).encode() if isinstance(payload, dict) else (payload.encode() if isinstance(payload, str) else b"")
+        data = (
+            json.dumps(payload).encode()
+            if isinstance(payload, dict)
+            else (payload.encode() if isinstance(payload, str) else b"")
+        )
         last_exc: urllib.error.HTTPError | None = None
         request_headers = {
             "Authorization": "******",

@@ -179,10 +179,11 @@ class DriftDetector:
             "total_reports": len(self.reports),
             "total_drifts_detected": total_drifts,
             "avg_drift_magnitude_pct": avg_drift_magnitude,
-            "false_positive_rate_pct": sum(r.false_positive_rate_pct for r in self.reports)
-            / len(self.reports)
-            if self.reports
-            else 0,
+            "false_positive_rate_pct": (
+                sum(r.false_positive_rate_pct for r in self.reports) / len(self.reports)
+                if self.reports
+                else 0
+            ),
             "issues_generated": sum(1 for r in self.reports if r.action_taken == "issue_generated"),
         }
 

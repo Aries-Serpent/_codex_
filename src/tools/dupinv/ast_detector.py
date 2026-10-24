@@ -14,7 +14,7 @@ class ASTDetector:
         self,
         root_path: Path,
         similarity_threshold: float = 0.85,
-        exclude_patterns: list[str] = None,
+        exclude_patterns: list[str] | None = None,
         respect_gitignore: bool = True,
     ):
         """

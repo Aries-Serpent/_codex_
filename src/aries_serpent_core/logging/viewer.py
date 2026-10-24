@@ -2,25 +2,26 @@
 CLI viewer for session-scoped logs stored in SQLite.
 
 Purpose:
-    Render session events (chronological) as text or JSON with optional filters.
+    Render session events chronologically through the configured logger, as
+    text or JSON with optional filters.
 
 Usage:
-    python -m codex.logging.viewer --session-id <ID> [--db path/to.db]
+    python -m aries_serpent_core.logging.viewer --session-id <ID> [--db path/to.db]
       [--format json|text] [--level INFO --contains token]
       [--since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
 
 Environment:
     CODEX_LOG_DB_PATH   Override default DB path (defaults to .codex/session_logs.db).
-    CODEX_SQLITE_POOL   If "1", prefer a pooled/shared connection for reduced overhead.
 
 Examples:
     export CODEX_LOG_DB_PATH=".codex/session_logs.db"
-    export CODEX_SQLITE_POOL=1
-    python -m codex.logging.viewer --session-id S123 --format text --limit 100
-    python -m codex.logging.viewer --session-id S123 --format json --since 2025-01-01
+    python -m aries_serpent_core.logging.viewer --session-id S123 --format text --limit 100
+    python -m aries_serpent_core.logging.viewer --session-id S123 --format json --since 2025-01-01
 
 Notes:
-    The README documents log viewing and exporting; flags here mirror that flow.
+    Uses its own sqlite3 connection, not a connection pool. Time bounds are
+    formatted as ISO text and compared directly with stored timestamps; this
+    viewer does not convert numeric epoch columns or normalize stored timezones.
 """
 
 from __future__ import annotations
@@ -116,6 +117,14 @@ def _validate_table_name(value: str | None) -> str | None:
 
 
 def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
+    """Parse viewer options, requiring ``--session-id``.
+
+    ``argv`` omits the executable name; ``None`` reads process arguments.
+    ``--level`` is repeatable, ``--format`` is text/json, and ``--db`` defaults
+    to ``CODEX_LOG_DB_PATH``. Explicit table names accept only letters, digits,
+    and underscores. Argparse raises ``SystemExit`` for help or invalid input.
+    Timestamp strings and the integer limit are not range-validated here.
+    """
     parser = argparse.ArgumentParser(description="Session Logging (SQLite) viewer")
     parser.add_argument("--session-id", required=True, help="Session identifier to filter")
     parser.add_argument(
@@ -171,6 +180,12 @@ def autodetect_db(root: Path) -> Optional[Path]:
 
 
 def connect_db(db_path: Path) -> sqlite3.Connection:
+    """Open ``db_path`` with name-addressable ``sqlite3.Row`` results.
+
+    Uses SQLite's normal create-if-missing behavior without initializing a
+    logging schema or creating parent directories. The caller owns and must
+    close the connection; connection failures propagate as SQLite errors.
+    """
     conn = sqlite3.connect(str(db_path))
     conn.row_factory = sqlite3.Row
     return conn
@@ -179,6 +194,17 @@ def connect_db(db_path: Path) -> sqlite3.Connection:
 def infer_schema(
     conn: sqlite3.Connection, explicit_table: Optional[str] = None
 ) -> dict[str, Optional[str]]:
+    """Find the first table supplying session, timestamp, and message aliases.
+
+    Inspect only ``explicit_table`` when truthy, otherwise inspect tables in
+    :func:`list_tables` order. Match each field using this module's candidate
+    lists after lowercasing column names. Return ``table``, ``sid``, ``ts``,
+    ``msg``, and optional ``lvl`` keys; returned column names are lowercase.
+
+    Raises ``RuntimeError`` if no table satisfies the three required fields.
+    Unsafe table identifiers raise ``ValueError`` through :func:`get_columns`.
+    Does not initialize or close ``conn``.
+    """
     candidates = [explicit_table] if explicit_table else list_tables(conn)
     for table in candidates:
         if not table:
@@ -203,6 +229,13 @@ def infer_schema(
 
 
 def parse_iso(value: Optional[str]) -> Optional[str]:
+    """Format an ISO date/time with a space separator and whole seconds.
+
+    Returns ``None`` for empty input. Invalid ISO strings are logged and
+    returned unchanged, not rejected. Offsets are preserved rather than
+    converted to UTC; formatting alone does not ensure that the result is
+    comparable to every SQLite timestamp representation.
+    """
     if not value:
         return None
     try:
@@ -222,6 +255,28 @@ def build_query(
     until: Optional[str],
     limit: Optional[int],
 ) -> tuple[str, list[Any]]:
+    """Build a chronological session query with a session-ID placeholder.
+
+    ``schema`` is the mapping returned by :func:`infer_schema`; required
+    table/sid/ts/msg identifiers must be nonempty and contain only letters,
+    digits, or underscores, otherwise ``ValueError`` is raised. Use a trusted
+    inferred schema, including its optional ``lvl`` column.
+
+    Returns SQL and a mutable bound-parameter list whose first item is
+    ``None``. The caller must replace that item with the session ID before
+    execution. Subsequent parameters follow level, contains, since, until,
+    limit order. Levels are ignored if the schema has no level column.
+    Contains uses lowercased SQL LIKE matching (``%`` and ``_`` remain
+    wildcards); time bounds are inclusive and use :func:`parse_iso`.
+    A truthy limit is coerced to int, while zero/``None`` adds no LIMIT.
+
+    Example::
+
+        schema = infer_schema(conn, "session_events")
+        sql, params = build_query(schema, None, "retry", None, None, 25)
+        params[0] = "S123"
+        rows = conn.execute(sql, params).fetchall()
+    """
     table = schema["table"]
     sid_col = schema["sid"]
     ts_col = schema["ts"]
@@ -259,6 +314,15 @@ def build_query(
 
 
 def main(argv: Optional[list[str]] = None) -> int:
+    """Resolve a database, apply viewer filters, and log text or JSON results.
+
+    ``argv`` omits the executable name; ``None`` uses process arguments.
+    An explicit/environment database path wins over shallow autodetection
+    from the current directory. Returns ``0`` on success (including no rows),
+    ``2`` when autodetection finds no database, or ``1`` for caught I/O/import
+    errors. Argparse errors, schema errors, and SQLite errors can propagate
+    rather than being translated into these return codes.
+    """
     ns = parse_args(argv)
     if ns.table and not re.fullmatch(r"[A-Za-z0-9_]+", ns.table):
         msg = f"Invalid table name: '{ns.table}'. Only letters, digits, and underscore are allowed."

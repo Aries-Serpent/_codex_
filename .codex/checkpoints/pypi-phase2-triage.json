@@ -1,0 +1,660 @@
+{
+  "schema_version": 1,
+  "checkpoint": "pypi-phase2-triage",
+  "generated_at": "2026-10-22T08:48:06Z",
+  "repository": "Aries-Serpent/_codex_",
+  "base_commit": "f343056f",
+  "base_commit_is_abbreviated": true,
+  "phase": 2,
+  "status": "in_progress",
+  "completed": false,
+  "wrapup": {
+    "recorded_at": "2026-10-22T14:09:33Z",
+    "user_authorized": "Conclude the turn, save all work, and push commits to the current branch.",
+    "phase2_completed": false,
+    "phase3_release_ready": false,
+    "phase4_started": false,
+    "wrapup_validation": {
+      "repository_ruff": "Passed: python -m ruff check .",
+      "source_black": "Passed: python -m black --check src/; 1969 files unchanged.",
+      "whitespace": "git diff --check passed; configured trailing-whitespace hook corrected one test fixture.",
+      "configured_hooks": "All 335 changed/new paths checked in disposable integration checkout. Security scanners, workflow/YAML/actionlint, dependency, link and other applicable hooks pass except five unsuppressed AST class-size findings. Detect-secrets and trailing-whitespace rechecks pass after narrow synthetic-fixture annotations. Scanner baseline findings/hashes and filters are preserved; only line references were refreshed.",
+      "remaining_ast_findings": [
+        "ApprovalService: 28 methods, limit 20",
+        "NumpyStub: 23 methods, limit 20",
+        "PhysicsGuidedDeveloperOrchestrator: 27 methods, limit 20",
+        "MentalMappingModel: 26 methods, limit 20",
+        "UserStore: 28 methods, limit 20"
+      ],
+      "evidence": "pypi-resume/wrapup-precommit.log",
+      "global_gate_pass_claimed": false
+    },
+    "full_suite_current_state": "No pytest tests/ process remains. The latest frozen run has no full-suite.exit marker or terminal result and its log stops near 20%; classify it as interrupted with unknown exit status, not running or complete. Any periodic raw coverage is partial.",
+    "failed_agent_lanes": "Distributed/model typing, training-engine typing and archive/common documentation all failed with HTTP 402 monthly quota exhausted and zero completed turns. No completed implementation is credited to those lanes.",
+    "continuation": "Resume from execution_round4 and retained suite recorder artifacts. Reconcile the interrupted snapshot, repair remaining suite families, continue 1055 measured type errors and below-90% API documentation without resetting baselines. Registry dependency, version collision, security/legal and release verification remain gated.",
+    "publication": "No registry upload, version tag, release creation or deployment was performed.",
+    "save_and_push_result": {
+      "local_implementation_commit": "8dfed27c",
+      "local_remote_integration_merge": "73400c1b",
+      "branch": "0D_base_",
+      "remote_updates_preserved": "Merged dependency update 4306426a and manifest refresh 71613ee0 without rebase or force push. Baseline conflict preserves local findings and the remote manifest fingerprint; canonical manifest integrity verified.",
+      "push_status": "blocked_by_session_credential_permission",
+      "server_error": "refusing to allow a GitHub App to create or update workflow .github/workflows/copilot-setup-steps.yml without workflows permission",
+      "required_next_step": "Use a session/credential authorized for workflow writes, or manually push the saved current-branch commits. This session permission denial does not establish a limit on the user's own repository permissions.",
+      "remote_push_succeeded": false
+    }
+  },
+  "execution_round4": {
+    "recorded_at": "2026-10-22T08:48:06Z",
+    "status": "active_remediation_global_gates_unmet",
+    "previous_clean_suite": {
+      "evidence": "clean-suite/full-suite-controller.jsonl",
+      "exit_code": 137,
+      "full_suite_completed": false,
+      "incremental_events_not_terminal_test_counts": {
+        "call_passed": 10624,
+        "call_failed": 294,
+        "call_skipped": 209,
+        "setup_failed": 36
+      },
+      "final_coverage_available": false,
+      "boundary": "Last completed node was tests/codex/test_ingest_phase9_1.py::TestSizeBounds::test_check_directory_too_large. The following fixture constructed 10001 deeply nested MagicMocks; a separate selected attempt also exited 137 there. Lightweight mocks and sparse files preserve exact limits and the repaired complete five-module cohort passed 234 tests."
+    },
+    "current_frozen_suite": {
+      "status": "running_on_immutable_snapshot",
+      "worktree": "pypi-resume/round3-suite-worktree",
+      "evidence_directory": "pypi-resume/round3-suite",
+      "snapshot_manifest": "round3-suite/snapshot.json",
+      "overlaid_paths": 328,
+      "shell_id": "pypi-round3-full",
+      "workers": 0,
+      "outer_timeout": null,
+      "per_test_timeout_seconds": 30,
+      "coverage_scope": "src",
+      "required_coverage_percent": 80,
+      "repository_coverage_percent": null,
+      "coverage_save_interval_completed_calls": 500,
+      "partial_coverage_is_not_acceptance": true,
+      "later_repairs_injected_into_running_snapshot": false,
+      "command": "PYPI_RESUME_EVIDENCE=<evidence>/round3-suite PYTHONPATH=<evidence> COVERAGE_FILE=<evidence>/round3-suite/.coverage PATH=/tmp/pypi-venv/bin:$PATH /tmp/pypi-venv/bin/python -m pytest tests/ -p phase2_test_recorder -p no:randomly -p no:cacheprovider -n 0 --timeout=30 --continue-on-collection-errors --tb=short -ra --junitxml=../round3-suite/full-suite.xml --cov=src --cov-report=json:../round3-suite/full-suite-coverage.json --cov-report=term --cov-fail-under=80",
+      "snapshot_limits": "Includes the round-3 ingest, metrics, training-provider and auth exception-identity repairs. Predates the core CLI follow-up and round-4 API/email changes. Later changes require dependent validation on another snapshot."
+    },
+    "complete_global_measurements_on_328_path_snapshot": {
+      "mypy": {"errors": 1055, "files_with_errors": 323, "files_checked": 1972, "exit_code": 1, "evidence": "round3-suite/mypy-full.log", "baseline_reset": false},
+      "ruff": {"exit_code": 0, "command": "python -m ruff check .", "evidence": "round3-suite/ruff-full.log"},
+      "black": {"exit_code": 0, "source_files": 1969, "command": "python -m black --check src/", "evidence": "round3-suite/black-source.log"},
+      "public_api_documentation": {
+        "unchanged_direct_ast_method": {"documented": 9991, "total": 12206, "percent": 81.853187},
+        "explicit_mcp_inherited_api_sensitivity": {"documented": 10018, "total": 12233, "percent": 81.893240},
+        "interpretation": "Exactly 27 documented public methods moved into private mixins and are omitted by the original direct-public-class AST rule. All 30 public facade methods remain documented before and after; the refactor itself adds no documentation. Report both measurements, not denominator shrinkage as progress.",
+        "evidence": ["round3-global-docs/global-inventory.json", "round3-mcp-structure/documentation-accounting/summary.json"],
+        "required_percent": 90,
+        "gate_passes": false
+      }
+    },
+    "additional_separate_acceptance_cohorts": [
+      {"scope": "Core CLI/config source follow-up and unchanged original combined cases", "passed": 123, "failed": 0, "skipped": 0, "scoped_mypy_errors_before": 39, "scoped_mypy_errors_after": 0, "evidence": "round3-core-cli-types/source-followup"},
+      {"scope": "Auth exception identity, MFA and token lifecycle", "passed": 48, "failed": 0, "skipped": 0, "evidence": "round3-auth-domain.xml"},
+      {"scope": "Auth identity/MFA/lifecycle plus complete phase-7 API files and email regressions", "passed": 245, "failed": 0, "skipped": 0, "evidence": ["round4-auth-api.xml", "round4-auth-api.log"]},
+      {"scope": "MCP module with scoped module-restoration regression", "passed": 132, "failed": 0, "skipped": 0, "evidence": "round3-mcp-structure/test-isolation"}
+    ],
+    "counts_are_overlapping_not_additive": true,
+    "additional_documentation": {"second_ml_batch_docstrings_added": 106, "executable_ast_unchanged": true, "evidence": "round3-ml-docstrings-next"},
+    "additional_implemented_roots": [
+      "Canonical auth exceptions share exact class identity through both legacy import orders; login catches actual AuthError and refresh catches AuthError/ValueError without swallowing programming exceptions.",
+      "Restore actual login fields and access/refresh/session token roles in phase-7 API tests. Require successful fixture login, assert schema 422 versus domain 401, and inject unexpected failure into the actual authenticator instance with an explicit non-raising test client.",
+      "Share existing UserStore email validation with the registration schema; reject malformed leading/trailing/repeated dots while preserving tagged, subdomain and Unicode addresses through focused regressions."
+    ],
+    "active_lanes": [
+      {"agent": "Mypy Manager Agent", "scope": "FSDP wrapper and model-loading utilities", "id": "a55c07e4-47dc-4b1f-8c46-9fbed8583b6e"},
+      {"agent": "Mypy Manager Agent", "scope": "Three training-engine modules", "id": "5e996d82-bafb-4f32-9e2f-c2c108cb541d"},
+      {"agent": "Unified Documentation Agent", "scope": "Live archive DAL/config, archive manager and common hooks", "id": "59d29efe-4310-4b51-8af0-70e099e6c244"}
+    ],
+    "next_gate": "Collect the running frozen-suite terminal result without mutating its checkout. Continue independent root-cause repair, integrate active lanes in a separate disposable worktree, rerun configured hooks and global measurements, and preserve publication gates. Phase 2 is incomplete, Phase 3 is gated, Phase 4 is not started."
+  },
+  "execution_round3": {
+    "recorded_at": "2026-10-22T08:26:36Z",
+    "status": "active_remediation_global_gates_unmet",
+    "clean_full_suite": {
+      "status": "terminated_exit_137_without_final_coverage",
+      "exit_code": 137,
+      "worktree": "pypi-resume/clean-suite-worktree",
+      "evidence_directory": "pypi-resume/clean-suite",
+      "snapshot_manifest": "clean-suite/snapshot.json",
+      "shell_id": "pypi-clean-full",
+      "workers": 0,
+      "outer_timeout": null,
+      "per_test_timeout_seconds": 30,
+      "coverage_scope": "src",
+      "required_coverage_percent": 80,
+      "repository_coverage_percent": null,
+      "later_repairs_injected_into_running_snapshot": false,
+      "command": "PYPI_RESUME_EVIDENCE=<evidence>/clean-suite PYTHONPATH=<evidence> PATH=/tmp/pypi-venv/bin:$PATH /tmp/pypi-venv/bin/python -m pytest tests/ -p phase2_test_recorder -p no:randomly -p no:cacheprovider -n 0 --timeout=30 --continue-on-collection-errors --tb=short -ra --junitxml=../clean-suite/full-suite.xml --cov=src --cov-report=json:../clean-suite/full-suite-coverage.json --cov-report=term --cov-fail-under=80",
+      "interpretation": "This clean rerun contains the earlier logger/cwd/import repairs but predates round-3 source and test repairs. It ended with exit 137; execution_round4 records the boundary, incremental counts and replacement run. No final coverage or completed-suite result is available."
+    },
+    "verified_cohorts": [
+      {"scope": "Initial parent ten-file integration", "passed": 548, "failed": 0, "skipped": 26, "evidence": "round3-parent-integrated.xml"},
+      {"scope": "Ingest/comparator/filesystem and existing ingest suites", "passed": 234, "failed": 0, "skipped": 0, "evidence": "round3-ingest-comparator-final.xml"},
+      {"scope": "Classification/data/JSON/sanitizer modules", "passed": 252, "failed": 0, "skipped": 0, "evidence": "round3-metrics-safety-final.xml"},
+      {"scope": "Variable-manager isolated auth and mocked transports", "passed": 27, "failed": 0, "skipped": 0, "evidence": "round3-variable-management-final.xml"},
+      {"scope": "ML contract batches 2 and 3", "passed": 154, "failed": 0, "skipped": 0, "evidence": "round3-ml-contracts"},
+      {"scope": "Cognitive catalog and pattern contracts", "passed": 167, "failed": 0, "skipped": 0, "evidence": "round3-cognitive"},
+      {"scope": "Training/helper initialization and prior regression integration", "passed": 188, "failed": 0, "skipped": 0, "evidence": "round3-trainloop-contracts/source-followup"},
+      {"scope": "Token rotation contracts", "passed": 73, "failed": 0, "skipped": 0, "evidence": "round3-rotation-contracts"},
+      {"scope": "Typed top-level agent modules", "passed": 347, "failed": 0, "skipped": 16, "evidence": "round3-agent-types"},
+      {"scope": "Three concentrated status/docs-agent tool modules", "passed": 21, "failed": 0, "skipped": 0, "evidence": "round3-status-types"}
+    ],
+    "counts_are_overlapping_not_additive": true,
+    "coverage_measured_in_these_cohorts": false,
+    "implemented_roots": [
+      "Validate clock injection before mutating module-global state; rejected invalid clocks preserve the previous callable and tests restore their clock lifecycle.",
+      "Replacing PatternLibrary entries removes stale tag-index membership and prevents duplicate indexed IDs.",
+      "Atomically allocate unique default ingest snapshot directories even for identical content at the same timestamp; reject existing explicit IDs without changing saved content.",
+      "Correct canonical ingest/variable-manager mock targets and isolate synthetic auth environment changes; no live remote test operations.",
+      "Use sparse files and one lightweight repeated mock entry for exact existing size/count thresholds instead of allocating hundreds of megabytes or thousands of nested mocks.",
+      "Reject broadcastable shape mismatches consistently across classification and streaming metrics before counter mutation.",
+      "Handle malformed optional YAML overrides through their actual YAMLError base, warn explicitly without logging policy text, and retain tested default PII redaction.",
+      "Use real packaged train-loop dataset/collate and dp_config providers so optimizer creation and real parameter updates are no longer silently disabled.",
+      "Replace fictional generated test APIs with meaningful supported contracts, including checksum sidecars, JSON strict-number handling, physics actions, rotation policy, and canonical historical catalog artifacts.",
+      "Decompose the GitHub MCP facade into cohesive mixins while preserving all 38 public method signatures and injection/dispatch behavior; dependent cross-module isolation validation is still active."
+    ],
+    "scoped_static_and_documentation": {
+      "status_tool_mypy_errors_before": 74,
+      "status_tool_mypy_errors_after": 0,
+      "agent_module_mypy_errors_before": 86,
+      "agent_module_mypy_errors_after": 0,
+      "parent_memory_clock_ingest_metrics_sanitizer_modules_mypy_pass": true,
+      "full_source_mypy_latest_complete_errors": 1263,
+      "full_source_mypy_latest_complete_files_with_errors": 339,
+      "full_source_mypy_not_remeasured_after_round3": true,
+      "status_tool_public_docstrings_added": 36,
+      "ml_public_docstrings_added": 177,
+      "ml_documentation_executable_ast_unchanged": true,
+      "repository_public_api_docstrings_not_remeasured_after_round3": true,
+      "global_typing_or_docstring_gate_closed": false
+    },
+    "validation_recovery": "An ingest-related selected attempt was killed with exit 137 and produced no final XML. Its oversized file allocations and 10001 nested MagicMocks were replaced with exact sparse-file thresholds and a single repeated typed-path mock; the same complete five-module target then passed all 234 cases. Preserve the interrupted log as incomplete evidence.",
+    "active_lanes": [
+      {"agent": "Mypy Manager Agent", "scope": "Five core CLI/governance/AST/config modules", "id": "85e95f71-9be0-431a-94ce-47cc2bcb3304"},
+      {"agent": "Unified Documentation Agent", "scope": "Eight additional metrics/workflow/serving/model APIs", "id": "e6467e06-4f5e-42b5-aecb-8248ba3b8969"},
+      {"agent": "GitHub Guru Agent", "scope": "MCP test module identity restoration follow-up", "id": "2b3ddfb8-28b9-41b2-bd3c-557ff7ce353a"}
+    ],
+    "next_gate": "Collect the frozen clean-run terminal result and actual global coverage; map repaired families without adding overlapping cohort counts. Integrate active lanes, repeat a coherent acceptance cohort, remeasure configured hooks, full-source typing and the unchanged defined public-API denominator, then continue remaining genuine failures. Registry codex-contracts availability, security/legal checks and release authorization remain explicit blockers; Phase 4 has not started."
+  },
+  "continuation": {
+    "status": "blocked_after_measured_validation",
+    "recorded_at": "2026-10-22T07:52:56Z",
+    "evidence_directory": "/root/.copilot/session-state/c2af55dfb88e44fa9053b38006537ee9/files/pypi-resume",
+    "preservation": "Existing uncommitted work retained; validation uses disposable worktrees. No commit, push, tag, release, registry upload, workflow activation or settings mutation.",
+    "chronicle_and_prior_failure_cohort": {
+      "passed": 365,
+      "failed": 0,
+      "skipped": 0,
+      "coverage_percent": 87.80,
+      "coverage_modules": [
+        "aries_serpent_core.logging.chronicle_cost",
+        "aries_serpent_core.logging.chronicle_analytics"
+      ],
+      "coverage_is_repository_wide": false,
+      "evidence": ["chronicle-cohort.log", "chronicle-cohort.xml", "chronicle-cohort-coverage.json"],
+      "newly_repaired_root": "Concurrent memory writes still failed on the fresh isolated rerun. Serialize each AgentMemory instance's full connection/transaction lifetime with RLock; retain explicit close/rollback. A deterministic regression failed before and passed after; require all 500 concurrent writes to persist.",
+      "counts_overlap_historical_results": true
+    },
+    "full_suite": {
+      "status": "failed_internal_error_on_frozen_snapshot",
+      "exit_code": 3,
+      "terminal_summary": {
+        "passed": 6105,
+        "failed": 386,
+        "skipped": 276,
+        "xfailed": 50,
+        "errors": 56209,
+        "rerun_reports": 21,
+        "duration_seconds": 2660.63
+      },
+      "junit": {
+        "tests": 44044,
+        "failures": 386,
+        "errors": 56211,
+        "skipped_including_xfails": 326,
+        "counts_are_not_disjoint": true
+      },
+      "outer_timeout": null,
+      "per_test_timeout_seconds": 30,
+      "workers": 2,
+      "full_suite_completed": false,
+      "repository_coverage_percent": null,
+      "coverage_artifact_available": false,
+      "command": "PYPI_RESUME_EVIDENCE=<evidence> PYTHONPATH=<evidence> PATH=/tmp/pypi-venv/bin:$PATH /tmp/pypi-venv/bin/python -m pytest tests/ -p phase2_test_recorder -p no:randomly -p no:cacheprovider -n 2 --dist=loadfile --timeout=30 --continue-on-collection-errors --tb=short -ra --junitxml=../full-suite.xml --cov=src --cov-report=json:../full-suite-coverage.json --cov-report=term --cov-fail-under=80",
+      "evidence": ["full-suite.log", "full-suite.xml", "full-suite.exit", "full-suite-summary.json", "full-suite-call-failures.json", "full-suite-gw0.jsonl", "full-suite-gw1.jsonl"],
+      "later_selected_mapping": {
+        "recorded_call_failures": 386,
+        "exact_node_ids_passing_later_integration": 35,
+        "other_failed_call_files": 27,
+        "unmatched_nodes_are_not_automatically_unfixed": true,
+        "constraint": "Some repaired tests changed names/contracts. Exact-node matching only verifies the 35 identical cases; classify the remaining records rather than assuming every unmatched node is an independent product failure."
+      },
+      "interpretation": "The overall-unbounded run terminated with pytest/xdist internal errors after 44 minutes. The broken logger mock caused pytest sessionfinish failure and worker bookkeeping errors; deleted cwd caused another large cascade. Multiple phase errors can belong to one node, so JUnit errors exceed tests and terminal/JUnit errors differ by two internal errors. Later repairs are absent from this frozen snapshot. No coverage report or raw worker coverage data survived; do not claim global coverage or full-suite success.",
+      "new_root_families": [
+        "Security-test logger mock rejects logging.getLogger() without a name and corrupts pytest logging teardown",
+        "Deleted temporary current directory makes the global cwd fixture fail repeatedly",
+        "Test-directory sys.path insertion shadows the canonical codex_ml source package",
+        "Phase-9.1 fixture is class-scoped despite unrelated classes using it; assertions expect a nonexistent recommendation key and confuse confidence with accuracy",
+        "Custom RBAC grants are stored but omitted from permission evaluation",
+        "Training engines mishandle plain mappings and invalid configuration shapes",
+        "Stale security-core test signatures and additional independent suite failures"
+      ]
+    },
+    "implemented_since_refresh": [
+      "AgentMemory transaction serialization with deterministic concurrent-write regression",
+      "Shared mapping/OmegaConf training-section validation for both engines; 32 targeted tests passed",
+      "Module-scoped phase-9.1 fixture, stable decision_action assertions and actual weighted-factor checks; escalation_required is always boolean",
+      "Unconditional restoration of project cwd even when the temporary previous cwd has been deleted",
+      "Logger mocks preserve root/default logger behavior; actual logging API and sanitized event payloads are asserted",
+      "Canonical codex_ml import finder regression and removal of test-directory path injection from two test modules",
+      "Custom permission evaluation reuses scoped, unexpired effective permissions, retains explicit-deny precedence, and compares Enum levels by value; 109 RBAC tests passed",
+      "Tools typing batch removed 54 scoped diagnostics; expanded follow-up target passed 68 tests",
+      "Codex ML typing batch removed 43 scoped diagnostics and repaired drift-detector overwrite and absent dataset-hash output-path handling; dependent validation passed 182 tests",
+      "19 substantive logging/resilience public docstrings; executable AST unchanged"
+    ],
+    "cross_lane_integration": {
+      "passed": 1607,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 6,
+      "coverage_measured": false,
+      "evidence": ["integrated-regression-command.json", "integration-snapshot.json", "integrated-regression.log", "integrated-regression.xml"],
+      "scope": "Chronicle, original failure cohort, BrainClient, SQLite lifetime/concurrency, legacy CLI, both training engines, decision scoring, cwd/import/logger isolation, RBAC, security-core contracts, ML initialization/backend contracts and tools normalization/gates.",
+      "counts_overlap_all_smaller_runs": true,
+      "repaired_during_integration": "An earlier combined run exposed unstable microsecond-scale scalability ratios. Measure equal total work over independently warmed batches, retain the original 2x scaling bound, require completed decision counts, and prove with a synthetic clock that linear work passes while growing-history quadratic work fails. The revised scalability class passed five independent process reruns.",
+      "prior_failed_attempt": {
+        "passed": 1604,
+        "failed": 1,
+        "skipped": 6,
+        "evidence": ["integrated-regression-before-scalability.log", "integrated-regression-before-scalability.xml"]
+      },
+      "skip_reasons": [
+        "One module requires optional mlflow",
+        "Two argparse-fallback tests do not apply with Typer installed",
+        "Three text-metric cases explicitly require tensor rather than list inputs"
+      ]
+    },
+    "dependent_lane_validation": {
+      "tools": "68 passed; all 17 owned source modules have zero diagnostics; src/tools still has 189 diagnostics",
+      "codex_ml": "182 passed, zero skips; 439 to 396 scoped diagnostics. Fixed missing-Torch BF16 capability handling, model-name CLI forwarding, startup callback error consistency and Prometheus degraded-export logging. Cancellation and actual model initialization errors remain fatal.",
+      "security_core_test_contracts": "159 passed, zero skips; source security behavior unchanged, stale call/return assumptions replaced with positive/negative contract tests",
+      "all_results_are_selected_scope": true
+    },
+    "global_quality": {
+      "ruff_initial_refresh": "passed; zero errors",
+      "black_initial_refresh": "passed; 1969 source files unchanged",
+      "mypy_integrated_progress": {
+        "command": "/tmp/pypi-venv/bin/python -m mypy src/ --no-incremental",
+        "errors": 1263,
+        "files_with_errors": 339,
+        "files_checked": 1972,
+        "previous_errors": 1386,
+        "previous_files_with_errors": 362,
+        "baseline_reset": false,
+        "evidence": "mypy-final-sequential.log",
+        "final_recheck_required": false,
+        "intermediate_result": "1264 errors in 340 files in mypy-integrated-progress.log",
+        "resource_failure_and_recovery": "mypy-final.log was killed with exit 137 while full-suite and integration validation were concurrent. After the heavy suite released resources, mypy-final-sequential.log completed with exit 1 and 1263 errors in 339 files; this is the current count."
+      },
+      "public_api_docstrings": {
+        "documented": 9688,
+        "total": 12233,
+        "percent": 79.195618,
+        "missing": 2545,
+        "additional_required_for_90_percent_at_fixed_denominator": 1322,
+        "included_source_files": 1974,
+        "method": "Module-public definitions OR explicit exports plus public class methods; canonical private reexports counted once. Module docstrings measured separately. Exclude nested/private unexported symbols, ten tests and four documented workflow.backup duplicates, not live archive/template/tooling APIs.",
+        "conditional_definition_variant_percent": 78.493239,
+        "evidence": ["docs/global-inventory.json", "docs/global-missing-symbols.json", "docs/global-validation.json"],
+        "gate_passed": false
+      }
+    },
+    "remaining_execution_order": [
+      "The frozen overall-unbounded full run terminated with internal errors and no surviving coverage; preserve terminal, JUnit and per-phase recorder evidence without interpreting pollution cascades as independently confirmed product defects.",
+      "The sequential full-source mypy retry completed: 1263 errors in 339 files, down from 1386 in 362. Continue root-cause batches without resetting the baseline.",
+      "Next test gate: use final integration-snapshot.json and corrected logger/cwd/import infrastructure in a separate clean broad rerun, retaining incremental evidence and bounded root-cause shards without summing overlapping counts.",
+      "Classify the residual global diagnostics and missing API symbols by owned scope; 2545 missing docstrings and the 90-percent gate remain real work, not bulk placeholders or a narrowed denominator.",
+      "Complete dependency/security/legal validation and registry resolution through separately authorized compatible contracts publication; choose an authorized release version newer than the occupied public 0.3.0 artifacts.",
+      "Only after measured Phase 2 gates pass, complete metadata/license/readme/entry-point review and fresh sdist/wheel/Twine/installed-artifact validation for Phase 3.",
+      "Keep Phase 4 not started until local and TestPyPI verification plus explicit release authorization/platform access permit any publication, tag, release or remote push."
+    ],
+    "dependency_validation": {
+      "registry_installation": "blocked: codex-contracts returns HTTP 404 and registry-only editable install reports no matching distribution",
+      "local_builds": "Contracts and root sdist/wheel builds succeeded; local wheelhouse installs passed with pip and uv; 49 packages compatible",
+      "lock": "uv lock --check passed; 386 packages; lock unchanged",
+      "packaging_tests_passed": 6,
+      "installed_contract_tests_passed": 23,
+      "installed_cli_help_checks_passed": 5,
+      "pypi_audit": "pip-audit 2.10.1 checked 47 public runtime packages and reported zero known vulnerabilities; no ignores",
+      "unauditable_local_distributions": ["codex-contracts", "locally changed codex-ml==0.3.0"],
+      "scanner_limits": "OSV DNS resolution failed; Safety is not installed. Neither is a clean result.",
+      "version_collision": "Public codex-ml 0.3.0 already exists, uploaded 2026-07-20 with different metadata/artifacts. Do not overwrite it; a later release requires an authorized version decision.",
+      "evidence": ["dependencies/summary.json", "dependencies/DEPENDENCY_EVIDENCE.txt", "dependencies/runtime-audit/AUDIT_EVIDENCE.txt"],
+      "local_success_is_not_registry_availability": true
+    },
+    "phase3_status": "gated; local dependency/build probes do not establish Phase 2 completion or release readiness",
+    "phase4_status": "not_started",
+    "publication_authorized": false
+  },
+  "distribution": "codex-ml",
+  "implementation_state": "uncommitted_worktree",
+  "python_version": "3.12.3",
+  "evidence_directory": "/root/.copilot/session-state/c2af55dfb88e44fa9053b38006537ee9/files/pypi-phase2",
+  "implemented": [
+    "Portable Chronicle .codex scope normalization",
+    "Canonical legacy CLI exports, submodule path, and main-module identity",
+    "Real SQLite Chronicle analytics and optional event-metric regressions",
+    "Lazy optional ML backend imports and mapping-shaped training configuration validation",
+    "ParamSpec-preserving retry decorator typing",
+    "Resolver-generated dependency lock and editable local contracts source",
+    "Explicit incompatible extras and standalone asyncio test requirements",
+    "Existing publishing workflow expression, selection, permission, and interpreter corrections",
+    "Agent allowlist exports and canonical autonomous-runner mock targets",
+    "Manifest-driven installation checks without pkg_resources",
+    "Template test root setup and informational mypy hook shell syntax",
+    "README installation, Chronicle usage, and moved-reference repairs",
+    "BrainClient optional local-health authentication and installation-token fallback without weakening the shared elevated-token resolver",
+    "Explicit SQLite connection closure and rollback/lifetime regressions",
+    "Readonly SQLite fixtures, migrated-import fixtures, actual concurrent memory reads, and bounded diagnostics",
+    "Deterministic benchmark aggregation tests and zero/negative-round quantum-game behavior",
+    "Source-layout mypy discovery, fail-closed baseline execution, and 82 AST-equivalent source formatting repairs",
+    "Truthful documentation inventory metrics and their checker regressions"
+  ],
+  "focused_regression": {
+    "provenance": "Historical selected run; the latest isolated cross-lane result is continuation.cross_lane_integration.",
+    "status": "passed_with_skips",
+    "passed": 700,
+    "failed": 0,
+    "skipped": 5,
+    "command_prefix": "PATH=/tmp/pypi-venv/bin:$PATH /tmp/pypi-venv/bin/python -m pytest",
+    "selectors": [
+      "tests/test_chronicle_campaign_cli.py",
+      "tests/test_chronicle_cost.py",
+      "tests/test_chronicle_analytics.py",
+      "tests/test_package_dependency_contract.py",
+      "tests/test_cli_lazy_imports.py",
+      "tests/orchestration/test_chronicle_cli_gaps.py",
+      "tests/test_code_quality_fixes.py",
+      "tests/unit/test_retry.py",
+      "tests/release/test_pypi_publish_workflow.py",
+      "tests/smoke/test_install.py",
+      "tests/templates/test_cli_template.py",
+      "tests/test_cli.py",
+      "tests/test_import_smoke.py",
+      "tests/agent/test_agent_core_minimal.py",
+      "tests/configuration/test_config_basics.py",
+      "tests/test_codex_cli_main_enhancements.py",
+      "tests/unit/test_cli_main_phase1a.py",
+      "tests/agents/test_agents_init_phase9_2.py"
+    ],
+    "options": [
+      "-p no:randomly",
+      "-p no:cacheprovider",
+      "-ra",
+      "--maxfail=5",
+      "--timeout=30",
+      "--cov=aries_serpent_core.logging.chronicle_cost",
+      "--cov=aries_serpent_core.logging.chronicle_analytics",
+      "--cov=aries_serpent_core.resilience.retry",
+      "--cov=codex.cli",
+      "--cov-fail-under=80",
+      "--cov-report=term-missing"
+    ],
+    "coverage_percent": 86.08,
+    "coverage_is_repository_wide": false,
+    "analytics_module_coverage_percent": 94.96,
+    "cost_module_coverage_percent": 84.98,
+    "skip_reasons": [
+      "Two test modules require optional mlflow",
+      "One optional codex-import-ndjson entry point is absent",
+      "Two argparse-fallback cases do not apply with Typer installed"
+    ],
+    "evidence": [
+      "current-integration.log",
+      "current-integration.xml",
+      "current-integration-coverage.json"
+    ],
+    "selector_scope": "The original selectors plus BrainClient, lifecycle/memory, migration, concurrency, optimization, diagnostics, benchmark, quantum, documentation-metrics and source-layout/baseline regressions; see current-integration.xml for exact cases.",
+    "chronicle_only_saved_result": {
+      "passed": 92,
+      "failed": 0,
+      "skipped": 0,
+      "coverage_percent": 85.47,
+      "evidence": ["chronicle.log", "chronicle.xml", "chronicle-coverage.json"],
+      "coverage_is_repository_wide": false
+    }
+  },
+  "autonomous_runner_regression": {
+    "passed": 17,
+    "failed": 0,
+    "skipped": 0,
+    "command": "PATH=/tmp/pypi-venv/bin:$PATH /tmp/pypi-venv/bin/python -m pytest tests/agents/test_autonomous_runner.py -p no:randomly -p no:cacheprovider --timeout=30 -ra",
+    "evidence": ["runner-regression.log", "runner-regression.xml"],
+    "root_cause": "Tests patched src.agents.autonomous_runner while executing agents.autonomous_runner, leaving the actual runtime objects unmocked.",
+    "counts_overlap_other_runs": true
+  },
+  "collection_error_cohort": {
+    "original_errors": 59,
+    "collected": 1422,
+    "collection_errors_after_repairs": 0,
+    "scope": "Previously failing collection cohort, not the entire repository",
+    "agent": "Test Pattern Guardian",
+    "evidence_directory": "/root/.copilot/session-state/c2af55dfb88e44fa9053b38006537ee9/files/phase2-evidence-f343056f-20261022T041916Z"
+  },
+  "bounded_broad_suite": {
+    "status": "failed",
+    "exit_code": 124,
+    "passed": 2837,
+    "failed": 15,
+    "skipped": 173,
+    "warnings": 235,
+    "full_suite_completed": false,
+    "repository_coverage_percent": null,
+    "command": "See suite-after-brain.log and suite-after-brain.exit; bounded broad run with a 15-second per-test timeout and an outer execution limit.",
+    "evidence": ["suite-after-brain.log", "suite-after-brain.xml", "suite-after-brain.exit"],
+    "failed_node_ids": [
+      "tests/agents/test_agent_lifecycle.py::TestAgentInitialization::test_memory_system_initialization",
+      "tests/agents/test_agent_lifecycle.py::TestAgentInitialization::test_multiple_agent_initialization",
+      "tests/agents/test_agent_lifecycle.py::TestStateManagement::test_state_persistence_across_operations",
+      "tests/agents/test_agent_lifecycle.py::TestErrorRecovery::test_recovery_from_incomplete_operations",
+      "tests/agents/test_edge_cases_exception_paths.py::TestAgentMemoryDatabaseErrors::test_store_memory_to_readonly_database",
+      "tests/agents/test_import_migration_orchestrator.py::TestImportMigrationOrchestrator::test_assess_imports_finds_correct_count",
+      "tests/agents/test_import_migration_orchestrator.py::TestImportMigrationOrchestrator::test_assess_imports_skips_already_migrated",
+      "tests/agents/test_import_migration_orchestrator.py::TestImportMigrationWorkflow::test_workflow_with_no_deprecated_imports",
+      "tests/agents/test_load_and_concurrent.py::TestConcurrentMemoryAccess::test_concurrent_memory_reads",
+      "tests/agents/test_load_and_concurrent.py::TestScalability::test_increasing_load_handling",
+      "tests/agents/test_phase2_deep_coverage_batch4.py::TestPhase2_OptimizationMethods::test_path_integral_optimization",
+      "tests/agents/test_phase2_deep_coverage_batch5.py::TestPhase2_SelfHealing::test_run_diagnostics_function",
+      "tests/agents/test_quality.py::TestPerformance::test_performance_variance",
+      "tests/agents/test_quantum_game_core_flows.py::TestBlueRedTeamSimulator::test_payoff_accumulation",
+      "tests/agents/test_quantum_game_core_flows.py::TestBlueRedTeamSimulator::test_zero_rounds_simulation"
+    ],
+    "root_cause": "SQLite connection lifetime, root-insensitive readonly fixture, incorrect migrated-import fixtures, guarded nonexistent memory API, noisy timing assertions, invalid optimization input, unbounded diagnostic fixture and zero-round semantics.",
+    "repair_constraint": "All listed files were included in the later passing 700-test integration; broad-suite order/environment behavior must still be reconfirmed.",
+    "resolved_previous_family": {
+      "family": "BrainClient optional authentication",
+      "standalone_passed": 46,
+      "evidence": ["brain-regression.log", "brain-regression.xml"],
+      "subsequent_selected_integration_passed": true
+    },
+    "subsequent_failure_cohort_recheck": {
+      "evidence": "current-integration.xml",
+      "failed": 0,
+      "included_files": [
+        "tests/agents/test_agent_lifecycle.py",
+        "tests/agents/test_edge_cases_exception_paths.py",
+        "tests/agents/test_import_migration_orchestrator.py",
+        "tests/agents/test_load_and_concurrent.py",
+        "tests/agents/test_phase2_deep_coverage_batch4.py",
+        "tests/agents/test_phase2_deep_coverage_batch5.py",
+        "tests/agents/test_quality.py",
+        "tests/agents/test_quantum_game_core_flows.py",
+        "tests/agents/test_memory_connection_lifetime.py"
+      ],
+      "does_not_establish_full_suite_success": true
+    },
+    "counts_must_not_be_added_to_focused_results": true
+  },
+  "static_validation": {
+    "ruff_repository": {
+      "command": "/tmp/pypi-venv/bin/python -m ruff check .",
+      "status": "passed"
+    },
+    "black_changed_python_files": {
+      "status": "passed",
+      "file_count": 20
+    },
+    "mypy_changed_source_modules": {
+      "status": "passed",
+      "module_count": 9,
+      "files": [
+        "src/codex/cli/__init__.py",
+        "src/aries_serpent_core/logging/chronicle_cost.py",
+        "src/aries_serpent_core/resilience/retry.py",
+        "src/codex_ml/__init__.py",
+        "src/codex_ml/utils/__init__.py",
+        "src/codex_ml/cli/main.py",
+        "src/codex_ml/cli/utils.py",
+        "src/codex_ml/cli/__init__.py",
+        "src/agents/__init__.py"
+      ]
+    },
+    "black_full_source": {
+      "command": "/tmp/pypi-venv/bin/python -m black --check src",
+      "status": "passed_after_subsequent_repairs",
+      "formatted_files": 82,
+      "formatting_ast_equivalent": true,
+      "fresh_resume_recheck_required": false,
+      "current_evidence": "pypi-resume/black-final.log",
+      "historical_failure_evidence": "black-src-final.log"
+    },
+    "mypy_full_source": {
+      "command": "/tmp/pypi-venv/bin/python -m mypy src/ --no-incremental",
+      "status": "failed_after_resumed_repairs",
+      "errors": 1263,
+      "files_with_errors": 339,
+      "files_checked": 1972,
+      "baseline_reset": false,
+      "provenance": "Final sequential full-source scan after integration, superseding the 1386-error/362-file baseline and interrupted concurrent scan.",
+      "evidence": "pypi-resume/mypy-final-sequential.log",
+      "previous_complete_scan": {
+        "errors": 1386,
+        "files_with_errors": 362,
+        "source_errors": 1377,
+        "imported_script_errors": 9
+      },
+      "historical_discovery_failure_evidence": "mypy-src-final.log"
+    },
+    "public_name_docstring_inventory": {
+      "provenance": "Historical heuristic only; current defined API inventory is continuation.global_quality.public_api_docstrings.",
+      "documented": 9766,
+      "total": 12827,
+      "percent": 76.14,
+      "target_percent": 90,
+      "method": "AST function, async function, and class definitions whose names do not start with an underscore; includes nested definitions and is not a validated API boundary."
+    }
+  },
+  "dependencies": {
+    "lock_command": "uv lock --check --python /tmp/pypi-venv/bin/python",
+    "lock_status": "passed",
+    "resolved_packages": 386,
+    "pip_check_status": "passed",
+    "local_editable_install_status": "passed",
+    "local_editable_install_command": "uv pip install --python <fresh-venv>/bin/python -e . ./packages/contracts",
+    "standalone_editable_install_status": "blocked",
+    "standalone_install_blocker": "codex-contracts is a declared runtime dependency but is unavailable from the configured registry.",
+    "transitive_pin_location": "uv.lock",
+    "incompatible_extras": [
+      ["dev", "full"],
+      ["dev", "all"],
+      ["dev", "train"]
+    ],
+    "extra_conflict_reason": "Semgrep's OpenTelemetry 1.37 constraint conflicts with W&B 0.29+ requiring OpenTelemetry API 1.43+.",
+    "evidence": [
+      "lock-check.log",
+      "lock-regenerate.log",
+      "editable-install.log",
+      "editable-install-local-contracts.log"
+    ]
+  },
+  "remaining_gates": [
+    "Chronicle/prior cohort is reconfirmed and cross-lane integration passes 1607 tests with six skips; finish the frozen broad run and validate the corrected infrastructure in a clean broad rerun.",
+    "Complete the full suite and measure repository-wide coverage of at least 80%.",
+    "Repository Ruff and full-source Black pass; resolve the remaining 1263 global mypy diagnostics without resetting the baseline.",
+    "Reach the public API documentation threshold with a defined API inventory.",
+    "Preserve the repaired documentation-metric semantics and rerun their regression/checker gate.",
+    "Make the contracts runtime dependency resolvable for standalone registry installation.",
+    "Run final unfiltered pre-commit and full security/dependency gates."
+  ],
+  "pre_commit": {
+    "status": "failed_one_architectural_check",
+    "selected_changed_paths": 265,
+    "exit_code": 1,
+    "remaining_failure": {
+      "hook": "ast-smell-check",
+      "code": "SMELL-S001",
+      "file": "src/aries_serpent_core/github/mcp_poster.py",
+      "line": 78,
+      "message": "GitHubMCPPoster has 38 methods; configured maximum is 20",
+      "suppressed": false
+    },
+    "other_applicable_hooks": "passed, including Bandit, detect-secrets, gitleaks, dependency, documentation metrics, workflow schemas and actionlint; informational mypy/docstring hooks do not close global gates",
+    "false_positive_corrections": "Narrowly annotate verified synthetic examples, illustrative key names and public format/resource markers; the changed API doctest passes. No broad scanner exclusion or baseline reset.",
+    "resolved_previous_failing_hook": "doc-metrics-check",
+    "command": "pre-commit run --files <changed-files>",
+    "evidence": "pypi-resume/precommit-final.log",
+    "selection_evidence": "pypi-resume/precommit-files.json",
+    "informational_type_and_docstring_hook_success_is_not_a_global_gate_pass": true,
+    "historical_stale_files": [
+      "docs/ops/SAR_METHODOLOGY.md",
+      "docs/evolution/COGNITIVE_CODEBASE_MAP.md",
+      "docs/evolution/INDEX.md",
+      "docs/deployment/DEPLOYMENT_RUNBOOK.md"
+    ],
+    "constraint": "Subsequent repairs relabeled metrics as estimated inventory and passed 38 tests; historical failed logs do not reflect current checker state."
+  },
+  "publication": {
+    "attempted": false,
+    "tag_created": false,
+    "release_created": false,
+    "pushed": false,
+    "workflow_created_or_activated": false
+  },
+  "actual_ai_credits": null,
+  "resume_safety": [
+    "Run tests only in disposable worktrees; the root conftest and suite can mutate tracked artifacts.",
+    "Do not sum overlapping shard counts.",
+    "Do not interpret focused coverage as repository-wide coverage.",
+    "Do not label pypi-code-complete successful while global gates remain blocked.",
+    "Do not publish or tag based on these partial results."
+  ],
+  "recovery_2026_10_24": {
+    "recorded_at": "2026-10-24T04:43:42Z",
+    "scope": "PR #5708 R1-R4 remediation; this current status supplements, and does not rewrite, the historical execution records above.",
+    "base_commit": "71613ee00080",
+    "pre_cleanup_evidence_commit": "see recovery manifest for exact immutable ID",
+    "status": "incomplete; no merge-readiness or publication claim",
+    "R1": "Blocked pending authorized companion workflow integration; the required selector reports 67 passed and 2 failed on missing --warn-only workflow lines. Requested reviewer @mbaetiong must confirm the workflow owner and authorize integration.",
+    "R2": "The 1423-path validation deletion is published. An independent post-push fetch verified the pre-cleanup evidence commit remains an ancestor and reverified all 1425 inventory entries; the Git-history fallback is not an independent archive.",
+    "R3": "Synthetic campaign records and startup timestamp churn are absent from the proposed base diff; campaign telemetry tests passed twice (43 each), with output isolated to temporary files.",
+    "R4": "The validator reports ordinary-workflow compatibility separately from hosted setup contract, reports the exact retained legacy filtered environment listing, and rejects new broad environment dumps.",
+    "current_full_source_mypy": "855 errors in 278 files, 1972 checked, exit 1. The base comparison could not be measured because base package discovery exits 2 on invalid package name self-healing.",
+    "pre_commit": "Exit 1 on five existing AST class-size findings; all other applicable hooks passed, including secret/dependency scanners.",
+    "codeql": "Analysis skipped because the database size is too large; no CodeQL result is claimed.",
+    "hosted_checks": "Runs on the pushed commit are action_required; Validation Pipeline, Copilot Setup Steps Validation and Nox have zero jobs. No approval or dispatch was performed.",
+    "required_next_actions": [
+      "Obtain authorized R1 companion integration and rerun its exact acceptance test against checked-in workflows.",
+      "Complete the full suite and repository-wide coverage gate; focused selections are not acceptance.",
+      "Resolve or obtain maintainer disposition for required full-source typing and the five AST class-size findings.",
+      "Run CodeQL with an available database and obtain authorized execution of required hosted checks."
+    ],
+    "verified_cleanup_commit": "see recovery manifest for exact immutable ID",
+    "full_commit_ids": "recovery/bfe2456b/nonworkflow-manifest.md",
+    "details": "recovery/bfe2456b/CONTEXT.md and recovery/bfe2456b/nonworkflow-manifest.md"
+  }
+}

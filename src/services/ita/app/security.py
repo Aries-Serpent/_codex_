@@ -43,7 +43,8 @@ class ApiKeyStore:
     """Minimal file-backed API key store that keeps only hashed keys."""
 
     def __init__(self, path: Optional[Path] = None) -> None:
-        self.path = Path(path or os.environ.get(_KEY_FILE_ENV, _DEFAULT_RUNTIME_PATH))
+        path_value = path if path is not None else os.environ.get(_KEY_FILE_ENV)
+        self.path = Path(_DEFAULT_RUNTIME_PATH if path_value is None else path_value)
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
     def _load(self) -> set[ApiKeyRecord]:
