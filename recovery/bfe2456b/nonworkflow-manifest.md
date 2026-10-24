@@ -71,13 +71,18 @@ git show e15df253c7f0facc2bbeda1e552ada1f0e050360:recovery/bfe2456b/validation/<
 ```
 
 After cleanup, a second fresh bare object store fetched the assigned branch
-without shared alternates. It confirmed that the final PR commit
-`ed235eb14ef9b88b6c7ae006498767e7e18d8c17` contains the pre-cleanup evidence
-commit as an ancestor. The complete 1,425-path inventory again matched path,
-mode, blob ID, size, and SHA-256 for every blob. The final recovery tree has
-only the two allowlisted documents and no validation descendants. The history
-fallback is verified; it is still not an independent or indefinite archive.
-Do not rewrite shared history or claim an external archive was created.
+without shared alternates. At that verification point, cleanup commit
+`ed235eb14ef9b88b6c7ae006498767e7e18d8c17` contained the pre-cleanup evidence
+commit as an ancestor. The complete 1,425-path inventory matched path, mode,
+blob ID, size, and SHA-256 for every blob. The recovery tree had only the two
+allowlisted documents and no validation descendants. The history fallback is
+verified; it is still not an independent or indefinite archive. Do not rewrite
+shared history or claim an external archive was created.
+
+After the subsequent recovery-status update, the live branch was fetched again
+at `1719d9d44f41f8fa8d8b9807160e4a37aab9f2ef`; the evidence commit remained an
+ancestor and all inventory entries again matched. This later update changed
+only the already-listed checkpoint and recovery-status documents.
 
 ## Payload disposition
 

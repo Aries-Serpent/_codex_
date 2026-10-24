@@ -653,7 +653,7 @@
       "Resolve or obtain maintainer disposition for required full-source typing and the five AST class-size findings.",
       "Run CodeQL with an available database and obtain authorized execution of required hosted checks."
     ],
-    "published_commit": "see recovery manifest for exact immutable ID",
+    "verified_cleanup_commit": "see recovery manifest for exact immutable ID",
     "full_commit_ids": "recovery/bfe2456b/nonworkflow-manifest.md",
     "details": "recovery/bfe2456b/CONTEXT.md and recovery/bfe2456b/nonworkflow-manifest.md"
   }

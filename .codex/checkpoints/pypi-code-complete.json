@@ -108,7 +108,7 @@
       "CodeQL analysis with an available database and disposition of five AST findings",
       "Authorized execution and successful required hosted checks"
     ],
-    "published_commit": "see recovery manifest for exact immutable ID",
+    "verified_cleanup_commit": "see recovery manifest for exact immutable ID",
     "full_commit_ids": "recovery/bfe2456b/nonworkflow-manifest.md",
     "details": "recovery/bfe2456b/CONTEXT.md and recovery/bfe2456b/nonworkflow-manifest.md"
   },
