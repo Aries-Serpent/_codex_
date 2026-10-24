@@ -156,3 +156,60 @@ git show e15df253c7f0facc2bbeda1e552ada1f0e050360:recovery/bfe2456b/validation/<
   companion integration, and executed hosted checks remain open. Requested
   reviewer @mbaetiong must identify/confirm the workflow owner and authorize
   integration of the held workflow changes; no second-branch write is implied.
+
+## Current workflow/validation handoff
+
+At session entry the live PR head was `3eb98e97ae071f9852adc6384c6dec894e18204e`
+(base `71613ee000808ab758cc2f8ddb07a05c5101f731`). It added only the
+`generated_at` field change in `.codex/session_startup_packet.json` after the
+verified cleanup. A later status push created `4508b16cd12ad6b8696d784de70eb7016614e1b6`;
+the current index stages the base packet so the final PR diff drops that
+timestamp-only path. The session-entry worktree bytes are saved at
+`/tmp/pr5708-session-startup-dirty-3eb.json` (SHA-256
+`cd4a86487f27a8b69e120ffa1d4ea72b10453b2957026ff732b4e4607b836cb2`) and must
+be restored as an uncommitted local change after the corrective push. The
+previously reported `8138605f…` file was absent at this session's entry; do not
+claim those different bytes were recovered.
+
+The current WEC has the five always-required boxes checked and all opt-in boxes
+unchecked, including Nox and security. PR label `wec:auto-approve` is present
+and is persistent; it is not evidence of selected workflows, approval, or
+authorization to approve every pending run. No one-session label is present.
+The default-branch registered Nox, Workflow Execution Gate, and Auto-Approve
+workflows exist. Nox supports pull_request/workflow_dispatch but is one
+sequential 60-minute job (policy, lint, typing, tests, security); it does not
+split validation or upload failure diagnostics. The gate's check step is
+initialization only. Auto-Approve offers `target_pr`/`target_run_id` and
+one-session inputs, but no run-scoped dispatch or approval has occurred.
+
+At session-entry head `3eb98e9…`, relevant runs all concluded
+`action_required` with zero jobs, attempt 1: Nox `40065023097`, Auto-Approve
+`40065023096`, Workflow Execution Gate `40065023219`, Security
+`40065023089`, Enterprise Compliance/CodeQL `40065023081`, and Code Quality &
+Coverage `40065023065`. Artifact queries for Nox, security, Enterprise
+Compliance, Code Quality/Coverage, WEC, and Auto-Approve returned zero.
+Therefore there are no hosted logs, manifests, JUnit, coverage, SARIF, or
+other artifacts to retrieve; do not represent these runs as executed.
+
+The previous local Nox full-suite collection stopped with 37 errors on
+`a76c9fb`; a separate raw pytest probe in a mismatched environment ended at
+133 collection errors. The repository CI environment lacked NumPy and real
+torch/transformers installs, and root-local optional-dependency shims were on
+the import path. These runs do not isolate source regressions or prove an
+Actions-hosted result. Neither produced a complete node inventory or coverage.
+Do not rerun a monolithic local suite.
+
+After the session-entry snapshot, the status push created head
+`4508b16cd12ad6b8696d784de70eb7016614e1b6`. Its relevant attempt-1 runs are
+Nox `40067306514`, Auto-Approve `40067306528`, WEC `40067306494`, Security
+`40067306501`, Enterprise Compliance/CodeQL `40067306511`, and Code Quality &
+Coverage `40067306496`; all are `action_required`. Nox, Auto-Approve, WEC and
+Enterprise Compliance have zero jobs; artifact queries for Nox, Security,
+Enterprise Compliance, and Code Quality/Coverage returned zero.
+
+The next agent should obtain the exact authorized human selection and approval
+for the validation run IDs and confirm the workflow owner can publish the R1
+companion change. Then monitor actual jobs and retrieve bounded artifacts after
+they exist; do not dispatch or approve the persistent all-pending path. Full
+suite/coverage, R1, comparable mypy disposition, five AST findings, and
+CodeQL remain open.

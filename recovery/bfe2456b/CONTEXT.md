@@ -22,25 +22,61 @@ claim.
 
 | Finding | Status |
 |---|---|
-| R1 held-workflow advisory assertions | Blocked: the checked-in workflows lack `--warn-only`; the required selector reports 67 passed and 2 failed on these assertions. No workflow was changed or acceptance assertion weakened. Requested reviewer @mbaetiong must confirm the workflow owner and authorize companion integration before R1 can close. |
+| R1 held-workflow advisory assertions | Blocked: the checked-in workflows lack `--warn-only`; the required selector reports 67 passed and 2 failed on these assertions. No workflow was changed or acceptance assertion weakened. Reviewer @mbaetiong must authorize workflow-owner integration; this session has no workflow write/approval tool. |
 | R2 recovery evidence payload | Cleanup is pushed. A second independent fetch verified the pre-cleanup evidence commit remains an ancestor and matched all 1,425 paths, modes, blob IDs, sizes, and SHA-256 values. The final tree contains only this file and the manifest. Retention is historical Git reachability, not an independent archive. |
-| R3 generated pytest telemetry and startup timestamp | The 16 synthetic campaign records and timestamp-only startup diff are absent relative to base. Campaign tests use a temporary metrics path and passed twice (43 tests per run); the original local startup-packet bytes remain separately preserved at `/tmp/session_startup_packet.r1r4-preserved.json` (SHA-256 `8138605f314633fb35efe676edf8da4c92cda9c5dfcdd7a7552c7fb07b82e27e`). |
+| R3 generated pytest telemetry and startup timestamp | The 16 synthetic campaign records are absent relative to base; campaign tests passed twice (43 per run). The later `3eb98e9` commit added only `generated_at` churn to the startup packet; this correction stages the base packet while preserving the session-entry working-copy bytes (SHA-256 `cd4a86487f27a8b69e120ffa1d4ea72b10453b2957026ff732b4e4607b836cb2`) for restoration after push. The older stated `8138605f…` copy was not present at session entry. |
 | R4 bootstrap validator | Ordinary retained-workflow compatibility is reported separately from hosted setup validation. The retained filtered environment listing remains an explicit legacy finding; added broad dumps are rejected by non-executing mutation tests. Cloud-setup consumers remain deferred to the held workflow integration. |
 
-At the current recovery validation snapshot, full-source mypy reports 855
-errors in 278 files (1,972 checked, exit 1). The attempted base comparison
-exits 2 during package discovery because `self-healing` is not a valid Python
-package name; therefore the current count is not a measured regression delta.
-Ruff, source Black, targeted validator mypy, and the 57-test
-Chronicle/auth/memory selection pass. The required bootstrap/instruction
-selection is 67 passed and 2 failed (R1). Pre-commit exits 1 on five existing
-AST class-size findings; all other applicable hooks pass. CodeQL analysis was
-skipped because the database is too large. Hosted checks on the pushed commit
-are `action_required`; Validation Pipeline, Copilot Setup Steps Validation,
-and Nox have zero jobs, not passing results. Focused tests do not establish
-complete-suite coverage. Do not claim merge readiness while R1, the full-suite
-and coverage gate, required type acceptance, or required hosted checks lack an
-accepted disposition.
+## Latest execution handoff (2026-10-24)
+
+- Session-entry PR head: `3eb98e97ae071f9852adc6384c6dec894e18204e`;
+  base: `71613ee000808ab758cc2f8ddb07a05c5101f731`. The later status push
+  created head `4508b16cd12ad6b8696d784de70eb7016614e1b6`; the pending index-only
+  R3 correction removes the startup packet from the base diff.
+- Current PR label `wec:auto-approve` is present (persistent). WEC always-required
+  boxes are checked; every opt-in box, including Nox and security, is unchecked.
+  Do not treat the label or checkbox as permission to approve all pending runs.
+- After the status push, the live head became
+  `4508b16cd12ad6b8696d784de70eb7016614e1b6`; its Nox
+  `40067306514`, Auto-Approve `40067306528`, WEC `40067306494`, Security
+  `40067306501`, Enterprise Compliance/CodeQL `40067306511`, and Code
+  Quality/Coverage `40067306496` runs are all completed `action_required`,
+  attempt 1. Nox, Auto-Approve, WEC and Enterprise Compliance have zero jobs;
+  artifact listings for Nox, Security, Enterprise Compliance, and Code
+  Quality/Coverage are empty.
+- The default-branch registered workflows exist: Nox, Workflow Execution Gate,
+  and Auto-Approve. Nox supports `pull_request` and `workflow_dispatch`, but its
+  single 60-minute job runs workflow-policy, lint, typecheck, tests, and security
+  sequentially. The gate's success is only initialization; it does not prove
+  dispatch or approval. Auto-Approve supports a run target, but no safe
+  PR-scoped dispatch/approval has occurred.
+- Runs for head `3eb98e9` (all completed `action_required`, attempt 1, zero jobs):
+  Nox `40065023097`, Auto-Approve `40065023096`, Workflow Execution Gate
+  `40065023219`, Security `40065023089`, Enterprise Compliance/CodeQL
+  `40065023081`, and Code Quality/Coverage `40065023065`. Artifact listings
+  returned zero for Nox, Security, Enterprise Compliance, Code Quality/Coverage,
+  WEC, and Auto-Approve. No hosted logs or test artifacts exist to retrieve.
+- Previous local full-suite attempts are not acceptance: Nox collection at
+  `a76c9fb` stopped with 37 errors; a separate raw pytest attempt in a mismatched
+  environment had 133 collection errors. The repository CI environment lacked
+  NumPy and real torch/transformers installs; root-local optional-dependency
+  shims were found on the import path. These runs do not isolate source
+  regressions. No complete inventory or coverage was produced. Do not restart
+  a monolithic local scan; validate in the supported hosted environment after
+  approval.
+- Full-source mypy: 855 errors in 278 files; the base run fails during package
+  discovery on invalid package name `self-healing`, so no matched delta exists.
+  The required selector remains 67 passed, 2 R1 failures. Pre-commit has five
+  AST class-size findings; CodeQL was skipped due database size.
+- Next authorized operations: reviewer @mbaetiong must arrange workflow-owner
+  review/integration of the two `--warn-only` workflow changes; an authorized
+  maintainer must explicitly choose selected validation workflows and approve
+  the specific action-required runs or use a run-scoped controller. Do not
+  trigger the persistent all-pending approval path. Retrieve artifacts only
+  after a run with jobs/artifacts exists.
+
+Do not claim merge readiness while R1, the full-suite/coverage gate, required
+type acceptance, and required hosted checks lack an accepted disposition.
 
 No workflows were activated, approved, dispatched, or modified. No release or
 publication is authorized by this recovery.
