@@ -37,7 +37,7 @@ class TestErrorHandlingBranches:
         error_occurred = False
         try:
             raise RuntimeError("test error")
-        except (IOError, OSError) as _err:  # intentional: testing generic exception handler path
+        except RuntimeError:
             error_occurred = True
         assert error_occurred is True, "Error should be raised or set"
 
@@ -73,7 +73,7 @@ class TestErrorHandlingBranches:
             error_type = "value_error"
         except TypeError:
             error_type = "type_error"
-        except (IOError, OSError) as _err:  # intentional: testing generic exception handler path
+        except RuntimeError:
             error_type = "generic"
         assert error_type == "generic", "Error should be raised or set"
 

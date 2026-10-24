@@ -47,6 +47,11 @@ class HARTimings:
     ssl: float = -1
 
     def to_dict(self) -> dict[str, float]:
+        """Return all seven HAR timing fields, retaining negative unknown values.
+
+        Values are passed through in their original units (HAR milliseconds);
+        the returned dictionary is new and changing it does not update timings.
+        """
         return {
             "blocked": self.blocked,
             "dns": self.dns,
@@ -59,6 +64,15 @@ class HARTimings:
 
     @property
     def total(self) -> float:
+        """Return the sum of nonnegative timing fields, including SSL.
+
+        Unknown negative durations are omitted; SSL is not subtracted from
+        connect, so this is a field sum rather than a measured wall-clock time.
+
+        Example:
+            >>> HARTimings(wait=12, receive=3).total
+            15
+        """
         return sum(
             v
             for v in [
@@ -89,6 +103,11 @@ class HARRequest:
     body_size: int = -1
 
     def to_dict(self) -> dict[str, Any]:
+        """Return request fields using HAR camelCase names.
+
+        Include postData only when truthy. Header, query, cookie, and body
+        containers are shared with this request, not deep-copied.
+        """
         result = {
             "method": self.method,
             "url": self.url,
@@ -105,6 +124,11 @@ class HARRequest:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> HARRequest:
+        """Construct a request from HAR fields in ``data`` without validation.
+
+        Return a new request with defaults for optional keys. Missing method or
+        url raises KeyError. Supplied nested lists/dictionaries remain shared.
+        """
         return cls(
             method=data["method"],
             url=data["url"],
@@ -133,6 +157,11 @@ class HARResponse:
     body_size: int = -1
 
     def to_dict(self) -> dict[str, Any]:
+        """Return HAR-named response fields, including empty content and redirect.
+
+        The result is a new dictionary but headers, cookies, and content are
+        references to the response's containers; no body decoding is performed.
+        """
         return {
             "status": self.status,
             "statusText": self.status_text,
@@ -147,6 +176,11 @@ class HARResponse:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> HARResponse:
+        """Return a response from HAR ``data``, defaulting optional fields.
+
+        Require status and statusText (KeyError if absent). Nested containers
+        are reused without validation, content decoding, or copying.
+        """
         return cls(
             status=data["status"],
             status_text=data["statusText"],
@@ -175,6 +209,11 @@ class HAREntry:
     comment: str = ""
 
     def to_dict(self) -> dict[str, Any]:
+        """Return this transaction with nested HAR request/response/timing maps.
+
+        Preserve timestamps, duration, connection metadata, and empty fields.
+        Cache and nested request/response containers are not deep-copied.
+        """
         return {
             "startedDateTime": self.started_datetime,
             "time": self.time,
@@ -189,6 +228,12 @@ class HAREntry:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> HAREntry:
+        """Return a transaction reconstructed from HAR ``data``.
+
+        Require startedDateTime, request, and response, including their required
+        fields; missing keys raise KeyError. Unknown timing keys are discarded
+        and missing timings use HARTimings defaults. Other values are unvalidated.
+        """
         return cls(
             started_datetime=data["startedDateTime"],
             time=data.get("time", 0),
@@ -225,6 +270,11 @@ class HARLog:
     comment: str = ""
 
     def to_dict(self) -> dict[str, Any]:
+        """Return a HAR document wrapped in a top-level ``log`` key.
+
+        Serialize entries and always include version/creator. Browser, pages,
+        and comment appear only when truthy. Metadata containers remain shared.
+        """
         result = {
             "log": {
                 "version": self.version,
@@ -242,6 +292,12 @@ class HARLog:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> HARLog:
+        """Return a log from either a wrapped document or bare log mapping.
+
+        Missing entries become an empty list and creator defaults to Unknown.
+        Entries are reconstructed with HAREntry.from_dict, whose missing required
+        fields raise KeyError. No HAR schema or version validation is performed.
+        """
         log_data = data.get("log", data)
         return cls(
             version=log_data.get("version", "1.2"),
@@ -253,9 +309,20 @@ class HARLog:
         )
 
     def add_entry(self, entry: HAREntry) -> None:
+        """Append ``entry`` by reference to the log and return None.
+
+        No deduplication or validation occurs; later entry mutations affect
+        subsequent serialization of this log.
+        """
         self.entries.append(entry)
 
     def save(self, path: Path, compress: bool = False) -> None:
+        """Overwrite ``path`` with indented UTF-8 HAR JSON, returning None.
+
+        When compress is true, replace the final suffix with .har.gz and write
+        gzip text there instead. Parent directories are not created. Serialization
+        TypeError and filesystem OSError propagate; the actual path is logged.
+        """
         data = json.dumps(self.to_dict(), indent=2)
         if compress:
             path = path.with_suffix(".har.gz")
@@ -268,6 +335,12 @@ class HARLog:
 
     @classmethod
     def load(cls, path: Path) -> HARLog:
+        """Read a HAR log from ``path``, using gzip for names ending in .gz.
+
+        Return HARLog.from_dict of the decoded UTF-8 JSON. Filesystem/gzip errors,
+        JSONDecodeError, and malformed-entry errors propagate; no network or
+        optional dependency is involved.
+        """
         if str(path).endswith(".gz"):
             with gzip.open(path, "rt", encoding="utf-8") as f:
                 data = json.load(f)
@@ -302,10 +375,20 @@ class HARRecorder:
             self.save(self.save_path)
 
     def start(self) -> None:
+        """Set the recording flag and log the recording name, returning None.
+
+        Existing entries remain intact. This flag is informational:
+        record_complete_transaction does not consult it.
+        """
         self._recording = True
         logger.info(f"Started HAR recording: {self.name}")
 
     def stop(self) -> None:
+        """Clear the recording flag and log the entry count, returning None.
+
+        This method does not save or clear entries; context-manager exit handles
+        auto-save separately. Transactions can still be appended after stopping.
+        """
         self._recording = False
         logger.info(f"Stopped HAR recording: {self.name} ({len(self.har_log.entries)} entries)")
 
@@ -321,6 +404,22 @@ class HARRecorder:
         response_body: Optional[str] = None,
         elapsed_ms: float = 0,
     ) -> HAREntry:
+        """Append and return a transaction assembled from caller-supplied values.
+
+        Args:
+            method: Request method, preserved verbatim.
+            url: Request URL, without parsing or normalization.
+            request_headers: Name/value pairs converted to HAR header records.
+            request_body: Optional text recorded as JSON postData when nonempty.
+            status: HTTP response code.
+            status_text: Response reason phrase.
+            response_headers: Response name/value pairs.
+            response_body: Text stored as JSON-labelled content, or empty text.
+            elapsed_ms: Both entry time and wait timing, in milliseconds.
+
+        Body sizes count Python characters, not encoded bytes. No HTTP request
+        is issued, JSON bodies are not parsed, and the recording flag is ignored.
+        """
         req_header_list = [{"name": k, "value": v} for k, v in (request_headers or {}).items()]
         resp_header_list = [{"name": k, "value": v} for k, v in (response_headers or {}).items()]
 
@@ -351,9 +450,20 @@ class HARRecorder:
         return entry
 
     def save(self, path: Path, compress: bool = False) -> None:
+        """Persist accumulated entries via HARLog.save and return None.
+
+        ``path`` is overwritten; compress replaces its final suffix with .har.gz.
+        Parent directories must already exist. Serialization and filesystem
+        failures propagate, and recording state is unchanged.
+        """
         self.har_log.save(path, compress)
 
     def get_entries(self) -> list[HAREntry]:
+        """Return the live entry list, not a defensive copy.
+
+        Appending/removing entries through the result changes the recorder's
+        log, regardless of whether recording has been started or stopped.
+        """
         return self.har_log.entries
 
 
@@ -382,6 +492,12 @@ class HARCache:
         return hashlib.sha256(f"{method}:{url}".encode()).hexdigest()
 
     def get(self, method: str, url: str) -> Optional[HAREntry]:
+        """Read the cached transaction matching exact ``method`` and ``url``.
+
+        Return the first matching entry from the indexed file, or None on a miss
+        or caught I/O/import failure (logged). Files are read on each hit.
+        JSON decoding and malformed-HAR errors are not suppressed.
+        """
         key = self._make_key(method, url)
         if key in self._index:
             har_file = self._index[key]
@@ -397,6 +513,12 @@ class HARCache:
         return None
 
     def put(self, entry: HAREntry) -> None:
+        """Persist ``entry`` as a single-entry HAR and update the cache index.
+
+        The SHA-256 of method:url determines the filename; the same key overwrites
+        its previous file. Return None. Save errors propagate and the index is
+        updated only after saving; headers/body do not participate in the key.
+        """
         key = self._make_key(entry.request.method, entry.request.url)
         har_log = HARLog(entries=[entry])
         cache_file = self.cache_dir / f"{key}.har"
@@ -404,6 +526,13 @@ class HARCache:
         self._index[key] = cache_file
 
     def clear(self) -> int:
+        """Attempt to delete indexed files, empty the index, and return key count.
+
+        The count is index entries, not successful deletions or unique files.
+        I/O/import deletion failures are logged and suppressed; unindexed files
+        and the cache directory remain. Shared indexed paths may be attempted
+        more than once.
+        """
         count = len(self._index)
         for cache_file in self._index.values():
             try:
@@ -433,21 +562,41 @@ class HARReplayer:
 
     @classmethod
     def from_file(cls, path: Path) -> HARReplayer:
+        """Load ``path`` with HARLog.load and return an indexed replayer.
+
+        Gzip is selected by the .gz suffix. Load/parse errors propagate.
+        Duplicate method/URL pairs resolve to the last entry in the loaded log.
+        """
         har_log = HARLog.load(path)
         return cls(har_log)
 
     def get_response(self, method: str, url: str) -> Optional[HARResponse]:
+        """Return the indexed response for exact ``method``/``url``, or None.
+
+        The response is the original mutable object, not a copy. This is an
+        in-memory lookup only; it neither sends requests nor advances playback.
+        """
         key = f"{method}:{url}"
         entry = self._index.get(key)
         return entry.response if entry else None
 
     def get_response_body(self, method: str, url: str) -> Optional[str]:
+        """Return stored content text for exact ``method``/``url``, or None.
+
+        Missing responses/content/text return None; an existing empty text stays
+        empty. HAR content encodings, including base64, are not decoded.
+        """
         response = self.get_response(method, url)
         if response and response.content:
             return response.content.get("text")
         return None
 
     def has_entry(self, method: str, url: str) -> bool:
+        """Return whether the initial index contains exact ``method``/``url``.
+
+        Matching is case-sensitive and does not normalize query strings. Later
+        changes to the underlying log do not automatically rebuild this index.
+        """
         return f"{method}:{url}" in self._index
 
 
@@ -459,6 +608,18 @@ def record_api_call(
     request_body: Optional[str] = None,
     elapsed_ms: float = 0,
 ) -> HAREntry:
+    """Return one HAR transaction without sending a request or writing a file.
+
+    ``method``/``url`` identify the request; response_status and response_body
+    supply its outcome. Optional request_body and elapsed_ms record text and
+    duration. Status text is OK below 400 and Error otherwise; bodies are
+    JSON-labelled and sizes count characters, as in HARRecorder.
+
+    Example:
+        >>> entry = record_api_call("GET", "/health", 200, '{"ok":true}', elapsed_ms=2)
+        >>> (entry.response.status, entry.timings.wait)
+        (200, 2)
+    """
     recorder = HARRecorder()
     return recorder.record_complete_transaction(
         method=method,
@@ -472,6 +633,15 @@ def record_api_call(
 
 
 def create_audit_snapshot(audit_id: str, entries: list[HAREntry], output_dir: Path) -> Path:
+    """Write a compressed HAR snapshot for ``entries`` under ``output_dir``.
+
+    ``audit_id`` is interpolated verbatim into audit-{id}.har.gz and the log
+    comment; callers must supply an appropriate filename component. The directory
+    must already exist. Existing output is overwritten and save/JSON failures
+    propagate. Return the constructed audit-{id}.har.gz path, but note the current
+    save implementation replaces its .gz suffix with .har.gz: the actual file is
+    audit-{id}.har.har.gz. The returned path therefore differs from the saved file.
+    """
     har_log = HARLog(
         creator={"name": "Codex Audit Snapshot", "version": "1.0.0"},
         comment=f"Audit snapshot: {audit_id}",

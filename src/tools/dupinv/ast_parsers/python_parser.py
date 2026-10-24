@@ -77,7 +77,7 @@ class PythonASTParser:
 
     def _extract_function(
         self,
-        node: ast.FunctionDef,
+        node: ast.FunctionDef | ast.AsyncFunctionDef,
         file_path: str,
         class_name: Optional[str] = None,
     ) -> Optional[FunctionSignature]:
@@ -140,7 +140,7 @@ class PythonASTParser:
         ast_str = ast.dump(node, annotate_fields=False, include_attributes=False)
         return hashlib.sha256(ast_str.encode()).hexdigest()[:16]
 
-    def _compute_body_hash(self, node: ast.FunctionDef) -> str:
+    def _compute_body_hash(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> str:
         """
         Compute hash of function body only.
 

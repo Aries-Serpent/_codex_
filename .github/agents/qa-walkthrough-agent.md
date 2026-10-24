@@ -53,8 +53,8 @@ See `.codex/docs/MCP_WORKFLOW_RECIPES.md` for templates.
 - Produce a conflict matrix between legacy and modern modules.
 - Verify critical security and data integrity paths.
 - Track coverage gaps and propose test additions to reach 70%+ and 100% targets.
-- Log all actions to `.codex/action_log.ndjson`, `.codex/change_log.md`, `.codex/results.md`.
-- Update cognitive brain status with phase completion details.
+- Persist logs and cognitive status only when authorized; otherwise return
+  findings directly without shared-state writes.
 
 ## Architecture Diagram
 
@@ -193,10 +193,10 @@ capability_registry.json with current repository metrics.
 ## AI Agency Policy Compliance
 
 The qa-walkthrough-agent follows all AI Agency Policy requirements:
-- ✅ Complete all tasks until completion
-- ✅ Address all issues found (including out-of-scope)
-- ✅ Update cognitive brain status
-- ✅ Log all actions
+- ✅ Complete the authorized objective or report a precise blocker
+- ✅ Fix relevant issues; report other findings with evidence and owner/mitigation
+- ✅ Update shared status only when authorized and relevant
+- ✅ Record actual evidence without inventing execution
 - ✅ Follow PDA loop (Plan → Do → Assess)
 - ✅ Leave codebase better than found
 
@@ -469,7 +469,10 @@ def run_batch(batch_id: int) -> dict:
 
 ## 📦 Artifact Sourcing
 
-The agent **must** collect CI artifacts from the last 5 workflow runs before producing its report.
+Collect available artifacts from recent, relevant completed workflow runs when
+CI evidence is part of the authorized walkthrough. Five is an example lookback,
+not a minimum required to report local/read-only findings. State unavailable
+artifacts and inspection limits rather than inventing results.
 
 ### Artifact Collection Protocol
 
@@ -631,7 +634,9 @@ assignees: []
 
 ### Explicit TopologyManager Invocations
 
-The agent **must** call `TopologyManager.register_scan_result()` after each batch:
+When topology persistence is authorized and the integration is available, record
+actual results with `TopologyManager.register_scan_result()`. For read-only work,
+return the findings without writing shared topology state:
 
 ```python
 from scripts.cognitive.topology_manager import TopologyManager
@@ -748,7 +753,7 @@ sequenceDiagram
     participant Output
 
     User->>Agent: @copilot run qa-walkthrough
-    Agent->>CIArtifacts: list_workflow_run_artifacts (last 5 runs)
+    Agent->>CIArtifacts: list available relevant completed runs
     CIArtifacts-->>Agent: artifact list
     Agent->>CIArtifacts: download validation-log-*, test-results
     CIArtifacts-->>Agent: log content
@@ -770,12 +775,6 @@ sequenceDiagram
     Agent->>Output: append action_log.ndjson
     Agent-->>User: QA Walkthrough Complete — N issues, M patches ready
 ```
-
----
-
-**Enhanced Version**: 4.1.0
-**Enhancement Date**: 2026-03-25
-**New Capabilities**: Batched traversal, artifact sourcing, structured report, self-healing loop, enhanced cognitive integration, full activation commands, codebase architecture map, S228 QA findings
 
 ---
 

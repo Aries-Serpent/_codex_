@@ -348,7 +348,7 @@ class TestMetricsWriterEdgeCases:
 
         # JSON doesn't support NaN natively
         with pytest.raises((ValueError, TypeError)):
-            json.dumps(metrics)
+            json.dumps(metrics, allow_nan=False)
 
     def test_write_infinite_metrics(self):
         """Test writing infinite metrics"""
@@ -356,7 +356,7 @@ class TestMetricsWriterEdgeCases:
 
         # JSON doesn't support Infinity natively
         with pytest.raises((ValueError, TypeError)):
-            json.dumps(metrics)
+            json.dumps(metrics, allow_nan=False)
 
     def test_metric_value_types(self):
         """Test various metric value types"""

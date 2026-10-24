@@ -278,9 +278,9 @@ class CostAllocator:
                     title="Convert on-demand to reserved instances",
                     description="Reserve instances for predictable workloads",
                     potential_savings=savings,
-                    savings_percentage=(savings / cost.total_cost * 100)
-                    if cost.total_cost > 0
-                    else 0,
+                    savings_percentage=(
+                        (savings / cost.total_cost * 100) if cost.total_cost > 0 else 0
+                    ),
                     implementation_effort="medium",
                     priority="high",
                     estimated_implementation_time_hours=4.0,
@@ -297,9 +297,9 @@ class CostAllocator:
                     title="Migrate non-critical workloads to spot instances",
                     description="Use spot instances for fault-tolerant workloads",
                     potential_savings=spot_potential,
-                    savings_percentage=(spot_potential / cost.total_cost * 100)
-                    if cost.total_cost > 0
-                    else 0,
+                    savings_percentage=(
+                        (spot_potential / cost.total_cost * 100) if cost.total_cost > 0 else 0
+                    ),
                     implementation_effort="high",
                     priority="medium",
                     estimated_implementation_time_hours=8.0,
@@ -316,9 +316,9 @@ class CostAllocator:
                     title="Optimize storage tier and retention",
                     description="Move cold data to cheaper storage classes",
                     potential_savings=storage_savings,
-                    savings_percentage=(storage_savings / cost.total_cost * 100)
-                    if cost.total_cost > 0
-                    else 0,
+                    savings_percentage=(
+                        (storage_savings / cost.total_cost * 100) if cost.total_cost > 0 else 0
+                    ),
                     implementation_effort="low",
                     priority="medium",
                     estimated_implementation_time_hours=2.0,

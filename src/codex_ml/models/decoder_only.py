@@ -51,6 +51,19 @@ def _apply_rope(x: torch.Tensor, sin: torch.Tensor, cos: torch.Tensor) -> torch.
 
 
 class MultiHeadAttention(nn.Module):
+    """PyTorch self-attention with optional rotary transforms and KV caching.
+
+    Args:
+        cfg: ModelConfig controlling projections, head count, bias, and dropout.
+
+    Raises:
+        ValueError: If d_model is not divisible by n_heads.
+
+    PyTorch is required at import time. RoPE callers should use an even head
+    dimension; only divisibility is validated here. Masks and caches are supplied
+    by the caller, and dropout follows nn.Module training/evaluation mode.
+    """
+
     def __init__(self, cfg: ModelConfig) -> None:
         super().__init__()
         if cfg.d_model % cfg.n_heads != 0:
@@ -70,6 +83,25 @@ class MultiHeadAttention(nn.Module):
         sin: Optional[torch.Tensor] = None,
         cos: Optional[torch.Tensor] = None,
     ) -> tuple[torch.Tensor, Optional[tuple[torch.Tensor, torch.Tensor]]]:
+        """Project hidden states, attend over current/cached keys, and project back.
+
+        Args:
+            x: Tensor shaped (batch, current_length, d_model).
+            mask: Broadcastable attention mask over current queries and total keys;
+                zero entries are masked, nonzero entries are permitted.
+            past: Optional (key, value) tensors shaped
+                (batch, n_heads, past_length, head_dim), concatenated to new states.
+            use_cache: Whether to return the concatenated key/value tensors.
+            sin: Optional rotary sine cache for current positions.
+            cos: Matching cosine cache. Rotation occurs only when both are supplied;
+                this method slices from position zero, so callers handle offsets.
+
+        Returns:
+            Pair of output shaped like x and the KV cache, or None if caching is off.
+
+        Incompatible tensor shapes/devices raise PyTorch errors. An entirely masked
+        query can produce NaNs; no mask validation or attention_mask merging occurs.
+        """
         bsz, seq, _ = x.shape
         h = self.cfg.n_heads
         head_dim = self.cfg.d_model // h
@@ -95,6 +127,15 @@ class MultiHeadAttention(nn.Module):
 
 
 class FeedForward(nn.Module):
+    """PyTorch two-layer GELU projection used within a decoder block.
+
+    Args:
+        cfg: ModelConfig with hidden width int(ffn_mult * d_model), projection
+            bias, and dropout rate. PyTorch is required.
+
+    Dropout is applied after GELU and after the output projection in train mode.
+    """
+
     def __init__(self, cfg: ModelConfig) -> None:
         super().__init__()
         inner = int(cfg.ffn_mult * cfg.d_model)
@@ -104,6 +145,16 @@ class FeedForward(nn.Module):
         self.dropout = nn.Dropout(cfg.dropout)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Map x through the expanded GELU layer and back to model width.
+
+        Args:
+            x: Tensor with final dimension cfg.d_model; leading dimensions are kept.
+
+        Returns:
+            Tensor of the same shape, with train-mode dropout applied twice.
+
+        Incompatible final dimensions or devices raise PyTorch tensor errors.
+        """
         x = self.fc1(x)
         x = self.act(x)
         x = self.dropout(x)
@@ -112,6 +163,14 @@ class FeedForward(nn.Module):
 
 
 class Block(nn.Module):
+    """Pre-normalized decoder block with residual attention and GELU MLP.
+
+    Args:
+        cfg: ModelConfig configuring LayerNorm, MultiHeadAttention, and FeedForward.
+
+    Requires PyTorch and inherits attention's head-divisibility constraint.
+    """
+
     def __init__(self, cfg: ModelConfig) -> None:
         super().__init__()
         self.ln1 = nn.LayerNorm(cfg.d_model, eps=cfg.layer_norm_eps)
@@ -129,6 +188,23 @@ class Block(nn.Module):
         sin: Optional[torch.Tensor] = None,
         cos: Optional[torch.Tensor] = None,
     ) -> tuple[torch.Tensor, Optional[tuple[torch.Tensor, torch.Tensor]]]:
+        """Apply normalized attention and MLP, each with a residual connection.
+
+        Args:
+            x: Hidden states shaped (batch, current_length, d_model).
+            mask: Broadcastable zero-masked attention matrix for current queries
+                against all cached and current keys.
+            past: Optional per-head (key, value) cache from a preceding call.
+            use_cache: Whether to return updated key/value tensors.
+            sin: Optional full rotary sine cache, including cached positions.
+            cos: Matching cosine cache. Both are sliced using the past cache length
+                before passing current-position values to attention.
+
+        Returns:
+            Updated hidden states of x's shape and a KV pair, or None without caching.
+
+        Cache/mask shape or device mismatches propagate as PyTorch errors.
+        """
         offset = past[0].size(2) if past is not None else 0
         sin_slice = sin[:, :, offset : offset + x.size(1), :] if sin is not None else None
         cos_slice = cos[:, :, offset : offset + x.size(1), :] if cos is not None else None
@@ -178,6 +254,16 @@ class DecoderOnlyLM(nn.Module):
             init.normal_(module.weight, mean=0.0, std=self.cfg.init_std)
 
     def enable_gradient_checkpointing(self, enable: bool = True) -> None:
+        """Set whether training forwards use PyTorch activation checkpointing.
+
+        Args:
+            enable: Flag stored on the model, default True. Evaluation-mode forwards
+                do not checkpoint even when enabled.
+
+        Returns:
+            None. This does not disable KV caching or import torch.utils.checkpoint;
+            the checkpoint API must be available when a checkpointed forward runs.
+        """
         self.gradient_checkpointing = enable
 
     def _causal_mask(self, x: torch.Tensor, past_len: int = 0) -> torch.Tensor:
@@ -196,6 +282,29 @@ class DecoderOnlyLM(nn.Module):
         use_cache: bool = True,
         labels: Optional[torch.Tensor] = None,
     ) -> dict[str, Any]:
+        """Compute vocabulary logits, optional shifted loss, and optional KV caches.
+
+        Args:
+            input_ids: Integer tensor shaped (batch, current_length) on the model device.
+            attention_mask: Accepted for compatibility but unused; only the causal
+                mask is applied, so padding is not masked.
+            past_key_values: Optional list with one (key, value) pair per block,
+                shaped (batch, n_heads, past_length, head_dim).
+            use_cache: Return updated caches when True; past is still consumed when
+                False. No automatic cache detachment or invalidation is performed.
+            labels: Optional targets shaped like input_ids. Cross-entropy compares
+                logits[:, :-1] with labels[:, 1:], using PyTorch's default ignore index.
+
+        Returns:
+            Dictionary with logits shaped (batch, current_length, vocab_size), loss
+            (scalar tensor or None), and past_key_values (tuple of layer caches or
+            None). Train-mode gradient checkpointing follows the stored flag.
+
+        PyTorch shape, index, and device errors propagate. Cached rotary positions
+        are offset by past length and must fit max_seq_len; learned absolute
+        positions instead restart at zero each call, even when past is supplied.
+        A sequence shorter than two tokens has no shifted loss pairs.
+        """
         _bsz, seq = input_ids.shape
         device = input_ids.device
         pos = torch.arange(seq, device=device)

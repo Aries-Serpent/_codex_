@@ -36,7 +36,7 @@ class ExactDetector:
     def __init__(
         self,
         root_path: Path,
-        exclude_patterns: list[str] = None,
+        exclude_patterns: list[str] | None = None,
         respect_gitignore: bool = True,
     ):
         """

@@ -219,7 +219,7 @@ def _load_training_config(path: str) -> dict[str, Any]:
         return {}
     if not os.path.exists(path):
         raise FileNotFoundError(f"Training config not found: {path}")
-    if not _HAS_YAML:
+    if not _HAS_YAML or yaml is None:
         message = (
             f"PyYAML is not installed; cannot load training config from '{path}'. "
             "Proceeding with default training configuration values."
@@ -231,7 +231,12 @@ def _load_training_config(path: str) -> dict[str, Any]:
         )
         return {}
     with open(path, encoding="utf-8") as fh:
-        return yaml.safe_load(fh) or {}
+        config = yaml.safe_load(fh)
+    if config is None:
+        return {}
+    if not isinstance(config, dict):
+        raise ValueError("Training configuration must be a mapping")
+    return config
 
 
 def main_cli(
@@ -277,7 +282,7 @@ def _train_model_from_click(
             " 'pip install codex_ml[torch]'"
         )
         log_error("codex_ml.cli.train_model", message, f"config={config}")
-        if _HAS_CLICK:
+        if _HAS_CLICK and click is not None:
             click.echo(f"[error] {message}", err=True)
         raise SystemExit(1)
 
@@ -294,7 +299,7 @@ def _train_model_from_click(
     )
 
 
-if _HAS_CLICK:
+if _HAS_CLICK and click is not None:
 
     @click.group()
     def cli() -> None:
@@ -371,12 +376,7 @@ if __name__ == "__main__":  # pragma: no cover
     cli()
 
 
-try:
-    from .codex_cli import app as infer  # type: ignore[attr-defined]
-except (ImportError, AttributeError):  # pragma: no cover - optional CLI wiring
-    infer = cli
-
-
+infer = cli
 main = package_main
 
 __all__ = ["cli", "infer", "main", "main_cli"]

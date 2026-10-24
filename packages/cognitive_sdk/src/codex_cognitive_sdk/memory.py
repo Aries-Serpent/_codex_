@@ -4,18 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from types import MappingProxyType
 from typing import Mapping, Protocol, Sequence, runtime_checkable
 
-
-def _freeze_mapping(value: Mapping[str, object] | None) -> Mapping[str, object]:
-    """Return an immutable mapping snapshot for a frozen dataclass field."""
-
-    if value is None:
-        return MappingProxyType({})
-    if isinstance(value, MappingProxyType):
-        return value
-    return MappingProxyType(dict(value))
+from ._frozen import freeze_mapping as _freeze_mapping
 
 
 @dataclass(frozen=True, slots=True)

@@ -506,18 +506,19 @@ class TestPhase2_OptimizationMethods:
 
     def test_path_integral_optimization(self):
         """Test path integral optimization"""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        from agents.physics_orchestrator import (
+            ActionPath,
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
 
         orchestrator = PhysicsInspiredOrchestrator()
-        if hasattr(orchestrator, "optimize_path"):
-            try:
-                result = orchestrator.optimize_path({"x": 0.0}, {"x": 1.0})
-                assert result is not None, "result must be initialized"
-            except TypeError:
-                # Different signature - skip
-                assert orchestrator is not None, "orchestrator must be initialized"
-        else:
-            assert orchestrator is not None, "orchestrator must be initialized"
+        expensive = ActionPath(potential_energy=1000.0, confidence=1.0)
+        feasible = ActionPath(potential_energy=1.0, confidence=1.0)
+        for path in (expensive, feasible):
+            path.calculate_total_energy()
+        result = orchestrator.optimize_path([expensive, feasible], DecisionState())
+        assert result is feasible
 
     def test_simulated_annealing(self):
         """Test simulated annealing optimization"""

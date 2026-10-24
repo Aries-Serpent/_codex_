@@ -23,11 +23,26 @@ def _to_numpy(arr: Any) -> np.ndarray:
     return np.asarray(arr)
 
 
-def accuracy(preds: Any, labels: Any, ignore_index: int | None = None) -> float:
+def _classification_arrays(preds: Any, labels: Any) -> tuple[np.ndarray, np.ndarray]:
     p = _to_numpy(preds)
     y = _to_numpy(labels)
     if p.shape != y.shape:
         raise ValueError(f"Shape mismatch preds{p.shape} vs labels{y.shape}")
+    return p, y
+
+
+def accuracy(preds: Any, labels: Any, ignore_index: int | None = None) -> float:
+    """Return exact class-label accuracy without rounding or thresholding scores.
+
+    Array-like inputs and tensors must have identical shapes, otherwise a
+    ``ValueError`` is raised. Labels equal to ``ignore_index`` are excluded
+    from both counts. Empty or entirely ignored inputs return zero.
+
+    Example:
+        >>> accuracy([1, 0], [1, 1])
+        0.5
+    """
+    p, y = _classification_arrays(preds, labels)
     if ignore_index is not None:
         mask = y != ignore_index
         denom = max(1, int(mask.sum()))
@@ -37,8 +52,17 @@ def accuracy(preds: Any, labels: Any, ignore_index: int | None = None) -> float:
 
 
 def precision(preds: Any, labels: Any, positive: int = 1) -> float:
-    p = _to_numpy(preds).astype(int)
-    y = _to_numpy(labels).astype(int)
+    """Return precision for ``positive`` after converting inputs to integer labels.
+
+    Inputs must have identical shapes; a mismatch raises ``ValueError``.
+    No predicted positives yields zero rather than an undefined ratio.
+
+    Example:
+        >>> precision([1, 1, 0], [1, 0, 0])
+        0.5
+    """
+    p, y = _classification_arrays(preds, labels)
+    p, y = p.astype(int), y.astype(int)
     tp = int(((p == positive) & (y == positive)).sum())
     fp = int(((p == positive) & (y != positive)).sum())
     denom = max(1, tp + fp)
@@ -46,8 +70,17 @@ def precision(preds: Any, labels: Any, positive: int = 1) -> float:
 
 
 def recall(preds: Any, labels: Any, positive: int = 1) -> float:
-    p = _to_numpy(preds).astype(int)
-    y = _to_numpy(labels).astype(int)
+    """Return recall for ``positive`` after converting inputs to integer labels.
+
+    Inputs must have identical shapes; a mismatch raises ``ValueError``.
+    No positive target labels yields zero.
+
+    Example:
+        >>> recall([1, 0, 0], [1, 1, 0])
+        0.5
+    """
+    p, y = _classification_arrays(preds, labels)
+    p, y = p.astype(int), y.astype(int)
     tp = int(((p == positive) & (y == positive)).sum())
     fn = int(((p != positive) & (y == positive)).sum())
     denom = max(1, tp + fn)
@@ -55,6 +88,11 @@ def recall(preds: Any, labels: Any, positive: int = 1) -> float:
 
 
 def f1(preds: Any, labels: Any, positive: int = 1) -> float:
+    """Return the harmonic mean of precision and recall for integer class labels.
+
+    Shape validation and integer conversion match :func:`precision` and
+    :func:`recall`. The result is zero when both component scores are zero.
+    """
     prec = precision(preds, labels, positive=positive)
     rec = recall(preds, labels, positive=positive)
     denom = max(1e-12, (prec + rec))
@@ -62,14 +100,21 @@ def f1(preds: Any, labels: Any, positive: int = 1) -> float:
 
 
 class StreamingAccuracy(BaseMetric):
+    """Accumulate exact label matches across batches without retaining predictions.
+
+    Labels matching ``ignore_index`` are excluded. Invalid batch shapes raise
+    ``ValueError`` before changing accumulated counts.
+    """
+
     def __init__(self, ignore_index: int | None = None) -> None:
+        """Start empty counts, optionally excluding one target-label value."""
         self.ignore_index = ignore_index
         self._correct = 0
         self._total = 0
 
-    def update(self, preds: Any, labels: Any, **kwargs) -> None:
-        p = _to_numpy(preds)
-        y = _to_numpy(labels)
+    def update(self, preds: Any, labels: Any, **kwargs: object) -> None:
+        """Add a same-shaped prediction/target batch; accept unused metric keywords."""
+        p, y = _classification_arrays(preds, labels)
         if self.ignore_index is not None:
             mask = y != self.ignore_index
             self._correct += int(((p == y) & mask).sum())
@@ -79,10 +124,12 @@ class StreamingAccuracy(BaseMetric):
             self._total += int(y.size)
 
     def compute(self) -> float:
+        """Return accumulated accuracy, or zero if no nonignored labels were seen."""
         if self._total <= 0:
             return 0.0
         return float(self._correct / self._total)
 
     def reset(self) -> None:
+        """Clear both counters while retaining the configured ignored-label value."""
         self._correct = 0
         self._total = 0

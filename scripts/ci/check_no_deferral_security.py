@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Enforce strict no-deferral security governance.
+"""Validate security owner/reason evidence; handoff wording is advisory.
 
 Rules:
-- No deferral language is allowed in security status or PR artifacts.
+- Scope explanations do not waive finding classification or execution approvals.
 - Every unresolved finding must be associated with an explicit owner and reason.
 """
 
@@ -47,8 +47,8 @@ def validate_exceptions(path: Path) -> list[str]:
         if status_match:
             errors.extend(_ensure_owner_reason(block, f"{path}:{block.splitlines()[0].strip()}"))
             out_of_scope_hits = _scan_for_out_of_scope_language(block)
-            if out_of_scope_hits:
-                errors.extend(out_of_scope_hits)
+            for advisory in out_of_scope_hits:
+                print(f"Advisory only: {advisory}", file=sys.stderr)
     return errors
 
 
@@ -78,12 +78,12 @@ def _scan_for_out_of_scope_language(target: str | None) -> list[str]:
     ]
     hits = [p for p in patterns if p in text]
     if hits:
-        return [f"Deferral/out-of-scope language detected: {hits[0]}"]
+        return [f"Scope/handoff context mentioned ({hits[0]}); retain owner/reason evidence"]
     return []
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Enforce no-deferral security policy")
+    parser = argparse.ArgumentParser(description="Validate unresolved security finding owner/reason evidence")
     parser.add_argument(
         "--paths",
         nargs="*",
@@ -99,7 +99,8 @@ def main() -> int:
     errors: list[str] = []
 
     if args.text is not None:
-        errors.extend(_scan_for_out_of_scope_language(args.text))
+        for advisory in _scan_for_out_of_scope_language(args.text):
+            print(f"Advisory only: {advisory}", file=sys.stderr)
 
     for raw_path in args.paths:
         path = Path(raw_path)

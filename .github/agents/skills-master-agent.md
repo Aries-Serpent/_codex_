@@ -280,7 +280,7 @@ Step 3: DEFINE behaviour sections
   - Architecture (mermaid flowchart)
   - Primary capabilities with working code examples
   - Self-healing loop (max 5 iterations)
-  - 5-pass self-review checklist
+  - Risk-based review checklist
   - Activation command
 
 Step 4: REGISTER skill (optional)
@@ -398,15 +398,15 @@ Each session the Skills Master runs this full cycle:
 
 ---
 
-## 5-Pass Self-Review Checklist
+## Risk-based review checklist
 
-Before completing any task, the Skills Master runs 5 passes:
+Assess the relevant dimensions; do not require a fixed number of iterations.
 
-- [ ] **Pass 1 — Correctness:** Does the implementation match the spec (manifest schema, execution result schema, scoring formula)?
-- [ ] **Pass 2 — Policy compliance:** Is deferral language absent? Are all issues fixed (not deferred)?
-- [ ] **Pass 3 — Test coverage:** Are there tests for each new module? Do all 83+ skills tests pass?
-- [ ] **Pass 4 — AAIS quality:** Do new docs/agents score ≥ 0.80? Are citation fields present?
-- [ ] **Pass 5 — Telemetry:** Is a telemetry event emitted for each skill execution? Is the JSONL log written?
+- [ ] **Correctness:** Does the implementation match the relevant schema/spec?
+- [ ] **Policy:** Is work authorized, with other findings honestly documented?
+- [ ] **Tests:** Do relevant focused tests cover the change?
+- [ ] **Quality:** Are required citations and applicable quality checks present?
+- [ ] **Telemetry:** Is actual execution recorded when relevant and authorized?
 
 ---
 

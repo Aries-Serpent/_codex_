@@ -96,10 +96,33 @@ See [Quick start by profile](docs/QUICKSTART_BY_PROFILE.md) for task-based setup
 python3 -m venv .venv
 source .venv/bin/activate # or .venv\Scripts\activate on Windows
 # Install this checkout for repository development
-python -m pip install -e '.[full]'
+python -m pip install -e ./packages/contracts -e '.[full]'
 # Verify installation
 python -c "import codex; print(codex.__version__)"
 ```
+The dependency-free `codex-contracts` distribution is maintained in this
+repository. Install it alongside the checkout until it is available on your
+package index. The `uv` source mapping selects `packages/contracts` for repository
+development; published `codex-ml` metadata retains its real `codex-contracts`
+dependency.
+
+Keep the `dev` extra in a separate environment from `full`, `all`, and `train`:
+Semgrep requires the OpenTelemetry 1.37 series while those experiment-tracking
+profiles require a newer series through W&B. The `uv` conflict declarations
+make this incompatibility explicit rather than forcing an inconsistent install.
+The standalone test requirements include `pytest-asyncio`, which is required by
+the repository's pytest configuration.
+
+For Chronicle analysis, use the canonical module entry point:
+```bash
+python -m aries_serpent_core.cli chronicle --help
+python -m aries_serpent_core.cli chronicle cost-tips --help
+```
+Chronicle cost and analytics APIs live in
+`aries_serpent_core.logging.chronicle_cost` and
+`aries_serpent_core.logging.chronicle_analytics`; the legacy `codex.cli` facade
+preserves the canonical CLI exports.
+
 ### Offline Installation
 For air-gapped environments, use the bootstrap script:
 ```bash
@@ -157,7 +180,7 @@ sovereign, or zero-touch. The runtime policy also retains approval and escalatio
 
 Canonical evidence: [agent configuration](.codex/autonomous_agent.yaml),
 [runtime decision levels](scripts/autonomous_agent.py), and
-[agent variable expectations](agents/VARIABLE_EXPECTATIONS.md).
+[agent variable expectations](src/agents/VARIABLE_EXPECTATIONS.md).
 For detailed instructions, see: [Genesis Setup Guide](docs/admin/GENESIS_SETUP_GUIDE.md)
 ## CI/CD Automation System
 **Status:** Production Ready | **Coverage:** 37.5% Auto-Fix (3/8 patterns)
@@ -204,7 +227,7 @@ Autonomous prevention system that detects and auto-fixes critical CI failures:
 - **RP-002:** mypy Type Safety - Enforces baseline and prevents regressions
 - **RP-003:** Documentation Links - Detects and fixes broken links in markdown
 **Quick Links:**
-- **Prevention Guide:** [`.codex/CI_PATTERN_PREVENTION_GUIDE.md`](.codex/CI_PATTERN_PREVENTION_GUIDE.md)
+- **Historical prevention guide:** [CI pattern prevention](.codex/archive/legacy-root/CI_PATTERN_PREVENTION_GUIDE.md)
 - **Incident Archive:** [`docs/archive/README.md`](docs/archive/README.md) and the historical incident notes under `.codex/archive/` remain archival-only context.
 - **Issue #5067:** [CI AUTO-FIX Prevention Framework](https://github.com/Aries-Serpent/_codex_/issues/5067)
 - **PR #5068:** [Fix 3 Critical CI Failures](https://github.com/Aries-Serpent/_codex_/pull/5068)
@@ -252,8 +275,8 @@ Prevents coverage hangs with timeout protection and graceful degradation:
 - Detailed timeout diagnostics and recommendations
 **Documentation:**
 - Implementation guide: [`FOLLOWUP_IMPLEMENTATION_PROMPT.md`](.codex/reports/FOLLOWUP_IMPLEMENTATION_PROMPT.md)
-- Analysis: [`.codex/CI_FAILURE_PATTERN_ANALYSIS.md`](.codex/CI_FAILURE_PATTERN_ANALYSIS.md)
-- Plansets: [`.codex/CI_OPTIMIZATION_PLANSETS.md`](.codex/CI_OPTIMIZATION_PLANSETS.md)
+- Historical analysis: [CI failure patterns](.codex/archive/legacy-root/CI_FAILURE_PATTERN_ANALYSIS.md)
+- Historical plansets: [CI optimization](.codex/archive/legacy-root/CI_OPTIMIZATION_PLANSETS.md)
 ### 🆕 Phase 2: Core Improvements (2026-02-15)
 **Status:** Implemented | **Focus:** Progressive validation, telemetry-driven orchestration
 Building on Phase 1, these tools optimize CI resource usage and enable intelligent test selection:
@@ -288,8 +311,8 @@ Automated CI health monitoring (daily at 2 AM UTC):
 - **Proactive monitoring:** Catch degradation early
 **Documentation:**
 - Implementation log: [`docs/ci/IMPLEMENTATION_LOG.md`](docs/ci/IMPLEMENTATION_LOG.md) (Phase 1-2 complete)
-- Analysis foundation: [`.codex/CI_FAILURE_PATTERN_ANALYSIS.md`](.codex/CI_FAILURE_PATTERN_ANALYSIS.md)
-- Complete plansets: [`.codex/CI_OPTIMIZATION_PLANSETS.md`](.codex/CI_OPTIMIZATION_PLANSETS.md)
+- Historical analysis foundation: [CI failure patterns](.codex/archive/legacy-root/CI_FAILURE_PATTERN_ANALYSIS.md)
+- Historical plansets: [CI optimization](.codex/archive/legacy-root/CI_OPTIMIZATION_PLANSETS.md)
 ## Cognitive Codex Web Application
 **Status:** Integrated source exists in the repo; public Pages hosting is a deployment artifact and must be verified separately from the active source tree.
 **Source of truth:** `cognitive_app/` and its integration notes in the repo; the GitHub Pages site is not itself the authoritative implementation state.
@@ -419,7 +442,7 @@ Start here on every session:
 ## Codex Quick-Index (For AI Agents)
 **New to this repository as an AI agent (Copilot, ChatGPT, etc.)?**
 **Start here:** [docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md) and [docs/REPOSITORY_MAP.md](docs/REPOSITORY_MAP.md) for current repo and agent guidance.
-**Tokenized Workflows:** [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md) Deterministic navigation paths
+**Tokenized Workflows:** [src/agents/TOKENIZED_WORKFLOWS.md](src/agents/TOKENIZED_WORKFLOWS.md) Deterministic navigation paths
 **Machine index:** [.codex/codex_index.yaml](.codex/codex_index.yaml) Primary files, priorities, orchestration map
 **Continuation:** [AGENT_CONTINUATION_PROMPT.md](docs/plans/AGENT_CONTINUATION_PROMPT.md) Resume protocol for multi-step tasks
 **agent Interface:** Generate with `python -m scripts.space_traversal.audit_runner agent-interface`
@@ -446,7 +469,7 @@ navigator.execute('AUDIT_EXEC') # Run full audit pipeline
 navigator.execute('DOC_GEN') # Generate documentation
 ```
 **Quick Access Tokens:** `audit`, `decide`, `docs`, `organize`, `review`, `heal`
-See [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md) for complete workflow catalog.
+See [src/agents/TOKENIZED_WORKFLOWS.md](src/agents/TOKENIZED_WORKFLOWS.md) for complete workflow catalog.
 ### ChatGPT 5.1 agent Mode
 Generate an intuitive control interface for AI agents:
 ```bash
@@ -628,9 +651,9 @@ python -m http.server -d artifacts/docs/api 8000
 ```
 ### New to `_codex_`? **Start here**: [Role-based onboarding](docs/onboarding/README.md)
 ### Quick Links - Status & Validation
-- **Status Update Generator**: [tools/generate_status_update.py](tools/generate_status_update.py) - Automated JSON status report generator
+- **Status Update Generator**: [src/tools/generate_status_update.py](src/tools/generate_status_update.py) - Automated JSON status report generator
 - **Status Update Schema**: [schemas/codex_status_update.schema.json](schemas/codex_status_update.schema.json) - JSON Schema v1.2
-- **Status Update Guide**: [tools/README_status_update.md](tools/README_status_update.md) - Usage and integration guide
+- **Status Update Guide**: [src/tools/README_status_update.md](src/tools/README_status_update.md) - Usage and integration guide
 - **Status Template**: [codex_status_template_v1.2.md](docs/templates/status/codex_status_template_v1.2.md)
 - **Status Schema (JSON)**: [codex_status_template.schema_v1.2.json](docs/templates/status/codex_status_template.schema_v1.2.json)
 - **Authoring (Quickstart)**: [authoring_quickstart_v1.2.md](docs/templates/status/authoring_quickstart_v1.2.md)
@@ -692,7 +715,7 @@ Generate a comprehensive status update audit report for the Codex repository:
 codex-status-audit --generate
 # Output: .codex/status/_codex_status_update-YYYY-MM-DD.json
 # Or use the direct script
-python tools/generate_status_update.py
+python src/tools/generate_status_update.py
 # Full audit and report (legacy)
 codex-status-audit
 # Quick regeneration with existing artifacts
@@ -709,7 +732,7 @@ The new JSON-based status update generator provides:
 - Security assessment
 - Schema validation (v1.2)
 
-See **[tools/README_status_update.md](tools/README_status_update.md)** for the new generator documentation.
+See **[src/tools/README_status_update.md](src/tools/README_status_update.md)** for the new generator documentation.
 See **[docs/cli/status_audit.md](docs/cli/status_audit.md)** for legacy audit tool usage.
 
 ## Candidate Selection (local-only)

@@ -596,7 +596,9 @@ def cmd_ff(
     typer.echo(f"  ✅ Allowed  ({len(plan.allowed):>3}): " + (", ".join(plan.allowed[:5]) or "—"))
     if len(plan.allowed) > 5:
         typer.echo(f"               … and {len(plan.allowed) - 5} more")
-    typer.echo(f"  ⏭️  Excluded ({len(plan.excluded):>3}): " + (", ".join(plan.excluded[:3]) or "—"))
+    typer.echo(
+        f"  ⏭️  Excluded ({len(plan.excluded):>3}): " + (", ".join(plan.excluded[:3]) or "—")
+    )
     typer.echo(f"  🚫 Denied   ({len(plan.denied):>3}): " + (", ".join(plan.denied) or "—"))
     typer.echo(f"{'─' * 60}\n")
 

@@ -1,8 +1,9 @@
 """Exponential backoff retry logic for the Codex platform.
 
-Provides a configurable retry decorator / callable wrapper with full jitter
-exponential backoff, suitable for wrapping unreliable external HTTP / service
-calls.
+Provides a configurable decorator for synchronous callables, with capped
+exponential delays plus additive uniform jitter. This is not full jitter
+(which would randomize the entire delay). Calls block the current thread
+during ``time.sleep``; coroutine failures are not awaited or retried.
 
 Public API
 ----------
@@ -10,23 +11,19 @@ Public API
 * :exc:`RetryExhausted` — raised when all retry attempts are exhausted;
   the last exception is chained as ``__cause__``.
 
-Quick start::
+No-network example with zero-delay retries::
 
-    from aries_serpent_core.resilience.retry import retry_with_backoff, RetryExhausted
+    from aries_serpent_core.resilience.retry import RetryExhausted, retry_with_backoff
 
-    # --- Decorator usage ---
-    @retry_with_backoff(max_retries=4, base_delay=0.5)
-    def call_external_api() -> dict:
-        return requests.get("https://api.example.com/data").json()
+    @retry_with_backoff(max_retries=2, base_delay=0, jitter=0, exceptions=(OSError,))
+    def unavailable():
+        raise OSError("service unavailable")
 
-    # --- Direct wrapper ---
-    result = retry_with_backoff(max_retries=3)(my_func)(arg1, arg2)
-
-    # --- Catching exhaustion ---
     try:
-        call_external_api()
+        unavailable()
     except RetryExhausted as exc:
-        logger.error("All retries failed: %s", exc.__cause__)
+        assert exc.attempts == 3  # initial call plus two retries
+        assert isinstance(exc.__cause__, OSError)
 """
 
 from __future__ import annotations
@@ -35,13 +32,14 @@ import functools
 import random
 import time
 from collections.abc import Callable
-from typing import Any, TypeVar
+from typing import ParamSpec, TypeVar
 
 __all__ = ["RetryExhausted", "retry_with_backoff"]
 
 from aries_serpent_core.logging.structured_logger import logger
 
-F = TypeVar("F", bound=Callable[..., Any])
+P = ParamSpec("P")
+R = TypeVar("R")
 
 
 class RetryExhausted(Exception):
@@ -70,10 +68,10 @@ def retry_with_backoff(
     max_delay: float = 60.0,
     jitter: float = 0.1,
     exceptions: tuple[type[BaseException], ...] = (Exception,),
-) -> Callable[[F], F]:
+) -> Callable[[Callable[P, R]], Callable[P, R]]:
     """Decorator factory that wraps a callable with exponential backoff retry.
 
-    The delay before attempt *n* (0-indexed) is::
+    The delay after failed attempt *n* (0-indexed), if a retry remains, is::
 
         delay = min(base_delay * 2**n + random.uniform(0, jitter), max_delay)
 
@@ -88,7 +86,16 @@ def retry_with_backoff(
             exception NOT in this tuple propagates immediately.
 
     Returns:
-        A decorator that wraps a callable with the retry logic.
+        A decorator that forwards arguments and returns the first successful
+        result, preserving the wrapped function's metadata.
+
+    Timing:
+        With ``max_retries=0``, the callable is still invoked once and a
+        matching failure becomes ``RetryExhausted`` without sleeping.
+        There is no sleep after the final failure. Supply nonnegative retry
+        counts and delays; the factory does not validate these values.
+        This synchronous wrapper does not catch failures during later
+        iteration of a generator or execution of a returned coroutine.
 
     Raises:
         RetryExhausted: After all retries are exhausted.  The last raised
@@ -96,19 +103,16 @@ def retry_with_backoff(
         Exception: Any exception type not listed in *exceptions* propagates
             without retrying.
 
-    Examples::
+    Direct wrapping also uses the returned decorator::
 
-        @retry_with_backoff(max_retries=3, base_delay=0.5)
-        def fetch() -> str:
-            return urllib.request.urlopen("https://example.com").read()
-
-        # Use as a direct wrapper (no decoration):
-        result = retry_with_backoff(max_retries=2)(some_func)(arg)
+        parse = retry_with_backoff(max_retries=0, exceptions=(OSError,))(int)
+        assert parse("42") == 42
+        # parse("invalid") raises ValueError immediately, without retrying.
     """
 
-    def decorator(func: F) -> F:
+    def decorator(func: Callable[P, R]) -> Callable[P, R]:
         @functools.wraps(func)
-        def wrapper(*args: Any, **kwargs: Any) -> Any:
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
             last_exc: BaseException | None = None
             total_attempts = max_retries + 1  # initial call + retries
             func_name = getattr(func, "__qualname__", None) or repr(func)
@@ -148,6 +152,6 @@ def retry_with_backoff(
                 attempts=total_attempts,
             ) from last_exc
 
-        return wrapper  # type: ignore[VarArg(Any),KwArg(Any),unused-ignore,VarArg(Any), KwArg(Any)]
+        return wrapper
 
     return decorator

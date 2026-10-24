@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import os
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from openai.types.chat import ChatCompletionMessageParam
 
 from .base_adapter import BaseGenerationProvider, GenerationRequest, GenerationResponse
 
@@ -52,7 +55,7 @@ class OpenAICompatibleAdapter(BaseGenerationProvider):
 
             self._client = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
-        messages = []
+        messages: list[ChatCompletionMessageParam] = []
         if request.system_prompt:
             messages.append({"role": "system", "content": request.system_prompt})
         messages.append({"role": "user", "content": request.prompt})

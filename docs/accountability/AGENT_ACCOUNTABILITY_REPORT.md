@@ -1,3 +1,250 @@
+## Continuation: 2026-10-24 — Isolated Phase 2 acceptance and evidence reconciliation
+
+**Status:** Phase 2 remains incomplete. This entry supersedes only the current-state
+claims below: historical frozen runs are interrupted, not active processes or
+agents to resume. No complete-suite or repository-wide coverage result is claimed.
+
+**Baseline and preservation:** Work continues on `copilot/fix-review-comments`
+from session-entry commit `aa5bfd235038411bd4e54354124dcacb890b5eaf`; immutable
+validation baseline is `3a455fd0667ddd9b30449ce7d6b023d2695a79c2`.
+PR #5708 remains on its separate branch at `80953c9ab4eb2b8e281b9936bce15eec5fd6105e`.
+The current branch already retains the LFS/DP/logical-indentation review fixes;
+no other branch was changed. The initial progress tool committed pre-existing
+startup timestamp bytes; the patch restores the session-entry committed packet
+and the original entry bytes are retained for restoration as uncommitted work.
+
+**Execution lanes:** `phase2-chronicle` (CI Auto-Healer) owns the CLI scope
+correction and its regressions. `phase2-suite-triage` (Test Pattern Guardian)
+owns external collection/exclusion and bounded-shard evidence.
+`phase2-historical-reconcile` (Session Analysis) owns historical failure
+reconciliation and reachable incomplete-module disposition. `phase2-review`
+independently reviewed the scoped Chronicle correction and found no significant
+issues. The coordinator owns checkpoint integration; these are actual invocations,
+not evidence of hosted agent activation.
+
+**Evidence and limits:** Disposable snapshots and logs/JUnit/coverage are under
+`/tmp/codex-phase2-20261024/`, not the primary checkout. The existing Python 3.12.10
+environment is inventoried, not freshly lock-resolved; no dependencies were
+installed. Because `git archive` omits exported tests, the baseline was completed
+with the tracked test tree, its immutable baseline regression-file blob, and
+SHA-256 hashes for 3,418 tracked test files.
+
+Historical commit `e15df253c7f0facc2bbeda1e552ada1f0e050360` was fetched without
+changing branches. Recovery retained 32 exact Git payloads (9,948,275 bytes),
+including 24 selected JUnit files, with a SHA-256 provenance manifest. They
+describe incomplete observations and unmatched environments, not fresh
+acceptance. The original 386-failure inventory was not recovered in the bounded
+search; 243 overlapping failure/error records from later XML are not a substitute.
+
+Baseline `ruff check src` passes. Baseline `black --check src` exits 1:
+`src/codex_ml/models/registry.py` would be reformatted and 1,973 files are unchanged.
+This pre-existing formatting finding is not repaired as part of the Chronicle
+patch. Global typing, documentation, coverage and security gates remain open.
+Scoped Chronicle mypy reports 21 errors, identical to baseline after line-number
+normalization. Supplemental Bandit reports the same eight low-severity
+subprocess/import findings before and after; none are on the normalization patch.
+PR #5708 Validation run `40070032176` remains `action_required` with zero jobs;
+current-branch PR #5709 Validation run `40072734660` at `26c4d0ba` also requires
+approval, has zero jobs and no failed-job logs. Its review-thread query returns
+zero threads. Neither observation establishes passing CI or validates later commits;
+no approval, retry, dispatch, workflow modification, tag, release or publication
+was performed.
+
+**Continuation checkpoint:** `.codex/checkpoints/pypi-phase2-triage.json#/execution_2026_10_24`
+records exact provenance and gate status; `pypi-code-complete.json` remains
+incomplete. External artifacts are session-local and need an authorized retention
+channel before runner cleanup.
+
+**Focused acceptance:** The exact campaign/cost/orchestration/compatibility quartet
+passed 93 tests with zero failures, errors or skips (exit 0) in the Chronicle
+snapshot. The two-file overlay hashes and command/JUnit metadata are retained in
+the external Chronicle evidence directory. This closes only the focused gate,
+not complete-suite, fresh-environment or repository-wide coverage acceptance.
+
+**Related consumers:** The initial shard passed 18 tests and failed two, both
+reproduced on baseline. The simple training CLI case is blocked by absent real
+Torch; the logging viewer emits logger-prefixed JSON that cannot be parsed.
+The CI Auto-Healer repaired the viewer by writing raw JSON to stdout and validated
+all 10 viewer regressions. The expanded consumer shard now passes 26 and fails
+one (missing Torch), with no skips. Viewer Ruff/Black/isort/compile/mypy pass.
+Independent `phase2-viewer-review` found no significant issues; the reviewed
+diff hash is retained in the checkpoint. The dependency-blocked failure is not
+hidden by a skip or counted as acceptance.
+
+**Bounded triage:** The normalization/DP/validator/memory cohort passes all 42
+tests (exit 0). Initial missing-test and missing-workflow failures were snapshot
+omissions, superseded after supplying hashed fixtures, not production regressions.
+Static inventory covers 2,969 test modules and 43 conftests; a 308-path declared
+exclusion union is not proof of effective runtime omissions. The complete intended
+suite/shard manifest and pytest-time snapshot-only import provenance remain open.
+Repeated and overlapping test counts are not summed.
+
+**Security disposition:** CodeQL on code commit
+`e5b7af7d34971fafb62e2573b43904e971eb7835` skipped analysis because the Python
+database is too large. The zero-alert header is not a security pass. Secret
+scanning passed before that commit; security maintainers must complete supported
+analysis before declaring the global gate satisfied.
+
+**Bounded incomplete-module audit:** Chronicle strategy hooks are intentional
+interfaces with concrete implementations. Existing reachable WorkflowNavigator
+`uses` steps report success without dispatch; workflow maintainers should implement
+dispatch or explicitly label simulation in separate work. The historical
+zero-round raises assertion conflicts with graceful source behavior; its test
+owner must reproduce and reconcile it, not revert the implementation blindly.
+Neither static observation is claimed as a fresh suite failure.
+
+**Time coordination:** `phase2-time-monitor` provides read-only wrapup alerts
+and a continuation-prompt reminder based on the user's estimate of 15/60 minutes
+used, not a claim about a platform-enforced deadline.
+
+---
+
+## Continuation: 2026-10-22 — Clean-suite root-cause remediation
+
+**Status:** Active Phase 2 implementation; no completion claim. The clean, single-process full-suite run remains active on a frozen snapshot with repository-source coverage requested and no outer timeout. Round-3 changes are deliberately not injected into that running checkout. Phase 3 remains gated and Phase 4 has not started; no commit, push, release, publication or remote mutation occurred.
+
+**Parallel ownership:** Test Pattern Guardian lanes repaired supported ML and rotation contracts and then followed the training failures to their actual provider imports. Mypy Manager lanes removed 74 diagnostics in three tool modules and 86 across 18 agent modules; a five-module core CLI/config lane is active. Unified Documentation Agent added 177 substantive docstrings across eight ML modules with executable AST equivalence; a second bounded documentation lane is active. GitHub Guru Agent decomposed the MCP facade preserving all 38 original signatures and is validating cross-module test-state restoration. Parent work owns clock/memory state, ingest isolation, metrics, sanitizer errors and remaining concrete failure families.
+
+**Verified root repairs:** Invalid injected clocks now fail before mutating global state; tests restore clock lifecycle. Pattern replacement cleans stale and duplicate tag-index entries. Ingest allocates unique snapshot directories atomically at identical timestamps and preserves existing explicit-ID content. Correct canonical mocking prevents accidental real Git operations. Sparse files and a lightweight repeated mock retain the exact size/count thresholds without large allocations. Training initialization uses actual packaged dataset/collate and DP providers; real optimizer steps and parameter updates are asserted. Classification metrics reject broadcastable shape mismatches before counter updates. Malformed optional YAML retains default redaction and emits a warning without policy contents. Variable-manager tests use isolated synthetic environment values, canonical patch targets and fully mocked transports.
+
+**Separate acceptance cohorts:** Parent ten-file integration passed 548 cases with 26 existing skips. Ingest/comparator/filesystem plus existing ingest suites passed 234 without skips; metrics/data/JSON/sanitizer modules passed 252; variable-manager transport/isolation tests passed 27. Independent ML contract files passed 154, catalog/pattern files 167, dependent training/helper checks 188, rotation 73, tool typing checks 21, and agent-module checks 347 with 16 skips. These scopes overlap and are not summed. None measured repository-wide coverage.
+
+**Remaining measurement:** The last completed global scan remains 1,263 mypy errors in 339 files, and the last defined global public-API docstring inventory remains 79.195618%; both predate these scoped changes. A fresh complete scan, unchanged-denominator documentation inventory, configured-hook integration and full-suite terminal/coverage artifacts are still required. The original MCP class-size failure has a passing scoped refactor/hook result, not yet an all-files hook rerun. Registry-only `codex-contracts` resolution, occupied public version 0.3.0, and incomplete security/legal evidence still block publication readiness.
+
+**Recovery evidence:** A selected ingest attempt was killed with exit 137 before producing XML. Removing large fixture allocations and nested mock proliferation produced the complete 234-pass rerun; the interrupted log is retained, not treated as a completed result.
+
+**Continuation checkpoint:** `.codex/checkpoints/pypi-phase2-triage.json#/execution_round3` records exact cohort artifacts, active agent IDs, the immutable clean-run command and the next global gates. `.codex/checkpoints/pypi-code-complete.json` remains explicitly incomplete. Session `files/pypi-resume/round3-*` holds commands, preimage hashes, XML, diagnostics and documentation AST checks.
+
+---
+
+## Session: 2026-10-22 — Resumed PyPI Phase 2 validation
+
+**Objective:** Continue from the preserved Chronicle/package work, refresh stale evidence, and measure global gates before release preparation.
+
+**Status:** Phase 2 remains incomplete. Phase 3 is gated, and Phase 4 has not started. Existing dirty work is preserved; there has been no commit, push, tag, release, registry upload, workflow activation or administrative mutation.
+
+**Parallel and dependent lanes:** Mypy Manager Agents own independent `codex_ml` and `tools` batches; Doc Freshness Checker owns substantive logging/resilience documentation and the subsequent global inventory; a dependency lane owns clean builds/installations and the subsequent runtime audit. Test Pattern Guardian repairs stale security-core test contracts. Parent work handles Chronicle, transaction concurrency, training configuration, import/cwd/logger isolation, decision semantics and RBAC. Follow-up validation uses each lane's retained context; cross-lane integration is separate from individual acceptance.
+
+**Verified progress:**
+1. Refreshed both Phase 2 checkpoints before further source edits. Retained the historical 2,837-pass/15-failure/173-skip broad evidence, mapped later targeted repairs and corrected the obsolete BrainClient next-step claim.
+2. Fresh isolated Chronicle/prior-failure-cohort execution exposed an additional concurrent-write lock failure. Serializing complete per-instance SQLite connection/transaction lifetimes fixes a deterministic before/after regression. The resulting run passed 365 tests with zero skips and 87.80% cost/analytics-only coverage, not repository-wide coverage.
+3. Both training engines now accept plain mappings and resolved OmegaConf mappings and reject invalid root, training, LoRA and reproducibility shapes. The related training/helper/lazy-CLI target passed 32 tests.
+4. Shared decision fixtures and assertions now follow the real score/action contract; escalation is a boolean without threshold changes. Decision/core/path files passed 283 tests. Import/edge-case/readiness checks passed 445 tests with three skips; logger/import/path isolation separately passed 63. These cohorts overlap and must not be summed.
+5. Custom RBAC checks now include live, scoped grants and explicit denials. All 109 selected RBAC tests pass, including expiration-boundary, cross-user/tenant/resource/action, denial-precedence and revoked-role regressions. Permission assertions compare effective authorization rather than raw wildcard-rule counts.
+6. Tools typing repairs removed 54 scoped diagnostics; its dependent target passed 68 tests. ML typing repairs removed 43 scoped diagnostics and fixed distinct model/data drift initialization plus failed artifact-directory hashing. Dependent ML repairs also resolved BF16 capability handling, CLI model forwarding, startup callback handling and Prometheus logging; all 182 selected tests passed without skips. The security-core test-contract lane passed 159 tests without changing production security behavior.
+7. Added 19 genuine public docstrings with unchanged executable AST. The defined global inventory still reports 9,688/12,233 documented symbols (79.195618%); module documentation is measured separately and does not close the public-API gate.
+8. Local contracts/root source/wheel builds, clean pip/uv wheelhouse installs, 49-package compatibility, six packaging tests, 23 installed-contract tests and five CLI help checks pass. Registry-only installation fails because `codex-contracts` is unavailable; existing public `codex-ml==0.3.0` artifacts have different metadata and cannot be overwritten.
+9. pip-audit checked 47 public runtime packages with no known vulnerabilities reported and no ignores. Two locally changed/unpublished distributions remain unauditable by registry identity; OSV DNS failed and Safety is absent. This is not full security completion.
+10. Final cross-lane integration passed 1,607 tests with six skips and zero failures/errors. The prior attempt exposed an unstable scalability measurement; equal-work independently warmed batches retain the original 2x bound and synthetic-clock regressions prove quadratic work is rejected. Five independent scalability-class reruns passed. Counts overlap the smaller cohorts above and are not added together; coverage was disabled for this integration run.
+
+**Global measurement:** The overall-unbounded, two-worker `pytest tests/ --cov=src --cov-fail-under=80` run terminated with exit 3/internal errors after 2,660.63 seconds. Its terminal summary reports 6,105 passed, 386 failed, 276 skipped, 50 xfailed, 56,209 errors and 21 rerun reports. JUnit reports 44,044 tests and 56,211 errors: setup/teardown errors are not disjoint test counts, and the two internal errors account for the terminal/JUnit difference. Broken root-logger mocking and deleted cwd caused large cascades; logger corruption also broke session-finish/worker bookkeeping. Later repairs were deliberately not injected into the frozen baseline. No coverage report or raw worker coverage data survived. A clean broad rerun remains necessary; none of these counts establishes full-suite success. Final sequential full-source mypy improved from 1,386 errors in 362 files to 1,263 in 339, still failed; no baseline was reset. Final repository Ruff and full-source Black passed. Configured hooks caught a resource-enum secret-keyword false positive; a narrowly justified inline allowlist corrected it and the recheck passed. Informational mypy hooks are not proof of a zero-error type gate.
+
+**Resource limit and recovery:** A full-source mypy attempt was killed with exit 137 while the full suite and integration ran concurrently. After the heavy suite released resources, the sequential retry completed with exit 1 and the 1,263-error result above. The interrupted attempt is retained as incomplete evidence, not a replacement diagnostic count.
+
+**Final configured hooks:** All 265 existing changed paths were checked in the disposable checkout. Verified scanner false positives for synthetic examples, illustrative keys and public resource/hash-format markers received narrow annotations, and the changed API example passed its doctest. All applicable hooks pass except the unsuppressed `SMELL-S001` finding at `src/aries_serpent_core/github/mcp_poster.py:78`: `GitHubMCPPoster` has 38 methods against a configured limit of 20. No architectural refactor or exclusion was introduced merely to force that gate green. The saved failure inventory contains all 386 broad-run call failures; 35 exact node IDs also pass in final selected integration, while unmatched/renamed tests still require root-cause classification.
+
+**Continuation:** The next test gate is a clean broad rerun using the validated logger/cwd/import repairs, not repetition of the broken frozen baseline. Use the saved per-worker records to classify remaining real call failures and validate root-cause shards; do not add overlapping counts. Continue the measured typing/documentation backlog and incomplete security/dependency/legal checks. Keep registry dependency publication and a later release-version decision explicit; do not create release-ready checkpoints or enter publication while these gates fail.
+
+**Evidence:** `.codex/checkpoints/pypi-phase2-triage.json#/continuation`, `.codex/checkpoints/pypi-code-complete.json`, and session `files/pypi-resume/` retain exact commands, XML/coverage, source inventories, failure recorder output and scanner limits.
+
+---
+
+## Session: 2026-10-22 — Evidence-backed agent restrictions remediation
+
+**Objective:** Remove unnecessary agent-side restrictions while preserving actual GitHub permissions, secrets handling, protected operations and genuine execution approvals.
+
+**Status:** Combined evidence review preceded implementation. Local policy/runtime acceptance passed 219 tests with zero failures, errors or skips. Final source, workflow and configured-hook results are recorded in the audit report; no hosted success or administrative grant is inferred.
+
+**Actions:**
+1. Ran independent Policy Coach Agent and GitHub Guru Agent lanes for instruction/profile enforcement, setup/LFS/runtime, and read-only platform evidence. Scanned all 661 agent-directory files programmatically, without claiming full manual review or verified hosted loading.
+2. Recorded 58 scoped GET outcomes and 19 official documentation sources. Distinguished accessible rules/environment metadata from denied classic protection, organization, Agents-store, hosted runner and firewall settings.
+3. Replaced contradictory startup, memory, delegation, scope, workflow-preparation, review-count and public-retrigger mandates in canonical and affected active sources. Wording-only checks are advisory; real security owner/reason and execution-approval checks remain.
+4. Corrected unsupported flag/checkbox/TTL authority claims and historical MCP/runtime inventories. Preserved `.codex/agent_context.json` rather than manufacturing a current snapshot.
+5. Implemented one supported setup job, consumed measured repository/build worker limits, and provided bounded targeted LFS materialization with explicit full opt-in and actionable required-asset errors. Real local Git LFS fixtures passed; authenticated GitHub transfers remain unverified.
+6. Made optional context and dependency gaps transparent, removed broad environment dumping, retained local evolution safeguards, and distinguished readable context artifacts from confirmed host prompt attachment.
+7. Validated in a disposable worktree containing the preserved PyPI changes. Normal repository pytest configuration passed all 219 selected cases, including actual security guards, direct/no-PR records, scorer/integration regressions and real local LFS behavior. Scoped mypy passed all 16 changed source modules without casts, ignores or baseline resets.
+
+**Evidence:** [Audit, blocker matrix and rollout](../../.codex/reports/AGENT_RESTRICTIONS_AUDIT_2026_10_22.md), [sanitized endpoint/source catalog](../../.codex/reports/agent-restrictions-evidence-2026-10-22.json), and [instruction/profile inventory](../../.codex/docs/AGENT_INSTRUCTION_INVENTORY.md).
+
+**Limits:** Local catalog validation reports 224 passing and 15 failing records; schema/runtime semantics and hosted loading must not be guessed merely to force a green catalog. Automatic setup still requires normal review into the default branch and subsequent hosted observation. No commit, push, PR mutation, tag, publication, workflow dispatch, merge, deployment or settings change was performed.
+
+**Prior-campaign continuity:** The earlier PyPI entry below records its initial 325-test cohort. Subsequent preserved work reached 700 passing tests, five skips and 86.08% selected-scope coverage; BrainClient, connection-lifetime, formatting and documentation-metrics repairs were verified. Global typing, repository-wide coverage/docstrings and standalone registry installation remain unsatisfied. The PyPI checkpoints are incomplete, not evidence of package publication readiness.
+
+### Agents Used
+- [x] `policy-coach-agent` — canonical/scoped guidance, profile inventory, wording checks and wrapup
+- [x] `github-guru-agent` — independent runtime/LFS and read-only platform evidence lanes
+
+---
+
+## Session: 2026-10-22 — Chronicle and PyPI Phase 2 triage
+
+**Objective:** Implement Chronicle repairs, isolate suite failures, and record evidence-based package-readiness gates.
+
+**Status:** Chronicle repairs and focused checks pass. Phase 2 remains blocked; no repository-wide all-green, publication, or release claim is made.
+
+**Actions:**
+1. Corrected portable Chronicle paths, legacy CLI exports and canonical module identity, typed retry forwarding, and missing agent exports. Added real SQLite analytics tests and strengthened compatibility assertions.
+2. Made optional ML backends lazy, preserved the existing inference CLI alias, and rejected non-mapping training configurations. Cold CLI startup no longer imports heavy training backends; existing five-second smoke-test thresholds were retained.
+3. Regenerated the invalid dependency lock using the resolver, added the local editable contracts source, and separated incompatible development/security and W&B extras. The contracts package remains a real runtime dependency.
+4. Corrected the existing publication workflow's expressions, distribution guards, validation permissions, and installed-interpreter verification. No workflow was created or activated, and nothing was uploaded.
+5. Replaced removed `pkg_resources` installation checks, corrected template test setup, repaired canonical autonomous-runner mock targets, and fixed the informational mypy hook's multiline shell command.
+6. Executed tests in disposable worktrees because the suite can mutate repository artifacts. An independent Test Pattern Guardian lane handled collection and test-maintenance work while Chronicle repairs proceeded.
+
+**Validation:**
+
+| Check | Result |
+| --- | --- |
+| Integrated focused regressions | 325 passed, five skipped |
+| Selected Chronicle/analytics/retry/legacy CLI coverage | 86.08%; not repository-wide coverage |
+| Autonomous-runner regressions | 17 passed |
+| Original collection-error cohort | 1,422 tests collected with zero collection errors |
+| Bounded broad suite | Five failed, 372 passed, 132 skipped; stopped at five failures |
+| `ruff check .` | Passed |
+| Black on 20 changed Python files | Passed |
+| Mypy on nine changed source modules | Passed |
+| `uv lock --check --python /tmp/pypi-venv/bin/python` | Passed; 386 packages resolved |
+| Editable installation with local contracts; `pip check` | Passed |
+| Unfiltered configured pre-commit on changed files | Failed at `doc-metrics-check`; remaining applicable hooks passed |
+
+**Unresolved readiness gates:**
+- The next broad-suite failure family is `BrainClient` authentication: elevated token resolution raises before no-token health requests reach their mocked HTTP transport. Authentication policy must remain explicit; neither skipping these tests nor weakening elevated-token requirements establishes a fix.
+- The broad suite was intentionally bounded and does not establish full-suite success or global coverage.
+- Full-source Black reports 82 files requiring formatting. Full-source mypy stops at the invalid `self-healing` package name; diagnostic exclusions also expose package-name/import ambiguity.
+- The source AST inventory documents 9,766 of 12,827 public-name functions/classes, or 76.14%; this heuristic inventory does not establish the requested 90% public API documentation threshold.
+- The documentation-metrics hook reports four stale inventory values, including two statements that describe counts as passing tests. Updating those numbers alone would not substantiate those claims.
+- Standalone editable installation cannot resolve the unpublished `codex-contracts` dependency; local co-installation is not proof of registry installation.
+
+**Evidence:** `.codex/checkpoints/pypi-phase2-triage.json` records commands, scopes, failure node IDs, and session-local logs. `.codex/checkpoints/pypi-code-complete.json` explicitly records `completed: false`. No tag, release, push, publication, or commit was performed.
+
+### Agents Used
+- [x] `Test Pattern Guardian` — isolated collection triage and test-maintenance repairs
+
+---
+
+## Session: 2026-10-21 — PR #5706 CI rescue remediation
+
+**Objective:** Resolve the named Fast Validation, Cognitive Pre-flight, and no-deferral check findings on PR #5706.
+
+**Status:** The reported setup-workflow whitespace is corrected and current-session evidence is recorded. The latest completed no-deferral / owner-reason run passed; hosted validation of the new commit is pending.
+
+**Actions:**
+1. Retrieved Actions logs for the failures on `f9e9400d3de86492a9c8aa1312294158dfc11cc7`. Fast Validation stopped at seven trailing-whitespace findings in `.github/workflows/copilot-setup-steps.yml`; Cognitive Pre-flight reported that this report was unchanged in the required commit.
+2. Removed the reported trailing whitespace, converted the performance instrumentation command to a YAML block scalar without changing its decoded contents, and updated the active and archived accountability reports, `CHANGELOG.md`, and `.codex/aftermath/pda_iterations.jsonl`.
+3. Checked Strict No-Deferral Security Gate run `39542960867`; both language and owner/reason checks passed, so no change to that gate was needed.
+
+**Validation:**
+- `bash scripts/ci/validate_setup_steps_yaml.sh` → all five setup-step checks passed.
+- `yamllint -c .yamllint.yml --strict -f parsable .github/workflows/copilot-setup-steps.yml` → passed.
+- `python scripts/ci/session_wrapup_autofix.py --check --pr-number 5706` → REQ-4, REQ-5, and REQ-14 passed.
+- `git diff --check` and PDA JSONL parsing → passed.
+
+### Agents Used
+- [x] `ci-triage-pipeline-agent`
+- [x] `ci-testing-agent`
+- [x] `ci-auto-healer-agent`
+
+---
+
 ## Session: 2026-10-12 — PR #5695 CI rescue remediation
 
 **Objective:** Investigate the CI rescue findings for commit `09972c66` and resolve reproducible failures in the current PR branch.
@@ -23771,5 +24018,27 @@ agent signatures and a direct meta-tensor regression run are absent.
 - [x] `general-purpose`
 - [x] `ci-testing-agent`
 - [x] `workflow-compliance-guardian`
+
+---
+## Continuation: 2026-10-22 — Fresh global measurements and auth/API integration
+
+**Status:** Phase 2 remains incomplete. Phase 3 is gated; Phase 4 has not started. All accumulated dirty changes are preserved. No commit, push, tag, release, publication, workflow activation or administrative mutation occurred.
+
+**Full-suite evidence:** The prior single-process clean run exited 137 without final coverage. Its recorder contains 10,624 passed calls, 294 failed calls, 209 skipped calls and 36 failed setup events; these are incremental, non-disjoint events, not terminal test counts. Its last completed node was the ingest directory-size boundary before a fixture constructing 10,001 nested mocks. Replacing nested mocks and large allocations without changing size/count limits produced a complete 234-pass ingest/comparator cohort. A new unbounded single-process run is active on an immutable 328-path integrated snapshot with `--cov=src`, explicit coverage storage and periodic saves every 500 calls. Partial raw data is not accepted coverage. Later core CLI/API changes are not injected into the running checkout.
+
+**Measured global gates:** A complete `mypy src/ --no-incremental` scan reports 1,055 errors in 323 files, checking 1,972 files; no baseline reset. Repository Ruff and full-source Black pass on that same snapshot. The unchanged direct-AST documentation rule reports 9,991/12,206 (81.853187%). The MCP refactor moved exactly 27 documented public methods into private mixins, outside that direct-class rule: explicit inherited-facade sensitivity is 10,018/12,233 (81.893240%). The fixed facade's 30 public methods are documented before and after; no improvement is attributed to denominator shrinkage. Both global type and documentation gates remain failed.
+
+**Dependent and separate acceptance:** The five-module core CLI/config follow-up now passes all original 123 combined cases and removes 39 scoped diagnostics. The second ML documentation batch adds 106 substantive docstrings with unchanged executable AST. Auth exceptions share exact identity through both legacy import orders; login/refresh catch their actual domain errors rather than unrelated connection exceptions. The original 48-case auth cohort passes. Repaired phase-7 login fields, successful token fixtures, distinct token purposes, actual schema/domain statuses and instance-level unexpected-error injection pass in a complete 245-case auth/API cohort, including new shared email-validation regressions. Tagged, subdomain and Unicode addresses remain supported; malformed dot addresses are rejected by both interfaces. MCP module isolation passes 132 cases. These cohorts overlap and are not summed.
+
+**Parallel ownership and continuation:** Mypy Manager lanes own FSDP/model utilities and three training engines; Unified Documentation Agent owns four live archive/common modules. Parent owns API/email and remaining concrete suite failures. Keep the running snapshot immutable, collect its terminal artifacts, integrate lanes into another disposable checkout, then repeat applicable hooks and global measurements. Registry `codex-contracts`, occupied public version, and incomplete security/legal evidence remain explicit release gates. Exact commands, artifacts, active lane IDs and scope limitations are recorded in `.codex/checkpoints/pypi-phase2-triage.json#/execution_round4`; `pypi-code-complete.json` remains incomplete.
+
+---
+## Session wrap-up: 2026-10-22 — Authorized save and current-branch push
+
+**Push outcome:** All accumulated work was committed locally, then remote dependency/manifest updates were merged without history rewriting. Canonical manifest integrity is verified; its matching baseline fingerprint and local scanner findings are preserved. GitHub rejected the push because this session's GitHub App lacks `workflows` permission for `.github/workflows/copilot-setup-steps.yml`. No remote success is claimed and no permission workaround was attempted. Resume in a workflow-write-authorized session or push the saved branch manually; the denial describes this session credential, not the user's own repository permissions.
+
+The user requested concluding this turn, saving all accumulated work and pushing commits to the current branch. Phase 2 remains incomplete; Phase 3 is gated and Phase 4 has not started. At wrap-up no full-suite pytest process remains; the latest snapshot has no exit marker or terminal report and its log stops near 20%, so it is interrupted with unknown exit status, not a completed run. Three round-4 agents failed with HTTP 402 monthly quota exhausted and zero completed turns; their intended typing/documentation work is not credited as done. Resume from the checkpoints' `execution_round4` evidence, retaining the measured global type/documentation blockers, registry dependency and release gates. Commit/push authorization does not authorize PyPI publication, tags, releases or deployment.
+
+**Wrap-up validation:** Repository Ruff, full-source Black (1,969 files) and `git diff --check` pass. Configured hooks ran against all 335 changed/new paths in the disposable integration checkout: workflow YAML/actionlint, Bandit, gitleaks, dependency and other applicable checks pass. Narrow annotations identify synthetic test credentials/payloads; the final detect-secrets and trailing-whitespace rechecks pass. Scanner findings/hashes and filters are preserved with only line references refreshed. Five unsuppressed AST class-size findings remain in ApprovalService, NumpyStub, PhysicsGuidedDeveloperOrchestrator, MentalMappingModel and UserStore (23–28 methods, limit 20); these are recorded rather than bypassed or falsely reported as green. The complete hook log is retained in session `files/pypi-resume/wrapup-precommit.log`.
 
 ---

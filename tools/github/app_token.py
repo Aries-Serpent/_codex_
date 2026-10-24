@@ -11,6 +11,7 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 from src.tools.github.app_token import *  # noqa: F401,F403
+from src.tools.github.app_token import main
 
 if __name__ == "__main__":  # pragma: no cover - CLI entrypoint
     raise SystemExit(main())

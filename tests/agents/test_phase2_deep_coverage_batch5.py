@@ -192,11 +192,12 @@ class TestPhase2_SelfHealing:
             actions = engine._suggest_remediation(issue)
             assert isinstance(actions, list)
 
-    def test_run_diagnostics_function(self):
+    def test_run_diagnostics_function(self, tmp_path):
         """Test standalone diagnostics function"""
         from agents.self_healing import run_diagnostics
 
-        result = run_diagnostics()
+        (tmp_path / "example.py").write_text("value = 1\n", encoding="utf-8")
+        result = run_diagnostics(repo_root=tmp_path)
         assert result is not None, "result must be initialized"
 
 

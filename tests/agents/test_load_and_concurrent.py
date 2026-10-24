@@ -13,6 +13,8 @@ import tempfile
 import threading
 import time
 from pathlib import Path
+from statistics import median
+from types import SimpleNamespace
 
 import pytest
 
@@ -35,9 +37,6 @@ class TestConcurrentMemoryAccess:
 
     def test_concurrent_memory_writes(self, temp_db):
         """Test multiple threads writing memories simultaneously."""
-        if not hasattr(AgentMemory, "__init__"):
-            pytest.skip("AgentMemory API not available")
-
         memory = AgentMemory(db_path=str(temp_db))
         errors = []
 
@@ -50,8 +49,7 @@ class TestConcurrentMemoryAccess:
                         content=f"Data from thread {thread_id}, iteration {i}",
                         context={"thread": thread_id, "iteration": i},
                     )
-                    if hasattr(memory, "add_memory"):
-                        memory.add_memory(entry)
+                    memory.add_memory(entry)
             except Exception as e:
                 errors.append(e)
 
@@ -67,6 +65,8 @@ class TestConcurrentMemoryAccess:
 
         # Should complete without errors
         assert len(errors) == 0, f"Errors occurred: {errors}"
+        assert all(not thread.is_alive() for thread in threads)
+        assert memory.get_memory_stats()["total_memories"] == 500
 
     def test_concurrent_memory_reads(self, temp_db):
         """Test multiple threads reading memories simultaneously."""
@@ -93,10 +93,9 @@ class TestConcurrentMemoryAccess:
             try:
                 for i in range(count):
                     memory_id = f"read_test_{i % 100}"
-                    if hasattr(memory, "get_memory"):
-                        result = memory.get_memory(memory_id)
-                        results.append((thread_id, result))
-            except (IOError, OSError) as e:
+                    result = memory.retrieve_memory(memory_id)
+                    results.append((thread_id, result))
+            except Exception as e:
                 errors.append(e)
 
         # Run 10 threads reading simultaneously
@@ -110,7 +109,9 @@ class TestConcurrentMemoryAccess:
             t.join(timeout=30)
 
         assert len(errors) == 0, "Errors must not be empty"
-        assert len(results) > 0, "Results must not be empty"
+        assert all(not thread.is_alive() for thread in threads)
+        assert len(results) == 500
+        assert all(entry is not None for _, entry in results)
 
     def test_concurrent_read_write_mix(self, temp_db):
         """Test concurrent reads and writes."""
@@ -438,21 +439,32 @@ class TestScalability:
 
     def test_increasing_load_handling(self):
         """Test handling increasing load gracefully."""
-        orch = HybridPhysicsOrchestrator()
-
         load_levels = [10, 50, 100, 200]
         timings = []
 
         for load in load_levels:
-            start = time.time()
-            for i in range(load):
-                decision_space = {
-                    "current_position": f"load_{load}_item_{i}",
-                    "goal_position": f"target_{i}",
-                }
-                orch.orchestrate_with_all_paradigms(decision_space)
-            duration = time.time() - start
-            timings.append((load, duration))
+            samples = []
+            # Equal total work prevents tiny batches from amplifying scheduler/GC noise.
+            repetitions = 1000 // load
+            for _ in range(5):
+                elapsed = 0.0
+                for _ in range(repetitions):
+                    orch = HybridPhysicsOrchestrator()
+                    for _ in range(10):
+                        orch.orchestrate_with_all_paradigms(
+                            {"current_position": "warmup", "goal_position": "target"}
+                        )
+                    start = time.perf_counter()
+                    for i in range(load):
+                        decision_space = {
+                            "current_position": f"load_{load}_item_{i}",
+                            "goal_position": f"target_{i}",
+                        }
+                        orch.orchestrate_with_all_paradigms(decision_space)
+                    elapsed += time.perf_counter() - start
+                    assert len(orch.decision_history) == 10 + load
+                samples.append(elapsed / repetitions)
+            timings.append((load, median(samples)))
 
         # Check that time scales roughly linearly (not exponentially)
         # Allow some overhead
@@ -462,6 +474,27 @@ class TestScalability:
 
             # Time shouldn't grow faster than 2x the load ratio
             assert time_ratio < load_ratio * 2, "time_ratio is not valid"
+
+    @pytest.mark.parametrize("quadratic", [False, True])
+    def test_scalability_measurement_detects_superlinear_work(self, monkeypatch, quadratic):
+        """The benchmark must accept linear work but reject growing-history scans."""
+        clock = [0.0]
+
+        class MeasuredOrchestrator:
+            def __init__(self):
+                self.decision_history = []
+
+            def orchestrate_with_all_paradigms(self, decision_space):
+                self.decision_history.append(decision_space)
+                clock[0] += len(self.decision_history) if quadratic else 1.0
+
+        monkeypatch.setattr(f"{__name__}.HybridPhysicsOrchestrator", MeasuredOrchestrator)
+        monkeypatch.setattr(f"{__name__}.time", SimpleNamespace(perf_counter=lambda: clock[0]))
+        if quadratic:
+            with pytest.raises(AssertionError, match="time_ratio"):
+                self.test_increasing_load_handling()
+        else:
+            self.test_increasing_load_handling()
 
     def test_connection_pool_exhaustion(self):
         """Test behavior when connection pool is exhausted."""

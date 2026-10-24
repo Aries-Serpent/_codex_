@@ -152,8 +152,11 @@ jobs:
           n`;\nbody += `|----------|----------|----------------|--------|----|\\n`;\n\
           for (const [wfName, runs] of Object.entries(byWorkflow)) {\n  const latest\
           \ = runs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];\n\
-          \  const prLink = latest.pr_number\n    ? `[#${latest.pr_number}](${context.payload.repository.html_url}/pull/${latest.pr_number})`\n\
-          \    : 'N/A';\n  body += `| ${wfName} | ${runs.length} | [#${latest.run_number}](${latest.run_url})\
+          \  const prLink = latest.pr_number
+    ? `[#${latest.pr_number}](` +
+      `${context.payload.repository.html_url}/pull/${latest.pr_number})`\n\
+          \    : 'N/A';
+  body += `| ${wfName} | ${runs.length} | [#${latest.run_number}](${latest.run_url})\
           \ (${latest.created_at.split('T')[0]}) | \\`${latest.head_branch}\\` | ${prLink}\
           \ |\\n`;\n}\n\nbody += `\\n---\\n\\n## Detailed Failure Analysis\\n\\n`;\n\
           \nfor (const [wfName, runs] of Object.entries(byWorkflow)) {\n  const latestRun\
@@ -272,7 +275,7 @@ jobs:
           '
     - name: Upload triage report artifact
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         path: 'ci-triage-report.md
 

@@ -1,90 +1,64 @@
-# COPILOT_SETUP_STEPS_GUARD — Do Not Refactor
-**Last Updated:** 2026-07-11
-**Version:** v0.2.0
+# Copilot setup guidance and compatibility guard
 
-**Last Updated: 2026-06-22
+Updated: 2026-10-22.
 
-**Status:** HARD RULE — enforced by CI (`scripts/ci/validate_setup_steps_yaml.sh`)
-**Relevant file:** `.github/workflows/copilot-setup-steps.yml`
-**Canonical baseline:** commit `12f7a861` / blob `8c84a8c1` (~1,075 lines)
+This recovery branch retains the base ordinary Actions workflow. The local
+validator checks that retained baseline only; it is not evidence that GitHub's
+hosted Copilot setup protocol supports the workflow or that a setup job ran.
+Workflow edits remain subject to the separate workflow-owner review boundary.
 
----
+## Retained ordinary Actions baseline
 
-## Why This File Has a Guard
+The current baseline has `resource-profile`, `copilot-setup-steps`, and
+`rescue-comment` jobs, with their existing per-job permissions and timeouts.
+`validate_copilot_bootstrap.py` checks this ordinary workflow shape, its
+resource-profile command/output, the environment-preflight consumer, and
+checkout with LFS disabled. It reports the existing filtered environment
+listing as a legacy finding and rejects new broad `env`/`printenv` output.
 
-`.github/workflows/copilot-setup-steps.yml` has regressed 4+ times across
-consecutive Copilot agent sessions. Each regression broke the entire
-`copilot-setup-steps` job — the mandatory pre-session environment setup
-for every Copilot coding agent session.
+These are compatibility checks, not a claim of hardened cloud bootstrap.
+The validator does not widen permissions or prove that runner labels are
+available. A resource-profile job cannot migrate an already-running setup job.
 
----
+## Deferred hardened cloud-setup contract
 
-## Canonical Baseline
+The candidate cloud-setup changes remain held back with the other workflow
+changes. Their intended contract includes resource detection in the actual
+setup job, bounded environment classification, explicitly requested LFS
+fetch/verification, optional context preparation, and an always-run readiness
+report. These consumers are reported as deferred, not required of the retained
+baseline and not considered validated here.
 
-Commit [`12f7a861`](https://github.com/Aries-Serpent/_codex_/blob/12f7a861a067ed5d9f1e1939119325f896624588/.github/workflows/copilot-setup-steps.yml)
-(blob `8c84a8c1`, ~1,075 lines) **plus** the session preload block scalar fix
-is the authoritative version. It is the only version that simultaneously has:
+GitHub may start the agent after a failed setup step. A setup error therefore
+does **not** prove the agent was prevented from starting. Tasks requiring assets
+must also run the LFS helper's `--verify-only` check or equivalent task tests
+after the companion workflow contract is reviewed and integrated.
 
-| Feature | Required Value |
-|---------|---------------|
-| `cancel-in-progress` | `true` |
-| `runs-on` | `${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}` |
-| `NODE_VERSION` | `"22"` |
-| Workflow-level `permissions` | `contents: read` |
-| Action SHAs | All pinned (not floating `@v5`/`@v6` tags) |
-| Session Preload step `run:` form | Block scalar (`run: |`) |
-| Session Access Probe | Present |
-| RAG Context Build | Present |
-| Cascade-control injection | Present |
-| `rescue-comment` job | Present |
+Repository evolution compatibility flags do not pin GitHub's CCA runtime, grant
+permissions, intercept upstream payloads, or bypass approvals. Their local
+deduplication/turn-state implementations and tests remain independent.
 
----
+## Secrets, variables and unknown settings
 
-## Known Defect Blobs — NEVER restore to these
+Current platform documentation uses dedicated **Agents secrets and variables**,
+replacing legacy advice to configure the Actions `copilot` environment. Inventories
+and hosted networking/runner/approval settings were inaccessible in this audit;
+neither checked-in snapshots nor variable names establish their live values.
+The retained workflow grants differ by job; the local compatibility check does
+not change them or establish hosted authorization. Never add broad environment
+dumps or log credentials.
 
-| Blob | Defects |
-|------|---------|
-| `45bf1b4c` | Missing `cancel-in-progress`, hardcoded runner, no `rescue-comment` job |
-| `415da93573` | Missing Session Preload, Access Probe, RAG Context Build, cascade steps; floating SHAs |
-| `5d47ccd3` | Orphaned `run:` key — YAML parse failure |
-
----
-
-## Canonical Session Preload Step — DO NOT CHANGE
-
-```yaml
- # DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
- # Canonical form: block scalar run: | with if ! ...; then syntax.
- # This step has been broken 4+ times by agents converting it to flow scalar
- # (|| { } syntax) or orphaning the run: key. yamllint 1.38.0 crashes on
- # flow scalar brace syntax. Canonical baseline: commit 12f7a861 / blob 8c84a8c1.
- # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
- - name: " Session Context Pre-load (memory + policy + accountability + PDA)"
- continue-on-error: true # non-blocking: agent must start even if preload fails
- run: |
- if ! python3 .github/scripts/session_preload.py; then
- echo " session_preload.py failed (non-blocking) — agent will operate without preloaded context"
- fi
-```
-
----
-
-## Restore Procedure
-
-If you must restore this file from the canonical commit:
+## Validation before publication
 
 ```bash
-git show 12f7a861a067ed5d9f1e1939119325f896624588:.github/workflows/copilot-setup-steps.yml \
- > .github/workflows/copilot-setup-steps.yml
-python3 scripts/ci/patch_session_preload.py
+python scripts/ci/validate_copilot_bootstrap.py .github/workflows/copilot-setup-steps.yml
+bash scripts/ci/validate_setup_steps_yaml.sh
+actionlint .github/workflows/copilot-setup-steps.yml
 ```
 
----
-
-## Agent Instruction
-
-> **If you are a Copilot coding agent reading this:**
-> Do NOT refactor, simplify, or touch the session preload step in `copilot-setup-steps.yml`.
-> If a CI failure led you here, identify and fix the **other** file that is failing.
-> If `copilot-setup-steps.yml` itself is failing, run the restore procedure above.
-> Do not rewrite the step inline.
+Run the validator, focused mutation tests, scoped secret checks, and ordinary
+YAML lint locally. Run LFS/resource/readiness tests against the reviewed
+companion contract when integrated. Use local fixtures and mocked transport;
+do not perform broad remote downloads just to validate setup. YAML/schema and
+baseline compatibility checks are not hosted-runner or authorization proof.
+No workflow/settings writes, dispatch, approval, or publication is implied.

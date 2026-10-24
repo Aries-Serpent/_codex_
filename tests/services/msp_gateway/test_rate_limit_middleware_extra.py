@@ -71,7 +71,7 @@ def test_dispatch_returns_429_when_preflight_token_quota_is_exhausted(
     assert "Token quota exceeded" in response.json()["detail"], "Response must not be empty"
 
 
-def test_dispatch_reinserts_request_body_and_handles_accounting_errors(
+def test_dispatch_reinserts_request_body_and_accounts_reported_tokens(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     app = _app_for_infer()
@@ -89,5 +89,4 @@ def test_dispatch_reinserts_request_body_and_handles_accounting_errors(
 
     assert response.status_code == 200, "Response must not be empty"
     assert response.json()["max_tokens"] == 7, "Response must not be empty"
-    # Current middleware gracefully handles body-iterator accounting errors.
-    bucket.consume.assert_not_called()
+    bucket.consume.assert_called_once_with(5)

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-10-19T05:28:41Z",
+  "generated_at": "2026-10-22T05:36:18Z",
   "agents": [
     {
       "name": "deep-research-analysis-agent",
@@ -1366,5 +1366,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "6e4a155b11e4b0623985b7ff50267521505ec4cf6463a138d00e9419d1ffa4ab"
+  "integrity_sha256": "cea7e4792805a12f7da0b1b48187a85cd78c90d9caba65d0ce0df845986b5302"
 }

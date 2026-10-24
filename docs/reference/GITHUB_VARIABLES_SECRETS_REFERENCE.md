@@ -1,6 +1,6 @@
 # Reference: GitHub Variables & Secrets — All Scopes, All Methods
-**Last Updated:** 2026-07-11
-**Version:** v0.2.0
+**Last Updated:** 2026-10-22
+**Version:** v0.3.0
 
 > **Generated:** 2026-04-05 | **Author:** mbaetiong | **Verified against upstream:** 2026-04-05
 > **Sources:** [Actions Secrets](https://docs.github.com/en/rest/actions/secrets) · [Actions Variables](https://docs.github.com/en/rest/actions/variables) · [Dependabot Secrets](https://docs.github.com/en/rest/dependabot/secrets) · [Codespaces Secrets](https://docs.github.com/en/rest/codespaces/secrets) · [GitHub CLI](https://cli.github.com/manual/) · [MCP Server](https://github.com/github/github-mcp-server)
@@ -19,21 +19,25 @@
 
 ---
 
-## Active runtime variables in this repo
+## Historical variable snapshot and current verification
 
-The active runtime contract is not every historical or debugging variable ever mentioned in the repo. The codebase and workflow files actually consume the subset below; this is the inventory that should be tracked as the canonical GitHub variable list for day-to-day branch work.
+The table below records historical configuration, not live settings or permissions.
+`.codex/agent_context.json` was generated on 2026-07-13. Check relevant current
+consumers and authorized metadata before relying on a value. The 2026-10-22 audit
+could not read repository/organization variable inventories or dedicated Agents
+secrets/variables; those settings remain unknown, not absent.
 
-| Variable | Current value in repo snapshot | Source / consumption |
+| Variable | Historical snapshot value | Source / interpretation |
 |---|---|---|
-| `COPILOT_AGENT_AUTH_ENABLED` | `true` | Repo variable gate for permanent agent authorization; checked by `.github/workflows/agent-auth-delegation.yml` |
+| `COPILOT_AGENT_AUTH_ENABLED` | `true` | Application/workflow feature gate; not permanent GitHub authorization |
 | `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | `D` | Repo variable used to bound automation tier |
 | `COPILOT_AGENT_SESSION_RESTORE_ENABLED` | `true` | Session restoration guardrail |
-| `COPILOT_AGENT_CCA_VERSION_LOCK` | `stable` | Required by `.github/workflows/copilot-setup-steps.yml` |
-| `COPILOT_AGENT_DEDUPLICATION_ENABLED` | `true` | Required by CCA payload hardening |
-| `COPILOT_AGENT_TURN_ISOLATION_ENABLED` | `true` | Required by CCA turn-state isolation |
-| `COPILOT_AGENT_FIREWALL_ENABLED` | `true` | Present in active snapshot; aligns with runtime protection checks |
+| `COPILOT_AGENT_CCA_VERSION_LOCK` | `stable` | Repository application flag; does not pin GitHub's cloud-agent runtime |
+| `COPILOT_AGENT_DEDUPLICATION_ENABLED` | `true` | Local configuration/telemetry; not upstream payload interception |
+| `COPILOT_AGENT_TURN_ISOLATION_ENABLED` | `true` | Local configuration/telemetry; verify actual subsystem consumers |
+| `COPILOT_AGENT_FIREWALL_ENABLED` | `true` | Historical claim; not evidence of hosted firewall configuration |
 | `COGNITIVE_BRAIN_ALLOWED_ACTORS` | `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]` | RBAC allow-list used by cognitive-brain integration |
-| `COGNITIVE_BRAIN_INJECTION_ENABLED` | `true` | Enables memory/session injection |
+| `COGNITIVE_BRAIN_INJECTION_ENABLED` | `true` | Repository context feature flag; delivery requires an actual consumer |
 | `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | Context budget |
 | `COGNITIVE_BRAIN_MEMORY_TIER` | `both` | STM+LTM enablement |
 | `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` | Pattern promotion threshold |
@@ -46,7 +50,7 @@ The active runtime contract is not every historical or debugging variable ever m
 | `CODEX_NETWORK_MODE` | `isolated` | Network hardening state |
 | `CODEX_LOG_LEVEL` | `INFO` | Logging verbosity |
 | `CODEX_CACHE_VERSION` | `v2` | Cache invalidation key used by setup workflows |
-| `COPILOT_RUNNER_PROFILE` | `ubuntu-latest-m` | Runner sizing profile (active config) |
+| `COPILOT_RUNNER_PROFILE` | `ubuntu-latest-m` | Historical preference; actual runner comes from the setup job's `runs-on` |
 | `EMBEDDING_INDEX_AUTO_REBUILD` | `true` | Embedding index maintenance |
 | `AUTO_PROMOTE_TIER_ENABLED` | `true` | Auto-promotion policy |
 | `COPILOT_CLI_BASE_URL` | `http://localhost:8765` | Local Copilot CLI endpoint |
@@ -73,7 +77,24 @@ These names appear in historical diagnostics and generated audit content, but th
 | `GITHUB_APP_*` variables | Optional integration-only | Present in some archival materials; not part of the active codepath unless a specific integration is enabled |
 | `OPENAI_API_KEY` | Optional external dependency credential | Not the repo’s GitHub variable contract; only relevant for optional model integrations |
 
-This distinction matters: the branch should rely on the values reflected in `.codex/agent_context.json` and the actual workflow reads in `.github/workflows/agent-auth-delegation.yml` and `.github/workflows/copilot-setup-steps.yml` rather than on any older runbook or archived variable dump.
+Neither a checked-in snapshot nor an older runbook establishes current settings.
+Use available authorized live metadata and actual consumers; disclose denied
+sources rather than treating a variable name, historical value, or file mtime as
+proof.
+
+### Dedicated Agents configuration
+
+GitHub's current [Agents secrets and variables guide](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/configure-secrets-and-variables)
+documents dedicated repository/organization Agents stores and migration from the
+legacy Actions `copilot` environment. Ordinary Actions, Codespaces and Dependabot
+stores are not automatically supplied to the cloud agent. Inspect the intended
+store explicitly; secret values cannot be retrieved through metadata listing.
+
+The [Agents variables](https://docs.github.com/en/rest/agents/variables) and
+[Agents secrets](https://docs.github.com/en/rest/agents/secrets) endpoints are
+distinct from the Actions endpoints below. Their inaccessible inventories and
+the hosted firewall/runner configuration require an authorized administrator's
+verification; this document does not claim that migration completed here.
 
 ---
 
@@ -327,19 +348,19 @@ gh variable delete VAR_NAME --repo OWNER/REPO
 gh api /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE --jq '.value'
 
 # Write a repo variable (canonical pattern from GITHUB_API_COPILOT_AGENT_REFERENCE.md)
-gh api PATCH /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE \
+gh api -X PATCH /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE \
  -f name='COPILOT_AGENT_STATE' \
  -f value='ACTIVE'
 
 # Increment a counter variable (pattern from agent-auth-delegation.yml)
 CURRENT=$(gh api /repos/$REPO/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER --jq '.value // "0"')
 NEXT=$((CURRENT + 1))
-gh api PATCH /repos/$REPO/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \
+gh api -X PATCH /repos/$REPO/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \
  -f name='COGNITIVE_BRAIN_SESSION_NUMBER' \
  -f value="$NEXT"
 
 # Cancel a workflow run (used in wec_enforcer.py --cancel-unchecked)
-gh api POST /repos/$REPO/actions/runs/$RUN_ID/cancel
+gh api -X POST /repos/$REPO/actions/runs/$RUN_ID/cancel
 
 # Dispatch a workflow (used in wec_enforcer.py --dispatch-checked)
 gh workflow run validate.yml --repo OWNER/REPO --ref BRANCH
@@ -466,7 +487,12 @@ MCP aggregator :2301
 
 ---
 
-## 4. Required PAT Scopes by Operation
+## 4. Credential models and operation-specific permissions
+
+The following scope examples describe classic PATs where supported. Fine-grained
+PATs, GitHub App installation tokens, and workflow `GITHUB_TOKEN` use their own
+permission and eligibility rules. Do not combine classic scope names with
+fine-grained permission notation or infer grants from a token's configured name.
 
 | Operation | Required Scope(s) |
 |---|---|
@@ -480,19 +506,19 @@ MCP aggregator :2301
 | Codespaces secrets (user) | `codespace` |
 | Codespaces secrets (org) | `admin:org` |
 | Secret scanning alerts (read) | `security_events` or `repo` |
-| Cancel workflow run | `repo` + `actions:write` |
-| Dispatch workflow | `repo` + `actions:write` |
+| Cancel workflow run | Classic PAT `repo`, or applicable fine-grained Actions write permission |
+| Dispatch workflow | Classic PAT `repo`, or applicable fine-grained Actions write permission |
 
 ### Token Hierarchy for This repository
 
 | Priority | Token | Scopes | Use for |
 |---|---|---|---|
-| 1st | `secrets.CODEX_MASTER_KEY` | `repo` + `workflow` + `actions:write` | Variable writes, workflow dispatch/cancel, force-push |
-| 2nd | `secrets.CODEX_BACKUP_KEY` | `repo` + `workflow` | Same as above when MASTER_KEY unavailable |
-| 3rd | `github.token` | `contents:read`, `pull-requests:write` | Read-only ops, posting comments |
+| Configured fallback | `secrets.CODEX_MASTER_KEY` | Verify actual type and grants | Only authorized operations requiring those grants |
+| Backup fallback | `secrets.CODEX_BACKUP_KEY` | Verify independently | Appropriate authorized fallback |
+| Job-local token | `github.token` | Actual workflow job permissions and platform eligibility | Available operations within that job |
 
 ```yaml
-# Canonical pattern — always use this token chain
+# Existing workflow fallback; do not expose it broadly or infer permissions
 env:
  GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 ```

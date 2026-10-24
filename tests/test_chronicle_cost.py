@@ -7,6 +7,7 @@ import json
 import sqlite3
 from pathlib import Path
 
+import pytest
 from click.testing import CliRunner
 
 from aries_serpent_core.logging.chronicle_cost import (
@@ -70,7 +71,25 @@ def _cli_module():
     return module
 
 
-def test_resolve_chronicle_database_prefers_existing_repo_session_db(tmp_path: Path, monkeypatch) -> None:
+@pytest.fixture(autouse=True)
+def isolate_campaign_metrics(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Keep CLI telemetry from pytest runs in the per-test temporary directory."""
+    monkeypatch.setenv("CODEX_CAMPAIGN_METRICS_LOG", str(tmp_path / "campaign_metrics.jsonl"))
+
+
+def test_campaign_metrics_use_configured_temporary_path(tmp_path: Path) -> None:
+    module = _cli_module()
+    module._append_campaign_metric("test_event", {"state": "available"})
+
+    output = tmp_path / "campaign_metrics.jsonl"
+    record = json.loads(output.read_text(encoding="utf-8"))
+    assert record["event"] == "test_event"
+    assert record["state"] == "available"
+
+
+def test_resolve_chronicle_database_prefers_existing_repo_session_db(
+    tmp_path: Path, monkeypatch
+) -> None:
     module = _cli_module()
     monkeypatch.setattr(module, "REPO_ROOT", tmp_path)
     (tmp_path / ".codex").mkdir(parents=True, exist_ok=True)
@@ -79,7 +98,26 @@ def test_resolve_chronicle_database_prefers_existing_repo_session_db(tmp_path: P
     (tmp_path / ".codex" / "codex.sqlite").touch()
 
     assert module._resolve_chronicle_database() == str(session_db), "Data must not be empty"
-    assert module._resolve_chronicle_database("/tmp/custom.sqlite") == "/tmp/custom.sqlite", "Data must not be empty"
+    assert (
+        module._resolve_chronicle_database("/tmp/custom.sqlite") == "/tmp/custom.sqlite"
+    ), "Data must not be empty"
+
+
+def test_canonicalize_chronicle_scope_uses_repo_relative_paths_before_trim(tmp_path: Path) -> None:
+    module = _cli_module()
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+    (repo_root / "reports").mkdir()
+    (repo_root / "reports" / ".codex").mkdir(parents=True)
+    database = repo_root / "reports" / ".codex" / "sessions.db"
+
+    module.REPO_ROOT = repo_root
+    assert module._canonicalize_chronicle_scope(str(database)) == "reports/.codex/sessions.db"
+
+    external_root = tmp_path / ".codex" / "external"
+    external_root.mkdir(parents=True)
+    external_db = external_root / "sessions.db"
+    assert module._canonicalize_chronicle_scope(str(external_db)) == ".codex/external/sessions.db"
 
 
 def test_store_normalizes_id_schema_and_reports_missing_credits(tmp_path: Path) -> None:
@@ -94,6 +132,37 @@ def test_store_normalizes_id_schema_and_reports_missing_credits(tmp_path: Path) 
     assert report["metrics"]["credits_available"] is False, "rep is not valid"
     assert report["metrics"]["tool_calls"] == 4, "rep is not valid"
     assert any(tip["category"] == "measurement" for tip in report["tips"]), "Condition must be true"
+
+
+@pytest.mark.parametrize("has_events", [False, True])
+def test_store_reads_optional_event_metrics(tmp_path: Path, has_events: bool) -> None:
+    """Event-level metrics remain optional when a session has no event rows."""
+    database = tmp_path / "chronicle.sqlite"
+    with sqlite3.connect(database) as connection:
+        connection.executescript("""
+            CREATE TABLE sessions (id TEXT PRIMARY KEY);
+            INSERT INTO sessions VALUES ('session-1');
+            CREATE TABLE events (
+                session_id TEXT, tool_name TEXT, lane_bucket TEXT,
+                checkpoint_state TEXT, budget_remaining REAL,
+                estimated_cost REAL, cost_score REAL
+            );
+            """)
+        if has_events:
+            connection.execute(
+                "INSERT INTO events VALUES (?, ?, ?, ?, ?, ?, ?)",
+                ("session-1", "view", "P1", "saved", 100.0, 2.5, 0.25),
+            )
+
+    records = ChronicleStore(database).load_sessions()
+    assert len(records) == 1
+    record = records[0]
+    assert record.tool_calls == int(has_events)
+    assert record.lane_bucket == ("P1" if has_events else None)
+    assert record.checkpoint_state == ("saved" if has_events else None)
+    assert record.budget_remaining == (100.0 if has_events else None)
+    assert record.estimated_cost == (2.5 if has_events else None)
+    assert record.cost_score == (0.25 if has_events else None)
 
 
 def test_standup_filters_task_url_and_identifies_incomplete_work(tmp_path: Path) -> None:
@@ -177,7 +246,9 @@ def test_session_events_preserve_zero_credits_and_tool_boundaries(
     assert records[0].tests == 0, "tests is not valid"
     assert records[0].checkpoints == 0, "checkpoints is not valid"
     assert report["metrics"]["credits_available"] is True, "rep is not valid"
-    assert not any(tip["category"] == "measurement" for tip in report["tips"]), "Condition must be true"
+    assert not any(
+        tip["category"] == "measurement" for tip in report["tips"]
+    ), "Condition must be true"
 
 
 def test_event_rows_count_only_tool_events(tmp_path: Path) -> None:
@@ -434,6 +505,91 @@ def test_build_chronicle_index_redacts_machine_specific_diagnostics() -> None:
     assert "/home/runner/work" not in json.dumps(index), "Condition must be true"
 
 
+@pytest.mark.parametrize(
+    ("scope", "expected"),
+    [
+        (None, "local Chronicle session store"),
+        ("  ", "local Chronicle session store"),
+        (".codex/session_logs.db", ".codex/session_logs.db"),
+        ("reports/sessions.db", "reports/sessions.db"),
+        ("/external/private/sessions.db", "sessions.db"),
+        ("/external/repo/.codex/session_logs.db", ".codex/session_logs.db"),
+        ("/external/repo/.codex/nested/sessions.db", ".codex/nested/sessions.db"),
+    ],
+)
+def test_chronicle_scope_is_portable(
+    scope: str | None, expected: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Index scopes retain repository context without machine-specific prefixes."""
+    from aries_serpent_core.logging.chronicle_cost import _sanitize_chronicle_scope
+
+    monkeypatch.chdir(tmp_path)
+    assert _sanitize_chronicle_scope(scope) == expected
+
+
+@pytest.mark.parametrize("working_directory", ["root", "repo", "state"])
+def test_chronicle_state_scope_does_not_depend_on_working_directory(
+    working_directory: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The same state database has one portable scope from every directory."""
+    database = tmp_path / "repo" / ".codex" / "session_logs.db"
+    database.parent.mkdir(parents=True)
+    directories = {"root": tmp_path, "repo": database.parent.parent, "state": database.parent}
+    monkeypatch.chdir(directories[working_directory])
+
+    index = build_chronicle_index([], [], scope=str(database))
+    assert index["scope"] == ".codex/session_logs.db"
+    assert str(tmp_path) not in json.dumps(index)
+
+
+@pytest.mark.parametrize("working_directory", ["repo", "external"])
+@pytest.mark.parametrize(
+    ("database_path", "expected_scope"),
+    [
+        ("external/.codex/session_logs.db", ".codex/session_logs.db"),
+        ("external/.codex/nested/sessions.db", ".codex/nested/sessions.db"),
+        ("external/custom/sessions.db", "sessions.db"),
+        ("repo/reports/sessions.db", "reports/sessions.db"),
+        (".codex/session_logs.db", ".codex/session_logs.db"),
+        ("reports/sessions.db", "reports/sessions.db"),
+    ],
+)
+def test_cli_reindex_preserves_portable_database_scope(
+    database_path: str,
+    expected_scope: str,
+    working_directory: str,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Reindex retains state suffixes and repo-relative custom paths from any CWD."""
+    repo_root = tmp_path / "repo"
+    external_root = tmp_path / "external"
+    repo_root.mkdir()
+    external_root.mkdir()
+    cwd = repo_root if working_directory == "repo" else external_root
+    monkeypatch.chdir(cwd)
+    if database_path.startswith(("repo/", "external/")):
+        database = tmp_path / database_path
+    else:
+        database = Path(database_path)
+    database.parent.mkdir(parents=True, exist_ok=True)
+    _database(database)
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", repo_root)
+    output = tmp_path / "index.json"
+
+    result = CliRunner().invoke(
+        module.cli,
+        ["chronicle", "reindex", "--database", str(database), "--output", str(output)],
+    )
+
+    assert result.exit_code == 0, result.output
+    index = json.loads(output.read_text(encoding="utf-8"))
+    assert index["scope"] == expected_scope
+    assert index["summary"]["total_sessions"] == 2
+    assert str(tmp_path) not in json.dumps(index)
+
+
 def test_cli_cost_tips_and_standup_support_json(tmp_path: Path, monkeypatch) -> None:
     database = tmp_path / "chronicle.sqlite"
     task_id = "98a181d6-d9af-448e-8fab-6f4760fd7a6f"
@@ -476,7 +632,9 @@ def test_cli_cost_tips_and_standup_support_json(tmp_path: Path, monkeypatch) -> 
     assert reindex_result.exit_code == 0, reindex_result.output
     assert json.loads(cost_result.output)["schema_version"] == "1.0", "Result must not be empty"
     assert json.loads(standup_result.output)["task_id"] == task_id, "Result must not be empty"
-    assert json.loads(index_path.read_text())["summary"]["total_sessions"] == 2, "Condition must be true"
+    assert (
+        json.loads(index_path.read_text())["summary"]["total_sessions"] == 2
+    ), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -501,6 +659,7 @@ def test_tips_explicit_database_used(tmp_path: Path, monkeypatch) -> None:
 
     # Stub SessionDatabase and ChronicleAnalytics so we don't need a real DB
     import unittest.mock as mock
+
     fake_analytics = mock.MagicMock()
     fake_analytics.generate_summary.return_value = "stub tips"
     fake_db = mock.MagicMock()
@@ -541,6 +700,7 @@ def test_tips_no_db_resolves_via_helper(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setattr(module, "_resolve_chronicle_database", capturing_resolve)
 
     import unittest.mock as mock
+
     fake_analytics = mock.MagicMock()
     fake_analytics.generate_summary.return_value = "stub tips"
     fake_db = mock.MagicMock()
@@ -582,6 +742,7 @@ def test_analyze_explicit_database_used(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setattr(module, "_resolve_chronicle_database", capturing_resolve)
 
     import unittest.mock as mock
+
     fake_analytics = mock.MagicMock()
     fake_analytics.analyze_patterns.return_value = {"frequency": {}, "tools": {}}
     fake_db = mock.MagicMock()
@@ -621,6 +782,7 @@ def test_analyze_no_db_resolves_via_helper(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setattr(module, "_resolve_chronicle_database", capturing_resolve)
 
     import unittest.mock as mock
+
     fake_analytics = mock.MagicMock()
     fake_analytics.analyze_patterns.return_value = {"frequency": {}, "tools": {}}
     fake_db = mock.MagicMock()
