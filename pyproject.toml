@@ -37,6 +37,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
+    "jsonschema>=4.25.1,<5",
     # Federated interoperability contracts (dependency-free)
     "codex-contracts",
     # Essential configuration & validation (offline-first)
@@ -583,6 +584,7 @@ rag = [
 ]
 
 [project.scripts]
+codex-institutional = "codex.institutional.__main__:main"
 # Core entry points (bundled in all profiles)
 codex = "codex_ml.cli.main:cli"
 codex-ml = "codex_ml.cli.main:cli"
@@ -717,6 +719,7 @@ exclude = [
 namespaces = true
 
 [tool.setuptools.package-data]
+"codex.institutional" = ["contracts.json"]
 agents = [
     "prompts/**/*.md",
 ]

@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "contract_version": "1",
+  "implemented": {
+    "codex.agent-role.v1": {
+      "type": "object",
+      "required": ["purpose", "capability", "authority"],
+      "properties": {
+        "purpose": {"type": "string"},
+        "capability": {"type": "string"},
+        "authority": {"const": "none"}
+      },
+      "additionalProperties": false
+    },
+    "codex.inventory.v1": {
+      "type": "object",
+      "required": ["source", "entries", "counts", "coverage", "limitations", "component_defaults"],
+      "properties": {
+        "source": {"type": "object"},
+        "component_defaults": {"type": "object"},
+        "entries": {"type": "array", "items": {"type": "object"}},
+        "counts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+        "coverage": {"enum": ["git-tree", "filesystem"]},
+        "limitations": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "codex.trust-evidence.v1": {
+      "type": "object",
+      "required": ["source_identity", "location", "source_sha", "digest", "method", "observation", "limitations", "predecessor"],
+      "properties": {
+        "source_identity": {"type": "string"},
+        "location": {"type": "string"},
+        "source_sha": {"type": ["string", "null"]},
+        "digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "method": {"type": "string"},
+        "observation": {"type": "string"},
+        "limitations": {"type": "array", "items": {"type": "string"}},
+        "predecessor": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "codex.audit-finding.v1": {
+      "type": "object",
+      "required": ["stage", "findings", "semantic_review", "independent_reproduction"],
+      "properties": {
+        "stage": {"enum": ["assessment", "challenge"]},
+        "findings": {"type": "array", "items": {"type": "string"}},
+        "semantic_review": {"const": "NOT_RUN"},
+        "independent_reproduction": {"const": "NOT_RUN"}
+      },
+      "additionalProperties": false
+    },
+    "codex.experience.v1": {
+      "type": "object",
+      "required": ["problem", "context", "environment", "hypotheses", "support", "against", "alternatives", "decision", "dissent", "uncertainty", "implementation", "verification", "outcomes", "failure_modes", "applicability", "confidence", "next_review"],
+      "properties": {
+        "problem": {"type": "string"}, "context": {"type": "string"},
+        "environment": {"type": "object"},
+        "hypotheses": {"type": "array"}, "support": {"type": "array"},
+        "against": {"type": "array"}, "alternatives": {"type": "array"},
+        "decision": {"type": "string"}, "dissent": {"type": "array"},
+        "uncertainty": {"type": "array"}, "implementation": {"type": "array"},
+        "verification": {"type": "array"}, "outcomes": {"const": "unknown"},
+        "failure_modes": {"type": "array"}, "applicability": {"type": "string"},
+        "confidence": {"const": "unknown"}, "next_review": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "codex.continuation-state.v1": {
+      "type": "object",
+      "required": ["session_id", "sequence", "source_sha", "candidate_ref", "dirty_tree", "configuration", "predecessor", "gates", "records", "actors", "blockers", "findings", "rejected_hypotheses", "uncertainty", "next_action", "recovery"],
+      "properties": {
+        "session_id": {"type": "string", "minLength": 1},
+        "sequence": {"type": "integer", "minimum": 1},
+        "source_sha": {"type": ["string", "null"]},
+        "candidate_ref": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "dirty_tree": {"type": "string"},
+        "configuration": {"type": "object"},
+        "predecessor": {"type": ["string", "null"]},
+        "gates": {"type": "object", "additionalProperties": {"enum": ["PASS", "FAIL", "NOT_RUN", "BLOCKED_AUTHORITY", "BLOCKED_RESOURCE_LIMIT", "NOT_APPLICABLE_WITH_RATIONALE"]}},
+        "records": {"type": "array", "items": {"type": "object"}},
+        "actors": {"type": "object"}, "blockers": {"type": "array"},
+        "findings": {"type": "array"}, "rejected_hypotheses": {"type": "array"},
+        "uncertainty": {"type": "array"}, "next_action": {"type": "object"},
+        "recovery": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "unsupported": [
+    "codex.decision.v1", "codex.dissent.v1", "codex.institution.v1",
+    "codex.amendment.v1", "codex.knowledge-lifecycle.v1", "codex.capability-package.v1"
+  ]
+}

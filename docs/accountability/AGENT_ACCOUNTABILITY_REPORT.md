@@ -1,3 +1,26 @@
+## Institutional foundation candidate — 2026-10-24
+
+Task `CODEX-INSTITUTIONAL-FOUNDATION-001` starts from
+`159830ca8b9e689cae443fb7c1cc0f36cfb7d667` on the assigned institutional branch.
+The existing startup packet's timestamp-only dirty bytes are preserved, not
+included in task commits. The complete source census contains 33,298 paths;
+13,139 lexical candidates include 13 directly inspected relevant paths and
+13,126 unresolved semantic inspections, not a claim of exhaustive understanding.
+Evidence, actual source/wheel results and the task continuation are under
+`.codex/evidence/institutional-foundation/`.
+
+The coordinator implements the inactive slice. `reuse-investigation` performed
+bounded read-only research; `candidate-safety-review` supplied implementation
+feedback. Neither actor has independently established identity or approval
+assurance. Review identified a namespace symlink race and multiple-evidence
+binding bypass; directory-descriptor writes and cardinality rejection address
+these with regression tests. A duplicate source verification was removed.
+No governance adoption, release, workflow activation, new persistent agent,
+deprecation or retirement is performed. Source self-tests and wheel self-tests
+are not independent reproduction or final acceptance. See the inactive ADR at
+`docs/adr/institutional-foundation-001.json` and scoped runtime/recovery guide at
+`docs/institutional-foundation.rst`.
+
 ## Continuation: 2026-10-24 — Isolated Phase 2 acceptance and evidence reconciliation
 
 **Status:** Phase 2 remains incomplete. This entry supersedes only the current-state

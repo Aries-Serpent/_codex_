@@ -1,0 +1,837 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001",
+  "repository": "Aries-Serpent/_codex_",
+  "branch": "copilot/codex-institutional-foundation-001",
+  "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+  "base_sha": null,
+  "base_limitation": "Shallow clone has no parent; no existing branch PR returned by GitHub lookup.",
+  "collected_at": "2026-10-24T20:16:07Z",
+  "producer": {
+    "identity": "Copilot task coordinator",
+    "assurance": "unverified"
+  },
+  "initial_dirty_tree": [
+    ".codex/session_startup_packet.json: generated_at-only user change preserved via temporary skip-worktree index flag"
+  ],
+  "policy_refs": [
+    ".codex/CODEBASE_AGENCY_POLICY.md",
+    ".github/Copilot.md",
+    ".github/copilot-instructions.md",
+    ".github/instructions/python.instructions.md",
+    ".github/prompts/sprint_execution_plan/TEMPLATE.md",
+    "pyproject.toml",
+    "MANIFEST.in",
+    "src/codex/cli.py",
+    "src/codex/cli/__init__.py",
+    "src/codex/__init__.py",
+    "src/codex_ml/cli/main.py",
+    "src/aries_serpent_core/cli/__init__.py",
+    "src/codex/deep_research/storage.py",
+    "src/codex/cognitive_brain/authority.py",
+    "scripts/cognitive/session_checkpoint_manager.py",
+    ".github/workflows/pypi-publish.yml",
+    ".codex/AGENTIC_REPO_STATE.md",
+    ".codex/agent_context.json",
+    "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+    ".codex/AI_AGENT_UTILITIES_REGISTRY.md",
+    "docs/validation/Offline_Audit_Validation.md",
+    ".github/docs/Status_Authoring_Cookbook_Copilot.md",
+    "docs/adr/ADR-009-federated-package-boundaries.md",
+    "docs/architecture/federated_package_boundaries.md"
+  ],
+  "instruction_limits": [
+    "No root AGENTS.md tracked. No applicable nested AGENTS.md under implementation/test paths.",
+    "Requested governance YAML directory absent. Agent-profile contents not accessed under environment boundary.",
+    "Template read at targeted sections, not exhaustively. Optional historical documents not exhaustively read."
+  ],
+  "tools": {
+    "python": "3.12.10",
+    "pytest": "9.1.1",
+    "jsonschema": "4.25.1",
+    "git": "available",
+    "rg_shell": "unavailable; used grep and structured tree traversal",
+    "independent_identity": "unverified; unavailable"
+  },
+  "permissions": {
+    "local_development": "task-authorized",
+    "protected_github_operations": "not granted",
+    "package_publication": "not granted",
+    "activation": "not granted"
+  },
+  "budget": {
+    "concurrent_investigation_lanes": 2,
+    "unchanged_failure_retries": 2,
+    "runtime_paths": 50000,
+    "runtime_bytes": 67108864,
+    "git_timeout_seconds": 20,
+    "host_hard_limits": "unknown"
+  },
+  "census": {
+    "count": 33298,
+    "complete": true,
+    "method": "git ls-tree -r --name-only -z SOURCE_SHA; reconciled with runtime git-tree inventory",
+    "artifact": "source-inventory.json.gz",
+    "artifact_sha256": "0cebadfe88f39ba4d1308fceb829cb92cdf0e7d409f76ba538d4b823ad80022e",
+    "canonical_inventory_sha256": "2cf433bc99ac7016a7dc291c8f78607f311f3ebea248961fb9f1d273bc2e4f8c",
+    "primary_classification": "core.classify, ordered exclusive lexical rules; separate tags",
+    "counts": {
+      "agent": 728,
+      "decision": 138,
+      "governance": 124,
+      "instruction": 756,
+      "knowledge": 1163,
+      "other": 20159,
+      "packaging": 107,
+      "registry": 660,
+      "verification": 9232,
+      "workflow": 231
+    }
+  },
+  "semantic_coverage": {
+    "relevant": 13139,
+    "inspected": 13,
+    "excluded": 0,
+    "unreadable": 0,
+    "unresolved": 13126,
+    "reconciles": true,
+    "inspected_paths": [
+      ".codex/AI_AGENT_UTILITIES_REGISTRY.md",
+      ".github/Copilot.md",
+      ".github/copilot-instructions.md",
+      ".github/docs/Status_Authoring_Cookbook_Copilot.md",
+      ".github/instructions/python.instructions.md",
+      ".github/prompts/sprint_execution_plan/TEMPLATE.md",
+      ".github/workflows/pypi-publish.yml",
+      "MANIFEST.in",
+      "docs/adr/ADR-009-federated-package-boundaries.md",
+      "docs/validation/Offline_Audit_Validation.md",
+      "pyproject.toml",
+      "scripts/cognitive/session_checkpoint_manager.py",
+      "src/codex/cognitive_brain/authority.py"
+    ],
+    "remaining_action": "Risk-rank next source reads; agent-profile contents remain unavailable in this environment.",
+    "census_depth": "metadata_only; not semantic inspection"
+  },
+  "search_ledger": [
+    {
+      "query": "git status --short; git branch --show-current; git rev-parse HEAD",
+      "scope": "assigned workspace",
+      "limitation": "Initial dirty tree only; no elevated authority proof"
+    },
+    {
+      "query": "git ls-files -z; git ls-tree -r --name-only -z SOURCE_SHA",
+      "scope": "all tracked paths",
+      "limitation": "Complete path metadata; no file contents"
+    },
+    {
+      "query": "filename filters: institution, checkpoint, continuation, registry, authority, governance, evidence",
+      "scope": "tracked paths except profile contents",
+      "limitation": "Initial terminal output truncated; complete census retained separately"
+    },
+    {
+      "query": "direct CLI -> codex_ml.cli.main -> compatibility codex/aries_serpent_core tracing",
+      "scope": "entry points and packaging",
+      "limitation": "Not a complete call graph"
+    },
+    {
+      "query": "read-only reuse-investigation: authority, RBAC, evidence store, checkpoint manager, approval routing",
+      "scope": "bounded 15-file investigator lane",
+      "limitation": "Agent assertions are investigation leads, not independent verified findings"
+    },
+    {
+      "query": "GitHub list_pull_requests head=Aries-Serpent:copilot/codex-institutional-foundation-001 state=open",
+      "scope": "current branch",
+      "result": "empty list; no active PR feedback inspected"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:2bccbfb256f9311132b812c511103a2709c0d79ee32fa6409f7f3ab289827782",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": ".codex/CODEBASE_AGENCY_POLICY.md",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "ce2a12abfd53b91195352ba148ee9060aa85508c281ee5a34e07d16954622f4c",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at full_text depth",
+        "limitations": [
+          "Source inspection is not runtime verification."
+        ],
+        "predecessor": null
+      },
+      "integrity": "1329df1f983fd49815a5e9564cebb71c131faa195269f73fe6ff2e14125dfaf4"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:e5bde0f76e300970db4d2406fbb9e5e6f4b8300993de52f847aa896659d6330b",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": ".github/Copilot.md",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "2792f82b8ba2b9cacbf135e64c97aa7d86745dcbbca0e84f85c900ebf2011d0f",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at full_text depth",
+        "limitations": [
+          "Source inspection is not runtime verification."
+        ],
+        "predecessor": null
+      },
+      "integrity": "600148f0dea28633e0c9951b5c3010b7647439e02c7dcbca9f0b87d48e3cc877"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:a8007a4ce3716e3de83d1f61118b10a02169326c4b2c6d2870fea0dfbe6e7de4",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": ".github/copilot-instructions.md",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "182d66e2680b97f214e84b83425e944205ed223cfdf1786b1f20b2dd42cc1219",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at full_text depth",
+        "limitations": [
+          "Source inspection is not runtime verification."
+        ],
+        "predecessor": null
+      },
+      "integrity": "dc4dc0ab6e7fd1aa99d722f5d8162601b5eb860d0cbe88fb4f980d34f289617f"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:15fafa5ecc918273c8091e07d5d4e23ee0c6d9d02e4941baae80e1e7f9e99de0",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": ".github/instructions/python.instructions.md",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "6f9aba6ff5e1185ddf6eea62506fa95e6f2089f1d7e9c0ee8c5f3ba4e4ad5b22",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at full_text depth",
+        "limitations": [
+          "Source inspection is not runtime verification."
+        ],
+        "predecessor": null
+      },
+      "integrity": "c318d26f27e72b41af14bd600080f5c764275011db0a0e5941e09cf4d379cb89"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:36561d3d1c2a7bc97c226a1da74a36611837505ff876eb8c50f1c8a0e006bee9",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": ".github/prompts/sprint_execution_plan/TEMPLATE.md",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "2ac5fc91d87061bfba9726ea59c000a6a5d82b1e31213f71de3a43bb832306de",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at targeted_sections depth",
+        "limitations": [
+          "Targeted reads do not establish whole-file understanding."
+        ],
+        "predecessor": null
+      },
+      "integrity": "ed6427dca30b40516186ff57a32013f3929c9bb76ef5ca7ee57fcdfeaf1deee5"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:303f62a1f5cf60d45944a4bb5151a007fb91643287d831592a0f3965603ca455",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "pyproject.toml",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "eb628232fb9d29bf42f2e24beecf8f39a2b92aac29906ef0a4b4d0c39dbb27e3",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at targeted_sections depth",
+        "limitations": [
+          "Targeted reads do not establish whole-file understanding."
+        ],
+        "predecessor": null
+      },
+      "integrity": "05c8803437108b883107e8be22b2c280e525fe36fbb12581917806351f00915a"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:bf76ba16f66bf050094f7b5de2f55fdfa944a49402ff9368cce5dcef026e4b68",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "MANIFEST.in",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "a012e677a5a0dca5ce163df5ee1e4a1e24062eaf5c28c575d9aeb5c39a1d77f5",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at full_text depth",
+        "limitations": [
+          "Source inspection is not runtime verification."
+        ],
+        "predecessor": null
+      },
+      "integrity": "ebad913703ecc6c871c142d8718bd14500efdc079a8ab3f5c183c6963d8c1e63"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:a8914587e3b72a302ddc5c6d6020383593dfb825e245157fbfd1dbd0c73d87f0",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "src/codex/cli.py",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "46ad4e96ed1e168b46533366bbd7e9df1b4f9964685cbec7db0710289b7b07a6",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at full_text depth",
+        "limitations": [
+          "Source inspection is not runtime verification."
+        ],
+        "predecessor": null
+      },
+      "integrity": "58986c6b0cb552091f3808f8acf9cbc705900df8ed491e71249b0101c0044ef8"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:efc12fcc738599893589218559d2d3df88f942d7d52df148000deac503fd1bd4",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "src/codex/cli/__init__.py",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "28e4c268bcde5f5c131f84036e0cdd5c41a5e130533a27a9de191beab1381f91",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at full_text depth",
+        "limitations": [
+          "Source inspection is not runtime verification."
+        ],
+        "predecessor": null
+      },
+      "integrity": "738873e3499d37c78896ccb13e241d18fd3c7e986a992a7144cdbecf36bed057"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:8195aa4d7f16f8b58bd94c51583f964b3a2429b0558bbf7ae8d0bf469b76c33a",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "src/codex/__init__.py",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "c1648b21b779c5a35f370d64e057d9d1d72c5bf2e06704b83826384fb74a82f6",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at full_text depth",
+        "limitations": [
+          "Source inspection is not runtime verification."
+        ],
+        "predecessor": null
+      },
+      "integrity": "1516a9341ba6e0c234b00781d4d49278250fcdc7db4c45331e6fc8a6f74e9ee0"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:be47504eaf021e32d3ea9d368ccbff771f380c542d7db0058dc7ae85e3beca64",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "src/codex_ml/cli/main.py",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "6ebed5e347a238325e5d595d8e7aabf3e694d0e6b55362611531f299f4ea120c",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at targeted_sections depth",
+        "limitations": [
+          "Targeted reads do not establish whole-file understanding."
+        ],
+        "predecessor": null
+      },
+      "integrity": "d45919703704b9cda9103285c6fb52c3114728bed6e80f0b6e678cf3512423a7"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:d7dc7445c3d6af2c4f80a78ec5eab296867fec84474cccbd1c8188a796b7a893",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "src/aries_serpent_core/cli/__init__.py",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "e60bbdf7a68ded545316e2696824de78c68c03b3e3b0b4fa2b2af9521c497398",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at targeted_sections depth",
+        "limitations": [
+          "Targeted reads do not establish whole-file understanding."
+        ],
+        "predecessor": null
+      },
+      "integrity": "125b6f64e2e721c9565c95ac2196b32a3479ef43d37306cb697c132f72959da2"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:e4045c6c3f9c88527526d4648e5fdcdc7a93bfb9c72b3cd17517b4a677e38eef",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "src/codex/deep_research/storage.py",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "98bb46939fe0898e0d20889734d37143fb09f190e98451b9ce9fd988bc20bebe",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at targeted_sections depth",
+        "limitations": [
+          "Targeted reads do not establish whole-file understanding."
+        ],
+        "predecessor": null
+      },
+      "integrity": "f6fa26a0fe99242f8b23f7e17a3a1f906abafa2442e1b34e3b8ed518bab13ec6"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:24875e4665cd95213499b4cbbdbf2d4216846c64b8daccbfe6849eb68bf13d11",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "src/codex/cognitive_brain/authority.py",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "86cb6e470f6c0eba89a561010769088ab6e48f98e180f0466269d7a6e7985df8",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at full_text depth",
+        "limitations": [
+          "Source inspection is not runtime verification."
+        ],
+        "predecessor": null
+      },
+      "integrity": "1ec469f99b93b8ad88e4c7c761754e6ed7345569bed88d9f11d15f62e8081638"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:0c1f4a69ea14d99a5d64548739bb679137ca6569eafe8ecd699e9414b3e50b7f",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "scripts/cognitive/session_checkpoint_manager.py",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "0ac436dfde6199b504c3214a5faef9e289bc6f91561def94e2799df66fdb1b9a",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at targeted_sections depth",
+        "limitations": [
+          "Targeted reads do not establish whole-file understanding."
+        ],
+        "predecessor": null
+      },
+      "integrity": "7510b944f3439d103ff377ba0efc5efd52ece455b7dc5577ebe34350e24efc79"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:1d920e6a1037999b32cafe43f39d3b0439f102f1e662cd1f07e4aef5b4e17cf7",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": ".github/workflows/pypi-publish.yml",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "f100eb9c35f34be932274009e961561baec2731a8dddbf35b450d53f558ffa8f",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at targeted_sections depth",
+        "limitations": [
+          "Targeted reads do not establish whole-file understanding."
+        ],
+        "predecessor": null
+      },
+      "integrity": "963fbf5117408dc72db8ec73ca5ef14deb58d7f5166b83fe388f53835e024ac8"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:5da5c5862f5b703a8b34efdb006cdf5686262464c4efe9be95da8bf16c9f0b53",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": ".codex/AGENTIC_REPO_STATE.md",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "256a3c597a167ccf13a12b4e0184967521c3e49fdd0739cb60c879249190062b",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at targeted_sections depth",
+        "limitations": [
+          "Targeted reads do not establish whole-file understanding."
+        ],
+        "predecessor": null
+      },
+      "integrity": "576bf3b57ff7af528e35a7b401aaf7a78963d2530411ad4102c97e32ddb3ba49"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:39c8a4eea91704b2f013ec05ac3fd152b07dfacdd36ace96e256245c5ff7d0c2",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": ".codex/agent_context.json",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "a01fe73db678d0fb71e3031ae63303a38dda9ec47852424c29960c075cc97c7b",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at full_text depth",
+        "limitations": [
+          "Source inspection is not runtime verification."
+        ],
+        "predecessor": null
+      },
+      "integrity": "00db6c84d726974eb1f80cbd8336cbad1fe7799eef0cc4548d390c04921b2624"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:2a628d3eedc56f80e1c215c77c818fbe293c452fee65e66769264f7a738a92db",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "af0f142ec4ebfccc7443f3510e868c10ba5a975e71b0b96c0ac845c41754b3c4",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at targeted_sections depth",
+        "limitations": [
+          "Targeted reads do not establish whole-file understanding."
+        ],
+        "predecessor": null
+      },
+      "integrity": "0be455eb2afb873e2afdabffc68deacccd7db94648c402bebbb67622a99d4081"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:f83d4bfa8cd251bd8445a9aab0699ebe14ec4f48ec4cb80d1b6d6970dccd3340",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": ".codex/AI_AGENT_UTILITIES_REGISTRY.md",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "1225c42d78c55c7ab54c43dd56100bfe08903cd4ac31707c6a338117495c73db",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at targeted_sections depth",
+        "limitations": [
+          "Targeted reads do not establish whole-file understanding."
+        ],
+        "predecessor": null
+      },
+      "integrity": "b4bf478e40837074efd8d61fad8771154bfad4b265e10a49c4099f738173856c"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:b774a65c59935a30bae57f0ee1020ba9f91e3ed0d2aac4e7626b88bf005e668f",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "docs/validation/Offline_Audit_Validation.md",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "d76277b1c8f98d37de13c534d5f9c6c89dc07c08c989c8624e84a14a73fbfba2",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at full_text depth",
+        "limitations": [
+          "Source inspection is not runtime verification."
+        ],
+        "predecessor": null
+      },
+      "integrity": "9c329ca1ffc32dc9c7a0a5e15ff53e13cf7d87a0f4046fc0dc1afc35f260ec85"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:cd1d3a782f682c584160f25cf2cd7881c6283efb64f1752dd53e8bb179848bef",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": ".github/docs/Status_Authoring_Cookbook_Copilot.md",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "9e06cb645ae51960aacbbd93369bcc1a17016b0efa81281a1feaeb69ea42dfd5",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at full_text depth",
+        "limitations": [
+          "Source inspection is not runtime verification."
+        ],
+        "predecessor": null
+      },
+      "integrity": "8ced4ce858cc724ac793c6f7345745109b38b6cfc7344de52d0dee490ace9253"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:3f0864341e77e825d95c99371fb2d5438d0a4295348d6a40a3a8659493de8207",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "docs/adr/ADR-009-federated-package-boundaries.md",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "e5d32fbebd9cb027b57588c17b9a4528b1553a6e96b123f4380e5dbdec31de82",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at targeted_sections depth",
+        "limitations": [
+          "Targeted reads do not establish whole-file understanding."
+        ],
+        "predecessor": null
+      },
+      "integrity": "3a97bb267cfb4d354fad27cf2affc2116f57a780224777d3a95f7d6bc869a0ba"
+    },
+    {
+      "schema": "codex.trust-evidence.v1",
+      "id": "codex.trust-evidence.v1:52ee4401a976d5913f42755bb0bdbb75c41696156eb8bb699a9a351ea2d40be6",
+      "created_at": "2026-10-24T20:16:06Z",
+      "producer": {
+        "identity": "codex-institutional",
+        "assurance": "unverified"
+      },
+      "evidence_refs": [],
+      "authority_refs": [],
+      "validation_state": "candidate",
+      "lifecycle": "Draft",
+      "supersedes": null,
+      "extensions": {},
+      "payload": {
+        "source_identity": "Aries-Serpent/_codex_",
+        "location": "docs/architecture/federated_package_boundaries.md",
+        "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+        "digest": "4ba20808c7e459cb7891b485868e27b5a773c733605c64327e9a64a542ab7118",
+        "method": "view/sed targeted repository inspection",
+        "observation": "Inspected at targeted_sections depth",
+        "limitations": [
+          "Targeted reads do not establish whole-file understanding."
+        ],
+        "predecessor": null
+      },
+      "integrity": "b542b9e3ce16a3fadc9638bd05abf0d28e09f09ea501c4e7f78a8b2c5046f13e"
+    }
+  ],
+  "history": {
+    "scope": "last five PDA records read; source checkpoint names inspected; optional older history not fetched",
+    "continuation_validity": "No task-specific prior continuation found; existing unrelated checkpoint schemas not adopted."
+  },
+  "actors": [
+    {
+      "id": "reuse-investigation",
+      "role": "read-only reuse investigation",
+      "assurance": "unverified same-platform agent, not independent approval"
+    },
+    {
+      "id": "candidate-safety-review",
+      "role": "implementation feedback",
+      "assurance": "unverified same-platform agent, not independent approval"
+    }
+  ]
+}

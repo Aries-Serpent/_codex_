@@ -17,6 +17,20 @@
 
 ---
 
+## Institutional Candidate CLI
+
+- **Location:** `src/codex/institutional/`; installed command `codex-institutional`.
+- **Purpose:** Offline inventory, evidence-linked Draft assessment/challenge,
+  experience, previewed checkpoint writes, Public-only classified export and
+  non-destructive disengagement planning.
+- **Status:** Inactive candidate; no approval, governance activation or agent
+  retirement capability. Deterministic challenge is not semantic review.
+- **Contracts and recovery:** `docs/institutional-foundation.rst`.
+- **Evidence:** `.codex/evidence/institutional-foundation/`; source census and
+  preflight distinguish metadata completeness from semantic understanding.
+- **Tests:** `tests/institutional/test_foundation.py`, also the implementer-owned
+  external wheel harness. Independent verification and final approval remain pending.
+
 ## Documentation Link Fixer
 
 **Created:** 2026-01-05 (Session 9)
