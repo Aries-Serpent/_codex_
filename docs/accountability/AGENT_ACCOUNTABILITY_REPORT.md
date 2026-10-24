@@ -30,16 +30,23 @@ with the tracked test tree, its immutable baseline regression-file blob, and
 SHA-256 hashes for 3,418 tracked test files.
 
 Historical commit `e15df253c7f0facc2bbeda1e552ada1f0e050360` was fetched without
-changing branches. Six selected historical manifests were recovered and hashed.
-They describe incomplete observations and unmatched environments, not fresh
-acceptance. The original 386-failure inventory is not inferred from their
-smaller observed-only comparison.
+changing branches. Recovery retained 32 exact Git payloads (9,948,275 bytes),
+including 24 selected JUnit files, with a SHA-256 provenance manifest. They
+describe incomplete observations and unmatched environments, not fresh
+acceptance. The original 386-failure inventory was not recovered in the bounded
+search; 243 overlapping failure/error records from later XML are not a substitute.
 
 Baseline `ruff check src` passes. Baseline `black --check src` exits 1:
 `src/codex_ml/models/registry.py` would be reformatted and 1,973 files are unchanged.
 This pre-existing formatting finding is not repaired as part of the Chronicle
 patch. Global typing, documentation, coverage and security gates remain open.
+Scoped Chronicle mypy reports 21 errors, identical to baseline after line-number
+normalization. Supplemental Bandit reports the same eight low-severity
+subprocess/import findings before and after; none are on the normalization patch.
 PR #5708 Validation run `40070032176` remains `action_required` with zero jobs;
+current-branch PR #5709 Validation run `40072734660` at `26c4d0ba` also requires
+approval, has zero jobs and no failed-job logs. Its review-thread query returns
+zero threads. Neither observation establishes passing CI or validates later commits;
 no approval, retry, dispatch, workflow modification, tag, release or publication
 was performed.
 
@@ -53,6 +60,28 @@ passed 93 tests with zero failures, errors or skips (exit 0) in the Chronicle
 snapshot. The two-file overlay hashes and command/JUnit metadata are retained in
 the external Chronicle evidence directory. This closes only the focused gate,
 not complete-suite, fresh-environment or repository-wide coverage acceptance.
+
+**Related consumers:** The initial shard passed 18 tests and failed two, both
+reproduced on baseline. The simple training CLI case is blocked by absent real
+Torch; the logging viewer emits logger-prefixed JSON that cannot be parsed.
+The CI Auto-Healer repaired the viewer by writing raw JSON to stdout and validated
+all 10 viewer regressions. The expanded consumer shard now passes 26 and fails
+one (missing Torch), with no skips. Viewer Ruff/Black/isort/compile/mypy pass.
+Independent `phase2-viewer-review` found no significant issues; the reviewed
+diff hash is retained in the checkpoint. The dependency-blocked failure is not
+hidden by a skip or counted as acceptance.
+
+**Bounded incomplete-module audit:** Chronicle strategy hooks are intentional
+interfaces with concrete implementations. Existing reachable WorkflowNavigator
+`uses` steps report success without dispatch; workflow maintainers should implement
+dispatch or explicitly label simulation in separate work. The historical
+zero-round raises assertion conflicts with graceful source behavior; its test
+owner must reproduce and reconcile it, not revert the implementation blindly.
+Neither static observation is claimed as a fresh suite failure.
+
+**Time coordination:** `phase2-time-monitor` provides read-only wrapup alerts
+and a continuation-prompt reminder based on the user's estimate of 15/60 minutes
+used, not a claim about a platform-enforced deadline.
 
 ---
 

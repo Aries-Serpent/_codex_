@@ -2,8 +2,8 @@
 CLI viewer for session-scoped logs stored in SQLite.
 
 Purpose:
-    Render session events chronologically through the configured logger, as
-    text or JSON with optional filters.
+    Render session events chronologically as logged text or raw JSON on stdout,
+    with optional filters.
 
 Usage:
     python -m aries_serpent_core.logging.viewer --session-id <ID> [--db path/to.db]
@@ -314,7 +314,7 @@ def build_query(
 
 
 def main(argv: Optional[list[str]] = None) -> int:
-    """Resolve a database, apply viewer filters, and log text or JSON results.
+    """Resolve a database, apply filters, and emit logged text or raw JSON stdout.
 
     ``argv`` omits the executable name; ``None`` uses process arguments.
     An explicit/environment database path wins over shallow autodetection
@@ -341,7 +341,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         args[0] = ns.session_id
         rows = conn.execute(query, args).fetchall()
         if ns.format == "json":
-            logger.info(json.dumps([dict(r) for r in rows], ensure_ascii=False, indent=2))
+            print(json.dumps([dict(r) for r in rows], ensure_ascii=False, indent=2))
         else:
             for row in rows:
                 d = dict(row)

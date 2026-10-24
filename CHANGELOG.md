@@ -5,6 +5,7 @@
 ### Fixed — Chronicle CLI scope and bounded Phase 2 continuation (2026-10-24)
 - Preserve external absolute `.codex` database suffixes during CLI reindexing without changing repository-relative custom paths or external custom-path basename behavior.
 - Add CLI regressions across two working directories, nested state paths, custom database paths and relative paths; retain existing legacy CLI export and module-identity contracts.
+- Emit logging-viewer JSON directly to stdout rather than through logger formatting. Cover canonical/legacy entrypoints, Unicode, empty results and logger-independent JSON while preserving text rendering.
 - Resume validation in disposable snapshots with external evidence and explicit dependency/import provenance. Recover selected historical manifests without treating incomplete observations as current acceptance.
 - Supersede stale active-run instructions with current branch-aware checkpoints. Phase 2, complete-suite acceptance and repository-wide 80% coverage remain unverified; no release or publication is performed.
 

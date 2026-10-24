@@ -45,7 +45,15 @@
       ],
       "hash_manifest": "baseline-provenance.json#/historical_artifacts",
       "interpretation": "Recovered manifests describe incomplete historical observations. The reconciliation explicitly records environment_matched=false and no proven regressions. Do not convert candidate identities, partial XML, or observed-only comparisons into current failures or complete-suite counts.",
-      "original_386_failure_inventory": "Not yet recovered; must not be reconstructed from the smaller observed-only comparison."
+      "original_386_failure_inventory": "Not recovered in the bounded historical search; no exhaustive blob search claimed. Do not reconstruct it from later XML or observed-only comparisons.",
+      "recovered_payloads": 32,
+      "recovered_bytes": 9948275,
+      "selected_junit_files": 24,
+      "recovery_provenance": "historical/recovery-provenance.json",
+      "recovery_provenance_sha256": "fc568cc540332fb544a0f582222dc17337bc17b7c1fa9f522a5aca69cfbdd4ff",
+      "derived_failure_error_records": 243,
+      "derived_inventory_limit": "Records overlap across selected historical XML; not deduplicated, not the original 386 identities, and not current test failures.",
+      "recovery_summary": "historical/summary.json"
     },
     "fresh_baseline_quality": {
       "ruff": {
@@ -61,7 +69,24 @@
         "evidence": "black-src.log",
         "disposition": "Existing baseline formatting finding; not mixed into the Chronicle fix."
       },
-      "global_mypy": "Not remeasured in this execution; historical 855-error result is not a current matched-baseline result."
+      "global_mypy": "Not remeasured in this execution; historical 855-error result is not a current matched-baseline result.",
+      "chronicle_scoped_mypy": {
+        "exit_code": 1,
+        "errors": 21,
+        "unchanged_from_baseline": true,
+        "comparison": "CI Auto-Healer compared baseline and patched diagnostics after normalizing shifted line numbers.",
+        "evidence": ["chronicle/mypy-baseline.log", "chronicle/mypy.log", "chronicle/result.json"]
+      },
+      "supplemental_bandit": {
+        "file": "src/aries_serpent_core/cli.py",
+        "baseline_findings": 8,
+        "patched_findings": 8,
+        "severity": "LOW",
+        "new_findings": 0,
+        "comparison": "Same checks and identical code snippets after stripping shifted line-number prefixes; existing subprocess/import warnings are outside the two changed normalization lines.",
+        "owner": "CLI maintainers retain existing subprocess/input-review debt; this comparison is not global security acceptance.",
+        "evidence": "bandit-comparison.json"
+      }
     },
     "hosted_checks": {
       "pr_head": "80953c9ab4eb2b8e281b9936bce15eec5fd6105e",
@@ -70,12 +95,20 @@
       "conclusion": "action_required",
       "jobs": 0,
       "failed_job_logs": "No failed jobs found; zero total jobs.",
+      "current_branch_pr": 5709,
+      "current_branch_sha_observed": "26c4d0ba256bc3c1ed8d27cc7a64458fedbf774d",
+      "current_branch_validation_run": 40072734660,
+      "current_branch_conclusion": "action_required",
+      "current_branch_jobs": 0,
+      "current_branch_failed_job_logs": "No failed jobs found; zero total jobs. Not passing CI and not validation of later commits.",
+      "current_branch_review_threads_observed": 0,
       "authorization": "No workflows modified, approved, dispatched, or retried."
     },
     "agents": [
       {"id": "phase2-chronicle", "type": "ci-auto-healer-agent", "scope": "Chronicle CLI and directly related regression tests"},
       {"id": "phase2-suite-triage", "type": "test-pattern-guardian", "scope": "External collection inventory and bounded serial test shards"},
-      {"id": "phase2-historical-reconcile", "type": "session-analysis-agent", "scope": "Recovered historical evidence and reachable incomplete-module disposition"}
+      {"id": "phase2-historical-reconcile", "type": "session-analysis-agent", "scope": "Recovered historical evidence and reachable incomplete-module disposition"},
+      {"id": "phase2-time-monitor", "type": "session-analysis-agent", "scope": "Read-only remaining-time alerts and continuation-prompt reminder based on the user's session-time estimate"}
     ],
     "focused_quartet": {
       "selectors": [
@@ -94,7 +127,69 @@
       "snapshot_overlays": "chronicle/sha256.json",
       "coverage_scope": "Selected quartet with --cov=aries_serpent_core and --cov-fail-under=0 for diagnostic collection only; not repository-wide acceptance and not enforcement of the 80-percent gate.",
       "isolation": "External runner removes primary-checkout source paths and records imported module origins; exit 99 would reject primary-checkout source imports.",
-      "primary_checkout_test_execution": false
+      "primary_checkout_test_execution": false,
+      "regression_proof": "Four external .codex cases fail on the unpatched CLI and pass patched; eight relative/custom/CWD cases pass both. The combined baseline proof also includes two separately classified consumer failures."
+    },
+    "related_consumers": {
+      "initial_exit_code": 1,
+      "initial_passed": 18,
+      "initial_failed": 2,
+      "baseline_reproduced": true,
+      "evidence": "chronicle/consumers.xml",
+      "after_viewer_repair": {
+        "exit_code": 1,
+        "tests": 27,
+        "passed": 26,
+        "failed": 1,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "chronicle/cp-d-consumers.xml",
+        "remaining_failure": "tests/test_cli_entrypoint.py::test_cli_runs_with_simple_config",
+        "remaining_classification": "Real Torch dependency absent; not accepted or hidden by a skip."
+      },
+      "viewer_acceptance": {
+        "tests": 10,
+        "passed": 10,
+        "exit_code": 0,
+        "evidence": "chronicle/cp-d-after.xml",
+        "regression_scope": "Raw JSON, empty results, Unicode, logger-independent output and unchanged text rendering through canonical and legacy module entrypoints.",
+        "quality": "CI Auto-Healer reports Ruff, Black, isort, compile and scoped mypy pass for the two viewer files.",
+        "independent_review": "phase2-viewer-review found no significant issues; final scoped diff SHA-256 2e3552f1471e21678a1ff02902c37993b26c65aa6bc9a29bbb1ef39c49981a64."
+      },
+      "findings": [
+        {
+          "nodeid": "tests/test_cli_entrypoint.py::test_cli_runs_with_simple_config",
+          "classification": "environment_blocked",
+          "cause": "Real Torch distribution is absent; an optional-dependency stub raises ImportError during hasattr(torch, 'nn').",
+          "owner": "Dependency/environment lane",
+          "next_action": "Use the supported real-dependency environment and rerun; do not add a blanket skip or infer a source defect."
+        },
+        {
+          "nodeid": "tests/test_logging_viewer_cli.py::test_cli_json_output",
+          "classification": "repaired_and_regression_validated",
+          "cause": "Logger formatting prefixes JSON stdout, so json.loads fails.",
+          "owner": "phase2-chronicle",
+          "next_action": "Retain the raw-JSON regression; viewer-only acceptance is complete, while the related training consumer remains dependency-blocked."
+        }
+      ],
+      "counts_are_not_additive_with_quartet": true
+    },
+    "bounded_incomplete_module_audit": {
+      "scope": "Chronicle CLI/logging and directly reachable workflow modules only; not repository-wide completeness.",
+      "evidence": "historical/current-source-audit-provenance.json",
+      "intentional_hooks": "Two _TipStrategy NotImplementedError hooks have seven concrete implementations; no missing behavior inferred.",
+      "existing_workflow_debt": {
+        "path": "src/agents/workflow_navigator.py:83-87",
+        "finding": "Reachable uses branch reports COMPLETED/success and Would execute without dispatch.",
+        "owner": "WorkflowNavigator maintainers",
+        "next_action": "Implement real dispatch or explicitly label simulation in a separately bounded task; not a freshly reproduced failure."
+      },
+      "historical_contract_mismatch": {
+        "path": "tests/agents/test_edge_cases_phase9_4.py:447-451",
+        "finding": "Raises assertion conflicts with graceful zero-round source behavior and existing core-flow contracts.",
+        "owner": "Quantum-game test maintainers",
+        "next_action": "Reproduce and reconcile the stale contract without reverting intentional graceful behavior; static evidence only in this execution."
+      }
     },
     "gates": {
       "fresh_environment": false,
