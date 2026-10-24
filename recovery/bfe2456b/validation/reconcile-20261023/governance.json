@@ -1,0 +1,8 @@
+{
+  "source": "live repository Actions Variables API via CODEX_MASTER_KEY; GET only",
+  "AUTONOMOUS_ACTIONS_ENABLED": "true",
+  "COPILOT_AGENT_AUTH_ENABLED": "true",
+  "AGENT_KILL_SWITCH": "0",
+  "COPILOT_AGENT_MAX_AUTONOMY_LEVEL": "D",
+  "modified": false
+}

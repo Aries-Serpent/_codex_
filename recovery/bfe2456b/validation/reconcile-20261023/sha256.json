@@ -1,0 +1,31 @@
+{
+  "scope": "Frozen reconciliation checkpoint only; original historical files absent, so no historical SHA-256 invented. Excludes live rerun files and this index itself.",
+  "sha256": {
+    "recovery/bfe2456b/validation/reconcile-20261023/polls.jsonl": "8d590e622f2813e9bfd64d699a90b0ffcbc2e1f62c0d350ae07350cca63fcba6",
+    "recovery/bfe2456b/validation/reconcile-20261023/strict-no-deferral-security-yamllint.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recovery/bfe2456b/validation/reconcile-20261023/execution-status.json": "c40f1fba7185ea269e0f05a54ab814069e82e93a042051f13e9aa72e597fd032",
+    "recovery/bfe2456b/validation/reconcile-20261023/preservation.json": "1262e2d93b7deda760cbcd0a2ec5dbb28c41385f08ca3c9929b29af07cd4f3f7",
+    "recovery/bfe2456b/validation/reconcile-20261023/coverage-status.json": "b06628fb610b6eb00889d9ba739311996a06c285a6155448447e089bce2ccada",
+    "recovery/bfe2456b/validation/reconcile-20261023/outcome-reconciliation.json": "6e75f345bf2637d9201c2cd53f06810f096b99abfa049125ad5f3a755f83343e",
+    "recovery/bfe2456b/validation/reconcile-20261023/copilot-bootstrap-validation.txt": "bf25f513a053c77b9fa66bd9154fe66ec03e7403c92c146f1a466e5df15e0eca",
+    "recovery/bfe2456b/validation/reconcile-20261023/environment.json": "c60c737f4bbeef7e1b501af12d66e42860fb6075fc0673e9a0a3f043f3b2e987",
+    "recovery/bfe2456b/validation/reconcile-20261023/copilot-setup-steps-yamllint.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recovery/bfe2456b/validation/reconcile-20261023/workflow-validation.json": "47ade94f90f4b5e7556882d7e0bb8337b201a3025d6b2d53c2ee5f84ee7af32c",
+    "recovery/bfe2456b/validation/reconcile-20261023/deferral-language-gate-yamllint.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recovery/bfe2456b/validation/reconcile-20261023/pypi-publish-yamllint.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recovery/bfe2456b/validation/reconcile-20261023/governance.json": "d20c20cdcc148f037f5046aac10bb9ceb3057bbccb53aad0b365376a17557b3c",
+    "recovery/bfe2456b/validation/reconcile-20261023/git-reconciliation.json": "659d0380678c342fef109a3ff4afc97f2b7f54baf93dccdb1b6eb88e296e1046",
+    "recovery/bfe2456b/validation/reconcile-20261023/checkpoint/test_bridge_manager_comprehensive/pid": "adbc1a509cedf6251f2932aa121514a78bcc5896b92f9f4458ce29ce6a097d49",
+    "recovery/bfe2456b/validation/reconcile-20261023/checkpoint/test_bridge_manager_comprehensive/started": "1c1c457efa693b2d119059e674c614e12b14c37c4914ff5181934f44cfd24b81",
+    "recovery/bfe2456b/validation/reconcile-20261023/checkpoint/test_bridge_manager_comprehensive/pytest.log": "042733e250fdaceb9340bbccb6d207046499836d3385cea69e2c5627989d50bd",
+    "recovery/bfe2456b/validation/reconcile-20261023/checkpoint/test_session_logger_wal/pid": "3cff22a2f279db5b014c37cd6739e6815f4d78005da9006e59d2e447dd70f2a8",
+    "recovery/bfe2456b/validation/reconcile-20261023/checkpoint/test_session_logger_wal/started": "1c1c457efa693b2d119059e674c614e12b14c37c4914ff5181934f44cfd24b81",
+    "recovery/bfe2456b/validation/reconcile-20261023/checkpoint/test_session_logger_wal/pytest.log": "e1c452bf7a8b6af153ba32480eb7e59fb6403b4e11d54bb9bec9ec7dd67ddf21",
+    "recovery/bfe2456b/validation/reconcile-20261023/checkpoint/test_phase12_tier2_lane4_edge_cases/pid": "76310fb87981f4992188d979130608bcbc3e013dbeadb86361ea8fc25bae9b8a",
+    "recovery/bfe2456b/validation/reconcile-20261023/checkpoint/test_phase12_tier2_lane4_edge_cases/started": "1c1c457efa693b2d119059e674c614e12b14c37c4914ff5181934f44cfd24b81",
+    "recovery/bfe2456b/validation/reconcile-20261023/checkpoint/test_phase12_tier2_lane4_edge_cases/pytest.log": "81d4a9956802130b5f501ee9e447920d02c0f5e4ddaaac7720d00d92bb9e1846",
+    "recovery/bfe2456b/validation/reconcile-20261023/checkpoint/test_phase12_tier2_lane4_edge_cases/junit.xml": "0bd3ee3b608477e19960852509d18e819184fedfe7e761e4cee2a3a79c32f359",
+    "recovery/bfe2456b/CONTEXT.md": "7ddb562858f1d0022785b9845674ba68bd5db0b673044a9a17908d82e6a937a0",
+    "recovery/bfe2456b/validation/guide-findings.md": "bfcd7a42cfb5f22e94c1ba1e4f688f51e75f9090e0ae61a9d49a5237fcf35359"
+  }
+}

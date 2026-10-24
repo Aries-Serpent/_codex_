@@ -1,0 +1,15 @@
+{
+  "coverage_percent": null,
+  "gate_80_percent": "UNVERIFIED",
+  "coverage_status": "UNKNOWN",
+  "combine_attempted": false,
+  "reason": "No fresh shard process has a recorded exit; no completed coverage data eligible for combine. Original 869-shard coverage files are absent. Running XML is not a completed coverage run.",
+  "included_shards": [],
+  "excluded_fresh_shards": [
+    "tests/test_bridge_manager_comprehensive.py",
+    "tests/test_phase12_tier2_lane4_edge_cases.py",
+    "tests/test_session_logger_wal.py"
+  ],
+  "excluded_historical_shards": "All 869 historical shards: original manifest, per-shard logs, JUnit, and coverage absent; previous selector inventory remains at validation/full/pinned-run-manifest.json, but historical identities/results cannot be reconstructed from that alone.",
+  "coverage_warning": "Source files may be pre-imported by sitecustomize before coverage starts; no completeness or percentage claimed."
+}

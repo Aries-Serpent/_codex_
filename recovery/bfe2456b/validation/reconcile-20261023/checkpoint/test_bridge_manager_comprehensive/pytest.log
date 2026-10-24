@@ -1,0 +1,77 @@
+MLflow not installed; tracking URI set to file:./artifacts/mlruns
+ℹ️  W&B defaulted to offline mode (set WANDB_MODE=online to override)
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/cognitive_brain/context_manager.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/cognitive_brain/reasoning.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/cognitive_brain/core.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/memory/schemas.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/memory/ltm.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/memory/stm.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/memory/consolidation.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/config/settings.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/tracking/offline.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/tracking/experiments.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/logging/file_logger.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/utils/error_log.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/safety/filters.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/safety/moderation.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/safety/prompt_sanitizer.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/safety/redaction.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/safety/sanitizers.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/safety/sandbox.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/logging/session_logger.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/logging/permissions.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/logging/ndjson_logger.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/logging/run_logger.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/tracking/mlflow_guard.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/aries_serpent_core/logging/adapter.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/aries_serpent_core/logging/config.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/aries_serpent_core/db/sqlite_patch.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/aries_serpent_core/logging/fetch_messages.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/aries_serpent_core/logging/session_database.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/aries_serpent_core/logging/pattern_event_recorder.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/aries_serpent_core/logging/session_analytics.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/aries_serpent_core/logging/session_query_builder.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/aries_serpent_core/logging/session_db.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/utils/optional_dependencies.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/tracking/writers.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/tracking/init_experiment.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/tracking/mlflow_utils.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+/home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/coverage/inorout.py:538: CoverageWarning: Already imported a file that will be measured: /tmp/bfe2456b-reconcile-be91ba82/src/codex_ml/utils/experiment_tracking_mlflow.py (already-imported); see https://coverage.readthedocs.io/en/7.17.0/messages.html#warning-already-imported
+  self.warn(msg, slug="already-imported")
+EEFEFE...........EFFEE

@@ -1,0 +1,131 @@
+{
+  "recovery_start_head": "6ca982ce9e195a0f5c4392d96d3694d71e410eb2",
+  "artifact_head": "6dc08c325bade743c89162aa4029be7638984a19",
+  "ancestry": {
+    "8dfed27c3a47bf9fc0fe88b0b1f6f11370b964e3": false,
+    "73400c1bf220a19858a61198649839f3edfada52": false,
+    "5980258483d8f03b6385562fc0940c52e183fb87": false,
+    "053409ad98ff3dc40243d1e132a1139e83ffaef7": true
+  },
+  "paths": {
+    ".codex/checkpoints/pypi-phase2-triage.json": {
+      "present_on_both": true,
+      "blobs": {
+        "6ca982ce9e195a0f5c4392d96d3694d71e410eb2": "b80252d7a1bb25d7ab40816ee3b346704e04d16f",
+        "5980258483d8f03b6385562fc0940c52e183fb87": "b80252d7a1bb25d7ab40816ee3b346704e04d16f"
+      },
+      "match": true
+    },
+    ".codex/checkpoints/pypi-code-complete.json": {
+      "present_on_both": true,
+      "blobs": {
+        "6ca982ce9e195a0f5c4392d96d3694d71e410eb2": "0218931091a606a61848b6fe6d827b16d22b4d36",
+        "5980258483d8f03b6385562fc0940c52e183fb87": "0218931091a606a61848b6fe6d827b16d22b4d36"
+      },
+      "match": true
+    },
+    ".codex/reports/AGENT_RESTRICTIONS_AUDIT_2026_10_22.md": {
+      "present_on_both": true,
+      "blobs": {
+        "6ca982ce9e195a0f5c4392d96d3694d71e410eb2": "830a7d6ce8bd5ef5f922fb1b50b07bf6b076b2e6",
+        "5980258483d8f03b6385562fc0940c52e183fb87": "830a7d6ce8bd5ef5f922fb1b50b07bf6b076b2e6"
+      },
+      "match": true
+    },
+    "CHANGELOG.md": {
+      "present_on_both": true,
+      "blobs": {
+        "6ca982ce9e195a0f5c4392d96d3694d71e410eb2": "bc12abeb53761f59df37afb5842e14f475cd0541",
+        "5980258483d8f03b6385562fc0940c52e183fb87": "bc12abeb53761f59df37afb5842e14f475cd0541"
+      },
+      "match": true
+    },
+    "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md": {
+      "present_on_both": true,
+      "blobs": {
+        "6ca982ce9e195a0f5c4392d96d3694d71e410eb2": "e3318b6580a8519b1a6dcfbbfb9b99c88c256e0e",
+        "5980258483d8f03b6385562fc0940c52e183fb87": "e3318b6580a8519b1a6dcfbbfb9b99c88c256e0e"
+      },
+      "match": true
+    }
+  },
+  "artifacts": [
+    {
+      "path": "recovery/bfe2456b/README.md",
+      "present_on_recovery": false,
+      "artifact_blob": "79c304818e01c4a2d6738ee99d62d32c9cfe499c",
+      "location": "origin/copilot/recovery-artifacts-bfe2456b:recovery/bfe2456b/README.md",
+      "missing_reason": "Retained on artifact branch as immutable recovery export; not copied to evidence branch."
+    },
+    {
+      "path": "recovery/bfe2456b/codex-session-bfe2456b.bundle",
+      "present_on_recovery": false,
+      "artifact_blob": "55a7bf5abcd309f8609695637ae5d262029924f9",
+      "location": "origin/copilot/recovery-artifacts-bfe2456b:recovery/bfe2456b/codex-session-bfe2456b.bundle",
+      "missing_reason": "Retained on artifact branch as immutable recovery export; not copied to evidence branch."
+    },
+    {
+      "path": "recovery/bfe2456b/codex-session-manifest.md",
+      "present_on_recovery": false,
+      "artifact_blob": "92ec038e7e3fd44c85ef46f444e672ea0e49e792",
+      "location": "origin/copilot/recovery-artifacts-bfe2456b:recovery/bfe2456b/codex-session-manifest.md",
+      "missing_reason": "Retained on artifact branch as immutable recovery export; not copied to evidence branch."
+    },
+    {
+      "path": "recovery/bfe2456b/patches/0001-Continue-PyPI-readiness-repairs-and-preserve-incompl.patch",
+      "present_on_recovery": false,
+      "artifact_blob": "e807e1022d80c293c29f5f21c3d60377983f4cc2",
+      "location": "origin/copilot/recovery-artifacts-bfe2456b:recovery/bfe2456b/patches/0001-Continue-PyPI-readiness-repairs-and-preserve-incompl.patch",
+      "missing_reason": "Retained on artifact branch as immutable recovery export; not copied to evidence branch."
+    },
+    {
+      "path": "recovery/bfe2456b/patches/0002-Record-saved-PyPI-work-and-workflow-permission-push-.patch",
+      "present_on_recovery": false,
+      "artifact_blob": "83610590069e2919cc28e7125b5840452c2dba41",
+      "location": "origin/copilot/recovery-artifacts-bfe2456b:recovery/bfe2456b/patches/0002-Record-saved-PyPI-work-and-workflow-permission-push-.patch",
+      "missing_reason": "Retained on artifact branch as immutable recovery export; not copied to evidence branch."
+    },
+    {
+      "path": "recovery/bfe2456b/patches/merge-first-parent-integration.patch",
+      "present_on_recovery": false,
+      "artifact_blob": "3b3680273d80161745890fde1ac05df39b1edbf8",
+      "location": "origin/copilot/recovery-artifacts-bfe2456b:recovery/bfe2456b/patches/merge-first-parent-integration.patch",
+      "missing_reason": "Retained on artifact branch as immutable recovery export; not copied to evidence branch."
+    },
+    {
+      "path": "recovery/bfe2456b/session-recovery-bfe2456b.tar.gz",
+      "present_on_recovery": false,
+      "artifact_blob": "2ef18dc60335f85a2e169fe74d517d5e1b7c6b8b",
+      "location": "origin/copilot/recovery-artifacts-bfe2456b:recovery/bfe2456b/session-recovery-bfe2456b.tar.gz",
+      "missing_reason": "Retained on artifact branch as immutable recovery export; not copied to evidence branch."
+    },
+    {
+      "path": "recovery/bfe2456b/state/STATE.md",
+      "present_on_recovery": false,
+      "artifact_blob": "27883bcb6459d654687202953e305dea4fbf62ee",
+      "location": "origin/copilot/recovery-artifacts-bfe2456b:recovery/bfe2456b/state/STATE.md",
+      "missing_reason": "Retained on artifact branch as immutable recovery export; not copied to evidence branch."
+    },
+    {
+      "path": "recovery/bfe2456b/state/bfe-nonworkflow-uncommitted.patch",
+      "present_on_recovery": false,
+      "artifact_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "location": "origin/copilot/recovery-artifacts-bfe2456b:recovery/bfe2456b/state/bfe-nonworkflow-uncommitted.patch",
+      "missing_reason": "Retained on artifact branch as immutable recovery export; not copied to evidence branch."
+    },
+    {
+      "path": "recovery/bfe2456b/state/bfe-workflows-uncommitted.patch",
+      "present_on_recovery": false,
+      "artifact_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "location": "origin/copilot/recovery-artifacts-bfe2456b:recovery/bfe2456b/state/bfe-workflows-uncommitted.patch",
+      "missing_reason": "Retained on artifact branch as immutable recovery export; not copied to evidence branch."
+    },
+    {
+      "path": "recovery/bfe2456b/state/state.json",
+      "present_on_recovery": false,
+      "artifact_blob": "425236d6f57b4f6eaa8ddeee79fd77645f2cd77e",
+      "location": "origin/copilot/recovery-artifacts-bfe2456b:recovery/bfe2456b/state/state.json",
+      "missing_reason": "Retained on artifact branch as immutable recovery export; not copied to evidence branch."
+    }
+  ]
+}
