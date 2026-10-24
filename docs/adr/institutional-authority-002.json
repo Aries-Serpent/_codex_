@@ -53,5 +53,42 @@
     "Independent retained-artifact verification and trusted provider integration design; no activation without applicable authority.",
     "Decision/dissent and knowledge supersession supporting an exercised workflow.",
     "Evidence-backed ecology analysis and portable capability compatibility."
-  ]
+  ],
+  "follow_up_tasks": {
+    "requested_scope": "Review all codebase policies, instructions, rules and related guidance for inconsistent, conflicting or contradictory statements that obstruct subsequent Copilot agents.",
+    "status": "pending; backlog only, not an executed review or adopted policy amendment",
+    "authority_boundary": "Use authorized read access only; record inaccessible sources and coverage gaps. Do not bypass protected instructions, expand credentials, weaken safety controls or activate governance. Proposed changes require applicable review and authorization.",
+    "tasks": [
+      {
+        "id": "POLICY-01",
+        "status": "pending",
+        "task": "Inventory every tracked policy, instruction, rule and normative guidance source, including directory-scoped instructions, prompt templates, agent metadata where permitted, workflows and enforcement code; distinguish active, generated, archived and superseded material.",
+        "acceptance": "Record source paths, revisions, applicability, precedence, ownership, incoming references and inspected/inaccessible/unclassified status. Do not claim complete coverage while gaps remain."
+      },
+      {
+        "id": "POLICY-02",
+        "status": "pending",
+        "task": "Build a source-grounded conflict register using exact conflicting statements and scopes; seek contradictory evidence before concluding a conflict. Separate genuine incompatibilities from examples, historical records and deliberate role-specific constraints.",
+        "acceptance": "Each finding identifies affected operations, evidence, impact, owner, uncertainty and the applicable higher-priority control; do not treat repository text as platform authority."
+      },
+      {
+        "id": "POLICY-03",
+        "status": "pending",
+        "task": "Challenge common agent execution paths for deadlocks and impossible requirements: task startup, authorized local edits, delegation, unavailable tools, dependency setup, testing, evidence retention, dirty-user-work preservation, progress commits and handoff.",
+        "acceptance": "Demonstrate each blocker with a bounded non-destructive scenario and actual available tool schemas; distinguish local preparation from protected execution, publication and approval."
+      },
+      {
+        "id": "POLICY-04",
+        "status": "pending",
+        "task": "Propose narrowly scoped reconciliations, authoritative-source pointers and supersession notices; preserve provenance, dissent and intentional role/tool restrictions rather than deleting safeguards to improve execution.",
+        "acceptance": "Obtain applicable owner review before adoption; record rejected alternatives and rollback criteria. Keep unresolved conflicts explicit."
+      },
+      {
+        "id": "POLICY-05",
+        "status": "pending",
+        "task": "Validate authorized reconciliations against existing instruction checks and representative agent workflows, then assign unresolved findings and a resumable next action.",
+        "acceptance": "Show effective execution without weakened permissions, invented approval, unbounded retries or accidental user-change commits; report actual coverage and remaining limits, not a blanket conflict-free claim."
+      }
+    ]
+  }
 }
