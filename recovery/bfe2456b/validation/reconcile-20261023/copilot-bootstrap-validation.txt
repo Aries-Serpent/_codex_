@@ -1,1 +1,0 @@
-Single-job setup contract and actual consumers verified

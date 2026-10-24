@@ -1,9 +1,0 @@
-{
-  "package_counts": {
-    "base": 243,
-    "snapshot": 243
-  },
-  "version_differences": {},
-  "same_distribution_versions": true,
-  "note": "Separate non-editable local builds match distribution versions; source revisions differ by design. Not a claim of equality with historical 292-line environment."
-}

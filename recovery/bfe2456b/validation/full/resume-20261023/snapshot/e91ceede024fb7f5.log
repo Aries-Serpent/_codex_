@@ -1,7 +1,0 @@
-...............                                                          [100%]
-=============================== warnings summary ===============================
-tests/asyncio/test_py312_compatibility.py:211
-  /tmp/bfe2456b-resume-snapshot/tests/asyncio/test_py312_compatibility.py:211: PytestAssertRewriteWarning: assertion is always true, perhaps remove parentheses?
-    assert (len(event_loop_warnings) == 0, "Event_loop_warnings must not be empty"
-
--- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

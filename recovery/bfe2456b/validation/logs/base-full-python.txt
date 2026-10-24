@@ -1,2 +1,0 @@
-/home/runner/work/_codex_/_codex_/.venv_ci/bin/python
-3.12.10 (main, Apr  8 2025, 22:38:13) [GCC 13.3.0]

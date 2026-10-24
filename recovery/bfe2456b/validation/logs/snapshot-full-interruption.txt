@@ -1,1 +1,0 @@
-Sending SIGINT at 572 seconds to preserve partial JUnit before the 600-second hard bound.

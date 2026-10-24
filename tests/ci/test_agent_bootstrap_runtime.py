@@ -10,18 +10,26 @@ from jsonschema import validate as validate_schema
 
 from scripts.ci import agent_resource_profile, agent_setup_readiness, prepare_agent_context
 from scripts.ci.environment_preflight import _build_config, _detect_missing_runtime_dependencies
-from scripts.ci.validate_copilot_bootstrap import validate
+from scripts.ci.validate_copilot_bootstrap import validate_retained_workflow
 
 ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW = ROOT / ".github/workflows/copilot-setup-steps.yml"
 
 
-def test_real_setup_matches_supported_workflow_contract():
-    assert validate(WORKFLOW) == []
+def test_retained_workflow_reports_legacy_findings_and_deferred_cloud_contract():
+    report = validate_retained_workflow(WORKFLOW)
+    assert report.errors == ()
+    assert len(report.legacy_findings) == 1
+    assert "filtered environment output" in report.legacy_findings[0]
+    assert report.deferred_cloud_setup_checks == (
+        "agent context preparation and delivery",
+        "requested LFS fetch integration",
+        "always-run setup readiness reporting",
+    )
 
 
-def test_supported_job_schema():
-    """Supported workflow schema, not a claim of hosted execution."""
+def test_retained_ordinary_workflow_schema():
+    """Ordinary Actions schema acceptance is not hosted setup support."""
     data = yaml.safe_load(WORKFLOW.read_text())
     validate_schema(
         data["jobs"],
@@ -72,8 +80,21 @@ def test_supported_job_schema():
     )
 
 
-@pytest.mark.parametrize("mutation", ["extra_job", "runner", "timeout", "permissions", "export"])
-def test_guard_rejects_contract_regressions(tmp_path, mutation):
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "extra_job",
+        "runner",
+        "timeout",
+        "permissions",
+        "export",
+        "env_sort",
+        "printenv",
+        "baseline_env_sort",
+        "malformed_checkout",
+    ],
+)
+def test_baseline_guard_rejects_compatibility_and_dump_regressions(tmp_path, mutation):
     data = yaml.safe_load(WORKFLOW.read_text())
     job = data["jobs"]["copilot-setup-steps"]
     if mutation == "extra_job":
@@ -84,12 +105,54 @@ def test_guard_rejects_contract_regressions(tmp_path, mutation):
         job["timeout-minutes"] = 60
     elif mutation == "permissions":
         job["permissions"]["actions"] = "read"
-    else:
+    elif mutation == "export":
         profile_step = data["jobs"]["resource-profile"]["steps"][1]
         profile_step["run"] = profile_step["run"].replace("--github-output", "--unused")
+    elif mutation == "baseline_env_sort":
+        environment_step = next(
+            step for step in job["steps"] if step.get("name") == "✅ Validate Environment Setup"
+        )
+        environment_step["run"] = environment_step["run"].replace(
+            'env | grep -E "^(CODEX|PYTHON|RAG|CI|GITHUB|COPILOT)" | sort || true',
+            "env | sort",
+        )
+    elif mutation == "malformed_checkout":
+        checkout_step = next(
+            step
+            for step in job["steps"]
+            if str(step.get("uses", "")).startswith("actions/checkout@")
+        )
+        checkout_step["with"] = "invalid"
+    else:
+        job["steps"].append(
+            {
+                "name": "Unexecuted unsafe mutation",
+                "run": "printenv" if mutation == "printenv" else "env | sort",
+            }
+        )
     path = tmp_path / "workflow.yml"
     path.write_text(yaml.safe_dump(data))
-    assert validate(path)
+    report = validate_retained_workflow(path)
+    assert report.errors
+    if mutation in {"env_sort", "printenv", "baseline_env_sort"}:
+        assert any("environment output" in error for error in report.errors)
+    if mutation == "malformed_checkout":
+        assert "checkout options must be a mapping" in report.errors
+
+
+@pytest.mark.parametrize("contents", ["[]", "jobs: []", "jobs: ["])
+def test_validator_reports_malformed_workflow_structure(tmp_path, contents):
+    path = tmp_path / "malformed.yml"
+    path.write_text(contents)
+    report = validate_retained_workflow(path)
+    assert report.errors
+
+
+def test_validator_reports_malformed_yaml_without_raising(tmp_path):
+    path = tmp_path / "malformed.yml"
+    path.write_text("jobs: [")
+    report = validate_retained_workflow(path)
+    assert report.errors[0].startswith("unable to read valid workflow YAML:")
 
 
 def test_resource_main_exports_real_tool_consumers(tmp_path, monkeypatch):

@@ -71,6 +71,22 @@ def _cli_module():
     return module
 
 
+@pytest.fixture(autouse=True)
+def isolate_campaign_metrics(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Keep CLI telemetry from pytest runs in the per-test temporary directory."""
+    monkeypatch.setenv("CODEX_CAMPAIGN_METRICS_LOG", str(tmp_path / "campaign_metrics.jsonl"))
+
+
+def test_campaign_metrics_use_configured_temporary_path(tmp_path: Path) -> None:
+    module = _cli_module()
+    module._append_campaign_metric("test_event", {"state": "available"})
+
+    output = tmp_path / "campaign_metrics.jsonl"
+    record = json.loads(output.read_text(encoding="utf-8"))
+    assert record["event"] == "test_event"
+    assert record["state"] == "available"
+
+
 def test_resolve_chronicle_database_prefers_existing_repo_session_db(
     tmp_path: Path, monkeypatch
 ) -> None:

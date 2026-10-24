@@ -87,6 +87,27 @@
       "evidence": "pypi-phase2/current-integration.xml"
     }
   },
+  "recovery_2026_10_24": {
+    "recorded_at": "2026-10-24T04:21:32Z",
+    "scope": "PR #5708 R1-R4 remediation; this recovery status supplements, and does not rewrite, the historical measurements above.",
+    "base_commit": "71613ee00080",
+    "pre_cleanup_evidence_commit": "see recovery manifest for exact immutable ID",
+    "status": "incomplete; not merge-ready",
+    "R1": "Blocked: required instruction-contract selector last reported 67 passed and 2 failed because the held workflows lack --warn-only. No workflow changes or weakened acceptance.",
+    "R2": "The 1423 validation payload paths were verified from a fresh remote fetch; exact deletion is staged and only two recovery documents remain in the proposed index. Post-push ancestry/inventory verification is pending; retention is Git history, not an independent archive.",
+    "R3": "The 16 synthetic campaign records and timestamp-only startup diff are absent against base. Campaign telemetry tests passed twice (43 each); original dirty startup bytes are preserved separately.",
+    "R4": "Ordinary workflow compatibility is distinguished from hosted setup validation; legacy filtered environment output is reported, new broad dumps are rejected, and cloud setup checks are deferred.",
+    "current_full_source_mypy": "855 errors in 278 files, 1972 checked, exit 1. Base invocation exits 2 during package discovery on the invalid self-healing package name; no comparable delta or waiver.",
+    "open_gates": [
+      "R1 authorized companion workflow integration and passing tests",
+      "Complete applicable suite and repository-wide coverage acceptance",
+      "Required full-source type acceptance/disposition",
+      "Post-cleanup remote evidence ancestry and complete inventory verification",
+      "Final secret, CodeQL, configured-hook and hosted-check validation"
+    ],
+    "full_commit_ids": "recovery/bfe2456b/nonworkflow-manifest.md",
+    "details": "recovery/bfe2456b/CONTEXT.md and recovery/bfe2456b/nonworkflow-manifest.md"
+  },
   "resolved_since_original_checkpoint": [
     "BrainClient optional authentication, covered by 46 standalone tests and selected integration",
     "15 broad-run failures repaired and their files passed in selected integration; broad rerun remains necessary",
