@@ -8,7 +8,9 @@ This module identifies duplicates after normalizing code by:
 """
 
 import hashlib
+import io
 import re
+import tokenize
 from pathlib import Path
 
 from .exact_detector import ExactDetector
@@ -38,22 +40,42 @@ class PythonNormalizer:
         # Remove blank lines
         lines = [line for line in code.split("\n") if line.strip()]
 
+        # Continuation indentation is not suite indentation. In particular, a
+        # closing delimiter at column zero must not dedent its enclosing blocks.
+        logical_depths: dict[int, int] = {}
+        depth = 0
+        try:
+            for token in tokenize.generate_tokens(io.StringIO("\n".join(lines)).readline):
+                if token.type == tokenize.INDENT:
+                    depth += 1
+                elif token.type == tokenize.DEDENT:
+                    depth -= 1
+                elif token.type != tokenize.ENDMARKER:
+                    logical_depths.setdefault(token.start[0], depth)
+        except (IndentationError, tokenize.TokenError):
+            # Retain best-effort normalization for incomplete or invalid input.
+            logical_depths.clear()
+
         # Normalize whitespace (consistent indentation)
         normalized_lines = []
         indent_widths = [0]
-        for line in lines:
+        depth = 0
+        for row, line in enumerate(lines, start=1):
             # Replace multiple spaces with single space, preserve indentation structure
             stripped = line.lstrip()
             if stripped:
-                prefix = line[: len(line) - len(stripped)]
-                indent_width = len(prefix.expandtabs(8))
-                # Canonicalize nesting depth, not physical indent width.
+                if logical_depths:
+                    depth = logical_depths.get(row, depth)
+                else:
+                    prefix = line[: len(line) - len(stripped)]
+                    indent_width = len(prefix.expandtabs(8))
+                    while indent_width < indent_widths[-1]:
+                        indent_widths.pop()
+                    if indent_width > indent_widths[-1]:
+                        indent_widths.append(indent_width)
+                    depth = len(indent_widths) - 1
                 # Two spaces, four spaces and tabs can express the same suite.
-                while indent_width < indent_widths[-1]:
-                    indent_widths.pop()
-                if indent_width > indent_widths[-1]:
-                    indent_widths.append(indent_width)
-                normalized_indent = (len(indent_widths) - 1) * "    "
+                normalized_indent = depth * "    "
                 normalized_lines.append(normalized_indent + " ".join(stripped.split()))
 
         return "\n".join(normalized_lines)

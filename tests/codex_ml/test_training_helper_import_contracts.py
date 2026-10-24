@@ -3,13 +3,13 @@
 from pathlib import Path
 
 import pytest
-import torch
-from torch import nn
-from torch.utils.data import DataLoader
 
+import torch
 from codex_ml import _train_init_helpers as helpers
 from codex_ml.train_loop import ToyDataset
 from codex_ml.training.dp_config import DifferentialPrivacyConfig
+from torch import nn
+from torch.utils.data import DataLoader
 
 
 @pytest.mark.parametrize(
@@ -43,10 +43,12 @@ def test_helper_builds_real_optimizer_without_optional_opacus(
 ) -> None:
     model = nn.Linear(10, 1)
     loader = DataLoader(torch.ones(4, 10), batch_size=2)
-    optimizer, privacy_engine = helpers.setup_optimizer_with_dp(
+    wrapped_model, optimizer, wrapped_loader, privacy_engine = helpers.setup_optimizer_with_dp(
         model, 0.001, torch.float32, dp_settings, loader
     )
 
+    assert wrapped_model is model
+    assert wrapped_loader is loader
     assert isinstance(optimizer, torch.optim.Adam)
     assert privacy_engine is None
     assert optimizer.param_groups[0]["lr"] == 0.001
