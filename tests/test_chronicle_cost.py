@@ -103,6 +103,23 @@ def test_resolve_chronicle_database_prefers_existing_repo_session_db(
     ), "Data must not be empty"
 
 
+def test_canonicalize_chronicle_scope_uses_repo_relative_paths_before_trim(tmp_path: Path) -> None:
+    module = _cli_module()
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+    (repo_root / "reports").mkdir()
+    (repo_root / "reports" / ".codex").mkdir(parents=True)
+    database = repo_root / "reports" / ".codex" / "sessions.db"
+
+    module.REPO_ROOT = repo_root
+    assert module._canonicalize_chronicle_scope(str(database)) == "reports/.codex/sessions.db"
+
+    external_root = tmp_path / ".codex" / "external"
+    external_root.mkdir(parents=True)
+    external_db = external_root / "sessions.db"
+    assert module._canonicalize_chronicle_scope(str(external_db)) == ".codex/external/sessions.db"
+
+
 def test_store_normalizes_id_schema_and_reports_missing_credits(tmp_path: Path) -> None:
     database = tmp_path / "chronicle.sqlite"
     _database(database)

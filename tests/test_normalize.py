@@ -102,6 +102,17 @@ def test_python_normalizer_handles_incomplete_or_invalid_input(code: str, expect
     assert PythonNormalizer().normalize(code) == expected
 
 
+def test_python_normalizer_preserves_whitespace_inside_spanning_string_literals() -> None:
+    first = 'def build():\n    text = "hello \\\n    world"\n'
+    second = 'def build():\n    text = "hello\\\nworld"\n'
+    normalized_first = PythonNormalizer().normalize(first)
+    normalized_second = PythonNormalizer().normalize(second)
+
+    assert normalized_first != normalized_second
+    assert 'hello \\\n    world' in normalized_first
+    assert 'hello\\\n    world' in normalized_second
+
+
 def test_normalized_detector_ignores_comments():
     """Test that files differing only in comments are detected as duplicates."""
     with tempfile.TemporaryDirectory() as tmpdir:
