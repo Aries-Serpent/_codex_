@@ -10,9 +10,11 @@
   "completed": false,
   "current_execution": "execution_2026_10_24",
   "execution_2026_10_24": {
-    "status": "in_progress_global_gates_unmet",
+    "status": "bounded_followup_complete_global_gates_blocked",
     "entry_commit": "aa5bfd235038411bd4e54354124dcacb890b5eaf",
     "baseline_commit": "3a455fd0667ddd9b30449ce7d6b023d2695a79c2",
+    "validated_code_commit": "e5b7af7d34971fafb62e2573b43904e971eb7835",
+    "validated_code_provenance": "External baseline plus hashed CLI/viewer overlays; later checkpoint-only commits do not change the accepted production/test blobs.",
     "destination_branch": "copilot/fix-review-comments",
     "pr5708_head_at_start": "80953c9ab4eb2b8e281b9936bce15eec5fd6105e",
     "branch_boundary": "The current branch retains the eight LFS/DP/normalizer review-fix paths. PR #5708 remains a different branch; no other branch was changed.",
@@ -29,7 +31,7 @@
       "test_snapshot": "git archive respects export-ignore and omitted tests. Restored the tracked test tree and immutable baseline test_chronicle_cost.py blob; baseline-tests-sha256.json hashes 3418 tracked test files.",
       "provenance": "baseline-provenance.json",
       "startup_entry_sha256": "bb90bd5eac8752be4576dcd03146caca5fd8708ae4095f1fb0bb2a17ec8cca0b",
-      "startup_disposition": "The initial progress tool committed the pre-existing dirty timestamp. Restore the session-entry committed packet in the patch, then restore the exact dirty entry bytes uncommitted after publication."
+      "startup_disposition": "26c4d0ba restored the session-entry committed packet after the initial progress commit accidentally included dirty timestamp bytes. Final handoff restores the saved exact entry bytes uncommitted, after the last progress/commit call."
     },
     "historical_evidence": {
       "commit": "e15df253c7f0facc2bbeda1e552ada1f0e050360",
@@ -86,6 +88,13 @@
         "comparison": "Same checks and identical code snippets after stripping shifted line-number prefixes; existing subprocess/import warnings are outside the two changed normalization lines.",
         "owner": "CLI maintainers retain existing subprocess/input-review debt; this comparison is not global security acceptance.",
         "evidence": "bandit-comparison.json"
+      },
+      "codeql": {
+        "code_commit": "e5b7af7d34971fafb62e2573b43904e971eb7835",
+        "analysis_performed": false,
+        "result": "Skipped because the Python database is too large. The tool's zero-alert header is not an analyzed security pass.",
+        "owner": "Security/CI maintainers",
+        "next_action": "Run the required analysis in a supported environment with an analyzable database; retain security acceptance as open."
       }
     },
     "hosted_checks": {
@@ -151,7 +160,8 @@
         "tests": 10,
         "passed": 10,
         "exit_code": 0,
-        "evidence": "chronicle/cp-d-after.xml",
+        "evidence": "chronicle/cp-d-viewer-final.xml",
+        "before_repair": {"passed": 3, "failed": 7, "evidence": "chronicle/cp-d-before.xml"},
         "regression_scope": "Raw JSON, empty results, Unicode, logger-independent output and unchanged text rendering through canonical and legacy module entrypoints.",
         "quality": "CI Auto-Healer reports Ruff, Black, isort, compile and scoped mypy pass for the two viewer files.",
         "independent_review": "phase2-viewer-review found no significant issues; final scoped diff SHA-256 2e3552f1471e21678a1ff02902c37993b26c65aa6bc9a29bbb1ef39c49981a64."
@@ -174,6 +184,39 @@
       ],
       "counts_are_not_additive_with_quartet": true
     },
+    "bounded_suite_triage": {
+      "status": "selected_cohort_passed_global_accounting_incomplete",
+      "evidence": "triage/summary.json",
+      "collection_inventory": "triage/collection_inventory.json",
+      "tracked_test_modules": 2969,
+      "conftest_files": 43,
+      "static_root_declared_exclusion_union": 308,
+      "exclusion_runtime_effect_verified": false,
+      "inventory_interpretation": "Static test_*.py inventory, not all 3418 tracked test-tree files. The 308-path union reflects declared root-relative exclusion intent, not verified effective pytest omissions.",
+      "selectors": [
+        "tests/test_normalize.py",
+        "tests/test_dp_config.py",
+        "tests/ci/test_validate_copilot_dependencies.py",
+        "tests/agents/test_memory_connection_lifetime.py"
+      ],
+      "terminal_cohort": {
+        "tests": 42,
+        "passed": 42,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "exit_code": 0,
+        "junit": "triage/terminal-quartet/batch_0000.xml",
+        "command_record": "triage/terminal-quartet.json",
+        "coverage": "Selected-only --cov=src diagnostic XML/JSON; no compatible global merge or 80-percent acceptance."
+      },
+      "setup_attempts": "Three initial missing-test invocation errors, then 41 passes/one missing-workflow-asset failure, were superseded by the 42-pass cohort. These were snapshot omissions, not product failures.",
+      "workflow_fixture_sha256": "46df601f510e9b8aecabb0e0b02db1698964db6733dfbb24bddcaba8cb83f182",
+      "workflow_fixture_provenance": "Hash matches immutable baseline 3a455fd0. Supplying it to an external snapshot neither edited nor executed the workflow.",
+      "isolation_limit": "Tests ran outside the primary checkout, but this lane did not establish pytest-time snapshot-only module origins. Editable imports in the reused environment can point at primary source; do not label this hermetic acceptance.",
+      "whole_suite_manifest_complete": false,
+      "counts_overlap_repeated_runs": true
+    },
     "bounded_incomplete_module_audit": {
       "scope": "Chronicle CLI/logging and directly reachable workflow modules only; not repository-wide completeness.",
       "evidence": "historical/current-source-audit-provenance.json",
@@ -191,6 +234,28 @@
         "next_action": "Reproduce and reconcile the stale contract without reverting intentional graceful behavior; static evidence only in this execution."
       }
     },
+    "continuation": [
+      {
+        "checkpoint": "CP-A/P0",
+        "owner": "Dependency and evidence coordinator",
+        "next_action": "Provision the supported SHA-pinned real-dependency environment, prove import origins, and retain external evidence through an authorized artifact channel. Archive exports must include selected tests and non-code fixtures explicitly."
+      },
+      {
+        "checkpoint": "CP-C",
+        "owner": "Test Pattern Guardian",
+        "next_action": "Resolve effective collection/exclusion semantics and enumerate the complete intended suite into bounded serial shards. Reproduce blocked consumers with real Torch; retain exact node IDs, terminal logs, JUnit and coverage."
+      },
+      {
+        "checkpoint": "CP-D",
+        "owner": "Subsystem maintainers",
+        "next_action": "Reproduce historical candidates before assigning defects; reconcile the zero-round test contract and explicitly disposition WorkflowNavigator simulation. Original 386 identities remain missing, not silently closed."
+      },
+      {
+        "checkpoint": "CP-E",
+        "owner": "Coverage, typing and security maintainers",
+        "next_action": "Finish compatible suite shards on one environment/source snapshot, enforce repository-wide coverage >=80%, and resolve typing, formatting, hooks, security and required hosted-check gates. Do not create tests-passing/code-complete acceptance from selected cohorts."
+      }
+    ],
     "gates": {
       "fresh_environment": false,
       "exact_focused_quartet": true,

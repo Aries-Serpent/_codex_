@@ -71,6 +71,20 @@ Independent `phase2-viewer-review` found no significant issues; the reviewed
 diff hash is retained in the checkpoint. The dependency-blocked failure is not
 hidden by a skip or counted as acceptance.
 
+**Bounded triage:** The normalization/DP/validator/memory cohort passes all 42
+tests (exit 0). Initial missing-test and missing-workflow failures were snapshot
+omissions, superseded after supplying hashed fixtures, not production regressions.
+Static inventory covers 2,969 test modules and 43 conftests; a 308-path declared
+exclusion union is not proof of effective runtime omissions. The complete intended
+suite/shard manifest and pytest-time snapshot-only import provenance remain open.
+Repeated and overlapping test counts are not summed.
+
+**Security disposition:** CodeQL on code commit
+`e5b7af7d34971fafb62e2573b43904e971eb7835` skipped analysis because the Python
+database is too large. The zero-alert header is not a security pass. Secret
+scanning passed before that commit; security maintainers must complete supported
+analysis before declaring the global gate satisfied.
+
 **Bounded incomplete-module audit:** Chronicle strategy hooks are intentional
 interfaces with concrete implementations. Existing reachable WorkflowNavigator
 `uses` steps report success without dispatch; workflow maintainers should implement
