@@ -503,7 +503,7 @@ def setup_optimizer_with_dp(
     dtype_obj: Any,
     dp_settings: Any,
     train_loader: Any,
-) -> tuple[Any, Any]:
+) -> tuple[Any, Any, Any, Any]:
     """Setup optimizer and differential privacy engine.
 
     Args:
@@ -514,7 +514,7 @@ def setup_optimizer_with_dp(
         train_loader: DataLoader for training
 
     Returns:
-        (optimizer, privacy_engine) tuple
+        (model, optimizer, train_loader, privacy_engine) tuple
 
     Reduces complexity by extracting DP and optimizer setup (20+ branches).
     """
@@ -523,7 +523,7 @@ def setup_optimizer_with_dp(
         from codex_ml.training.dp_config import make_private_model
     except ImportError:
         logger.debug("PyTorch optim or DP not available")
-        return None, None
+        return model, None, train_loader, None
 
     # Setup base optimizer
     optimizer = None
@@ -549,7 +549,7 @@ def setup_optimizer_with_dp(
                 logger.debug("Failed to check optimizer dtype compatibility: %s", e)
     except Exception as e:
         logger.warning("Failed to setup optimizer: %s", e)
-        return None, None
+        return model, None, train_loader, None
 
     # Setup differential privacy if requested
     privacy_engine = None
@@ -565,4 +565,4 @@ def setup_optimizer_with_dp(
             logger.warning("Failed to enable differential privacy: %s", exc)
             dp_settings = None
 
-    return optimizer, privacy_engine
+    return model, optimizer, train_loader, privacy_engine

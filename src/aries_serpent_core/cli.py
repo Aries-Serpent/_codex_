@@ -156,7 +156,10 @@ def _canonicalize_chronicle_scope(database: str | None) -> str:
         try:
             return str(path.relative_to(REPO_ROOT))
         except ValueError:
-            return path.name or "local Chronicle session store"
+            pass
+        if ".codex" in path.parts:
+            return str(Path(*path.parts[path.parts.index(".codex") :]))
+        return path.name or "local Chronicle session store"
     return str(path)
 
 

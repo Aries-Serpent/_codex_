@@ -8,11 +8,80 @@ This module identifies duplicates after normalizing code by:
 """
 
 import hashlib
+import io
 import re
+import tokenize
 from pathlib import Path
 
 from .exact_detector import ExactDetector
 from .schema import DuplicateGroup, MemberFile
+
+
+def _normalize_python_line(line: str) -> str:
+    """Normalize spacing while preserving whitespace inside string literals."""
+
+    try:
+        tokens = list(tokenize.generate_tokens(io.StringIO(line).readline))
+    except (IndentationError, tokenize.TokenError):
+        return " ".join(line.split())
+
+    output: list[str] = []
+    previous: tokenize.TokenInfo | None = None
+    for token in tokens:
+        if token.type in {
+            tokenize.ENCODING,
+            tokenize.INDENT,
+            tokenize.DEDENT,
+            tokenize.COMMENT,
+            tokenize.NL,
+            tokenize.NEWLINE,
+            tokenize.ENDMARKER,
+        }:
+            continue
+        if previous is not None and _needs_space_between(previous, token):
+            output.append(" ")
+        output.append(token.string)
+        previous = token
+    return "".join(output).strip()
+
+
+def _continued_string_rows(code: str) -> set[int]:
+    """Return rows after the first in a multiline string literal."""
+
+    rows: set[int] = set()
+    try:
+        for token in tokenize.generate_tokens(io.StringIO(code).readline):
+            if token.type == tokenize.STRING and token.start[0] != token.end[0]:
+                rows.update(range(token.start[0] + 1, token.end[0] + 1))
+    except (IndentationError, tokenize.TokenError):
+        return set()
+    return rows
+
+
+def _needs_space_between(left: tokenize.TokenInfo, right: tokenize.TokenInfo) -> bool:
+    """Return whether a single separator should be emitted between tokens."""
+
+    left_text = left.string
+    right_text = right.string
+    if left_text in {"(", "[", "{", "."} or right_text in {")", "]", "}", "."}:
+        return False
+    if right_text == ",":
+        return False
+    if left_text == ",":
+        return True
+    if right_text == ":":
+        return False
+    if left_text == ":":
+        return True
+    if left.type in {tokenize.NAME, tokenize.NUMBER, tokenize.STRING} and right.type in {
+        tokenize.NAME,
+        tokenize.NUMBER,
+        tokenize.STRING,
+    }:
+        return True
+    if left_text in {"=", "+", "-", "*", "/", "//", "%", "**", "<<", ">>", "&", "|", "^", "~", "==", "!=", "<", ">", "<=", ">=", "->", ":=", "@"} or right_text in {"=", "+", "-", "*", "/", "//", "%", "**", "<<", ">>", "&", "|", "^", "~", "==", "!=", "<", ">", "<=", ">=", "->", ":=", "@"}:
+        return True
+    return False
 
 
 class PythonNormalizer:
@@ -38,23 +107,47 @@ class PythonNormalizer:
         # Remove blank lines
         lines = [line for line in code.split("\n") if line.strip()]
 
-        # Normalize whitespace (consistent indentation)
+        # Continuation indentation is not suite indentation. In particular, a
+        # closing delimiter at column zero must not dedent its enclosing blocks.
+        logical_depths: dict[int, int] = {}
+        depth = 0
+        try:
+            for token in tokenize.generate_tokens(io.StringIO("\n".join(lines)).readline):
+                if token.type == tokenize.INDENT:
+                    depth += 1
+                elif token.type == tokenize.DEDENT:
+                    depth -= 1
+                elif token.type != tokenize.ENDMARKER:
+                    logical_depths.setdefault(token.start[0], depth)
+        except (IndentationError, tokenize.TokenError):
+            # Retain best-effort normalization for incomplete or invalid input.
+            logical_depths.clear()
+
+        # Normalize whitespace (consistent indentation), while preserving the
+        # literal content of spanning STRING tokens that may contain backslash
+        # continuations and leading spaces on the next physical line.
         normalized_lines = []
         indent_widths = [0]
-        for line in lines:
-            # Replace multiple spaces with single space, preserve indentation structure
+        depth = 0
+        string_rows = _continued_string_rows("\n".join(lines))
+        for row, line in enumerate(lines, start=1):
             stripped = line.lstrip()
             if stripped:
-                prefix = line[: len(line) - len(stripped)]
-                indent_width = len(prefix.expandtabs(8))
-                # Canonicalize nesting depth, not physical indent width.
-                # Two spaces, four spaces and tabs can express the same suite.
-                while indent_width < indent_widths[-1]:
-                    indent_widths.pop()
-                if indent_width > indent_widths[-1]:
-                    indent_widths.append(indent_width)
-                normalized_indent = (len(indent_widths) - 1) * "    "
-                normalized_lines.append(normalized_indent + " ".join(stripped.split()))
+                if logical_depths:
+                    depth = logical_depths.get(row, depth)
+                else:
+                    prefix = line[: len(line) - len(stripped)]
+                    indent_width = len(prefix.expandtabs(8))
+                    while indent_width < indent_widths[-1]:
+                        indent_widths.pop()
+                    if indent_width > indent_widths[-1]:
+                        indent_widths.append(indent_width)
+                    depth = len(indent_widths) - 1
+                normalized_indent = depth * "    "
+                if row in string_rows:
+                    normalized_lines.append(normalized_indent + line.strip())
+                else:
+                    normalized_lines.append(normalized_indent + _normalize_python_line(stripped))
 
         return "\n".join(normalized_lines)
 

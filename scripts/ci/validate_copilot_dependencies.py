@@ -37,7 +37,6 @@ logger = logging.getLogger(__name__)
 # Environment variables expected to be defined in copilot-setup-steps.yml
 EXPECTED_ENV_VARS = [
     "GIT_LFS_SKIP_SMUDGE",
-    "LFS_AUTH_TOKEN",
 ]
 
 

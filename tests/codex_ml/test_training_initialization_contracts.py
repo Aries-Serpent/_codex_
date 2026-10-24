@@ -17,6 +17,7 @@ import pytest
 
 from codex_ml import _train_init_helpers as helpers
 from codex_ml import train_loop
+from codex_ml._train_init_helpers import setup_optimizer_with_dp
 from codex_ml.training.dp_config import DifferentialPrivacyConfig
 
 
@@ -66,6 +67,53 @@ def test_first_parameter_dtype_empty_and_populated_models() -> None:
     populated = SimpleNamespace(parameters=lambda: iter([SimpleNamespace(dtype="float32")]))
     assert helpers._first_param_dtype(empty) is None
     assert helpers._first_param_dtype(populated) == "float32"
+
+
+@pytest.mark.parametrize("dp_settings", [None, DifferentialPrivacyConfig(enabled=False)])
+def test_optimizer_without_dp_preserves_model_and_loader(
+    dp_settings, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import torch.optim
+
+    model = SimpleNamespace(parameters=lambda: [object()])
+    loader = object()
+    optimizer = Mock()
+    monkeypatch.setattr(torch.optim, "Adam", Mock(return_value=optimizer))
+
+    assert setup_optimizer_with_dp(model, 0.001, None, dp_settings, loader) == (
+        model,
+        optimizer,
+        loader,
+        None,
+    )
+
+
+@pytest.mark.parametrize("failure", ["import", "optimizer"])
+def test_optimizer_setup_failure_preserves_model_and_loader(
+    failure: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import torch.optim
+
+    model = SimpleNamespace(parameters=lambda: [object()])
+    loader = object()
+    if failure == "import":
+        real_import = builtins.__import__
+
+        def guarded_import(name, *args, **kwargs):
+            if name == "torch.optim":
+                raise ImportError("optimizer unavailable")
+            return real_import(name, *args, **kwargs)
+
+        monkeypatch.setattr(builtins, "__import__", guarded_import)
+    else:
+        monkeypatch.setattr(torch.optim, "Adam", Mock(side_effect=ValueError("invalid params")))
+
+    assert setup_optimizer_with_dp(model, 0.001, None, None, loader) == (
+        model,
+        None,
+        loader,
+        None,
+    )
 
 
 def _load_with_import_failure(
@@ -173,7 +221,9 @@ def minimal_training(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(helpers, "setup_metrics_registry", lambda *args: (None, None))
     monkeypatch.setattr(helpers, "setup_dataset_and_loader", lambda *args: (None, None))
     monkeypatch.setattr(helpers, "setup_model_device_dtype", lambda *args: None)
-    monkeypatch.setattr(helpers, "setup_optimizer_with_dp", lambda *args: (None, None))
+    monkeypatch.setattr(
+        helpers, "setup_optimizer_with_dp", lambda model, *args: (model, None, args[-1], None)
+    )
     return train_loop
 
 
@@ -224,7 +274,9 @@ def test_training_uses_distinct_data_and_model_drift_detectors(
     )
     monkeypatch.setattr(minimal_training, "_HAS_TORCH", True)
     monkeypatch.setattr(minimal_training, "_synthetic_step", lambda model: 0.25)
-    monkeypatch.setattr(helpers, "setup_optimizer_with_dp", lambda *args: (optimizer, None))
+    monkeypatch.setattr(
+        helpers, "setup_optimizer_with_dp", lambda model, *args: (model, optimizer, args[-1], None)
+    )
 
     result = minimal_training.run_training(
         epochs=2, steps_per_epoch=2, seed=1, model=model, art_dir=tmp_path, return_state=True
@@ -237,6 +289,67 @@ def test_training_uses_distinct_data_and_model_drift_detectors(
     assert model_check.call_args.kwargs["epoch"] == 2
     assert data_check.call_args.kwargs["epoch"] == 2
     assert "drift_result_epoch" in result["state"]
+
+
+def test_enabled_dp_training_uses_private_model_optimizer_and_loader(
+    minimal_training, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import torch.optim
+
+    original_model = SimpleNamespace(parameters=lambda: [object()])
+    original_loader = object()
+    private_model = SimpleNamespace(
+        parameters=lambda: [],
+        to=lambda *args, **kwargs: None,
+        train=Mock(),
+    )
+    private_optimizer = Mock(param_groups=[{"lr": 0.001}])
+    consumed = []
+
+    class PrivateLoader:
+        def __iter__(self):
+            consumed.append(True)
+            return iter([object(), object()])
+
+    private_loader = PrivateLoader()
+    engine = Mock()
+    engine.make_private.return_value = (private_model, private_optimizer, private_loader)
+    privacy_engine = Mock(return_value=engine)
+    monkeypatch.setitem(sys.modules, "opacus", SimpleNamespace(PrivacyEngine=privacy_engine))
+    base_optimizer = Mock()
+    monkeypatch.setattr(torch.optim, "Adam", Mock(return_value=base_optimizer))
+    monkeypatch.setattr(minimal_training, "_HAS_TORCH", True)
+    monkeypatch.setattr(helpers, "setup_dataset_and_loader", lambda *args: (None, original_loader))
+    monkeypatch.setattr(helpers, "setup_optimizer_with_dp", setup_optimizer_with_dp)
+    training_step = Mock(return_value=0.25)
+    monkeypatch.setattr(minimal_training, "_synthetic_step", training_step)
+
+    result = minimal_training.run_training(
+        epochs=1,
+        steps_per_epoch=2,
+        seed=1,
+        model=original_model,
+        dp_config={"enabled": True},
+        art_dir=tmp_path,
+        return_state=True,
+    )
+
+    privacy_engine.assert_called_once_with(secure_rng=False)
+    engine.make_private.assert_called_once_with(
+        module=original_model,
+        optimizer=base_optimizer,
+        data_loader=original_loader,
+        noise_multiplier=1.0,
+        max_grad_norm=1.0,
+    )
+    assert result["state"]["model"] is private_model
+    assert result["state"]["optimizer"] is private_optimizer
+    assert result["privacy_engine"] is True
+    assert consumed == [True]
+    assert training_step.call_count == 2
+    assert all(call.args == (private_model,) for call in training_step.call_args_list)
+    assert private_optimizer.step.call_count == 2
+    private_model.train.assert_called_once()
 
 
 @pytest.mark.parametrize("requested_dtype", ["bf16", "bfloat16"])

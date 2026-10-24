@@ -103,6 +103,23 @@ def test_resolve_chronicle_database_prefers_existing_repo_session_db(
     ), "Data must not be empty"
 
 
+def test_canonicalize_chronicle_scope_uses_repo_relative_paths_before_trim(tmp_path: Path) -> None:
+    module = _cli_module()
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+    (repo_root / "reports").mkdir()
+    (repo_root / "reports" / ".codex").mkdir(parents=True)
+    database = repo_root / "reports" / ".codex" / "sessions.db"
+
+    module.REPO_ROOT = repo_root
+    assert module._canonicalize_chronicle_scope(str(database)) == "reports/.codex/sessions.db"
+
+    external_root = tmp_path / ".codex" / "external"
+    external_root.mkdir(parents=True)
+    external_db = external_root / "sessions.db"
+    assert module._canonicalize_chronicle_scope(str(external_db)) == ".codex/external/sessions.db"
+
+
 def test_store_normalizes_id_schema_and_reports_missing_credits(tmp_path: Path) -> None:
     database = tmp_path / "chronicle.sqlite"
     _database(database)
@@ -522,6 +539,54 @@ def test_chronicle_state_scope_does_not_depend_on_working_directory(
 
     index = build_chronicle_index([], [], scope=str(database))
     assert index["scope"] == ".codex/session_logs.db"
+    assert str(tmp_path) not in json.dumps(index)
+
+
+@pytest.mark.parametrize("working_directory", ["repo", "external"])
+@pytest.mark.parametrize(
+    ("database_path", "expected_scope"),
+    [
+        ("external/.codex/session_logs.db", ".codex/session_logs.db"),
+        ("external/.codex/nested/sessions.db", ".codex/nested/sessions.db"),
+        ("external/custom/sessions.db", "sessions.db"),
+        ("repo/reports/sessions.db", "reports/sessions.db"),
+        (".codex/session_logs.db", ".codex/session_logs.db"),
+        ("reports/sessions.db", "reports/sessions.db"),
+    ],
+)
+def test_cli_reindex_preserves_portable_database_scope(
+    database_path: str,
+    expected_scope: str,
+    working_directory: str,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Reindex retains state suffixes and repo-relative custom paths from any CWD."""
+    repo_root = tmp_path / "repo"
+    external_root = tmp_path / "external"
+    repo_root.mkdir()
+    external_root.mkdir()
+    cwd = repo_root if working_directory == "repo" else external_root
+    monkeypatch.chdir(cwd)
+    if database_path.startswith(("repo/", "external/")):
+        database = tmp_path / database_path
+    else:
+        database = Path(database_path)
+    database.parent.mkdir(parents=True, exist_ok=True)
+    _database(database)
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", repo_root)
+    output = tmp_path / "index.json"
+
+    result = CliRunner().invoke(
+        module.cli,
+        ["chronicle", "reindex", "--database", str(database), "--output", str(output)],
+    )
+
+    assert result.exit_code == 0, result.output
+    index = json.loads(output.read_text(encoding="utf-8"))
+    assert index["scope"] == expected_scope
+    assert index["summary"]["total_sessions"] == 2
     assert str(tmp_path) not in json.dumps(index)
 
 

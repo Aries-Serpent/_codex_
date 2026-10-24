@@ -1413,7 +1413,7 @@ def run_training(
     # Extract optimizer and DP setup to helper (reduces ~20 branches)
     from codex_ml._train_init_helpers import setup_optimizer_with_dp
 
-    optimizer, privacy_engine = setup_optimizer_with_dp(
+    model, optimizer, train_loader, privacy_engine = setup_optimizer_with_dp(
         model, learning_rate, dtype_obj, dp_settings, train_loader
     )
 

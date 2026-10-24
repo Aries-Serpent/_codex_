@@ -1,3 +1,104 @@
+## Continuation: 2026-10-24 — Isolated Phase 2 acceptance and evidence reconciliation
+
+**Status:** Phase 2 remains incomplete. This entry supersedes only the current-state
+claims below: historical frozen runs are interrupted, not active processes or
+agents to resume. No complete-suite or repository-wide coverage result is claimed.
+
+**Baseline and preservation:** Work continues on `copilot/fix-review-comments`
+from session-entry commit `aa5bfd235038411bd4e54354124dcacb890b5eaf`; immutable
+validation baseline is `3a455fd0667ddd9b30449ce7d6b023d2695a79c2`.
+PR #5708 remains on its separate branch at `80953c9ab4eb2b8e281b9936bce15eec5fd6105e`.
+The current branch already retains the LFS/DP/logical-indentation review fixes;
+no other branch was changed. The initial progress tool committed pre-existing
+startup timestamp bytes; the patch restores the session-entry committed packet
+and the original entry bytes are retained for restoration as uncommitted work.
+
+**Execution lanes:** `phase2-chronicle` (CI Auto-Healer) owns the CLI scope
+correction and its regressions. `phase2-suite-triage` (Test Pattern Guardian)
+owns external collection/exclusion and bounded-shard evidence.
+`phase2-historical-reconcile` (Session Analysis) owns historical failure
+reconciliation and reachable incomplete-module disposition. `phase2-review`
+independently reviewed the scoped Chronicle correction and found no significant
+issues. The coordinator owns checkpoint integration; these are actual invocations,
+not evidence of hosted agent activation.
+
+**Evidence and limits:** Disposable snapshots and logs/JUnit/coverage are under
+`/tmp/codex-phase2-20261024/`, not the primary checkout. The existing Python 3.12.10
+environment is inventoried, not freshly lock-resolved; no dependencies were
+installed. Because `git archive` omits exported tests, the baseline was completed
+with the tracked test tree, its immutable baseline regression-file blob, and
+SHA-256 hashes for 3,418 tracked test files.
+
+Historical commit `e15df253c7f0facc2bbeda1e552ada1f0e050360` was fetched without
+changing branches. Recovery retained 32 exact Git payloads (9,948,275 bytes),
+including 24 selected JUnit files, with a SHA-256 provenance manifest. They
+describe incomplete observations and unmatched environments, not fresh
+acceptance. The original 386-failure inventory was not recovered in the bounded
+search; 243 overlapping failure/error records from later XML are not a substitute.
+
+Baseline `ruff check src` passes. Baseline `black --check src` exits 1:
+`src/codex_ml/models/registry.py` would be reformatted and 1,973 files are unchanged.
+This pre-existing formatting finding is not repaired as part of the Chronicle
+patch. Global typing, documentation, coverage and security gates remain open.
+Scoped Chronicle mypy reports 21 errors, identical to baseline after line-number
+normalization. Supplemental Bandit reports the same eight low-severity
+subprocess/import findings before and after; none are on the normalization patch.
+PR #5708 Validation run `40070032176` remains `action_required` with zero jobs;
+current-branch PR #5709 Validation run `40072734660` at `26c4d0ba` also requires
+approval, has zero jobs and no failed-job logs. Its review-thread query returns
+zero threads. Neither observation establishes passing CI or validates later commits;
+no approval, retry, dispatch, workflow modification, tag, release or publication
+was performed.
+
+**Continuation checkpoint:** `.codex/checkpoints/pypi-phase2-triage.json#/execution_2026_10_24`
+records exact provenance and gate status; `pypi-code-complete.json` remains
+incomplete. External artifacts are session-local and need an authorized retention
+channel before runner cleanup.
+
+**Focused acceptance:** The exact campaign/cost/orchestration/compatibility quartet
+passed 93 tests with zero failures, errors or skips (exit 0) in the Chronicle
+snapshot. The two-file overlay hashes and command/JUnit metadata are retained in
+the external Chronicle evidence directory. This closes only the focused gate,
+not complete-suite, fresh-environment or repository-wide coverage acceptance.
+
+**Related consumers:** The initial shard passed 18 tests and failed two, both
+reproduced on baseline. The simple training CLI case is blocked by absent real
+Torch; the logging viewer emits logger-prefixed JSON that cannot be parsed.
+The CI Auto-Healer repaired the viewer by writing raw JSON to stdout and validated
+all 10 viewer regressions. The expanded consumer shard now passes 26 and fails
+one (missing Torch), with no skips. Viewer Ruff/Black/isort/compile/mypy pass.
+Independent `phase2-viewer-review` found no significant issues; the reviewed
+diff hash is retained in the checkpoint. The dependency-blocked failure is not
+hidden by a skip or counted as acceptance.
+
+**Bounded triage:** The normalization/DP/validator/memory cohort passes all 42
+tests (exit 0). Initial missing-test and missing-workflow failures were snapshot
+omissions, superseded after supplying hashed fixtures, not production regressions.
+Static inventory covers 2,969 test modules and 43 conftests; a 308-path declared
+exclusion union is not proof of effective runtime omissions. The complete intended
+suite/shard manifest and pytest-time snapshot-only import provenance remain open.
+Repeated and overlapping test counts are not summed.
+
+**Security disposition:** CodeQL on code commit
+`e5b7af7d34971fafb62e2573b43904e971eb7835` skipped analysis because the Python
+database is too large. The zero-alert header is not a security pass. Secret
+scanning passed before that commit; security maintainers must complete supported
+analysis before declaring the global gate satisfied.
+
+**Bounded incomplete-module audit:** Chronicle strategy hooks are intentional
+interfaces with concrete implementations. Existing reachable WorkflowNavigator
+`uses` steps report success without dispatch; workflow maintainers should implement
+dispatch or explicitly label simulation in separate work. The historical
+zero-round raises assertion conflicts with graceful source behavior; its test
+owner must reproduce and reconcile it, not revert the implementation blindly.
+Neither static observation is claimed as a fresh suite failure.
+
+**Time coordination:** `phase2-time-monitor` provides read-only wrapup alerts
+and a continuation-prompt reminder based on the user's estimate of 15/60 minutes
+used, not a claim about a platform-enforced deadline.
+
+---
+
 ## Continuation: 2026-10-22 — Clean-suite root-cause remediation
 
 **Status:** Active Phase 2 implementation; no completion claim. The clean, single-process full-suite run remains active on a frozen snapshot with repository-source coverage requested and no outer timeout. Round-3 changes are deliberately not injected into that running checkout. Phase 3 remains gated and Phase 4 has not started; no commit, push, release, publication or remote mutation occurred.
