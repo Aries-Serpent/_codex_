@@ -373,7 +373,7 @@ A React/Vite-based quantum-enhanced code generation platform with real-time cogn
 **Unbranded Recursion** - Self-modifying improvement loops without fixed ground
 **Five Transformations** - Dissolve lenses, fracture rails, compress timelines, mirror contradictions, flood abundance
 ### Quick Links
-- [Full Documentation Index](.codex/docs/README.md)
+- [Full Documentation Hub](docs/index.md)
 - [Implementation Roadmap](.codex/docs/PHILOSOPHICAL_FRAMEWORK.md#9-refactoring-recommendations)
 - [Philosophical Metrics](.codex/docs/PHILOSOPHICAL_FRAMEWORK.md#10-philosophical-metrics)
 - [Cognitive Pattern Analysis](.codex/docs/COGNITIVE_ARCHITECTURE.md#cognitive-domain-mapping)
@@ -520,7 +520,7 @@ Start here if you're new to Codex ML:
 - **[ Learning Paths](docs/LEARNING_PATHS.md)** — Choose a structured learning journey (Beginner Intermediate Advanced)
 - **[ Complete Architecture Guide](docs/human-facing/architecture.md)** — Understand the 5-layer architecture with Mermaid diagrams
 - **[🆘 Troubleshooting Guide](docs/TROUBLESHOOTING.md)** — Fix 25+ common issues
-- **[ Documentation Index](docs/DOCUMENTATION_INDEX.md)** — Central hub for all documentation
+- **[Documentation Hub](docs/index.md)** — Current navigation for active repository documentation
 ### repository Organization
 | Directory | Purpose |
 |-----------|---------|
