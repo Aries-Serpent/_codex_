@@ -206,9 +206,29 @@ def classify(path: str) -> str:
 
 
 def git(root: Path, *args: str) -> str | None:
+    env = {
+        **os.environ,
+        "GIT_NO_LAZY_FETCH": "1",
+        "GIT_ALLOW_PROTOCOL": "",
+        "GIT_OPTIONAL_LOCKS": "0",
+        "GIT_TERMINAL_PROMPT": "0",
+    }
     try:
         result = subprocess.run(
-            ["git", "-C", str(root), *args], capture_output=True, check=True, timeout=20
+            [
+                "git",
+                "-c",
+                "core.fsmonitor=false",
+                "-c",
+                f"core.hooksPath={os.devnull}",
+                "-C",
+                str(root),
+                *args,
+            ],
+            capture_output=True,
+            check=True,
+            timeout=20,
+            env=env,
         )
         return result.stdout.decode("utf-8", errors="surrogateescape").strip()
     except (OSError, subprocess.SubprocessError):

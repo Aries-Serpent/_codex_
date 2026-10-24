@@ -29,6 +29,9 @@ OS lock. Python callers may explicitly separate ``storage.plan`` and
 ``storage.apply``. Filesystem targets need no Git metadata. Git census inventories
 the recorded committed tree; dirty tracked bytes have a separate digest.
 Untracked Git files are outside that census. Profile contents are not read.
+Git child processes disable fsmonitor/hooks, lazy fetching, all transports,
+terminal prompts and optional index writes. Target Git configuration is not
+permission to execute callbacks or contact remotes.
 
 Contracts and compatibility
 ---------------------------

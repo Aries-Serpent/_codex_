@@ -212,6 +212,51 @@ def test_git_census_immutable_reference_and_dirty_drift(target):
         core.inventory(target, source_ref="missing-reference")
 
 
+def test_git_does_not_execute_target_fsmonitor(target, tmp_path):
+    subprocess.run(["git", "init", "-q", str(target)], check=True)
+    subprocess.run(["git", "-C", str(target), "add", "."], check=True)
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(target),
+            "-c",
+            "user.name=Fixture",
+            "-c",
+            "user.email=fixture@example.invalid",
+            "commit",
+            "-qm",
+            "fixture",
+        ],
+        check=True,
+    )
+    marker = tmp_path / "callback-ran"
+    callback = tmp_path / "fsmonitor"
+    callback.write_text(f"#!/bin/sh\nprintf invoked > '{marker}'\nprintf '\\0'\n")
+    callback.chmod(0o700)
+    subprocess.run(
+        ["git", "-C", str(target), "config", "core.fsmonitor", str(callback)],
+        check=True,
+    )
+    core.candidate(target, "fixture", clock)
+    assert not marker.exists()
+
+
+def test_git_transport_and_optional_writes_are_disabled(target, monkeypatch):
+    def observed(command, **kwargs):
+        assert command[:3] == ["git", "-c", "core.fsmonitor=false"]
+        assert "core.hooksPath=" + os.devnull in command
+        env = kwargs["env"]
+        assert env["GIT_ALLOW_PROTOCOL"] == ""
+        assert env["GIT_NO_LAZY_FETCH"] == "1"
+        assert env["GIT_OPTIONAL_LOCKS"] == "0"
+        assert env["GIT_TERMINAL_PROMPT"] == "0"
+        return subprocess.CompletedProcess(command, 0, stdout=b"observed")
+
+    monkeypatch.setattr(subprocess, "run", observed)
+    assert core.git(target, "rev-parse", "HEAD") == "observed"
+
+
 def test_preview_write_history_and_compare_and_swap(target):
     value = core.candidate(target, "fixture", clock)
     before = snapshot(target)
