@@ -21,6 +21,28 @@ are not independent reproduction or final acceptance. See the inactive ADR at
 `docs/adr/institutional-foundation-001.json` and scoped runtime/recovery guide at
 `docs/institutional-foundation.rst`.
 
+**Observed final candidate:** `592e882f516744937957a2287fd93ad9d0c870ee`.
+Source and fresh external installed-wheel harness each pass 40 cases; six
+existing packaging tests pass. Statement coverage is 90.39%, combined
+statement/branch coverage 88.75%. Full declared dependencies install in a fresh
+venv and `pip check` passes. Wheel SHA-256:
+`1f52c08f1deb5f5487692509cd63253d67f78571bd73c14e647ba5fe080e65a6`.
+Git inspection now disables target hooks/fsmonitor, network transports/lazy
+fetching and optional writes. Final source and wheel observations are not
+summed; the prior 38-case candidate remains separate historical evidence.
+
+G0–G4 and G6–G8 pass only their declared development/technical scopes; G5 is
+NOT_RUN. Independent approval and activation remain unavailable/unperformed.
+CodeQL analysis was skipped twice because the database was too large; zero
+reported alerts is not a completed scan. Bandit returned four low findings,
+with dispositions and remaining environment assumptions in `validation.json`.
+Complete-suite CI and full CodeQL acceptance are not claimed. The retained
+continuation is schema/integrity/reference validated against the candidate
+source at collection; subsequent evidence-only commits intentionally change
+the live tree, so resume must revalidate references rather than reuse a stale
+mutation plan. All new task work is saved; temporary wheel/log/environment
+retention still requires an authorized channel before runner cleanup.
+
 ## Continuation: 2026-10-24 — Isolated Phase 2 acceptance and evidence reconciliation
 
 **Status:** Phase 2 remains incomplete. This entry supersedes only the current-state

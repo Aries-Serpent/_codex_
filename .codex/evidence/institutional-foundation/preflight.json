@@ -1,5 +1,10 @@
 {
   "task": "CODEX-INSTITUTIONAL-FOUNDATION-001",
+  "memory_limits": [
+    "The federated package-boundary memory was verified at its cited ADR/architecture sources and upvoted; the user delegation preference was applicable and upvoted.",
+    "Startup-packet memory CHANGELOG line citations do not match current content; its preservation follows directly observed dirty bytes and current policy, not those stale citations.",
+    "The packaging-discovery memory cites tools/apply_pyproject_packaging.py, which is absent. Do not treat that citation as evidence; current packaging was inspected directly. No replacement convention is inferred from a missing citation."
+  ],
   "repository": "Aries-Serpent/_codex_",
   "branch": "copilot/codex-institutional-foundation-001",
   "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",

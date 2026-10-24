@@ -1,8 +1,8 @@
 {
-  "candidate_commit": "1cf76ff9ccab1c6ce5294df0131092fc10055d1c",
+  "candidate_commit": "592e882f516744937957a2287fd93ad9d0c870ee",
   "wheel": "codex_ml-0.3.0-py3-none-any.whl",
-  "wheel_sha256": "75c12676d034ac22062a9ef23c098361aea87111d1e417291a8fec8a0b342ca5",
-  "bytes": 4210206,
+  "wheel_sha256": "1f52c08f1deb5f5487692509cd63253d67f78571bd73c14e647ba5fe080e65a6",
+  "bytes": 4210349,
   "entries": [
     {
       "path": "agent/__init__.py",
@@ -3616,8 +3616,8 @@
     },
     {
       "path": "codex/institutional/core.py",
-      "sha256": "03d06ceb71043c9ff3b17996fbc6f7f9845d1d3213a498a1af84f1023e0b69fd",
-      "bytes": 22036
+      "sha256": "ffb9a9df8095ee693bd77ba2349f014cdf6f4612fd76f22088cbfc171148dfd6",
+      "bytes": 22484
     },
     {
       "path": "codex/institutional/storage.py",
@@ -4031,7 +4031,7 @@
     },
     {
       "path": "codex_ml-0.3.0.dist-info/RECORD",
-      "sha256": "38a86d2811a315f948f845eb26e91606b336a4034992a91bcff874a0863567b1",
+      "sha256": "0adda202488cbdba3e89a510b21de1c8266e7dddc69c3a9bb53239403a015fb5",
       "bytes": 173617
     },
     {

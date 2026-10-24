@@ -8,7 +8,7 @@ cffi==2.1.1
 charset-normalizer==3.5.2
 click==8.5.0
 codex-contracts==0.1.0a1
-codex-ml @ file:///tmp/codex-institutional-wheel/wheels/codex_ml-0.3.0-py3-none-any.whl#sha256=75c12676d034ac22062a9ef23c098361aea87111d1e417291a8fec8a0b342ca5
+codex-ml @ file:///tmp/codex-institutional-wheel/wheels-final/codex_ml-0.3.0-py3-none-any.whl#sha256=1f52c08f1deb5f5487692509cd63253d67f78571bd73c14e647ba5fe080e65a6
 colorama==0.4.6
 cryptography==50.0.2
 defusedxml==0.7.1
