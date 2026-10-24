@@ -270,11 +270,17 @@ grep -rn "filename" --include="*.py" --include="*.yaml" --include="*.sh" .
 
 ### Protocol Behavior (When Active)
 
-1. **Complete ALL tasks** - Zero omissions allowed
+1. **Account for all tasks** - Complete authorized work; record blocked, deferred
+   and pending tasks with evidence, proposed owner and next action.
 2. **Maintain progress tracker** - Live status updates for each task
 3. **Codebase-first approach** - Search existing utilities before creating new ones
 4. **Document new utilities** - Include integration plans for any new code
-5. **Verify completion** - Final check: `Completed = Total, Skipped = 0`
+5. **Verify status honestly** - `Total = Completed + Blocked + Deferred + Pending`.
+   Incomplete tasks remain incomplete; tracking compliance is not acceptance.
+
+Activation of CTEP does not expand task authority. Read-only boundaries, resource
+limits, security owner/reason requirements and required reviews/approvals remain
+binding. Continue unaffected authorized work when a dependent operation is blocked.
 
 ### Response Structure
 
@@ -288,12 +294,15 @@ grep -rn "filename" --include="*.py" --include="*.yaml" --include="*.sh" .
 [Search results for existing utilities]
 
 ## ✅ Completion Summary
-Total Tasks: X | Completed: X ✅ | Skipped: 0 ❌
-CTEP Compliance: ✅ PASS
+Total: X | Completed: C | Blocked: B | Deferred: D | Pending: P
+Accounting: X = C + B + D + P
+Acceptance: [actual evidence-supported status; incomplete work is not PASS]
 ```
 
 ### Documentation Links
 
+[CTEP specification](docs/Copilot_Task_Execution_Protocol.md) ·
+[Current agency policy](../.codex/CODEBASE_AGENCY_POLICY.md)
 
 ---
 

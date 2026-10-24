@@ -91,13 +91,15 @@
       },
       {
         "id": "POLICY-06",
-        "status": "pending",
+        "status": "in-progress; iteration-003 scoped revisions prepared; broader inventory remains unresolved",
+        "batch_evidence": ".codex/evidence/institutional-foundation/iteration-003/closure-report.json",
         "task": "Implement authorized, reviewed revisions for every confirmed applicable conflict across policies, instructions, rules, normative documents and their references; align guidance with the expected task, directory, role, lifecycle stage and actual available tools.",
         "acceptance": "Map each revision to a conflict-register finding and authoritative context; update affected cross-references and supersession notices, preserve historical evidence and required controls, and assign any blocked revision an owner and next action."
       },
       {
         "id": "POLICY-07",
-        "status": "pending",
+        "status": "in-progress; iteration-003 scoped replay evidence retained; no global closure",
+        "batch_evidence": ".codex/evidence/institutional-foundation/iteration-003/closure-report.json",
         "task": "Recheck the complete guidance inventory and representative subsequent-agent execution paths after revisions; verify that resolved contradictory statements no longer apply to the affected context and that execution blockers do not recur.",
         "acceptance": "Retain before/after evidence and existing check results for each closed finding. Claim no remaining applicable blockers only for fully inspected and validated scope; inaccessible, unreviewed or unresolved sources remain explicit acceptance gaps rather than being silently waived."
       }
