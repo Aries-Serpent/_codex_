@@ -264,6 +264,7 @@ def get_distributed_env_info() -> dict[str, str]:
 __all__ = [
     "AccelerateInitResult",
     "Accelerator",
+    "get_distributed_env_info",
     "is_accelerate_available",
     "is_gpu_available",
     "safe_accelerate_init",

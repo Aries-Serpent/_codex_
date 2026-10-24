@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-10-10T08:54:37.372938+00:00",
+  "total_alerts": 3,
+  "changes": {
+    "count": 3,
+    "direction": "fresh_export"
+  },
+  "source_of_truth": "GitHub REST API /repos/{owner}/{repo}/code-scanning/alerts"
+}

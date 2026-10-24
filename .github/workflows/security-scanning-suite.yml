@@ -5,6 +5,7 @@ name: Art_Security Scanning Suite
       - main
       - 0D_base_
       - develop
+      - "release/**"
       - "copilot/**"
     paths:
       - ".config/Dockerfile*"
@@ -19,6 +20,7 @@ name: Art_Security Scanning Suite
       - main
       - 0D_base_
       - develop
+      - "release/**"
     paths:
       - ".config/Dockerfile*"
       - "docker/**"
@@ -31,19 +33,41 @@ name: Art_Security Scanning Suite
     - cron: "0 5 * * 1"
   workflow_dispatch:
     inputs:
-      scan-type:
-        description: Security scan types
-        required: true
-        type: choice
-        options:
-        - all
-        - codeql
-        - dependency
-        - semgrep
-        - cve
-        - containers
-        - secrets
-        default: all
+      scan_codeql:
+        description: Run CodeQL analysis (Python and JavaScript)
+        required: false
+        type: boolean
+        default: true
+      scan_semgrep:
+        description: Run Semgrep SAST
+        required: false
+        type: boolean
+        default: true
+      scan_containers:
+        description: Run Trivy container scans
+        required: false
+        type: boolean
+        default: true
+      scan_cve:
+        description: Run ecosystem CVE audits
+        required: false
+        type: boolean
+        default: true
+      scan_dependency:
+        description: Run dependency security audit
+        required: false
+        type: boolean
+        default: true
+      scan_secrets:
+        description: Run full-repository secret scanning (may take over an hour)
+        required: false
+        type: boolean
+        default: true
+      scan_sbom:
+        description: Generate software bill of materials
+        required: false
+        type: boolean
+        default: true
       lane-id:
         description: Multi-lane orchestration lane id
         required: false
@@ -132,6 +156,7 @@ jobs:
       lane_mode: ${{ steps.meta.outputs.lane_mode }}
       codeql_wave: ${{ steps.meta.outputs.codeql_wave }}
       deterministic_seed: ${{ steps.meta.outputs.deterministic_seed }}
+      selected_scans: ${{ steps.meta.outputs.selected_scans }}
       input_lock_sha256: ${{ steps.lock.outputs.input_lock_sha256 }}
       scan_type: ${{ steps.meta.outputs.scan_type }}
     steps:
@@ -143,8 +168,14 @@ jobs:
       id: meta
       shell: bash
       env:
-        IN_SCAN_TYPE: ${{ github.event.inputs.scan-type || inputs.scan-type || 'all'
-          }}
+        IN_SCAN_TYPE: ${{ inputs.scan-type || 'all' }}
+        IN_SCAN_CODEQL: ${{ inputs.scan_codeql }}
+        IN_SCAN_SEMGREP: ${{ inputs.scan_semgrep }}
+        IN_SCAN_CONTAINERS: ${{ inputs.scan_containers }}
+        IN_SCAN_CVE: ${{ inputs.scan_cve }}
+        IN_SCAN_DEPENDENCY: ${{ inputs.scan_dependency }}
+        IN_SCAN_SECRETS: ${{ inputs.scan_secrets }}
+        IN_SCAN_SBOM: ${{ inputs.scan_sbom }}
         IN_LANE_ID: ${{ github.event.inputs.lane-id || inputs.lane-id || 'lane-security'
           }}
         IN_SHARD_ID: ${{ github.event.inputs.shard-id || inputs.shard-id || 'shard-0'
@@ -155,23 +186,102 @@ jobs:
           || 'off' }}
         IN_SEED: ${{ github.event.inputs.deterministic-seed || inputs.deterministic-seed
           || '' }}
-      run: "set -euo pipefail\n\nLANE_ID=\"${IN_LANE_ID}\"\nSHARD_ID=\"${IN_SHARD_ID}\"\
-        \nLANE_MODE=\"${IN_LANE_MODE}\"\nCODEQL_WAVE=\"${IN_CODEQL_WAVE}\"\nDETERMINISTIC_SEED=\"\
-        ${IN_SEED}\"\nSCAN_TYPE=\"${IN_SCAN_TYPE}\"\n\nmkdir -p .codex/contracts\n\
-        \ncat > .codex/contracts/lane-manifest.json <<EOF\n{\n  \"schema_version\"\
-        : \"${SECURITY_ARTIFACT_SCHEMA_VERSION}\",\n  \"workflow\": \"${GITHUB_WORKFLOW}\"\
-        ,\n  \"run_id\": \"${GITHUB_RUN_ID}\",\n  \"run_number\": \"${GITHUB_RUN_NUMBER}\"\
-        ,\n  \"run_attempt\": \"${GITHUB_RUN_ATTEMPT}\",\n  \"repository\": \"${GITHUB_REPOSITORY}\"\
-        ,\n  \"ref\": \"${GITHUB_REF}\",\n  \"sha\": \"${GITHUB_SHA}\",\n  \"event_name\"\
-        : \"${GITHUB_EVENT_NAME}\",\n  \"actor\": \"${GITHUB_ACTOR}\",\n  \"scan_type\"\
-        : \"${SCAN_TYPE}\",\n  \"lane\": {\n    \"id\": \"${LANE_ID}\",\n    \"shard_id\"\
-        : \"${SHARD_ID}\",\n    \"mode\": \"${LANE_MODE}\"\n  },\n  \"codeql_wave\"\
-        : \"${CODEQL_WAVE}\",\n  \"deterministic_seed\": \"${DETERMINISTIC_SEED}\"\
-        \n}\nEOF\n\necho \"lane_id=${LANE_ID}\" >> \"$GITHUB_OUTPUT\"\necho \"shard_id=${SHARD_ID}\"\
-        \ >> \"$GITHUB_OUTPUT\"\necho \"lane_mode=${LANE_MODE}\" >> \"$GITHUB_OUTPUT\"\
-        \necho \"codeql_wave=${CODEQL_WAVE}\" >> \"$GITHUB_OUTPUT\"\necho \"deterministic_seed=${DETERMINISTIC_SEED}\"\
-        \ >> \"$GITHUB_OUTPUT\"\necho \"scan_type=${SCAN_TYPE}\" >> \"$GITHUB_OUTPUT\"\
-        \n"
+      run: |
+        set -euo pipefail
+
+        LANE_ID="${IN_LANE_ID}"
+        SHARD_ID="${IN_SHARD_ID}"
+        LANE_MODE="${IN_LANE_MODE}"
+        CODEQL_WAVE="${IN_CODEQL_WAVE}"
+        DETERMINISTIC_SEED="${IN_SEED}"
+        SELECTED_SCANS=()
+
+        add_scan() {
+          local scan="$1"
+          case ",${SELECTED_SCANS[*]}," in
+            *,"${scan}",*) ;;
+            *) SELECTED_SCANS+=("${scan}") ;;
+          esac
+        }
+
+        case "${GITHUB_EVENT_NAME}" in
+          workflow_dispatch)
+            if [[ "${IN_SCAN_CODEQL}" == "true" ]]; then add_scan codeql; fi
+            if [[ "${IN_SCAN_SEMGREP}" == "true" ]]; then add_scan semgrep; fi
+            if [[ "${IN_SCAN_CONTAINERS}" == "true" ]]; then add_scan containers; fi
+            if [[ "${IN_SCAN_CVE}" == "true" ]]; then add_scan cve; fi
+            if [[ "${IN_SCAN_DEPENDENCY}" == "true" ]]; then add_scan dependency; fi
+            if [[ "${IN_SCAN_SECRETS}" == "true" ]]; then add_scan secrets; fi
+            if [[ "${IN_SCAN_SBOM}" == "true" ]]; then add_scan sbom; fi
+            ;;
+          workflow_call)
+            case "${IN_SCAN_TYPE}" in
+              all|"") SELECTED_SCANS=(codeql semgrep containers cve dependency secrets sbom) ;;
+              codeql|semgrep|containers|cve|dependency|secrets|sbom) add_scan "${IN_SCAN_TYPE}" ;;
+              *) echo "::error::Unsupported scan-type '${IN_SCAN_TYPE}'"; exit 1 ;;
+            esac
+            ;;
+          push)
+            SELECTED_SCANS=(semgrep containers)
+            ;;
+          pull_request)
+            SELECTED_SCANS=(semgrep containers cve)
+            ;;
+          schedule)
+            SELECTED_SCANS=(semgrep containers cve dependency)
+            ;;
+          *)
+            echo "::error::Unsupported workflow event '${GITHUB_EVENT_NAME}'"
+            exit 1
+            ;;
+        esac
+
+        SELECTED_SCANS_CSV="$(IFS=,; echo "${SELECTED_SCANS[*]}")"
+        SCAN_TYPE="${SELECTED_SCANS_CSV:-none}"
+        export LANE_ID SHARD_ID LANE_MODE CODEQL_WAVE DETERMINISTIC_SEED
+        export SCAN_TYPE SELECTED_SCANS_CSV
+        mkdir -p .codex/contracts
+
+        python - <<'PY'
+        import json
+        import os
+
+        metadata = {
+            "schema_version": os.environ["SECURITY_ARTIFACT_SCHEMA_VERSION"],
+            "workflow": os.environ["GITHUB_WORKFLOW"],
+            "run_id": os.environ["GITHUB_RUN_ID"],
+            "run_number": os.environ["GITHUB_RUN_NUMBER"],
+            "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+            "repository": os.environ["GITHUB_REPOSITORY"],
+            "ref": os.environ["GITHUB_REF"],
+            "sha": os.environ["GITHUB_SHA"],
+            "event_name": os.environ["GITHUB_EVENT_NAME"],
+            "actor": os.environ["GITHUB_ACTOR"],
+            "scan_type": os.environ["SCAN_TYPE"],
+            "selected_scans": os.environ["SELECTED_SCANS_CSV"].split(",")
+            if os.environ["SELECTED_SCANS_CSV"]
+            else [],
+            "lane": {
+                "id": os.environ["LANE_ID"],
+                "shard_id": os.environ["SHARD_ID"],
+                "mode": os.environ["LANE_MODE"],
+            },
+            "codeql_wave": os.environ["CODEQL_WAVE"],
+            "deterministic_seed": os.environ["DETERMINISTIC_SEED"],
+        }
+        with open(".codex/contracts/lane-manifest.json", "w", encoding="utf-8") as handle:
+            json.dump(metadata, handle, indent=2)
+        PY
+
+        {
+          echo "lane_id=${LANE_ID}"
+          echo "shard_id=${SHARD_ID}"
+          echo "lane_mode=${LANE_MODE}"
+          echo "codeql_wave=${CODEQL_WAVE}"
+          echo "deterministic_seed=${DETERMINISTIC_SEED}"
+          echo "scan_type=${SCAN_TYPE}"
+          echo "selected_scans=${SELECTED_SCANS_CSV}"
+        } >> "${GITHUB_OUTPUT}"
     - name: Generate input lock
       id: lock
       shell: bash
@@ -200,14 +310,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: lane-metadata-contract
     timeout-minutes: 60
-    continue-on-error: ${{ matrix.language == 'javascript' || github.actor == 'dependabot[bot]'
-      }}
     # Keep CodeQL in the dedicated GA gate workflow for push/PR enforcement.
     # The general security suite can still run CodeQL for manual/reusable scans,
-    # but it must not duplicate the automatic CodeQL gate uploads.
+    # but it must not duplicate the automatic CodeQL gate uploads, mask scanner
+    # failures, or silently drop a partial SARIF result.
     if: >
       (github.event_name == 'workflow_dispatch' &&
-        (github.event.inputs.scan-type == 'all' || github.event.inputs.scan-type == 'codeql')) ||
+        inputs.scan_codeql) ||
       (github.event_name == 'workflow_call' &&
         (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'codeql'))
     permissions:
@@ -232,7 +341,6 @@ jobs:
     - uses: github/codeql-action/autobuild@311b4ee155dcdab395044f00946f664bd51ff173
     - name: Perform CodeQL Analysis
       id: codeql
-      continue-on-error: true
       uses: github/codeql-action/analyze@311b4ee155dcdab395044f00946f664bd51ff173
       with:
         category: /language:${{ matrix.language }}
@@ -249,65 +357,14 @@ jobs:
         SARIF_FILES=("$SARIF_DIR"/*.sarif)
 
         if [ "${#SARIF_FILES[@]}" -eq 0 ]; then
-          echo "No SARIF files were produced for ${{ matrix.language }}; creating a minimal empty fallback."
-          jq -n \
-            --arg lang "${{ matrix.language }}" \
-            --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            '{
-              "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
-              "version": "2.1.0",
-              "runs": [{
-                "tool": {
-                  "driver": {
-                    "name": "CodeQL",
-                    "informationUri": "https://codeql.github.com",
-                    "version": "unknown",
-                    "rules": []
-                  }
-                },
-                "results": [],
-                "properties": {
-                  "ScanType": "FallbackEmpty",
-                  "Language": $lang,
-                  "ScanTimestamp": $timestamp
-                }
-              }]
-            }' > "$SARIF_DIR/codeql-${{ matrix.language }}-empty.sarif"
-
-          if [ "${{ steps.codeql.outcome }}" = "failure" ]; then
-            echo "CodeQL analysis produced no SARIF for ${{ matrix.language }}. " \
-              "Preserving the fallback, but keeping the underlying CodeQL failure " \
-              "isolated to the empty-output path."
-            exit 0
-          fi
+          echo "::error::No SARIF files were produced for ${{ matrix.language }}; refusing to treat this as a silent pass."
+          exit 1
         fi
 
         for sarif_file in "$SARIF_DIR"/*.sarif; do
           if ! jq empty "$sarif_file" >/dev/null 2>&1; then
-            echo "Malformed SARIF detected in $sarif_file; rewriting a minimal valid fallback."
-            jq -n \
-              --arg lang "${{ matrix.language }}" \
-              --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-              '{
-                "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
-                "version": "2.1.0",
-                "runs": [{
-                  "tool": {
-                    "driver": {
-                      "name": "CodeQL",
-                      "informationUri": "https://codeql.github.com",
-                      "version": "unknown",
-                      "rules": []
-                    }
-                  },
-                  "results": [],
-                  "properties": {
-                    "ScanType": "FallbackRepair",
-                    "Language": $lang,
-                    "ScanTimestamp": $timestamp
-                  }
-                }]
-              }' > "$sarif_file"
+            echo "::error::Malformed SARIF detected in $sarif_file; refusing to continue with a partial capture."
+            exit 1
           fi
         done
 
@@ -378,6 +435,7 @@ jobs:
             "codeql-sarif/${{ matrix.language }}",
             "codeql-reports/codeql-${{ matrix.language }}-summary.md"
           ],
+          "scan_outcome": "${{ steps.codeql.outcome }}",
           "status": "${{ job.status }}"
         }
         EOF
@@ -397,19 +455,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: lane-metadata-contract
     timeout-minutes: 30
-    if: '(github.event_name == ''push'') ||
-
-      (github.event_name == ''pull_request'') ||
-
-      (github.event_name == ''schedule'') ||
-
-      (github.event_name == ''workflow_dispatch'' && (github.event.inputs.scan-type
-      == ''all'' || github.event.inputs.scan-type == ''semgrep'')) ||
-
-      (github.event_name == ''workflow_call'' && (inputs.scan-type == '''' || inputs.scan-type
-      == ''all'' || inputs.scan-type == ''semgrep''))
-
-      '
+    if: >
+      github.event_name == 'push' ||
+      github.event_name == 'pull_request' ||
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && inputs.scan_semgrep) ||
+      (github.event_name == 'workflow_call' &&
+        (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'semgrep'))
     permissions:
       contents: read
       security-events: write
@@ -520,6 +572,10 @@ jobs:
         ERRORS=0
         CHUNK_COUNT=0
 
+        if [ ! -s semgrep-results.json ] || ! python -m json.tool semgrep-results.json >/dev/null; then
+          echo "::error::Semgrep JSON results are missing or malformed."
+          exit 1
+        fi
         if [ -f semgrep-results.json ]; then
           RESULTS=$(python - <<'PY' 2>/dev/null || echo 0
         import json
@@ -570,6 +626,7 @@ jobs:
             "semgrep-results.json",
             "semgrep-summary.md"
           ],
+          "scan_outcome": "${{ steps.semgrep.outcome }}",
           "status": "${{ job.status }}"
         }
         EOF
@@ -595,19 +652,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: lane-metadata-contract
     timeout-minutes: 30
-    if: '(github.event_name == ''push'') ||
-
-      (github.event_name == ''pull_request'') ||
-
-      (github.event_name == ''schedule'') ||
-
-      (github.event_name == ''workflow_dispatch'' && (github.event.inputs.scan-type
-      == ''all'' || github.event.inputs.scan-type == ''containers'')) ||
-
-      (github.event_name == ''workflow_call'' && (inputs.scan-type == '''' || inputs.scan-type
-      == ''all'' || inputs.scan-type == ''containers''))
-
-      '
+    if: >
+      github.event_name == 'push' ||
+      github.event_name == 'pull_request' ||
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && inputs.scan_containers) ||
+      (github.event_name == 'workflow_call' &&
+        (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'containers'))
     permissions:
       contents: read
       security-events: write
@@ -627,6 +678,7 @@ jobs:
         \ not found: ${{ matrix.dockerfile }}\"\n  exit 1\nfi\necho \"\u2705 Dockerfile\
         \ found: ${{ matrix.dockerfile }}\"\n"
     - name: Run Trivy filesystem scan (pre-build)
+      id: trivy-fs
       uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
       with:
         scan-type: fs
@@ -658,22 +710,44 @@ jobs:
     - name: Generate container scan summary + contract
       if: always()
       shell: bash
-      run: "set -euo pipefail\nmkdir -p .codex/contracts\n\n{\n  echo \"# Container\
-        \ Security Scan Report\"\n  echo \"- **Dockerfile:** ${{ matrix.dockerfile\
-        \ }}\"\n  echo \"- **Scan outcome:** ${{ job.status }}\"\n  echo \"- **Lane\
-        \ ID:** \\`${{ needs.lane-metadata-contract.outputs.lane_id }}\\`\"\n  echo\
-        \ \"- **Shard ID:** \\`${{ needs.lane-metadata-contract.outputs.shard_id }}\\\
-        `\"\n  echo \"\"\n  if [ -f \"docker-build-${{ strategy.job-index }}.log\"\
-        \ ]; then\n    echo \"## Docker Build Log\"\n    echo \"\\`\\`\\`\"\n    tail\
-        \ -20 \"docker-build-${{ strategy.job-index }}.log\"\n    echo \"\\`\\`\\\
-        `\"\n  fi\n} > container-scan-summary-${{ strategy.job-index }}.md\n\ncat\
-        \ > .codex/contracts/output-contract-container-${{ strategy.job-index }}.json\
-        \ <<'EOFJ'\n{\n  \"schema_version\": \"${{ env.SECURITY_ARTIFACT_SCHEMA_VERSION\
-        \ }}\",\n  \"job\": \"container-scan\",\n  \"matrix_index\": \"${{ strategy.job-index\
-        \ }}\",\n  \"dockerfile\": \"${{ matrix.dockerfile }}\",\n  \"lane_id\": \"\
-        ${{ needs.lane-metadata-contract.outputs.lane_id }}\",\n  \"input_lock_sha256\"\
-        : \"${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\",\n  \"\
-        status\": \"${{ job.status }}\"\n}\nEOFJ\n"
+      run: |
+        set -euo pipefail
+        mkdir -p .codex/contracts
+
+        jq empty "trivy-fs-results-${{ strategy.job-index }}.sarif"
+        if [ -f "trivy-image-results-${{ strategy.job-index }}.sarif" ]; then
+          jq empty "trivy-image-results-${{ strategy.job-index }}.sarif"
+        fi
+        {
+          echo "# Container Security Scan Report"
+          echo "- **Dockerfile:** ${{ matrix.dockerfile }}"
+          echo "- **Scan outcome:** ${{ job.status }}"
+          echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+          echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`"
+          if [ -f "docker-build-${{ strategy.job-index }}.log" ]; then
+            echo "## Docker Build Log"
+            echo '```'
+            tail -20 "docker-build-${{ strategy.job-index }}.log"
+            echo '```'
+          fi
+        } > "container-scan-summary-${{ strategy.job-index }}.md"
+
+        cat > ".codex/contracts/output-contract-container-${{ strategy.job-index }}.json" <<EOF
+        {
+          "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}",
+          "job": "container-scan",
+          "matrix_index": "${{ strategy.job-index }}",
+          "dockerfile": "${{ matrix.dockerfile }}",
+          "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+          "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+          "required_outputs": [
+            "trivy-fs-results-${{ strategy.job-index }}.sarif",
+            "container-scan-summary-${{ strategy.job-index }}.md"
+          ],
+          "scan_outcome": "${{ steps.trivy-fs.outcome }}",
+          "status": "${{ job.status }}"
+        }
+        EOF
     - name: Upload container scan artifacts
       if: always()
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
@@ -692,17 +766,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: lane-metadata-contract
     timeout-minutes: 30
-    if: '(github.event_name == ''pull_request'') ||
-
-      (github.event_name == ''schedule'') ||
-
-      (github.event_name == ''workflow_dispatch'' && (github.event.inputs.scan-type
-      == ''all'' || github.event.inputs.scan-type == ''cve'')) ||
-
-      (github.event_name == ''workflow_call'' && (inputs.scan-type == '''' || inputs.scan-type
-      == ''all'' || inputs.scan-type == ''cve''))
-
-      '
+    if: >
+      github.event_name == 'pull_request' ||
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && inputs.scan_cve) ||
+      (github.event_name == 'workflow_call' &&
+        (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'cve'))
     permissions:
       contents: read
       security-events: write
@@ -766,16 +835,36 @@ jobs:
     - name: Generate CVE summary + contract
       if: always()
       shell: bash
-      run: "set -euo pipefail\nmkdir -p .codex/contracts\n\n{\n  echo \"# CVE & Dependency\
-        \ Audit Report\"\n  echo \"- **Ecosystem:** ${{ matrix.ecosystem }}\"\n  echo\
-        \ \"- **Scan outcome:** ${{ job.status }}\"\n  echo \"- **Lane ID:** \\`${{\
-        \ needs.lane-metadata-contract.outputs.lane_id }}\\`\"\n} > cve-scan-summary-${{\
-        \ matrix.ecosystem }}.md\n\ncat > .codex/contracts/output-contract-cve-${{\
-        \ matrix.ecosystem }}.json <<'EOFJ'\n{\n  \"schema_version\": \"${{ env.SECURITY_ARTIFACT_SCHEMA_VERSION\
-        \ }}\",\n  \"job\": \"cve-scan\",\n  \"ecosystem\": \"${{ matrix.ecosystem\
-        \ }}\",\n  \"lane_id\": \"${{ needs.lane-metadata-contract.outputs.lane_id\
-        \ }}\",\n  \"input_lock_sha256\": \"${{ needs.lane-metadata-contract.outputs.input_lock_sha256\
-        \ }}\",\n  \"status\": \"${{ job.status }}\"\n}\nEOFJ\n"
+      run: |
+        set -euo pipefail
+        mkdir -p .codex/contracts
+
+        RESULTS_JSON="${{ matrix.ecosystem }}-cve-audit.json"
+        if [ -f "${RESULTS_JSON}" ] && ! python -m json.tool "${RESULTS_JSON}" >/dev/null; then
+          echo "::error::${RESULTS_JSON} is malformed."
+          exit 1
+        fi
+        {
+          echo "# CVE & Dependency Audit Report"
+          echo "- **Ecosystem:** ${{ matrix.ecosystem }}"
+          echo "- **Scan outcome:** ${{ job.status }}"
+          echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+        } > "cve-scan-summary-${{ matrix.ecosystem }}.md"
+
+        cat > ".codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json" <<EOF
+        {
+          "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}",
+          "job": "cve-scan",
+          "ecosystem": "${{ matrix.ecosystem }}",
+          "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+          "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+          "required_outputs": [
+            "cve-scan-summary-${{ matrix.ecosystem }}.md",
+            "${{ matrix.ecosystem }}-cve-audit.json"
+          ],
+          "status": "${{ job.status }}"
+        }
+        EOF
     - name: Upload CVE scan artifacts
       if: always()
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
@@ -792,15 +881,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: lane-metadata-contract
     timeout-minutes: 60
-    if: '(github.event_name == ''schedule'') ||
-
-      (github.event_name == ''workflow_dispatch'' && (github.event.inputs.scan-type
-      == ''all'' || github.event.inputs.scan-type == ''dependency'')) ||
-
-      (github.event_name == ''workflow_call'' && (inputs.scan-type == '''' || inputs.scan-type
-      == ''all'' || inputs.scan-type == ''dependency''))
-
-      '
+    if: >
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && inputs.scan_dependency) ||
+      (github.event_name == 'workflow_call' &&
+        (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'dependency'))
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
@@ -818,6 +903,7 @@ jobs:
 
         '
     - name: Run pip-audit and Safety
+      id: dependency-audit
       continue-on-error: true
       run: 'pip-audit --format json --output pip-audit.json 2>&1 | tee pip-audit-json.log
         || true
@@ -840,6 +926,12 @@ jobs:
         PIP_AUDIT_COUNT=0
         SAFETY_COUNT=0
 
+        for result_file in pip-audit.json safety.json; do
+          if [ ! -s "${result_file}" ] || ! python -m json.tool "${result_file}" >/dev/null; then
+            echo "::error::Dependency scan output is missing or malformed: ${result_file}"
+            exit 1
+          fi
+        done
         if [ -f pip-audit.json ]; then
           PIP_AUDIT_COUNT=$(python - <<'PY' 2>/dev/null || echo 0
         import json
@@ -889,6 +981,7 @@ jobs:
             "safety.json",
             "dependency-scan-summary.md"
           ],
+          "scan_outcome": "${{ steps.dependency-audit.outcome }}",
           "status": "${{ job.status }}"
         }
         EOF
@@ -915,14 +1008,11 @@ jobs:
     name: Secret Scanning
     runs-on: ubuntu-latest
     needs: lane-metadata-contract
-    timeout-minutes: 60
-    if: '(github.event_name == ''workflow_dispatch'' && github.event.inputs.scan-type
-      == ''all'') ||
-
-      (github.event_name == ''workflow_call'' && (inputs.scan-type == '''' || inputs.scan-type
-      == ''all''))
-
-      '
+    timeout-minutes: 120
+    if: >
+      (github.event_name == 'workflow_dispatch' && inputs.scan_secrets) ||
+      (github.event_name == 'workflow_call' &&
+        (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'secrets'))
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
@@ -950,26 +1040,51 @@ jobs:
     - name: Generate secret summary + contract
       if: always()
       shell: bash
-      run: "set -euo pipefail\npython - <<'PY'\nimport json\nout = {'results_by_file':\
-        \ {}, 'files_with_secrets': 0, 'total_secrets': 0, 'plugins': []}\ntry:\n\
-        \  with open('.secrets.baseline') as fh:\n    data = json.load(fh)\n  results\
-        \ = data.get('results', {}) or {}\n  out['plugins'] = [p.get('name') for p\
-        \ in (data.get('plugins_used') or [])]\n  out['files_with_secrets'] = len(results)\n\
-        \  for fname, items in results.items():\n    out['results_by_file'][fname]\
-        \ = len(items)\n    out['total_secrets'] += len(items)\nexcept Exception as\
-        \ exc:\n  out['error'] = str(exc)\njson.dump(out, open('detect-secrets-summary.json','w'),\
-        \ indent=2, sort_keys=True)\nPY\n\n{\n  echo \"# Secret Scan Report\"\n  echo\
-        \ \"- **Secrets found:** ${{ steps.detect-secrets.outputs.secrets_found ||\
-        \ 0 }}\"\n  echo \"- **Lane ID:** \\`${{ needs.lane-metadata-contract.outputs.lane_id\
-        \ }}\\`\"\n  echo \"- **Input Lock SHA:** \\`${{ needs.lane-metadata-contract.outputs.input_lock_sha256\
-        \ }}\\`\"\n} > secret-scan-summary.md\ncat secret-scan-summary.md >> \"$GITHUB_STEP_SUMMARY\"\
-        \n\nmkdir -p .codex/contracts\ncat > .codex/contracts/output-contract-secrets.json\
-        \ <<EOF\n{\n  \"schema_version\": \"${SECURITY_ARTIFACT_SCHEMA_VERSION}\"\
-        ,\n  \"job\": \"secret-scan\",\n  \"lane_id\": \"${{ needs.lane-metadata-contract.outputs.lane_id\
-        \ }}\",\n  \"input_lock_sha256\": \"${{ needs.lane-metadata-contract.outputs.input_lock_sha256\
-        \ }}\",\n  \"required_outputs\": [\n    \".secrets.baseline\",\n    \"detect-secrets-summary.json\"\
-        ,\n    \"secret-scan-summary.md\"\n  ],\n  \"status\": \"${{ job.status }}\"\
-        \n}\nEOF\n"
+      run: |
+        set -euo pipefail
+        python - <<'PY'
+        import json
+
+        summary = {"results_by_file": {}, "files_with_secrets": 0, "total_secrets": 0, "plugins": []}
+        with open(".secrets.baseline", encoding="utf-8") as handle:
+            data = json.load(handle)
+        results = data.get("results", {}) or {}
+        summary["plugins"] = [
+            plugin.get("name") for plugin in data.get("plugins_used", [])
+        ]
+        summary["files_with_secrets"] = len(results)
+        summary["results_by_file"] = {
+            filename: len(items) for filename, items in results.items()
+        }
+        summary["total_secrets"] = sum(summary["results_by_file"].values())
+        with open("detect-secrets-summary.json", "w", encoding="utf-8") as handle:
+            json.dump(summary, handle, indent=2, sort_keys=True)
+        PY
+
+        {
+          echo "# Secret Scan Report"
+          echo "- **Secrets found:** ${{ steps.detect-secrets.outputs.secrets_found || 0 }}"
+          echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+          echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`"
+        } > secret-scan-summary.md
+        cat secret-scan-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+        mkdir -p .codex/contracts
+        cat > .codex/contracts/output-contract-secrets.json <<EOF
+        {
+          "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}",
+          "job": "secret-scan",
+          "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+          "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+          "required_outputs": [
+            ".secrets.baseline",
+            "detect-secrets-summary.json",
+            "secret-scan-summary.md"
+          ],
+          "scan_outcome": "${{ steps.detect-secrets.outcome }}",
+          "status": "${{ job.status }}"
+        }
+        EOF
     - name: Upload secret scan artifacts
       if: always()
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
@@ -988,16 +1103,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: lane-metadata-contract
     timeout-minutes: 60
-    if: '(github.event_name == ''schedule'' && github.event.schedule == ''0 3 * *
-      0'') ||
-
-      (github.event_name == ''workflow_dispatch'' && github.event.inputs.scan-type
-      == ''all'') ||
-
-      (github.event_name == ''workflow_call'' && (inputs.scan-type == '''' || inputs.scan-type
-      == ''all''))
-
-      '
+    if: >
+      (github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') ||
+      (github.event_name == 'workflow_dispatch' && inputs.scan_sbom) ||
+      (github.event_name == 'workflow_call' &&
+        (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'sbom'))
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
@@ -1082,6 +1192,8 @@ jobs:
     - name: Audit artifact family presence (record evidence gaps)
       if: always()
       shell: bash
+      env:
+        SELECTED_SCANS: ${{ needs.lane-metadata-contract.outputs.selected_scans }}
       run: |
         set -euo pipefail
         # Record which expected artifact families are present vs missing. A missing
@@ -1099,37 +1211,59 @@ jobs:
         if os.path.isdir(root):
             present = {d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d))}
 
-        expected = [
-            "security-suite-lane-contract",
-            "security-suite-codeql-python",
-            "security-suite-codeql-javascript",
-            "security-suite-semgrep",
-            "security-suite-dependency",
-            "security-suite-secrets",
-            "security-suite-sbom",
-            "security-suite-summary",
-        ]
-        # Matrix families (3 dockerfiles / 3 ecosystems) — count any present member.
-        matrix_prefixes = ["security-suite-container-", "security-suite-cve-"]
-
+        selected = {
+            scan for scan in os.environ.get("SELECTED_SCANS", "").split(",") if scan
+        }
+        expected_by_scan = {
+            "codeql": ["security-suite-codeql-python", "security-suite-codeql-javascript"],
+            "semgrep": ["security-suite-semgrep"],
+            "containers": [f"security-suite-container-{index}" for index in range(3)],
+            "cve": [
+                "security-suite-cve-python",
+                "security-suite-cve-javascript",
+                "security-suite-cve-rust",
+            ],
+            "dependency": ["security-suite-dependency"],
+            "secrets": ["security-suite-secrets"],
+            "sbom": ["security-suite-sbom"],
+        }
         rows = []
-        for name in expected:
-            rows.append({"family": name, "present": name in present})
-        for prefix in matrix_prefixes:
-            members = sorted(d for d in present if d.startswith(prefix))
-            rows.append({
-                "family": prefix + "*",
-                "present": len(members) > 0,
-                "members": members,
-                "member_count": len(members),
-            })
+        rows.append(
+            {
+                "family": "security-suite-lane-contract",
+                "selected": True,
+                "status": (
+                    "present"
+                    if "security-suite-lane-contract" in present
+                    else "evidence_gap"
+                ),
+            }
+        )
+        for scan, names in expected_by_scan.items():
+            for name in names:
+                is_selected = scan in selected
+                is_present = name in present
+                rows.append(
+                    {
+                        "family": name,
+                        "selected": is_selected,
+                        "status": (
+                            "skipped"
+                            if not is_selected
+                            else "present"
+                            if is_present
+                            else "evidence_gap"
+                        ),
+                    }
+                )
 
-        gaps = [r["family"] for r in rows if not r["present"]]
+        gaps = [row["family"] for row in rows if row["status"] == "evidence_gap"]
         report = {
             "schema_version": "1.0.0",
             "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "run_id": os.environ.get("GITHUB_RUN_ID", "unknown"),
             "sha": os.environ.get("GITHUB_SHA", "unknown"),
+            "selected_scans": sorted(selected),
             "families": rows,
             "evidence_gaps": gaps,
             "evidence_gap_count": len(gaps),
@@ -1141,14 +1275,12 @@ jobs:
         lines = [
             "## Artifact Family Evidence Audit",
             "",
-            "| Family | Status |",
-            "|---|---|",
+            "| Family | Selected | Status |",
+            "|---|---:|---|",
         ]
         for r in rows:
-            status = "present" if r["present"] else "**EVIDENCE GAP**"
-            if r.get("member_count") is not None and r["present"]:
-                status = f"present ({r['member_count']} members)"
-            lines.append(f"| `{r['family']}` | {status} |")
+            status = "**EVIDENCE GAP**" if r["status"] == "evidence_gap" else r["status"]
+            lines.append(f"| `{r['family']}` | {r['selected']} | {status} |")
         lines.append("")
         if gaps:
             lines.append(f"**Evidence gaps recorded:** {len(gaps)} — " + ", ".join(f"`{g}`" for g in gaps))
@@ -1162,36 +1294,60 @@ jobs:
         print("\n".join(lines))
         PY
         cat "$GAP_MD" >> "$GITHUB_STEP_SUMMARY"
+    - name: Record selected scans
+      if: always()
+      run: |
+        echo "## Selected Security Scans" >> "$GITHUB_STEP_SUMMARY"
+        echo "${{ needs.lane-metadata-contract.outputs.selected_scans || 'none' }}" >> "$GITHUB_STEP_SUMMARY"
     - name: Build consolidated security summary
       if: always()
       shell: bash
-      run: "set -euo pipefail\nRUN_URL=\"${{ github.server_url }}/${{ github.repository\
-        \ }}/actions/runs/${{ github.run_id }}\"\nARTIFACTS_URL=\"${RUN_URL}#artifacts\"\
-        \nSECURITY_URL=\"${{ github.server_url }}/${{ github.repository }}/security/code-scanning\"\
-        \nmkdir -p security-suite-summary .codex/contracts\nOUT=\"security-suite-summary/security-suite-summary.md\"\
-        \n\n{\n  echo \"# \U0001F510 Security Scanning Suite Summary\"\n  echo \"\"\
-        \n  echo \"- **Repository:** \\`${{ github.repository }}\\`\"\n  echo \"-\
-        \ **Commit:** \\`${{ github.sha }}\\`\"\n  echo \"- **Workflow run:** [#${{\
-        \ github.run_number }}](${RUN_URL})\"\n  echo \"- **Artifacts:** [open dropdown](${ARTIFACTS_URL})\"\
-        \n  echo \"- **GHAS code-scanning alerts:** [open](${SECURITY_URL})\"\n  echo\
-        \ \"- **Lane ID:** \\`${{ needs.lane-metadata-contract.outputs.lane_id }}\\\
-        `\"\n  echo \"- **Shard ID:** \\`${{ needs.lane-metadata-contract.outputs.shard_id\
-        \ }}\\`\"\n  echo \"- **CodeQL Wave:** \\`${{ needs.lane-metadata-contract.outputs.codeql_wave\
-        \ }}\\`\"\n  echo \"- **Input Lock SHA:** \\`${{ needs.lane-metadata-contract.outputs.input_lock_sha256\
-        \ }}\\`\"\n  echo \"\"\n  echo \"## Job Results\"\n  echo \"\"\n  echo \"\
-        | Job | Result |\"\n  echo \"|---|---|\"\n  echo \"| codeql-scan | ${{ needs.codeql-scan.result\
-        \ }} |\"\n  echo \"| container-scan | ${{ needs.container-scan.result }} |\"\
-        \n  echo \"| cve-scan | ${{ needs.cve-scan.result }} |\"\n  echo \"| semgrep\
-        \ | ${{ needs.semgrep.result }} |\"\n  echo \"| dependency-scan | ${{ needs.dependency-scan.result\
-        \ }} |\"\n  echo \"| secret-scan | ${{ needs.secret-scan.result }} |\"\n \
-        \ echo \"| sbom-generation | ${{ needs.sbom-generation.result }} |\"\n  echo\
-        \ \"\"\n} > \"$OUT\"\n\ncat \"$OUT\" >> \"$GITHUB_STEP_SUMMARY\"\n\ncat >\
-        \ .codex/contracts/output-contract-summary.json <<EOF\n{\n  \"schema_version\"\
-        : \"${SECURITY_ARTIFACT_SCHEMA_VERSION}\",\n  \"job\": \"security-suite-summary\"\
-        ,\n  \"lane_id\": \"${{ needs.lane-metadata-contract.outputs.lane_id }}\"\
-        ,\n  \"input_lock_sha256\": \"${{ needs.lane-metadata-contract.outputs.input_lock_sha256\
-        \ }}\",\n  \"required_outputs\": [\n    \"security-suite-summary/security-suite-summary.md\"\
-        \n  ],\n  \"status\": \"${{ job.status }}\"\n}\nEOF\n"
+      run: |
+        set -euo pipefail
+        RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        ARTIFACTS_URL="${RUN_URL}#artifacts"
+        SECURITY_URL="${{ github.server_url }}/${{ github.repository }}/security/code-scanning"
+        mkdir -p security-suite-summary .codex/contracts
+        OUT="security-suite-summary/security-suite-summary.md"
+
+        {
+          echo "# 🔐 Security Scanning Suite Summary"
+          echo ""
+          echo "- **Repository:** \`${{ github.repository }}\`"
+          echo "- **Commit:** \`${{ github.sha }}\`"
+          echo "- **Workflow run:** [#${{ github.run_number }}](${RUN_URL})"
+          echo "- **Artifacts:** [open dropdown](${ARTIFACTS_URL})"
+          echo "- **GHAS code-scanning alerts:** [open](${SECURITY_URL})"
+          echo "- **Selected scans:** \`${{ needs.lane-metadata-contract.outputs.selected_scans || 'none' }}\`"
+          echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+          echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`"
+          echo "- **CodeQL Wave:** \`${{ needs.lane-metadata-contract.outputs.codeql_wave }}\`"
+          echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`"
+          echo ""
+          echo "## Job Results"
+          echo ""
+          echo "| Job | Result |"
+          echo "|---|---|"
+          echo "| codeql-scan | ${{ needs.codeql-scan.result }} |"
+          echo "| container-scan | ${{ needs.container-scan.result }} |"
+          echo "| cve-scan | ${{ needs.cve-scan.result }} |"
+          echo "| semgrep | ${{ needs.semgrep.result }} |"
+          echo "| dependency-scan | ${{ needs.dependency-scan.result }} |"
+          echo "| secret-scan | ${{ needs.secret-scan.result }} |"
+          echo "| sbom-generation | ${{ needs.sbom-generation.result }} |"
+        } > "${OUT}"
+        cat "${OUT}" >> "${GITHUB_STEP_SUMMARY}"
+
+        cat > .codex/contracts/output-contract-summary.json <<EOF
+        {
+          "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}",
+          "job": "security-suite-summary",
+          "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+          "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+          "required_outputs": ["security-suite-summary/security-suite-summary.md"],
+          "status": "${{ job.status }}"
+        }
+        EOF
     - name: Upload consolidated summary
       if: always()
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
@@ -1211,7 +1367,9 @@ jobs:
     if: always()
     timeout-minutes: 40
     permissions:
+      actions: read
       contents: read
+      security-events: read
     steps:
     - name: Checkout repository
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -1230,6 +1388,47 @@ jobs:
         python-version: '3.12'
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+    - name: Fetch all existing code-scanning alerts
+      if: contains(needs.lane-metadata-contract.outputs.selected_scans, 'codeql')
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        set -euo pipefail
+        inventory_dir="security-suite-artifacts/security-suite-codeql-alerts"
+        python scripts/ci/fetch_codeql_alerts.py \
+          --state open \
+          --tool all \
+          --max-pages 100 \
+          --page-sleep 1.0 \
+          --min-remaining 100 \
+          --out-dir "${inventory_dir}"
+        python - "${inventory_dir}" <<'PY'
+        import json
+        import sys
+        from pathlib import Path
+
+        inventory_dir = Path(sys.argv[1])
+        with (inventory_dir / "api_inventory_raw.json").open(encoding="utf-8") as handle:
+            alerts = json.load(handle)
+        with (inventory_dir / "api_inventory_summary.json").open(encoding="utf-8") as handle:
+            summary = json.load(handle)
+        if not isinstance(alerts, list) or len(alerts) != summary.get("total"):
+            raise SystemExit("GitHub alert inventory is incomplete or inconsistent")
+        contract = {
+            "job": "github-code-scanning-alert-inventory",
+            "status": "success",
+            "required_outputs": [
+                "api_inventory_raw.json",
+                "api_inventory_summary.json",
+            ],
+            "alert_count": len(alerts),
+        }
+        with (inventory_dir / "output-contract-codeql-alerts.json").open(
+            "w", encoding="utf-8"
+        ) as handle:
+            json.dump(contract, handle, indent=2)
+        print(f"Collected {len(alerts)} existing code-scanning alerts.")
+        PY
     - name: Run findings aggregator + normalized exports
       id: aggregate
       env:
@@ -1244,55 +1443,62 @@ jobs:
         CODEQL_WAVE: ${{ needs.lane-metadata-contract.outputs.codeql_wave }}
         COPILOT_AGENT_GLOBAL_SEED: ${{ needs.lane-metadata-contract.outputs.deterministic_seed
           }}
-      run: "set -euo pipefail\nmkdir -p .codex security .codex/contracts\n\npython\
-        \ scripts/ci/aggregate_security_findings.py \\\n  --artifacts-dir security-suite-artifacts\
-        \ \\\n  --output-json .codex/security-findings-comprehensive.json \\\n  --output-md\
-        \ security-findings-comprehensive.md\n\npython scripts/ci/aggregate_security_findings.py\
-        \ \\\n  --artifacts-dir security-suite-artifacts \\\n  --output-json .codex/security-findings-comprehensive.json\
-        \ \\\n  --output-md security-findings-comprehensive.md \\\n  --output-csv\
-        \ security/codeql-alert-inventory.csv \\\n  --output-priority-csv security/codeql-priority-queue.csv\
-        \ \\\n  --output-family-csv security/codeql-family-index.csv \\\n  || true\n\
-        \nif [ ! -f security/codeql-alert-inventory.csv ]; then\n  python - <<'PY'\n\
-        import json, csv, os\nos.makedirs(\"security\", exist_ok=True)\np=\".codex/security-findings-comprehensive.json\"\
-        \nrows=[]\ntry:\n  d=json.load(open(p))\n  findings=d.get(\"findings\",[])\
-        \ or []\n  for i,f in enumerate(findings,1):\n    rows.append({\n      \"\
-        alert_id\": f.get(\"id\", f\"agg-{i}\"),\n      \"tool\": f.get(\"tool\",\"\
-        unknown\"),\n      \"rule_id\": f.get(\"rule_id\",\"\"),\n      \"severity\"\
-        : f.get(\"severity\",\"\"),\n      \"file_path\": f.get(\"path\",\"\"),\n\
-        \      \"start_line\": f.get(\"start_line\",\"\"),\n      \"end_line\": f.get(\"\
-        end_line\",\"\"),\n      \"commit_sha\": d.get(\"metadata\",{}).get(\"commit_sha\"\
-        ,\"\"),\n      \"run_id\": d.get(\"metadata\",{}).get(\"run_id\",\"\")\n \
-        \   })\nexcept Exception:\n  pass\nwith open(\"security/codeql-alert-inventory.csv\"\
-        ,\"w\",newline=\"\") as fh:\n  w=csv.DictWriter(fh,fieldnames=[\"alert_id\"\
-        ,\"tool\",\"rule_id\",\"severity\",\"file_path\",\"start_line\",\"end_line\"\
-        ,\"commit_sha\",\"run_id\"])\n  w.writeheader()\n  w.writerows(rows)\nPY\n\
-        fi\n\n[ -f security/codeql-family-index.csv ] || echo \"family_id,rule_id,count\"\
-        \ > security/codeql-family-index.csv\n[ -f security/codeql-priority-queue.csv\
-        \ ] || echo \"family_id,priority_score,severity,reachable\" > security/codeql-priority-queue.csv\n\
-        \npython - <<'PY'\nimport json, datetime, os, hashlib\nos.makedirs(\"security\"\
-        , exist_ok=True)\n\nschema={\n  \"schema_version\":\"1.0.0\",\n  \"generated_at\"\
-        :datetime.datetime.now(datetime.timezone.utc).strftime(\"%Y-%m-%dT%H:%M:%SZ\"\
-        ),\n  \"repository\":\"${{ github.repository }}\",\n  \"run_id\":\"${{ github.run_id\
-        \ }}\",\n  \"sha\":\"${{ github.sha }}\",\n  \"lane_id\":\"${{ needs.lane-metadata-contract.outputs.lane_id\
-        \ }}\",\n  \"shard_id\":\"${{ needs.lane-metadata-contract.outputs.shard_id\
-        \ }}\",\n  \"codeql_wave\":\"${{ needs.lane-metadata-contract.outputs.codeql_wave\
-        \ }}\"\n}\njson.dump(schema, open(\"security/codeql-schema-version.json\"\
-        ,\"w\"), indent=2)\n\nprov={\n  \"schema_version\":\"1.0.0\",\n  \"input_lock_sha256\"\
-        :\"${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\",\n  \"\
-        source_run_id\":\"${{ github.run_id }}\",\n  \"source_sha\":\"${{ github.sha\
-        \ }}\",\n  \"source_repository\":\"${{ github.repository }}\",\n  \"artifacts_pattern\"\
-        :\"security-suite-*\"\n}\njson.dump(prov, open(\"security/artifact-provenance.json\"\
-        ,\"w\"), indent=2)\n\nlock_material = \"\\n\".join([\n  \"${{ github.repository\
-        \ }}\",\n  \"${{ github.sha }}\",\n  \"${{ github.run_id }}\",\n  \"${{ needs.lane-metadata-contract.outputs.input_lock_sha256\
-        \ }}\"\n])\nlock_hash = hashlib.sha256(lock_material.encode()).hexdigest()\n\
-        json.dump({\n  \"schema_version\":\"1.0.0\",\n  \"remediation_input_lock_sha256\"\
-        : lock_hash\n}, open(\"security/remediation-input-lock.json\",\"w\"), indent=2)\n\
-        PY\n\npython -c \"\nimport json\nwith open('.codex/security-findings-comprehensive.json')\
-        \ as f:\n  data = json.load(f)\nsummary = data.get('summary',{})\nprint(f\\\
-        \"CRITICAL={summary.get('critical_count',0)}\\\")\nprint(f\\\"HIGH={summary.get('high_count',0)}\\\
-        \")\nprint(f\\\"MEDIUM={summary.get('medium_count',0)}\\\")\nprint(f\\\"LOW={summary.get('low_count',0)}\\\
-        \")\nprint(f\\\"TOTAL={summary.get('total_findings',0)}\\\")\n\" >> \"$GITHUB_OUTPUT\"\
-        \n"
+      run: |
+        set -euo pipefail
+        mkdir -p .codex security .codex/contracts
+
+        python scripts/ci/aggregate_security_findings.py \
+          --artifacts-dir security-suite-artifacts \
+          --output-json .codex/security-findings-comprehensive.json \
+          --output-md security-findings-comprehensive.md \
+          --output-csv security/codeql-alert-inventory.csv \
+          --output-priority-csv security/codeql-priority-queue.csv \
+          --output-family-csv security/codeql-family-index.csv
+
+        python - <<'PY'
+        import json
+        from pathlib import Path
+
+        Path("security").mkdir(exist_ok=True)
+        with open(".codex/security-findings-comprehensive.json", encoding="utf-8") as handle:
+            report = json.load(handle)
+        schema = {
+            "schema_version": "1.0.0",
+            "repository": "${{ github.repository }}",
+            "run_id": "${{ github.run_id }}",
+            "sha": "${{ github.sha }}",
+            "selected_scans": report["scan_metadata"]["selected_scans"],
+        }
+        with open("security/codeql-schema-version.json", "w", encoding="utf-8") as handle:
+            json.dump(schema, handle, indent=2)
+        provenance = {
+            "schema_version": "1.0.0",
+            "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+            "source_run_id": "${{ github.run_id }}",
+            "source_sha": "${{ github.sha }}",
+            "source_repository": "${{ github.repository }}",
+            "artifacts_pattern": "security-suite-*",
+        }
+        with open("security/artifact-provenance.json", "w", encoding="utf-8") as handle:
+            json.dump(provenance, handle, indent=2)
+        remediation_lock = {
+            "schema_version": "1.0.0",
+            "remediation_input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+        }
+        with open("security/remediation-input-lock.json", "w", encoding="utf-8") as handle:
+            json.dump(remediation_lock, handle, indent=2)
+        PY
+
+        python - <<'PY' >> "${GITHUB_OUTPUT}"
+        import json
+
+        with open(".codex/security-findings-comprehensive.json", encoding="utf-8") as handle:
+            report = json.load(handle)
+        summary = report["summary"]
+        for key in ("critical", "high", "medium", "low"):
+            print(f"{key.upper()}={summary[f'{key}_count']}")
+        print(f"TOTAL={summary['total_findings']}")
+        PY
     - name: Upload comprehensive findings artifact
       if: always()
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
@@ -1307,6 +1513,7 @@ jobs:
           security/codeql-schema-version.json
           security/artifact-provenance.json
           security/remediation-input-lock.json
+          security-suite-artifacts/security-suite-codeql-alerts/
         if-no-files-found: warn
         retention-days: 90
     - name: Summary

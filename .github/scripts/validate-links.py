@@ -320,6 +320,12 @@ class LinkValidator:
 def main():
     parser = argparse.ArgumentParser(description="Validate links in repo markdown files")
     parser.add_argument(
+        "files",
+        nargs="*",
+        metavar="FILE",
+        help="Markdown files to validate (default: scan all configured documentation directories)",
+    )
+    parser.add_argument(
         "--fail-on-errors",
         action="store_true",
         default=False,
@@ -339,14 +345,28 @@ def main():
     elif env_strict in ("0", "false", "no"):
         args.fail_on_errors = False
 
-    repo_root = Path(__file__).parent.parent.parent
+    repo_root = Path(__file__).resolve().parents[2]
     validator = LinkValidator(repo_root)
 
-    # Validate specific directories
-    validator.validate_directory(repo_root / ".github" / "workflows")
-    validator.validate_directory(repo_root / ".github" / "docs")
-    validator.validate_directory(repo_root / ".github" / "agents")
-    validator.validate_directory(repo_root / "docs")
+    if args.files:
+        # Pre-commit supplies repository-relative filenames. Anchor relative paths
+        # at the repository root and reject paths (including symlinks) outside it.
+        for filename in args.files:
+            file_path = Path(filename)
+            if not file_path.is_absolute():
+                file_path = repo_root / file_path
+            file_path = file_path.resolve()
+            try:
+                file_path.relative_to(repo_root)
+            except ValueError:
+                parser.error(f"file is outside the repository: {filename}")
+            validator.validate_file(file_path)
+    else:
+        # No explicit paths retains the full-repository audit/report behavior.
+        validator.validate_directory(repo_root / ".github" / "workflows")
+        validator.validate_directory(repo_root / ".github" / "docs")
+        validator.validate_directory(repo_root / ".github" / "agents")
+        validator.validate_directory(repo_root / "docs")
 
     exit_code = validator.report(report_file=args.report_file)
 

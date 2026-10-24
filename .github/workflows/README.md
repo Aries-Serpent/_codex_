@@ -22,50 +22,46 @@ The reusable gate workflow `cost-gate.yml` remains active because it is referenc
 
 ### Security Workflows
 
-#### `phase34-codeql-alert-fetch.yml`
+#### `codeql-alert-inventory.yml`
 **Status**: ✅ Active  
-**Last Updated**: 2026-01-26  
-**Trigger**: Manual (`workflow_dispatch`)
+**Last Updated**: 2026-10-10  
+**Trigger**: Manual (`workflow_dispatch`) and weekly scheduled run
 
-**Purpose**: Fetch CodeQL code scanning alerts from GitHub API, generate inventory, and create tracking issue for AI agent analysis.
+**Purpose**: Fetch the repository’s CodeQL code-scanning alerts via the GitHub REST API, write the canonical inventory to `.codex/security/code_scanning_inventory`, and publish the result as a workflow artifact.
 
 **Inputs**:
-- `max_pages` (default: 60) - Maximum pages to fetch (100 alerts per page)
-- `severity_filter` (default: all) - Filter by severity: all, critical, high, medium, low
+- `state` (default: `open`) - Alert state to fetch
+- `tool_name` (default: `CodeQL`) - Tool filter for the API request
+- `max_pages` (default: `10`) - Maximum pages to enumerate (100 alerts per page)
+- `page_sleep` (default: `1.0`) - Delay between paginated REST calls
+- `top_n` (default: `20`) - Number of entries in the fixable-priority report
 
 **Permissions**:
-- `security-events: read` - Fetch code scanning alerts
-- `contents: write` - Commit alert inventory to repository
-- `pull-requests: write` - Create PRs for fixes
-- `issues: write` - Create tracking issues
+- `security-events: read` - Read code-scanning alert data
+- `actions: read` - Access workflow metadata
+- `contents: read` - Repository read access for the checkout step
 
 **Outputs**:
-- `.codex/security/alert_inventory.json` - Complete alert data
-- `.codex/security/alert_inventory.csv` - Spreadsheet format
-- `.codex/security/alert_summary.md` - Human-readable summary
-- GitHub Issue - Tracking issue with @copilot instructions
+- `.codex/security/code_scanning_inventory/manifest.json` - Inventory schema and source-of-truth metadata
+- `.codex/security/code_scanning_inventory/api_inventory_raw.json` - Full API payload
+- `.codex/security/code_scanning_inventory/api_inventory_summary.json` - Rule/severity summary
+- `.codex/security/code_scanning_inventory/api_inventory_by_rule.csv` - Rule rollup
+- `.codex/security/code_scanning_inventory/api_inventory_by_severity.csv` - Severity rollup
+- `.codex/security/code_scanning_inventory/api_inventory_by_path.csv` - Path rollup
 
 **Usage**:
 ```bash
 # Trigger manually
-gh workflow run phase34-codeql-alert-fetch.yml \
+gh workflow run codeql-alert-inventory.yml \
+  --field state=open \
   --field max_pages=10 \
-  --field severity_filter=high
+  --field tool_name=CodeQL
 
 # Monitor execution
 gh run watch
 
-# View results
-gh run view --log
+# Download the artifact from the workflow run
 ```
-
-**Debug Mode**:
-Enable debug logging by setting `ACTIONS_RUNNER_DEBUG=true` in repository secrets:
-```bash
-gh secret set ACTIONS_RUNNER_DEBUG --body "true"
-```
-
-Then check debug output in workflow logs.
 
 ---
 
@@ -127,7 +123,7 @@ gh workflow run app-package-download.yml \
 
 The following workflows require elevated permissions via the `CODEX_MASTER_KEY` secret:
 
-1. **phase34-codeql-alert-fetch.yml** - CodeQL alert operations
+1. **codeql-alert-inventory.yml** - CodeQL alert inventory collection via the GitHub API
 2. **auth-token-rotation.yml** - Token rotation automation
 3. **phase10-automated-secrets-setup.yml** - Secret management
 
@@ -187,7 +183,7 @@ gh secret set CODEX_MASTER_KEY --body "NEW_TOKEN"
 **Solution**:
 ```bash
 # Check workflow permissions in YAML
-grep -A 5 "permissions:" .github/workflows/phase34-codeql-alert-fetch.yml
+grep -A 5 "permissions:" .github/workflows/codeql-alert-inventory.yml
 
 # Verify token scopes
 gh api /user --include | grep "x-oauth-scopes"
@@ -202,10 +198,10 @@ gh api /user --include | grep "x-oauth-scopes"
 **Solution**:
 ```bash
 # Validate YAML syntax
-yamllint .github/workflows/phase34-codeql-alert-fetch.yml
+yamllint .github/workflows/codeql-alert-inventory.yml
 
 # Validate with Python
-python -c "import yaml; yaml.safe_load(open('.github/workflows/FILENAME.yml'))"
+python -c "import yaml; yaml.safe_load(open('.github/workflows/codeql-alert-inventory.yml'))"
 
 # Common fixes:
 # - Remove trailing spaces
@@ -221,34 +217,34 @@ python -c "import yaml; yaml.safe_load(open('.github/workflows/FILENAME.yml'))"
 **Solution**:
 ```bash
 # Check if workflow is enabled
-gh workflow view phase34-codeql-alert-fetch.yml | grep "State:"
+gh workflow view codeql-alert-inventory.yml | grep "State:"
 
 # Enable if disabled
-gh workflow enable phase34-codeql-alert-fetch.yml
+gh workflow enable codeql-alert-inventory.yml
 
 # Verify you're on correct branch
 git branch --show-current
 
 # Trigger from specific branch
-gh workflow run phase34-codeql-alert-fetch.yml --ref main
+gh workflow run codeql-alert-inventory.yml --ref main
 ```
 
 ---
 
 ## Rollback Strategies
 
-### Phase 34 Workflow Rollback
+### CodeQL Inventory Workflow Rollback
 
-If the Phase 34 workflow fails after deployment, use this rollback strategy:
+If the inventory workflow fails after deployment, use this rollback strategy:
 
 #### Method 1: Git Revert (Recommended)
 
 ```bash
 # Revert the fix commit
-git revert a407495
+git revert <commit-sha>
 
 # Or revert multiple commits
-git revert a407495..HEAD
+git revert <earliest-sha>..HEAD
 
 # Push revert
 git push origin main
@@ -260,29 +256,29 @@ Add this to the workflow file:
 ```yaml
 on:
   workflow_dispatch: {}
-  # Disabled due to issues - see https://github.com/Aries-Serpent/_codex_/issues/XXXX
+  # Disabled due to issues - see issue tracker
 ```
 
 Or disable via CLI:
 ```bash
-gh workflow disable phase34-codeql-alert-fetch.yml
+gh workflow disable codeql-alert-inventory.yml
 ```
 
 #### Method 3: Restore Previous Version
 
 ```bash
 # Find previous working version
-git log --oneline .github/workflows/phase34-codeql-alert-fetch.yml
+git log --oneline .github/workflows/codeql-alert-inventory.yml
 
 # Restore specific version
-git checkout 34ba3a8 -- .github/workflows/phase34-codeql-alert-fetch.yml
+git checkout <commit-sha> -- .github/workflows/codeql-alert-inventory.yml
 
 # Commit restoration
-git commit -m "rollback: Restore phase34 workflow to working version"
+git commit -m "rollback: Restore codeql inventory workflow to prior version"
 git push origin main
 ```
 
-#### Method 4: Alternative Heredoc Implementation
+#### Method 4: Preserve the inventory path while debugging
 
 If echo approach fails, alternative heredoc pattern:
 ```yaml

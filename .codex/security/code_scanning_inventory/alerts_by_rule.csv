@@ -1,0 +1,2 @@
+rule_id,count,severity,path_count,paths,alert_numbers
+js/insecure-cookie,3,high,1,src/test.py,1; 2; 3

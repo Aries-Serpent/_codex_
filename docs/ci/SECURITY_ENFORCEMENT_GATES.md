@@ -218,7 +218,7 @@ Key skips (security-justified):
 **Advisory Mode** (current):
 - HIGH/MEDIUM findings reported to GitHub Security tab
 - Does NOT block PR merge
-- Findings tracked in `.codex/security/codeql_alert_inventory.json`
+- Findings tracked in `.codex/security/code_scanning_inventory/api_inventory_summary.json`
 
 **Blocking Mode** (after Phase 4):
 - CRITICAL findings (0 expected) block PR
