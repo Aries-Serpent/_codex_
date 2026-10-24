@@ -38,7 +38,7 @@ name: "\U0001F4B0 Cost Gate"
         description: true if job may proceed
         value: ${{ jobs.gate.outputs.approved }}
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  group: ${{ github.workflow }}-cost-gate-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 permissions:
   contents: read

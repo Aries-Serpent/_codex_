@@ -252,10 +252,10 @@ repos:
         name: Validate Internal Doc Links (.github/agents + docs/)
         entry: python .github/scripts/validate-links.py --fail-on-errors
         language: system
-        pass_filenames: false
+        pass_filenames: true
         files: '\.md$'
         stages: [commit]
-        # Runs full internal-link scan whenever .md files are staged; exits 1 on errors
+        # Strictly validates staged Markdown files; run without filenames for a full audit.
 
       # Phase 2: Anchor link validation
       - id: validate-doc-anchors

@@ -216,66 +216,23 @@ jobs:
           ls -la | head -20
         fi
 
-    - name: Create fallback SARIF if missing
+    - name: Require a real SARIF artifact
       if: always()
       run: |
+        set -euo pipefail
         SARIF_FILE="semgrep.sarif"
-        CREATE_FALLBACK=false
-
-        if [ ! -f "$SARIF_FILE" ]; then
-          echo "📝 SARIF file not found, creating fallback..."
-          CREATE_FALLBACK=true
-        elif [ ! -s "$SARIF_FILE" ]; then
-          echo "📝 SARIF file is empty, creating fallback..."
-          CREATE_FALLBACK=true
-        elif ! jq empty "$SARIF_FILE" 2>/dev/null; then
-          echo "📝 SARIF file is invalid JSON, creating fallback..."
-          cp "$SARIF_FILE" "${SARIF_FILE}.broken"
-          CREATE_FALLBACK=true
-        else
-          echo "✅ Valid SARIF file already exists, skipping fallback"
-          FILE_SIZE=$(stat -c %s "$SARIF_FILE" 2>/dev/null || stat -f %z "$SARIF_FILE" 2>/dev/null)
-          RESULT_COUNT=$(jq '.runs[0].results | length' "$SARIF_FILE" 2>/dev/null || echo "0")
-          echo "   - Size: ${FILE_SIZE} bytes"
-          echo "   - Results: ${RESULT_COUNT}"
+        if [ ! -f "$SARIF_FILE" ] || [ ! -s "$SARIF_FILE" ]; then
+          echo "::error::Semgrep did not produce a SARIF artifact; this is a silent false-negative condition and must fail the workflow."
+          exit 1
         fi
 
-        if [ "$CREATE_FALLBACK" = true ]; then
-          echo "Creating minimal valid SARIF file..."
-          jq -n \
-            --arg schema "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json" \
-            --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            '{
-              "$schema": $schema,
-              "version": "2.1.0",
-              "runs": [{
-                "tool": {
-                  "driver": {
-                    "name": "Semgrep",
-                    "informationUri": "https://semgrep.dev",
-                    "version": "1.45.0",
-                    "rules": []
-                  }
-                },
-                "results": [],
-                "properties": {
-                  "ScanTimestamp": $timestamp,
-                  "ScanType": "FallbackEmpty"
-                }
-              }]
-            }' > "$SARIF_FILE"
-
-          echo "✅ Fallback SARIF file created"
-          echo "   - Status: Empty results (no violations found)"
-
-          if jq empty "$SARIF_FILE" 2>/dev/null; then
-            echo "   - Validation: ✅ Valid JSON"
-            ls -lh "$SARIF_FILE"
-          else
-            echo "   - Validation: ❌ Failed!"
-            exit 1
-          fi
+        if ! jq empty "$SARIF_FILE" 2>/dev/null; then
+          echo "::error::Semgrep produced malformed SARIF output; refusing to silently hide the missing alert inventory."
+          exit 1
         fi
+
+        echo "✅ Valid SARIF artifact present: ${SARIF_FILE}"
+        ls -lh "$SARIF_FILE"
 
     - name: Upload SARIF to GitHub Security
       uses: github/codeql-action/upload-sarif@cdf488f595d80d6e07e03d4674febd5ab45fa938

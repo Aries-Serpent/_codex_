@@ -1,0 +1,62 @@
+[
+  {
+    "number": 1,
+    "state": "open",
+    "rule": {
+      "id": "js/insecure-cookie",
+      "severity": "high",
+      "description": "bad"
+    },
+    "most_recent_instance": {
+      "location": {
+        "path": "src/test.py",
+        "start_line": 10
+      }
+    },
+    "tool": {
+      "name": "CodeQL"
+    },
+    "created_at": "2026-10-01T00:00:00Z",
+    "html_url": "https://example.com/"
+  },
+  {
+    "number": 2,
+    "state": "open",
+    "rule": {
+      "id": "js/insecure-cookie",
+      "severity": "high",
+      "description": "bad"
+    },
+    "most_recent_instance": {
+      "location": {
+        "path": "src/test.py",
+        "start_line": 11
+      }
+    },
+    "tool": {
+      "name": "CodeQL"
+    },
+    "created_at": "2026-10-01T00:00:00Z",
+    "html_url": "https://example.com/"
+  },
+  {
+    "number": 3,
+    "state": "open",
+    "rule": {
+      "id": "js/insecure-cookie",
+      "severity": "high",
+      "description": "bad"
+    },
+    "most_recent_instance": {
+      "location": {
+        "path": "src/test.py",
+        "start_line": 12
+      }
+    },
+    "tool": {
+      "name": "CodeQL"
+    },
+    "created_at": "2026-10-01T00:00:00Z",
+    "html_url": "https://example.com/"
+  }
+]

@@ -177,6 +177,11 @@ jobs:
     name: "\U0001F9E0 Cognitive Pre-flight Check"
     runs-on: ubuntu-latest
     if: github.event.action != 'closed'
+    permissions:
+      actions: read
+      contents: read
+      issues: write
+      pull-requests: write
     steps:
     - name: Checkout repository
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -186,8 +191,7 @@ jobs:
       id: session_reqs
       continue-on-error: true
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+        GH_TOKEN: ${{ github.token }}
       run: "PR_NUMBER=\"${{ github.event.pull_request.number || github.event.issue.number\
         \  }}\"\nif [ -z \"$PR_NUMBER\" ]; then\n  echo \"has_requirements=false\"\
         \ >> \"$GITHUB_OUTPUT\"\n  exit 0\nfi\n# Try to download the latest session-requirements\
@@ -206,8 +210,7 @@ jobs:
         '
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: "// Branches that are staging gates \u2014 never the HEAD of an agent\
           \ session.\nconst INTEGRATION_BRANCHES = ['0D_base_'];\nconst PROMOTION_TARGETS\
           \ = ['main', 'master'];\nconst pr = context.payload.pull_request;\nif (!pr)\
@@ -277,8 +280,7 @@ jobs:
 
         '
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: "const fs = require('fs');\nconst sha = (context.sha || 'unknown').slice(0,\
           \ 7);\nconst MARKER = 'COGNITIVE PRE-FLIGHT CHECKLIST';\n\n// Upsert: find\
           \ existing comment by stable anchor marker\nconst { data: comments } = await\
@@ -378,8 +380,7 @@ jobs:
 
         '
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: "const sha    = (context.sha || 'unknown').slice(0, 7);\nconst MARKER\
           \ = 'COGNITIVE SESSION-TYPE DIRECTIVE';\n\nconst { data: comments } = await\
           \ github.rest.issues.listComments({\n  owner: context.repo.owner,\n  repo:\
@@ -625,45 +626,67 @@ jobs:
         GIT_SHA: ${{ github.sha }}
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-      run: "set -euo pipefail\n\necho \"### \U0001F527 Auto-Fix: Session Wrap-Up Compliance\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\n\n#\
-        \ Determine which fixes are needed\nFIX_ACCT=\"\"\nFIX_CL=\"\"\nif [ \"${{\
-        \  steps.accountability_check.outcome }}\" = \"failure\" ]; then\n  FIX_ACCT=\"\
-        --fix-accountability\"\n  echo \"- REQ-4 (accountability report): **needs\
-        \ fix**\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\nif [ \"${{ steps.changelog_check.outcome\
-        \  }}\" = \"failure\" ]; then\n  FIX_CL=\"--fix-changelog\"\n  echo \"- REQ-5\
-        \ (CHANGELOG): **needs fix**\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\n\n# Run the\
-        \ auto-fix script\npython3 scripts/ci/session_wrapup_autofix.py \\\n  --pr-number\
-        \ \"${PR_NUMBER:-unknown}\" \\\n  --sha \"${GIT_SHA:0:8}\" \\\n  --run-url\
-        \ \"${RUN_URL}\" \\\n  ${FIX_ACCT} ${FIX_CL}\n\n# Resolve TARGET_BRANCH via\
-        \ API when event context lacks head.ref\nif [ -z \"${TARGET_BRANCH}\" ] &&\
-        \ [ -n \"${PR_NUMBER}\" ]; then\n  TARGET_BRANCH=$(gh pr view \"${PR_NUMBER}\"\
-        \ --json headRefName -q .headRefName 2>/dev/null || true)\nfi\nif [ -z \"\
-        ${TARGET_BRANCH}\" ] || echo \"${TARGET_BRANCH}\" | grep -qE '^[0-9]+/merge$';\
-        \ then\n  echo \"\u26A0\uFE0F Could not resolve target branch ('${TARGET_BRANCH}')\
-        \ \u2014 auto-fix files written but not committed.\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  echo \"::warning::Auto-fix: could not resolve branch for commit-back.\
-        \ Files updated locally only.\"\n  exit 0\nfi\n\n# Commit and push the auto-fixed\
-        \ files back to the branch\ngit config user.name  \"github-actions[bot]\"\n\
-        git config user.email \"github-actions[bot]@users.noreply.github.com\"\ngit\
-        \ add \\\n  docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md \\\n  CHANGELOG.md\
-        \ 2>/dev/null || true\nif git diff --cached --quiet; then\n  echo \"- No file\
-        \ changes to commit (files may already have been correct).\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \nelse\n  git commit -m \"fix(docs): auto-update accountability report + CHANGELOG\
-        \ [cognitive-preflight][skip ci]\"\n  git pull --rebase --autostash origin\
-        \ \"${TARGET_BRANCH}\" || true\n  git push origin HEAD:refs/heads/\"${TARGET_BRANCH}\"\
-        \n  echo \"- \u2705 Auto-fix commit pushed to \\`${TARGET_BRANCH}\\`.\" >>\
-        \ \"$GITHUB_STEP_SUMMARY\"\n  echo \"- Next cognitive-preflight run will pass\
-        \ REQ-4/REQ-5.\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n"
+      run: |
+        set -euo pipefail
+
+        echo "### 🔧 Auto-Fix: Session Wrap-Up Compliance" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+
+        # Determine which fixes are needed
+        FIX_ACCT=""
+        FIX_CL=""
+        if [ "${{  steps.accountability_check.outcome }}" = "failure" ]; then
+          FIX_ACCT="--fix-accountability"
+          echo "- REQ-4 (accountability report): **needs fix**" >> "$GITHUB_STEP_SUMMARY"
+        fi
+        if [ "${{ steps.changelog_check.outcome  }}" = "failure" ]; then
+          FIX_CL="--fix-changelog"
+          echo "- REQ-5 (CHANGELOG): **needs fix**" >> "$GITHUB_STEP_SUMMARY"
+        fi
+
+        # Run the auto-fix script
+        python3 scripts/ci/session_wrapup_autofix.py \
+          --pr-number "${PR_NUMBER:-unknown}" \
+          --sha "${GIT_SHA:0:8}" \
+          --run-url "${RUN_URL}" \
+          ${FIX_ACCT} ${FIX_CL}
+
+        # Resolve TARGET_BRANCH via API when event context lacks head.ref
+        if [ -z "${TARGET_BRANCH}" ] || echo "${TARGET_BRANCH}" | grep -qE '^[0-9]+/merge$'; then
+          if [ -n "${PR_NUMBER}" ]; then
+            TARGET_BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName -q .headRefName 2>/dev/null || true)
+          fi
+        fi
+        if [ -z "${TARGET_BRANCH}" ] || echo "${TARGET_BRANCH}" | grep -qE '^[0-9]+/merge$'; then
+          echo "⚠️ Could not resolve target branch ('${TARGET_BRANCH}') — auto-fix files written but not committed." >> "$GITHUB_STEP_SUMMARY"
+          echo "::warning::Auto-fix: could not resolve branch for commit-back. Files updated locally only."
+          exit 0
+        fi
+
+        # Commit and push the auto-fixed files back to the branch
+        git config user.name  "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add \
+          docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md \
+          CHANGELOG.md 2>/dev/null || true
+        if git diff --cached --quiet; then
+          echo "- No file changes to commit (files may already have been correct)." >> "$GITHUB_STEP_SUMMARY"
+        else
+          git commit -m "fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][skip ci]"
+          git pull --rebase --autostash origin "${TARGET_BRANCH}" || true
+          git push origin HEAD:refs/heads/"${TARGET_BRANCH}"
+          echo "- ✅ Auto-fix commit pushed to \`${TARGET_BRANCH}\`." >> "$GITHUB_STEP_SUMMARY"
+          echo "- Next cognitive-preflight run will pass REQ-4/REQ-5." >> "$GITHUB_STEP_SUMMARY"
+        fi
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+
     - name: Ensure Workflow Execution Checklist in PR body
       id: inject-wec
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
         '
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+        GH_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
       run: |
         set -euo pipefail
@@ -677,8 +700,7 @@ jobs:
         '
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: "const EXPIRED_MARKER  = 'SESSION_TIMEBOX_EXPIRED';\nconst SUMMARY_MARKER\
           \  = '## \U0001F9E0 Session Summary';\n\nconst { data: comments } = await\
           \ github.rest.issues.listComments({\n  owner: context.repo.owner,\n  repo:\
@@ -799,8 +821,7 @@ jobs:
       if: github.event_name == 'pull_request' || github.event_name == 'pull_request_review'
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        github-token: ${{ github.token }}
         script: "const REQUIRED_MARKER = 'BRANCH_REBASE_REQUIRED';\nconst RESOLVED_MARKER\
           \ = 'BRANCH_REBASE_RESOLVED';\nconst prNumber = context.issue.number;\n\n\
           core.info(`REQ-10: Checking rebase status for PR  #${prNumber}`);\n\n//\
@@ -943,8 +964,6 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 1
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name
           }}
     - name: Validate/Refresh Session ID (CAPI Readiness Check)
@@ -952,18 +971,40 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-      run: "if [ -n \"${COPILOT_AGENT_SESSION_ID:-}\" ]; then\n  echo \"Checking session\
-        \ validity...\"\n  HTTP_CODE=$(curl -s -o /dev/null -w \"%{http_code}\" \\\
-        \n    -H \"Authorization: ******\" \\\n    -H \"Accept: application/vnd.github+json\"\
-        \ \\\n    \"https://api.github.com/repos/${{ github.repository }}/copilot/sessions/${COPILOT_AGENT_SESSION_ID}\"\
-        \ \\\n    2>/dev/null || echo \"000\")\n\n  if [ \"$HTTP_CODE\" = \"200\"\
-        \ ]; then\n    echo \"\u2705 Session valid. Proceeding with reuse.\"\n   \
-        \ echo \"session_status=valid\" >> \"$GITHUB_OUTPUT\"\n  else\n    echo \"\
-        \u26A0\uFE0F Session expired (HTTP ${HTTP_CODE}). Clearing for refresh.\"\n\
-        \    unset COPILOT_AGENT_SESSION_ID\n    echo \"session_status=refreshed\"\
-        \ >> \"$GITHUB_OUTPUT\"\n  fi\nelse\n  echo \"\u2139\uFE0F No session in environment.\
-        \ Will be created fresh.\"\n  echo \"session_status=fresh\" >> \"$GITHUB_OUTPUT\"\
-        \nfi\n"
+        CODEX_SECRET_AVAILABLE: ${{ secrets.CODEX_MASTER_KEY != '' || secrets.CODEX_BACKUP_KEY != '' }}
+      run: |
+        set -euo pipefail
+        if gh api "repos/${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+          AUTH_VALID=true
+        else
+          AUTH_VALID=false
+        fi
+        if [ "$AUTH_VALID" != "true" ]; then
+          if [ "$CODEX_SECRET_AVAILABLE" = "true" ]; then
+            echo "::error::Configured CODEX credential is unavailable or cannot read this repository; token value was not logged."
+            exit 1
+          fi
+          echo "::warning::No CODEX secret is available, and GITHUB_TOKEN could not read this repository."
+        elif [ "$CODEX_SECRET_AVAILABLE" = "true" ]; then
+          echo "✅ Configured CODEX credential authenticated and can read this repository."
+        else
+          echo "ℹ️ CODEX secrets are unavailable in this run; GITHUB_TOKEN can read this repository."
+        fi
+
+        if [ -n "${COPILOT_AGENT_SESSION_ID:-}" ]; then
+          echo "Checking session validity..."
+          if gh api "repos/${GITHUB_REPOSITORY}/copilot/sessions/${COPILOT_AGENT_SESSION_ID}" >/dev/null 2>&1; then
+            echo "✅ Session valid. Proceeding with reuse."
+            echo "session_status=valid" >> "$GITHUB_OUTPUT"
+          else
+            echo "⚠️ Session expired or unavailable. Clearing for refresh."
+            unset COPILOT_AGENT_SESSION_ID
+            echo "session_status=refreshed" >> "$GITHUB_OUTPUT"
+          fi
+        else
+          echo "ℹ️ No session in environment. Will be created fresh."
+          echo "session_status=fresh" >> "$GITHUB_OUTPUT"
+        fi
     - name: Set repo variables via CODEX_MASTER_KEY (maintainer auth)
       id: set_vars
       continue-on-error: true
@@ -1034,23 +1075,36 @@ jobs:
           || '' }}
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-      run: "# S932 rebasing guard:\n# During active PR iteration, avoid writing housekeeping\
-        \ commits to the PR branch.\n# This prevents churn/rebase loops caused by\
-        \ repeated auth-token refresh commits.\nif [ \"${{ github.event_name }}\"\
-        \ = \"pull_request\" ]; then\n  echo \"\u2139\uFE0F Skipping session-token\
-        \ commit on pull_request to avoid branch churn.\"\n  exit 0\nfi\n\n# Resolve\
-        \ TARGET_BRANCH \u2014 fall back to API lookup when event context lacks head.ref\n\
-        if [ -z \"${TARGET_BRANCH}\" ] && [ -n \"${PR_NUMBER}\" ]; then\n  TARGET_BRANCH=$(gh\
-        \ pr view \"${PR_NUMBER}\" --json headRefName -q .headRefName 2>/dev/null\
-        \ || true)\nfi\nif [ -z \"${TARGET_BRANCH}\" ] || echo \"${TARGET_BRANCH}\"\
-        \ | grep -qE '^[0-9]+/merge$'; then\n  echo \"::warning::Could not resolve\
-        \ target branch (got '${TARGET_BRANCH}'). Skipping commit.\"\n  exit 0\nfi\n\
-        git config user.name  \"github-actions[bot]\"\ngit config user.email \"github-actions[bot]@users.noreply.github.com\"\
-        \ngit add .codex/agent_auth_session.json\nif git diff --cached --quiet; then\n\
-        \  echo \"No changes to commit\"\nelse\n  git commit -m \"chore(auth): write\
-        \ provenance session token [skip ci]\"\n  git pull --rebase --autostash origin\
-        \ \"${TARGET_BRANCH}\" || true\n  git push origin HEAD:refs/heads/${TARGET_BRANCH}\n\
-        fi\n"
+      run: |
+        # S932 rebasing guard:
+        # During active PR iteration, avoid writing housekeeping commits to the PR branch.
+        # This prevents churn/rebase loops caused by repeated auth-token refresh commits.
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          echo "ℹ️ Skipping session-token commit on pull_request to avoid branch churn."
+          exit 0
+        fi
+
+        # Resolve TARGET_BRANCH — fall back to API lookup when event context lacks head.ref
+        if [ -z "${TARGET_BRANCH}" ] || echo "${TARGET_BRANCH}" | grep -qE '^[0-9]+/merge$'; then
+          if [ -n "${PR_NUMBER}" ]; then
+            TARGET_BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName -q .headRefName 2>/dev/null || true)
+          fi
+        fi
+        if [ -z "${TARGET_BRANCH}" ] || echo "${TARGET_BRANCH}" | grep -qE '^[0-9]+/merge$'; then
+          echo "::warning::Could not resolve target branch (got '${TARGET_BRANCH}'). Skipping commit."
+          exit 0
+        fi
+        git config user.name  "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add .codex/agent_auth_session.json
+        if git diff --cached --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "chore(auth): write provenance session token [skip ci]"
+          git pull --rebase --autostash origin "${TARGET_BRANCH}" || true
+          git push origin HEAD:refs/heads/${TARGET_BRANCH}
+        fi
+
     - name: Dispatch GitHub Guru (maintainer verification)
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
@@ -1338,8 +1392,6 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 1
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name
           }}
     - name: Generate Cognitive Brain App token
@@ -1370,8 +1422,6 @@ jobs:
       run: "python scripts/ci/approve_pending_runs.py || {\n  echo \"::warning::approve_pending_runs.py\
         \ failed; continuing to avoid blocking delegation workflow.\"\n  exit 0\n\
         }\n"
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     timeout-minutes: 30
   session-release:
     name: "\U0001F513 Release session lock"
@@ -1484,19 +1534,17 @@ jobs:
 
       '
     permissions:
+      contents: read
       pull-requests: write
       issues: write
     steps:
     - name: Checkout repository
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+        GH_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         REPO: ${{ github.repository }}
         COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
@@ -1506,6 +1554,4 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     timeout-minutes: 30

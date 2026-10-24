@@ -13,6 +13,8 @@ Target Coverage: 70%+
 
 from __future__ import annotations
 
+import sys
+from types import ModuleType
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
@@ -40,8 +42,17 @@ def mock_eval_dataset():
 @pytest.fixture
 def mock_hf_callback():
     """Mock HuggingFace EarlyStoppingCallback."""
-    with patch("codex_ml.training.early_stopping.EarlyStoppingCallback") as mock:
-        yield mock
+    class MockHFCallback:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+        def some_method(self):
+            return 42
+
+    transformers = ModuleType("transformers")
+    transformers.EarlyStoppingCallback = MockHFCallback
+    with patch.dict(sys.modules, {"transformers": transformers}):
+        yield MockHFCallback
 
 
 # =============================================================================
@@ -132,37 +143,32 @@ def test_codex_early_stopping_callback_override_threshold():
     assert callback.config.threshold == 0.005, "threshold is not valid"
 
 
-@patch("codex_ml.training.early_stopping.EarlyStoppingCallback")
 def test_codex_callback_uses_hf_callback(mock_hf_callback):
     """Test CodexEarlyStoppingCallback wraps HF callback when available."""
-    mock_instance = MagicMock()
-    mock_hf_callback.return_value = mock_instance
-
     callback = CodexEarlyStoppingCallback()
     assert callback.is_hf_callback is True, "is_hf_callback is not valid"
-    assert callback.callback is mock_instance, "callback is not valid"
+    assert isinstance(callback.callback, mock_hf_callback)
+    assert callback.callback.kwargs == {
+        "early_stopping_patience": callback.config.patience,
+        "early_stopping_threshold": callback.config.threshold,
+    }
 
 
 def test_codex_callback_fallback_without_hf():
     """Test CodexEarlyStoppingCallback fallback without transformers."""
-    with patch("codex_ml.training.early_stopping.EarlyStoppingCallback", side_effect=ImportError):
+    with patch.dict(sys.modules, {"transformers": None}):
         callback = CodexEarlyStoppingCallback()
         assert callback.is_hf_callback is False, "is_hf_callback is not valid"
         assert callback.best_metric is None, "best_metric is not valid"
         assert callback.patience_counter == 0, "Count must be greater than zero"
 
 
-def test_codex_callback_getattr_delegation():
+def test_codex_callback_getattr_delegation(mock_hf_callback):
     """Test CodexEarlyStoppingCallback delegates to HF callback."""
-    with patch("codex_ml.training.early_stopping.EarlyStoppingCallback") as mock_hf:
-        mock_instance = MagicMock()
-        mock_instance.some_method = Mock(return_value=42)
-        mock_hf.return_value = mock_instance
+    callback = CodexEarlyStoppingCallback()
+    result = callback.some_method()
 
-        callback = CodexEarlyStoppingCallback()
-        result = callback.some_method()
-
-        assert result == 42, "Result must not be empty"
+    assert result == 42, "Result must not be empty"
 
 
 # =============================================================================
@@ -199,10 +205,9 @@ def test_inject_early_stopping_already_present():
     assert len(result) == 1, "Result must not be empty"
 
 
-@patch("codex_ml.training.early_stopping.EarlyStoppingCallback")
 def test_inject_early_stopping_detects_hf_callback(mock_hf_callback):
     """Test inject_early_stopping detects HuggingFace callback."""
-    mock_instance = mock_hf_callback.return_value
+    mock_instance = mock_hf_callback()
     callbacks = [mock_instance]
 
     result = inject_early_stopping(callbacks)
@@ -244,7 +249,7 @@ def test_auto_inject_with_eval_dataset(mock_eval_dataset):
     """Test auto_inject_early_stopping_for_trainer with eval dataset."""
     callbacks = []
     result = auto_inject_early_stopping_for_trainer(
-        trainer_class="Trainer", eval_dataset=mock_eval_dataset, callbacks=callbacks
+        eval_dataset=mock_eval_dataset, callbacks=callbacks
     )
 
     assert len(result) == 1, "Result must not be empty"
@@ -255,7 +260,7 @@ def test_auto_inject_without_eval_dataset():
     """Test auto_inject_early_stopping_for_trainer without eval dataset."""
     callbacks = []
     result = auto_inject_early_stopping_for_trainer(
-        trainer_class="Trainer", eval_dataset=None, callbacks=callbacks
+        eval_dataset=None, callbacks=callbacks
     )
 
     # Should not inject if no eval dataset
@@ -265,7 +270,7 @@ def test_auto_inject_without_eval_dataset():
 def test_auto_inject_with_none_callbacks(mock_eval_dataset):
     """Test auto_inject_early_stopping_for_trainer with None callbacks."""
     result = auto_inject_early_stopping_for_trainer(
-        trainer_class="Trainer", eval_dataset=mock_eval_dataset, callbacks=None
+        eval_dataset=mock_eval_dataset, callbacks=None
     )
 
     assert len(result) == 1, "Result must not be empty"
@@ -275,7 +280,7 @@ def test_auto_inject_with_custom_config(mock_eval_dataset):
     """Test auto_inject_early_stopping_for_trainer with custom config."""
     config = EarlyStoppingConfig(patience=20, metric="eval_accuracy")
     result = auto_inject_early_stopping_for_trainer(
-        trainer_class="Trainer", eval_dataset=mock_eval_dataset, callbacks=[], config=config
+        eval_dataset=mock_eval_dataset, callbacks=[], config=config
     )
 
     assert result[0].config.patience == 20, "Result must not be empty"
@@ -288,7 +293,7 @@ def test_auto_inject_preserves_existing_callbacks(mock_eval_dataset):
     callbacks = [existing]
 
     result = auto_inject_early_stopping_for_trainer(
-        trainer_class="Trainer", eval_dataset=mock_eval_dataset, callbacks=callbacks
+        eval_dataset=mock_eval_dataset, callbacks=callbacks
     )
 
     assert existing in result, "Result must not be empty"
@@ -320,7 +325,6 @@ def test_callback_chain_integration(mock_eval_dataset):
 
     # Auto-inject for trainer
     callbacks = auto_inject_early_stopping_for_trainer(
-        trainer_class="Trainer",
         eval_dataset=mock_eval_dataset,
         callbacks=callbacks,
         config=EarlyStoppingConfig(patience=5),
