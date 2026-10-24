@@ -55,9 +55,9 @@
     "Evidence-backed ecology analysis and portable capability compatibility."
   ],
   "follow_up_tasks": {
-    "requested_scope": "Review all codebase policies, instructions, rules and related guidance for inconsistent, conflicting or contradictory statements that obstruct subsequent Copilot agents.",
+    "requested_scope": "Review all codebase policies, instructions, rules and related guidance for inconsistent, conflicting or contradictory statements that obstruct subsequent Copilot agents; update applicable conflicting guidance to align with the expected authorized execution context and verify identified blockers are resolved.",
     "status": "pending; backlog only, not an executed review or adopted policy amendment",
-    "authority_boundary": "Use authorized read access only; record inaccessible sources and coverage gaps. Do not bypass protected instructions, expand credentials, weaken safety controls or activate governance. Proposed changes require applicable review and authorization.",
+    "authority_boundary": "Inventory and investigation use authorized read access only; record inaccessible sources and coverage gaps. Revisions require applicable write authorization and review before adoption. Do not bypass protected instructions, expand credentials, weaken safety controls or activate governance.",
     "tasks": [
       {
         "id": "POLICY-01",
@@ -88,6 +88,18 @@
         "status": "pending",
         "task": "Validate authorized reconciliations against existing instruction checks and representative agent workflows, then assign unresolved findings and a resumable next action.",
         "acceptance": "Show effective execution without weakened permissions, invented approval, unbounded retries or accidental user-change commits; report actual coverage and remaining limits, not a blanket conflict-free claim."
+      },
+      {
+        "id": "POLICY-06",
+        "status": "pending",
+        "task": "Implement authorized, reviewed revisions for every confirmed applicable conflict across policies, instructions, rules, normative documents and their references; align guidance with the expected task, directory, role, lifecycle stage and actual available tools.",
+        "acceptance": "Map each revision to a conflict-register finding and authoritative context; update affected cross-references and supersession notices, preserve historical evidence and required controls, and assign any blocked revision an owner and next action."
+      },
+      {
+        "id": "POLICY-07",
+        "status": "pending",
+        "task": "Recheck the complete guidance inventory and representative subsequent-agent execution paths after revisions; verify that resolved contradictory statements no longer apply to the affected context and that execution blockers do not recur.",
+        "acceptance": "Retain before/after evidence and existing check results for each closed finding. Claim no remaining applicable blockers only for fully inspected and validated scope; inaccessible, unreviewed or unresolved sources remain explicit acceptance gaps rather than being silently waived."
       }
     ]
   }
