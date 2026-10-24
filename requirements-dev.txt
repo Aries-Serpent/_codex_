@@ -3,11 +3,11 @@
 # Update with care and test thoroughly before merging changes.
 
 # Include base project dependencies first
-# Installation order: Install requirements.txt first, then requirements-test.txt
+# Installation order: Install requirements.txt first, then requirements-dev.txt
 #   pip install --no-cache-dir -r requirements.txt
-#   pip install --no-cache-dir -r requirements-test.txt
-# This dependency chain ensures test deps have access to base project dependencies.
-# If you modify requirements.txt independently, re-test with requirements-test.txt.
+#   pip install --no-cache-dir -r requirements-dev.txt
+# This dependency chain ensures dev/test deps have access to base project dependencies.
+# If you modify requirements.txt independently, re-test with requirements-dev.txt.
 
 # Test tooling (pinned versions for reproducibility)
 pytest==9.1.1
@@ -20,7 +20,7 @@ coverage[toml]>=7.15.1,<8
 hypothesis>=6.165.10
 responses==0.26.3
 slowapi==0.1.10
-hydra-core==1.3.5
+hydra-core==1.3.7
 prometheus-client>=0.26.0
 # Security: Phase 14 WS1 - Updated for CVE fixes
 cryptography>=50.0.1,<51.0.0  # CVE-2026-26007 fix

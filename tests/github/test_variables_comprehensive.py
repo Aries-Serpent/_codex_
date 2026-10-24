@@ -549,6 +549,8 @@ class TestVariablesIntegration:
         assert "updated_at" in var, "Condition must be true"
         assert var["created_at"].endswith("Z"), "Condition must be true"
         assert var["updated_at"].endswith("Z"), "Condition must be true"
+        assert "+00:00Z" not in var["created_at"]
+        assert "+00:00Z" not in var["updated_at"]
 
     def test_rate_limit_headers(self, mock_rate_limit_headers):
         """Test: API responses include rate limit headers."""

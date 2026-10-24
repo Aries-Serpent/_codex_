@@ -231,4 +231,4 @@ Windows-safe timestamps codex.utils.path_utils No colons in filenames
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Phase history
 - [Planset Registry](PLANSET_REGISTRY.md) — Completed plansets as evidence
 - [cognitive_app](../cognitive_app.md) — Human-facing dashboard
-- [Agent Evolution Map](../.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Agent lineage
+- [Agent Evolution Map](../../.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Agent lineage

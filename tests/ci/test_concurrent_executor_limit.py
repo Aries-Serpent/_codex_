@@ -76,12 +76,12 @@ def test_executor_honors_worker_limit_and_runs_tasks_in_bounded_batches(
     maximum_active = 0
     lock = threading.Lock()
 
-    def dispatch(_subtask):
+    async def dispatch(_subtask):
         nonlocal active, maximum_active
         with lock:
             active += 1
             maximum_active = max(maximum_active, active)
-        time.sleep(0.02)
+        await asyncio.sleep(0.02)
         with lock:
             active -= 1
         return {"ok": True}
@@ -128,7 +128,7 @@ def test_execute_runs_independent_subtasks_concurrently_and_waits_for_dependenci
     }
     aggregate_id = f"{task_id}-aggregate"
 
-    def dispatch(subtask):
+    async def dispatch(subtask):
         nonlocal active, maximum_active
         with lock:
             started.add(subtask.id)
@@ -142,8 +142,8 @@ def test_execute_runs_independent_subtasks_concurrently_and_waits_for_dependenci
         if subtask.id != aggregate_id:
             # Hold the first independent task until a second one has started,
             # making accidental serialization observable without timing guesses.
-            overlap.wait(timeout=1)
-        time.sleep(0.02)
+            await asyncio.to_thread(overlap.wait, 1)
+        await asyncio.sleep(0.02)
 
         with lock:
             completed.add(subtask.id)
