@@ -105,15 +105,15 @@ inventory, not repeated implementation-tree payloads. A frozen PID/start
 marker is not current process authority; partial or interrupted runs do not
 establish full-suite or coverage success.
 
-## Proposed implementation-tree state
+## Published implementation-tree state
 
-At published commit `ed235eb14ef9b88b6c7ae006498767e7e18d8c17`, the PR tree
+At published commit `2a1a2970e24182c9975e585abb032dad13255ef8`, the PR tree
 differs from the base in 337 paths. By root: `.codex` 14, `.github` 21,
 `docs` 10, `recovery` 2, `scripts` 19, `src` 177, `tests` 82, and the
 remaining root/configuration paths 12. No workflow path differs from the base.
-The 16 synthetic campaign
-records and timestamp-only startup-packet change are absent from the proposed
-base diff. The only tracked recovery paths are the two documents listed above.
+The 16 synthetic campaign records and timestamp-only startup-packet change are
+absent from the published base diff. The only tracked recovery paths are the two
+documents listed above.
 
 The published cleanup deletes exactly the 1,423 tracked paths under
 `recovery/bfe2456b/validation/`; the independent post-push fetch and complete
@@ -160,16 +160,15 @@ git show e15df253c7f0facc2bbeda1e552ada1f0e050360:recovery/bfe2456b/validation/<
 ## Current workflow/validation handoff
 
 At session entry the live PR head was `3eb98e97ae071f9852adc6384c6dec894e18204e`
-(base `71613ee000808ab758cc2f8ddb07a05c5101f731`). It added only the
-`generated_at` field change in `.codex/session_startup_packet.json` after the
-verified cleanup. A later status push created `4508b16cd12ad6b8696d784de70eb7016614e1b6`;
-the current index stages the base packet so the final PR diff drops that
-timestamp-only path. The session-entry worktree bytes are saved at
+(base `71613ee000808ab758cc2f8ddb07a05c5101f731`); only `generated_at` changed
+in `.codex/session_startup_packet.json` after the verified cleanup. This was
+corrected in published commit `2a1a2970e24182c9975e585abb032dad13255ef8`; the
+committed packet now matches base. The session-entry worktree bytes were saved at
 `/tmp/pr5708-session-startup-dirty-3eb.json` (SHA-256
-`cd4a86487f27a8b69e120ffa1d4ea72b10453b2957026ff732b4e4607b836cb2`) and must
-be restored as an uncommitted local change after the corrective push. The
-previously reported `8138605f…` file was absent at this session's entry; do not
-claim those different bytes were recovered.
+`cd4a86487f27a8b69e120ffa1d4ea72b10453b2957026ff732b4e4607b836cb2`). Restore
+these exact bytes as an uncommitted local change after publishing this
+documentation update. The previously reported `8138605f…` file was absent at
+this session's entry; do not claim those different bytes were recovered.
 
 The current WEC has the five always-required boxes checked and all opt-in boxes
 unchecked, including Nox and security. PR label `wec:auto-approve` is present
@@ -199,13 +198,15 @@ the import path. These runs do not isolate source regressions or prove an
 Actions-hosted result. Neither produced a complete node inventory or coverage.
 Do not rerun a monolithic local suite.
 
-After the session-entry snapshot, the status push created head
-`4508b16cd12ad6b8696d784de70eb7016614e1b6`. Its relevant attempt-1 runs are
-Nox `40067306514`, Auto-Approve `40067306528`, WEC `40067306494`, Security
-`40067306501`, Enterprise Compliance/CodeQL `40067306511`, and Code Quality &
-Coverage `40067306496`; all are `action_required`. Nox, Auto-Approve, WEC and
-Enterprise Compliance have zero jobs; artifact queries for Nox, Security,
-Enterprise Compliance, and Code Quality/Coverage returned zero.
+At final handoff head `2a1a2970e24182c9975e585abb032dad13255ef8`, relevant
+attempt-1 runs are Validation Pipeline `40067630693`, Nox `40067630698`,
+Auto-Approve `40067631029`, WEC `40067630731`, Security `40067630695`,
+Enterprise Compliance/CodeQL `40067630782`, Code Quality & Coverage
+`40067630704`, and Setup Validation `40067630723`; all are `action_required`.
+The queried jobs for these runs are empty. Queried artifacts for Validation
+Pipeline, Nox, Code Quality & Coverage, Enterprise Compliance/CodeQL, and
+Security are empty; failed-job log queries for Validation Pipeline and Nox
+report zero jobs. No hosted validation evidence is currently available.
 
 The next agent should obtain the exact authorized human selection and approval
 for the validation run IDs and confirm the workflow owner can publish the R1
