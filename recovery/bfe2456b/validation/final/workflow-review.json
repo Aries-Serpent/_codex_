@@ -1,0 +1,105 @@
+{
+  "review_date_utc": "2026-10-24",
+  "artifact_branch": "copilot/recovery-artifacts-bfe2456b",
+  "archive_path": "recovery/bfe2456b/session-recovery-bfe2456b.tar.gz",
+  "archive_sha256": "06eed6f843d71af552abec336fb2af489026737d7776c207d5c0276943a161d1",
+  "embedded_bundle_sha256": "87197a66a95652d6b30860beb6b6f9307d030026e04c0b30ae581334d0dacdf4",
+  "bundle_verification": "PASS after fetching prerequisite f343056fbb1c0b3061a85542f05334d19e754f76",
+  "source_tip": "5980258483d8f03b6385562fc0940c52e183fb87",
+  "source_commits": [
+    "8dfed27c3a47bf9fc0fe88b0b1f6f11370b964e3",
+    "73400c1bf220a19858a61198649839f3edfada52"
+  ],
+  "review_method": "Read held final workflow content and diffs against origin/0D_base_; inspected archive names and verified embedded Git bundle without executing archive content. Read-only specialist inspected gated CI workflows; material findings independently checked against file lines.",
+  "held_workflows": [
+    {
+      "path": ".github/workflows/copilot-setup-steps.yml",
+      "blob": "c5e355392b96bf0226028a027ae773bb30ce90c6",
+      "additions": 130,
+      "deletions": 795,
+      "intent": "Replace bootstrap with one read-only setup job using configured runner, resource measurement, bounded asset fetch, environment classification, managed dependencies, optional context and readiness reporting.",
+      "review_limit": "Resource measurement is retained in the replacement. Removed bootstrap behavior needs parity review; a structural/YAML pass alone cannot prove full ML dependency provisioning."
+    },
+    {
+      "path": ".github/workflows/deferral-language-gate.yml",
+      "blob": "7914caf1ced5ae40afa42093bcb4ec9e50c5ea8c",
+      "additions": 13,
+      "deletions": 18,
+      "intent": "Add --warn-only to wording scans and report scanner input/tool failures instead of blocking on scoped handoff vocabulary.",
+      "review_limit": "This changes editorial enforcement; it does not authorize bypassing independent security or execution controls."
+    },
+    {
+      "path": ".github/workflows/pypi-publish.yml",
+      "blob": "52751d4bd91281bdcedd9e28edaa7dfbed11810f",
+      "additions": 32,
+      "deletions": 11,
+      "intent": "Repair Actions expression delimiters, reduce attestation-verification permissions, gate distribution-specific download/publish steps, and verify imports using the isolated verification interpreter and environment values.",
+      "review_limit": "Release selection, permission adequacy and installed-package imports require focused semantic validation before a release. No release was attempted."
+    },
+    {
+      "path": ".github/workflows/strict-no-deferral-security.yml",
+      "blob": "5d96b8590e282f4f6e22fc9fb0ad16cd20452c4f",
+      "additions": 4,
+      "deletions": 4,
+      "intent": "Make wording checks advisory while retaining the security owner/reason evidence validation script.",
+      "review_limit": "Security classification still needs enforcement; advisory wording is not permission to waive required reviews."
+    }
+  ],
+  "lint": {
+    "prior_yamllint_exit_per_file": 0,
+    "prior_setup_structural_exit": 0,
+    "prior_evidence": "recovery/bfe2456b/validation/reconcile-20261023/workflow-validation.json",
+    "actionlint": "UNAVAILABLE; no semantic-lint success claimed"
+  },
+  "live_ci_observation_before_publication": [
+    {
+      "run_id": 40042839484,
+      "workflow": "Auto-Approve",
+      "sha": "d56a2b0699f84eb89e8fd6248f9924dd43b8a5e4",
+      "conclusion": "action_required"
+    },
+    {
+      "run_id": 40042768561,
+      "workflow": "Auto-Approve",
+      "sha": "931bc6492d27947eb000aaa933f9715246cf9c1d",
+      "conclusion": "action_required"
+    },
+    {
+      "run_id": 40042768538,
+      "workflow": "Semgrep",
+      "sha": "931bc6492d27947eb000aaa933f9715246cf9c1d",
+      "conclusion": "action_required"
+    },
+    {
+      "run_id": 40042768569,
+      "workflow": "Rust Swarm",
+      "sha": "931bc6492d27947eb000aaa933f9715246cf9c1d",
+      "conclusion": "action_required"
+    }
+  ],
+  "approval_review": {
+    "auto_approve": {
+      "evidence": ".github/workflows/auto-approve-workflows.yml:396-440",
+      "finding": "Even after a target PR and WEC check, pending-run listing/approval is not filtered to the resolved HEAD SHA. Both batch and nonbatch paths can approve repository-wide action_required runs.",
+      "decision": "Do not recommend blanket approval; approval would delegate further approvals, not merely run a passive test. Human CI owner must review exact scope and guards first."
+    },
+    "semgrep": {
+      "finding": "SAST/SARIF workflow, not a full-suite test or coverage gate.",
+      "decision": "Human approval must review the exact run SHA and permissions separately; no blanket safety clearance asserted."
+    },
+    "rust_swarm": {
+      "evidence": ".github/workflows/rust_swarm_ci.yml:145-175,211-218",
+      "finding": "Runs cargo tarpaulin and tests/rust_integration/. No pinned be91ba82 checkout or full Python tests/ coverage command with an 80% gate is present in these jobs. fail_ci_if_error:false is a Codecov upload setting, not a coverage threshold.",
+      "decision": "Approving this run does not establish the requested pinned full-suite 80% result."
+    }
+  },
+  "publication": {
+    "held_workflows_applied": false,
+    "review_branch_pushed": false,
+    "PR_url": null,
+    "permission_denial_observed": false,
+    "reason": "Only assigned-branch publication is available in this session; alternate branch writes are not permitted, and the recovery branch must retain workflows identical to base. No shell push or credential workaround attempted.",
+    "next_owner": "Authorized workflow publisher in a session permitted to publish a workflow-containing review branch; human owner reviews exact CI approvals.",
+    "full_suite_future_requirement": "An explicitly authorized clean CI job must pin the intended snapshot, provision the recorded dependency environment, run the complete suite without weakened selection, preserve all exits/JUnit/coverage and enforce 80%. No such run was started or promised here."
+  }
+}
