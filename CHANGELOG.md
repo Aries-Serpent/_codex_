@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed — Chronicle CLI scope and bounded Phase 2 continuation (2026-10-24)
+- Preserve external absolute `.codex` database suffixes during CLI reindexing without changing repository-relative custom paths or external custom-path basename behavior.
+- Add CLI regressions across two working directories, nested state paths, custom database paths and relative paths; retain existing legacy CLI export and module-identity contracts.
+- Resume validation in disposable snapshots with external evidence and explicit dependency/import provenance. Recover selected historical manifests without treating incomplete observations as current acceptance.
+- Supersede stale active-run instructions with current branch-aware checkpoints. Phase 2, complete-suite acceptance and repository-wide 80% coverage remain unverified; no release or publication is performed.
+
 ### Fixed — Continued PyPI integration and measured global gates (2026-10-22)
 - Canonicalize auth exception identity across legacy import orders and catch actual credential/refresh domain errors without hiding unexpected exceptions. Share registration email validation and reject malformed dot placement while preserving tagged and Unicode addresses.
 - Require successful phase-7 login fixtures and use actual access, refresh and session tokens; distinguish schema validation from authentication errors and exercise the injected authenticator's unexpected-error response. The complete auth/API cohort passes 245 cases.

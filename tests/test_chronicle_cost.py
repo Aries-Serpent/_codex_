@@ -525,6 +525,54 @@ def test_chronicle_state_scope_does_not_depend_on_working_directory(
     assert str(tmp_path) not in json.dumps(index)
 
 
+@pytest.mark.parametrize("working_directory", ["repo", "external"])
+@pytest.mark.parametrize(
+    ("database_path", "expected_scope"),
+    [
+        ("external/.codex/session_logs.db", ".codex/session_logs.db"),
+        ("external/.codex/nested/sessions.db", ".codex/nested/sessions.db"),
+        ("external/custom/sessions.db", "sessions.db"),
+        ("repo/reports/sessions.db", "reports/sessions.db"),
+        (".codex/session_logs.db", ".codex/session_logs.db"),
+        ("reports/sessions.db", "reports/sessions.db"),
+    ],
+)
+def test_cli_reindex_preserves_portable_database_scope(
+    database_path: str,
+    expected_scope: str,
+    working_directory: str,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Reindex retains state suffixes and repo-relative custom paths from any CWD."""
+    repo_root = tmp_path / "repo"
+    external_root = tmp_path / "external"
+    repo_root.mkdir()
+    external_root.mkdir()
+    cwd = repo_root if working_directory == "repo" else external_root
+    monkeypatch.chdir(cwd)
+    if database_path.startswith(("repo/", "external/")):
+        database = tmp_path / database_path
+    else:
+        database = Path(database_path)
+    database.parent.mkdir(parents=True, exist_ok=True)
+    _database(database)
+    module = _cli_module()
+    monkeypatch.setattr(module, "REPO_ROOT", repo_root)
+    output = tmp_path / "index.json"
+
+    result = CliRunner().invoke(
+        module.cli,
+        ["chronicle", "reindex", "--database", str(database), "--output", str(output)],
+    )
+
+    assert result.exit_code == 0, result.output
+    index = json.loads(output.read_text(encoding="utf-8"))
+    assert index["scope"] == expected_scope
+    assert index["summary"]["total_sessions"] == 2
+    assert str(tmp_path) not in json.dumps(index)
+
+
 def test_cli_cost_tips_and_standup_support_json(tmp_path: Path, monkeypatch) -> None:
     database = tmp_path / "chronicle.sqlite"
     task_id = "98a181d6-d9af-448e-8fab-6f4760fd7a6f"
