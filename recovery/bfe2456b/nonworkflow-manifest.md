@@ -70,8 +70,14 @@ git merge-base --is-ancestor e15df253c7f0facc2bbeda1e552ada1f0e050360 FETCH_HEAD
 git show e15df253c7f0facc2bbeda1e552ada1f0e050360:recovery/bfe2456b/validation/<exact-relative-path>
 ```
 
-The evidence commit's reachability must be rechecked after cleanup. Do not
-rewrite shared history or claim an external archive was created.
+After cleanup, a second fresh bare object store fetched the assigned branch
+without shared alternates. It confirmed that the final PR commit
+`ed235eb14ef9b88b6c7ae006498767e7e18d8c17` contains the pre-cleanup evidence
+commit as an ancestor. The complete 1,425-path inventory again matched path,
+mode, blob ID, size, and SHA-256 for every blob. The final recovery tree has
+only the two allowlisted documents and no validation descendants. The history
+fallback is verified; it is still not an independent or indefinite archive.
+Do not rewrite shared history or claim an external archive was created.
 
 ## Payload disposition
 
@@ -96,19 +102,23 @@ establish full-suite or coverage success.
 
 ## Proposed implementation-tree state
 
-At the current pre-commit snapshot, the proposed PR tree differs from the base
-in 337 paths. By root: `.codex` 14, `.github` 21, `docs` 10, `recovery` 2,
-`scripts` 19, `src` 177, `tests` 82, and the remaining root/configuration
-paths 12. No workflow path differs from the base. The 16 synthetic campaign
+At published commit `ed235eb14ef9b88b6c7ae006498767e7e18d8c17`, the PR tree
+differs from the base in 337 paths. By root: `.codex` 14, `.github` 21,
+`docs` 10, `recovery` 2, `scripts` 19, `src` 177, `tests` 82, and the
+remaining root/configuration paths 12. No workflow path differs from the base.
+The 16 synthetic campaign
 records and timestamp-only startup-packet change are absent from the proposed
 base diff. The only tracked recovery paths are the two documents listed above.
 
-The current staged prune deletes exactly the 1,423 tracked paths under
-`recovery/bfe2456b/validation/`; the independent fetch and complete inventory
-verification are documented above. Recheck the remote PR tip after publishing
-the cleanup: prove `e15df253c7f0facc2bbeda1e552ada1f0e050360` is an ancestor and
-recompute the full path/mode/blob/size/content-hash inventory before claiming
-post-cleanup retention.
+The published cleanup deletes exactly the 1,423 tracked paths under
+`recovery/bfe2456b/validation/`; the independent post-push fetch and complete
+inventory verification are documented above. The recovery procedure remains:
+
+```bash
+git fetch origin copilot/recover-unpushed-session-commits-again
+git merge-base --is-ancestor e15df253c7f0facc2bbeda1e552ada1f0e050360 FETCH_HEAD
+git show e15df253c7f0facc2bbeda1e552ada1f0e050360:recovery/bfe2456b/validation/<exact-relative-path>
+```
 
 ## Current acceptance status
 
@@ -116,8 +126,9 @@ post-cleanup retention.
   2 failed because the two held workflows do not yet have the required
   `--warn-only` integration. No workflow was modified and the test was not
   weakened.
-- R2 pruning is prepared; after push, remote ancestry and inventory verification
-  are still required. The Git history fallback is not an independent archive.
+- R2 pruning is published; post-push ancestry and all 1,425 inventory entries
+  were independently reverified. The Git history fallback is not an independent
+  archive.
 - R3 metrics output is isolated to a temporary path in tests. The campaign
   tests passed twice (43 each), and neither generated campaign records nor
   startup timestamp churn appears in the proposed base diff.
@@ -127,6 +138,16 @@ post-cleanup retention.
 - Current full-source mypy: 855 errors in 278 files, 1,972 checked, exit 1.
   Base comparison failed during package discovery (`self-healing` is not a
   valid Python package name), so this is not a regression delta or waiver.
-- Complete suite/80% coverage, post-cleanup remote verification, remaining
-  final checks, R1 companion integration, and hosted check execution remain
-  open. `action_required`/zero-job workflow states are not successful runs.
+- Ruff, source Black, targeted validator mypy and the 57-test
+  Chronicle/auth/memory selection pass. The bootstrap/instruction selector
+  reports 67 passed and 2 R1 failures. Pre-commit exits 1 on five existing
+  AST class-size findings; other applicable hooks pass. CodeQL was skipped
+  because its database is too large.
+- Hosted checks on the published commit are `action_required`; the Validation
+  Pipeline, Copilot Setup Steps Validation, and Nox runs have zero jobs. No
+  workflow approval or dispatch was performed. These states do not establish
+  executed CI success.
+- Complete suite/80% coverage, accepted full-source type disposition, R1
+  companion integration, and executed hosted checks remain open. Requested
+  reviewer @mbaetiong must identify/confirm the workflow owner and authorize
+  integration of the held workflow changes; no second-branch write is implied.

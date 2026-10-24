@@ -634,22 +634,26 @@
     "Do not publish or tag based on these partial results."
   ],
   "recovery_2026_10_24": {
-    "recorded_at": "2026-10-24T04:21:32Z",
+    "recorded_at": "2026-10-24T04:43:42Z",
     "scope": "PR #5708 R1-R4 remediation; this current status supplements, and does not rewrite, the historical execution records above.",
     "base_commit": "71613ee00080",
     "pre_cleanup_evidence_commit": "see recovery manifest for exact immutable ID",
     "status": "incomplete; no merge-readiness or publication claim",
-    "R1": "Blocked pending authorized companion workflow integration; the required selector last reported 67 passed and 2 failed on missing --warn-only workflow lines.",
-    "R2": "The complete 1425-path historical recovery inventory is independently fetched and hashed (digest in the recovery manifest). The 1423-path validation deletion is prepared; post-push ancestry and inventory checks are not yet complete.",
+    "R1": "Blocked pending authorized companion workflow integration; the required selector reports 67 passed and 2 failed on missing --warn-only workflow lines. Requested reviewer @mbaetiong must confirm the workflow owner and authorize integration.",
+    "R2": "The 1423-path validation deletion is published. An independent post-push fetch verified the pre-cleanup evidence commit remains an ancestor and reverified all 1425 inventory entries; the Git-history fallback is not an independent archive.",
     "R3": "Synthetic campaign records and startup timestamp churn are absent from the proposed base diff; campaign telemetry tests passed twice (43 each), with output isolated to temporary files.",
     "R4": "The validator reports ordinary-workflow compatibility separately from hosted setup contract, reports the exact retained legacy filtered environment listing, and rejects new broad environment dumps.",
     "current_full_source_mypy": "855 errors in 278 files, 1972 checked, exit 1. The base comparison could not be measured because base package discovery exits 2 on invalid package name self-healing.",
+    "pre_commit": "Exit 1 on five existing AST class-size findings; all other applicable hooks passed, including secret/dependency scanners.",
+    "codeql": "Analysis skipped because the database size is too large; no CodeQL result is claimed.",
+    "hosted_checks": "Runs on the pushed commit are action_required; Validation Pipeline, Copilot Setup Steps Validation and Nox have zero jobs. No approval or dispatch was performed.",
     "required_next_actions": [
-      "Complete final focused and configured validation without treating focused tests as suite/coverage acceptance.",
-      "Re-fetch after the authorized branch push and prove the pre-cleanup evidence commit remains an ancestor; verify the complete inventory.",
       "Obtain authorized R1 companion integration and rerun its exact acceptance test against checked-in workflows.",
-      "Resolve or obtain maintainer disposition for required full-source typing, complete-suite/coverage, and hosted check gates."
+      "Complete the full suite and repository-wide coverage gate; focused selections are not acceptance.",
+      "Resolve or obtain maintainer disposition for required full-source typing and the five AST class-size findings.",
+      "Run CodeQL with an available database and obtain authorized execution of required hosted checks."
     ],
+    "published_commit": "see recovery manifest for exact immutable ID",
     "full_commit_ids": "recovery/bfe2456b/nonworkflow-manifest.md",
     "details": "recovery/bfe2456b/CONTEXT.md and recovery/bfe2456b/nonworkflow-manifest.md"
   }
