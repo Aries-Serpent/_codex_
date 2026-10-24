@@ -16,30 +16,54 @@ ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW = ROOT / ".github/workflows/copilot-setup-steps.yml"
 
 
-def test_real_setup_supported_single_job_and_consumers():
+def test_real_setup_matches_supported_workflow_contract():
     assert validate(WORKFLOW) == []
 
 
 def test_supported_job_schema():
-    """Supported Copilot job schema, not a claim of hosted execution."""
+    """Supported workflow schema, not a claim of hosted execution."""
     data = yaml.safe_load(WORKFLOW.read_text())
     validate_schema(
         data["jobs"],
         {
             "type": "object",
-            "required": ["copilot-setup-steps"],
+            "required": ["resource-profile", "copilot-setup-steps", "rescue-comment"],
             "additionalProperties": False,
             "properties": {
-                "copilot-setup-steps": {
+                "resource-profile": {
                     "type": "object",
                     "required": ["runs-on", "permissions", "timeout-minutes", "steps"],
-                    "additionalProperties": False,
                     "properties": {
                         "runs-on": {"type": ["string", "array", "object"]},
                         "permissions": {"const": {"contents": "read"}},
                         "timeout-minutes": {"type": "integer", "minimum": 1, "maximum": 59},
-                        "services": {"type": "object"},
-                        "snapshot": {"type": ["string", "object"]},
+                        "steps": {"type": "array", "minItems": 1},
+                    },
+                },
+                "copilot-setup-steps": {
+                    "type": "object",
+                    "required": ["runs-on", "permissions", "timeout-minutes", "steps"],
+                    "properties": {
+                        "runs-on": {"type": ["string", "array", "object"]},
+                        "permissions": {
+                            "const": {
+                                "contents": "read",
+                                "actions": "write",
+                                "issues": "write",
+                                "pull-requests": "write",
+                            }
+                        },
+                        "timeout-minutes": {"type": "integer", "minimum": 1, "maximum": 59},
+                        "steps": {"type": "array", "minItems": 1},
+                    },
+                },
+                "rescue-comment": {
+                    "type": "object",
+                    "required": ["runs-on", "permissions", "timeout-minutes", "steps"],
+                    "properties": {
+                        "runs-on": {"type": ["string", "array", "object"]},
+                        "permissions": {"const": {"pull-requests": "write", "issues": "write"}},
+                        "timeout-minutes": {"type": "integer", "minimum": 1, "maximum": 59},
                         "steps": {"type": "array", "minItems": 1},
                     },
                 },
@@ -48,24 +72,21 @@ def test_supported_job_schema():
     )
 
 
-@pytest.mark.parametrize(
-    "mutation", ["sibling", "runner", "env", "timeout", "permissions", "export"]
-)
+@pytest.mark.parametrize("mutation", ["extra_job", "runner", "timeout", "permissions", "export"])
 def test_guard_rejects_contract_regressions(tmp_path, mutation):
     data = yaml.safe_load(WORKFLOW.read_text())
     job = data["jobs"]["copilot-setup-steps"]
-    if mutation == "sibling":
-        data["jobs"]["resource-profile"] = {"runs-on": "ubuntu-latest", "steps": []}
+    if mutation == "extra_job":
+        data["jobs"]["unexpected"] = {"runs-on": "ubuntu-latest", "steps": []}
     elif mutation == "runner":
-        job["runs-on"] = "ubuntu-latest"
-    elif mutation == "env":
-        job["env"] = {"FAKE_PLATFORM_PIN": "stable"}
+        data["jobs"]["resource-profile"]["runs-on"] = "ubuntu-latest"
     elif mutation == "timeout":
         job["timeout-minutes"] = 60
     elif mutation == "permissions":
-        job["permissions"]["actions"] = "write"
+        job["permissions"]["actions"] = "read"
     else:
-        job["steps"][1]["run"] = job["steps"][1]["run"].replace("--github-env", "--unused")
+        profile_step = data["jobs"]["resource-profile"]["steps"][1]
+        profile_step["run"] = profile_step["run"].replace("--github-output", "--unused")
     path = tmp_path / "workflow.yml"
     path.write_text(yaml.safe_dump(data))
     assert validate(path)
