@@ -6,10 +6,12 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="Project documentation - v0.2.0 (MkDocs Material)" name="description"/>
-<link href="https://aries-serpent.github.io/_codex_/ARCHITECTURE/" rel="canonical"/>
+<link href="https://aries-serpent.github.io/_codex_/architecture/" rel="canonical"/>
+<link href="../tokens/QUICK_REFERENCE/" rel="prev"/>
+<link href="codex_pipeline/" rel="next"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
 <meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
-<title>Architecture Documentation - Aries-Serpent v0.2.0 - Codex Docs v0.2.0</title>
+<title>Overview - Codex Docs v0.2.0</title>
 <link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -23,7 +25,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#architecture-documentation-aries-serpent-v020">
+<a class="md-skip" href="#architecture">
           Skip to content
         </a>
 </div>
@@ -47,7 +49,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              Architecture Documentation - Aries-Serpent v0.2.0
+              Overview
             
           </span>
 </div>
@@ -209,8 +211,8 @@
 
         </a>
 </li>
-<li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture/">
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="./">
           
   
   
@@ -870,9 +872,9 @@
 </ul>
 </nav>
 </li>
-<li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
-<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="">
 <span class="md-ellipsis">
     
   
@@ -883,7 +885,7 @@
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<nav aria-expanded="true" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
 <label class="md-nav__title" for="__nav_10">
 <span class="md-nav__icon md-icon"></span>
             
@@ -893,8 +895,20 @@
 
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../architecture/">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
 <span class="md-ellipsis">
     
   
@@ -904,9 +918,44 @@
     
   </span>
 </a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#overview">
+<span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+</a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture/codex_pipeline/">
+<a class="md-nav__link" href="#references">
+<span class="md-ellipsis">
+      
+        References
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#todos">
+<span class="md-ellipsis">
+      
+        TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="codex_pipeline/">
 <span class="md-ellipsis">
     
   
@@ -2269,373 +2318,31 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#system-overview">
+<a class="md-nav__link" href="#overview">
 <span class="md-ellipsis">
       
-        System Overview
+        Overview
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#component-architecture">
+<a class="md-nav__link" href="#references">
 <span class="md-ellipsis">
       
-        Component Architecture
-      
-    </span>
-</a>
-<nav aria-label="Component Architecture" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#1-cognitive-brain-system">
-<span class="md-ellipsis">
-      
-        1. Cognitive Brain System
+        References
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#2-core-system-ooda-loop">
+<a class="md-nav__link" href="#todos">
 <span class="md-ellipsis">
       
-        2. Core System (OODA Loop)
+        TODOs
       
     </span>
 </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#3-ml-training-inference">
-<span class="md-ellipsis">
-      
-        3. ML Training &amp; Inference
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#4-api-layer-fastapi">
-<span class="md-ellipsis">
-      
-        4. API Layer (FastAPI)
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#data-flow-diagrams">
-<span class="md-ellipsis">
-      
-        Data Flow Diagrams
-      
-    </span>
-</a>
-<nav aria-label="Data Flow Diagrams" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#query-processing-flow">
-<span class="md-ellipsis">
-      
-        Query Processing Flow
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#learning-flow">
-<span class="md-ellipsis">
-      
-        Learning Flow
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#module-structure">
-<span class="md-ellipsis">
-      
-        Module Structure
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#deployment-architectures">
-<span class="md-ellipsis">
-      
-        Deployment Architectures
-      
-    </span>
-</a>
-<nav aria-label="Deployment Architectures" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#single-node-docker-deployment">
-<span class="md-ellipsis">
-      
-        Single-Node Docker Deployment
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#kubernetes-multi-pod-deployment">
-<span class="md-ellipsis">
-      
-        Kubernetes Multi-Pod Deployment
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#integration-patterns">
-<span class="md-ellipsis">
-      
-        Integration Patterns
-      
-    </span>
-</a>
-<nav aria-label="Integration Patterns" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#protocol-based-integration">
-<span class="md-ellipsis">
-      
-        Protocol-Based Integration
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#webhook-based-feedback-loop">
-<span class="md-ellipsis">
-      
-        Webhook-Based Feedback Loop
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#dependency-graph">
-<span class="md-ellipsis">
-      
-        Dependency Graph
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#technology-stack">
-<span class="md-ellipsis">
-      
-        Technology Stack
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#performance-characteristics">
-<span class="md-ellipsis">
-      
-        Performance Characteristics
-      
-    </span>
-</a>
-<nav aria-label="Performance Characteristics" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#latency">
-<span class="md-ellipsis">
-      
-        Latency
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#throughput">
-<span class="md-ellipsis">
-      
-        Throughput
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#resource-usage">
-<span class="md-ellipsis">
-      
-        Resource Usage
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#security-architecture">
-<span class="md-ellipsis">
-      
-        Security Architecture
-      
-    </span>
-</a>
-<nav aria-label="Security Architecture" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#authentication-authorization">
-<span class="md-ellipsis">
-      
-        Authentication &amp; Authorization
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#network-security">
-<span class="md-ellipsis">
-      
-        Network Security
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#data-security">
-<span class="md-ellipsis">
-      
-        Data Security
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#scalability-considerations">
-<span class="md-ellipsis">
-      
-        Scalability Considerations
-      
-    </span>
-</a>
-<nav aria-label="Scalability Considerations" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#horizontal-scaling">
-<span class="md-ellipsis">
-      
-        Horizontal Scaling
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#vertical-scaling">
-<span class="md-ellipsis">
-      
-        Vertical Scaling
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#optimization-techniques">
-<span class="md-ellipsis">
-      
-        Optimization Techniques
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#monitoring-observability">
-<span class="md-ellipsis">
-      
-        Monitoring &amp; Observability
-      
-    </span>
-</a>
-<nav aria-label="Monitoring &amp; Observability" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#metrics">
-<span class="md-ellipsis">
-      
-        Metrics
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#logging">
-<span class="md-ellipsis">
-      
-        Logging
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#tracing">
-<span class="md-ellipsis">
-      
-        Tracing
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#future-evolution">
-<span class="md-ellipsis">
-      
-        Future Evolution
-      
-    </span>
-</a>
-<nav aria-label="Future Evolution" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#phase-2-enhancements">
-<span class="md-ellipsis">
-      
-        Phase 2 Enhancements
-      
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#phase-3-roadmap">
-<span class="md-ellipsis">
-      
-        Phase 3 Roadmap
-      
-    </span>
-</a>
-</li>
-</ul>
-</nav>
 </li>
 </ul>
 </nav>
@@ -2644,469 +2351,27 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="architecture-documentation-aries-serpent-v020">Architecture Documentation - Aries-Serpent v0.2.0<a class="headerlink" href="#architecture-documentation-aries-serpent-v020" title="Permanent link">¶</a></h1>
-<p><strong>Last Updated:</strong> 2026-07-11
-<strong>Version:</strong> v0.2.0</p>
-<p><strong>Document Type:</strong> Architecture &amp; Design Guide
-<strong>Audience:</strong> Architects, Senior Developers, DevOps Engineers
-**Last Updated: 2026-07-16</p>
-<h2 id="system-overview">System Overview<a class="headerlink" href="#system-overview" title="Permanent link">¶</a></h2>
-<p>Aries-Serpent is a modular AI agent framework with three main components:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>graph TB
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> CB[" Cognitive Brain&lt;br/&gt;(Pattern Recognition &amp; Memory)"]
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> CORE[" Core&lt;br/&gt;(OODA Loop &amp; Protocol Engine)"]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> ML[" ML Components&lt;br/&gt;(Inference &amp; Training)"]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> API[" API Layer&lt;br/&gt;(FastAPI Services)"]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> CB --&gt;|Patterns| CORE
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> CORE --&gt;|Strategies| ML
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> ML --&gt;|Results| API
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> API --&gt;|Requests| CORE
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> CORE --&gt;|Queries| CB
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> style CB fill:#ff9999
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> style CORE fill:#99ccff
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> style ML fill:#99ff99
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> style API fill:#ffcc99
-</code></pre></div>
-<h2 id="component-architecture">Component Architecture<a class="headerlink" href="#component-architecture" title="Permanent link">¶</a></h2>
-<h3 id="1-cognitive-brain-system">1. Cognitive Brain System<a class="headerlink" href="#1-cognitive-brain-system" title="Permanent link">¶</a></h3>
-<p><strong>Purpose:</strong> Pattern recognition, memory management, and decision support</p>
-<p><strong>Key Classes:</strong>
-- <code>CognitiveBrainAPI</code> - Main interface
-- <code>PatternRecognizer</code> - Pattern detection engine
-- <code>MemoryManager</code> - STM/LTM management
-- <code>DecisionEngine</code> - Strategy selection</p>
-<p><strong>Location:</strong> <code>src/codex/cognitive_brain/</code></p>
-<p><strong>Capabilities:</strong>
-- Real-time pattern recognition
-- Short-term &amp; long-term memory
-- Probabilistic decision making
-- Learning from feedback</p>
-<h3 id="2-core-system-ooda-loop">2. Core System (OODA Loop)<a class="headerlink" href="#2-core-system-ooda-loop" title="Permanent link">¶</a></h3>
-<p><strong>Purpose:</strong> Autonomous action orchestration and protocol-based integration</p>
-<p><strong>Components:</strong>
-- <code>OODALoop</code> - Observe Orient Decide Act cycle
-- <code>ProtocolEngine</code> - Message routing and transformation
-- <code>ActionQueue</code> - Async action execution</p>
-<p><strong>Location:</strong> <code>src/codex/core/</code></p>
-<p><strong>Flow:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>1. Observe: Collect system state and events
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>2. Orient: Contextualize observations with patterns
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>3. Decide: Evaluate strategies from ML/Cognitive Brain
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>4. Act: Execute selected actions
-</code></pre></div></p>
-<h3 id="3-ml-training-inference">3. ML Training &amp; Inference<a class="headerlink" href="#3-ml-training-inference" title="Permanent link">¶</a></h3>
-<p><strong>Purpose:</strong> Model training, inference, and optimization</p>
-<p><strong>Components:</strong>
-- <code>TrainingPipeline</code> - End-to-end training orchestration
-- <code>InferenceEngine</code> - Model serving and inference
-- <code>ModelRegistry</code> - Version control for models</p>
-<p><strong>Location:</strong> <code>src/codex/ml/</code></p>
-<p><strong>Supported Models:</strong>
-- Transformers (HuggingFace)
-- PyTorch models
-- Custom neural networks</p>
-<h3 id="4-api-layer-fastapi">4. API Layer (FastAPI)<a class="headerlink" href="#4-api-layer-fastapi" title="Permanent link">¶</a></h3>
-<p><strong>Purpose:</strong> RESTful API for external integration</p>
-<p><strong>Endpoints:</strong>
-- <code>POST /api/v1/query</code> - Submit query
-- <code>GET /api/v1/status</code> - System status
-- <code>POST /api/v1/learn</code> - Feedback loop
-- <code>GET /api/v1/patterns</code> - List recognized patterns</p>
-<p><strong>Location:</strong> <code>src/codex/api/</code></p>
-<h2 id="data-flow-diagrams">Data Flow Diagrams<a class="headerlink" href="#data-flow-diagrams" title="Permanent link">¶</a></h2>
-<h3 id="query-processing-flow">Query Processing Flow<a class="headerlink" href="#query-processing-flow" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>sequenceDiagram
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> Client-&gt;&gt;API: POST /api/v1/query
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> API-&gt;&gt;CORE: Process query
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> CORE-&gt;&gt;CB: Request pattern match
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> CB--&gt;&gt;CORE: Matched patterns
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> CORE-&gt;&gt;ML: Generate strategy
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> ML--&gt;&gt;CORE: Model prediction
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> CORE-&gt;&gt;API: Action &amp; result
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> API--&gt;&gt;Client: Response
-</code></pre></div>
-<h3 id="learning-flow">Learning Flow<a class="headerlink" href="#learning-flow" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>sequenceDiagram
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> System-&gt;&gt;CORE: Action result
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> CORE-&gt;&gt;CB: Record outcome
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> CB--&gt;&gt;CORE: Updated patterns
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> CORE-&gt;&gt;ML: Training signal
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> ML-&gt;&gt;ML: Update model
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> ML--&gt;&gt;CORE: New checkpoint
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> CORE-&gt;&gt;CORE: Update strategy
-</code></pre></div>
-<h2 id="module-structure">Module Structure<a class="headerlink" href="#module-structure" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>src/codex/
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> cognitive_brain/
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> api.py # Main interface
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> pattern_recognizer.py # Pattern detection
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> memory_manager.py # STM/LTM management
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> decision_engine.py # Strategy selection
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> core/
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> ooda_loop.py # OODA orchestration
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> protocol_engine.py # Message routing
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> action_queue.py # Action execution
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> ml/
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> training.py # Training pipeline
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> inference.py # Model inference
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> registry.py # Model management
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> api/
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> main.py # FastAPI app
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> routes.py # API endpoints
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> models.py # Pydantic schemas
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a> config/
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a> hydra/ # Hydra configurations
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a> defaults.yaml # Default settings
-</code></pre></div>
-<h2 id="deployment-architectures">Deployment Architectures<a class="headerlink" href="#deployment-architectures" title="Permanent link">¶</a></h2>
-<h3 id="single-node-docker-deployment">Single-Node Docker Deployment<a class="headerlink" href="#single-node-docker-deployment" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a> Docker Container 
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> Cognitive Brain (STM/LTM) 
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> Core (OODA Loop) 
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> ML Models (Cached) 
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> API Server (FastAPI) 
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> PostgreSQL
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> Redis 
-</code></pre></div>
-<h3 id="kubernetes-multi-pod-deployment">Kubernetes Multi-Pod Deployment<a class="headerlink" href="#kubernetes-multi-pod-deployment" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a> Kubernetes Cluster 
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> API Pod(s) ML Pod(s) 
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> (FastAPI, 3x) (Inference) 
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> Cognitive Brain Training Pod 
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> Pod (Shared STM) (Batch Jobs) 
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a> Stateful Services 
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a> - PostgreSQL StatefulSet 
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a> - Redis Deployment 
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a> - Prometheus/Grafana 
-</code></pre></div>
-<h2 id="integration-patterns">Integration Patterns<a class="headerlink" href="#integration-patterns" title="Permanent link">¶</a></h2>
-<h3 id="protocol-based-integration">Protocol-Based Integration<a class="headerlink" href="#protocol-based-integration" title="Permanent link">¶</a></h3>
-<p>Aries-Serpent uses a protocol-based architecture for flexible integration:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Any system can integrate via protocol</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="k">class</span> <span class="nc">ProtocolClient</span><span class="p">:</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> <span class="k">async</span> <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w"> </span><span class="sd">"""</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="sd"> Send message following Aries-Serpent protocol</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="sd"> Supported message types:</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="sd"> - QUERY: Request pattern recognition</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="sd"> - LEARN: Provide feedback for learning</span>
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="sd"> - ACTION: Execute system action</span>
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="sd"> """</span>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a> <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol_engine</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</code></pre></div>
-<h3 id="webhook-based-feedback-loop">Webhook-Based Feedback Loop<a class="headerlink" href="#webhook-based-feedback-loop" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>External System
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> POST /webhook/feedback
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> {
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> "event_id": "evt_123",
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> "outcome": "success|failure",
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> "metrics": {...}
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> }
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>Cognitive Brain
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>Updates patterns &amp; models
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>Improves decision quality
-</code></pre></div>
-<h2 id="dependency-graph">Dependency Graph<a class="headerlink" href="#dependency-graph" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>graph LR
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> A["API Layer&lt;br/&gt;FastAPI"]
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> B["Core&lt;br/&gt;OODA Loop"]
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> C["Cognitive Brain&lt;br/&gt;Pattern Engine"]
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> D["ML&lt;br/&gt;PyTorch/HF"]
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> E["Config&lt;br/&gt;Hydra"]
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> F["Storage&lt;br/&gt;PostgreSQL"]
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a> G["Cache&lt;br/&gt;Redis"]
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> A --&gt;|routes| B
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> B --&gt;|patterns| C
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a> B --&gt;|inference| D
-<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a> B --&gt;|config| E
-<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>
-<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a> C --&gt;|memory| F
-<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>
-<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a> B --&gt;|cache| G
-<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a>
-<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a> D --&gt;|models| F
-<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a>
-<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a> style E fill:#e1f5ff
-<a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a> style F fill:#fff3e0
-<a href="#__codelineno-9-27" id="__codelineno-9-27" name="__codelineno-9-27"></a> style G fill:#f3e5f5
-</code></pre></div>
-<h2 id="technology-stack">Technology Stack<a class="headerlink" href="#technology-stack" title="Permanent link">¶</a></h2>
-<table>
-<thead>
-<tr>
-<th>Layer</th>
-<th>Technology</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Language</strong></td>
-<td>Python 3.12+</td>
-<td>Core runtime</td>
-</tr>
-<tr>
-<td><strong>Configuration</strong></td>
-<td>Hydra 1.3</td>
-<td>Config management</td>
-</tr>
-<tr>
-<td><strong>Validation</strong></td>
-<td>Pydantic 2.4</td>
-<td>Data validation</td>
-</tr>
-<tr>
-<td><strong>API</strong></td>
-<td>FastAPI</td>
-<td>REST API server</td>
-</tr>
-<tr>
-<td><strong>ML Framework</strong></td>
-<td>PyTorch</td>
-<td>Model training/inference</td>
-</tr>
-<tr>
-<td><strong>LLM Integration</strong></td>
-<td>HuggingFace</td>
-<td>Pre-trained models</td>
-</tr>
-<tr>
-<td><strong>Database</strong></td>
-<td>PostgreSQL</td>
-<td>Persistent storage</td>
-</tr>
-<tr>
-<td><strong>Cache</strong></td>
-<td>Redis</td>
-<td>Performance optimization</td>
-</tr>
-<tr>
-<td><strong>Container</strong></td>
-<td>Docker</td>
-<td>Containerization</td>
-</tr>
-<tr>
-<td><strong>Orchestration</strong></td>
-<td>Kubernetes</td>
-<td>Production deployment</td>
-</tr>
-<tr>
-<td><strong>Monitoring</strong></td>
-<td>Prometheus/Grafana</td>
-<td>Observability</td>
-</tr>
-<tr>
-<td><strong>Testing</strong></td>
-<td>pytest</td>
-<td>Test framework</td>
-</tr>
-</tbody>
-</table>
-<h2 id="performance-characteristics">Performance Characteristics<a class="headerlink" href="#performance-characteristics" title="Permanent link">¶</a></h2>
-<h3 id="latency">Latency<a class="headerlink" href="#latency" title="Permanent link">¶</a></h3>
-<table>
-<thead>
-<tr>
-<th>Operation</th>
-<th>Typical Latency</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Pattern recognition</td>
-<td>50-100ms</td>
-</tr>
-<tr>
-<td>Decision making</td>
-<td>100-200ms</td>
-</tr>
-<tr>
-<td>Model inference</td>
-<td>200-500ms</td>
-</tr>
-<tr>
-<td>API response (end-to-end)</td>
-<td>500-1000ms</td>
-</tr>
-</tbody>
-</table>
-<h3 id="throughput">Throughput<a class="headerlink" href="#throughput" title="Permanent link">¶</a></h3>
-<table>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Queries/second</td>
-<td>100+</td>
-</tr>
-<tr>
-<td>Learning events/hour</td>
-<td>10,000+</td>
-</tr>
-<tr>
-<td>Pattern updates/hour</td>
-<td>1,000+</td>
-</tr>
-</tbody>
-</table>
-<h3 id="resource-usage">Resource Usage<a class="headerlink" href="#resource-usage" title="Permanent link">¶</a></h3>
-<table>
-<thead>
-<tr>
-<th>Component</th>
-<th>CPU</th>
-<th>Memory</th>
-<th>Storage</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Cognitive Brain</td>
-<td>0.5 cores</td>
-<td>2GB</td>
-<td>5GB (LTM)</td>
-</tr>
-<tr>
-<td>Core OODA</td>
-<td>0.2 cores</td>
-<td>0.5GB</td>
-<td>100MB</td>
-</tr>
-<tr>
-<td>ML Inference</td>
-<td>1-2 cores</td>
-<td>4GB</td>
-<td>2GB (models)</td>
-</tr>
-<tr>
-<td>API Server</td>
-<td>0.5 cores</td>
-<td>1GB</td>
-<td>100MB</td>
-</tr>
-</tbody>
-</table>
-<h2 id="security-architecture">Security Architecture<a class="headerlink" href="#security-architecture" title="Permanent link">¶</a></h2>
-<h3 id="authentication-authorization">Authentication &amp; Authorization<a class="headerlink" href="#authentication-authorization" title="Permanent link">¶</a></h3>
+<h1 id="architecture">architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h1>
+<blockquote>
+<p><strong>Status</strong>: Stub file - To be populated</p>
+</blockquote>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<p>This documentation file is referenced in the knowledge base but content is pending.</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>API Authentication:</strong> <strong>*</strong>* (JWT)</li>
-<li><strong>Service-to-service:</strong> mTLS</li>
-<li><strong>Database:</strong> Encrypted credentials</li>
-<li><strong>Secrets:</strong> Managed via Kubernetes Secrets or Vault</li>
+<li>See related documentation for context</li>
+<li>To contribute content to this file, submit a pull request</li>
 </ul>
-<h3 id="network-security">Network Security<a class="headerlink" href="#network-security" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>Ingress:</strong> TLS 1.3 enforced</li>
-<li><strong>Service mesh:</strong> Optional Istio for advanced policies</li>
-<li><strong>Network policies:</strong> Pod-to-pod traffic control</li>
-<li><strong>Firewall:</strong> Cloud provider security groups</li>
-</ul>
-<h3 id="data-security">Data Security<a class="headerlink" href="#data-security" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>Encryption at rest:</strong> PostgreSQL TDE (Transparent Data Encryption)</li>
-<li><strong>Encryption in transit:</strong> mTLS for all inter-service communication</li>
-<li><strong>Key rotation:</strong> 90-day rotation for encryption keys</li>
-<li><strong>Audit logging:</strong> All data access logged and monitored</li>
-</ul>
-<h2 id="scalability-considerations">Scalability Considerations<a class="headerlink" href="#scalability-considerations" title="Permanent link">¶</a></h2>
-<h3 id="horizontal-scaling">Horizontal Scaling<a class="headerlink" href="#horizontal-scaling" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>API Pods:</strong> Scale independently (stateless)</li>
-<li><strong>ML Pods:</strong> Scale based on inference load</li>
-<li><strong>Cognitive Brain:</strong> Shared state via PostgreSQL</li>
-</ul>
-<h3 id="vertical-scaling">Vertical Scaling<a class="headerlink" href="#vertical-scaling" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>Memory:</strong> Increase Redis cache size for better performance</li>
-<li><strong>CPU:</strong> More cores improve parallel processing</li>
-<li><strong>Storage:</strong> Larger database for pattern history</li>
-</ul>
-<h3 id="optimization-techniques">Optimization Techniques<a class="headerlink" href="#optimization-techniques" title="Permanent link">¶</a></h3>
-<ol>
-<li><strong>Caching:</strong> Redis for hot data</li>
-<li><strong>Batching:</strong> Process multiple queries together</li>
-<li><strong>Model quantization:</strong> Reduce model size</li>
-<li><strong>Request coalescing:</strong> Batch similar requests</li>
-<li><strong>Async processing:</strong> Non-blocking I/O</li>
-</ol>
-<h2 id="monitoring-observability">Monitoring &amp; Observability<a class="headerlink" href="#monitoring-observability" title="Permanent link">¶</a></h2>
-<h3 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">¶</a></h3>
-<ul>
-<li>Request latency distribution</li>
-<li>Pattern recognition accuracy</li>
-<li>Model inference time</li>
-<li>System resource utilization</li>
-<li>Error rates and types</li>
-</ul>
-<h3 id="logging">Logging<a class="headerlink" href="#logging" title="Permanent link">¶</a></h3>
-<ul>
-<li>Structured JSON logs</li>
-<li>Log levels: DEBUG, INFO, WARNING, ERROR</li>
-<li>Centralized logging (ELK stack recommended)</li>
-<li>Audit trail for security events</li>
-</ul>
-<h3 id="tracing">Tracing<a class="headerlink" href="#tracing" title="Permanent link">¶</a></h3>
-<ul>
-<li>OpenTelemetry for distributed tracing</li>
-<li>Jaeger backend for visualization</li>
-<li>Trace sampling based on latency</li>
-</ul>
-<h2 id="future-evolution">Future Evolution<a class="headerlink" href="#future-evolution" title="Permanent link">¶</a></h2>
-<h3 id="phase-2-enhancements">Phase 2 Enhancements<a class="headerlink" href="#phase-2-enhancements" title="Permanent link">¶</a></h3>
+<h2 id="todos">TODOs<a class="headerlink" href="#todos" title="Permanent link">¶</a></h2>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Multi-model ensemble support</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Graph-based pattern storage</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Distributed cognitive state</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Enhanced federated learning</li>
-</ul>
-<h3 id="phase-3-roadmap">Phase 3 Roadmap<a class="headerlink" href="#phase-3-roadmap" title="Permanent link">¶</a></h3>
-<ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Real-time model retraining</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Advanced explainability features</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Privacy-preserving ML</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Multi-tenant architecture</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Add introductory content</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Add usage examples</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Add cross-references</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Link to related topics</li>
 </ul>
 <hr/>
-<p><strong>Status:</strong> COMPLETE
-**Last Updated: 2026-07-16</p>
+<p><strong>Created</strong>: 2026-07-17<br/>
+<strong>Status</strong>: Draft - Awaiting content population</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
