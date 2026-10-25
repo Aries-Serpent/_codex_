@@ -1,0 +1,22 @@
+{
+  "schema": "codex.institutional.preservation-observation.v1",
+  "entry_user_path": ".codex/session_startup_packet.json",
+  "entry_and_final_working_sha256": "97229ef4b723a01c4d458d3ec868197506c88924c3ac2f0513d8d8d5c3768caf",
+  "entry_index_state": "unstaged tracked modification",
+  "current_index_state": "restored original unstaged tracked modification",
+  "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+  "source_commit_task_path_count": 19,
+  "event": "Incidental staging of additional evidence and the pre-existing user file was detected after analysis/tool preparation, before any evidence commit. Exact user working bytes remained unchanged. Restored original index entry without modifying file bytes, flags, HEAD or user work. Unstaged only explicitly enumerated task-owned new evidence before checkpoint capture.",
+  "attribution": "Exact index writer unverified; no unsupported claim that a specific agent or tool staged it.",
+  "mitigation": "Explicit path allowlist and staged-byte manifests before commit. No automatic all-dirty-work publisher.",
+  "forbidden_operations_not_used": [
+    "user-byte replacement",
+    "assume-unchanged/skip-worktree",
+    "stash",
+    "worktree reset",
+    "broad commit of user changes",
+    "push",
+    "PR creation",
+    "activation"
+  ]
+}

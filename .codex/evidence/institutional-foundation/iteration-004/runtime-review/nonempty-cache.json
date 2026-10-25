@@ -1,0 +1,8 @@
+{
+  "event_digest": "e8bb61b97614a4e88ceaf92a8502bf72bb3b86bbfd133d60ed120b2c92830a5f",
+  "state": {
+    "blocker": null,
+    "pending_requirement": "resolve-conflict",
+    "stage": "meta"
+  }
+}

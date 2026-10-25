@@ -1,0 +1,63 @@
+{
+  "schema": "codex.institutional.consumer-investigation.v1",
+  "status": "Draft",
+  "classification": "Repository-Internal",
+  "scope": "One bounded followup-template consumer batch; not repository-wide policy closure.",
+  "chain": [
+    {
+      "stage": "template",
+      "path": ".github/copilot-prompts/templates/pr-continuation.md",
+      "siblings": ["5-pass-self-review.md", "multi-phase-implementation.md", "ci-fix-continuation.md", "consolidation.md"],
+      "operation": "Explicit template selection; legacy filename retained for compatibility."
+    },
+    {
+      "stage": "generator",
+      "path": "scripts/generate_pr_followup.py",
+      "symbols": ["PromptGenerator.load_template", "PromptGenerator.generate", "PromptGenerator._extract_existing_tasks", "PromptGenerator.has_real_content", "PromptGenerator.save", "main"],
+      "operation": "Positive decimal PR identity, bounded template name, current-PR preservation, safe default commands, every-preserved-block save guard."
+    },
+    {
+      "stage": "caller",
+      "paths": ["scripts/test_continuation_system.sh", ".github/workflows.backup.20260214_131353/pr-followup-generator.yml"],
+      "operation": "CLI and legacy shell caller exist. Backup is historical, not active workflow evidence. No current generation YAML was found in the bounded reference search."
+    },
+    {
+      "stage": "output",
+      "path_pattern": ".github/copilot-prompts/active/PR-{positive-decimal}-followup.md",
+      "operation": "Explicit invocation writes data, not dispatch. Historical generated outputs were not bulk rewritten. Opt-in custom output remains supported."
+    },
+    {
+      "stage": "validation",
+      "paths": ["tests/ci/test_followup_consumer.py", "scripts/ci/check_deferral_language.py", "scripts/test_continuation_system.sh"],
+      "operation": "17 focused output/consumer cases pass. Four failures reproduce with entry generator plus current templates. Wording scanner matches are advisory even under legacy --strict; missing input is an error. Legacy smoke test has a stale missing-workflow existence assertion and is not claimed passing."
+    },
+    {
+      "stage": "consumer",
+      "operation": "A human or separately authorized agent can read generated text. No verified current end-to-end hosted dispatch chain was established. Generation does not execute its embedded commands, post comments, invoke sessions, authenticate identities, grant permission, close findings or establish independent verification."
+    }
+  ],
+  "confirmed_findings": [
+    {"id": "RD4-C1", "finding": "Unrelated PR tasks and commands could silently seed a new followup.", "remediation": "Remove previous-PR fallback; only preserve the explicitly addressed PR."},
+    {"id": "RD4-C2", "finding": "Explicit continuation context, dissent and exact pending-node evidence could be discarded.", "remediation": "Preserve an explicit continuation-context section and require it at save."},
+    {"id": "RD4-C3", "finding": "Save protection checked only the first preserved block.", "remediation": "Require every extracted preserved block before overwriting."},
+    {"id": "RD4-C4", "finding": "One placeholder substring could cause real findings in the same block to be discarded.", "remediation": "Treat only an entire known placeholder block as placeholder."},
+    {"id": "RD4-C5", "finding": "Operative universal five-pass, forced-completion and automatic continuation wording conflicted with bounded review and execution authority.", "remediation": "Use risk-appropriate review dimensions, honest pending work, explicit authority and no self-triggering while preserving genuine security owner/reason and execution/review controls."},
+    {"id": "RD4-C6", "finding": "Caller keyword overrides could erase preserved continuation context in generated API output even though save would refuse to persist the loss.", "remediation": "Apply protected continuation precedence after general keywords; add exact regression. Reported by rd4-minority-review."},
+    {"id": "RD4-C7", "finding": "Sibling README and generated workflow reference claimed active automatic generation/linking without a current YAML caller.", "remediation": "Describe explicit generation, historical backup, unverified hosted state and separately authorized invocation. Reported by rd4-minority-review."}
+  ],
+  "rejected_or_unverified_interpretations": [
+    {"source": "rd4-followup-trace", "claim": "20+ generated prompts prove active automatic workflow deployment.", "decision": "REJECTED_WITH_EVIDENCE", "reason": "Generated files and historical workflow backups do not prove a current YAML caller or hosted activation."},
+    {"source": "rd4-followup-trace", "claim": "Template -> generator -> wording gate -> rescue comment -> agent is a verified automatic chain.", "decision": "INSUFFICIENT_EVIDENCE", "reason": "No exact current generator-to-gate-to-session dispatch binding established. Do not infer activation from mentions or filenames."},
+    {"source": "rd4-followup-trace", "claim": "Replace literal redacted ERROR_TYPE with exception details.", "decision": "NOT_ADOPTED", "reason": "Outside this batch; an exception may contain sensitive input. No evidence that exposing its text is a safe required correction."},
+    {"source": "prior policy review", "claim": "Missing --warn-only makes wording matches blocking.", "decision": "REJECTED_WITH_EVIDENCE", "reason": "Scanner implementation returns success for wording matches; security owner/reason checks and missing inputs are separate."},
+    {"source": "rd4-followup-trace", "claim": "Adding an explicitly requested package resource needs an additional governance grant.", "decision": "REJECTED_WITH_EVIDENCE", "reason": "Task already authorizes ordinary source/package development. Activation and protected operations remain separate."}
+  ],
+  "limits": [
+    "Same-PR preserved assertions may be stale and require candidate/context revalidation; preserving wording is not accepting its truth.",
+    "The extractor protects its supported task/validation/continuation sections, not arbitrary unrelated prose.",
+    "Unknown hosted caller, authentication, frontmatter enforcement and effective tool configuration remain unverified.",
+    "Local tests and separate-context dissent are not G5 independent verification or owner approval.",
+    "Broader POLICY-06/07 consumer backlog is not closed by this batch."
+  ],
+  "rollback": "Review and selectively revert this iteration's task-owned paths; preserve dirty user packet and historical evidence. Do not reset the worktree or blanket-revert unrelated guidance."
+}

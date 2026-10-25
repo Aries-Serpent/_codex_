@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.297" timestamp="2026-10-25T00:26:44.672905+00:00" hostname="runnervm1s3jh"><testcase classname="tests.institutional.test_review" name="test_huge_integer_confidence_rejected_in_lane_and_import[10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000]" time="0.003"><failure message="OverflowError: int too large to convert to float">confidence = 100000000000000000...0000000000000000000
+
+    @pytest.mark.parametrize("confidence", [10**400, -(10**400)])
+    def test_huge_integer_confidence_rejected_in_lane_and_import(confidence):
+        planned = plan()
+        bad_finding = finding()
+        bad_finding["confidence"] = confidence
+        with pytest.raises(core.Rejected, match="REVIEW_CONFIDENCE"):
+&gt;           review.lane_output(planned, "logic", "original wording", [bad_finding])
+
+tests/institutional/test_review.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/codex/institutional/review.py:314: in lane_output
+    _output(result, plan)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = {'schema': 'codex.review.v1', 'id': 'codex.review.v1:3e7de9fd18eae6fad5f146e23c0b4090c51605d5c372cebb50e2bc10cb557a6e', 'created_at': '2026-10-25T00:26:44Z', 'producer': {'identity': 'codex-institutional', 'assurance': 'unverified'}, ...}
+plan = {'schema': 'codex.review.v1', 'id': 'codex.review.v1:0432c05cb8da58ef1d861a5f149d5a8fb48a9fe0a2d732555d69ee2c5fb174f4', 'created_at': '2026-10-25T00:00:00Z', 'producer': {'identity': 'codex-institutional', 'assurance': 'unverified'}, ...}
+
+    def _output(value: dict[str, Any], plan: dict[str, Any]) -&gt; dict[str, Any]:
+        data = _data(value, "lane-output")
+        _keys(data, "plan_digest binding lane actor run identity source findings")
+        planned = _plan(plan)
+        _require(
+            data["plan_digest"] == digest(plan) and data["binding"] == planned["binding"],
+            "REVIEW_MIXED_BINDING",
+        )
+        lanes = {lane["id"]: lane for lane in planned["lanes"]}
+        _require(isinstance(data["lane"], str) and data["lane"] in lanes, "REVIEW_UNDECLARED_LANE")
+        lane = lanes[data["lane"]]
+        _require(
+            data["actor"] == lane["actor"]
+            and data["run"] == lane["run"]
+            and data["identity"] == "unverified",
+            "REVIEW_ATTRIBUTION",
+        )
+        _text(data["source"])
+        findings = data["findings"]
+        _require(isinstance(findings, list) and len(findings) &lt;= MAX_FINDINGS, "REVIEW_FINDING_LIMIT")
+        for finding in findings:
+            _keys(finding, "id source_quote normalized kind confidence coverage clearance_conditions")
+            for key in ("id", "source_quote", "normalized"):
+                _text(finding[key])
+            _require(finding["source_quote"] in data["source"], "REVIEW_SOURCE_QUOTE")
+            _require(finding["kind"] in ("observation", "inference"), "REVIEW_FINDING_KIND")
+            confidence = finding["confidence"]
+            _require(
+&gt;               type(confidence) in (int, float) and math.isfinite(confidence) and 0 &lt;= confidence &lt;= 1,
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+                "REVIEW_CONFIDENCE",
+            )
+E           OverflowError: int too large to convert to float
+
+src/codex/institutional/review.py:346: OverflowError</failure></testcase><testcase classname="tests.institutional.test_review" name="test_huge_integer_confidence_rejected_in_lane_and_import[-10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000]" time="0.002"><failure message="OverflowError: int too large to convert to float">confidence = -10000000000000000...0000000000000000000
+
+    @pytest.mark.parametrize("confidence", [10**400, -(10**400)])
+    def test_huge_integer_confidence_rejected_in_lane_and_import(confidence):
+        planned = plan()
+        bad_finding = finding()
+        bad_finding["confidence"] = confidence
+        with pytest.raises(core.Rejected, match="REVIEW_CONFIDENCE"):
+&gt;           review.lane_output(planned, "logic", "original wording", [bad_finding])
+
+tests/institutional/test_review.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/codex/institutional/review.py:314: in lane_output
+    _output(result, plan)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = {'schema': 'codex.review.v1', 'id': 'codex.review.v1:03ef254cebe75fd05feb7adad2c4dd470484434c559ce36be80e0a9c5ce96f06', 'created_at': '2026-10-25T00:26:44Z', 'producer': {'identity': 'codex-institutional', 'assurance': 'unverified'}, ...}
+plan = {'schema': 'codex.review.v1', 'id': 'codex.review.v1:0432c05cb8da58ef1d861a5f149d5a8fb48a9fe0a2d732555d69ee2c5fb174f4', 'created_at': '2026-10-25T00:00:00Z', 'producer': {'identity': 'codex-institutional', 'assurance': 'unverified'}, ...}
+
+    def _output(value: dict[str, Any], plan: dict[str, Any]) -&gt; dict[str, Any]:
+        data = _data(value, "lane-output")
+        _keys(data, "plan_digest binding lane actor run identity source findings")
+        planned = _plan(plan)
+        _require(
+            data["plan_digest"] == digest(plan) and data["binding"] == planned["binding"],
+            "REVIEW_MIXED_BINDING",
+        )
+        lanes = {lane["id"]: lane for lane in planned["lanes"]}
+        _require(isinstance(data["lane"], str) and data["lane"] in lanes, "REVIEW_UNDECLARED_LANE")
+        lane = lanes[data["lane"]]
+        _require(
+            data["actor"] == lane["actor"]
+            and data["run"] == lane["run"]
+            and data["identity"] == "unverified",
+            "REVIEW_ATTRIBUTION",
+        )
+        _text(data["source"])
+        findings = data["findings"]
+        _require(isinstance(findings, list) and len(findings) &lt;= MAX_FINDINGS, "REVIEW_FINDING_LIMIT")
+        for finding in findings:
+            _keys(finding, "id source_quote normalized kind confidence coverage clearance_conditions")
+            for key in ("id", "source_quote", "normalized"):
+                _text(finding[key])
+            _require(finding["source_quote"] in data["source"], "REVIEW_SOURCE_QUOTE")
+            _require(finding["kind"] in ("observation", "inference"), "REVIEW_FINDING_KIND")
+            confidence = finding["confidence"]
+            _require(
+&gt;               type(confidence) in (int, float) and math.isfinite(confidence) and 0 &lt;= confidence &lt;= 1,
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+                "REVIEW_CONFIDENCE",
+            )
+E           OverflowError: int too large to convert to float
+
+src/codex/institutional/review.py:346: OverflowError</failure></testcase></testsuite></testsuites>
