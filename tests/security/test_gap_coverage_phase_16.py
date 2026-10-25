@@ -59,7 +59,7 @@ class TestGapCoverageFileSystemOperations:
             ]
 
             try:
-                os.chmod(restricted_file, 0o644)
+                os.chmod(restricted_file, 0o600)
                 readable = subprocess.run(
                     command, capture_output=True, text=True, check=False, **identity
                 )
