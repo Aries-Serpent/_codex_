@@ -1,0 +1,220 @@
+{
+  "conclusion": "Only the three requested source items classified using static structures; no credential validity checks or blanket clean claim.",
+  "finding_occurrences_in_requested_members": 3,
+  "items": [
+    {
+      "archive_provenance": [
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+          "member": "aries_serpent_core/archive/dal.py",
+          "sha256": "5d2d0de4b40df704e3d8bc3f633cbeaab7bdc3e362dbef61364be3bf35a223cd"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/scoped-source.tar",
+          "member": "src/aries_serpent_core/archive/dal.py",
+          "sha256": "5d2d0de4b40df704e3d8bc3f633cbeaab7bdc3e362dbef61364be3bf35a223cd"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+          "member": "aries_serpent_core/archive/dal.py",
+          "sha256": "5d2d0de4b40df704e3d8bc3f633cbeaab7bdc3e362dbef61364be3bf35a223cd"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/scoped-source.tar",
+          "member": "src/aries_serpent_core/archive/dal.py",
+          "sha256": "5d2d0de4b40df704e3d8bc3f633cbeaab7bdc3e362dbef61364be3bf35a223cd"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+          "member": "aries_serpent_core/archive/dal.py",
+          "sha256": "5d2d0de4b40df704e3d8bc3f633cbeaab7bdc3e362dbef61364be3bf35a223cd"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/scoped-source.tar",
+          "member": "src/aries_serpent_core/archive/dal.py",
+          "sha256": "5d2d0de4b40df704e3d8bc3f633cbeaab7bdc3e362dbef61364be3bf35a223cd"
+        }
+      ],
+      "classification": "EXCEPTION_MESSAGE_URI_PLACEHOLDER_NOT_CONNECTION_ARGUMENT",
+      "finding_id": "bd60b9719ed46778f8ae936a2d5f0ffefd69c44465257d47f38ddcc478fcf9d3",
+      "line": 919,
+      "member": "aries_serpent_core/archive/dal.py",
+      "member_sha256": "5d2d0de4b40df704e3d8bc3f633cbeaab7bdc3e362dbef61364be3bf35a223cd",
+      "plugin": "Basic Auth Credentials",
+      "static_evidence": {
+        "ast_contexts": [
+          {
+            "ast_node": "Constant",
+            "constant_end_line": 919,
+            "constant_line": 919,
+            "docstring": false,
+            "parent_node": "Call",
+            "uri_structure": [
+              {
+                "has_password": true,
+                "placeholder_host": true,
+                "placeholder_password": true,
+                "placeholder_user": true
+              }
+            ]
+          }
+        ],
+        "call_keyword_names": [],
+        "call_name": "ValueError",
+        "context_basis": "AST string argument to ValueError inside DSN parser; conventional placeholder components. Not a docstring or credential passed to a connection call.",
+        "enclosing_function_name": "_parse_dsn"
+      }
+    },
+    {
+      "archive_provenance": [
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+          "member": "aries_serpent_core/docs_agent/integration.py",
+          "sha256": "8901852c36f92cecb498057268e29afa07ad44191af1cd54f4e01675846bf56f"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/scoped-source.tar",
+          "member": "src/aries_serpent_core/docs_agent/integration.py",
+          "sha256": "8901852c36f92cecb498057268e29afa07ad44191af1cd54f4e01675846bf56f"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+          "member": "aries_serpent_core/docs_agent/integration.py",
+          "sha256": "8901852c36f92cecb498057268e29afa07ad44191af1cd54f4e01675846bf56f"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/scoped-source.tar",
+          "member": "src/aries_serpent_core/docs_agent/integration.py",
+          "sha256": "8901852c36f92cecb498057268e29afa07ad44191af1cd54f4e01675846bf56f"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+          "member": "aries_serpent_core/docs_agent/integration.py",
+          "sha256": "8901852c36f92cecb498057268e29afa07ad44191af1cd54f4e01675846bf56f"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/scoped-source.tar",
+          "member": "src/aries_serpent_core/docs_agent/integration.py",
+          "sha256": "8901852c36f92cecb498057268e29afa07ad44191af1cd54f4e01675846bf56f"
+        }
+      ],
+      "classification": "REPEATED_SYNTHETIC_HEX_PLACEHOLDER_CONTEXT_OWNER_REVIEW",
+      "finding_id": "965bb88a29f3705732aeaa37c672e91b151d2c7d552dfd1709faa0b1e9f92726",
+      "line": 200,
+      "member": "aries_serpent_core/docs_agent/integration.py",
+      "member_sha256": "8901852c36f92cecb498057268e29afa07ad44191af1cd54f4e01675846bf56f",
+      "plugin": "Hex High Entropy String",
+      "static_evidence": {
+        "ast_contexts": [
+          {
+            "ast_node": "Constant",
+            "constant_end_line": 200,
+            "constant_line": 200,
+            "docstring": false,
+            "hit_is_entire_constant": true,
+            "parent_node": "Dict",
+            "whole_constant_hex_digest": false,
+            "whole_constant_is_uuid": false
+          }
+        ],
+        "constant_character_count": 12,
+        "constant_is_hex_only": true,
+        "constant_is_repeated_placeholder_hex": true,
+        "dictionary_field_name": "value",
+        "enclosing_function_names": [
+          "get_reference_context",
+          "get_reference_context"
+        ],
+        "example_function_context": false
+      }
+    },
+    {
+      "archive_provenance": [
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+          "member": "codex/institutional/review-formulas.json",
+          "sha256": "bb334de789fc66e6704b752268c84f32860a218bbc4858b6888822c4f5e23537"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/scoped-source.tar",
+          "member": "src/codex/institutional/review-formulas.json",
+          "sha256": "bb334de789fc66e6704b752268c84f32860a218bbc4858b6888822c4f5e23537"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+          "member": "codex/institutional/review-formulas.json",
+          "sha256": "bb334de789fc66e6704b752268c84f32860a218bbc4858b6888822c4f5e23537"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/scoped-source.tar",
+          "member": "src/codex/institutional/review-formulas.json",
+          "sha256": "bb334de789fc66e6704b752268c84f32860a218bbc4858b6888822c4f5e23537"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+          "member": "codex/institutional/review-formulas.json",
+          "sha256": "bb334de789fc66e6704b752268c84f32860a218bbc4858b6888822c4f5e23537"
+        },
+        {
+          "archive": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/scoped-source.tar",
+          "member": "src/codex/institutional/review-formulas.json",
+          "sha256": "bb334de789fc66e6704b752268c84f32860a218bbc4858b6888822c4f5e23537"
+        }
+      ],
+      "classification": "DECLARED_LINEAGE_ASSERTION_HEX_METADATA_NOT_ASSET_INTEGRITY_PROOF",
+      "finding_id": "164b8d4d15af588be485872f35193bab9d3bc564a6ee69e7e810511f269b0feb",
+      "line": 127,
+      "member": "codex/institutional/review-formulas.json",
+      "member_sha256": "bb334de789fc66e6704b752268c84f32860a218bbc4858b6888822c4f5e23537",
+      "plugin": "Hex High Entropy String",
+      "static_evidence": {
+        "assertion_digest_matches_canonical_without_assertion": false,
+        "declared_not_asset_content_digest": true,
+        "json_matching_fields": [
+          {
+            "exact_value_is_hex_digest": true,
+            "field_path": [
+              "lineage",
+              "assertion"
+            ],
+            "matches_entire_field": true
+          }
+        ],
+        "lineage_assertion_is_64_hex": true,
+        "lineage_field_names": [
+          "assertion",
+          "verification",
+          "is_asset_content_digest",
+          "source"
+        ],
+        "top_level_field_names": [
+          "schema",
+          "status",
+          "authority",
+          "source_preservation",
+          "packaging",
+          "review_sdk_mapping",
+          "lineage",
+          "schema_contract",
+          "metadata",
+          "global_semantics",
+          "profile_constants",
+          "symbols",
+          "formulas",
+          "structural_bindings",
+          "discovery"
+        ],
+        "verification_explicitly_unverified": true
+      }
+    }
+  ],
+  "limitations": "Structural context only; unresolved items remain withheld. No values or snippets retained.",
+  "other_unresolved_unique_source_paths": 7,
+  "prior_unresolved_findings": 13,
+  "prior_unresolved_other_members": 10,
+  "remaining_owner_review_findings_total": 11,
+  "scope": "Exactly three requested source members; no package/source modifications or network verification.",
+  "scope_correction": "The three requested paths account for three findings, not all 13 prior unresolved findings. Ten findings in 7 other source paths remain outside this final pass.",
+  "source_item_count": 3,
+  "targeted_owner_review_count": 1
+}
