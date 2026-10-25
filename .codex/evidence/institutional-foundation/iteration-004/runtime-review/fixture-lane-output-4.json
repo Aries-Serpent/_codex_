@@ -1,0 +1,43 @@
+{
+  "authority_refs": [],
+  "created_at": "2026-10-25T00:00:00Z",
+  "evidence_refs": [],
+  "extensions": {},
+  "id": "codex.review.v1:97f156380331d1065c2e2af97c82c8829999762ea411fa2d92e2b400ece5d01c",
+  "integrity": "f81398c88309d8fc0253c2483302118b1ddec46d5f7cc095a003a283fda7d633",
+  "lifecycle": "Draft",
+  "payload": {
+    "data": {
+      "actor": "same-platform:dissent",
+      "binding": "2b00ec0ce3fc3b9981c4727a776194a681353bbbc938438946f63ccc992babd2",
+      "findings": [
+        {
+          "clearance_conditions": [
+            "reproduce"
+          ],
+          "confidence": 0.4,
+          "coverage": [
+            "security"
+          ],
+          "id": "f1",
+          "kind": "inference",
+          "normalized": "Retained risk",
+          "source_quote": "original wording"
+        }
+      ],
+      "identity": "unverified",
+      "lane": "dissent",
+      "plan_digest": "4c068e58f3ed29c6bb3073332b684d3e243fc2afe9d4828ceb09b29bcbbd7688",
+      "run": "fixture-run:dissent",
+      "source": "dissent: original wording; reproduced fixture observation"
+    },
+    "kind": "lane-output"
+  },
+  "producer": {
+    "assurance": "unverified",
+    "identity": "codex-institutional"
+  },
+  "schema": "codex.review.v1",
+  "supersedes": null,
+  "validation_state": "candidate"
+}

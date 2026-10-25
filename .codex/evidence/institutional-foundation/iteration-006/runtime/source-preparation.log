@@ -1,0 +1,24 @@
+++ git -C /home/runner/work/_codex_/_codex_ rev-parse --verify fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c
++ test fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c = fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c
++ mkdir -p /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/immutable-source/src/codex/institutional
++ for name in assurance.py core.py storage.py
++ git -C /home/runner/work/_codex_/_codex_ show fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c:src/codex/institutional/assurance.py
++ for name in assurance.py core.py storage.py
++ git -C /home/runner/work/_codex_/_codex_ show fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c:src/codex/institutional/core.py
++ for name in assurance.py core.py storage.py
++ git -C /home/runner/work/_codex_/_codex_ show fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c:src/codex/institutional/storage.py
++ env -u PYTHONPATH /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/bin/python -I -B -
+{"source_commit": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c", "files": [{"path": "src/codex/institutional/assurance.py", "sha256": "ba67ea4d6201dd3c3243ec86715c54f21f1b620ac8dc8bc48732b818e020402c", "bytes": 33522, "mode": 420}, {"path": "src/codex/institutional/core.py", "sha256": "636c45dc7eed70d0bed4bc80602f6831fd76ef5a688119f082ae7f8fe4743cef", "bytes": 22677, "mode": 420}, {"path": "src/codex/institutional/storage.py", "sha256": "35e7122d388e44eb1badf025a2e69f2dffee0cf473822ca001e4f9f52b2a947f", "bytes": 11707, "mode": 420}], "preparation": "git show exact immutable commit before entering guarded SDK runtime", "repository_review": "PENDING_ACTUAL_ANALYTICAL_OUTPUTS", "G5": "NOT_RUN", "authority": "none"}
+++ git -C /home/runner/work/_codex_/_codex_ rev-parse --verify fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c
++ test fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c = fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c
++ mkdir -p /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/immutable-source/src/codex/institutional
++ for name in assurance.py contracts.json core.py storage.py
++ git -C /home/runner/work/_codex_/_codex_ show fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c:src/codex/institutional/assurance.py
++ for name in assurance.py contracts.json core.py storage.py
++ git -C /home/runner/work/_codex_/_codex_ show fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c:src/codex/institutional/contracts.json
++ for name in assurance.py contracts.json core.py storage.py
++ git -C /home/runner/work/_codex_/_codex_ show fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c:src/codex/institutional/core.py
++ for name in assurance.py contracts.json core.py storage.py
++ git -C /home/runner/work/_codex_/_codex_ show fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c:src/codex/institutional/storage.py
++ env -u PYTHONPATH /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/bin/python -I -B -
+{"source_commit": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c", "files": [{"path": "src/codex/institutional/assurance.py", "sha256": "ba67ea4d6201dd3c3243ec86715c54f21f1b620ac8dc8bc48732b818e020402c", "bytes": 33522, "mode": 420}, {"path": "src/codex/institutional/contracts.json", "sha256": "21026df523f2445bd0ade774603f7facd823aadabed96f59b983ad8f56b52e30", "bytes": 6154, "mode": 420}, {"path": "src/codex/institutional/core.py", "sha256": "636c45dc7eed70d0bed4bc80602f6831fd76ef5a688119f082ae7f8fe4743cef", "bytes": 22677, "mode": 420}, {"path": "src/codex/institutional/storage.py", "sha256": "35e7122d388e44eb1badf025a2e69f2dffee0cf473822ca001e4f9f52b2a947f", "bytes": 11707, "mode": 420}], "preparation": "git show exact immutable commit before entering guarded SDK runtime", "repository_review": "PENDING_ACTUAL_ANALYTICAL_OUTPUTS", "G5": "NOT_RUN", "authority": "none"}

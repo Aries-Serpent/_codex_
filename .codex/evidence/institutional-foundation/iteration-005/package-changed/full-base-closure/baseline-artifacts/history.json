@@ -1,0 +1,252 @@
+{
+  "authority_refs": [],
+  "created_at": "2026-10-25T00:00:00Z",
+  "evidence_refs": [],
+  "extensions": {},
+  "id": "codex.review.v1:bc0c4a6bf05fa715ce51bc211f119243298b0dc47331d1ee8e4e4c888d0feab8",
+  "integrity": "89caca894eccdbffeeec22357585cd98846257dc481a9b22d9392cbbde89b231",
+  "lifecycle": "Draft",
+  "payload": {
+    "data": {
+      "events": [
+        {
+          "action": "block",
+          "binding": "7c9ddd9f38d500dacef8303f51d6b4066508a185e279a69b5bce5cdf5bdc9e3e",
+          "content_id": "4f75896b8e68852a31ef92d73e4252e699a366066e159b24a90a46fcf099df60",
+          "data": {
+            "blocked_from_state": "initial",
+            "cause": "missing-required-lane",
+            "clearance_conditions": [
+              "supply-bound-output"
+            ],
+            "pending_requirement": "lane:risk",
+            "scope": "risk"
+          },
+          "event_id": "1f034258-5860-43ea-abde-cf809c62e54a",
+          "plan_digest": "337ca2467b7d259b62f5f6156ec071a402f78f6ff3c44aecc2f7d42867318f9f",
+          "sequence": 1
+        },
+        {
+          "action": "resume",
+          "binding": "7c9ddd9f38d500dacef8303f51d6b4066508a185e279a69b5bce5cdf5bdc9e3e",
+          "content_id": "71458e78711268428f117dc5dbaad4b3ceb2de892178b6ab36be16c4caea14c5",
+          "data": {
+            "blocker_digest": "5fb797504d4be4f1c348f7a55dff021479b3bb984952eb9621975554ab5ea9a9",
+            "clearances": [
+              "supply-bound-output"
+            ],
+            "current_manifest": {
+              "authority_refs": [],
+              "created_at": "2026-10-25T00:00:00Z",
+              "evidence_refs": [],
+              "extensions": {},
+              "id": "codex.review.v1:48fc79cca061aad75d7fca19c5d5418e1a07eb783649cb078b45cf8ba5ee6b53",
+              "integrity": "4f3903fd30c1acb19ec4f0f73d1eb27cb1ffe3c6c488f4fabde46de7d9d3834e",
+              "lifecycle": "Draft",
+              "payload": {
+                "data": {
+                  "classification": "Repository-Internal",
+                  "context_digest": "950c065fb0eb0a7fad632dfa0e063fdb5d0f0ef0ca9d12b450205e617d5542f7",
+                  "entries": [
+                    {
+                      "mode": 420,
+                      "path": "src/example.py",
+                      "sha256": "8c4c92212a384a14b0cda01dbbb5cc76580513550339da6d13affbf939c60f54",
+                      "size": 25
+                    }
+                  ],
+                  "rules": {
+                    "archives": "opaque-no-expansion",
+                    "hardlinks": "independent-bytes",
+                    "line_endings": "raw",
+                    "permissions": "explicit-posix-mode",
+                    "submodules": "reject",
+                    "symlinks": "reject"
+                  }
+                },
+                "kind": "manifest"
+              },
+              "producer": {
+                "assurance": "unverified",
+                "identity": "codex-institutional"
+              },
+              "schema": "codex.review.v1",
+              "supersedes": null,
+              "validation_state": "candidate"
+            }
+          },
+          "event_id": "67c9dabb-c959-41f5-9cc0-7fb22d1e2d15",
+          "plan_digest": "337ca2467b7d259b62f5f6156ec071a402f78f6ff3c44aecc2f7d42867318f9f",
+          "sequence": 2
+        },
+        {
+          "action": "advance",
+          "binding": "7c9ddd9f38d500dacef8303f51d6b4066508a185e279a69b5bce5cdf5bdc9e3e",
+          "content_id": "c55992d2f3867a0eee443785640d92870b8b7a3af688f562b3e8bb521472419b",
+          "data": {
+            "to": "meta"
+          },
+          "event_id": "3243ed71-6b25-4820-a963-52c406a1f009",
+          "plan_digest": "337ca2467b7d259b62f5f6156ec071a402f78f6ff3c44aecc2f7d42867318f9f",
+          "sequence": 3
+        },
+        {
+          "action": "advance",
+          "binding": "7c9ddd9f38d500dacef8303f51d6b4066508a185e279a69b5bce5cdf5bdc9e3e",
+          "content_id": "7f51761e0e69201f54640298af5ce3c834fbf949ae3fdeee5232c347c71fafd0",
+          "data": {
+            "to": "final"
+          },
+          "event_id": "8fd669ee-423c-4156-ab60-620bec1ece21",
+          "plan_digest": "337ca2467b7d259b62f5f6156ec071a402f78f6ff3c44aecc2f7d42867318f9f",
+          "sequence": 4
+        }
+      ],
+      "plan": {
+        "authority_refs": [],
+        "created_at": "2026-10-25T00:00:00Z",
+        "evidence_refs": [],
+        "extensions": {},
+        "id": "codex.review.v1:9db9d5dfdd1719c1ff42845a9baba10357f1d2a0f737292c7d4f97f2f8f2202c",
+        "integrity": "142aa23ca6150b2d9325d3cd2f7a1d9c747c9236a29fe666bba1194eb1907842",
+        "lifecycle": "Draft",
+        "payload": {
+          "data": {
+            "binding": "7c9ddd9f38d500dacef8303f51d6b4066508a185e279a69b5bce5cdf5bdc9e3e",
+            "coordinator_role": "implementer",
+            "critical": [
+              "security"
+            ],
+            "independence": "unverified",
+            "lanes": [
+              {
+                "actor": "same-platform:logic",
+                "bearing": "correctness",
+                "coverage": [
+                  "correctness",
+                  "security"
+                ],
+                "dissent": false,
+                "id": "logic",
+                "required": true,
+                "run": "wheel-fixture:logic",
+                "tools": [
+                  "read",
+                  "search"
+                ]
+              },
+              {
+                "actor": "same-platform:risk",
+                "bearing": "security",
+                "coverage": [
+                  "correctness",
+                  "security"
+                ],
+                "dissent": false,
+                "id": "risk",
+                "required": true,
+                "run": "wheel-fixture:risk",
+                "tools": [
+                  "read",
+                  "search"
+                ]
+              },
+              {
+                "actor": "same-platform:dissent",
+                "bearing": "cross-cutting",
+                "coverage": [
+                  "correctness",
+                  "security"
+                ],
+                "dissent": true,
+                "id": "dissent",
+                "required": true,
+                "run": "wheel-fixture:dissent",
+                "tools": [
+                  "read",
+                  "search"
+                ]
+              },
+              {
+                "actor": "same-platform:rotated",
+                "bearing": "followup",
+                "coverage": [
+                  "correctness",
+                  "security"
+                ],
+                "dissent": false,
+                "id": "rotated",
+                "required": false,
+                "run": "wheel-fixture:rotated",
+                "tools": [
+                  "read",
+                  "search"
+                ]
+              }
+            ],
+            "mandatory": [
+              "correctness",
+              "security"
+            ],
+            "manifest": {
+              "authority_refs": [],
+              "created_at": "2026-10-25T00:00:00Z",
+              "evidence_refs": [],
+              "extensions": {},
+              "id": "codex.review.v1:48fc79cca061aad75d7fca19c5d5418e1a07eb783649cb078b45cf8ba5ee6b53",
+              "integrity": "4f3903fd30c1acb19ec4f0f73d1eb27cb1ffe3c6c488f4fabde46de7d9d3834e",
+              "lifecycle": "Draft",
+              "payload": {
+                "data": {
+                  "classification": "Repository-Internal",
+                  "context_digest": "950c065fb0eb0a7fad632dfa0e063fdb5d0f0ef0ca9d12b450205e617d5542f7",
+                  "entries": [
+                    {
+                      "mode": 420,
+                      "path": "src/example.py",
+                      "sha256": "8c4c92212a384a14b0cda01dbbb5cc76580513550339da6d13affbf939c60f54",
+                      "size": 25
+                    }
+                  ],
+                  "rules": {
+                    "archives": "opaque-no-expansion",
+                    "hardlinks": "independent-bytes",
+                    "line_endings": "raw",
+                    "permissions": "explicit-posix-mode",
+                    "submodules": "reject",
+                    "symlinks": "reject"
+                  }
+                },
+                "kind": "manifest"
+              },
+              "producer": {
+                "assurance": "unverified",
+                "identity": "codex-institutional"
+              },
+              "schema": "codex.review.v1",
+              "supersedes": null,
+              "validation_state": "candidate"
+            },
+            "mode": "supplement"
+          },
+          "kind": "plan"
+        },
+        "producer": {
+          "assurance": "unverified",
+          "identity": "codex-institutional"
+        },
+        "schema": "codex.review.v1",
+        "supersedes": null,
+        "validation_state": "candidate"
+      }
+    },
+    "kind": "history"
+  },
+  "producer": {
+    "assurance": "unverified",
+    "identity": "codex-institutional"
+  },
+  "schema": "codex.review.v1",
+  "supersedes": null,
+  "validation_state": "candidate"
+}

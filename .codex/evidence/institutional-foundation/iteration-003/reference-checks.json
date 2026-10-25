@@ -1,0 +1,71 @@
+{
+  "scope": "All Markdown links in revised preload/CTEP docs and CTEP section of scoped entry; other entry sections not re-audited",
+  "results": [
+    {
+      "source": ".codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md",
+      "target": "../CODEBASE_AGENCY_POLICY.md",
+      "resolved": ".codex/CODEBASE_AGENCY_POLICY.md",
+      "status": "PASS"
+    },
+    {
+      "source": ".github/AGENTS.md",
+      "target": "docs/Copilot_Task_Execution_Protocol.md",
+      "resolved": ".github/docs/Copilot_Task_Execution_Protocol.md",
+      "status": "PASS"
+    },
+    {
+      "source": ".github/AGENTS.md",
+      "target": "../.codex/CODEBASE_AGENCY_POLICY.md",
+      "resolved": ".codex/CODEBASE_AGENCY_POLICY.md",
+      "status": "PASS"
+    },
+    {
+      "source": ".github/docs/Copilot_Task_Execution_Protocol.md",
+      "target": "../../.codex/CODEBASE_AGENCY_POLICY.md",
+      "resolved": ".codex/CODEBASE_AGENCY_POLICY.md",
+      "status": "PASS"
+    },
+    {
+      "source": ".github/docs/Copilot_Task_Execution_Protocol.md",
+      "target": "./CTEP_Usage_Examples.md",
+      "resolved": ".github/docs/CTEP_Usage_Examples.md",
+      "status": "PASS"
+    },
+    {
+      "source": ".github/docs/Copilot_Task_Execution_Protocol.md",
+      "target": "./CTEP_Quick_Reference.md",
+      "resolved": ".github/docs/CTEP_Quick_Reference.md",
+      "status": "PASS"
+    },
+    {
+      "source": ".github/docs/Copilot_Task_Execution_Protocol.md",
+      "target": "../copilot-instructions.md",
+      "resolved": ".github/copilot-instructions.md",
+      "status": "PASS"
+    },
+    {
+      "source": ".github/docs/CTEP_Quick_Reference.md",
+      "target": "./Copilot_Task_Execution_Protocol.md",
+      "resolved": ".github/docs/Copilot_Task_Execution_Protocol.md",
+      "status": "PASS"
+    },
+    {
+      "source": ".github/docs/CTEP_Quick_Reference.md",
+      "target": "../../.codex/CODEBASE_AGENCY_POLICY.md",
+      "resolved": ".codex/CODEBASE_AGENCY_POLICY.md",
+      "status": "PASS"
+    },
+    {
+      "source": ".github/docs/CTEP_Usage_Examples.md",
+      "target": "./Copilot_Task_Execution_Protocol.md",
+      "resolved": ".github/docs/Copilot_Task_Execution_Protocol.md",
+      "status": "PASS"
+    },
+    {
+      "source": ".github/docs/CTEP_Usage_Examples.md",
+      "target": "../../.codex/CODEBASE_AGENCY_POLICY.md",
+      "resolved": ".codex/CODEBASE_AGENCY_POLICY.md",
+      "status": "PASS"
+    }
+  ]
+}

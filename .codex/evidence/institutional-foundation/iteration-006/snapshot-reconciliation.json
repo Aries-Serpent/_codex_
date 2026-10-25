@@ -1,0 +1,120 @@
+{
+  "schema": "codex.snapshot-reconciliation.observation.v1",
+  "bearing": 180,
+  "role": "Verification",
+  "G5": "NOT_RUN",
+  "authority": "none",
+  "scope": "Read-only attribution followed by authorization to write only this JSON and verification-bearing.json; no packet modification, runtime edit, test execution, staging, commit or push by this lane.",
+  "repository": "/home/runner/work/_codex_/_codex_",
+  "requested_snapshot": {
+    "head": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+    "parent": "a6442c9e3865611917424100f05e889a7c470975",
+    "parent_of_parent": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+    "implementation": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+    "original_entry": "8b15df2da9a0cd8cddf5266a53c3da53dca0621d",
+    "ancestry_evidence": "Exact parent headers read with git cat-file -p. a644 remains a shallow boundary; ordinary git log alone hides its parent."
+  },
+  "historical_retrieval": {
+    "executed": true,
+    "command": "git fetch --no-tags --no-write-fetch-head origin 00306262216ef95d7cf1b927fe15e2ef073572ac",
+    "exit_code": 0,
+    "requested_object": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+    "named_ref_created_or_switched": false,
+    "note": "Read retrieval explicitly permitted by the coordinator; objects and ancestors became available. No branch switch or FETCH_HEAD update was requested."
+  },
+  "packet_attribution": {
+    "path": ".codex/session_startup_packet.json",
+    "disclosure": "Only byte hashes, Git blob identifiers and generated_at timestamps are retained; no other packet fields or values.",
+    "original_entry_and_prior_base": {
+      "commits": [
+        "8b15df2da9a0cd8cddf5266a53c3da53dca0621d",
+        "00306262216ef95d7cf1b927fe15e2ef073572ac"
+      ],
+      "blob": "655cf88bf9ea921846f374defe7094d0b45d28c2",
+      "sha256": "97229ef4b723a01c4d458d3ec868197506c88924c3ac2f0513d8d8d5c3768caf",
+      "generated_at": "2026-10-25T00:13:50Z"
+    },
+    "historical_user_capture": {
+      "capturing_commit": "a6442c9e3865611917424100f05e889a7c470975",
+      "unchanged_in": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+      "blob": "4a144c5d2955f8afbf5faa7f2065b753599b6989",
+      "sha256": "305f2128a5f1eaf1e26598481c234aa2cc6c34a30d2c0fab55d82369b55ddcd9",
+      "generated_at": "2026-10-25T01:06:19Z",
+      "observed_delta_from_base": "Exactly one added and one removed line; parsed packet differs only in generated_at.",
+      "attribution": "Matches the coordinator-supplied pre-existing user working-byte SHA256. Thus a644 captured that user timestamp; fa2 did not introduce another packet change.",
+      "confidence": "high",
+      "owner_review_proposal_only": {
+        "purpose": "Historical cleanup to original entry/prior-base timestamp, if explicitly approved.",
+        "historical_before": {
+          "commit": "a6442c9e3865611917424100f05e889a7c470975",
+          "blob": "4a144c5d2955f8afbf5faa7f2065b753599b6989"
+        },
+        "proposed_after": {
+          "reference_commit": "8b15df2da9a0cd8cddf5266a53c3da53dca0621d",
+          "blob": "655cf88bf9ea921846f374defe7094d0b45d28c2"
+        },
+        "execution": "NOT_RUN",
+        "constraints": "Not a revert instruction. Requires owner review, a separately authorized new corrective commit and explicit preservation of user bytes. Do not rewrite history or apply blindly over the newer incident."
+      }
+    },
+    "new_progress_tool_incident": {
+      "commit": "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+      "parent": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+      "blob": "56bf6a20b39d5ec015a3f490ba9acbe3aa66b377",
+      "sha256": "9f2c12134305ceb4306222fe7b9ee1dde56f774755678ac8080e2708b41e7ba5",
+      "generated_at": "2026-10-25T03:05:27Z",
+      "observed_delta": "Only .codex/session_startup_packet.json changed; only generated_at differs from fa2.",
+      "coordinator_report": "The initial report_progress invocation committed and pushed only the pre-existing dirty timestamp despite an explicit startup-exclusion note.",
+      "observation_vs_report": "Commit delta, parent, working bytes and live remote independently observed; invocation intent/tool cause supplied by coordinator, not independently reconstructed.",
+      "state_before_authorized_artifact_writes": "Index empty and worktree clean; user working bytes match the new committed blob. No packet bytes changed by this lane.",
+      "owner_review_proposal_only": {
+        "purpose": "Undo only this incident's committed timestamp in a future non-history-rewriting correction, if approved.",
+        "before": {
+          "commit": "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+          "blob": "56bf6a20b39d5ec015a3f490ba9acbe3aa66b377"
+        },
+        "proposed_after": {
+          "reference_commit": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+          "blob": "4a144c5d2955f8afbf5faa7f2065b753599b6989"
+        },
+        "execution": "NOT_RUN",
+        "constraints": "Owner review required. Preserve current user bytes; no actual packet revert, edit, staging, commit, push or history rewrite is authorized here. This target retains the distinct historical a644 capture."
+      }
+    }
+  },
+  "source_evidence_handoff": {
+    "tested_final_source": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+    "evidence_checkpoint": "a6442c9e3865611917424100f05e889a7c470975",
+    "final_scan_receipt_commit": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+    "final_scan_receipt": ".codex/evidence/institutional-foundation/iteration-005/final-secret-scan.json",
+    "checkpoint_delta_from_tested_source": "265 paths excluding prohibited agent profiles: 264 retained evidence paths and the startup packet. No runtime/source implementation delta.",
+    "final_receipt_delta_from_checkpoint": "Only final-secret-scan.json was added.",
+    "binding_receipt": ".codex/evidence/institutional-foundation/iteration-005/final-source-binding.json",
+    "independently_compared": "All six declared source-file SHA256 bindings match tested source, a644 and fa2: assurance.py, contracts.json, test_assurance.py, assurance-review-005.json, assurance-fixture-check.py and assurance-review.rst.",
+    "recorded_not_rerun": {
+      "source_cohort": "assurance-aggregate-verified-junit.xml: 285 tests, zero failures/errors/skips; source implementation 47daeb752582a8f03cd59341d95eb87141a9c7bf.",
+      "exact_final_candidate": "package-final/assurance-tests.junit.xml: 107 tests, zero failures/errors/skips; source 00306262216ef95d7cf1b927fe15e2ef073572ac.",
+      "overlap": "Installed 107 assurance tests overlap the 285 source tests; do not add these as unique coverage.",
+      "final_wheel_receipt": ".codex/evidence/institutional-foundation/iteration-005/package-final/gate-status.json",
+      "codex_ml_wheel_sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00",
+      "codex_contracts_wheel_sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+      "limit": "Retained same-platform observations, not authenticated independence, G5, approval, activation or current live CI."
+    }
+  },
+  "live_remote_observation": {
+    "method": "git ls-remote origin only; not cached tracking refs",
+    "HEAD": "05dd1b53802f4e4d2ceca95336ab555ad81d0248",
+    "refs/heads/main": "05dd1b53802f4e4d2ceca95336ab555ad81d0248",
+    "refs/heads/0D_base_": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+    "refs/heads/copilot/codex-institutional-foundation-001": "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+    "local_head_at_observation": "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+    "limit": "Point-in-time refs; no ancestry or mergeability claim about remote main/staging."
+  },
+  "handoff": {
+    "owner": "Coordinator and repository owner",
+    "next_step": "Retain historical capture and new tool incident separately; seek owner review of any corrective proposal; prevent broad staging of unrelated dirty changes.",
+    "architecture_and_dissent": "Gathered separately by coordinator; not synthesized by this lane.",
+    "prohibited_profile_reads": "No .github/agents file contents read.",
+    "tests_executed_by_this_lane": false
+  }
+}

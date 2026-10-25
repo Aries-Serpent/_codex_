@@ -1,0 +1,12 @@
+{
+  "checks": [
+    {
+      "condition": "finding-bound-observation",
+      "observation": "Fixture reproduced.",
+      "source_quote": "Fixture reproduced."
+    }
+  ],
+  "finding_id": "f1",
+  "followup_output": "052d9410e71b5ef8a6819fe1d2318619594a1c7b2fd9bb6f1b4bac88a387a464",
+  "original_output": "a56ff29fdff8fbea6313b2751c97ef70967c5bd9e2a832491683b3bb1457af0a"
+}

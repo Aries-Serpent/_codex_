@@ -1,0 +1,3000 @@
+{
+  "RD6-04": "PARTIAL_FAIL_MISSING_DURABLE_RETENTION",
+  "committed_history_checks": [
+    {
+      "command": [
+        "git",
+        "ls-tree",
+        "-r",
+        "--name-only",
+        "a6442c9e3865611917424100f05e889a7c470975",
+        "--",
+        ".codex/evidence/institutional-foundation/iteration-005"
+      ],
+      "commit": "a6442c9e3865611917424100f05e889a7c470975",
+      "expected_missing_paths_in_tree": [],
+      "tracked_iteration005_files": 265
+    },
+    {
+      "command": [
+        "git",
+        "ls-tree",
+        "-r",
+        "--name-only",
+        "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+        "--",
+        ".codex/evidence/institutional-foundation/iteration-005"
+      ],
+      "commit": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+      "expected_missing_paths_in_tree": [],
+      "tracked_iteration005_files": 266
+    },
+    {
+      "command": [
+        "git",
+        "ls-tree",
+        "-r",
+        "--name-only",
+        "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+        "--",
+        ".codex/evidence/institutional-foundation/iteration-005"
+      ],
+      "commit": "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+      "expected_missing_paths_in_tree": [],
+      "tracked_iteration005_files": 266
+    }
+  ],
+  "created_at": "2026-10-25T03:13:25Z",
+  "expected_missing": [
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-bandit.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 56,
+      "expected_sha256": "45a468fa6205768496f23f1716ebb7575e9b723449d2099b88bf2afef60b721f",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-black.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-compile.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-diff-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1632,
+      "expected_sha256": "a66fef2037889d238def9001d037cf83f60a7c7e7b672cf91e4bb16accbcdd67",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-fixture-example.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-isort.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 109,
+      "expected_sha256": "2331abbc9edaf15969f178bcd7ab936126e07c2f408d8e5fcc41a4724e6d7997",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-mypy.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-security-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 3830,
+      "expected_sha256": "51969dfe038c6b1954c4eeed6a56577d239267dde5cd10b5a2828d51e2a39738",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-tests.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-bandit.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 56,
+      "expected_sha256": "45a468fa6205768496f23f1716ebb7575e9b723449d2099b88bf2afef60b721f",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-black.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-compile.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-diff-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1632,
+      "expected_sha256": "c0ee2d4d06c8ca2872bc523c8b7c5f7c435215a4167a37be5ecc613eb2318c44",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-fixture-example.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-isort.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 109,
+      "expected_sha256": "2331abbc9edaf15969f178bcd7ab936126e07c2f408d8e5fcc41a4724e6d7997",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-mypy.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-security-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1938,
+      "expected_sha256": "08a55c280ca919a7c76bb27c5a883183220579fe3696c1255e7c3a4b2d92275f",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-tests.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-bandit.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 182,
+      "expected_sha256": "1a951a4d629a2884fa8a79e39d8cf737f1597e7f030fe6444d8f8ad5fb5465c0",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-black-final.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 56,
+      "expected_sha256": "45a468fa6205768496f23f1716ebb7575e9b723449d2099b88bf2afef60b721f",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-black-pass.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 56,
+      "expected_sha256": "b9cf511501d306d2bd8355ccb165c8ddc0a6fdd62d7c72c4a7b1795cf8934c8c",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-black.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-compile-final.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-compile.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-bandit.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 56,
+      "expected_sha256": "45a468fa6205768496f23f1716ebb7575e9b723449d2099b88bf2afef60b721f",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-black.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-compile.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-diff-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1349,
+      "expected_sha256": "d22498a8fec4689cf8f6078363a0fce520c9c168c3f2ba8f42af2c6c88f37e41",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-fixture-example.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-isort.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 109,
+      "expected_sha256": "2331abbc9edaf15969f178bcd7ab936126e07c2f408d8e5fcc41a4724e6d7997",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-mypy.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-security-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1530,
+      "expected_sha256": "181fee2ff0e8909827d760fe6931588394ccfa10536baa538f3ef7552674148d",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-tests.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-diff-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-disposition-bandit.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 56,
+      "expected_sha256": "45a468fa6205768496f23f1716ebb7575e9b723449d2099b88bf2afef60b721f",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-disposition-black.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-disposition-compile.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-disposition-diff-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1463,
+      "expected_sha256": "43a441354d12a2c29ace531bbff31345bca8342d7cc468d3711473f864413968",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-disposition-fixture-example.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-disposition-isort.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 109,
+      "expected_sha256": "2331abbc9edaf15969f178bcd7ab936126e07c2f408d8e5fcc41a4724e6d7997",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-disposition-mypy.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-disposition-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-disposition-security-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1851,
+      "expected_sha256": "c7e0dcb7625cc01ed8694739a1c052dd5d1ba1dcf52c7429e2011c548ead1c20",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-disposition-tests.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 56,
+      "expected_sha256": "45a468fa6205768496f23f1716ebb7575e9b723449d2099b88bf2afef60b721f",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-black.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-compile.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-diff-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1463,
+      "expected_sha256": "0c22137845aa9967d97875a98fcac16cc2d95e004c642b40dfb7dad12cbbf3ac",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-fixture-example.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-isort.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 109,
+      "expected_sha256": "2331abbc9edaf15969f178bcd7ab936126e07c2f408d8e5fcc41a4724e6d7997",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-mypy.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1852,
+      "expected_sha256": "b3af8b4bfc789a7d616052f95ae7b791d383a8b4d049a392a596ad83aea7fcc1",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-tests.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1525,
+      "expected_sha256": "9495a184353aa55d418997b7f654e0a0a3bc0bc991b68bd8a7c61a05d54d6480",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-final-tests.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 379,
+      "expected_sha256": "03994d363299d73a6bf7cbe230799bf03642fa7f7ad4820f804afa994d85451d",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-first-mypy-failure.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 963,
+      "expected_sha256": "87ab8266446855ff99d0522039905733be3c1651ee4f40ea2deff0eac2ad1ad8",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-first-tests.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1093,
+      "expected_sha256": "57ed07fb42fcf4e8c2db13d67ef7f3a8180e15598af72909bdbff6c4ee9aa004",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-isort-final.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-isort.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 109,
+      "expected_sha256": "2331abbc9edaf15969f178bcd7ab936126e07c2f408d8e5fcc41a4724e6d7997",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-mypy-final.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 109,
+      "expected_sha256": "1e3d3d375d1e7008372441b908b00e7c37d0d46669f47b611482bfe021479cc5",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-mypy.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 3277,
+      "expected_sha256": "43d2b3d775995c233bffa3a499f88c27f70413e230cf4f672135de115d63119b",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-prefix-aggregate.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 10347,
+      "expected_sha256": "28de8eaa3dcf63ff3b04b4a237f70303e10853fe92a8f887e5dacceb3ac2105b",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-prefix-defects.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 56,
+      "expected_sha256": "45a468fa6205768496f23f1716ebb7575e9b723449d2099b88bf2afef60b721f",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-recovery-black.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-recovery-compile.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-recovery-diff-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1349,
+      "expected_sha256": "a9636df22a1cedf21001dec0f77af24b84a40d0b479bfac4c094cd0a448156ee",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-recovery-fixture-example.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-recovery-isort.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 109,
+      "expected_sha256": "2331abbc9edaf15969f178bcd7ab936126e07c2f408d8e5fcc41a4724e6d7997",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-recovery-mypy.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-recovery-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1528,
+      "expected_sha256": "94caddb22a29d49b64bc99a8efd9b71d2f609d5bbcc7b71a787e09f5eb4de407",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-recovery-tests.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1530,
+      "expected_sha256": "e7e7b5af42818652ec7740939dd0bd91b618552eaa9aef593538f2af9ba382bc",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-regressions.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-ruff-final.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-security-ruff-followup.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-security-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 56,
+      "expected_sha256": "45a468fa6205768496f23f1716ebb7575e9b723449d2099b88bf2afef60b721f",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-verified-black.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-verified-compile.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-verified-diff-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1093,
+      "expected_sha256": "57ed07fb42fcf4e8c2db13d67ef7f3a8180e15598af72909bdbff6c4ee9aa004",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-verified-fixture-example.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-verified-isort.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 109,
+      "expected_sha256": "2331abbc9edaf15969f178bcd7ab936126e07c2f408d8e5fcc41a4724e6d7997",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-verified-mypy.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-verified-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-verified-security-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1528,
+      "expected_sha256": "aa0ff813e5d362592f71dee5403af1a27200d5a91b9d18cb316f33946b66704c",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-verified-tests.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 10369,
+      "expected_sha256": "b4642fa43afdea6cd8cf5b2a10fd34be24bc0c5f21361f53ed1a06448db4c72a",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/assurance-tests.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 185,
+      "expected_sha256": "6c812720a53c0e5c439f981f547c221b5fda13bb3cd374c8e4c7bd6c010feec9",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-runtime.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/build-venv.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 747,
+      "expected_sha256": "72c294d200b752b627b59689f7086a0a3f13c007bedeb20a269aee55db3f8df9",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/contracts-build.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 10369,
+      "expected_sha256": "3f34d78f3555dbc1825fe17fe234f4315d2a37005a392be643bf007141855920",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/assurance-tests.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 185,
+      "expected_sha256": "6c812720a53c0e5c439f981f547c221b5fda13bb3cd374c8e4c7bd6c010feec9",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/baseline-harness.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 721,
+      "expected_sha256": "c669db1ed9202443167b233c8fbf43031faf3f63c8f562073400cc3f46c00536",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/build-tool-provision.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 14058,
+      "expected_sha256": "04d0c2ce241e7386e751508caf98c66d6a5abb995f914f16a6001acc7a1d8666",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-install.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 30,
+      "expected_sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-pip-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 13053,
+      "expected_sha256": "ea4d96956e569ea4573fcf8923b93e580da850e5b067846e3e3805b6ecc94393",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-resolution.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 55,
+      "expected_sha256": "1a56c7cd8457fd05d978cfbd139d7bfd86e86acaa9b57668e718ef8bccc0cf48",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/harness-black-final.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 220,
+      "expected_sha256": "cdc9f5d9bc46f18c61449a85f3e60b6806e5f308d9b73f3cc92ae30a662fe92d",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/harness-black.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/harness-ruff-final.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 539,
+      "expected_sha256": "4c52149bee187593058a98901e74f0306210a8f26759f64aae4aafd638d27d2d",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/harness-ruff.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 185,
+      "expected_sha256": "8d2776128ac7134ab983725412349d27c218c30cf3762c062a40781037a5dfff",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/baseline-harness.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 569,
+      "expected_sha256": "02d97b844428d5e19811a00ce1de7fbafe7ad332e21461ba1090aad453a24692",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/build-tools.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 12530,
+      "expected_sha256": "8ea9bbbaddce657ad735aeaa17e58185bb6d01632f3b62491238d1c81281cfd1",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/full-base-install.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 30,
+      "expected_sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/pip-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/venv.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 30,
+      "expected_sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/pip-check-after-test-tools.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 40,
+      "expected_sha256": "ad7a2f458d8b33eff638d3118e5f2d201889bf8b22ee2cf2391dbf89bc0db1f1",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/sdk-harness-002.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 608,
+      "expected_sha256": "54c97093fe63214ee97b56fa4fc7483ee3eeffad43c4bce8dec7c0f44b0a68cf",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/sdk-harness.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 908,
+      "expected_sha256": "a1dac0959c6445e9f359403008a40c847937e5c2866c4ad33c4fd9d890cdcea9",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/test-tools-install.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/venv.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1553,
+      "expected_sha256": "741721a2025b5e515e7e2dd753ab8e40556157f3728cac818dc11f8652d2f501",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-dependency-pip-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 203,
+      "expected_sha256": "7fef3a0db29a4738004fb93d42e3a50fe88912b527cea9eb1b716c0c6f6e9a51",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/harness-black-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 55,
+      "expected_sha256": "1a56c7cd8457fd05d978cfbd139d7bfd86e86acaa9b57668e718ef8bccc0cf48",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/harness-black-final.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 192,
+      "expected_sha256": "d773d143d35037142964dff76b6d80d1168c91383d39bc0a41e77836ac2a90ae",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/harness-black-format.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 2042,
+      "expected_sha256": "321b186da518875dede69a6493b678ab0a84793a80ad35dc44f1af9411ccec71",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/harness-ruff-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 19,
+      "expected_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/harness-ruff-final.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 40,
+      "expected_sha256": "e29b204a36e472f2c5b614ff4ea3e6a0aa9bbb8264a455967fe2884360feb909",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-runtime-001.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 40,
+      "expected_sha256": "e29b204a36e472f2c5b614ff4ea3e6a0aa9bbb8264a455967fe2884360feb909",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-runtime-002.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1753,
+      "expected_sha256": "e2f175d53c1265264b11f608d67752ae874dc9bec6afb3ea07488534c1d91f0e",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/provision-build.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1444,
+      "expected_sha256": "b62dc5aa15dab1a0fd148ce642ddbd09504f5cf074c206c4e8aa5c40148a2fb3",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/provision-runtime.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 2436,
+      "expected_sha256": "91b99924e7392735dd784213ce7a9f5479bff2e164681e2e2e6449bf7c559de1",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/provision-test.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/runtime-venv.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 444,
+      "expected_sha256": "fa5b75b67eea7a17f47f2f11a6553ce5baa15c790130fa72390c56ffba114d43",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/runtime-wheel-install.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/test-venv.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 444,
+      "expected_sha256": "fa5b75b67eea7a17f47f2f11a6553ce5baa15c790130fa72390c56ffba114d43",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/test-wheel-install.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 765,
+      "expected_sha256": "3c9196fdb875f73fc7f445d717d0647717f6f33f39f9728741cd425e41461f62",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/wheel-build.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 10369,
+      "expected_sha256": "a0d67438f5cb7da8a56bde28d27ca05893dff7218e44a80d701d64b2bf15ee1e",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/assurance-tests.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 185,
+      "expected_sha256": "16fa419518ac431b443c3bb8abc9c095a543ac81ad201aa0c2d2eaf55e994592",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/baseline-runtime.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1631,
+      "expected_sha256": "8bedc60cc4da7bd0b3ab725d09a4e0014137ac6a8ac17042b364ecd12084912d",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/build-provision.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/build-venv.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 745,
+      "expected_sha256": "a2efe43efe0586b7fbb36458180cdffe52df6696187093bd5521f0134c363006",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/contracts-build.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 13213,
+      "expected_sha256": "164e6535fa42f300a8062be4f828a8a482e61b26a594a13afa052e00960d1e14",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/full-base-install.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 30,
+      "expected_sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/full-base-pip-check.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 12824,
+      "expected_sha256": "e38058313a7d90c45c1c494966781bc8f3a78ca311567b6952e3c9d38b2499fe",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/full-base-resolution.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/full-base-venv.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 40,
+      "expected_sha256": "ad7a2f458d8b33eff638d3118e5f2d201889bf8b22ee2cf2391dbf89bc0db1f1",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-runtime.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 30,
+      "expected_sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/pip-check-after-test-tools.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 569,
+      "expected_sha256": "02d97b844428d5e19811a00ce1de7fbafe7ad332e21461ba1090aad453a24692",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/runtime-build-tools.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 918,
+      "expected_sha256": "2d149818a29a24cbc3396884424e2aaad17a58309b12ade03619b5b69467f8c6",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/test-tools-install.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 728,
+      "expected_sha256": "867ab563f3a9cdc0911b841bec81117137585d42aa5837169b641e6f05c16fd1",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/wheel-build.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/build-venv.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 748,
+      "expected_sha256": "a3591b36bead4f0367b479c9d6f4b728001fbc20de1e821a921ce57ff779bd3e",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/contracts-build-complete-export.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 2889,
+      "expected_sha256": "2bc110109b11f8748988379792b667ab6d03bfcfb2457a0195d96668646680a4",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/contracts-build.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 185,
+      "expected_sha256": "8d2776128ac7134ab983725412349d27c218c30cf3762c062a40781037a5dfff",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/external-runtime.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1753,
+      "expected_sha256": "e4d2d15fe35b2401e69268d8df05fb8296b7f9186f96be364f433373c1ad0ba7",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/provision-build.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 1444,
+      "expected_sha256": "b62dc5aa15dab1a0fd148ce642ddbd09504f5cf074c206c4e8aa5c40148a2fb3",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/provision-runtime.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 0,
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/runtime-venv.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 39,
+      "expected_sha256": "455320d8eae12bc293899ee73dd31257d8340aac7f0a8eeb4da4e143e2009f3e",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/supplemental-runtime.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 767,
+      "expected_sha256": "b6b7c77f9252d70504e19f221e234bde8b7d18248149d5a8029d6e86bc10ca50",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/wheel-build.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    },
+    {
+      "expected_bytes": 446,
+      "expected_sha256": "a2c24e6d394f7fcb73906133b0aaa190b1d87833663389cdd594a9f7c876b5e2",
+      "inspected_commits_containing_path": [],
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/wheel-install.log",
+      "reason": "Absent working tree; absent all three inspected available commit trees. Current *.log ignore rule is consistent with omission, but publisher cause is not proven.",
+      "status": "EXPECTED_MISSING_NOT_RECOVERED"
+    }
+  ],
+  "expected_missing_count": 151,
+  "history_limit": {
+    "bounded_scope": "Only three currently available named commits and iteration-005 tree entries inspected; no fetch, reflog/object fishing or external recovery attempted.",
+    "cannot_conclude": "Never existed locally, or absent inaccessible earlier history/session artifacts.",
+    "shallow": true
+  },
+  "ignore_evidence": {
+    "command": [
+      "git",
+      "check-ignore",
+      "-v",
+      ".codex/evidence/institutional-foundation/iteration-005/package-original/wheel-build.log",
+      ".codex/evidence/institutional-foundation/iteration-005/package-final/assurance-tests.log"
+    ],
+    "conclusion": "*.log excluded by current .gitignore:80. This supports an ignore/persistence gap; exact publisher behavior is unproven.",
+    "stdout": [
+      ".gitignore:80:*.log\t.codex/evidence/institutional-foundation/iteration-005/package-original/wheel-build.log",
+      ".gitignore:80:*.log\t.codex/evidence/institutional-foundation/iteration-005/package-final/assurance-tests.log"
+    ]
+  },
+  "nested_manifests": [
+    {
+      "immutable_manifest_modified": false,
+      "manifest": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/retained-manifest.json",
+      "manifest_sha256": "cea1cbed68e9f88d88f9dc6d0ea329411581e5611d72ae45db74bf6318b910cf",
+      "mismatches": [],
+      "missing_paths": [
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/build-venv.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/contracts-build-complete-export.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/contracts-build.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/external-runtime.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/provision-build.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/provision-runtime.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/runtime-venv.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/supplemental-runtime.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/wheel-build.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/wheel-install.log"
+      ],
+      "missing_referenced_count": 10,
+      "present_referenced_count": 33,
+      "referenced_count": 43
+    },
+    {
+      "immutable_manifest_modified": false,
+      "manifest": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/retained-manifest.json",
+      "manifest_sha256": "362305e745e9d3d74902da7b4425f463bc8a9a084c5c158040c4860d6f68e280",
+      "mismatches": [],
+      "missing_paths": [
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/assurance-tests.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-runtime.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/build-venv.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/contracts-build.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/assurance-tests.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/baseline-harness.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/build-tool-provision.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-install.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-pip-check.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-resolution.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/harness-black-final.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/harness-black.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/harness-ruff-final.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/harness-ruff.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/baseline-harness.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/build-tools.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/full-base-install.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/pip-check.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/venv.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/pip-check-after-test-tools.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/sdk-harness-002.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/sdk-harness.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/test-tools-install.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/venv.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-dependency-pip-check.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/harness-black-check.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/harness-black-final.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/harness-black-format.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/harness-ruff-check.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/harness-ruff-final.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-runtime-001.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-runtime-002.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/provision-build.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/provision-runtime.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/provision-test.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/runtime-venv.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/runtime-wheel-install.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/test-venv.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/test-wheel-install.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/wheel-build.log"
+      ],
+      "missing_referenced_count": 40,
+      "present_referenced_count": 139,
+      "referenced_count": 179
+    },
+    {
+      "immutable_manifest_modified": false,
+      "manifest": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/retained-manifest.json",
+      "manifest_sha256": "5990694ddde464a6dcfbe6db5b630efeb9185c5097f5d7406f8015d8dd2bcd91",
+      "mismatches": [],
+      "missing_paths": [
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/assurance-tests.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/baseline-runtime.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/build-provision.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/build-venv.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/contracts-build.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/full-base-install.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/full-base-pip-check.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/full-base-resolution.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/full-base-venv.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-runtime.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/pip-check-after-test-tools.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/runtime-build-tools.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/test-tools-install.log",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/wheel-build.log"
+      ],
+      "missing_referenced_count": 14,
+      "present_referenced_count": 51,
+      "referenced_count": 65
+    }
+  ],
+  "observation_limits": "Surviving JUnit, command and result receipts remain separately available observations. Missing logs do not prove tests were absent or failed. No blanket test-status or acceptance inference.",
+  "owner_next_step": "Coordinator/retention owner may recover only original bytes from specifically authorized external session artifacts, verify recorded sizes/SHA-256, then reassess RD6-04. Security owner separately triages suspected findings.",
+  "present": [
+    {
+      "bytes": 753,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-bandit.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "24b6757d4b9b8a16e73f64fdd4ecb2d8bef50a5f4bc0528595516eed2b7552d5"
+    },
+    {
+      "bytes": 666,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-cohort.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "432e611b8f33c25efccd75b5452ff3a49179d89ff8aa9fb1a20f297e66c5d23a"
+    },
+    {
+      "bytes": 41946,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3d99a73f611710dc1de222f44d7f3e4612c0e858566b529155a15646cde0903d"
+    },
+    {
+      "bytes": 753,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-bandit.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "6950c7aa89a47ce86ee0877630fcfdade84b9598c3aca6132d692632de6d6f6a"
+    },
+    {
+      "bytes": 666,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-cohort.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "8b170dfd9122777bfdcfb2882f3ea8c84a78bb260a59efc9cacb0ddb8ce8a9c0"
+    },
+    {
+      "bytes": 40347,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "c5548027f95773ebc473b50748eac754c0cef14e989d1fba0e2f4d9ba1a51785"
+    },
+    {
+      "bytes": 753,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-bandit.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "6d237d2bb6c870741161bdc70ac0f2edc14421e7a7af1dec1ac0f63ec4237724"
+    },
+    {
+      "bytes": 753,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-bandit.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "9c6676374d56be29d688dd14cdfd33fead02d57fda484e2766c3ff2e482f0558"
+    },
+    {
+      "bytes": 35554,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "b5f53955e8fc9f4758d6c1230379769f35f0254c74eef1637f8f8deca9f2cda2"
+    },
+    {
+      "bytes": 753,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-disposition-bandit.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3cf0153d800fe3ca6ca8d175c423ac38ded9fa453d3c001c035b2599c55d3c93"
+    },
+    {
+      "bytes": 666,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-disposition-cohort.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "dcfde1209a6734c3c665ce1d506db54a7cc310d8685a18bd24e146d060299d18"
+    },
+    {
+      "bytes": 39742,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-disposition-junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "55ded3743ab7d2e4068a61dafde81694ffad7b9c44de1cac84e1ab69cbeb73db"
+    },
+    {
+      "bytes": 38602,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "8bf3fe5fb28cabe313b134c4b2f81bdabc674b66af794cd423b6480151eff627"
+    },
+    {
+      "bytes": 655,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "6f580c9ef86c215b4a2a1da6c909908364a7ed4bbbca63991fcba7e2e798be22"
+    },
+    {
+      "bytes": 34585,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-final-junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "bd818fa8847cbccdd54a80d9d23605e4b7099899ee7833b372beddee868a2bb7"
+    },
+    {
+      "bytes": 12727,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-first-junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "abbfc314316b476efaecc92c1bd794b6bcfc10edfddbbcf1f56d6ab0204cb92a"
+    },
+    {
+      "bytes": 1632,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "c0ee2d4d06c8ca2872bc523c8b7c5f7c435215a4167a37be5ecc613eb2318c44"
+    },
+    {
+      "bytes": 7587,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "0cb4cd7022ed9ab8f61246e7f26e46ca0996a09d2a474fd191d3b619c960335d"
+    },
+    {
+      "bytes": 426745,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-fixtures.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "5957a5d207c128025d51c41cc6a9c151f6196a2727e4ff9d6276b2d9832c1226"
+    },
+    {
+      "bytes": 2442,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-prefix-aggregate-junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "58102fe55ac047962236c89aeb7f1f36c8b65ede79562d35d2eededb8daba918"
+    },
+    {
+      "bytes": 9464,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-prefix-defects-junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "4e82700d32ad27c0b619d489f712cc0571a4ef754c9ba037c08ecd6c650e2795"
+    },
+    {
+      "bytes": 34743,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-recovery-junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "6490d90682dc138a7566b2e7ced1b4fa903d34cc842c99037b2bdd780a5a6c64"
+    },
+    {
+      "bytes": 33718,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-regression-junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "85da59e55b68b2887cdc72c8c897c53e272b7dce538688ffbe7f7745fa5b1372"
+    },
+    {
+      "bytes": 2727,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-resume-cache.json",
+      "prior_scan_exact_hash_match": false,
+      "sha256": "2983eaccf1600fb0c1aa5bdab26f490d073e048faafa385ee3176e24f7cb224d"
+    },
+    {
+      "bytes": 39571,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-validation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3aeadd12b9a73d405f8871a4b477d3fc246df1e7ffb97dba03b108d663edbb15"
+    },
+    {
+      "bytes": 34585,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-verified-junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "471d6ff5b0942a192eecaf6ed3db72ac648f336b9270c67b47675d3cd467831f"
+    },
+    {
+      "bytes": 897,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/checkpoint-verification.json",
+      "prior_scan_exact_hash_match": false,
+      "sha256": "a4b3d79cf30cff01d38dbb75957ecdbe6342096f647d20f64adfd4f03e2cddc8"
+    },
+    {
+      "bytes": 2662347,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz",
+      "prior_scan_exact_hash_match": false,
+      "sha256": "7c5041eba8ab8b120bb6a1d9e1c1790a111e5c7a49acd73142f9b5be29ad8c3a"
+    },
+    {
+      "bytes": 4508,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/experience-final.json",
+      "prior_scan_exact_hash_match": false,
+      "sha256": "6caf22772dd52d62e15b13d616a1de908bc1063f49b0351d73756d8219f8fa97"
+    },
+    {
+      "bytes": 4974,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/experience.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "83c8913ef8365c8fb61a3936d9ad7f3586de4ba41a8338e8cb36a5299b033639"
+    },
+    {
+      "bytes": 147143,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/final-secret-scan.json",
+      "prior_scan_exact_hash_match": false,
+      "sha256": "fd0f09b84cf53edb2321798e5ce5322c436f3f549fde08859621e8fb43059f2c"
+    },
+    {
+      "bytes": 2966,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/final-source-binding.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "8435d7d390af6c84dcf438cd4a2a74176ebb68bf3b0e252b16b167c0b33232f9"
+    },
+    {
+      "bytes": 2159,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/formula-design-preservation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "dcf2b40819e750e45704d43a271714d6b9f85cb3be0aae356980cd550b85ccf7"
+    },
+    {
+      "bytes": 3301,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/gate-adjudication.json",
+      "prior_scan_exact_hash_match": false,
+      "sha256": "5a3e26778570833bf2d61851df3c986fe84772717b8ab0bb88160aac042698fb"
+    },
+    {
+      "bytes": 5723,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/integration-decisions.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "4a15e1ef3d0f10b785070eb17dc27d2058ab40c96207657affcdca8c47301da1"
+    },
+    {
+      "bytes": 9381,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96"
+    },
+    {
+      "bytes": 4412691,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "0a684e9e09a787b15004cad1582ad2470b5e2bf8c4584d8bfcb9b568e75895f0"
+    },
+    {
+      "bytes": 719,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/assurance-tests-observation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "7898b605ee8378304e2323f61a50ee783959cfdc91e414276e7f8054a7750ddf"
+    },
+    {
+      "bytes": 14169,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/assurance-tests.junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "174a5094c5c9e25b0ba63d62d5ef03f03c820ed1f45303703052ca21bd631b70"
+    },
+    {
+      "bytes": 5916,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-artifacts/blocked-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "f8464f17d9454e0e50801e6d69cd4c4871b55907e91ee3c0547a8a18246a080a"
+    },
+    {
+      "bytes": 1154,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-artifacts/candidate-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "0b6df52480b471c2884ba471228ac31b609b40c761f14b0b07ba54463f82fa9d"
+    },
+    {
+      "bytes": 182,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-artifacts/event-cache.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "ec4226a82ce0f534e3030b8a6f7efee4fa6af716df76a0345673d71b679ce5cd"
+    },
+    {
+      "bytes": 9120,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-artifacts/history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3e1072868d8d294eab686e4ad7ed720d3fb50a4849c8b48999bab327f46fb847"
+    },
+    {
+      "bytes": 5679,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-artifacts/lane-outputs.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "b889af3f117a0507a6f2f187a4aee152f5e86aa8be9b8e0064769523e4278155"
+    },
+    {
+      "bytes": 26307,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-artifacts/recommendations.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "acf55196e432662cb5dea10053ed2d996c91a698ef995d3271e9539c8af12982"
+    },
+    {
+      "bytes": 4941,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-artifacts/results.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "5403e23153b84ea50928ac10289034a182f467c817ce126d1fc876fbdc014002"
+    },
+    {
+      "bytes": 187,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-artifacts/review-context.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "d6e47f083b6c0699523c19411587fefaee8fa0169dcc3e0d880322e53d9e8b7d"
+    },
+    {
+      "bytes": 3811,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-artifacts/review-plan.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "117b215ba4d21fdcb79121ddb159bdfb2ad9747feffb50cd9e0a8124b36451de"
+    },
+    {
+      "bytes": 184,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-artifacts/rotated-adequacy.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "edf0f76036d20017530da862d515f9bdeb68fe1795dff456e7960052db5f8a21"
+    },
+    {
+      "bytes": 370,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-artifacts/rotated-evidence.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "393e36776ca7006ce4a993dd40fd660fcce13b8f8afce282eb115f8f0e5a79d9"
+    },
+    {
+      "bytes": 12305,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-harness.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "7f03b6379b0872afbdaf5ab6ddffec094a08f0c0d3cf69c4bea6b51549992c44"
+    },
+    {
+      "bytes": 392,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/build-distributions.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "b91d7de4301ca328563e4c78e8a373740f0215651d1e0489fde543782ee650b1"
+    },
+    {
+      "bytes": 17888,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/commands.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "ed2f4ecf9276eabfff9badec4862bd2f0ce1dee937aa8c6d9220d28e558a7148"
+    },
+    {
+      "bytes": 7142,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/dependency-conformance.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "75e6c770824902262a193f6e6d0fdffa001bd4e946838e1f4fdfb75291b4c8d5"
+    },
+    {
+      "bytes": 1977,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/environment.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "98b27f9aba2bd2d01bf77b387815f8af07ab27aa4e070e6824483dccbf3cac25"
+    },
+    {
+      "bytes": 443,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/advisory-observation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "569c1e44bfd03e8cd32c6dfab74c84786324506b25a406f4dd077c2b92fb845f"
+    },
+    {
+      "bytes": 14169,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/assurance-tests.junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "abea21a7a0596465f7148ffe5a2c511d12aa1b4a01a035bb3f8d55eaa1153942"
+    },
+    {
+      "bytes": 5916,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/baseline-artifacts/blocked-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "c7a42a78d6ebafe68396550f94e84bdadabf6dbbd703daaacacb37792be8d5aa"
+    },
+    {
+      "bytes": 1154,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/baseline-artifacts/candidate-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "0b6df52480b471c2884ba471228ac31b609b40c761f14b0b07ba54463f82fa9d"
+    },
+    {
+      "bytes": 182,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/baseline-artifacts/event-cache.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "61ae6ea5376de4d01f6f0626d61502ad68a2f13bef8be4c3d2e427e508cce337"
+    },
+    {
+      "bytes": 9120,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/baseline-artifacts/history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "e38747bf06e5f94d0f12146f3556f5c385fb0c42c4c0eadbf908377c20a1348e"
+    },
+    {
+      "bytes": 5679,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/baseline-artifacts/lane-outputs.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "b889af3f117a0507a6f2f187a4aee152f5e86aa8be9b8e0064769523e4278155"
+    },
+    {
+      "bytes": 26307,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/baseline-artifacts/recommendations.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "acf55196e432662cb5dea10053ed2d996c91a698ef995d3271e9539c8af12982"
+    },
+    {
+      "bytes": 4910,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/baseline-artifacts/results.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "e217b00fd878f9b1efb0dd61ed03acc413362e3cf89b0fd3d11531fc556c8a86"
+    },
+    {
+      "bytes": 187,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/baseline-artifacts/review-context.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "d6e47f083b6c0699523c19411587fefaee8fa0169dcc3e0d880322e53d9e8b7d"
+    },
+    {
+      "bytes": 3811,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/baseline-artifacts/review-plan.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "117b215ba4d21fdcb79121ddb159bdfb2ad9747feffb50cd9e0a8124b36451de"
+    },
+    {
+      "bytes": 184,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/baseline-artifacts/rotated-adequacy.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "edf0f76036d20017530da862d515f9bdeb68fe1795dff456e7960052db5f8a21"
+    },
+    {
+      "bytes": 370,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/baseline-artifacts/rotated-evidence.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "393e36776ca7006ce4a993dd40fd660fcce13b8f8afce282eb115f8f0e5a79d9"
+    },
+    {
+      "bytes": 144590,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/build-artifacts/antlr4_python3_runtime-4.9.3-py3-none-any.whl",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "b289b4c2547032bdc7b4fddc7de8cf237dd98625a17bcd112e1c2adf3885e72b"
+    },
+    {
+      "bytes": 22928,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/commands.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "cec58eaf2afde090ddb1fe6af3b8e8e66c312b91ea89e0b55d556862903f3d8c"
+    },
+    {
+      "bytes": 2612,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/distributions-after-test-tools.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "e3175156262269ba10b244f854dfc70a381beb25a0a81c7490937b3bf515854b"
+    },
+    {
+      "bytes": 1762,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/environment.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "26694a5c3d3770b8da0b863de7fdf1974c7cc3bf74246373a4ec44dae45fae28"
+    },
+    {
+      "bytes": 4660,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-import-origins.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "d31dac861806e1713c3190067151ac021488d570c44da4a021a3beb0c89d86bf"
+    },
+    {
+      "bytes": 22155,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-installed-assurance-harness.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "e3ec72e8c237688434c6258ae22e3a41771316b3d1d4b2d7ca78291b25fe5301"
+    },
+    {
+      "bytes": 4688,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts/documentation-blocks.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3941734657bcf715e6d677d4c2ad8f1c61f8c5a75c70ee0e919a188ddcb06108"
+    },
+    {
+      "bytes": 26001,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts/exempt-bridge-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "4b6458c72f90ad3cf542a6c16d38167d838e957992595a656fccde2c6d39cd6c"
+    },
+    {
+      "bytes": 36477,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts/findings-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3da34c823b82f4e83f8d9b2be9d6c874b8aa910d0dd23674fed547468de39423"
+    },
+    {
+      "bytes": 62794,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts/fixed-unresolved.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "77b2dbf26d1a0087ba27a3d46a4276d1754a9e8cef09b6fa04316895d0a9f9fa"
+    },
+    {
+      "bytes": 43117,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts/formula-identities.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "7770195d4e936c7242ab676c8a1e47004b720e3a73f8a80c083e57282d8f20ec"
+    },
+    {
+      "bytes": 33058,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts/identically-restored-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "b9e4986671a992f05650774d1302e5699b90d4d7ea9d3b3596487c1e94587f2d"
+    },
+    {
+      "bytes": 73980,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts/nonmutating-fixture-rejection.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "6d7252306c80d5aa20a45073ac60209c45eb795f19e3c2def3d0e814488efe66"
+    },
+    {
+      "bytes": 31443,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts/original-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "757e6fa69d7b71b9e4af05b9c1fa3533a533ef3f9e9fa2b1ca1f6fe817749e09"
+    },
+    {
+      "bytes": 21676,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts/plan.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "ee8a343c017438fefde20b049828b6cc8c462a319ec0a94119437f2c372b2e00"
+    },
+    {
+      "bytes": 1281571,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts/recovered-continuation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "c368c1f938bf9cd9d612811f4e8dedffa2dfa436ea57345ccb6d0d8cc99d3906"
+    },
+    {
+      "bytes": 32267,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts/reopened-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "8c5b5761ceefb8153009328ff4625620c4397a0e3b90763abb62b53657df4115"
+    },
+    {
+      "bytes": 54108,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts/reopened-recommendation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "ed3cee50ed9f2300e412f4fef3d73263ac702c8724aaadcb7a7cd01b74383d60"
+    },
+    {
+      "bytes": 32253,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts/revoked-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "042fc90c7b5eb9a0d1f9ad48a26daa8cf19b6b816ae96126ee27ad75a47dd501"
+    },
+    {
+      "bytes": 4688,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts-002/documentation-blocks.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3941734657bcf715e6d677d4c2ad8f1c61f8c5a75c70ee0e919a188ddcb06108"
+    },
+    {
+      "bytes": 26001,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts-002/exempt-bridge-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "1c61bd847822bef65bdc15e377a36775df062dd0ab40bbdbf25d529a03b5ffa3"
+    },
+    {
+      "bytes": 36477,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts-002/findings-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "722817e5bd96f06bd33b7d929e31f2de082714c601b936e03270f058a6740794"
+    },
+    {
+      "bytes": 62794,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts-002/fixed-unresolved.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "88ef51cbd9a4f6b834fc663584f29958c529962ddcea29818ebdfaf97927cce4"
+    },
+    {
+      "bytes": 43117,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts-002/formula-identities.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "7770195d4e936c7242ab676c8a1e47004b720e3a73f8a80c083e57282d8f20ec"
+    },
+    {
+      "bytes": 33058,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts-002/identically-restored-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "81d15891198d536f4225c2a25e240a7edd7df78104a55df820eea1c4d643237a"
+    },
+    {
+      "bytes": 73980,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts-002/nonmutating-fixture-rejection.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "ab1cb7673ddcbccbff9a92d941f695f84e6b47ff0bb082bd3ff998718ad53263"
+    },
+    {
+      "bytes": 31443,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts-002/original-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "7b177200bc0a3f7598a53402cf7edd7bbe825c1834ddf618a76003efe37a00cb"
+    },
+    {
+      "bytes": 21676,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts-002/plan.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "c6ba311519854d1496b0b63a1ac42e399c3798bc106045d96f28068b2bf56c26"
+    },
+    {
+      "bytes": 1281583,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts-002/recovered-continuation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "0f0d64e58588c182a6464f487aef929656cf3068b163717242835ed9069e2dda"
+    },
+    {
+      "bytes": 32267,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts-002/reopened-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "a6c16f2b3dec722d713be96edd75e49661115c494b7182165835a82ea3bf22d6"
+    },
+    {
+      "bytes": 54108,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts-002/reopened-recommendation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "214a264ca89ae54ad8f616465833fdd6fee0cb53260e81447f7471061e3eca14"
+    },
+    {
+      "bytes": 10127,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts-002/results.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "eab27b1ed9582369b6e36b5e641b676aeba82b67d085cafee9649118516657a3"
+    },
+    {
+      "bytes": 32253,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-sdk-artifacts-002/revoked-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "c19b551231b00016939f72c20650f25cb2fa05c5d68d57d6e945dba3e97e5ace"
+    },
+    {
+      "bytes": 762,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/harness-first-failure.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "cdf2dc9540fbd67441bc409d74f80cd722e19f886deaa506aaaeecbcebb3574d"
+    },
+    {
+      "bytes": 16383,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/inputs/assurance-review.rst",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "4179e9f1db7d272c057a7d086496b8434516640caae94d5bf0fab27a37aa5da8"
+    },
+    {
+      "bytes": 36,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/install-exit.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "b7725c36677cb266f68b16a69a8fdf236582a5b69ed685e277e20f0974c00d9b"
+    },
+    {
+      "bytes": 710744,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/install-report.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "c02da450c793df991f9ccd893eb1f542cb840ab00d503fdddb7ac4fe0d09dd4c"
+    },
+    {
+      "bytes": 2489,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/installed-distributions.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "f087868a789040321e210798953efd0e93537f14d99ec98ec638ec080358b18c"
+    },
+    {
+      "bytes": 21336,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/installed-harness-attempt-001.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "72b495d259051f37d10cb421bb86683c37f400897b77cd3c282ca9a3e1b45146"
+    },
+    {
+      "bytes": 22155,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/installed-harness-attempt-002.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "e3ec72e8c237688434c6258ae22e3a41771316b3d1d4b2d7ca78291b25fe5301"
+    },
+    {
+      "bytes": 5916,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/baseline-artifacts/blocked-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "5591e899b601a819e775012ec053755f2b097ec846a864acc78da6d4f30a0fc8"
+    },
+    {
+      "bytes": 1154,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/baseline-artifacts/candidate-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "630bd6fff5b88f2934ed956f1f6ef299d8b473c55cc288440ad7d08fe66bdbb7"
+    },
+    {
+      "bytes": 182,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/baseline-artifacts/event-cache.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "706855efc3f5c3d2adc3d809acad34b38bee9a5e7d21722fbd1f0b777cbe15cc"
+    },
+    {
+      "bytes": 9120,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/baseline-artifacts/history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "28a216e9cb1515b363a1bef98cffdffab2442cd23d045e6f4b8c825e1cb1e735"
+    },
+    {
+      "bytes": 5679,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/baseline-artifacts/lane-outputs.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "639298f3e068b0e7964c6708b321bc99268c9d46f9af9d4e2cdabc275aea3e6f"
+    },
+    {
+      "bytes": 26307,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/baseline-artifacts/recommendations.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "7911fb73fab46c66dd4d7e140e01434364d279370199a3e29b159ba21a9cd148"
+    },
+    {
+      "bytes": 4956,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/baseline-artifacts/results.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "579b04e2a75edf2496723f7a3efde4968a8f53811a618fa8af9882f336768a71"
+    },
+    {
+      "bytes": 187,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/baseline-artifacts/review-context.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "31c16de68838b18bfb1548c1ec872dbe393001663736f26ff995ff6448f343b7"
+    },
+    {
+      "bytes": 3811,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/baseline-artifacts/review-plan.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "28e28ce95c0937f4332fd90f11f99a08b72946ee531a12cbb7d3f6d37213bce2"
+    },
+    {
+      "bytes": 184,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/baseline-artifacts/rotated-adequacy.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "edf0f76036d20017530da862d515f9bdeb68fe1795dff456e7960052db5f8a21"
+    },
+    {
+      "bytes": 370,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/baseline-artifacts/rotated-evidence.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "61f44a2e03a08f594cf11ccf02359834bed84152836c8291d3679988994c8285"
+    },
+    {
+      "bytes": 4715,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/import-origins.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "c5f6681cfb8fcdf5b6349f9a5a0193d00c115233a55d26a1c474013df388b492"
+    },
+    {
+      "bytes": 36,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/install-exit.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "b7725c36677cb266f68b16a69a8fdf236582a5b69ed685e277e20f0974c00d9b"
+    },
+    {
+      "bytes": 710746,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/install-report.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "b6abccaaa487239466ac301599c817a2137c803409a73e0f913d6ecf97f40b94"
+    },
+    {
+      "bytes": 2489,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/installed-distributions.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "f087868a789040321e210798953efd0e93537f14d99ec98ec638ec080358b18c"
+    },
+    {
+      "bytes": 250294,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/original-immutable/release.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "28c8409135b036b73ab6c52942a59ceb8de204ca2e344d7b51a11abe9c61af42"
+    },
+    {
+      "bytes": 5955,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/prior-bounded-gate-status.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "32a34f1963c42eb4c28d513eb92ea76639890adf4cd01291f6253daf02c118d3"
+    },
+    {
+      "bytes": 250395,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/release.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "e1c756370994e14b34097ca8df1d172f9721dfdbb09ed3939936d2e402bc546c"
+    },
+    {
+      "bytes": 1046,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/resolution-observation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "283a97d3e77d3275015afe9fb53dce039547741f07538aa87d2a8aa71b81630a"
+    },
+    {
+      "bytes": 715179,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/resolution-report.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "53710cf2194f377e456bb355294461918b8e4a936a978acef41965c7b7edcc1a"
+    },
+    {
+      "bytes": 543268,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/source-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "ed0d787db7173e3a5a78fefe18b51eb77be54b099f5edf4e0c21bfe44db96208"
+    },
+    {
+      "bytes": 3385,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/summary.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "42b37f5eefe94edfcda1dd52563c8f87a661ef74e8945888227064e334dc8990"
+    },
+    {
+      "bytes": 6934,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/gate-status.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "65627bafff68201b62ff982fe67d484a32fa18afc8e1394b47d744ed076d0f4a"
+    },
+    {
+      "bytes": 7587,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/inputs/assurance-fixture-check.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "0cb4cd7022ed9ab8f61246e7f26e46ca0996a09d2a474fd191d3b619c960335d"
+    },
+    {
+      "bytes": 5675,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/inputs/assurance-review-005.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "6de457f34bbbf6ec5ac5796f311503cffffa6f760186d67ec7243e94275bfbbf"
+    },
+    {
+      "bytes": 16383,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/inputs/assurance-review.rst",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "4179e9f1db7d272c057a7d086496b8434516640caae94d5bf0fab27a37aa5da8"
+    },
+    {
+      "bytes": 45038,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/inputs/test_assurance.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "716e7ae1919429cfd42b878ab83aad8dc35f6f123a3360d041a41ddc5b558a88"
+    },
+    {
+      "bytes": 4688,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts/documentation-blocks.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3941734657bcf715e6d677d4c2ad8f1c61f8c5a75c70ee0e919a188ddcb06108"
+    },
+    {
+      "bytes": 26001,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts/exempt-bridge-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "04ac22e2f09f5934ee45fe6b229b7019fde27ae52a7c9cd0f8d366e92a544295"
+    },
+    {
+      "bytes": 36477,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts/findings-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "e2436017c44383f4204951dece8f28b5cb956ba1404dc24ea84eee3fd8801a78"
+    },
+    {
+      "bytes": 62794,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts/fixed-unresolved.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "97d97008b786b05848e7fcf49e8f1a62382bb2b6508125b4d051ad4ecb3e982d"
+    },
+    {
+      "bytes": 43117,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts/formula-identities.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "7770195d4e936c7242ab676c8a1e47004b720e3a73f8a80c083e57282d8f20ec"
+    },
+    {
+      "bytes": 33058,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts/identically-restored-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3374f094cb501d327bc4077f19d55b9938899663ab116dfc4acf07e52d6c80c3"
+    },
+    {
+      "bytes": 73980,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts/nonmutating-fixture-rejection.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "cb6edc5a4303b3f5178780cbfa0659f5efcdad3bbd9075c0ac48c645050a8afb"
+    },
+    {
+      "bytes": 31443,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts/original-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "9db5d1dff3c6dc895f7d98b199e1b807defc9d0bcfec820faa94919418b89093"
+    },
+    {
+      "bytes": 21676,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts/plan.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "4e621fcae2dd9f914fa6def865e05723c741a602d85fee9ca75c38b4b776ec1d"
+    },
+    {
+      "bytes": 1281544,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts/recovered-continuation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "cd658fb783779a5d37d7942d260c73c768c349f7b6e2ed3d58c7499b7c8a7ca4"
+    },
+    {
+      "bytes": 32267,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts/reopened-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3e4b5ef99b793352c6a80c306fd3c71a7515b242dc45844aa3873a16a6fa9f77"
+    },
+    {
+      "bytes": 54108,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts/reopened-recommendation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "e2642f7e45fee1612765dd8d2f11b80f766abdd866ccefa17ac76d24ec0247bc"
+    },
+    {
+      "bytes": 9451,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts/results.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "38eec67e7751880297ffa7a9acbb7e3eaec7170755592e3687380675b0f799c5"
+    },
+    {
+      "bytes": 32253,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts/revoked-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "6aba5d4ff4c24b3cee48ebe6c2cbe41e1cfa715589e5531658fb2ae259b7b0d6"
+    },
+    {
+      "bytes": 4688,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/documentation-blocks.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3941734657bcf715e6d677d4c2ad8f1c61f8c5a75c70ee0e919a188ddcb06108"
+    },
+    {
+      "bytes": 26001,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/exempt-bridge-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "e79e318c21225f16a5c3d4093fd7a11c235198091d45c4fc3724aaee853d60b6"
+    },
+    {
+      "bytes": 36477,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/findings-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "23b4e615aeba3286582401fc4178341f717033569fcae26d3fa6d85f12d9ec61"
+    },
+    {
+      "bytes": 62794,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/fixed-unresolved.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "0e42f54a4fcf075bd836cb7d3dfc43292f9de34513b2c20906956e12246b0c68"
+    },
+    {
+      "bytes": 43117,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/formula-identities.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "7770195d4e936c7242ab676c8a1e47004b720e3a73f8a80c083e57282d8f20ec"
+    },
+    {
+      "bytes": 33058,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/identically-restored-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "8547224ba2d3de8feb47185bb9983e16175a98931fbbc1f178009b9de58c0a26"
+    },
+    {
+      "bytes": 73980,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/nonmutating-fixture-rejection.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "e79c14872e1c38363ac5492bfb25d51628c861f633553f3613996ddab005151a"
+    },
+    {
+      "bytes": 31443,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/original-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "ccb1c724e31c713349bd62ff15d306e9ce557cc071b640d2c092595b1f73f88b"
+    },
+    {
+      "bytes": 21676,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/plan.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "cbfe56138b2d8a451420a5a46e209efd652b2b883060d41e24b0219aeb80fd0a"
+    },
+    {
+      "bytes": 1281664,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/recovered-continuation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "c33c1218533e84073bba53be2d3ba2028500c2309cc96675381a92a5bfb285bf"
+    },
+    {
+      "bytes": 32267,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/reopened-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "90a31abba1f8bf0f91427b052b835837eea1d33106d7d1ac51f7470c1b119254"
+    },
+    {
+      "bytes": 54108,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/reopened-recommendation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "862994a099ebbd440b9512c06b2169d27bcd930e65ac5ac5f20143c92cc224b9"
+    },
+    {
+      "bytes": 9451,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/results.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "434f1f67081a4988b40a1c4025c5fd6a6c5b75aa6654c56ec3a24064d28c66c9"
+    },
+    {
+      "bytes": 32253,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/revoked-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3b1327790281738914e9da25bdcc335037b241d19792d9b468168ab55808dbba"
+    },
+    {
+      "bytes": 21215,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-harness-attempt-001.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "cb13906f9dc4a7a359e9408397da0273250f4a0f450aacde7628d3d056dc80f2"
+    },
+    {
+      "bytes": 21336,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-harness-attempt-002.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "72b495d259051f37d10cb421bb86683c37f400897b77cd3c282ca9a3e1b45146"
+    },
+    {
+      "bytes": 21336,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-harness.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "72b495d259051f37d10cb421bb86683c37f400897b77cd3c282ca9a3e1b45146"
+    },
+    {
+      "bytes": 250410,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/release.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "004d5f91db4ea27f35f359eef37fa3642486ee47328d4cbaf7b2b3164094dbec"
+    },
+    {
+      "bytes": 30364,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/retained-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "362305e745e9d3d74902da7b4425f463bc8a9a084c5c158040c4860d6f68e280"
+    },
+    {
+      "bytes": 421,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/runtime-distributions.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "bd485f146df1660906660faffda83b9f5724560918bbcf5ddc71768a6d8acc82"
+    },
+    {
+      "bytes": 26088,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/runtime-import-origins.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "d0ddd90fa371dbb43091ee7353dcf1f8cee9adbe786cb4fef223ca975f773a55"
+    },
+    {
+      "bytes": 17059840,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/scoped-source.tar",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "35db278d2089632a9ba20aacbcadaefae37379a1347e5aed744d8170d850c2e9"
+    },
+    {
+      "bytes": 543268,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/source-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "ed0d787db7173e3a5a78fefe18b51eb77be54b099f5edf4e0c21bfe44db96208"
+    },
+    {
+      "bytes": 629,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/test-distributions.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "b11447902a8fc4b7cc72c23434d5cdf378599ab0fd261015b0d099d28355db56"
+    },
+    {
+      "bytes": 27033,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/test-import-origins.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "345602f239d502261d46c98b3588bde029b866fb811a31aa79559c4740b27094"
+    },
+    {
+      "bytes": 376001,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/wheel-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "7060ab5f14d5945eb756a899fd2280e483e0f6fb68c8ad5f5978b78a51a5a02e"
+    },
+    {
+      "bytes": 590,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/advisory-observation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "fffd546e9ff93c8a999cbcdfc91acb9f7d524897654957dbcb8beee5e38bb6cc"
+    },
+    {
+      "bytes": 9381,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96"
+    },
+    {
+      "bytes": 4412691,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00"
+    },
+    {
+      "bytes": 14169,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/assurance-tests.junit.xml",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3c7ff4921430114f5b1399f3aaee5d2e50eeef55954a4ebf0355b193379f2550"
+    },
+    {
+      "bytes": 5916,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/baseline-artifacts/blocked-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "ed2337db6d2e0178a221c636c7226817971cdcd7cf7481e45c7b5903e9a65d2f"
+    },
+    {
+      "bytes": 1154,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/baseline-artifacts/candidate-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "f30870ebc952834bbe107f0df0faab0d860f71f006f99dc6ea0ed18bd21a5178"
+    },
+    {
+      "bytes": 182,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/baseline-artifacts/event-cache.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "aeb6ad3b3f9a46eb0aa70cb716473317ed433d5c4c4c81f8720675a65834d83e"
+    },
+    {
+      "bytes": 9120,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/baseline-artifacts/history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "d06649346b91a0a30078f892a1ad086f0b79db994e84ada6dbed55d8a4499b90"
+    },
+    {
+      "bytes": 5679,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/baseline-artifacts/lane-outputs.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "e33e2165868f61469660802ddf1ce2bfbe5035b27c63f49ee3fb4a3318ce858b"
+    },
+    {
+      "bytes": 26307,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/baseline-artifacts/recommendations.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "05ea6fab2d7504f26976a1df85628dc69f2eb553641f082e45f4f9aeed8501e1"
+    },
+    {
+      "bytes": 4937,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/baseline-artifacts/results.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "887c692968c0e054be73aef71f373e4fc640da08fad7d615e878c9602cbcfcd9"
+    },
+    {
+      "bytes": 187,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/baseline-artifacts/review-context.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "1d42dfff7c517a46d9b11182ed817b0d3c14eae4531e3e259643121e27b43ec3"
+    },
+    {
+      "bytes": 3811,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/baseline-artifacts/review-plan.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "f0720edc396a9ff004852addb28a182874e1eb086d8d35d0a82b948a679a554b"
+    },
+    {
+      "bytes": 184,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/baseline-artifacts/rotated-adequacy.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "edf0f76036d20017530da862d515f9bdeb68fe1795dff456e7960052db5f8a21"
+    },
+    {
+      "bytes": 370,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/baseline-artifacts/rotated-evidence.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "9b530e33fb783866bd4c71f9f79d9fd45db755f56a18c25c9187f8c5a883463a"
+    },
+    {
+      "bytes": 12305,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/baseline-review-harness.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "7f03b6379b0872afbdaf5ab6ddffec094a08f0c0d3cf69c4bea6b51549992c44"
+    },
+    {
+      "bytes": 392,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/build-distributions.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "b91d7de4301ca328563e4c78e8a373740f0215651d1e0489fde543782ee650b1"
+    },
+    {
+      "bytes": 17089,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/commands.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "4c7beff6dabf74ef3c841b4db314bb9f5c1b5067e241f9ec3745cbe8bac98184"
+    },
+    {
+      "bytes": 2612,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/distributions-after-test-tools.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "e3175156262269ba10b244f854dfc70a381beb25a0a81c7490937b3bf515854b"
+    },
+    {
+      "bytes": 483,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/documentation-block-comparison.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "2c61b7d44f7451b9ce4631ecdf09a26827e91cd65156117e778a1b97da2b0d38"
+    },
+    {
+      "bytes": 1398,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/environment.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "0f4e33b919c85f3fb5e0d1fa050d85d77bfb2dea9fb60435c989a87672ed76c3"
+    },
+    {
+      "bytes": 2489,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/full-base-distributions.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "f087868a789040321e210798953efd0e93537f14d99ec98ec638ec080358b18c"
+    },
+    {
+      "bytes": 4682,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/full-base-import-origins.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "f2be1b7c43e7b14e10e380385659413d68744b3a2aeb4e56645c3ab2f7f3e195"
+    },
+    {
+      "bytes": 5643,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/gate-status.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "bd79aa4d9a036f7110eb5d6a8cf9dea74987693f040d44a14f691b819ceab79e"
+    },
+    {
+      "bytes": 764,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/harness-origins.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "0fd0fd0dab2ef10fbb917553da3853c559e8e6c2e67ff714938aa3a2211c3098"
+    },
+    {
+      "bytes": 7587,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/inputs/assurance-fixture-check.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "0cb4cd7022ed9ab8f61246e7f26e46ca0996a09d2a474fd191d3b619c960335d"
+    },
+    {
+      "bytes": 5675,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/inputs/assurance-review-005.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "6de457f34bbbf6ec5ac5796f311503cffffa6f760186d67ec7243e94275bfbbf"
+    },
+    {
+      "bytes": 16518,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/inputs/assurance-review.rst",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "8ec28a65be37d9443d64ccab62e411e260b850706dd3f84f5cba8a743ee5cdce"
+    },
+    {
+      "bytes": 45038,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/inputs/test_assurance.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "716e7ae1919429cfd42b878ab83aad8dc35f6f123a3360d041a41ddc5b558a88"
+    },
+    {
+      "bytes": 710740,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/install-report.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "ef1ca8b215be2ffed2b8e5e938321460cb8829fb5729e0f1b88d5dc261d12e05"
+    },
+    {
+      "bytes": 22155,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-assurance-harness.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "e3ec72e8c237688434c6258ae22e3a41771316b3d1d4b2d7ca78291b25fe5301"
+    },
+    {
+      "bytes": 4688,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-artifacts/documentation-blocks.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3941734657bcf715e6d677d4c2ad8f1c61f8c5a75c70ee0e919a188ddcb06108"
+    },
+    {
+      "bytes": 26001,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-artifacts/exempt-bridge-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "6e4c2217f4820e15ca5584660d2097499880799ab97350826d005abbdad0eff0"
+    },
+    {
+      "bytes": 36477,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-artifacts/findings-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "8e41d33232cf250b3b74a7c8a5860ffac46c37aa6e5a6b4c5a875d8d2d64c5d5"
+    },
+    {
+      "bytes": 62794,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-artifacts/fixed-unresolved.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "437dc55902d881e6ef6f62eb53e8232167b236d173d2d6ebe4d5481e740576d0"
+    },
+    {
+      "bytes": 43117,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-artifacts/formula-identities.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "7770195d4e936c7242ab676c8a1e47004b720e3a73f8a80c083e57282d8f20ec"
+    },
+    {
+      "bytes": 33058,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-artifacts/identically-restored-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "f5e3ed954e1893c527276f345c5a89afeed3cf10cbc7c626aa26fddbfd2ffe33"
+    },
+    {
+      "bytes": 73980,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-artifacts/nonmutating-fixture-rejection.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "04a5af7f1bb5bade6bcd1f81a5eb7947bcb1ee32351a65a604791fcc203c2815"
+    },
+    {
+      "bytes": 31443,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-artifacts/original-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "a2c49d89e5159992e37d0dff2aed02b3476e3e8427668f059e6a089c6d8b8f27"
+    },
+    {
+      "bytes": 21676,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-artifacts/plan.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "d056b56bf227fdb5b7123ab0690772b3e62e82d8e38467f2f05e1a16447080a6"
+    },
+    {
+      "bytes": 1281610,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-artifacts/recovered-continuation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "fece3618bcdf7443250ac9ce53fe89289bb8302d98c13c30d9ccce6d97a12356"
+    },
+    {
+      "bytes": 32267,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-artifacts/reopened-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "378b69a72174238f435c7c8b012785f86514978d07b9c86c8b07eb43ed64a52a"
+    },
+    {
+      "bytes": 54108,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-artifacts/reopened-recommendation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "a824d4542ac2f19101ab882256dc4a694171ef8e6447cbbcbfb2f6c2284be78f"
+    },
+    {
+      "bytes": 10202,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-artifacts/results.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "97472d54d2816a727f889ecce6b2cccd84b87621580299fed6ce1cd0320e5839"
+    },
+    {
+      "bytes": 32253,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/installed-sdk-artifacts/revoked-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "716ad4b77f2d1c5a879f4e95b2bc92602fd08b2b91924b10ecc5d1bc8ee007b7"
+    },
+    {
+      "bytes": 263,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/prior-evidence-preservation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "8f65f7273a232f45a0ff015747fd93b188fd95bcf65b3de99955c211742f5e82"
+    },
+    {
+      "bytes": 250404,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/release.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "a57f8905c47ee1bb1b0a07360ee92185cf0b20851d89605d4213cb79a7c52b12"
+    },
+    {
+      "bytes": 710740,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/resolution-report.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "ef1ca8b215be2ffed2b8e5e938321460cb8829fb5729e0f1b88d5dc261d12e05"
+    },
+    {
+      "bytes": 10071,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/retained-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "5990694ddde464a6dcfbe6db5b630efeb9185c5097f5d7406f8015d8dd2bcd91"
+    },
+    {
+      "bytes": 17059840,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/scoped-source.tar",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "ac5c628ae9c7951c985a8e04a299016291c98ca3b7a22be5d8611c1a491c4243"
+    },
+    {
+      "bytes": 543472,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/source-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "f54649df368accd2538f98b5bb66ade40914856bbb9a1dbe08dc86ab4ebff080"
+    },
+    {
+      "bytes": 376041,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/wheel-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "8b92c416ca1342bf3463e36d5cb91703069addf73ac33e625256d55b33945d6e"
+    },
+    {
+      "bytes": 338716,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/archive-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "8ec158c78feda1ba8a6fdd7abae3fa456f0a4788a98765d72bf7aaa326f15a91"
+    },
+    {
+      "bytes": 5916,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/blocked-history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "25bcaa7eba7443b638d47c3710172455c1450fae95c01da1c07594136f0d62de"
+    },
+    {
+      "bytes": 1154,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/candidate-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "630bd6fff5b88f2934ed956f1f6ef299d8b473c55cc288440ad7d08fe66bdbb7"
+    },
+    {
+      "bytes": 9381,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96"
+    },
+    {
+      "bytes": 4403766,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "e88afdbc52d79f2155fdadacddac9d2e16cab15e7307822aecdccfe13c9a9c33"
+    },
+    {
+      "bytes": 182,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/event-cache.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "2140a1b68ffc1680597cdd32579df04a0aee7ffc6d3d81cc0fc901ad0d8bb0a5"
+    },
+    {
+      "bytes": 9120,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/history.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "5e8d70fe5513bd5c075d37b23015a37d99d81b851a221e99589289f1ddb3b66b"
+    },
+    {
+      "bytes": 5679,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/lane-outputs.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "639298f3e068b0e7964c6708b321bc99268c9d46f9af9d4e2cdabc275aea3e6f"
+    },
+    {
+      "bytes": 26307,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/recommendations.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "7911fb73fab46c66dd4d7e140e01434364d279370199a3e29b159ba21a9cd148"
+    },
+    {
+      "bytes": 4947,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/results.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "24be8c7ab85482b0503463c4eafd85053c58e75120386637a4d98f5e2c92b53f"
+    },
+    {
+      "bytes": 187,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/review-context.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "31c16de68838b18bfb1548c1ec872dbe393001663736f26ff995ff6448f343b7"
+    },
+    {
+      "bytes": 3811,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/review-plan.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "28e28ce95c0937f4332fd90f11f99a08b72946ee531a12cbb7d3f6d37213bce2"
+    },
+    {
+      "bytes": 184,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/rotated-adequacy.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "edf0f76036d20017530da862d515f9bdeb68fe1795dff456e7960052db5f8a21"
+    },
+    {
+      "bytes": 370,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/rotated-evidence.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "61f44a2e03a08f594cf11ccf02359834bed84152836c8291d3679988994c8285"
+    },
+    {
+      "bytes": 12531,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/storage-candidate.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "5ef6e89fe77c250e5fde616b93e504d9fbd8fd624cb1f928d03010aec986c765"
+    },
+    {
+      "bytes": 12593,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/storage-continuation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "6d66502152a28a5e2c0f5dbc1953d07d440d31f280610c5efa2fcefbcaa6f89b"
+    },
+    {
+      "bytes": 805,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/storage-preview.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "9057daf56f5ec999bca640b000d18a8be5f3d16ae3aa93bb74239bf8491c2e1b"
+    },
+    {
+      "bytes": 392,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/build-distributions.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "b91d7de4301ca328563e4c78e8a373740f0215651d1e0489fde543782ee650b1"
+    },
+    {
+      "bytes": 14303,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/commands.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "09aa67d88579251411254206ff518668a498ab0f8cc7d497962b1b71f9e819ce"
+    },
+    {
+      "bytes": 1620,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/environment.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "acbf7791b08bc8f06dac3ab350cf4abf596003f4e1adfdff0c8029cb58ba6ca1"
+    },
+    {
+      "bytes": 12305,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/external-harness.py",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "7f03b6379b0872afbdaf5ab6ddffec094a08f0c0d3cf69c4bea6b51549992c44"
+    },
+    {
+      "bytes": 43676,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/formula-identities.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "989679b397fa31b9e2edb8d8033d5816f637ee0bda1f09e5f5a22269df1820e8"
+    },
+    {
+      "bytes": 3409,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/gate-status.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "508d5ed12fe5dc762b83c36d94f5f1907526d9fb5c3f642002c5e9fd88aa7345"
+    },
+    {
+      "bytes": 208,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/harness-identity.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3d024e147e2a97e47265ca360a478d7d9defe88bb677fb9fe127c1fc0630cb97"
+    },
+    {
+      "bytes": 421,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/installed-distributions.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "bd485f146df1660906660faffda83b9f5724560918bbcf5ddc71768a6d8acc82"
+    },
+    {
+      "bytes": 526,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/original-build-observation.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "809777c450bdc87e5531e1de714973e6f0752cb58e4bcd5ad83d6a9d7b8c6d88"
+    },
+    {
+      "bytes": 335,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/original-harness-execution.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "096ca98394c6fccd06562084a965d7985e934a56ad449461fdd79fec4d0ffc69"
+    },
+    {
+      "bytes": 250301,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/release.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "956c982f706c9b4f5a8db4d4521afcea015a72cc13f6b275d3b578fd010cb800"
+    },
+    {
+      "bytes": 6438,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/retained-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "cea1cbed68e9f88d88f9dc6d0ea329411581e5611d72ae45db74bf6318b910cf"
+    },
+    {
+      "bytes": 328,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/runtime-before-install.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "b36329b9580973e3c4d7982e77e958225d3d7f2f340d51dc3f41b256c7e4eb89"
+    },
+    {
+      "bytes": 17029120,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/scoped-source.tar",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "b1af84634b8cce4618cab859bd09cdfae0e2d144bfee3db6780aa189078c737c"
+    },
+    {
+      "bytes": 542134,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/source-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "bfd4a63d8c1a3f017f30dca10a4728fe67b3e516441003f0e9260f50ac882357"
+    },
+    {
+      "bytes": 5559,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/supplemental-runtime-results.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "389aee18c140f3da89a2d35e5cdd042047cb7712c8ca918eec593ab8adb90de4"
+    },
+    {
+      "bytes": 375861,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/wheel-manifest.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "3622b691d7fa8d086ede9ab27698e96e50606414a6e7047c79a7f13a6de59f87"
+    },
+    {
+      "bytes": 4894,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/recovery.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "f29ea569ed8e456e20cf87a0b6528b452dde061a9afc5d28e5af587d92aba4f1"
+    },
+    {
+      "bytes": 3030,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/retention-verification.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "14af26b996f05910063d23262677efce4da468d6c028db14d2feba670f90e9f8"
+    },
+    {
+      "bytes": 2550,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/review-feedback.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "d2ab636fe41b52ba075653e445f40fe8c09bd402c2765fc062ac3537f6646389"
+    },
+    {
+      "bytes": 2622,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/security-and-review.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "72c93db387834922c4ef5b8f06d96700e275bb73daf34feedd85c4939b1e2b5f"
+    },
+    {
+      "bytes": 709,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/whitespace-disposition.json",
+      "prior_scan_exact_hash_match": true,
+      "sha256": "adc73df1892d897460c56d801201f9b8b3cda5dcb4cdd325fa1f8bd4acf677f5"
+    }
+  ],
+  "present_bytes": 86405626,
+  "present_count": 266,
+  "restoration": {
+    "files_restored": 0,
+    "reason": "No expected missing log blobs found in inspected committed trees. No logs fabricated, no builds/tests rerun, no immutable original manifest edits."
+  },
+  "scanner_coverage": {
+    "archive_member_result": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/security/scan-result.json",
+    "archive_suspected_findings": "73 untriaged findings across 12 unique contents; not clean.",
+    "five_new_root_text_hashes_rechecked": [
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-resume-cache.json",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/checkpoint-verification.json",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/experience-final.json",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/final-secret-scan.json",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/gate-adjudication.json"
+    ],
+    "prior_missing_count": 151,
+    "prior_submitted": 411,
+    "surviving_prior_exact_matches": 260,
+    "surviving_prior_mismatches": []
+  },
+  "schema": "codex.retention.present-and-expected-missing.v1",
+  "scope": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005"
+}

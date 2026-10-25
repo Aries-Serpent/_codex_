@@ -1,0 +1,34 @@
+{
+  "source_only": true,
+  "python": "3.12.10 (main, Apr  8 2025, 22:38:13) [GCC 13.3.0]",
+  "interpreter": "/home/runner/work/_codex_/_codex_/.venv_ci/bin/python",
+  "newcomer_example_blocks_executed": 2,
+  "existing_storage_roundtrip_recovery": {
+    "passed": true,
+    "session_id": "stable-assurance-fixture-session",
+    "extensions_preserved": true,
+    "sequence": 3,
+    "pending_after_recovery": "technical_verification",
+    "fixture_only": true,
+    "original_continuation_bytes": 1058087,
+    "successor_continuation_bytes": 1118666,
+    "assurance_artifact_cap": 1048576,
+    "inherited_aggregate_cap": 67108864
+  },
+  "fixture_recommendations": {
+    "converged": "CONVERGED_FOR_AUTHORIZED_DECISION",
+    "blocked_original_findings": "BLOCKED",
+    "reopened_revoked": "BLOCKED",
+    "reopened_context_drift": "BLOCKED",
+    "reopened_identical_status_restoration": "BLOCKED",
+    "blocked_required_exempt_required_bridge": "BLOCKED"
+  },
+  "sha256": {
+    "src/codex/institutional/assurance.py": "ba67ea4d6201dd3c3243ec86715c54f21f1b620ac8dc8bc48732b818e020402c",
+    "src/codex/institutional/contracts.json": "21026df523f2445bd0ade774603f7facd823aadabed96f59b983ad8f56b52e30",
+    "src/codex/institutional/review.py": "12ef9992b0b1a7412076cc26abc49cf42028bcb1b8fa94f65ecff9d41fc2d959",
+    "tests/institutional/test_assurance.py": "716e7ae1919429cfd42b878ab83aad8dc35f6f123a3360d041a41ddc5b558a88",
+    "docs/assurance-review.rst": "b6fa0c520995af39c34f4e5abf3f493db81456dc8512523a49dca222a3a33bae",
+    "docs/adr/assurance-review-005.json": "6de457f34bbbf6ec5ac5796f311503cffffa6f760186d67ec7243e94275bfbbf"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "python": "Python 3.12.10",
+  "workspace": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025",
+  "workspace_reason": "External sibling workspace outside checkout; actual path retained, removed after evidence retention.",
+  "PYTHONPATH": "absent",
+  "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch",
+  "advisory_check": {
+    "result": "No vulnerabilities found",
+    "packages": 18,
+    "tool": "runtime-tools-gh-advisory-database"
+  },
+  "dependency_scope": "Institutional SDK declared jsonschema closure and locally built codex-contracts. Test-only pytest installed separately only into test-venv. Full declared distribution checked separately via pip check.",
+  "venvs": {
+    "build-venv": {
+      "pyvenv_cfg": "home = /opt/hostedtoolcache/Python/3.12.10/x64/bin\ninclude-system-site-packages = false\nversion = 3.12.10\nexecutable = /opt/hostedtoolcache/Python/3.12.10/x64/bin/python3.12\ncommand = /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m venv /home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/build-venv\n",
+      "python": "Python 3.12.10"
+    },
+    "runtime-venv": {
+      "pyvenv_cfg": "home = /opt/hostedtoolcache/Python/3.12.10/x64/bin\ninclude-system-site-packages = false\nversion = 3.12.10\nexecutable = /opt/hostedtoolcache/Python/3.12.10/x64/bin/python3.12\ncommand = /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m venv /home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/runtime-venv\n",
+      "python": "Python 3.12.10"
+    },
+    "test-venv": {
+      "pyvenv_cfg": "home = /opt/hostedtoolcache/Python/3.12.10/x64/bin\ninclude-system-site-packages = false\nversion = 3.12.10\nexecutable = /opt/hostedtoolcache/Python/3.12.10/x64/bin/python3.12\ncommand = /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m venv /home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/test-venv\n",
+      "python": "Python 3.12.10"
+    }
+  }
+}

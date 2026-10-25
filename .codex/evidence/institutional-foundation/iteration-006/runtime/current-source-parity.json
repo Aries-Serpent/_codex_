@@ -1,0 +1,11 @@
+{
+  "immutable_commit": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+  "current_raw_bytes_match": {
+    "src/codex/institutional/assurance.py": true,
+    "src/codex/institutional/contracts.json": true,
+    "src/codex/institutional/core.py": true,
+    "src/codex/institutional/storage.py": true
+  },
+  "scope": "Four candidate files only; no runtime or historical test reruns",
+  "authority": "none"
+}

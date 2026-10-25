@@ -1,0 +1,15 @@
+{
+  "id": "azimuthal-review-004",
+  "status": "Draft",
+  "scope": "Supplied-byte manifests, bounded read-only analytical/dissent plans, attributed outputs, typed relations, non-authorizing reconciliation, ordered resumable events and finding-bound remediation evidence coverage.",
+  "hypothesis": "Explicit bindings and retained dissent permit reproducible local review without creating a second memory or authority system.",
+  "reuse": ["core.canonical", "core.digest", "core.record", "core.Rejected", "Draft envelopes", "codex.continuation-state.v1", "existing coordinator/storage"],
+  "schema_identity": "codex.review.v1; implemented kinds: manifest, plan, lane-output, history, recommendation. No other review kinds or versions are supported.",
+  "validation_boundary": "The installed contract identifies review envelope kinds; SDK entry points enforce their strict semantic fields and bindings. At import core.record validates a Draft exemplar. Pure review calls copy that restricted envelope and validate its integrity without file access. attach_continuation is the existing-storage adapter and may read the installed core contract resource.",
+  "acceptance": ["Deterministic supplied-input fixtures", "Reject candidate/context drift, malformed plans, unsafe tools and mixed outputs", "Retain original wording, unverified source attribution and unresolved conflict", "Reject event reorder/duplicates and stale caches", "Resume pending requirement only with exact current binding and explicit clearance"],
+  "rollback": "Remove new review attachments in a newly previewed continuation successor; preserve original history and user-owned bytes. No activation, destructive migration or automatic rollback execution.",
+  "event_trust": "UUIDv4 event IDs differ from content IDs. Coordinator guarantees cross-store uniqueness. Ordered digests detect accidental changes only; an attacker can rewrite and reseal a complete history. Not tamperproof, authenticated or independently witnessed.",
+  "operational_separation": "Coordinator is implementer. Roles and rotated same-platform fixture actors are unverified, not evidence of independent execution.",
+  "resource_disclosure": "Bounded Repository-Internal Draft records; existing Unknown/Secret export denial unchanged.",
+  "unsupported": ["Approval or acceptance authority", "Activation", "Filesystem discovery", "Symlinks and submodules", "Archive expansion", "Authenticated identities", "Semantic truth of remediation evidence", "External evidence eligibility and assurance DAG (planned)", "Operational FIXED routing", "Cross-store event uniqueness enforcement"]
+}

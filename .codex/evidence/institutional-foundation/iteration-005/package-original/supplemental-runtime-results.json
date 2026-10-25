@@ -1,0 +1,104 @@
+{
+  "status": "PASS",
+  "checks": [
+    "all institutional source files match installed bytes",
+    "preview is non-mutating",
+    "atomic candidate write roundtrip and mode 0600",
+    "candidate binding rejected:INVALID_CANDIDATE:CANDIDATE_BINDING_MISMATCH",
+    "continuation sequence 2 persisted and predecessor retained",
+    "stale preview rejects repeat write:CONCURRENT_MODIFICATION",
+    "symlink namespace rejected:UNSAFE_NAMESPACE",
+    "continuation remains Draft with no activation or gate acceptance",
+    "source dissent preserved in continuation"
+  ],
+  "checks_passed": 9,
+  "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+  "installed_resources": {
+    "__init__.py": {
+      "path": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/lib/python3.12/site-packages/codex/institutional/__init__.py",
+      "sha256": "9156844c6bf4c6095162cac331546fb5a4477027bce53838c16946a1570b47aa",
+      "bytes": 176
+    },
+    "__main__.py": {
+      "path": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/lib/python3.12/site-packages/codex/institutional/__main__.py",
+      "sha256": "dd1898fcc835a005dfa6a866e07c29703faf7efbe5c5ef73c1a1dbc9cb299d9c",
+      "bytes": 5977
+    },
+    "authority.py": {
+      "path": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/lib/python3.12/site-packages/codex/institutional/authority.py",
+      "sha256": "95946e4a65191dcb8525f59f641abb31e874f3bfeacfc7aae641cf8349320d95",
+      "bytes": 6076
+    },
+    "contracts.json": {
+      "path": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/lib/python3.12/site-packages/codex/institutional/contracts.json",
+      "sha256": "56fb5433b85d404e677d4f78c59b7690d4df390b41bd07e1bdeea52ae438f7ec",
+      "bytes": 5892
+    },
+    "core.py": {
+      "path": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/lib/python3.12/site-packages/codex/institutional/core.py",
+      "sha256": "636c45dc7eed70d0bed4bc80602f6831fd76ef5a688119f082ae7f8fe4743cef",
+      "bytes": 22677
+    },
+    "git_capture.py": {
+      "path": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/lib/python3.12/site-packages/codex/institutional/git_capture.py",
+      "sha256": "8bfb2b10066c2f475ef36fa151e6ace9d00e463b92bccfc1a58b7a46f822476e",
+      "bytes": 2433
+    },
+    "review-formulas.json": {
+      "path": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/lib/python3.12/site-packages/codex/institutional/review-formulas.json",
+      "sha256": "bb334de789fc66e6704b752268c84f32860a218bbc4858b6888822c4f5e23537",
+      "bytes": 54986
+    },
+    "review.py": {
+      "path": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/lib/python3.12/site-packages/codex/institutional/review.py",
+      "sha256": "12ef9992b0b1a7412076cc26abc49cf42028bcb1b8fa94f65ecff9d41fc2d959",
+      "bytes": 28021
+    },
+    "storage.py": {
+      "path": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/lib/python3.12/site-packages/codex/institutional/storage.py",
+      "sha256": "35e7122d388e44eb1badf025a2e69f2dffee0cf473822ca001e4f9f52b2a947f",
+      "bytes": 11707
+    }
+  },
+  "import_origins": {
+    "core": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/lib/python3.12/site-packages/codex/institutional/core.py",
+    "review": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/lib/python3.12/site-packages/codex/institutional/review.py",
+    "storage": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/lib/python3.12/site-packages/codex/institutional/storage.py",
+    "codex_contracts": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/lib/python3.12/site-packages/codex_contracts/__init__.py"
+  },
+  "codex_contracts": {
+    "version": "0.1.0a1",
+    "direct_url": {
+      "archive_info": {
+        "hash": "sha256=bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+        "hashes": {
+          "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96"
+        }
+      },
+      "url": "file:///home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl"
+    },
+    "origin": "locally built historical contracts wheel, not registry"
+  },
+  "codex_ml": {
+    "version": "0.3.0",
+    "direct_url": {
+      "archive_info": {
+        "hash": "sha256=e88afdbc52d79f2155fdadacddac9d2e16cab15e7307822aecdccfe13c9a9c33",
+        "hashes": {
+          "sha256": "e88afdbc52d79f2155fdadacddac9d2e16cab15e7307822aecdccfe13c9a9c33"
+        }
+      },
+      "url": "file:///home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/codex_ml-0.3.0-py3-none-any.whl"
+    }
+  },
+  "network": "Python audit hook denies socket events and subprocess creation with OSError; core falls back to filesystem inventory in non-git external fixture",
+  "authority": "none",
+  "independence": "unverified same-platform fixtures",
+  "G5": "NOT_RUN",
+  "limitations": [
+    "No numerical formula evaluation",
+    "Full declared dependency environment not installed",
+    "Python audit hook is process-local, not kernel network isolation",
+    "Continuation is an isolated test fixture, not parent institutional checkpoint"
+  ]
+}

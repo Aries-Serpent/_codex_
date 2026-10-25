@@ -1,0 +1,12 @@
+{
+  "package-original": {
+    "files_including_manifest": 44,
+    "hashes_verified": true,
+    "modified_by_final_lane": false
+  },
+  "package-changed": {
+    "files_including_manifest": 180,
+    "hashes_verified": true,
+    "modified_by_final_lane": false
+  }
+}

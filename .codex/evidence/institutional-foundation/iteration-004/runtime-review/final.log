@@ -1,0 +1,30 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.10, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/runner/work/_codex_/_codex_
+configfile: pytest.ini
+collected 151 items
+
+tests/institutional/test_authority.py ...............................    [ 20%]
+tests/institutional/test_foundation.py ................................. [ 42%]
+.......                                                                  [ 47%]
+tests/institutional/test_git_capture.py ......                           [ 50%]
+tests/institutional/test_review.py ..................................... [ 75%]
+...............................                                          [ 96%]
+tests/test_packaging_metadata.py ..                                      [ 97%]
+tests/test_packaging_entrypoints.py .                                    [ 98%]
+tests/test_package_dependency_contract.py ...                            [100%]
+
+=============================== warnings summary ===============================
+.venv_ci/lib/python3.12/site-packages/_pytest/config/__init__.py:1464
+  /home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/_pytest/config/__init__.py:1464: PytestConfigWarning: Unknown config option: asyncio_default_fixture_loop_scope
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+.venv_ci/lib/python3.12/site-packages/_pytest/config/__init__.py:1464
+  /home/runner/work/_codex_/_codex_/.venv_ci/lib/python3.12/site-packages/_pytest/config/__init__.py:1464: PytestConfigWarning: Unknown config option: asyncio_mode
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-004/runtime-review/final.xml -
+======================= 151 passed, 2 warnings in 2.78s ========================

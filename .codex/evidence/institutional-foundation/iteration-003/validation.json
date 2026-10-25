@@ -1,0 +1,56 @@
+{
+  "checks": {
+    "black": "PASS",
+    "broader_profile_suite": "BLOCKED_AUTHORITY; six policy cases deselected because they read restricted profiles",
+    "codeql": "NOT_RUN; checker explicitly skipped documentation/test-only change",
+    "compile": "PASS",
+    "git_diff_check": "PASS",
+    "isort": "PASS",
+    "live_CI": "NOT_RUN; no remote execution or PR operations",
+    "mypy_scoped": "PASS; follow-imports=skip, ignore-missing-imports",
+    "package_impact": "No runtime/package resources/dependencies/workflows changed. Seven institutional resources byte-identical to retained wheel; no new build warranted.",
+    "ruff": "PASS"
+  },
+  "classification": "Repository-Internal",
+  "commands": {
+    "policy": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest --noconftest -c /dev/null -p no:cacheprovider -q tests/ci/test_agent_instruction_contract.py -k \"not profile_integrations and not .github/agents\"",
+    "runtime_packaging": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest --noconftest -c /dev/null -p no:cacheprovider -q tests/institutional tests/test_packaging_metadata.py tests/test_packaging_entrypoints.py tests/test_package_dependency_contract.py",
+    "wrapup": "Four explicitly selected functions in tests/ci/test_session_wrapup_autofix.py; 10 parametrized cases. No registry/profile reads."
+  },
+  "counts_overlap": "Six before-state replay cases overlap with six current policy cases; not additional passing cases. Initial fixture failure retained, not hidden.",
+  "historical_artifacts": "All 49 retained iteration-002 artifacts match historical manifest; old checkpoint unchanged.",
+  "historical_gate_status": "G5 NOT_RUN. Other historical gates not re-adjudicated or copied to changed candidate. Policy P1-P8 below use separate meanings.",
+  "results": [
+    {
+      "artifact": "policy-junit.xml",
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 27
+    },
+    {
+      "artifact": "wrapup-junit.xml",
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 10
+    },
+    {
+      "artifact": "runtime-packaging-junit.xml",
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 83
+    },
+    {
+      "artifact": "before-replay-junit.xml",
+      "errors": 0,
+      "failures": 6,
+      "skipped": 0,
+      "tests": 6
+    }
+  ],
+  "source_candidate": "174a7771160725bb6edf54f85d38ed5484753789",
+  "task": "POLICY-06-07/iteration-003",
+  "user_preservation": "Exact entry bytes remain untouched and excluded from task commit."
+}

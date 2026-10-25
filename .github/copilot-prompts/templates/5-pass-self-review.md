@@ -1,14 +1,21 @@
-# 🔍 5-Pass Self-Review Protocol
+# 🔍 Risk-Appropriate Self-Review Dimensions
 
-**Purpose**: Comprehensive quality assurance checklist for Copilot Agent work. This protocol ensures thorough validation before concluding any task or PR work.
+**Purpose**: Optional review checklist under `.codex/CODEBASE_AGENCY_POLICY.md`.
+The legacy filename is retained for reference compatibility, not a minimum pass
+count. Dimensions are selected by risk and applicability; actual checks and gaps
+must be reported truthfully. Self-testing is not independent verification.
 
 **When to Use**:
-- Before finalizing any PR or task
+- When relevant to the authorized task and affected paths
 - After making significant code changes
 - When requested by repository policies
 - As part of iterative refinement cycles
 
-**Mandate**: ALL five passes must be completed with 0 concerns before work can be considered complete. If ANY checkpoint fails, document the issue, create a resolution plan, and execute within the current session.
+**Boundary**: Required checks and security owner/reason classification remain
+binding. Missing optional memory/tools/specialists is an explicit limitation, not
+a startup deadlock. Direct work is valid. Respect read-only tasks, resource limits
+and actual execution approvals; no public retrigger, merge, publication, protected
+settings change or activation is authorized by this checklist.
 
 ---
 
@@ -110,7 +117,7 @@ pip-audit  # Python
 npm audit  # JavaScript
 
 # CodeQL scan
-codeql analyze
+# Use an available supported security scanner; otherwise record NOT_RUN.
 ```
 
 **Common Security Pitfalls to Avoid**:
@@ -162,40 +169,34 @@ pytest tests/integration/ -v
    - Required resources or changes
    - Success criteria for verification
 
-3. **Execute Within Current Session**:
-   - Fix the issue immediately
+3. **Address Relevant Authorized Defects**:
+   - Fix introduced/relevant defects within task authority
    - Re-run the failed checkpoint
    - Continue with remaining checkpoints
 
-4. **NEVER Defer**:
-   - Do not mark as "TODO" or defer to future PR
-   - Only exception: Issues genuinely outside current scope (document reasoning)
-   - If blocked, escalate immediately with detailed explanation
+4. **Preserve Incomplete Work**:
+   - Keep blocked/deferred/pending work visibly incomplete
+   - Record evidence, dissent, mitigation, proposed owner and exact resume target
+   - Stop dependent unsafe/unauthorized work; continue unaffected scoped work
 
 ---
 
 ## 📊 Completion Criteria
 
-✅ **All 5 passes completed**  
-✅ **All checkboxes checked**  
-✅ **0 concerns remaining**  
-✅ **Failure protocol followed for any issues**  
-✅ **Documentation updated to reflect all changes**  
-✅ **🚨 No /tmp/ violations**: Verify with `ls -la /tmp/ | grep -E "\.(md|txt|json|yaml|py)$"`
+- Applicable checks actually run, with failures and NOT_RUN statuses retained
+- Required controls preserved; no claim of approval from checklist completion
+- Unresolved concerns and exact continuation retained
+- Useful task-owned temporary outputs durably retained before cleanup
 
 **Pre-Conclusion Verification**:
 ```bash
-# 1. Check for /tmp/ references in code changes
-git diff --cached | grep -i "/tmp/"
-
-# 2. Verify no important files in /tmp/
-ls -la /tmp/ | grep -E "\.(md|txt|json|yaml|py)$" || echo "✓ No important files in /tmp/"
-
-# 3. Confirm all work products are in repository
+# Inspect only task-owned outputs and retention manifests; filename absence
+# does not prove durable retention. Do not delete unrelated temporary files.
 git status --short
 ```
 
-**Sign-off Statement**: "5-pass self-review complete. 0 concerns remaining. No /tmp/ violations. Ready for submission."
+**Sign-off**: Report exact checks, limitations, unresolved concerns and retention
+evidence. Do not copy a universal successful sign-off statement.
 
 ---
 
@@ -206,13 +207,17 @@ If concerns are found during any pass:
 1. Address the concern
 2. Re-run the affected pass
 3. Re-run any dependent passes
-4. Continue until all passes complete with 0 concerns
+4. Continue within a risk-based budget; retain unresolved findings on exhaustion
 
-**Maximum Iterations**: No hard limit, but typical work completes in 1-3 iterations. If >5 iterations needed, reassess approach.
+**Retries**: Use new evidence and practical limits; no minimum pass count or
+unbounded retry requirement applies.
 
 ---
 
 ## 📝 Usage Examples
+
+The following are synthetic formatting examples, not observed validation,
+independence, CI results or required test counts. Replace them with actual evidence.
 
 ### Example 1: Simple Documentation Update
 

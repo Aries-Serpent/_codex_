@@ -1,0 +1,95 @@
+{
+  "schema": "codex.experience.v1",
+  "id": "codex.experience.v1:05f177ae2ba608dd012efe598f86b2ae05d612eee21604ac8f0eb70a5d0f2d2d",
+  "created_at": "2026-10-25T01:38:56Z",
+  "producer": {
+    "identity": "codex-institutional",
+    "assurance": "unverified"
+  },
+  "evidence_refs": [],
+  "authority_refs": [],
+  "validation_state": "candidate",
+  "lifecycle": "Draft",
+  "supersedes": null,
+  "extensions": {},
+  "payload": {
+    "problem": "Prevent evidence restoration and exemption bridges from falsely satisfying an assurance DAG while retaining institutional continuation compatibility.",
+    "context": "Inactive fixture-only source-to-wheel development; original immutable candidate evaluated before extending the SDK.",
+    "environment": {
+      "source_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+      "observations": [
+        {
+          "path": "review-feedback.json",
+          "sha256": "d2ab636fe41b52ba075653e445f40fe8c09bd402c2765fc062ac3537f6646389"
+        },
+        {
+          "path": "security-and-review.json",
+          "sha256": "72c93db387834922c4ef5b8f06d96700e275bb73daf34feedd85c4939b1e2b5f"
+        },
+        {
+          "path": "integration-decisions.json",
+          "sha256": "4a15e1ef3d0f10b785070eb17dc27d2058ab40c96207657affcdca8c47301da1"
+        },
+        {
+          "path": "assurance-aggregate-verified-cohort.json",
+          "sha256": "8b170dfd9122777bfdcfb2882f3ea8c84a78bb260a59efc9cacb0ddb8ce8a9c0"
+        },
+        {
+          "path": "package-original/gate-status.json",
+          "sha256": "508d5ed12fe5dc762b83c36d94f5f1907526d9fb5c3f642002c5e9fd88aa7345"
+        }
+      ],
+      "changed_wheel": "Pending at this experience observation; separate package-changed receipts must establish its result."
+    },
+    "hypotheses": [
+      "Current evidence state alone is an adequate dependency proof.",
+      "Exempting node execution can safely discard ancestor prerequisites.",
+      "One-MiB assurance record limits can also bound existing institutional continuations."
+    ],
+    "support": [
+      "Historical external wheel harness passed49 checks and nine supplemental checks for exact source3d7babe7233401e0dfd7b792f87a376898db61d0.",
+      "Final corrected source cohort285 distinct cases passed, including107assurance; scoped runtime Bandit/security Ruff passed."
+    ],
+    "against": [
+      "Five pre-fix regressions refuted the first two hypotheses.",
+      "Actual retained continuation is11543409decompressed bytes; the third hypothesis broke compatibility.",
+      "All evidence eligibility/actor assertions remain unauthenticated fixture data."
+    ],
+    "alternatives": [
+      "Reuse review/storage/core rather than create another memory or approval system.",
+      "Retain inert procedure descriptions instead of executing imported commands.",
+      "Reject unsupported disposition kinds instead of claiming seven implemented routes."
+    ],
+    "decision": "Retain an inactive Draft with event-revision-sensitive proofs, dependency-preserving exemptions, one bound nonmutating rejection recommendation and inherited continuation aggregate limits.",
+    "dissent": [
+      "Same-platform review and synthetic independence do not establish G5.",
+      "Integrity hashes and source-grounded fixture coverage do not establish evidence truth or authorized adjudication.",
+      "Whole-distribution dependency conformance remains distinct from the SDK subset experiment."
+    ],
+    "uncertainty": [
+      "Institutional effectiveness and causal benefit remain unknown.",
+      "Trusted lifecycle administration, authenticated independent actors, numerical assessment and production approval remain unsupported."
+    ],
+    "implementation": [
+      "codex.institutional.assurance",
+      "codex.assurance.v1 additive envelope",
+      "Existing core/review/storage reused without policy or authority activation."
+    ],
+    "verification": [
+      "Source receipts:assurance-aggregate-verified-cohort.json and assurance-validation.json.",
+      "Historical package receipts:package-original/.",
+      "Final static reviewer reported no additional high-confidencefinding; not independent verification.",
+      "Python CodeQL skipped for database size:NOT_RUN."
+    ],
+    "outcomes": "unknown",
+    "failure_modes": [
+      "Restoring identical evidence state revives dependent results without a new attempt.",
+      "Exempt intermediate node bypasses an unmet required ancestor.",
+      "Per-artifact limits accidentally reject compatible aggregate continuation records."
+    ],
+    "applicability": "Bounded offline supplied-data assurance mechanics; no executor, authenticated evidence provider, independent approval or activation.",
+    "confidence": "unknown",
+    "next_review": "Changed-candidate external wheel result, source/context/status drift, or independently supplied contradictory evidence."
+  },
+  "integrity": "3d9fe63b3033442f7b6fd2aa3caedaa0964fe68c3014b2daedbb781a5394c359"
+}

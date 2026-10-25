@@ -1,0 +1,93 @@
+{
+  "schema": "codex.institutional.implementation-map.v1",
+  "status": "Draft",
+  "classification": "Repository-Internal",
+  "source_candidate": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+  "authority": "none",
+  "design_references": [
+    {"id": "RD4-DESIGN-ARCH-001", "path": "docs/design/azimuthal-reasoning-integrity.rst", "status": "proposed"},
+    {"id": "RD4-DESIGN-FORMAL-001", "path": "docs/design/azimuthal-formal-model.rst", "status": "proposed"},
+    {"id": "RD4-FORMULA-BRIDGE-001", "path": "src/codex/institutional/review-formulas.json", "status": "proposed notation; 58 stable references, not numerical implementations"}
+  ],
+  "reuse": [
+    "core.canonical/digest/record/Rejected and existing Draft/unverified envelope",
+    "Existing codex.continuation-state.v1, experience records and persistence coordinator",
+    "Existing codex.institutional namespace, contracts.json and codex-ml package",
+    "Existing followup templates, generator and current consumer paths",
+    "Existing physics references retained with bounded-discovery provenance; no compatible registry presumed",
+    "No parallel .codex/rubber-duck memory store or autonomous scheduler"
+  ],
+  "executable_schema": {
+    "id": "codex.review.v1",
+    "kinds": ["manifest", "plan", "lane-output", "history", "recommendation"],
+    "scope": "SDK semantic entry-point checks supplement the deliberately minimal installed envelope schema; this is not 27 implemented standalone contracts."
+  },
+  "contract_traceability": [
+    {"id": "codex.candidate-manifest.v1", "status": "bounded_subset_only", "mapping": "review.candidate_manifest; codex.review.v1/manifest; supplied regular-file bytes, not filesystem discovery"},
+    {"id": "codex.azimuthal-review-context.v1", "status": "bounded_subset_only", "mapping": "Manifest-bound supplied context mapping; no complete standalone context schema"},
+    {"id": "codex.policy-record.v1", "status": "proposed_only"},
+    {"id": "codex.policy-conflict.v1", "status": "proposed_only", "mapping": "Consumer observations retained as Draft evidence, not this runtime schema"},
+    {"id": "codex.azimuthal-dispatch-plan.v1", "status": "bounded_subset_only", "mapping": "review.review_plan; codex.review.v1/plan; declaration/validation, not execution"},
+    {"id": "codex.review-bearing.v1", "status": "bounded_subset_only", "mapping": "review.lane_output; declared lanes, attributed source/normalized findings"},
+    {"id": "codex.review-batch-manifest.v1", "status": "bounded_subset_only", "mapping": "review.reconcile validates supplied output batch; no independent standalone batch record"},
+    {"id": "codex.dynamic-bearing.v1", "status": "proposed_only"},
+    {"id": "codex.rubber-duck-finding.v1", "status": "bounded_subset_only", "mapping": "Validated finding objects inside lane outputs, no complete standalone schema"},
+    {"id": "codex.finding-relation.v1", "status": "bounded_subset_only", "mapping": "Typed relations inside recommendations; source findings retained"},
+    {"id": "codex.evidence.v1", "status": "proposed_only", "mapping": "Evidence-reference coverage is not trusted eligibility/status lifecycle"},
+    {"id": "codex.remediation-response.v1", "status": "bounded_subset_only", "mapping": "review.remediation_adequacy checks original-finding-bound rotated evidence coverage only"},
+    {"id": "codex.change-set.v1", "status": "proposed_only"},
+    {"id": "codex.reconciliation.v1", "status": "bounded_subset_only", "mapping": "review.reconcile initial/meta/final recommendations; no closure/approval"},
+    {"id": "codex.assurance-plan.v1", "status": "proposed_only"},
+    {"id": "codex.assurance-result.v1", "status": "proposed_only"},
+    {"id": "codex.test-result.v1", "status": "proposed_only", "mapping": "Actual logs/JUnit retained without claiming implementation of this contract"},
+    {"id": "codex.authorization.v1", "status": "proposed_only", "mapping": "Existing denial-preserving authority mechanics remain separate; no new authorization grant"},
+    {"id": "codex.blocker.v1", "status": "bounded_subset_only", "mapping": "Bounded typed blocker objects in history/recommendations, exact pending-state resume"},
+    {"id": "codex.resource-profile.v1", "status": "bounded_subset_only", "mapping": "SDK hard resource limits, not full profile calibration or runtime budget authority"},
+    {"id": "codex.exception.v1", "status": "proposed_only"},
+    {"id": "codex.lifecycle-event.v1", "status": "bounded_subset_only", "mapping": "Ordered UUIDv4 events inside codex.review.v1/history; no global uniqueness service or tamperproof log"},
+    {"id": "codex.resolution-snapshot.v1", "status": "proposed_only"},
+    {"id": "codex.continuation-state.v1", "status": "existing_compatible_reuse", "mapping": "review.attach_continuation returns successor for existing coordinator; no second v1"},
+    {"id": "codex.resilience-record.v1", "status": "proposed_only"},
+    {"id": "codex.renderer-validation.v1", "status": "proposed_only", "mapping": "visual-check.json is an observation receipt, not this implemented schema"},
+    {"id": "codex.schema-migration.v1", "status": "proposed_only"}
+  ],
+  "formulas": {
+    "ids": "RD4-F001..RD4-F058",
+    "numerical_evaluators": 0,
+    "conceptual_noncomputable": ["RD4-F054"],
+    "source_prose_not_displayed_equations": ["RD4-F038", "RD4-F046", "RD4-F047"],
+    "composite_extracts": ["RD4-F056", "RD4-F057"],
+    "complete_composite": "RD4-F058",
+    "source": "Parent-transcribed user expressions retained separately from normalized notation; no upstream bytehash verification.",
+    "corrections": "H-known means known uncertainty, not invented health. Typography/normalization differences are explicit; no empirical calibration or mathematical proof."
+  },
+  "deployment": {
+    "implemented": "Read-only pure SDK over supplied bytes/records; caller persists through existing mechanisms.",
+    "proposed_profiles": ["rubber-duck-reconciler", "azimuthal-bearing-reviewer", "azimuthal-review-orchestrator"],
+    "profiles_created": [],
+    "effective_configuration": {
+      "filename": null,
+      "source_level": null,
+      "digest": null,
+      "precedence": "unknown",
+      "tools": null,
+      "MCP_allowlist": null,
+      "target_environment": "proposed modes only",
+      "hosted_runtime_version": null,
+      "enforcement": "unverified"
+    },
+    "effective_filename_source_digest_precedence": "unavailable; no profiles deployed",
+    "hosted_runtime_version_tool_and_MCP_enforcement": "unverified",
+    "modes": ["profile-only", "CLI/SDK-hosted", "cloud-agent", "IDE"],
+    "caveat": "Plan tool whitelists validate data; they do not prove hosted tool enforcement. No dispatch/authority follows from a profile name."
+  },
+  "roadmap": [
+    {"order": 1, "work": "Bound remediation/disposition responses and assurance DAG planning", "next_acceptance": "Original finding/candidate/context binding; reject cycles, missing prerequisite nodes and bypassed requirements; scoped blockers and nonmutating routes; source and external wheel examples"},
+    {"order": 2, "work": "Evidence eligibility/expiry/revocation and reopening", "next_acceptance": "Stale/disputed/revoked evidence cannot satisfy dependent requirements; history preserved"},
+    {"order": 3, "work": "Dynamic rotation, recurrence and richer independence assessment", "next_acceptance": "Explicit admission/budgets/membership rules, critical unknowns retained, no role-name-derived independence"},
+    {"order": 4, "work": "Calibrated resilience and sensitivity, where justified", "next_acceptance": "Analytic boundaries, unknown/zero-weight behavior and critical floors; scores cannot close or authorize"},
+    {"order": 5, "work": "Authorized disposition/approval integrations, audit and retention controls", "next_acceptance": "Applicable external authority, protected controls and independent assurance; no self-adoption"},
+    {"order": 6, "work": "Representative downstream profiles and capability distribution", "next_acceptance": "Actual effective environment/tool/MCP/precedence visibility, explicit opt-in and independent reproduction"}
+  ],
+  "program_limits": "This bounded SDK/design/consumer slice does not complete the broader institutional, ecology, knowledge-lifecycle, governance-amendment or policy-audit program."
+}

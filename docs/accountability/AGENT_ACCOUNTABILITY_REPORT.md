@@ -1,3 +1,99 @@
+## Institutional authority continuation — iteration 002, 2026-10-24
+
+Assigned source HEAD is `2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9`;
+the historical implementation at `592e882f516744937957a2287fd93ad9d0c870ee`
+matches its institutional modules/tests/packaging exactly. Historical continuation
+is structurally valid but stale; it is preserved, not relabeled current.
+The source census contains 33,320 paths and 13,147 lexical candidates.
+Historical 24 inspection evidence locations reconcile to 13 lexical-relevant
+inspections; the other 11 were integration/policy reads outside that classifier.
+The new six-component semantic cohort is source evidence, not six runtime tests
+or a complete agent census. Four cohort paths match the lexical relevant set.
+
+The original historical wheel is unavailable in the bounded inspected locations.
+An immutable-source rebuild passes the exact 40-case historical harness externally;
+its bytes differ from the historical digest. The initial registry dependency
+installation failed for unavailable `codex-contracts`; a declared local contracts
+wheel enabled installation. This is candidate-source rebuild validation, not
+original-artifact or independent reproduction.
+
+Implemented candidate `22a75dda20c14ccf0753bfde6d7d72e9b1268397` adds the
+typed unavailable-provider validation boundary, additive authority-evaluation
+contract/CLI, UTC expiry/revocation/separation/binding mechanics and bounded
+offline Git capture. Production activation remains denied, including fixture
+positive paths. No governance policy, operational agent, registry, release
+authority or retirement state is activated.
+
+Source and installed-wheel harnesses each pass 77 cases; the installed cohort
+also passes with socket creation denied. These overlapping counts are not summed.
+Six existing packaging regressions pass. Institutional statement coverage is
+92.02% (611/664), branch coverage 86.81% (250/288), combined 90.44%.
+Black/isort/Ruff, scoped mypy, compile and diff checks pass.
+CodeQL again skipped analysis for database size; no completed scan is claimed.
+Scoped Bandit completes with four low findings and explicit dispositions.
+The same-platform reviewer found a DST-fold comparison issue, fixed by UTC
+normalization and tested. This feedback does not establish independent approval.
+
+`historical-reproduction` reported a lane-specific workspace constraint and
+performed no reproduction; the coordinator completed it directly.
+`authority-ecology` supplied source leads; unsupported integrated-trust-chain
+conclusions are explicitly rejected in the retained reconciliation.
+`authority-boundary-review` supplied read-only implementation feedback.
+G5 remains NOT_RUN; approval, activation and publication remain unperformed.
+
+All useful task-temporary artifacts (both rebuilt wheels, contracts wheel,
+exact harnesses, environment records, manifests and logs) are retained in
+`.codex/evidence/institutional-foundation/iteration-002/`, not solely on runner
+scratch storage. The existing user startup packet bytes are preserved without
+index flags and are kept out of task commits. The source-bound successor
+checkpoint records expected drift after evidence-only commits and the next
+deterministic reproduction action; historical checkpoints remain untouched.
+
+## Institutional foundation candidate — 2026-10-24
+
+Task `CODEX-INSTITUTIONAL-FOUNDATION-001` starts from
+`159830ca8b9e689cae443fb7c1cc0f36cfb7d667` on the assigned institutional branch.
+The existing startup packet's timestamp-only dirty bytes are preserved, not
+included in task commits. The complete source census contains 33,298 paths;
+13,139 lexical candidates include 13 directly inspected relevant paths and
+13,126 unresolved semantic inspections, not a claim of exhaustive understanding.
+Evidence, actual source/wheel results and the task continuation are under
+`.codex/evidence/institutional-foundation/`.
+
+The coordinator implements the inactive slice. `reuse-investigation` performed
+bounded read-only research; `candidate-safety-review` supplied implementation
+feedback. Neither actor has independently established identity or approval
+assurance. Review identified a namespace symlink race and multiple-evidence
+binding bypass; directory-descriptor writes and cardinality rejection address
+these with regression tests. A duplicate source verification was removed.
+No governance adoption, release, workflow activation, new persistent agent,
+deprecation or retirement is performed. Source self-tests and wheel self-tests
+are not independent reproduction or final acceptance. See the inactive ADR at
+`docs/adr/institutional-foundation-001.json` and scoped runtime/recovery guide at
+`docs/institutional-foundation.rst`.
+
+**Observed final candidate:** `592e882f516744937957a2287fd93ad9d0c870ee`.
+Source and fresh external installed-wheel harness each pass 40 cases; six
+existing packaging tests pass. Statement coverage is 90.39%, combined
+statement/branch coverage 88.75%. Full declared dependencies install in a fresh
+venv and `pip check` passes. Wheel SHA-256:
+`1f52c08f1deb5f5487692509cd63253d67f78571bd73c14e647ba5fe080e65a6`.
+Git inspection now disables target hooks/fsmonitor, network transports/lazy
+fetching and optional writes. Final source and wheel observations are not
+summed; the prior 38-case candidate remains separate historical evidence.
+
+G0–G4 and G6–G8 pass only their declared development/technical scopes; G5 is
+NOT_RUN. Independent approval and activation remain unavailable/unperformed.
+CodeQL analysis was skipped twice because the database was too large; zero
+reported alerts is not a completed scan. Bandit returned four low findings,
+with dispositions and remaining environment assumptions in `validation.json`.
+Complete-suite CI and full CodeQL acceptance are not claimed. The retained
+continuation is schema/integrity/reference validated against the candidate
+source at collection; subsequent evidence-only commits intentionally change
+the live tree, so resume must revalidate references rather than reuse a stale
+mutation plan. All new task work is saved; temporary wheel/log/environment
+retention still requires an authorized channel before runner cleanup.
+
 ## Continuation: 2026-10-24 — Isolated Phase 2 acceptance and evidence reconciliation
 
 **Status:** Phase 2 remains incomplete. This entry supersedes only the current-state

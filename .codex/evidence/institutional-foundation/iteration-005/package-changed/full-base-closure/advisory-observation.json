@@ -1,0 +1,13 @@
+{
+  "tool": "runtime-tools-gh-advisory-database",
+  "result": "No vulnerabilities found",
+  "resolved_third_party_versions_checked": 52,
+  "resolution_report": "resolution-report.json",
+  "additional_prechecked_build_tools": [
+    "setuptools==81.0.0",
+    "wheel==0.48.0",
+    "packaging==26.3"
+  ],
+  "pip_bootstrap_prechecked": "25.0.1",
+  "scope": "Selected versions in resolver report, not proof of absence of unknown vulnerabilities."
+}

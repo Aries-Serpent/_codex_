@@ -53,4 +53,9 @@
 - [ ] Improved CI time
 - [ ] No regressions
 
-**Copilot Instructions**: Execute consolidation steps in order. Validate at each stage.
+**Copilot Instructions**: Prepare authorized scoped consolidation steps and validate
+at each stage under `.codex/CODEBASE_AGENCY_POLICY.md`. Read-only tasks permit no
+edits or dispatch. Workflow activation, deprecation/adoption and publication require
+applicable authorization; preparing a patch is not permission to execute it.
+Retain dissent, unresolved findings, proposed owners and exact next actions.
+Required security owner/reason checks and genuine review/execution controls remain.

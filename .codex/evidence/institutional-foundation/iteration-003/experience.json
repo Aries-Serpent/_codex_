@@ -1,0 +1,67 @@
+{
+  "authority_refs": [],
+  "created_at": "2026-10-24T22:35:41Z",
+  "evidence_refs": [
+    "codex.trust-evidence.v1:522b442d1e7afcd2821b2ac1263f60a0d43bf96f23f25f9b0c18f9f7266a7c75",
+    "codex.audit-finding.v1:3db290b353b0b9e9cc6bd73479fb6fba16da26a9d0709a69e41671ae329f1029"
+  ],
+  "extensions": {
+    "policy_iteration_003": {
+      "failure": "First JSON-array comment fixture violated actual JSONL scanner contract; fixture corrected; original failure retained.",
+      "limits": "No independent approval, operational adoption or global blocker-free claim.",
+      "observation": "Three scoped findings revised; six original-guidance replay checks fail and current scoped regressions pass.",
+      "rejected_inference": "No --warn-only flag does not imply wording-based denial when actual scanner returns0.",
+      "source_candidate": "174a7771160725bb6edf54f85d38ed5484753789"
+    }
+  },
+  "id": "codex.experience.v1:5d80c87645be99529e2ecc636a9fec59d7dcb11d06429bc0c416033fc2ccce27",
+  "integrity": "d691ab2aae8c1da96389996fdbe747c534c7abe5a8e0cc156d3bc6a33737e9e4",
+  "lifecycle": "Draft",
+  "payload": {
+    "against": [
+      "Semantic review not performed."
+    ],
+    "alternatives": [
+      "Enhance existing script checkpoint manager after compatibility work."
+    ],
+    "applicability": "Local metadata inspection only",
+    "confidence": "unknown",
+    "context": "Inactive development; imported records are inert data.",
+    "decision": "Retain Draft candidate; do not activate.",
+    "dissent": [
+      "A separate installed adapter adds maintenance."
+    ],
+    "environment": {
+      "coverage": "git-tree"
+    },
+    "failure_modes": [
+      "DETERMINISTIC_CHECK_ONLY",
+      "Alternative cause: integration gap does not establish agent ineffectiveness.",
+      "Contradiction search limited to structural checks; semantic review pending.",
+      "Untrusted content and its digest can both be replaced; no authenticated approval."
+    ],
+    "hypotheses": [
+      "Closed contracts and previews permit safe candidate development."
+    ],
+    "implementation": [
+      "codex.institutional"
+    ],
+    "next_review": "Independent reproduction or source/configuration drift",
+    "outcomes": "unknown",
+    "problem": "Portable evidence-gated institutional candidate",
+    "support": [
+      "codex.trust-evidence.v1:522b442d1e7afcd2821b2ac1263f60a0d43bf96f23f25f9b0c18f9f7266a7c75"
+    ],
+    "uncertainty": [
+      "Effectiveness and downstream outcomes unknown."
+    ],
+    "verification": []
+  },
+  "producer": {
+    "assurance": "unverified",
+    "identity": "codex-institutional"
+  },
+  "schema": "codex.experience.v1",
+  "supersedes": null,
+  "validation_state": "candidate"
+}

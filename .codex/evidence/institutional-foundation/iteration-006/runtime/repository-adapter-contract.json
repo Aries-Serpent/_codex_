@@ -1,0 +1,32 @@
+{
+  "status": "PREPARED_NOT_EXECUTED_PENDING_GENUINE_ANALYTICAL_OUTPUTS",
+  "input": "repository-input.json",
+  "required_keys": [
+    "source_commit", "wheel_sha256", "files", "context",
+    "lanes", "mandatory", "critical", "analytical_outputs", "relations"
+  ],
+  "source_commit": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+  "wheel_sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00",
+  "files": "Use exact path, sha256, mode entries from immutable-source.json: assurance.py, contracts.json, core.py, storage.py",
+  "context": "Must include source_commit, wheel_sha256 and nonempty retention_limits; include genuine review scope and evidence receipts",
+  "lanes": "Public review.review_plan lane declarations: id,bearing,actor,run,dissent,required,coverage,tools",
+  "analytical_outputs": "Actual coordinator-supplied objects with lane,source,findings; never fabricated by this adapter",
+  "relations": "Actual attributed finding relations, using lane-id/finding-id references",
+  "execute": "Unset PYTHONPATH; from runtime/work invoke runtime/cache/venv/bin/python -I -B runtime/workflow.py repository using absolute paths",
+  "authority": "none",
+  "G5": "NOT_RUN",
+  "fixture_only": true,
+  "residual_constraints": [
+    "Coordinator reports 151 missing historical log byte streams; do not reconstruct them or rerun historical validators.",
+    "Retain at least one unresolved source-backed concern and final BLOCKED assurance result.",
+    "The cached-recommendation-string hypothesis is analyst wording, not a code-source quotation.",
+    "Narrow rejection is supported only through assurance.validate_artifact semantic replay, not generic storage admission.",
+    "Core child schema checks do not imply assurance semantic dispatch or candidate manifest-to-inventory association.",
+    "Hostile whole-history resealing remains unsupported.",
+    "Next improvement belongs to existing coordinator validation/candidate association; no new agent or runtime patch."
+  ],
+  "no_checkpoint_write": true,
+  "actual_workspace": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime",
+  "execution_location": "Fresh noneditable installed SDK environment and runtime cwd were inside the repository checkout; isolated Python and installed origins do not establish outside-checkout execution",
+  "cleanup": "Owned runtime/cache and runtime/work removed after retaining installation reports, harness, inputs, commands and results"
+}

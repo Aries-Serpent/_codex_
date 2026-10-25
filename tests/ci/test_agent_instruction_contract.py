@@ -1,7 +1,12 @@
 """Regressions for scoped preparation, not claims about hosted permissions."""
 
 import re
+import runpy
+import shlex
+import subprocess
+import sys
 from pathlib import Path
+from types import ModuleType, SimpleNamespace
 
 import pytest
 import yaml
@@ -19,6 +24,7 @@ CURRENT_GUIDANCE = (
     ".github/agents/docs/AGENTS.md",
     ".codex/docs/COPILOT_AGENT_PROMPT_GUIDE.md",
     ".github/copilot-prompts/active/SESSION-DIAGNOSTIC-PROTOCOL.md",
+    ".codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md",
 )
 
 
@@ -93,7 +99,9 @@ def test_authority_references_do_not_assert_unqualified_admin_or_ttl_grants(path
         ".github/workflows/strict-no-deferral-security.yml",
     ),
 )
-def test_existing_workflow_wording_scans_are_advisory(path):
+def test_existing_workflow_wording_scans_are_advisory(path, tmp_path, monkeypatch):
+    from scripts.ci import check_deferral_language
+
     workflow = yaml.safe_load((ROOT / path).read_text())
     runs = [
         step.get("run", "") for job in workflow["jobs"].values() for step in job.get("steps", [])
@@ -105,7 +113,31 @@ def test_existing_workflow_wording_scans_are_advisory(path):
         if "python scripts/ci/check_deferral_language.py" in line
     ]
     assert scanner_lines
-    assert all("--warn-only" in line for line in scanner_lines)
+    sample = "This is out of scope; defer to a future session."
+    body = tmp_path / "body.txt"
+    body.write_text(sample)
+    comments = tmp_path / "comments.json"
+    comments.write_text(
+        '{"body": "' + sample + '", "created_at": "2026-10-24T00:00:00Z", '
+        '"user": {"login": "copilot[bot]"}}\n'
+    )
+    monkeypatch.setenv("DEFERRAL_SCANNER_ML", "0")
+
+    def git_log(command, **kwargs):
+        assert command == ["git", "log", "--format=%B", "-n", "10"]
+        return SimpleNamespace(stdout=sample)
+
+    monkeypatch.setattr(subprocess, "run", git_log)
+    for line in scanner_lines:
+        arguments = shlex.split(line)[2:]
+        for flag, value in (
+            ("--pr-body", str(body)),
+            ("--pr-comments", str(comments)),
+            ("--since", "2000-01-01T00:00:00Z"),
+        ):
+            if flag in arguments:
+                arguments[arguments.index(flag) + 1] = value
+        assert check_deferral_language.main(arguments) == 0
 
 
 def test_security_owner_reason_checks_remain_blocking_with_scoped_handoff(tmp_path):
@@ -159,3 +191,91 @@ def test_scope_advice_does_not_make_cli_security_classification_optional(tmp_pat
         ["check", "--paths", str(missing), "--text", "This fix is out of scope."],
     )
     assert security_evidence.main() == 1
+
+
+CTEP_GUIDANCE = (
+    ".github/AGENTS.md",
+    ".github/docs/Copilot_Task_Execution_Protocol.md",
+    ".github/docs/CTEP_Quick_Reference.md",
+    ".github/docs/CTEP_Usage_Examples.md",
+)
+
+
+@pytest.mark.parametrize("path", CTEP_GUIDANCE)
+def test_ctep_accounts_for_incomplete_work_without_expanding_authority(path):
+    text = (ROOT / path).read_text()
+    assert "Total = Completed + Blocked + Deferred + Pending" in text
+    assert "incomplete" in text.lower()
+    assert "owner" in text.lower() and "next action" in text.lower()
+    assert "read-only" in text.lower()
+    assert "approval" in text.lower()
+    assert "security owner/reason" in text.lower()
+    assert "CODEBASE_AGENCY_POLICY.md" in text
+    assert "Complete ALL tasks" not in text
+    assert "Skipped = 0" not in text
+
+
+def test_ctep_mixed_state_example_does_not_claim_completion():
+    text = (ROOT / ".github/docs/CTEP_Usage_Examples.md").read_text()
+    example = text.split("### Mixed-state accounting example\n", 1)[1]
+    rows = re.findall(
+        r"^\| (.+?) \| (Completed|Blocked|Deferred|Pending) \| (.+?) \|$", example, re.M
+    )
+    assert len(rows) == 4
+    assert {row[1] for row in rows} == {"Completed", "Blocked", "Deferred", "Pending"}
+    assert all(row[2] for row in rows)
+    assert "no activation" in example
+    assert "not completed implementation or independent approval" in example
+
+
+def test_preload_consumer_prints_scoped_reference_with_optional_context_missing(
+    tmp_path, monkeypatch, capsys
+):
+    # Exercise the real loader against disposable inputs, never the session index.
+    copy = ".codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md"
+    for relative in (copy, ".codex/CODEBASE_AGENCY_POLICY.md"):
+        destination = tmp_path / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_text((ROOT / relative).read_text())
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setitem(sys.modules, "scripts.ci.session_query", None)
+    optimizer = ModuleType("scripts.cognitive.context_window_optimizer")
+    optimizer.truncate_text = lambda text, max_chars: text[:max_chars]
+    monkeypatch.setitem(sys.modules, optimizer.__name__, optimizer)
+    runpy.run_path(str(ROOT / ".github/scripts/session_preload.py"))
+    output = capsys.readouterr().out
+    assert "agent_context.json not found" in output
+    assert "ordinary authorized" in output
+    assert "without a PR" in output
+    assert "Direct execution is a valid assignment" in output
+    assert "Missing optional memory" in output
+    assert "not operational activation" in output
+    assert "Independent verification remains NOT_RUN" in output
+    assert "Actual GitHub permissions, approvals" in output
+    assert "Before ANY bash/grep/edit" not in output
+    assert "parallel_validation(" not in output
+    assert "Plans without agent bindings are non-compliant" not in output
+    assert list(tmp_path.rglob("*session*")) == []
+
+
+def test_legacy_wording_flags_cannot_turn_handoff_into_an_execution_gate(monkeypatch):
+    from scripts.ci import check_deferral_language
+
+    monkeypatch.setenv("DEFERRAL_SCANNER_ML", "0")
+    for flag in ("--strict", "--warn-only"):
+        assert (
+            check_deferral_language.main(
+                ["--text", "This is out of scope; defer to a future session.", flag]
+            )
+            == 0
+        )
+
+
+def test_advisory_wording_does_not_hide_missing_input(tmp_path, monkeypatch):
+    from scripts.ci import check_deferral_language
+
+    monkeypatch.setenv("DEFERRAL_SCANNER_ML", "0")
+    assert (
+        check_deferral_language.main(["--pr-body", str(tmp_path / "missing.txt"), "--warn-only"])
+        == 2
+    )
