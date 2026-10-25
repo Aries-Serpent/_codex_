@@ -1,0 +1,55 @@
+{
+  "classification": "FACT: retained evidence reconciliation, not owner disposition",
+  "status": "BLOCKED_AUTHORITY",
+  "pending_node": "retention_security",
+  "ready": false,
+  "reason": "declared-blocked",
+  "newer_explicit_owner_disposition_found": false,
+  "owner_comment_search_scope": "PR5717 comments inspected by evidence-lane; retained iteration006 and current base. No exhaustive external search or credential probing.",
+  "missing_logs": {
+    "count": 151,
+    "expected_bytes": 171556,
+    "expected_empty_paths": 40,
+    "full_inventory": ".codex/evidence/institutional-foundation/iteration-006/security/retention-aggregate.json",
+    "verified_present": 266,
+    "dependent_claims": [
+      "Historical raw-log retention completeness",
+      "Claims requiring exact original command output rather than surviving structured/JUnit summaries"
+    ],
+    "not_automatic_failures": "Missing original output does not establish that the historical test failed.",
+    "decision_requested": "Recover authorized original bytes with recorded hashes, or an explicit existing-policy retention disposition. Fresh runs are new evidence only."
+  },
+  "credential_like_findings": {
+    "initial_unresolved": 13,
+    "later_unresolved": 11,
+    "scope_reconciliation": "Two contexts reclassified by targeted three-source static review, not blanket clearance.",
+    "safe_id_and_location_inventory": ".codex/evidence/institutional-foundation/iteration-006/security/triage-redacted.json",
+    "snapshot_comparison": ".codex/evidence/institutional-foundation/iteration-006/security/three-source-static-triage.json",
+    "summary": ".codex/evidence/institutional-foundation/iteration-006/security/triage-summary.json",
+    "dependent_claims": ["Security acceptance", "Affected-content disclosure clearance"],
+    "decision_requested": "Security owner determines validity, handling and disclosure; no matched values copied, no credential tests or rotation attempted."
+  },
+  "user_captures": {
+    "retained_history": ".codex/evidence/institutional-foundation/iteration-006/snapshot-reconciliation.json",
+    "historical": [
+      "a6442c9e3865611917424100f05e889a7c470975",
+      "64cd6ebed63d14a16e21079e4c67a318ccc92373"
+    ],
+    "new_progress_tool_capture": "621a57cea880fe2517338db232bc888a3d8d55db",
+    "dependent_claim": "G0 clean user-change exclusion",
+    "decision_requested": "Owner-reviewed forward handling only; no silent reversal or history rewriting."
+  },
+  "codeql": {
+    "historical_G4": "NOT_RUN",
+    "historical_reason": "Python scan skipped for size; subsequent checker errored before analysis",
+    "current": "Pending separate actual checker observation; scoped Bandit does not establish full G4."
+  },
+  "authority": {
+    "G5": "NOT_RUN",
+    "approval": "NOT_RUN",
+    "activation": false,
+    "publication": false,
+    "merge_is_clearance": false
+  },
+  "isolated_development": "Owner-only dependent acceptance stays blocked; local safe implementation, fixture tests and draft PR are not represented as owner acceptance."
+}

@@ -150,7 +150,8 @@ def validate(value: Any) -> None:
             raise Rejected("CENSUS_RECONCILIATION_FAILED", 5)
 
 
-def load(path: Path) -> dict[str, Any]:
+def load(path: Path, *, inspection_only: bool = False) -> dict[str, Any]:
+    """Load inert records; inspection_only preserves structural access to rejected legacy data."""
     if path.is_symlink() or not path.is_file():
         raise Rejected("UNSAFE_INPUT", 5)
     if path.stat().st_size > MAX_BYTES:
@@ -178,6 +179,15 @@ def load(path: Path) -> dict[str, Any]:
     except (ValueError, RecursionError) as exc:
         raise Rejected("MALFORMED_JSON", 5) from exc
     validate(value)
+    if not inspection_only:
+        if value["schema"] == "codex.assurance.v1":
+            from .assurance import validate_artifact
+
+            validate_artifact(value)
+        elif value["schema"] == "codex.continuation-state.v1":
+            findings = inspect_candidate(value)
+            if findings:
+                raise Rejected("INVALID_CANDIDATE:" + ",".join(findings))
     return value
 
 
@@ -379,6 +389,10 @@ def inspect_candidate(value: dict[str, Any]) -> list[str]:
     for index, child in enumerate(value["payload"]["records"]):
         try:
             validate(child)
+            if child["schema"] == "codex.assurance.v1":
+                from .assurance import validate_artifact
+
+                validate_artifact(child)
             supported.append(child)
         except Rejected as exc:
             findings.append(f"record[{index}]:{exc.reason}")
@@ -406,6 +420,13 @@ def inspect_candidate(value: dict[str, Any]) -> list[str]:
     for schema in ("codex.experience.v1", "codex.trust-evidence.v1", "codex.agent-role.v1"):
         if not any(r["schema"] == schema for r in supported):
             findings.append(f"REQUIRED_RECORD_MISSING:{schema}")
+    if not findings:
+        from .admission import inspect_associations
+
+        try:
+            inspect_associations(value)
+        except Rejected as exc:
+            findings.append(exc.reason)
     return sorted(set(findings))
 
 
@@ -563,6 +584,13 @@ def authority_diagnostics(claim: dict[str, Any], artifact: str, target: str) -> 
 
 def verify(value: dict[str, Any], root: Path) -> list[str]:
     findings = inspect_candidate(value)
+    if not findings:
+        from .admission import inspect_associations
+
+        try:
+            inspect_associations(value, root)
+        except Rejected as exc:
+            findings.append(exc.reason)
     config = value["payload"]["configuration"]
     if config.get("contracts_digest") != digest(contracts()):
         findings.append("CONTRACT_DRIFT")

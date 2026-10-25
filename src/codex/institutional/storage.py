@@ -10,6 +10,7 @@ from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any
 
+from . import admission
 from .core import (
     MAX_BYTES,
     NAMESPACE,
@@ -22,6 +23,8 @@ from .core import (
     validate,
     verify,
 )
+
+MAX_CHECKPOINTS = 128
 
 
 def installation() -> dict[str, Any]:
@@ -52,7 +55,10 @@ def plan(root: Path, value: dict[str, Any], expected: str | None = None) -> dict
     findings = inspect_candidate(value)
     if findings:
         raise Rejected("INVALID_CANDIDATE:" + ",".join(findings))
+    if value["payload"]["sequence"] > MAX_CHECKPOINTS:
+        raise Rejected("BLOCKED_RESOURCE_LIMIT", 4)
     root = safe_root(root)
+    admission.inspect_associations(value, root)
     ns = root / NAMESPACE
     checkpoint = ns / "checkpoint.json"
     marker = ns / "ownership.json"
@@ -71,19 +77,14 @@ def plan(root: Path, value: dict[str, Any], expected: str | None = None) -> dict
                 raise Rejected("HISTORY_COLLISION", 7)
     old = None
     if checkpoint.exists() or checkpoint.is_symlink():
-        old = load(checkpoint)
+        old = recover(root)
         if expected != digest(old):
             raise Rejected("CONCURRENT_MODIFICATION", 7)
-        if value["payload"]["predecessor"] != expected:
-            raise Rejected("PREDECESSOR_MISMATCH", 7)
-        if value["payload"]["sequence"] != old["payload"]["sequence"] + 1:
-            raise Rejected("SEQUENCE_MISMATCH", 7)
-        if value["payload"]["session_id"] != old["payload"]["session_id"]:
-            raise Rejected("SESSION_MISMATCH", 7)
-        if old["extensions"] != value["extensions"]:
-            raise Rejected("EXTENSION_LOSS_PROHIBITED", 7)
+        admission.transition(old, value)
     elif expected is not None or value["payload"]["predecessor"] is not None:
         raise Rejected("MISSING_PREDECESSOR", 7)
+    elif value["payload"]["sequence"] != 1:
+        raise Rejected("SEQUENCE_MISMATCH", 7)
     return {
         "operation": "candidate-write",
         "paths": [str(marker), str(checkpoint)],
@@ -95,6 +96,35 @@ def plan(root: Path, value: dict[str, Any], expected: str | None = None) -> dict
         "previous": digest(old) if old else None,
         "installation": installation(),
     }
+
+
+def recover(root: Path, expected: str | None = None) -> dict[str, Any]:
+    """Replay retained predecessors; expected is an optional externally trusted anchor.
+
+    Local digests alone cannot detect wholesale replacement of an entire chain.
+    Recovery validates semantics/continuity, not current source applicability.
+    """
+    root = safe_root(root)
+    namespace = root / NAMESPACE
+    current = load(namespace / "checkpoint.json")
+    if expected is not None and digest(current) != expected:
+        raise Rejected("RECOVERY_ANCHOR_MISMATCH", 7)
+    child = current
+    for _ in range(MAX_CHECKPOINTS):
+        predecessor = child["payload"]["predecessor"]
+        if predecessor is None:
+            if child["payload"]["sequence"] != 1:
+                raise Rejected("SEQUENCE_MISMATCH", 7)
+            return current
+        if re.fullmatch("[a-f0-9]{64}", predecessor) is None:
+            raise Rejected("PREDECESSOR_MISMATCH", 7)
+        path = namespace / f"previous-{predecessor}.json"
+        if not path.is_file() or path.is_symlink():
+            raise Rejected("MISSING_PREDECESSOR", 7)
+        previous = load(path)
+        admission.transition(previous, child)
+        child = previous
+    raise Rejected("BLOCKED_RESOURCE_LIMIT", 4)
 
 
 def _open_chain(path: Path) -> int:

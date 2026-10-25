@@ -119,6 +119,23 @@
         "predecessor": {"type": ["string", "null"]},
         "gates": {"type": "object", "additionalProperties": {"enum": ["PASS", "FAIL", "NOT_RUN", "BLOCKED_AUTHORITY", "BLOCKED_RESOURCE_LIMIT", "NOT_APPLICABLE_WITH_RATIONALE"]}},
         "records": {"type": "array", "items": {"type": "object"}},
+        "assurance_bindings": {
+          "type": "array", "maxItems": 128,
+          "items": {
+            "type": "object",
+            "required": ["artifact_digest", "candidate_ref", "source_sha", "dirty_tree", "configuration_digest", "review_binding", "review_plan_digest"],
+            "properties": {
+              "artifact_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "candidate_ref": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "source_sha": {"type": ["string", "null"]},
+              "dirty_tree": {"type": "string"},
+              "configuration_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "review_binding": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "review_plan_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+            },
+            "additionalProperties": false
+          }
+        },
         "actors": {"type": "object"}, "blockers": {"type": "array"},
         "findings": {"type": "array"}, "rejected_hypotheses": {"type": "array"},
         "uncertainty": {"type": "array"}, "next_action": {"type": "object"},
