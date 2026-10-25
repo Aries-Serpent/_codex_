@@ -1,0 +1,128 @@
+{
+  "schema": "codex.external-wheel-observation.v1",
+  "source_commit": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+  "source_tree": "0e46298906ca545992ecf0b644fabc913d88ccc3",
+  "previous_source_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+  "status": "PASS_FINAL_EXACT_CANDIDATE_BASE_CLOSURE_AND_SELECTED_SDK_VALIDATION",
+  "source_code_modified": false,
+  "changed_paths_since_reviewed_candidate": [
+    "docs/assurance-review.rst"
+  ],
+  "build_source_bytes_equal_previous_candidate": true,
+  "source_snapshot": {
+    "files": 2205,
+    "export_ignored_exact_blobs_restored": 69,
+    "postbuild_original_blob_reverification": "PASS"
+  },
+  "wheels": [
+    {
+      "wheel": "codex_contracts-0.1.0a1-py3-none-any.whl",
+      "name": "codex-contracts",
+      "version": "0.1.0a1",
+      "bytes": 9381,
+      "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+      "origin": "Locally built from exact final immutable scoped source; not registry-only"
+    },
+    {
+      "wheel": "codex_ml-0.3.0-py3-none-any.whl",
+      "name": "codex-ml",
+      "version": "0.3.0",
+      "bytes": 4412691,
+      "sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00",
+      "origin": "Locally built from exact final immutable scoped source; not registry-only"
+    }
+  ],
+  "full_declared_base_dependencies": {
+    "status": "PASS",
+    "direct_base_requirements_checked": 29,
+    "installation_exit": 0,
+    "pip_check_exit": 0,
+    "pip_check_after_test_tools_exit": 0,
+    "install_command": "commands.json: full-base-install.log entry; no --no-deps and no optional extras",
+    "resolved_versions": "resolution-report.json",
+    "actual_install_origins": "install-report.json",
+    "installed_versions": "full-base-distributions.json",
+    "local_contracts": "Locally built codex-contracts wheel via --find-links; not registry-only assurance."
+  },
+  "assurance_tests": {
+    "status": "PASS",
+    "exit": 0,
+    "tests": 107,
+    "copied_test_source_sha256": "716e7ae1919429cfd42b878ab83aad8dc35f6f123a3360d041a41ddc5b558a88",
+    "test_copy_modified": false,
+    "configuration": "Isolated Python, no PYTHONPATH, standalone /dev/null config, --noconftest, plugin autoload off, owned external basetemp",
+    "coverage_note": "Same 107 tests rerun for exact final candidate; overlapping coverage, not additional unique tests."
+  },
+  "retained_harnesses": {
+    "installed_assurance": {
+      "status": "PASS",
+      "checks": 55,
+      "sha256": "e3ec72e8c237688434c6258ae22e3a41771316b3d1d4b2d7ca78291b25fe5301",
+      "results": "installed-sdk-artifacts/results.json",
+      "modified_from_previously_validated_harness": false
+    },
+    "baseline_review": {
+      "status": "PASS",
+      "checks": 49,
+      "sha256": "7f03b6379b0872afbdaf5ab6ddffec094a08f0c0d3cf69c4bea6b51549992c44",
+      "results": "baseline-artifacts/results.json",
+      "modified": false
+    },
+    "source_only_parent_fixture": {
+      "retained": "inputs/assurance-fixture-check.py",
+      "modified": false,
+      "executed": false,
+      "not_relabelled_installed": true
+    }
+  },
+  "documentation": {
+    "python_blocks": 2,
+    "executed": "PASS",
+    "unchanged_from_reviewed_candidate": true,
+    "comparison": "documentation-block-comparison.json",
+    "final_prose_source_sha256": "8ec28a65be37d9443d64ccab62e411e260b850706dd3f84f5cba8a743ee5cdce"
+  },
+  "runtime_evidence": [
+    "Exact source/wheel/installed module and JSON resource bytes",
+    "All 58 formula IDs and source notation; no numerical evaluator claim",
+    "Offline socket/subprocess guards exercised",
+    "Exact replay cache accepted and forged cache rejected",
+    "Revision-sensitive evidence invalidation and exact-status restore keep downstream work stale",
+    "Required/exempt/required bridge cannot bypass prerequisite",
+    "Candidate drift and wrong pending resume rejected",
+    "FIXED proposals remain unresolved; bound nonmutating fixture rejection preserves dissent and relations",
+    "Actual storage preview/apply/persistence/recovery with >1-MiB continuation and inherited 64-MiB cap",
+    "Stable session/extensions/predecessor retained through sequence 3 reopen and checked pending resume"
+  ],
+  "prior_evidence": {
+    "package-original": {
+      "files_including_manifest": 44,
+      "hashes_verified": true,
+      "modified_by_final_lane": false
+    },
+    "package-changed": {
+      "files_including_manifest": 180,
+      "hashes_verified": true,
+      "modified_by_final_lane": false
+    }
+  },
+  "failures_during_final_validation": [],
+  "prior_failures": "Preserved unchanged in package-changed, including initial subset dependency failure and provenance-assumption harness failure. No repeated initial subset environment created.",
+  "authority": "none",
+  "approval": false,
+  "activation": false,
+  "G5": "NOT_RUN",
+  "independence": "Unverified same-platform fixtures; separate harness authorship is not authenticated production independence.",
+  "scope_limits": [
+    "Observed base dependency conformance and selected institutional SDK behavior; not all optional extras or whole-distribution feature coverage.",
+    "Process-local audit guards, not kernel network namespace isolation.",
+    "No authenticated identity, trusted independent assurance, acceptance, approval, activation or deployment.",
+    "Parent owns post-commit CodeQL and institutional successor; this lane makes no claims for those."
+  ],
+  "workspace": {
+    "path": "/home/runner/work/_codex_/lane-a-package-final-0030626-20261025",
+    "removed": true,
+    "useful_artifacts_retained": true
+  },
+  "timestamp": "2026-10-25T01:51:26Z"
+}

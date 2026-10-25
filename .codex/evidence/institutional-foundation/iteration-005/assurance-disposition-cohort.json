@@ -1,0 +1,18 @@
+{
+  "distinct_cases": 281,
+  "failures_errors": 0,
+  "skipped": 0,
+  "by_classname": {
+    "tests.ci.test_followup_consumer": 17,
+    "tests.institutional.test_assurance": 103,
+    "tests.institutional.test_authority": 31,
+    "tests.institutional.test_foundation": 40,
+    "tests.institutional.test_git_capture": 6,
+    "tests.institutional.test_review": 70,
+    "tests.institutional.test_review_formulas": 8,
+    "tests.test_package_dependency_contract": 3,
+    "tests.test_packaging_entrypoints": 1,
+    "tests.test_packaging_metadata": 2
+  },
+  "scope": "Bounded source regression cohort; no installed-package acceptance inferred; inherited conftest disabled"
+}

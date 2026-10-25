@@ -1,0 +1,19 @@
+{
+  "operation": "candidate-write",
+  "paths": [
+    "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/external-runtime/storage-fixture/.codex/institutional/ownership.json",
+    "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/external-runtime/storage-fixture/.codex/institutional/checkpoint.json"
+  ],
+  "candidate_digest": "2438d3add5ab7806483bbea3c972edf0299e8306af9c1228a9df38b1e6947e94",
+  "expected": null,
+  "lifecycle": "Draft -> Draft",
+  "authority": "explicit ordinary write only; no activation",
+  "activation": "unsupported",
+  "previous": null,
+  "installation": {
+    "namespace": ".codex/institutional",
+    "package": "codex-ml",
+    "version": "0.3.0",
+    "contracts_digest": "f7fa2047a9a8453b8c36b645c52379125d189da1aa2cb8a3fd060590f0ce1030"
+  }
+}

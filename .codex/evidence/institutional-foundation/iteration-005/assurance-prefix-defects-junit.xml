@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="5" time="1.081" timestamp="2026-10-25T01:27:14.125054+00:00" hostname="runnervm1s3jh"><testcase classname="tests.institutional.test_assurance" name="test_exempt_execution_preserves_transitive_prerequisite_gating" time="0.040"><failure message="AssertionError: assert 'NOT_REQUIRED' == 'BLOCKED'&#10;  &#10;  - BLOCKED&#10;  + NOT_REQUIRED">def test_exempt_execution_preserves_transitive_prerequisite_gating():
+        history = assurance.new_history(exempt_bridge_plan(), clock=clock)
+        state = assurance.fold_events(history)
+&gt;       assert state["nodes"]["independent_reproduction"]["state"] == "BLOCKED"
+E       AssertionError: assert 'NOT_REQUIRED' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + NOT_REQUIRED
+
+tests/institutional/test_assurance.py:475: AssertionError</failure></testcase><testcase classname="tests.institutional.test_assurance" name="test_exempt_bridge_proof_tracks_upstream_revision_and_requires_downstream_retry[revoke]" time="0.162"><failure message="AssertionError: assert 'PASSED' == 'BLOCKED'&#10;  &#10;  - BLOCKED&#10;  + PASSED">invalidation = 'revoke'
+
+    @pytest.mark.parametrize("invalidation", ["retry", "revoke", "restore-identical"])
+    def test_exempt_bridge_proof_tracks_upstream_revision_and_requires_downstream_retry(invalidation):
+        history = assurance.new_history(exempt_bridge_plan(), clock=clock)
+        original = supplied_result(history, "technical_verification")
+        history = assurance.ingest_result(history, manifest(), event_id(1), original, clock=clock)
+        history = assurance.ingest_result(
+            history, manifest(), event_id(2), supplied_result(history, "institutional_audit"), clock=clock
+        )
+        assert assurance.fold_events(history)["nodes"]["institutional_audit"]["state"] == "PASSED"
+        initial_state = assurance.fold_events(history)
+        result_hash = initial_state["latest_results"]["technical_verification"]
+        initial = initial_state["evidence_states"][result_hash]["observation"]
+        if invalidation == "retry":
+            replacement = supplied_result(history, "technical_verification", suffix="-replacement")
+            history = assurance.ingest_result(
+                history, manifest(), event_id(10), replacement,
+                previous_result=core.digest(original), clock=clock
+            )
+        else:
+            history = alter_status(history)
+            if invalidation == "restore-identical":
+                current = assurance.fold_events(history)["evidence_states"][result_hash]["observation"]
+                history = assurance.evidence_status(
+                    history, event_id(21), result_hash, "observation", core.digest(current),
+                    {key: initial[key] for key in ("status", "applicability", "eligibility", "reason")},
+                    clock=clock,
+                )
+        state = assurance.fold_events(history)
+&gt;       assert state["nodes"]["institutional_audit"]["state"] == "BLOCKED"
+E       AssertionError: assert 'PASSED' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + PASSED
+
+tests/institutional/test_assurance.py:511: AssertionError</failure></testcase><testcase classname="tests.institutional.test_assurance" name="test_restoring_identical_evidence_assertion_cannot_erase_invalidation_revision" time="0.225"><failure message="AssertionError: assert 'PASSED' == 'BLOCKED'&#10;  &#10;  - BLOCKED&#10;  + PASSED">def test_restoring_identical_evidence_assertion_cannot_erase_invalidation_revision():
+        history = complete()
+        original_state = assurance.fold_events(history)
+        result_hash = original_state["latest_results"]["technical_verification"]
+        initial = original_state["evidence_states"][result_hash]["observation"]
+        revoked = alter_status(history)
+        current = assurance.fold_events(revoked)["evidence_states"][result_hash]["observation"]
+        restored = assurance.evidence_status(
+            revoked,
+            event_id(21),
+            result_hash,
+            "observation",
+            core.digest(current),
+            {key: initial[key] for key in ("status", "applicability", "eligibility", "reason")},
+            clock=clock,
+        )
+        state = assurance.fold_events(restored)
+        assert state["nodes"]["technical_verification"]["state"] == "PASSED"
+&gt;       assert state["nodes"]["institutional_audit"]["state"] == "BLOCKED"
+E       AssertionError: assert 'PASSED' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + PASSED
+
+tests/institutional/test_assurance.py:457: AssertionError</failure></testcase><testcase classname="tests.institutional.test_assurance" name="test_exempt_bridge_proof_tracks_upstream_revision_and_requires_downstream_retry[restore-identical]" time="0.185"><failure message="AssertionError: assert 'PASSED' == 'BLOCKED'&#10;  &#10;  - BLOCKED&#10;  + PASSED">invalidation = 'restore-identical'
+
+    @pytest.mark.parametrize("invalidation", ["retry", "revoke", "restore-identical"])
+    def test_exempt_bridge_proof_tracks_upstream_revision_and_requires_downstream_retry(invalidation):
+        history = assurance.new_history(exempt_bridge_plan(), clock=clock)
+        original = supplied_result(history, "technical_verification")
+        history = assurance.ingest_result(history, manifest(), event_id(1), original, clock=clock)
+        history = assurance.ingest_result(
+            history, manifest(), event_id(2), supplied_result(history, "institutional_audit"), clock=clock
+        )
+        assert assurance.fold_events(history)["nodes"]["institutional_audit"]["state"] == "PASSED"
+        initial_state = assurance.fold_events(history)
+        result_hash = initial_state["latest_results"]["technical_verification"]
+        initial = initial_state["evidence_states"][result_hash]["observation"]
+        if invalidation == "retry":
+            replacement = supplied_result(history, "technical_verification", suffix="-replacement")
+            history = assurance.ingest_result(
+                history, manifest(), event_id(10), replacement,
+                previous_result=core.digest(original), clock=clock
+            )
+        else:
+            history = alter_status(history)
+            if invalidation == "restore-identical":
+                current = assurance.fold_events(history)["evidence_states"][result_hash]["observation"]
+                history = assurance.evidence_status(
+                    history, event_id(21), result_hash, "observation", core.digest(current),
+                    {key: initial[key] for key in ("status", "applicability", "eligibility", "reason")},
+                    clock=clock,
+                )
+        state = assurance.fold_events(history)
+&gt;       assert state["nodes"]["institutional_audit"]["state"] == "BLOCKED"
+E       AssertionError: assert 'PASSED' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + PASSED
+
+tests/institutional/test_assurance.py:511: AssertionError</failure></testcase><testcase classname="tests.institutional.test_assurance" name="test_exempt_bridge_proof_tracks_upstream_revision_and_requires_downstream_retry[retry]" time="0.183"><failure message="AssertionError: assert 'PASSED' == 'BLOCKED'&#10;  &#10;  - BLOCKED&#10;  + PASSED">invalidation = 'retry'
+
+    @pytest.mark.parametrize("invalidation", ["retry", "revoke", "restore-identical"])
+    def test_exempt_bridge_proof_tracks_upstream_revision_and_requires_downstream_retry(invalidation):
+        history = assurance.new_history(exempt_bridge_plan(), clock=clock)
+        original = supplied_result(history, "technical_verification")
+        history = assurance.ingest_result(history, manifest(), event_id(1), original, clock=clock)
+        history = assurance.ingest_result(
+            history, manifest(), event_id(2), supplied_result(history, "institutional_audit"), clock=clock
+        )
+        assert assurance.fold_events(history)["nodes"]["institutional_audit"]["state"] == "PASSED"
+        initial_state = assurance.fold_events(history)
+        result_hash = initial_state["latest_results"]["technical_verification"]
+        initial = initial_state["evidence_states"][result_hash]["observation"]
+        if invalidation == "retry":
+            replacement = supplied_result(history, "technical_verification", suffix="-replacement")
+            history = assurance.ingest_result(
+                history, manifest(), event_id(10), replacement,
+                previous_result=core.digest(original), clock=clock
+            )
+        else:
+            history = alter_status(history)
+            if invalidation == "restore-identical":
+                current = assurance.fold_events(history)["evidence_states"][result_hash]["observation"]
+                history = assurance.evidence_status(
+                    history, event_id(21), result_hash, "observation", core.digest(current),
+                    {key: initial[key] for key in ("status", "applicability", "eligibility", "reason")},
+                    clock=clock,
+                )
+        state = assurance.fold_events(history)
+&gt;       assert state["nodes"]["institutional_audit"]["state"] == "BLOCKED"
+E       AssertionError: assert 'PASSED' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + PASSED
+
+tests/institutional/test_assurance.py:511: AssertionError</failure></testcase></testsuite></testsuites>

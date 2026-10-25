@@ -1,0 +1,152 @@
+{
+  "python": "3.12.10 (main, Apr  8 2025, 22:38:13) [GCC 13.3.0]",
+  "prefix": "/home/runner/work/_codex_/lane-a-package-final-0030626-20261025/full-base-venv",
+  "sys_path": [
+    "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python312.zip",
+    "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12",
+    "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/lib-dynload",
+    "/home/runner/work/_codex_/lane-a-package-final-0030626-20261025/full-base-venv/lib/python3.12/site-packages"
+  ],
+  "base_requirements_checked": 29,
+  "requirements": [
+    {
+      "declared": "jsonschema<5,>=4.25.1",
+      "installed_version": "4.26.0"
+    },
+    {
+      "declared": "codex-contracts",
+      "installed_version": "0.1.0a1"
+    },
+    {
+      "declared": "omegaconf>=2.3.1",
+      "installed_version": "2.3.1"
+    },
+    {
+      "declared": "hydra-core==1.3.7",
+      "installed_version": "1.3.7"
+    },
+    {
+      "declared": "pydantic>=2.13.4",
+      "installed_version": "2.14.1"
+    },
+    {
+      "declared": "pydantic-settings>=2.15.0",
+      "installed_version": "2.16.1"
+    },
+    {
+      "declared": "pyyaml>=6.0.1",
+      "installed_version": "6.0.3"
+    },
+    {
+      "declared": "marshmallow<5,>=4.3.1",
+      "installed_version": "4.3.1"
+    },
+    {
+      "declared": "typer>=0.27.1",
+      "installed_version": "0.27.3"
+    },
+    {
+      "declared": "click<9.0,>=8.4.2",
+      "installed_version": "8.5.0"
+    },
+    {
+      "declared": "libcst>=1.9.0",
+      "installed_version": "1.9.0"
+    },
+    {
+      "declared": "parso>=0.8.7",
+      "installed_version": "0.8.7"
+    },
+    {
+      "declared": "radon>=6.0.1",
+      "installed_version": "6.0.1"
+    },
+    {
+      "declared": "jinja2>=3.1.6",
+      "installed_version": "3.1.6"
+    },
+    {
+      "declared": "cryptography<51.0.0,>=50.0.1",
+      "installed_version": "50.0.2"
+    },
+    {
+      "declared": "bcrypt<6.0.0,>=5.0.0",
+      "installed_version": "5.0.0"
+    },
+    {
+      "declared": "PyJWT<3.0.0,>=2.15.0",
+      "installed_version": "2.15.1"
+    },
+    {
+      "declared": "PyNaCl<2.0.0,>=1.6.2",
+      "installed_version": "1.6.2"
+    },
+    {
+      "declared": "pyotp>=2.10.0",
+      "installed_version": "2.10.0"
+    },
+    {
+      "declared": "pyOpenSSL<27.0.0,>=26.4.0",
+      "installed_version": "26.4.0"
+    },
+    {
+      "declared": "pyasn1>=0.4.8",
+      "installed_version": "0.6.4"
+    },
+    {
+      "declared": "certifi>=2026.7.22",
+      "installed_version": "2026.10.23"
+    },
+    {
+      "declared": "filelock>=3.32.4",
+      "installed_version": "4.2.4"
+    },
+    {
+      "declared": "idna>=3.19",
+      "installed_version": "3.20"
+    },
+    {
+      "declared": "urllib3>=2.8.0",
+      "installed_version": "2.8.0"
+    },
+    {
+      "declared": "requests>=2.33.0",
+      "installed_version": "2.34.2"
+    },
+    {
+      "declared": "tenacity>=8.2.3",
+      "installed_version": "9.2.1"
+    },
+    {
+      "declared": "defusedxml>=0.7.1",
+      "installed_version": "0.7.1"
+    },
+    {
+      "declared": "structlog>=26.1.0",
+      "installed_version": "26.1.0"
+    }
+  ],
+  "origins": {
+    "core": "/home/runner/work/_codex_/lane-a-package-final-0030626-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/core.py",
+    "review": "/home/runner/work/_codex_/lane-a-package-final-0030626-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/review.py",
+    "storage": "/home/runner/work/_codex_/lane-a-package-final-0030626-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/storage.py",
+    "codex_contracts": "/home/runner/work/_codex_/lane-a-package-final-0030626-20261025/full-base-venv/lib/python3.12/site-packages/codex_contracts/__init__.py"
+  },
+  "module_sha256": {
+    "core": "636c45dc7eed70d0bed4bc80602f6831fd76ef5a688119f082ae7f8fe4743cef",
+    "review": "12ef9992b0b1a7412076cc26abc49cf42028bcb1b8fa94f65ecff9d41fc2d959",
+    "storage": "35e7122d388e44eb1badf025a2e69f2dffee0cf473822ca001e4f9f52b2a947f",
+    "codex_contracts": "75a01f61f9f4780f69fdc76a32b881f750a6a10f6e53a7d4315adaac335863ef"
+  },
+  "codex_ml_direct_url": {
+    "archive_info": {
+      "hash": "sha256=08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00",
+      "hashes": {
+        "sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00"
+      }
+    },
+    "url": "file:///home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_ml-0.3.0-py3-none-any.whl"
+  },
+  "codex_contracts_direct_url": null,
+  "codex_contracts_origin_note": "Local --find-links wheel, bound by installer report rather than absent direct_url.json"
+}

@@ -1,0 +1,26 @@
+{
+  "workspace": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025",
+  "location_note": "External sibling workspace outside checkout; actual path retained, removed after evidence retention.",
+  "venvs": {
+    "full-base-venv": {
+      "configuration": "home = /opt/hostedtoolcache/Python/3.12.10/x64/bin\ninclude-system-site-packages = false\nversion = 3.12.10\nexecutable = /opt/hostedtoolcache/Python/3.12.10/x64/bin/python3.12\ncommand = /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m venv /home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv\n"
+    },
+    "original-full-base-venv": {
+      "configuration": "home = /opt/hostedtoolcache/Python/3.12.10/x64/bin\ninclude-system-site-packages = false\nversion = 3.12.10\nexecutable = /opt/hostedtoolcache/Python/3.12.10/x64/bin/python3.12\ncommand = /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m venv /home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/original-full-base-venv\n"
+    }
+  },
+  "optional_ML_extras_installed": false,
+  "source_or_dependency_manifests_edited": false,
+  "explicit_build_tools": "setuptools==81.0.0, wheel==0.48.0, packaging==26.3, advisory-checked",
+  "test_tools": "Changed full-base venv only: pytest==9.1.1, iniconfig==2.3.0, pluggy==1.7.0 added after initial SDK harness and base pip check.",
+  "copied_test_sha256": "716e7ae1919429cfd42b878ab83aad8dc35f6f123a3360d041a41ddc5b558a88",
+  "base_requirements": 29,
+  "all_selected_versions_match_prechecked_resolver_report": true,
+  "cached_built_dependency_wheels": [
+    {
+      "path": "build-artifacts/antlr4_python3_runtime-4.9.3-py3-none-any.whl",
+      "sha256": "b289b4c2547032bdc7b4fddc7de8cf237dd98625a17bcd112e1c2adf3885e72b"
+    }
+  ],
+  "removed": true
+}
