@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from typing import Any, Literal, Protocol
+from typing import Any, Literal, Protocol, cast
 
 from . import admission
 from .core import (
@@ -109,9 +109,13 @@ def evaluate_checkpoint_reference(
         for item in (subject, scope, context)
     ):
         return ReferenceEvaluation("malformed", None, None, "provider", "unknown")
-    assert type(subject) is str and type(scope) is str and type(context) is str
+    subject_value = cast(str, subject)
+    scope_value = cast(str, scope)
+    context_value = cast(str, context)
     try:
-        reference = provider.resolve(subject=subject, scope=scope, context=context)
+        reference = provider.resolve(
+            subject=subject_value, scope=scope_value, context=context_value
+        )
     except Exception:
         return ReferenceEvaluation("unavailable", None, None, "provider", "unknown")
     if isinstance(reference, ReferenceUnavailable):
