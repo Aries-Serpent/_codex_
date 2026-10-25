@@ -2,6 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "contract_version": "1",
   "implemented": {
+    "codex.assurance.v1": {
+      "type": "object",
+      "required": ["kind", "data"],
+      "properties": {
+        "kind": {"enum": ["plan", "history", "recommendation"]},
+        "data": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
     "codex.review.v1": {
       "type": "object",
       "required": ["kind", "data"],
