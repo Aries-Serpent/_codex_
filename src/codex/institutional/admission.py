@@ -43,6 +43,14 @@ def _history(artifact: dict[str, Any]) -> dict[str, Any] | None:
 
 def _binding(value: dict[str, Any], artifact: dict[str, Any]) -> dict[str, Any]:
     payload = value["payload"]
+    inventories = [
+        record for record in payload["records"] if record["schema"] == "codex.inventory.v1"
+    ]
+    _require(
+        len(inventories) == 1
+        and payload["source_sha"] == inventories[0]["payload"]["source"]["sha"],
+        "ASSOCIATION_SOURCE_MISMATCH",
+    )
     planned = _plan(artifact)["payload"]["data"]
     return {
         "artifact_digest": digest(artifact),
@@ -171,6 +179,7 @@ def bind(
     and its bindings. Review manifests must exclude framework state, avoiding
     circular self-binding. Context is bound by the review manifest/plan digest.
     """
+    core.validate(value)
     result = copy.deepcopy(value)
     if replace:
         result["payload"]["assurance_bindings"] = []

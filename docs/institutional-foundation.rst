@@ -118,6 +118,8 @@ digests do not include the checkpoint's own references, avoiding self-binding.
 Bindings themselves are metadata, not an additional incompatible continuation
 schema. Older runtimes that reject the new optional field cannot consume bound
 records; preserve original bytes and use a compatible runtime, not silent downgrade.
+The candidate source identity must also equal the source SHA in its retained inventory
+before an association can be constructed or accepted.
 
 ``storage.recover(root, expected=None)`` checks up to 128 retained checkpoints,
 their semantic admission, exact predecessor/session/sequence, protected extensions
@@ -139,6 +141,19 @@ an external trusted anchor. The optional expected checkpoint digest detects
 replacement only when the caller already trusts that reference. Append-only
 construction and historical replay are not authentication; C3 is bounded, not
 universally solved. Technical validation never changes G5, approval or activation.
+
+``storage.evaluate_checkpoint_reference`` distinguishes match, mismatch,
+unavailable, unsupported, malformed, stale and inapplicable references. Callers
+may supply an expected digest or inject a ``CheckpointReferenceProvider`` directly;
+providers are never selected or imported from candidate contents. Provider references
+bind a subject, digest, source, scope, context and time-bounded observation. The
+``fixture`` and ``externally-verified`` assurance labels are provider assertions, not
+authentication performed by this package. A match grants no approval or activation.
+Unanchored ``recover`` remains available for legacy diagnostics. Callers that require
+an anchor can pass it to ``recover`` or to both ``plan`` and ``apply``; write previews
+bind the reference result and reject mismatches before persistence. In ``plan/apply``,
+``anchor_expected`` is the trusted pin; ``expected`` remains the concurrency token for
+the current checkpoint.
 
 Authority, challenge and results
 -------------------------------

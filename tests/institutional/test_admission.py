@@ -6,6 +6,7 @@ import copy
 import gzip
 import json
 import os
+from datetime import timedelta
 from pathlib import Path
 
 import pytest
@@ -32,6 +33,34 @@ def attached(root):
     final = assurance.reconcile(history, manifest(), [], clock=clock)
     value = assurance.attach_continuation(original, [history, final], clock=clock)
     return original, value, history, final
+
+
+class FixtureCheckpointProvider:
+    def __init__(self, result):
+        self.result = result
+
+    def resolve(self, *, subject, scope, context):
+        return self.result
+
+
+class RaisingCheckpointProvider:
+    def resolve(self, *, subject, scope, context):
+        raise RuntimeError("fixture provider unavailable")
+
+
+def checkpoint_reference(value, **changes):
+    reference = {
+        "subject": "fixture-history",
+        "digest": core.digest(value),
+        "source": "test-fixture",
+        "scope": "institutional-checkpoint",
+        "context": "recovery-test",
+        "observed_at": clock(),
+        "expires_at": clock() + timedelta(minutes=10),
+        "assurance": "fixture",
+    }
+    reference.update(changes)
+    return storage.CheckpointReference(**reference)
 
 
 def test_semantically_invalid_resealed_attachment_rejected_everywhere(tmp_path):
@@ -104,6 +133,22 @@ def test_wrong_candidate_context_artifact_or_reference_rejected(tmp_path, field)
     assert any("ASSOCIATION_" in item for item in core.inspect_candidate(bound))
     with pytest.raises(core.Rejected, match="ASSOCIATION_"):
         storage.plan(tmp_path, bound)
+
+
+def test_candidate_source_sha_must_match_retained_inventory_before_binding(tmp_path):
+    _, value, history, _ = attached(tmp_path)
+    value["payload"]["source_sha"] = "a" * 40
+    value = reseal(value)
+    assert "SOURCE_BINDING_MISMATCH" in core.inspect_candidate(value)
+    with pytest.raises(core.Rejected, match="SOURCE_BINDING_MISMATCH"):
+        admission.bind(value, [history], root=tmp_path)
+
+
+def test_rebinding_rejects_candidate_payload_corruption_before_resealing(tmp_path):
+    _, value, history, _ = attached(tmp_path)
+    value["payload"]["recovery"] = "unsealed mutation"
+    with pytest.raises(core.Rejected, match="INTEGRITY_MISMATCH"):
+        admission.bind(value, [history], root=tmp_path, replace=True)
 
 
 def test_bound_source_drift_cannot_reach_plan_or_apply(tmp_path):
@@ -230,6 +275,139 @@ def test_wholesale_reseal_needs_external_anchor_and_is_not_authentication(tmp_pa
         storage.recover(tmp_path, anchor)
 
 
+def test_checkpoint_reference_provider_gates_plan_apply_and_recovery(tmp_path):
+    current = core.candidate(tmp_path, "anchored-history", clock)
+    storage.apply(tmp_path, current, storage.plan(tmp_path, current))
+    successor = assurance.attach_continuation(current, [], clock=clock)
+    provider = FixtureCheckpointProvider(checkpoint_reference(current))
+    options = {
+        "anchor_provider": provider,
+        "anchor_subject": "fixture-history",
+        "anchor_scope": "institutional-checkpoint",
+        "anchor_context": "recovery-test",
+        "require_anchor": True,
+        "clock": clock,
+    }
+    preview = storage.plan(tmp_path, successor, core.digest(current), **options)
+    assert preview["anchor"]["status"] == "match"
+    assert preview["anchor"]["assurance"] == "fixture"
+    assert preview["anchor"]["authority"] == "none"
+    storage.apply(tmp_path, successor, preview, **options)
+    provider = FixtureCheckpointProvider(checkpoint_reference(successor))
+    assert (
+        storage.recover(
+            tmp_path,
+            provider=provider,
+            subject="fixture-history",
+            scope="institutional-checkpoint",
+            context="recovery-test",
+            require_anchor=True,
+            clock=clock,
+        )
+        == successor
+    )
+    result = storage.evaluate_checkpoint_reference(
+        core.digest(successor),
+        provider=provider,
+        subject="fixture-history",
+        scope="institutional-checkpoint",
+        context="recovery-test",
+        clock=clock,
+    )
+    assert result.status == "match"
+    assert "not independently authenticated" in " ".join(result.limitations)
+
+
+def test_anchor_mismatch_blocks_plan_before_checkpoint_changes(tmp_path):
+    current = core.candidate(tmp_path, "anchored-history", clock)
+    storage.apply(tmp_path, current, storage.plan(tmp_path, current))
+    checkpoint = tmp_path / core.NAMESPACE / "checkpoint.json"
+    before = checkpoint.read_bytes()
+    provider = FixtureCheckpointProvider(checkpoint_reference(current, digest="a" * 64))
+    with pytest.raises(core.Rejected, match="RECOVERY_ANCHOR_MISMATCH"):
+        storage.plan(
+            tmp_path,
+            current,
+            core.digest(current),
+            anchor_provider=provider,
+            anchor_subject="fixture-history",
+            anchor_scope="institutional-checkpoint",
+            anchor_context="recovery-test",
+            require_anchor=True,
+            clock=clock,
+        )
+    assert checkpoint.read_bytes() == before
+
+
+@pytest.mark.parametrize(
+    ("change", "expected"),
+    [
+        ({"digest": "a" * 64}, "mismatch"),
+        ({"subject": "other"}, "inapplicable"),
+        ({"scope": "other"}, "inapplicable"),
+        ({"context": "other"}, "inapplicable"),
+        ({"expires_at": clock() - timedelta(seconds=1)}, "stale"),
+        ({"assurance": "unverified"}, "malformed"),
+    ],
+)
+def test_checkpoint_reference_provider_results_are_scoped_and_fresh(change, expected):
+    value = {"checkpoint": True}
+    result = storage.evaluate_checkpoint_reference(
+        core.digest(value),
+        provider=FixtureCheckpointProvider(checkpoint_reference(value, **change)),
+        subject="fixture-history",
+        scope="institutional-checkpoint",
+        context="recovery-test",
+        clock=clock,
+    )
+    assert result.status == expected
+
+
+@pytest.mark.parametrize(
+    ("provider", "expected"),
+    [
+        (FixtureCheckpointProvider(storage.ReferenceUnavailable()), "unavailable"),
+        (
+            FixtureCheckpointProvider(storage.ReferenceUnavailable("unsupported")),
+            "unsupported",
+        ),
+        (FixtureCheckpointProvider(object()), "malformed"),
+    ],
+)
+def test_checkpoint_reference_provider_unavailable_unsupported_and_malformed(provider, expected):
+    result = storage.evaluate_checkpoint_reference(
+        "a" * 64,
+        provider=provider,
+        subject="fixture-history",
+        scope="institutional-checkpoint",
+        context="recovery-test",
+        clock=clock,
+    )
+    assert result.status == expected
+
+
+def test_checkpoint_reference_provider_exception_is_unavailable():
+    result = storage.evaluate_checkpoint_reference(
+        "a" * 64,
+        provider=RaisingCheckpointProvider(),
+        subject="fixture-history",
+        scope="institutional-checkpoint",
+        context="recovery-test",
+        clock=clock,
+    )
+    assert result.status == "unavailable"
+
+
+def test_required_anchor_cannot_be_bootstrapped_from_checkpoint_contents(tmp_path):
+    current = core.candidate(tmp_path, "self-anchored-history", clock)
+    current["extensions"]["anchor_provider"] = "untrusted.module:load"
+    current = reseal(current)
+    storage.apply(tmp_path, current, storage.plan(tmp_path, current))
+    with pytest.raises(core.Rejected, match="RECOVERY_ANCHOR_UNAVAILABLE"):
+        storage.recover(tmp_path, require_anchor=True, clock=clock)
+    assert storage.recover(tmp_path) == current
+
+
 def test_recovery_import_preserves_gzip_bytes_and_ordinary_candidate(tmp_path):
     value = core.candidate(tmp_path, "ordinary", clock)
     path = tmp_path / "legacy.json.gz"
@@ -257,12 +435,19 @@ def test_replayed_result_cannot_be_new_acceptance():
 
 def source_workflow(root):
     """Exercise actual runtime bytes; all analysis is same-platform, not independent."""
-    source = Path(core.__file__).read_bytes()
-    (root / "core.py").write_bytes(source)
-    (root / "core.py").chmod(0o644)
-    context = {"scope": "core.inspect_candidate semantic dispatch", "authority": "none"}
+    sources = {
+        "core.py": Path(core.__file__).read_bytes(),
+        "storage.py": Path(storage.__file__).read_bytes(),
+    }
+    for name, content in sources.items():
+        (root / name).write_bytes(content)
+        (root / name).chmod(0o644)
+    context = {"scope": "candidate admission and checkpoint anchoring", "authority": "none"}
     current = review.candidate_manifest(
-        [{"path": "core.py", "content": source, "kind": "file", "mode": 0o644}],
+        [
+            {"path": name, "content": content, "kind": "file", "mode": 0o644}
+            for name, content in sources.items()
+        ],
         context,
         clock=clock,
     )
@@ -285,21 +470,21 @@ def source_workflow(root):
         ]
     ]
     planned = review.review_plan(current, lanes, ["admission"], ["admission"], clock=clock)
-    quote = "validate_artifact(child)"
-    assert quote.encode() in source
+    quote = "Provider provenance and asserted assurance are not independently authenticated."
+    assert quote.encode() in sources["storage.py"]
     finding = {
-        "id": "semantic-dispatch",
+        "id": "anchor-provenance",
         "source_quote": quote,
-        "normalized": "Semantic dispatch is present; this alone is not authentication.",
+        "normalized": "Provider output is checked but not authenticated by local code.",
         "kind": "inference",
         "confidence": 0.8,
         "coverage": ["admission"],
         "clearance_conditions": ["inspect-dispatch"],
     }
     exact_source = (
-        "FACT: exact quotation from core.inspect_candidate: "
+        "FACT: exact quotation from storage.evaluate_checkpoint_reference: "
         + quote
-        + "\nINFERENCE: scoped semantic dispatch is not whole-history authentication."
+        + "\nINFERENCE: a scoped provider match is not independent assurance."
     )
     outputs = [
         review.lane_output(planned, key, exact_source, [finding], clock=clock)
@@ -308,8 +493,8 @@ def source_workflow(root):
     relations = [
         {
             "type": "contradicts",
-            "from": "architecture/semantic-dispatch",
-            "to": "dissent/semantic-dispatch",
+            "from": "architecture/anchor-provenance",
+            "to": "dissent/anchor-provenance",
         }
     ]
     initial = review.reconcile(planned, outputs, relations, clock=clock)
@@ -377,6 +562,19 @@ def source_workflow(root):
     storage.apply(root, original, storage.plan(root, original))
     storage.apply(root, bound, storage.plan(root, bound, core.digest(original)))
     assert storage.recover(root) == bound
+    provider = FixtureCheckpointProvider(checkpoint_reference(bound))
+    assert (
+        storage.recover(
+            root,
+            provider=provider,
+            subject="fixture-history",
+            scope="institutional-checkpoint",
+            context="recovery-test",
+            require_anchor=True,
+            clock=clock,
+        )
+        == bound
+    )
     assert initial["payload"]["data"]["relations"] == meta["payload"]["data"]["relations"]
     assert final["payload"]["data"]["recommendation"] == "BLOCKED"
     assert adequacy["authorization"] == "none"

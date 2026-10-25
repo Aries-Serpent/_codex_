@@ -408,6 +408,8 @@ def inspect_candidate(value: dict[str, Any]) -> list[str]:
         findings.append("REQUIRED_INVENTORY_MISSING")
     elif value["payload"]["candidate_ref"] != digest(inventories[0]):
         findings.append("CANDIDATE_BINDING_MISMATCH")
+    elif value["payload"]["source_sha"] != inventories[0]["payload"]["source"]["sha"]:
+        findings.append("SOURCE_BINDING_MISMATCH")
     evidence = [r for r in supported if r["schema"] == "codex.trust-evidence.v1"]
     if len(evidence) != 1:
         findings.append("REQUIRED_SINGLE_EVIDENCE")
