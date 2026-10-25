@@ -45,7 +45,7 @@ class TestGapCoverageFileSystemOperations:
         with tempfile.TemporaryDirectory() as tmpdir:
             restricted_file = Path(tmpdir) / "restricted.txt"
             restricted_file.write_text("permission test")
-            os.chmod(tmpdir, 0o755)
+            os.chmod(tmpdir, 0o700)
             identity = (
                 {"user": 65534, "group": 65534, "extra_groups": []} if os.geteuid() == 0 else {}
             )
