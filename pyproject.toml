@@ -719,7 +719,7 @@ exclude = [
 namespaces = true
 
 [tool.setuptools.package-data]
-"codex.institutional" = ["contracts.json"]
+"codex.institutional" = ["contracts.json", "review-formulas.json"]
 agents = [
     "prompts/**/*.md",
 ]

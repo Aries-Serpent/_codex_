@@ -2,6 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "contract_version": "1",
   "implemented": {
+    "codex.review.v1": {
+      "type": "object",
+      "required": ["kind", "data"],
+      "properties": {
+        "kind": {"enum": ["manifest", "plan", "lane-output", "history", "recommendation"]},
+        "data": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
     "codex.authority-evaluation.v1": {
       "type": "object",
       "required": ["status", "reasons", "provider_assurance", "activation_allowed", "request"],
