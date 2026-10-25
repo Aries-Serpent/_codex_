@@ -8,6 +8,15 @@
   "maintained_roadmap": ".codex/evidence/institutional-foundation/iteration-006/program-roadmap.json",
   "standalone_next_session_prompt": ".codex/evidence/institutional-foundation/iteration-006/next-session-prompt.rst",
   "prompt_execution": "NOT_RUN; do not launch or self-trigger",
+  "final_binding_protocol": {
+    "evidence_candidate": "ad4c89d8f903ed9c4b87d0b6caa4568d02dd6ec1",
+    "retention_binding": ".codex/evidence/institutional-foundation/iteration-006/retention-binding.json",
+    "security_analysis": ".codex/evidence/institutional-foundation/iteration-006/codeql-result.json",
+    "digest_resolution": "Checkpoint and manifest digests are resolved from retention-binding.json and checkpoint-verification.json. This handoff is covered by the manifest, so it does not embed those digests.",
+    "publication": "The PR/current remote ref establishes the final pushed head externally. Checkpoint inventory binds an immutable pre-final evidence candidate; final bookkeeping and eventual merge require successor revalidation, not rewritten historical hashes.",
+    "retrieval": "Retrieve repository-relative files from the final task commit or actual merged base. All current iteration log paths must be committed explicitly despite the repository *.log ignore. Historical missing bytes remain listed, not restored.",
+    "next_action": "Owner security triage and original-byte retention recovery or an existing-policy disposition. retention_security is declared-blocked, not dispatch-ready; any later changed requirement needs a versioned plan with source/context revalidation. Do not append PASS to bypass it."
+  },
   "path_policy": "All durable references are repository-relative to repository_root_context. Runner-local virtual environments are disposable execution environments, never retention.",
   "source_and_artifact_identity": {
     "historical_source": "3d7babe7233401e0dfd7b792f87a376898db61d0",
@@ -51,8 +60,10 @@
     "experience": ".codex/evidence/institutional-foundation/iteration-006/experience-final.json",
     "checkpoint_digest": null,
     "manifest_digest": null,
-    "final_checkpoint_sequence": null,
-    "eligible_pending_node": "retention_security",
+    "final_checkpoint_sequence": 6,
+    "eligible_pending_node": null,
+    "pending_node": "retention_security",
+    "pending_ready": false,
     "rule": "Discover finalized retained artifacts, verify them, then fill actual values without changing immutable predecessors. Never infer digest, sequence or eligible node from a draft path."
   },
   "historical_checkpoint_reference": {
@@ -119,7 +130,7 @@
     },
     "G1": "NOT_RUN; broader semantic ecology remains open",
     "G5": "NOT_RUN",
-    "full_G4": "NOT_RUN; retained Python CodeQL size limitation is not closed by scoped scans",
+    "full_G4": "NOT_RUN; prior Python CodeQL skipped for size and current checker errored during git diff before analysis. Scoped scans do not close this gap.",
     "approval": "NOT_RUN",
     "activation": "unsupported",
     "release_or_publication": "NOT_RUN"
