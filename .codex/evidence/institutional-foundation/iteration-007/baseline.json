@@ -1,0 +1,84 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001",
+  "classification": "FACT unless explicitly qualified",
+  "workspace_root": "/home/runner/work/_codex_/_codex_",
+  "assigned_branch": "copilot/codex-institutional-foundation-001-again",
+  "assigned_HEAD": "83e5187a9fa44d0ba758a93a1214930878695fb3",
+  "observed_target_branch": "0D_base_",
+  "observed_target_HEAD": "83e5187a9fa44d0ba758a93a1214930878695fb3",
+  "target_observation": "git ls-remote origin refs/heads/0D_base_ before source edits",
+  "merge": {
+    "PR": 5717,
+    "merged": true,
+    "base": "0D_base_",
+    "integration_commit": "83e5187a9fa44d0ba758a93a1214930878695fb3",
+    "merged_at": "2026-10-25T04:20:37Z",
+    "tree": "340648595f06c65b65aaa478cd6fa5a6b1458dc9",
+    "sources": ["GitHub pull_request_read(get)", "GitHub get_commit", "local HEAD and target ref"],
+    "local_history_limit": "Initially shallow. Later authorized depth-two target fetch confirms the single parent 159830ca8b9e689cae443fb7c1cc0f36cfb7d667; feature-branch ancestry is not required. Assigned tree exactly equals integration tree.",
+    "subsequent_base_changes_at_observation": [],
+    "reverted_or_superseded": false
+  },
+  "initial_workspace": {
+    "dirty": [".codex/session_startup_packet.json"],
+    "staged": [],
+    "only_changed_field": "generated_at",
+    "current_packet_sha256": "40ac095dac4399bfc10656182f7716c896a63509122e8dc457b827a91c86cb7f",
+    "preservation_incident": {
+      "commit": "621a57cea880fe2517338db232bc888a3d8d55db",
+      "cause": "Initial engine-tools-report_progress committed the existing dirty timestamp despite checklist exclusion intent.",
+      "treatment": "Current bytes and history preserved. No reset, reversal or claim of clean exclusion. Owner-only forward disposition required.",
+      "historical_incidents_remain_distinct": [
+        "a6442c9e3865611917424100f05e889a7c470975",
+        "64cd6ebed63d14a16e21079e4c67a318ccc92373"
+      ]
+    }
+  },
+  "instructions_read": [
+    ".codex/CODEBASE_AGENCY_POLICY.md",
+    ".github/instructions/python.instructions.md",
+    ".github/prompts/sprint_execution_plan/TEMPLATE.md"
+  ],
+  "template_adaptation": "Bounded context, dependencies, implementation, validation and recovery checklist; no self-expansion, automatic retries or next-session launch.",
+  "profile_visibility": "UNAVAILABLE_BY_EXPLICIT_BOUNDARY; .github/agents contents not inspected",
+  "lanes": {
+    "A": "Coordinator: shared contracts, source implementation, tests, package and checkpoint integration",
+    "B": "history-lane: read-only static investigation",
+    "C": "evidence-lane: read-only retained integrity and owner-decision reconciliation",
+    "D": "portability-lane: read-only packaging discovery; unsupported initial claims rejected and corrected",
+    "review": "Subsequent read-only composition-review; two findings fixed, follow-up found no significant issues"
+  },
+  "independence": "Same-platform analytical work; G5 NOT_RUN",
+  "pre_edit_reproducers": {
+    "C1": {
+      "input": "fixture_plan with limits.approval=true, correctly resealed and nested by hand",
+      "observed": "core.inspect_candidate returned []; storage.plan returned candidate-write",
+      "counterevidence": "assurance.attach_continuation already dispatches semantic validation"
+    },
+    "C2": {
+      "input": "complete fixture assurance for candidate.py attached to unrelated filesystem candidate",
+      "observed": "core.inspect_candidate returned [] without an explicit association",
+      "inference_limit": "Co-storage was not proof of current assurance; no activation was possible"
+    },
+    "C3": {
+      "input": "Persist ordinary genesis, append history, construct sequence-three successor dropping assurance records",
+      "observed": "storage.plan returned candidate-write",
+      "counterevidence": "Existing event replay, cache comparison, sequence/session/extensions already reject many cooperative inconsistencies",
+      "remaining_limit": "Entire unanchored history and digests remain replaceable"
+    },
+    "initial_reproducer_failure": "First C3 attempt tried to persist orphan sequence-two checkpoint; correctly rejected MISSING_PREDECESSOR. Repeated with real genesis and observed history-loss gap."
+  },
+  "historical_evidence": {
+    "namespace": ".codex/evidence/institutional-foundation/iteration-006/",
+    "manifest_verified_entries": 132,
+    "separately_bound_exclusions": 5,
+    "checkpoint_sequence": 6,
+    "checkpoint_records": 41,
+    "semantic_assurance_artifacts": 11,
+    "checkpoint_canonical_digest": "385b07cd28b557df1fc48b2ddf6f070c01c5f8095dfb609730fbe2162407bd20",
+    "checkpoint_gzip_sha256": "12fe1d40be420bbbbdc0844e926752f03fbce5cc93b80a133891920e93014f91",
+    "manifest_canonical_digest": "7f6d33d37964e12ab3fdc201975fad6ef5d0700440b562c6dfc31412716ac6ca",
+    "integrity_is_not_applicability": "Historical checkpoint is stale after publication/merge and contract changes; immutable bytes preserved.",
+    "roadmap_items": 32
+  }
+}

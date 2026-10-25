@@ -86,6 +86,75 @@ availability or detect coordinated replacement of both data and untrusted digest
 All producer identities are explicitly unverified. Replacing a record and its
 digest never establishes approval.
 
+Composed assurance admission (post-merge continuation)
+-----------------------------------------------------
+
+``core.validate`` remains structural. ``core.inspect_candidate``, ``core.verify``,
+``storage.plan/apply`` and default ``core.load`` now dispatch
+``assurance.validate_artifact`` for every supported assurance attachment.
+Plans, event histories and recomputed recommendations must pass their existing
+semantic rules even when their envelopes have been correctly resealed.
+``core.load(path, inspection_only=True)`` provides explicit read-only structural
+inspection of rejected legacy data; it does not bypass persistence validation,
+rewrite bytes, migrate data or grant acceptance. Unknown schemas remain unsupported.
+
+The additive optional ``assurance_bindings`` continuation payload relates exact
+assurance observations to the inventory candidate, source/dirty-tree/configuration
+identity and exact review plan/manifest (including its context digest).
+``admission.bind(value, artifacts, root=...)`` binds already attached artifacts
+only after validation and rehashing the explicitly reviewed regular files.
+``admission.inspect_associations`` classifies absent bindings as
+``unbound-diagnostic``: valid historical PASS observations remain retainable, but
+are not current assurance. Binding establishes only scoped technical association,
+not authenticated provenance, completeness of review scope or approval.
+Ordinary candidates need no assurance attachments or bindings.
+
+Wrong candidate, context, artifact, stale observation or source bytes block bound
+admission. Files outside the supplied manifest are not reviewed. Git inventory
+still covers committed metadata; explicit review manifest files additionally cover
+their current bytes and modes, including dirty files. Framework state and agent
+profile contents are excluded from bound file reads. Inventory and configuration
+digests do not include the checkpoint's own references, avoiding self-binding.
+Bindings themselves are metadata, not an additional incompatible continuation
+schema. Older runtimes that reject the new optional field cannot consume bound
+records; preserve original bytes and use a compatible runtime, not silent downgrade.
+The candidate source identity must also equal the source SHA in its retained inventory
+before an association can be constructed or accepted.
+
+``storage.recover(root, expected=None)`` checks up to 128 retained checkpoints,
+their semantic admission, exact predecessor/session/sequence, protected extensions
+and retention of prior review/assurance records. ``storage.plan/apply`` use the
+same recovery and transition checks. Non-genesis imports require their original
+chain in the existing namespace; an orphan is not adopted as a new checkpoint.
+Standalone ``core.load`` cannot establish chain availability or current source
+applicability; use recovery and then ``core.verify`` for those separate questions.
+CLI regeneration that drops retained attachments is rejected, not silently repaired.
+
+Histories for the same assurance plan must be prefix-compatible; bound results
+must use the latest retained history. Existing replay enforces event digests,
+prerequisites, retries and cache equality. After appending evidence changes,
+explicitly replace current associations with
+``admission.bind(..., replace=True)``; original observations remain in the records
+and predecessor bytes. Unrecognized extension caches stay inert and cannot supply
+acceptance. Replacing the entire chain and all its hashes may still pass without
+an external trusted anchor. The optional expected checkpoint digest detects
+replacement only when the caller already trusts that reference. Append-only
+construction and historical replay are not authentication; C3 is bounded, not
+universally solved. Technical validation never changes G5, approval or activation.
+
+``storage.evaluate_checkpoint_reference`` distinguishes match, mismatch,
+unavailable, unsupported, malformed, stale and inapplicable references. Callers
+may supply an expected digest or inject a ``CheckpointReferenceProvider`` directly;
+providers are never selected or imported from candidate contents. Provider references
+bind a subject, digest, source, scope, context and time-bounded observation. The
+``fixture`` and ``externally-verified`` assurance labels are provider assertions, not
+authentication performed by this package. A match grants no approval or activation.
+Unanchored ``recover`` remains available for legacy diagnostics. Callers that require
+an anchor can pass it to ``recover`` or to both ``plan`` and ``apply``; write previews
+bind the reference result and reject mismatches before persistence. In ``plan/apply``,
+``anchor_expected`` is the trusted pin; ``expected`` remains the concurrency token for
+the current checkpoint.
+
 Authority, challenge and results
 -------------------------------
 

@@ -1,0 +1,48 @@
+{
+  "problem": "Continue integrated institutional foundation without restarting or converting merge completion into assurance.",
+  "context": "Exact integrated base 83e5187a; existing dirty startup timestamp and blocked sequence-six history.",
+  "hypotheses": [
+    "Existing semantic replay and persistence checks can compose safely through a bounded admission adapter.",
+    "Explicit artifact/candidate/review-context association can distinguish current observation from legacy co-storage."
+  ],
+  "support": [
+    "Reproduced resealed semantic admission and history-loss gaps before changes.",
+    "289 source cases pass; 285 portable installed cases pass with full base dependency closure.",
+    "Wrong associations, forks, stale acceptance, chain loss and resource boundary regressions reject.",
+    "Actual installed core source quotation exercised with bearings, remediation coverage, rotated meta response and retained conflict."
+  ],
+  "against": [
+    "Entire unanchored histories remain replaceable; local hashes cannot authenticate producers.",
+    "CodeQL skipped Python analysis for size.",
+    "Four repository-document inspection tests cannot run unchanged without source/document fixtures outside checkout.",
+    "Initial progress publication captured pre-existing user timestamp despite preservation intent."
+  ],
+  "alternatives": [
+    "Keep caller-only semantic validation: rejected because generic persistence and default reload bypass it.",
+    "Require assurance for every ordinary candidate: rejected as incompatible and unrelated.",
+    "Introduce a second continuation schema/store: rejected; one optional payload field and existing storage coordinator reused.",
+    "Treat role labels or merged PR as approval: rejected; no trusted independent assurance."
+  ],
+  "decision": "Retain inactive Draft composition, diagnostic historical data and owner-only blockers; submit draft follow-on review.",
+  "dissent": [
+    "Scoped semantic dispatch is not proof of authenticated history.",
+    "Fixture PASS assertions and same-platform rotated review cannot satisfy G5.",
+    "Missing originals and unresolved owner findings continue to block dependent acceptance."
+ ],
+  "uncertainty": [
+    "No universal repository security or ecology coverage.",
+    "Hosted checks/required review remain separate from local observations.",
+    "No trusted external anchor custody or independent exact-wheel reproduction established."
+  ],
+  "implementation": [
+    "src/codex/institutional/admission.py",
+    "src/codex/institutional/core.py",
+    "src/codex/institutional/storage.py",
+    "src/codex/institutional/contracts.json"
+  ],
+  "verification": "validation.json; package/ receipts; source-review/; checkpoint-verification.json",
+  "outcomes": "Scoped technical behavior improved; institutional program remains incomplete.",
+  "next_review": "Owner retention/security dispositions and independent exact-artifact reproduction, then trusted anchor/provider design.",
+  "authority": "none",
+  "G5": "NOT_RUN"
+}

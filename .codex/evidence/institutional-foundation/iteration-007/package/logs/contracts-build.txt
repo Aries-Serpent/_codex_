@@ -1,0 +1,13 @@
+Processing /tmp/institutional-007/source/packages/contracts
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: codex-contracts
+  Building wheel for codex-contracts (pyproject.toml): started
+  Building wheel for codex-contracts (pyproject.toml): finished with status 'done'
+  Created wheel for codex-contracts: filename=codex_contracts-0.1.0a1-py3-none-any.whl size=9381 sha256=bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96
+  Stored in directory: /tmp/pip-ephem-wheel-cache-z1i_eu8w/wheels/09/9e/af/c3a372f40c379f8a54a147a26a165f06c4ffd6342816378c7a
+Successfully built codex-contracts
