@@ -1,0 +1,629 @@
+{
+  "artifact_type": "maintained-institutional-program-roadmap",
+  "version": 1,
+  "repository_root_context": "/home/runner/work/_codex_/_codex_",
+  "path_rule": "All evidence links are repository-relative, retrievable paths. No runner-local virtual environment is a retention location.",
+  "status_vocabulary": [
+    "completed",
+    "partial",
+    "planned",
+    "blocked",
+    "superseded",
+    "not_applicable_with_rationale"
+  ],
+  "status_rule": "Status is scoped to the named item, not program acceptance. Historical scoped PASS receipts do not establish current acceptance, G5, approval, activation or release.",
+  "maintenance_rule": "Preserve item IDs and evidence; update facts and append scoped successors rather than restarting the program or deleting future work. Superseded items must name a successor and rationale.",
+  "source_index": {
+    "g4": ".codex/evidence/institutional-foundation/iteration-004/gate-adjudication.json",
+    "i4": ".codex/evidence/institutional-foundation/iteration-004/implementation-status.json",
+    "c4": ".codex/evidence/institutional-foundation/iteration-004/continuation.json.gz",
+    "g5": ".codex/evidence/institutional-foundation/iteration-005/gate-adjudication.json",
+    "d5": ".codex/evidence/institutional-foundation/iteration-005/formula-design-preservation.json",
+    "e5": ".codex/evidence/institutional-foundation/iteration-005/experience-final.json",
+    "c5": ".codex/evidence/institutional-foundation/iteration-005/continuation.json.gz",
+    "k5": ".codex/evidence/institutional-foundation/iteration-005/checkpoint-verification.json",
+    "s5": ".codex/evidence/institutional-foundation/iteration-005/final-source-binding.json",
+    "x6": ".codex/evidence/institutional-foundation/iteration-006/execution-context.json",
+    "snapshot6": ".codex/evidence/institutional-foundation/iteration-006/snapshot-reconciliation.json",
+    "architecture6": ".codex/evidence/institutional-foundation/iteration-006/architecture-bearing.json",
+    "dissent6": ".codex/evidence/institutional-foundation/iteration-006/dissent-bearing.json",
+    "design6": ".codex/evidence/institutional-foundation/iteration-006/design-rendering-observation.json",
+    "retention6": ".codex/evidence/institutional-foundation/iteration-006/security/retention-aggregate.json",
+    "triage6": ".codex/evidence/institutional-foundation/iteration-006/security/triage-summary.json",
+    "targeted_triage6": ".codex/evidence/institutional-foundation/iteration-006/security/three-source-static-triage.json",
+    "runtime6": ".codex/evidence/institutional-foundation/iteration-006/runtime/summary.json",
+    "meta6": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-completion.json",
+    "meta_final6": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-assurance-final.json",
+    "parity6": ".codex/evidence/institutional-foundation/iteration-006/runtime/current-source-parity.json",
+    "admission6": ".codex/evidence/institutional-foundation/iteration-006/runtime/admission-observation.json",
+    "design": "docs/design/azimuthal-reasoning-integrity.rst",
+    "formal": "docs/design/azimuthal-formal-model.rst",
+    "foundation": "docs/institutional-foundation.rst",
+    "authority_adr": "docs/adr/institutional-authority-002.json"
+  },
+  "evidence_reference_rule": "Each evidence array resolves source_index keys to repository-relative paths. Dependency arrays reference item IDs; dependencies constrain the named acceptance, not all unrelated development.",
+  "immutable_baselines": {
+    "tested_source": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+    "tested_wheel_sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00",
+    "historical_source": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+    "historical_wheel_sha256": "e88afdbc52d79f2155fdadacddac9d2e16cab15e7307822aecdccfe13c9a9c33",
+    "source_review_candidate": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+    "limits": "Retained technical observations; no independent reproduction or current merged-SHA equivalence inferred."
+  },
+  "items": [
+    {
+      "id": "foundation-sdk",
+      "title": "Preserve the bounded installed offline SDK and existing component reuse",
+      "status": "completed",
+      "evidence": [
+        "g5",
+        "e5",
+        "s5",
+        "i4"
+      ],
+      "dependencies": [],
+      "scope": "Historical exact-wheel/runtime/resources/base-installation observations only. Existing core/review/assurance/storage reused; not full architecture completion."
+    },
+    {
+      "id": "retained-design-assets",
+      "title": "Preserve 58 formula references, 27 design contracts and seven diagram sources/text alternatives",
+      "status": "completed",
+      "evidence": [
+        "d5",
+        "design6",
+        "i4"
+      ],
+      "dependencies": [],
+      "scope": "Preservation and metadata only, not 58 evaluators, 27 implemented standalone schemas, rendering or mathematical proof."
+    },
+    {
+      "id": "evidence-acceptance",
+      "title": "Close durable evidence acceptance without manufacturing historical logs",
+      "status": "blocked",
+      "evidence": [
+        "retention6",
+        "g4",
+        "g5"
+      ],
+      "dependencies": [
+        "missing-logs",
+        "secret-triage",
+        "snapshot-owner-review"
+      ],
+      "remaining": "RD6-04 remains partial: 266 present retained files and 151 expected missing historical paths in the bounded receipt. Surviving JUnit and structured results are separate observations, not replacement original logs.",
+      "owner": "Coordinator and retention/security owners"
+    },
+    {
+      "id": "missing-logs",
+      "title": "Recover or explicitly adjudicate all 151 expected missing historical log paths",
+      "status": "blocked",
+      "evidence": [
+        "retention6"
+      ],
+      "dependencies": [],
+      "remaining": "Use the complete expected_missing inventory, recorded sizes and SHA-256. Recover only authorized original bytes; retain unknown/unavailable outcomes. Do not regenerate empty logs or infer test failure from absence.",
+      "owner": "Retention owner with authorized historical session/artifact access"
+    },
+    {
+      "id": "secret-triage",
+      "title": "Resolve credential-like findings and disclose bounded scan coverage",
+      "status": "blocked",
+      "evidence": [
+        "triage6",
+        "targeted_triage6",
+        "retention6"
+      ],
+      "dependencies": [],
+      "remaining": "Initial 73 matches included 20 hash/source contexts and 40 lockfile checksums, leaving 13 unresolved. The newer exactly-three-source static pass classified three finding contexts and leaves 11 owner-review findings total: one targeted finding and ten findings outside that pass. Owner triage, containment and disclosure decisions remain required; no plaintext secrets, validity probes or clean-scan claim.",
+      "owner": "Security owner"
+    },
+    {
+      "id": "snapshot-owner-review",
+      "title": "Keep historical user capture and newer progress-publication capture separately attributable",
+      "status": "blocked",
+      "evidence": [
+        "snapshot6",
+        "x6"
+      ],
+      "dependencies": [],
+      "remaining": "a6442c9e3865611917424100f05e889a7c470975 captured historical user timestamp; 64cd6ebed63d14a16e21079e4c67a318ccc92373 captured newer user bytes. Corrections are owner-review-only forward proposals, not silent packet reverts or history rewriting.",
+      "owner": "Repository owner; coordinator preserves bytes/history"
+    },
+    {
+      "id": "safe-admission-composition",
+      "title": "Compose semantic admission/recovery, explicit candidate association and history-continuity policy",
+      "status": "planned",
+      "evidence": [
+        "architecture6",
+        "admission6",
+        "dissent6"
+      ],
+      "dependencies": [
+        "foundation-sdk"
+      ],
+      "remaining": "C1 semantic versus structural admission, C2 unbound co-storage, C3 cooperative history versus hostile reseal all remain open. Reuse validate_artifact/inspect_candidate/verify/storage.plan/apply; no new agent, store, Reconciler or authority.",
+      "acceptance": "Targeted authorized vectors distinguish structural admission from semantic validity; bound and unbound attachments explicit; required history extensions checked; hostile reseal not falsely solved."
+    },
+    {
+      "id": "actual-source-workflow",
+      "title": "Preserve the executed actual source-backed loop and its scoped rotated meta response",
+      "status": "partial",
+      "evidence": [
+        "architecture6",
+        "dissent6",
+        "runtime6",
+        "meta6",
+        "meta_final6",
+        "parity6",
+        "x6"
+      ],
+      "dependencies": [
+        "foundation-sdk"
+      ],
+      "remaining": "Actual source review and rotated meta path EXECUTED. Only narrow 090/H1-attach-only received a formal nonmutating REJECTED_WITH_EVIDENCE recommendation; broad eight findings, dissent and C1/C2/C3 remain open. Latest scoped meta final is BLOCKED pending retention_security. Further work is recurrence, stronger evidence and safe admission after triage, not repeating this completed path.",
+      "receipt_discovery": [
+        ".codex/evidence/institutional-foundation/iteration-006/runtime/summary.json",
+        ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-completion.json",
+        ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-assurance-final.json",
+        ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-checks.json",
+        ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-initial.json",
+        ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-meta.json",
+        ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-assurance-final.json"
+      ],
+      "receipt_rule": "Preserve the executed actual and synthetic paths separately. Synthetic technical_verification resumed with 25 checks; its stale independent_reproduction pending state is not the universal next target. Counts 25 sit within overlapping 34/54 assertion stages; retain the separate 20 scoped meta checks without summing all stages. Exact source parity supports retained-wheel applicability; no new runtime implementation or build."
+    },
+    {
+      "id": "independent-exact-reproduction",
+      "title": "Independent reproduction of the exact retained artifact",
+      "status": "blocked",
+      "evidence": [
+        "g5",
+        "e5",
+        "snapshot6",
+        "k5"
+      ],
+      "dependencies": [
+        "foundation-sdk",
+        "evidence-acceptance"
+      ],
+      "remaining": "Authenticate genuinely independent verifier identity, procedure/environment, artifact custody, audit and result provenance for the exact wheel. Same-platform lanes, fixture actors and technical reruns do not establish G5.",
+      "owner": "Eligible independent verifier and applicable governance owner"
+    },
+    {
+      "id": "trusted-provider-boundaries",
+      "title": "Separate evidence-provider truth, identity, eligibility and independent assurance from local mechanics",
+      "status": "partial",
+      "evidence": [
+        "authority_adr",
+        "g5",
+        "architecture6",
+        "e5"
+      ],
+      "dependencies": [
+        "foundation-sdk"
+      ],
+      "remaining": "Existing denial-preserving provider mechanics do not authenticate production actors or lifecycle administration. Specify provenance, freshness, revocation, custody, expiry, unavailable providers and fail-closed critical unknowns."
+    },
+    {
+      "id": "rotation-response-adequacy",
+      "title": "Extend source-backed rotated responses without losing original findings, dissent or contradictions",
+      "status": "partial",
+      "evidence": [
+        "i4",
+        "g5",
+        "architecture6",
+        "design"
+      ],
+      "dependencies": [
+        "actual-source-workflow"
+      ],
+      "remaining": "Existing coverage checks and the executed 090/H1-attach-only rotated meta response are bounded mechanics. Preserve minority source wording, exact clearance conditions and current eligible evidence; general semantic adequacy and broader finding closure are not established. Do not repeat the completed meta path as a new acceptance objective."
+    },
+    {
+      "id": "dynamic-bearings",
+      "title": "Dynamic-bearing admission and bounded resource membership",
+      "status": "planned",
+      "evidence": [
+        "i4",
+        "design"
+      ],
+      "dependencies": [
+        "actual-source-workflow",
+        "rotation-response-adequacy"
+      ],
+      "remaining": "Specify trigger, parent, scope, duplicate check, membership, budgets, required outputs and retirement conditions. Canonical bearings remain distinct from independence dimensions; dissent is cross-cutting."
+    },
+    {
+      "id": "recurrence-window",
+      "title": "Recurrence, novelty, rotation history and stable stopping windows",
+      "status": "planned",
+      "evidence": [
+        "i4",
+        "design",
+        "formal"
+      ],
+      "dependencies": [
+        "rotation-response-adequacy"
+      ],
+      "remaining": "Define recurrence identity, novelty threshold, positive window and missing-history behavior; preserve reopened findings and event multiplicity. No empty-history convergence."
+    },
+    {
+      "id": "convergence-sensitivity",
+      "title": "Convergence, resilience vector and sensitivity boundaries",
+      "status": "planned",
+      "evidence": [
+        "i4",
+        "formal",
+        "d5"
+      ],
+      "dependencies": [
+        "recurrence-window",
+        "trusted-provider-boundaries",
+        "formula-calibration"
+      ],
+      "remaining": "Critical floors, unknown and zero-weight behavior, fixed noncircular base snapshots, assessed sensitivity domain and readiness predicates. Scores cannot close findings, waive unknowns or authorize operations."
+    },
+    {
+      "id": "formula-calibration",
+      "title": "Trace and assess all RD4-F001 through RD4-F058 without inventing evaluators",
+      "status": "planned",
+      "evidence": [
+        "d5",
+        "formal",
+        "i4"
+      ],
+      "dependencies": [
+        "retained-design-assets"
+      ],
+      "remaining": "Retain source versus normalized notation, provenance/conditions and partial structural mappings. Zero standalone evaluators observed. F054 remains conceptual/noncomputable; F038/F046/F047 prose and F056/F057 composites remain explicitly classified. Any justified evaluator/calibration is separate bounded work, not blanket implementation."
+    },
+    {
+      "id": "contract-completion-migration",
+      "title": "Maintain all 27 design-contract mappings and compatible lifecycle/version transitions",
+      "status": "partial",
+      "evidence": [
+        "i4",
+        "d5",
+        "design6",
+        "foundation"
+      ],
+      "dependencies": [
+        "retained-design-assets",
+        "safe-admission-composition"
+      ],
+      "remaining": "Carry the complete 27-entry contract_traceability inventory in i4 forward, including naming differences against design6; do not silently normalize aliases. Assurance later adds bounded predicates, not all standalone schemas. Policy/conflict/change-set/exception/resolution/resilience/renderer/migration contracts remain future work; import/version/downgrade rejection and extensions must remain compatible."
+    },
+    {
+      "id": "diagram-rendering",
+      "title": "Render seven exact diagram sources and mathematical/RST notation in an approved environment",
+      "status": "blocked",
+      "evidence": [
+        "design6",
+        "d5"
+      ],
+      "dependencies": [
+        "retained-design-assets"
+      ],
+      "remaining": "Mermaid/MathJax/docutils unavailable in observed environment. Retain renderer versions, exact source digests, artifacts/errors and text alternatives. Rendering readiness does not imply semantic or mathematical proof.",
+      "owner": "Documentation/rendering environment owner"
+    },
+    {
+      "id": "deployment-profile-enforcement",
+      "title": "Distinguish installed SDK deployment from proposed hosted profiles",
+      "status": "planned",
+      "evidence": [
+        "i4",
+        "g5",
+        "design6"
+      ],
+      "dependencies": [
+        "foundation-sdk",
+        "trusted-operation-authority"
+      ],
+      "remaining": "No profile creation/activation claimed. Profile-only, CLI/SDK, cloud and IDE modes need explicit opt-in and actual effective filename/source/digest/precedence/runtime/tool/MCP enforcement observations. Registry names and tool-whitelist data do not prove hosted configuration."
+    },
+    {
+      "id": "institutional-decisions-dissent",
+      "title": "Institutional decisions, competing valid decisions and durable minority dissent",
+      "status": "planned",
+      "evidence": [
+        "foundation",
+        "design",
+        "e5"
+      ],
+      "dependencies": [
+        "rotation-response-adequacy",
+        "trusted-operation-authority"
+      ],
+      "remaining": "Retain current experience/findings reuse. Standalone decision/dissent/institution contracts and authorized decision conflict resolution are unsupported; do not add schemas only for checklist coverage."
+    },
+    {
+      "id": "knowledge-quarantine-lifecycle",
+      "title": "Knowledge quarantine, trusted operational knowledge, promotion and revocation",
+      "status": "planned",
+      "evidence": [
+        "foundation",
+        "design",
+        "e5"
+      ],
+      "dependencies": [
+        "trusted-provider-boundaries",
+        "institutional-decisions-dissent"
+      ],
+      "remaining": "Separate six evidence statuses from institutional knowledge lifecycle. Address stale trusted knowledge, quarantine, eligibility, provenance, promotion, expiry, revocation and reopening without silently adopting imported content."
+    },
+    {
+      "id": "trusted-operation-authority",
+      "title": "Authenticate operation-specific authority before protected execution",
+      "status": "blocked",
+      "evidence": [
+        "authority_adr",
+        "foundation",
+        "g5"
+      ],
+      "dependencies": [
+        "trusted-provider-boundaries",
+        "independent-exact-reproduction"
+      ],
+      "remaining": "Verify real credentials, operation/target/artifact scope, separation of roles, owner approval, expiry/revocation and protected platform controls. Development permission is not activation, merge, deployment or disclosure authority.",
+      "owner": "Repository/governance owners and eligible external authority provider"
+    },
+    {
+      "id": "formal-disposition-expansion",
+      "title": "Expand formal dispositions only with route-specific evidence and authority",
+      "status": "planned",
+      "evidence": [
+        "g5",
+        "e5",
+        "design",
+        "architecture6"
+      ],
+      "dependencies": [
+        "rotation-response-adequacy",
+        "trusted-operation-authority"
+      ],
+      "remaining": "Only bounded REJECTED_WITH_EVIDENCE nonmutating recommendation exists; FIXED remains a proposal. ACCEPTED_RISK, NOT_APPLICABLE, SUPERSEDED, DEFERRED and OUT_OF_SCOPE_TRANSFER need their own semantics, evidence/owner requirements and downstream revalidation, not relabeling as rejection."
+    },
+    {
+      "id": "governance-amendment-activation",
+      "title": "Governance amendments, authorized adoption and activation",
+      "status": "blocked",
+      "evidence": [
+        "foundation",
+        "g5",
+        "authority_adr"
+      ],
+      "dependencies": [
+        "trusted-operation-authority",
+        "formal-disposition-expansion",
+        "institutional-decisions-dissent"
+      ],
+      "remaining": "No constitution adoption, self-approval, amendment protocol, activation or protected-operation execution is authorized by this handoff.",
+      "owner": "Applicable human governance/operation approver"
+    },
+    {
+      "id": "semantic-agent-ecology",
+      "title": "Semantic component ecology, usage, overlap and effectiveness inventory",
+      "status": "planned",
+      "evidence": [
+        "g4",
+        "g5",
+        "foundation"
+      ],
+      "dependencies": [
+        "evidence-acceptance"
+      ],
+      "remaining": "G1 remains open. Path census is not semantic coverage. Establish actual inputs/outputs/dependencies/tools/permissions/callers and denominator coverage; memory overlap and agent reuse cannot be inferred from filenames. No profile inspection is authorized by this task."
+    },
+    {
+      "id": "memory-overlap-integration",
+      "title": "Compare existing memory/checkpoint/experience mechanisms before integration",
+      "status": "planned",
+      "evidence": [
+        "i4",
+        "foundation",
+        "design"
+      ],
+      "dependencies": [
+        "semantic-agent-ecology",
+        "knowledge-quarantine-lifecycle"
+      ],
+      "remaining": "Assess overlap, retention, STM/LTM or other actual consumers only with evidence. Prefer existing continuation/experience, no second rubber-duck memory or unsupported effectiveness/retirement claims."
+    },
+    {
+      "id": "portability-compatibility-adoption",
+      "title": "Representative downstream compatibility, capability distribution and opt-in adoption",
+      "status": "partial",
+      "evidence": [
+        "g5",
+        "i4",
+        "foundation"
+      ],
+      "dependencies": [
+        "foundation-sdk",
+        "contract-completion-migration",
+        "evidence-acceptance"
+      ],
+      "remaining": "Installed offline SDK and full declared base installation are observed historical subsets. Optional features, platforms, POSIX locking limits, import origin isolation, schema migration, incompatible capabilities, downstream consumers and adoption/disengagement require representative evidence."
+    },
+    {
+      "id": "capability-disclosure-export",
+      "title": "Classified capability export, recipient authority and safe subset derivation",
+      "status": "planned",
+      "evidence": [
+        "foundation",
+        "design"
+      ],
+      "dependencies": [
+        "portability-compatibility-adoption",
+        "trusted-operation-authority",
+        "secret-triage"
+      ],
+      "remaining": "Existing explicit Public assertion is not authenticated disclosure approval. Restricted/internal recipient authority, redaction/subset derivation, incompatible imported capability handling and complete export lineage remain unsupported."
+    },
+    {
+      "id": "descriptive-metrics",
+      "title": "Denominated descriptive metrics with unknown outcomes and no causal claims",
+      "status": "partial",
+      "evidence": [
+        "e5",
+        "g5",
+        "snapshot6",
+        "runtime6",
+        "meta6",
+        "formal"
+      ],
+      "dependencies": [
+        "evidence-acceptance",
+        "semantic-agent-ecology"
+      ],
+      "remaining": "Report distinct versus overlapping cases, cohort/source/artifact/environment and coverage denominator. Do not add 107 installed assurance cases to overlapping 285 source cases. Iteration006 synthetic 25 checks sit within overlapping 34/54 assertion stages; 20 scoped meta checks are separately described, not all stages summed. Do not infer institutional benefit, intelligence, causal uplift or retirement from counts/scores."
+    },
+    {
+      "id": "security-supplychain",
+      "title": "Complete eligible security analysis and supply-chain/provenance assessment",
+      "status": "blocked",
+      "evidence": [
+        "g4",
+        "g5",
+        "triage6",
+        "foundation"
+      ],
+      "dependencies": [
+        "secret-triage",
+        "trusted-provider-boundaries"
+      ],
+      "remaining": "G4 full Python CodeQL was skipped for size; targeted scans do not substitute. Track dependency advisories, exact build closure, package provenance, archive scan exclusions, poisoning/collusion/compromised actors and transport/disclosure boundaries.",
+      "owner": "Security and packaging owners"
+    },
+    {
+      "id": "regression-adversarial",
+      "title": "Preserve focused regression and adversarial cases without repeating unchanged builds",
+      "status": "partial",
+      "evidence": [
+        "e5",
+        "g5",
+        "foundation",
+        "architecture6"
+      ],
+      "dependencies": [
+        "foundation-sdk"
+      ],
+      "remaining": "Carry dependency revision/exemption/aggregate-budget fixes forward; future changes need targeted admission/binding/continuity, missing evidence, minority-confirmed-later, compromised trust, incompatible import and collusion cases. Existing passing cohorts are historical evidence, not universal resistance."
+    },
+    {
+      "id": "separate-release",
+      "title": "Separate release/publication readiness from development and package experiments",
+      "status": "blocked",
+      "evidence": [
+        "g5",
+        "foundation",
+        "e5"
+      ],
+      "dependencies": [
+        "evidence-acceptance",
+        "independent-exact-reproduction",
+        "security-supplychain",
+        "portability-compatibility-adoption",
+        "regression-adversarial",
+        "trusted-operation-authority"
+      ],
+      "remaining": "No publication, production deployment or release claim. Require explicit release authority and relevant checks separately; a built/installed wheel does not grant them.",
+      "owner": "Release maintainer and applicable approvers"
+    },
+    {
+      "id": "merged-continuation",
+      "title": "Verify merged base and resume an eligible bound successor rather than restarting",
+      "status": "planned",
+      "evidence": [
+        "c4",
+        "c5",
+        "k5",
+        "x6",
+        "snapshot6"
+      ],
+      "dependencies": [],
+      "remaining": "Verify actual PR merge and 0D_base_ ancestry, current policy, final manifest/checkpoint and source/config drift. Rebind to actual merged SHA using existing successor semantics, retain original artifacts, replay pending history and determine eligible next node without granting authority."
+    }
+  ],
+  "next_three_bounded_slices": [
+    {
+      "priority": 1,
+      "id": "slice-evidence-and-safe-admission",
+      "items": [
+        "merged-continuation",
+        "evidence-acceptance",
+        "missing-logs",
+        "secret-triage",
+        "snapshot-owner-review",
+        "safe-admission-composition"
+      ],
+      "justification": "Known durable-retention and unresolved-secret blockers constrain acceptance; current source analysis identifies concrete existing-component admission/binding/continuity improvements.",
+      "boundary": "First verify receipts and ownership. Recover only authorized exact original evidence; preserve unavailable outcomes. Prepare only explicitly authorized targeted existing-component changes, not a new trust system.",
+      "done_when": "An honest retained present/missing/triaged inventory and owner decisions exist; admission/cross-binding/continuity policy has explicit scoped acceptance evidence or remains blocked with named owner."
+    },
+    {
+      "priority": 2,
+      "id": "slice-independent-assurance-provider-boundaries",
+      "items": [
+        "independent-exact-reproduction",
+        "trusted-provider-boundaries"
+      ],
+      "justification": "Technical replay cannot discharge G5; trusted provider and independent custody boundaries must be explicit before protected decisions.",
+      "boundary": "Request eligible independently established verifier and exact retained artifact. Do not invent identities, fixture trust, provider availability or operational authority.",
+      "done_when": "Independent receipt is properly established or G5 stays NOT_RUN with exact artifact, missing predicates, owner and next authorized action."
+    },
+    {
+      "priority": 3,
+      "id": "slice-source-backed-response-recurrence",
+      "items": [
+        "actual-source-workflow",
+        "rotation-response-adequacy",
+        "recurrence-window"
+      ],
+      "justification": "The source review and scoped rotated meta path already executed. After triage, extend with one bounded recurrence or stronger-evidence case rather than repeating the completed path.",
+      "boundary": "Choose one justified source-backed extension and preserve speculative hypothesis versus source quotation, broad eight findings, dissent, counterevidence and original relations; no automatic dispatch, full dynamic bearings or score-based closure.",
+      "done_when": "A new justified recurrence/stronger-evidence decision is retained separately from synthetic fixtures and the completed meta path, with unchanged authority limits and unresolved concerns."
+    }
+  ],
+  "current_iteration_update_rule": {
+    "runtime_status": "EXECUTED_SCOPED_SOURCE_AND_ROTATED_META_FINAL_BLOCKED",
+    "observed_final_summary": "Actual review and narrow 090/H1-attach-only nonmutating rejection recommendation executed; broad eight findings and dissent remain. Latest meta final is BLOCKED pending retention_security. Synthetic resumption remains a separate fixture.",
+    "coordinator_action": "Finalize checkpoint/manifest paths and actual digest bindings, retain actual versus synthetic scope and scoped counts, and preserve current facts without converting technical execution to acceptance.",
+    "G1": "NOT_RUN",
+    "G4": "NOT_RUN",
+    "no_execution_by_this_lane": true,
+    "G5": "NOT_RUN",
+    "authority": "none",
+    "approval": "NOT_RUN",
+    "activation": "unsupported"
+  },
+  "iteration_007_updates": {
+    "rule": "All 32 predecessor items, statuses, dependencies and evidence remain unchanged above. These additive observations supply successor scope, not owner acceptance.",
+    "safe-admission-composition": {
+      "status": "partial",
+      "evidence": [
+        ".codex/evidence/institutional-foundation/iteration-007/validation.json",
+        ".codex/evidence/institutional-foundation/iteration-007/checkpoint-verification.json"
+      ],
+      "implemented": "Semantic dispatch, explicit association, persisted-chain recovery, history retention, fork and stale replay checks",
+      "remaining": "Independently trusted external anchors and G5; no universal C3 solution"
+    },
+    "actual-source-workflow": {
+      "status": "partial",
+      "evidence": [
+        ".codex/evidence/institutional-foundation/iteration-007/source-review/"
+      ],
+      "remaining": "Broader source-backed response/recurrence and owner retention/security acceptance; current conflict retained"
+    },
+    "snapshot-owner-review": {
+      "status": "blocked",
+      "additional_incident": "621a57cea880fe2517338db232bc888a3d8d55db"
+    },
+    "independent-exact-reproduction": {
+      "status": "blocked",
+      "G5": "NOT_RUN"
+    },
+    "next_deterministic_task": "Obtain owner decisions for retention_security and independent exact-artifact reproduction of retained new wheel; then evaluate trusted external anchor/provider boundaries without activation."
+  }
+}

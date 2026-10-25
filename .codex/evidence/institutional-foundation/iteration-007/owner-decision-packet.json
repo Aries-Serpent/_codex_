@@ -42,7 +42,7 @@
   "codeql": {
     "historical_G4": "NOT_RUN",
     "historical_reason": "Python scan skipped for size; subsequent checker errored before analysis",
-    "current": "Pending separate actual checker observation; scoped Bandit does not establish full G4."
+    "current": "NOT_RUN: checker explicitly skipped Python because database size is too large. Reported zero alerts is not a completed scan; scoped Bandit does not establish full G4."
   },
   "authority": {
     "G5": "NOT_RUN",

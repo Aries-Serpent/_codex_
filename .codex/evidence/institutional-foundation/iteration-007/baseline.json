@@ -15,7 +15,7 @@
     "merged_at": "2026-10-25T04:20:37Z",
     "tree": "340648595f06c65b65aaa478cd6fa5a6b1458dc9",
     "sources": ["GitHub pull_request_read(get)", "GitHub get_commit", "local HEAD and target ref"],
-    "local_history_limit": "Shallow boundary exposes no parents locally; do not infer root history or feature-branch ancestry. Assigned tree exactly equals integration tree.",
+    "local_history_limit": "Initially shallow. Later authorized depth-two target fetch confirms the single parent 159830ca8b9e689cae443fb7c1cc0f36cfb7d667; feature-branch ancestry is not required. Assigned tree exactly equals integration tree.",
     "subsequent_base_changes_at_observation": [],
     "reverted_or_superseded": false
   },
