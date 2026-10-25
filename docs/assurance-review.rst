@@ -21,11 +21,13 @@ declared dependencies; missing dependencies must fail rather than be ignored::
     /tmp/codex-assurance-example/bin/python -I -c \
         "from codex.institutional import assurance; print(assurance.__file__)"
 
-Use that environment's Python for the examples below. The retained iteration-005
-wheel experiments validate the institutional SDK's dependency subset, not a
-complete ML-distribution installation. A failed whole-distribution dependency
-check remains a separate limitation; the command above is not claimed as an
-observed complete installation. Runtime procedures remain inert and offline.
+Use that environment's Python for the examples below. Initial iteration-005
+SDK-only environments failed whole-distribution dependency checks; those failures
+remain retained. Separate ``package-changed/full-base-closure`` receipts establish
+complete base-dependency installs and clean dependency checks for both exact
+candidate wheels, without optional extras. The offline-wheelhouse command above
+is an installation procedure, not a claim that this particular command was run.
+Runtime procedures remain inert and offline.
 
 The three assurance node kinds are ``technical_verification``,
 ``independent_reproduction`` and ``institutional_audit``. Dependencies are only
