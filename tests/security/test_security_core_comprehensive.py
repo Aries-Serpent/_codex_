@@ -11,16 +11,17 @@ This module provides extensive coverage of core security functions including:
 
 from __future__ import annotations
 
-import json
+import asyncio
+import inspect
 import logging
-import time
-from datetime import UTC, datetime, timedelta
+import os
 from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
 
 from security.core import (
+    SecurityError,
     check_permissions,
     enforce_absolute_path,
     hmac_compare,
@@ -43,30 +44,35 @@ from security.core import (
 def mock_logger(monkeypatch):
     """Mock logger for testing."""
     mock = MagicMock()
-    monkeypatch.setattr(logging, "getLogger", lambda name: mock)
+    get_logger = logging.getLogger
+    monkeypatch.setattr(
+        logging,
+        "getLogger",
+        lambda name=None: mock if name == "codex.security" else get_logger(name),
+    )
     return mock
 
 
 @pytest.fixture
-def temp_session_file(tmp_path):
-    """Create a temporary session file."""
-    session_file = tmp_path / "session.json"
-    session_data = {
-        "user_id": "user123",
-        "username": "testuser",
-        "created_at": datetime.now(UTC).isoformat(),
-        "last_activity": datetime.now(UTC).isoformat(),
-        "ip_address": "192.168.1.1",
-        "user_agent": "Mozilla/5.0...",
+def session_metadata():
+    """Return fresh request metadata for each session integrity test."""
+    return {
+        "fingerprint": "fingerprint123",
+        "ip": "192.168.1.1",
+        "user_agent": "TestBrowser/1.0",
     }
-    session_file.write_text(json.dumps(session_data))
-    return session_file
 
 
 @pytest.fixture
-def rate_limiter_instance():
-    """Create a rate limiter instance for testing."""
-    return rate_limiter(max_calls=5, time_window=60)
+def active_sessions(session_metadata):
+    """Return independent server-side session metadata."""
+    return [{"id": "session123", **session_metadata}]
+
+
+@pytest.fixture
+def fake_clock():
+    """A controllable monotonic clock avoids sleeps and finite side effects."""
+    return MagicMock(return_value=0.0)
 
 
 # ============================================================================
@@ -156,78 +162,120 @@ class TestValidateInput:
 
     def test_validate_input_sql_injection_basic(self):
         """Test basic SQL injection pattern detection."""
-        result = validate_input("'; DROP TABLE users; --")
-        assert result is False, "Result must not be empty"
+        with pytest.raises(SecurityError, match="SQL injection pattern"):
+            validate_input("'; DROP TABLE users; --", input_type="sql")
 
     def test_validate_input_sql_injection_delete(self):
         """Test DELETE statement detection."""
-        result = validate_input("value'; DELETE FROM users WHERE '1'='1")
-        assert result is False, "Result must not be empty"
+        with pytest.raises(SecurityError, match="SQL injection pattern"):
+            validate_input("value'; DELETE FROM users WHERE '1'='1", input_type="sql")
 
-    def test_validate_input_sql_injection_union(self):
-        """Test UNION statement detection."""
-        result = validate_input("1' UNION SELECT * FROM users --")
-        assert result is False, "Result must not be empty"
+    def test_validate_input_sql_injection_with_trailing_comment(self):
+        """The trailing SQL comment is a rejected pattern."""
+        with pytest.raises(SecurityError, match="SQL injection pattern"):
+            validate_input("1' UNION SELECT * FROM users --", input_type="sql")
 
     def test_validate_input_xss_script_tag(self):
         """Test XSS script tag detection."""
-        result = validate_input("<script>alert('xss')</script>")
-        assert result is False, "Result must not be empty"
+        with pytest.raises(SecurityError, match="XSS pattern"):
+            validate_input("<script>alert('xss')</script>", input_type="html")
 
     def test_validate_input_xss_javascript_uri(self):
         """Test JavaScript URI detection."""
-        result = validate_input('<a href="javascript:alert()">click</a>')
-        assert result is False, "Result must not be empty"
+        with pytest.raises(SecurityError, match="XSS pattern"):
+            validate_input('<a href="javascript:alert()">click</a>', input_type="html")
 
     def test_validate_input_xss_event_handler(self):
         """Test event handler detection."""
-        result = validate_input("<img src=x onerror=alert()>")
-        assert result is False, "Result must not be empty"
+        with pytest.raises(SecurityError, match="XSS pattern"):
+            validate_input("<img src=x onerror=alert()>", input_type="html")
 
     def test_validate_input_json_prototype_pollution(self):
         """Test JSON prototype pollution detection."""
-        result = validate_input('{"__proto__": {"admin": true}}')
-        assert result is False, "Result must not be empty"
+        with pytest.raises(SecurityError, match="Prototype pollution"):
+            validate_input('{"__proto__": {"admin": true}}', input_type="json")
 
     def test_validate_input_clean_string(self):
         """Test valid clean string."""
         result = validate_input("This is a valid input")
-        assert result is True, "Result must not be empty"
+        assert result == "This is a valid input"
 
     def test_validate_input_clean_email(self):
         """Test valid email input."""
         result = validate_input("user@example.com")
-        assert result is True, "Result must not be empty"
+        assert result == "user@example.com"
 
     def test_validate_input_clean_with_numbers(self):
         """Test valid input with numbers."""
         result = validate_input("User123")
-        assert result is True, "Result must not be empty"
+        assert result == "User123"
 
     def test_validate_input_empty_string(self):
         """Test empty string."""
         result = validate_input("")
-        assert result is True, "Result must not be empty"
+        assert result == ""
 
     def test_validate_input_none_value(self):
         """Test None value."""
-        result = validate_input(None)
-        assert result is True, "Result must not be empty"
+        with pytest.raises(SecurityError, match="Expected string"):
+            validate_input(None)
 
     def test_validate_input_numeric_value(self):
         """Test numeric value."""
-        result = validate_input(12345)
-        assert result is True, "Result must not be empty"
+        with pytest.raises(SecurityError, match="Expected string"):
+            validate_input(12345)
 
     def test_validate_input_comment_with_double_dash(self):
         """Test SQL comment detection."""
-        result = validate_input("SELECT * FROM users -- comment")
-        assert result is False, "Result must not be empty"
+        with pytest.raises(SecurityError, match="SQL injection pattern"):
+            validate_input("SELECT * FROM users -- comment", input_type="sql")
 
     def test_validate_input_comment_with_slash(self):
         """Test SQL block comment detection."""
-        result = validate_input("SELECT * /* comment */ FROM users")
-        assert result is False, "Result must not be empty"
+        with pytest.raises(SecurityError, match="SQL injection pattern"):
+            validate_input("SELECT * /* comment */ FROM users", input_type="sql")
+
+    def test_validate_input_text_transforms_content(self):
+        """Default text validation returns the sanitized string, not a boolean."""
+        assert validate_input("FOO and safe text") == "[REDACTED] and safe text"
+
+    @pytest.mark.parametrize("control", ["\0", "\x01", "\x1f"])
+    def test_validate_input_rejects_text_controls(self, control):
+        with pytest.raises(SecurityError, match="Invalid control characters"):
+            validate_input(f"before{control}after")
+
+    def test_validate_input_preserves_allowed_whitespace(self):
+        text = "line1\nline2\r\n\tindented"
+        assert validate_input(text) == text
+
+    def test_validate_input_html_escapes_safe_markup(self):
+        assert validate_input("<b>safe & sound</b>", input_type="html") == (
+            "&lt;b&gt;safe &amp; sound&lt;/b&gt;"
+        )
+
+    def test_validate_input_max_length_boundary(self):
+        assert validate_input("abcd", max_length=4) == "abcd"
+        with pytest.raises(SecurityError, match="Input exceeds max length 4"):
+            validate_input("abcde", max_length=4)
+
+    @pytest.mark.parametrize("path", ["../secret", "/etc/passwd", "~/secret", "a\0b"])
+    def test_validate_input_rejects_unsafe_paths(self, path):
+        with pytest.raises(SecurityError, match="traversal|Invalid characters"):
+            validate_input(path, input_type="path")
+
+    def test_validate_input_rejects_symlink_escape(self, tmp_path, monkeypatch):
+        root = tmp_path / "root"
+        root.mkdir()
+        outside = tmp_path / "outside"
+        outside.mkdir()
+        (root / "escape").symlink_to(outside, target_is_directory=True)
+        monkeypatch.chdir(root)
+        with pytest.raises(SecurityError, match="escape current directory"):
+            validate_input("escape/secret.txt", input_type="path")
+
+    def test_validate_input_rejects_unsupported_type(self):
+        with pytest.raises(SecurityError, match="Unsupported input_type"):
+            validate_input("value", input_type="xml")
 
 
 # ============================================================================
@@ -397,46 +445,49 @@ class TestVerifyCSRFToken:
 
     def test_verify_csrf_token_valid_token(self):
         """Test with valid CSRF token."""
-        session_id = "session123"
         token = "valid_token"
-        result = verify_csrf_token(session_id, token, token)
-        assert isinstance(result, bool)
+        assert verify_csrf_token(token, token) is None
 
     def test_verify_csrf_token_invalid_token(self):
         """Test with invalid token."""
-        result = verify_csrf_token("session123", "token1", "token2")
-        assert result is False, "Result must not be empty"
+        with pytest.raises(SecurityError, match="CSRF token mismatch"):
+            verify_csrf_token("token1", "token2")
 
-    def test_verify_csrf_token_empty_session_id(self):
-        """Test with empty session ID."""
-        result = verify_csrf_token("", "token", "token")
-        assert isinstance(result, bool)
+    @pytest.mark.parametrize("provided", ["", None])
+    def test_verify_csrf_token_missing_provided_token(self, provided):
+        """A missing request token cannot match a valid server-side token."""
+        with pytest.raises(SecurityError, match="Missing CSRF token"):
+            verify_csrf_token(provided, "token")
+
+    @pytest.mark.parametrize("session", ["", None])
+    def test_verify_csrf_token_missing_session_token(self, session):
+        with pytest.raises(SecurityError, match="Missing CSRF token"):
+            verify_csrf_token("token", session)
 
     def test_verify_csrf_token_empty_token(self):
         """Test with empty token."""
-        result = verify_csrf_token("session123", "", "")
-        assert result is True or result is False, "Result must not be empty"
+        with pytest.raises(SecurityError, match="Missing CSRF token"):
+            verify_csrf_token("", "")
 
     def test_verify_csrf_token_none_values(self):
         """Test with None values."""
-        result = verify_csrf_token(None, None, None)
-        assert isinstance(result, bool)
+        with pytest.raises(SecurityError, match="Missing CSRF token"):
+            verify_csrf_token(None, None)
 
     def test_verify_csrf_token_case_sensitive(self):
         """Test token comparison is case sensitive."""
-        result = verify_csrf_token("session123", "Token", "token")
-        assert result is False, "Result must not be empty"
+        with pytest.raises(SecurityError, match="CSRF token mismatch"):
+            verify_csrf_token("Token", "token")
 
     def test_verify_csrf_token_whitespace_sensitive(self):
         """Test token comparison is whitespace sensitive."""
-        result = verify_csrf_token("session123", "token ", "token")
-        assert result is False, "Result must not be empty"
+        with pytest.raises(SecurityError, match="CSRF token mismatch"):
+            verify_csrf_token("token ", "token")
 
     def test_verify_csrf_token_long_token(self):
         """Test with long token."""
         long_token = "A" * 1000
-        result = verify_csrf_token("session123", long_token, long_token)
-        assert isinstance(result, bool)
+        assert verify_csrf_token(long_token, long_token) is None
 
 
 # ============================================================================
@@ -514,12 +565,12 @@ class TestRateLimiter:
 
     def test_rate_limiter_decorator_creation(self):
         """Test creating a rate limiter decorator."""
-        decorator = rate_limiter(max_calls=5, time_window=60)
+        decorator = rate_limiter(calls=5, period=60)
         assert callable(decorator), "Condition must be true"
 
-    def test_rate_limiter_allows_calls_within_limit(self):
+    def test_rate_limiter_allows_calls_within_limit(self, fake_clock):
         """Test allowing calls within limit."""
-        decorator = rate_limiter(max_calls=3, time_window=1)
+        decorator = rate_limiter(calls=3, period=1, clock=fake_clock)
 
         @decorator
         def test_func():
@@ -530,12 +581,14 @@ class TestRateLimiter:
             result = test_func()
             assert result == "success", "Result must not be empty"
 
-    def test_rate_limiter_blocks_calls_exceeding_limit(self):
+    def test_rate_limiter_blocks_calls_exceeding_limit(self, fake_clock):
         """Test blocking calls exceeding limit."""
-        decorator = rate_limiter(max_calls=2, time_window=60)
+        decorator = rate_limiter(calls=2, period=60, clock=fake_clock)
+        executed = []
 
         @decorator
         def test_func():
+            executed.append("called")
             return "success"
 
         # First 2 calls succeed
@@ -543,12 +596,13 @@ class TestRateLimiter:
         test_func()
 
         # Third call should raise
-        with pytest.raises(Exception):
+        with pytest.raises(SecurityError, match="Rate limit exceeded"):
             test_func()
+        assert executed == ["called", "called"]
 
-    def test_rate_limiter_resets_after_time_window(self):
+    def test_rate_limiter_resets_after_time_window(self, fake_clock):
         """Test reset after time window expires."""
-        decorator = rate_limiter(max_calls=1, time_window=1)
+        decorator = rate_limiter(calls=1, period=1, clock=fake_clock)
 
         @decorator
         def test_func():
@@ -559,19 +613,25 @@ class TestRateLimiter:
         assert result == "success", "Result must not be empty"
 
         # Second call fails
-        with pytest.raises(Exception):
+        with pytest.raises(SecurityError, match="Rate limit exceeded"):
             test_func()
 
-        # Wait for window to expire
-        time.sleep(1.1)
+        # Entries remain in the window at the exact boundary.
+        fake_clock.return_value = 1.0
+        with pytest.raises(SecurityError, match="Rate limit exceeded"):
+            test_func()
+
+        fake_clock.return_value = 1.1
 
         # Should succeed again
         result = test_func()
         assert result == "success", "Result must not be empty"
 
-    def test_rate_limiter_per_user_tracking(self):
+    def test_rate_limiter_per_user_tracking(self, fake_clock):
         """Test per-user rate limit tracking."""
-        decorator = rate_limiter(max_calls=2, time_window=60, per_user=True)
+        decorator = rate_limiter(
+            calls=2, period=60, key_func=lambda user_id: user_id, clock=fake_clock
+        )
 
         @decorator
         def test_func(user_id):
@@ -583,23 +643,24 @@ class TestRateLimiter:
         assert test_func("user1") == "success", "Condition must be true"
 
         # user1 exceeds limit
-        with pytest.raises(Exception):
+        with pytest.raises(SecurityError, match="Rate limit exceeded"):
             test_func("user1")
+        assert test_func("user2") == "success"
 
-    def test_rate_limiter_zero_calls(self):
-        """Test with max_calls=0."""
-        decorator = rate_limiter(max_calls=0, time_window=60)
+    @pytest.mark.parametrize("calls", [0, -1])
+    def test_rate_limiter_invalid_calls(self, calls):
+        """Invalid limits are rejected when the decorator is created."""
+        with pytest.raises(ValueError, match="calls must be positive"):
+            rate_limiter(calls=calls, period=60)
 
-        @decorator
-        def test_func():
-            return "success"
+    @pytest.mark.parametrize("period", [0, -1])
+    def test_rate_limiter_invalid_period(self, period):
+        with pytest.raises(ValueError, match="period must be positive"):
+            rate_limiter(calls=1, period=period)
 
-        with pytest.raises(Exception):
-            test_func()
-
-    def test_rate_limiter_large_window(self):
+    def test_rate_limiter_large_window(self, fake_clock):
         """Test with large time window."""
-        decorator = rate_limiter(max_calls=1000, time_window=3600)
+        decorator = rate_limiter(calls=1000, period=3600, clock=fake_clock)
 
         @decorator
         def test_func():
@@ -610,6 +671,39 @@ class TestRateLimiter:
             result = test_func()
             assert result == "success", "Result must not be empty"
 
+    def test_rate_limiter_preserves_signature_and_arguments(self, fake_clock):
+        def original(value, *, suffix="!"):
+            """The original callable's metadata."""
+            return f"{value}{suffix}"
+
+        decorated = rate_limiter(calls=1, clock=fake_clock)(original)
+        assert inspect.signature(decorated) == inspect.signature(original)
+        assert decorated.__name__ == original.__name__
+        assert decorated.__doc__ == original.__doc__
+        assert decorated("hello", suffix="?") == "hello?"
+
+    def test_rate_limiter_async_keyed_windows(self, fake_clock):
+        """Async calls enforce independent keys and expire like sync calls."""
+        executed = []
+
+        @rate_limiter(calls=1, period=1, key_func=lambda user: user, clock=fake_clock)
+        async def request(user):
+            executed.append(user)
+            return user
+
+        async def exercise():
+            assert await request("alice") == "alice"
+            assert await request("bob") == "bob"
+            with pytest.raises(SecurityError, match="Rate limit exceeded"):
+                await request("alice")
+            assert executed == ["alice", "bob"]
+            fake_clock.return_value = 1.1
+            assert await request("alice") == "alice"
+            assert executed == ["alice", "bob", "alice"]
+
+        assert inspect.iscoroutinefunction(request)
+        asyncio.run(exercise())
+
 
 # ============================================================================
 # VERIFY_SESSION_INTEGRITY TESTS
@@ -619,51 +713,64 @@ class TestRateLimiter:
 class TestVerifySessionIntegrity:
     """Test verify_session_integrity function."""
 
-    def test_verify_session_integrity_valid(self, temp_session_file):
-        """Test with valid session."""
-        result = verify_session_integrity(temp_session_file)
-        assert isinstance(result, bool)
+    def test_verify_session_integrity_valid(self, session_metadata, active_sessions):
+        """Matching request and server-side metadata validate without mutation."""
+        expected_metadata = session_metadata.copy()
+        expected_sessions = [session.copy() for session in active_sessions]
+        assert verify_session_integrity("session123", session_metadata, active_sessions) is None
+        assert session_metadata == expected_metadata
+        assert active_sessions == expected_sessions
 
-    def test_verify_session_integrity_missing_file(self):
-        """Test with missing session file."""
-        result = verify_session_integrity("/nonexistent/session.json")
-        assert result is False, "Result must not be empty"
+    @pytest.mark.parametrize("session_id", ["", None])
+    def test_verify_session_integrity_missing_id(
+        self, session_id, session_metadata, active_sessions
+    ):
+        with pytest.raises(SecurityError, match="Incomplete session metadata"):
+            verify_session_integrity(session_id, session_metadata, active_sessions)
 
-    def test_verify_session_integrity_corrupted_json(self, tmp_path):
-        """Test with corrupted JSON."""
-        session_file = tmp_path / "corrupt.json"
-        session_file.write_text("not valid json")
-        result = verify_session_integrity(session_file)
-        assert result is False, "Result must not be empty"
+    @pytest.mark.parametrize("field", ["fingerprint", "ip", "user_agent"])
+    @pytest.mark.parametrize("missing_value", ["absent", "", None])
+    def test_verify_session_integrity_incomplete_metadata(
+        self, field, missing_value, session_metadata, active_sessions
+    ):
+        if missing_value == "absent":
+            session_metadata.pop(field)
+        else:
+            session_metadata[field] = missing_value
+        with pytest.raises(SecurityError, match="Incomplete session metadata"):
+            verify_session_integrity("session123", session_metadata, active_sessions)
 
-    def test_verify_session_integrity_empty_file(self, tmp_path):
-        """Test with empty file."""
-        session_file = tmp_path / "empty.json"
-        session_file.write_text("")
-        result = verify_session_integrity(session_file)
-        assert result is False, "Result must not be empty"
+    @pytest.mark.parametrize(
+        "field,message",
+        [
+            ("fingerprint", "Session fingerprint mismatch"),
+            ("ip", "Session IP mismatch"),
+            ("user_agent", "Session user agent mismatch"),
+        ],
+    )
+    def test_verify_session_integrity_mismatch(
+        self, field, message, session_metadata, active_sessions
+    ):
+        session_metadata[field] = "different"
+        with pytest.raises(SecurityError, match=message):
+            verify_session_integrity("session123", session_metadata, active_sessions)
 
-    def test_verify_session_integrity_expired_session(self, tmp_path):
-        """Test with expired session."""
-        session_file = tmp_path / "expired.json"
-        expired_time = datetime.now(UTC) - timedelta(days=30)
-        session_data = {
-            "user_id": "user123",
-            "created_at": expired_time.isoformat(),
-        }
-        session_file.write_text(json.dumps(session_data))
-        result = verify_session_integrity(session_file)
-        assert isinstance(result, bool)
+    def test_verify_session_integrity_finds_matching_session(
+        self, session_metadata, active_sessions
+    ):
+        """Unrelated sessions must not affect the requested session's checks."""
+        active_sessions.insert(
+            0, {"id": "other", "fingerprint": "other", "ip": "other", "user_agent": "other"}
+        )
+        assert verify_session_integrity("session123", session_metadata, active_sessions) is None
 
-    def test_verify_session_integrity_missing_user_id(self, tmp_path):
-        """Test with missing user_id."""
-        session_file = tmp_path / "no_user.json"
-        session_data = {
-            "created_at": datetime.now(UTC).isoformat(),
-        }
-        session_file.write_text(json.dumps(session_data))
-        result = verify_session_integrity(session_file)
-        assert result is False, "Result must not be empty"
+    def test_verify_session_integrity_checks_later_matching_session(
+        self, session_metadata, active_sessions
+    ):
+        active_sessions.insert(0, {"id": "other"})
+        active_sessions[1]["fingerprint"] = "changed"
+        with pytest.raises(SecurityError, match="Session fingerprint mismatch"):
+            verify_session_integrity("session123", session_metadata, active_sessions)
 
 
 # ============================================================================
@@ -676,15 +783,15 @@ class TestLogSecurityEvent:
 
     def test_log_security_event_basic(self, mock_logger):
         """Test basic security event logging."""
-        result = log_security_event("login", "user123", "success")
-        assert result is None or isinstance(result, dict)
+        assert log_security_event("login") is None
+        mock_logger.info.assert_called_once_with("security_event", extra={"event": "login"})
 
-    def test_log_security_event_with_details(self, mock_logger):
-        """Test logging with additional details."""
-        result = log_security_event(
-            "login", "user123", "success", details={"ip": "192.168.1.1", "method": "password"}
-        )
-        assert result is None or isinstance(result, dict)
+    def test_log_security_event_with_explicit_logger(self, mock_logger):
+        """A supplied logger receives the event instead of the default logger."""
+        explicit_logger = MagicMock()
+        assert log_security_event("login", logger=explicit_logger) is None
+        explicit_logger.info.assert_called_once_with("security_event", extra={"event": "login"})
+        mock_logger.info.assert_not_called()
 
     def test_log_security_event_types(self, mock_logger):
         """Test various event types."""
@@ -699,21 +806,22 @@ class TestLogSecurityEvent:
         ]
 
         for event_type in event_types:
-            result = log_security_event(event_type, "user123", "info")
-            assert result is None or isinstance(result, dict)
+            assert log_security_event(event_type) is None
+            mock_logger.info.assert_called_with("security_event", extra={"event": event_type})
+        assert mock_logger.info.call_count == len(event_types)
 
-    def test_log_security_event_with_timestamp(self, mock_logger):
-        """Test logging with timestamp."""
-        timestamp = datetime.now(UTC)
-        result = log_security_event("login", "user123", "success", timestamp=timestamp)
-        assert result is None or isinstance(result, dict)
+    def test_log_security_event_sanitizes_controls(self, mock_logger):
+        """Control characters must not create forged multiline log entries."""
+        event = "login\nforged\rentry"
+        log_security_event(event)
+        logged_event = mock_logger.info.call_args.kwargs["extra"]["event"]
+        assert "\n" not in logged_event
+        assert "\r" not in logged_event
 
-    def test_log_security_event_with_context(self, mock_logger):
-        """Test logging with context."""
-        result = log_security_event(
-            "login", "user123", "success", context={"app": "codex", "version": "1.0"}
-        )
-        assert result is None or isinstance(result, dict)
+    def test_log_security_event_empty(self, mock_logger):
+        """Empty events retain the stable audit record shape."""
+        log_security_event("")
+        mock_logger.info.assert_called_once_with("security_event", extra={"event": ""})
 
 
 # ============================================================================
@@ -722,56 +830,43 @@ class TestLogSecurityEvent:
 
 
 class TestCheckPermissions:
-    """Test check_permissions function."""
+    """Check filesystem access, not application roles or admin overrides."""
 
-    def test_check_permissions_has_permission(self):
-        """Test with user having permission."""
-        user_perms = ["read", "write"]
-        required = "read"
-        result = check_permissions(user_perms, required)
-        assert result is True, "Result must not be empty"
+    @pytest.mark.parametrize("mode", ["read", "write"])
+    def test_check_permissions_existing_file(self, tmp_path, mode):
+        path = tmp_path / "file.txt"
+        path.write_text("content")
+        assert check_permissions(path, mode) is True
 
-    def test_check_permissions_lacks_permission(self):
-        """Test with user lacking permission."""
-        user_perms = ["read"]
-        required = "write"
-        result = check_permissions(user_perms, required)
-        assert result is False, "Result must not be empty"
+    @pytest.mark.parametrize(
+        "mode,access_flag", [("read", os.R_OK), ("write", os.W_OK), ("execute", os.X_OK)]
+    )
+    @pytest.mark.parametrize("allowed", [True, False])
+    def test_check_permissions_delegates_to_os_access(
+        self, tmp_path, monkeypatch, mode, access_flag, allowed
+    ):
+        """Both access outcomes are deterministic even when tests run as root."""
+        path = tmp_path / "file.txt"
+        path.touch()
+        access = MagicMock(return_value=allowed)
+        monkeypatch.setattr("security.core.os.access", access)
+        assert check_permissions(path, mode) is allowed
+        access.assert_called_once_with(path, access_flag)
 
-    def test_check_permissions_admin_override(self):
-        """Test admin permission override."""
-        user_perms = ["admin"]
-        required = "delete"
-        result = check_permissions(user_perms, required)
-        assert result is True, "Result must not be empty"
+    @pytest.mark.parametrize("mode", ["read", "write", "execute"])
+    def test_check_permissions_missing_path(self, tmp_path, monkeypatch, mode):
+        access = MagicMock()
+        monkeypatch.setattr("security.core.os.access", access)
+        assert check_permissions(tmp_path / "missing", mode) is False
+        access.assert_not_called()
 
-    def test_check_permissions_empty_user_perms(self):
-        """Test with empty user permissions."""
-        result = check_permissions([], "read")
-        assert result is False, "Result must not be empty"
-
-    def test_check_permissions_empty_required(self):
-        """Test with empty required permission."""
-        result = check_permissions(["read"], "")
-        assert isinstance(result, bool)
-
-    def test_check_permissions_multiple_required(self):
-        """Test with multiple required permissions."""
-        user_perms = ["read", "write"]
-        required = ["read", "write"]
-        result = check_permissions(user_perms, required)
-        assert isinstance(result, bool)
-
-    def test_check_permissions_case_sensitivity(self):
-        """Test case sensitivity."""
-        result = check_permissions(["Read"], "read")
-        assert result is False, "Result must not be empty"
-
-    def test_check_permissions_wildcard(self):
-        """Test wildcard permissions."""
-        user_perms = ["*"]
-        result = check_permissions(user_perms, "any_permission")
-        assert result is True, "Result must not be empty"
+    @pytest.mark.parametrize("mode", ["", "Read", "delete", "*", "admin"])
+    def test_check_permissions_unsupported_mode(self, tmp_path, monkeypatch, mode):
+        """Unsupported access modes never confer permissions."""
+        access = MagicMock()
+        monkeypatch.setattr("security.core.os.access", access)
+        assert check_permissions(tmp_path, mode) is False
+        access.assert_not_called()
 
 
 # ============================================================================
@@ -780,19 +875,34 @@ class TestCheckPermissions:
 
 
 @pytest.mark.parametrize(
-    "malicious_input,expected",
+    "value,input_type",
     [
-        ("'; DROP TABLE;", False),
-        ("1' OR '1'='1", False),
-        ("test@example.com", True),
-        ("normal text", True),
-        ("", True),
+        ("SELECT name FROM users", "sql"),
+        ('{"name": "alice"}', "json"),
+        ("subdir/file.txt", "path"),
+        ("test@example.com", "text"),
+        ("normal text", "text"),
+        ("", "text"),
     ],
 )
-def test_validate_input_parametrized(malicious_input, expected):
-    """Parametrized test for validate_input."""
-    result = validate_input(malicious_input)
-    assert result == expected, "Result must not be empty"
+def test_validate_input_accepts_clean_values(value, input_type):
+    """Validation returns accepted strings unchanged for these input types."""
+    assert validate_input(value, input_type=input_type) == value
+
+
+@pytest.mark.parametrize(
+    "value,input_type,message",
+    [
+        ("'; DROP TABLE users;", "sql", "SQL injection pattern"),
+        ("1' OR '1'='1", "sql", "SQL injection pattern"),
+        ('{"constructor": {}}', "json", "Prototype pollution"),
+        ('{"prototype": {}}', "json", "Prototype pollution"),
+        ("<script>alert(1)</script>", "html", "XSS pattern"),
+    ],
+)
+def test_validate_input_rejects_typed_patterns(value, input_type, message):
+    with pytest.raises(SecurityError, match=message):
+        validate_input(value, input_type=input_type)
 
 
 @pytest.mark.parametrize(

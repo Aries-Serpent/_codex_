@@ -1,0 +1,24 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001/iteration-002",
+  "source_candidate": "22a75dda20c14ccf0753bfde6d7d72e9b1268397",
+  "checkpoint_file_sha256": "a06f9ae29244c092f85e6f4e411cf2f0a8068efdd908b0eeec51403e0eaf4677",
+  "checkpoint_canonical_sha256": "ca90cb8cf6cf955b0ea3acfed0aeaed14ab0239b92345674c62cb13ab4626de3",
+  "predecessor_canonical_sha256": "5893e6775e429f8d67c658ce08f289dbfa1b61cc024fb3a0d265e0d8b5f2eef5",
+  "sequence": 2,
+  "schema_integrity_references": "PASS",
+  "source_drift_at_collection": "none",
+  "subsequent_evidence_commit_drift": "expected; revalidate on resume",
+  "saved_at": "2026-10-24T21:44:59Z",
+  "unsaved_task_work": "none at checkpoint collection; all successor artifacts still require task commit",
+  "next_action": {
+    "action": "Independently reproduce the retained changed-candidate wheel before proposing any operational provider integration.",
+    "preconditions": [
+      "Read iteration-002/validation.json, security.json and retained manifests.",
+      "Verify wheel SHA256 de5d8791451bd3ac713f944bf3c0543db20e662f17ca976d413b4c2b071a5930",
+      "Establish verifier identity/independence according to applicable policy, otherwise keep G5 NOT_RUN.",
+      "Install own retained contracts wheel plus declared dependencies in a fresh environment, test dependencies separately; use retained *.py.txt copies as test modules outside the source tree."
+    ],
+    "acceptance_test": "77 retained current harness cases pass without source-path assistance; origins/resources match retained wheel; authority command returns exit3/unavailable, activate remains denied. Record independently authored tests and actual assurance basis separately.",
+    "idempotency": "Read-only digest comparison first; never overwrite evidence. Any state refresh is a new predecessor-bound checkpoint. No activation or publication follows from test success."
+  }
+}

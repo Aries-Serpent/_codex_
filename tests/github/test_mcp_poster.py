@@ -6,6 +6,8 @@ network calls are made. Zero external dependencies.
 
 from __future__ import annotations
 
+import importlib
+import inspect
 import json
 import logging
 import unittest.mock as mock
@@ -14,6 +16,7 @@ from io import BytesIO
 from urllib.parse import urlparse
 
 import pytest
+
 from codex.github.mcp_poster import GitHubMCPPoster, main
 
 # ---------------------------------------------------------------------------
@@ -48,6 +51,15 @@ def _mock_http_error(code: int, reason: str = "Error", body: bytes = b"{}"):
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True)
+def reject_unmocked_http(monkeypatch):
+    """Every HTTP response in this module must come from an explicit test fake."""
+    monkeypatch.setattr(
+        "urllib.request.urlopen",
+        mock.Mock(side_effect=AssertionError("Unexpected unmocked GitHub HTTP request")),
+    )
 
 
 @pytest.fixture()
@@ -905,8 +917,9 @@ def test_set_repo_variable_reraises_non_404_http_error(poster, monkeypatch):
     assert exc_info.value.code == 403, "Value must be initialized"
 
 
-def test_record_cb_pattern_cognitive_brain_available(poster, monkeypatch):
-    """_record_cb_pattern executes the import block when cognitive_brain is mockable (lines 495-510)."""
+@pytest.mark.parametrize("module_state", ["preloaded", "absent"])
+def test_record_cb_pattern_cognitive_brain_available(poster, monkeypatch, module_state):
+    """Fake memory imports must restore real module identities or prior absence."""
     stored = []
 
     class FakeMemoryPattern:
@@ -923,24 +936,43 @@ def test_record_cb_pattern_cognitive_brain_available(poster, monkeypatch):
 
     import sys
 
-    # Inject the fake module so the import inside _record_cb_pattern succeeds.
-    # Clean up after to avoid contaminating other tests.
-    sys.modules["cognitive_brain"] = mock.MagicMock()
-    sys.modules["cognitive_brain.quantum"] = mock.MagicMock()
-    sys.modules["cognitive_brain.quantum.memory"] = fake_module
-    try:
-        poster._record_cb_pattern(
-            "CB-test",
-            "test decision",
-            {"repo": "owner/repo", "sha": "abc123"},
-            outcome="success",
-        )
-    finally:
-        sys.modules.pop("cognitive_brain", None)
-        sys.modules.pop("cognitive_brain.quantum", None)
-        sys.modules.pop("cognitive_brain.quantum.memory", None)
+    module_names = (
+        "cognitive_brain",
+        "cognitive_brain.quantum",
+        "cognitive_brain.quantum.memory",
+    )
+    with monkeypatch.context() as prior_cache:
+        if module_state == "preloaded":
+            for name in module_names:
+                importlib.import_module(name)
+            real_utils = importlib.import_module("cognitive_brain.utils")
+        else:
+            for name in module_names:
+                prior_cache.delitem(sys.modules, name, raising=False)
 
-    assert len(stored) == 1, "Stored must not be empty"
+        missing = object()
+        original_modules = {name: sys.modules.get(name, missing) for name in module_names}
+        # Restore previous entries, not just their names: other collected tests
+        # can already hold references to the real packages and their children.
+        with monkeypatch.context() as fake_cache:
+            fake_cache.setitem(sys.modules, "cognitive_brain", mock.MagicMock())
+            fake_cache.setitem(sys.modules, "cognitive_brain.quantum", mock.MagicMock())
+            fake_cache.setitem(sys.modules, "cognitive_brain.quantum.memory", fake_module)
+            poster._record_cb_pattern(
+                "CB-test",
+                "test decision",
+                {"repo": "owner/repo", "sha": "abc123"},
+                outcome="success",
+            )
+
+        assert len(stored) == 1, "Stored must not be empty"
+        for name, original in original_modules.items():
+            assert sys.modules.get(name, missing) is original, name
+        if module_state == "preloaded":
+            for name, original in original_modules.items():
+                assert importlib.import_module(name) is original, name
+            assert importlib.import_module("cognitive_brain.utils") is real_utils
+            assert sys.modules["cognitive_brain"].utils is real_utils
 
 
 def test_request_raises_after_retry_exhaustion(poster, monkeypatch):
@@ -1155,6 +1187,7 @@ class TestAddDiscussionComment:
     """Tests for GitHubMCPPoster.add_discussion_comment()."""
 
     def test_success(self, poster, monkeypatch):
+        """Return the documented GraphQL comment payload, including its permalink."""
         call_count = {"n": 0}
 
         def fake_urlopen(req, timeout):
@@ -1165,7 +1198,11 @@ class TestAddDiscussionComment:
 
         monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
         result = poster.add_discussion_comment("owner/repo", 42, "Hello!")
-        assert result.get("url") == "https://github.com/d/42", "Result must not be empty"
+        assert result == {
+            "id": "DC_new",
+            "url": "https://github.com/d/42#c5",
+            "body": "body",
+        }
         assert call_count["n"] == 2, "Count must be greater than zero"
 
     def test_raises_when_discussion_not_found(self, poster, monkeypatch):
@@ -1347,7 +1384,6 @@ def test_cli_upsert_discussion_comment(monkeypatch, tmp_path):
         captured_body["body"] = body
         return {"id": "DC_1", "url": "https://u"}
 
-
     monkeypatch.setattr(GitHubMCPPoster, "upsert_discussion_comment", fake_upsert)
     f = tmp_path / "update.md"
     f.write_text("## Status")
@@ -1374,7 +1410,6 @@ def test_cli_post_ci_pattern_summary(monkeypatch, tmp_path):
     def fake_post(self, repo, number, body, session_id):
         captured["session_id"] = session_id
         return {"id": "DC_s", "url": "https://u/s"}
-
 
     monkeypatch.setattr(GitHubMCPPoster, "post_ci_pattern_summary", fake_post)
     f = tmp_path / "summary.md"
@@ -1403,7 +1438,6 @@ def test_cli_post_continuation(monkeypatch, tmp_path):
     def fake_chain(self, repo, number, body):
         captured["body"] = body
         return {"id": "DC_c", "url": "https://u/c"}
-
 
     monkeypatch.setattr(GitHubMCPPoster, "post_continuation_chain", fake_chain)
     f = tmp_path / "chain.md"
@@ -1452,8 +1486,9 @@ class TestCheckTokenHealth:
         monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
         result = poster.check_token_health()
         assert result["healthy"] is False, "Result must not be empty"
-        assert ("expired" in str(result["expiry_warning"]).lower(), "Result must not be empty"
-            or "invalid" in str(result["expiry_warning"]).lower()
+        assert (
+            "expired" in str(result["expiry_warning"]).lower(),
+            "Result must not be empty" or "invalid" in str(result["expiry_warning"]).lower(),
         )
 
     def test_healthy_token_with_full_scopes(self, monkeypatch):
@@ -1532,3 +1567,242 @@ class TestCheckTokenHealth:
         monkeypatch.setenv("CODEX_MASTER_KEY", "master_token")
         poster2 = GitHubMCPPoster()
         assert poster2._token_source == "CODEX_MASTER_KEY", "_token_source is not valid"
+
+
+# ---------------------------------------------------------------------------
+# Operation-family compatibility contracts
+# ---------------------------------------------------------------------------
+
+_POSTER_METHODS = (
+    "__init__ __setattr__ _token check_token_health "
+    "post_pr_comment post_pr_comment_from_file create_ref create_pull_request "
+    "list_pull_requests merge_branch commit_files create_discussion "
+    "post_session_summary_discussion find_or_create_pr_discussion update_discussion "
+    "lock_discussion unlock_discussion delete_discussion list_discussions get_discussion "
+    "pin_discussion unpin_discussion list_discussion_categories _resolve_discussion_node_id "
+    "add_discussion_comment upsert_discussion_comment post_ci_pattern_summary "
+    "post_continuation_chain check_discussion_replies delete_discussion_comment "
+    "mark_answer unmark_answer _find_discussion_comment set_repo_variable "
+    "retrieve_cb_patterns _record_cb_pattern _request _get"
+).split()
+
+
+@pytest.mark.parametrize(
+    "module_name", ["codex.github.mcp_poster", "aries_serpent_core.github.mcp_poster"]
+)
+def test_public_method_metadata(module_name):
+    """Both import paths retain ordinary methods with their original public names."""
+    module = importlib.import_module(module_name)
+    cls = module.GitHubMCPPoster
+    for name in _POSTER_METHODS:
+        member = inspect.getattr_static(cls, name)
+        if isinstance(member, property):
+            member = member.fget
+        assert inspect.isfunction(member)
+        assert member.__name__ == name
+        assert member.__qualname__ == f"GitHubMCPPoster.{name}"
+        assert member.__module__ == module_name
+        assert member.__doc__
+        assert member.__annotations__
+        assert not hasattr(member, "__wrapped__"), "Operation methods must not be wrappers"
+    public_names = {name for name in dir(cls) if not name.startswith("_")}
+    assert public_names == {name for name in _POSTER_METHODS if not name.startswith("_")}
+
+
+@pytest.mark.parametrize(
+    "method, expected",
+    [
+        ("__init__", "(self, token: 'str | None' = None) -> 'None'"),
+        (
+            "create_pull_request",
+            "(self, repo: 'str', title: 'str', body: 'str', head: 'str', "
+            "base: 'str', draft: 'bool' = False) -> 'dict[str, Any]'",
+        ),
+        (
+            "update_discussion",
+            "(self, repo: 'str', discussion_number: 'int', *, title: 'str | None' = None, "
+            "body: 'str | None' = None, category_slug: 'str | None' = None) -> 'dict[str, Any]'",
+        ),
+        (
+            "list_discussions",
+            "(self, repo: 'str', category_slug: 'str | None' = None, first: 'int' = 20, "
+            "after: 'str | None' = None) -> 'dict[str, Any]'",
+        ),
+        (
+            "upsert_discussion_comment",
+            "(self, repo: 'str', discussion_number: 'int', body: 'str', "
+            "marker: 'str' = '') -> 'dict[str, Any]'",
+        ),
+        (
+            "_request",
+            "(self, method: 'str', url: 'str', body: 'str | dict | None' = None, "
+            "headers: 'dict[str, str] | None' = None, max_retries: 'int' = 3) -> 'dict'",
+        ),
+    ],
+)
+def test_public_signature_contract(method, expected):
+    assert str(inspect.signature(getattr(GitHubMCPPoster, method))) == expected
+
+
+@pytest.mark.parametrize(
+    "method, collaborator, args, kwargs",
+    [
+        ("post_pr_comment", "_prs", ("o/r", 3, "body"), {}),
+        ("post_pr_comment_from_file", "_prs", ("o/r", 3, "prompt.md"), {}),
+        ("create_pull_request", "_prs", ("o/r", "title", "body", "topic", "main", True), {}),
+        ("list_pull_requests", "_prs", ("o/r", "closed", "o:topic", "main", 7), {}),
+        ("create_ref", "_git", ("o/r", "topic", "abc"), {}),
+        ("merge_branch", "_git", ("o/r", "main", "topic", "merge"), {}),
+        ("commit_files", "_git", ("o/r", "topic", {"a": "b"}, "message", True), {}),
+        ("create_discussion", "_discussions", ("o/r", "title", "body", "ideas"), {}),
+        ("find_or_create_pr_discussion", "_discussions", ("o/r", 3, "review", "ideas"), {}),
+        (
+            "update_discussion",
+            "_discussions",
+            ("o/r", 3),
+            {"title": "title", "body": "body", "category_slug": "ideas"},
+        ),
+        ("lock_discussion", "_discussions", ("o/r", 3, "SPAM"), {}),
+        ("unlock_discussion", "_discussions", ("o/r", 3), {}),
+        ("delete_discussion", "_discussions", ("o/r", 3), {}),
+        ("list_discussions", "_discussions", ("o/r", "ideas", 7, "cursor"), {}),
+        ("get_discussion", "_discussions", ("o/r", 3, 7, "cursor"), {}),
+        ("pin_discussion", "_discussions", ("o/r", 3), {}),
+        ("unpin_discussion", "_discussions", ("o/r", 3), {}),
+        ("list_discussion_categories", "_discussions", ("o/r",), {}),
+        ("_resolve_discussion_node_id", "_discussions", ("o", "r", 3), {}),
+        ("add_discussion_comment", "_discussions", ("o/r", 3, "body"), {}),
+        ("upsert_discussion_comment", "_discussions", ("o/r", 3, "body", "marker"), {}),
+        ("check_discussion_replies", "_discussions", ("o/r", 3, "marker", 7), {}),
+        ("delete_discussion_comment", "_discussions", ("DC_3",), {}),
+        ("mark_answer", "_discussions", ("DC_3",), {}),
+        ("unmark_answer", "_discussions", ("DC_3",), {}),
+        ("_find_discussion_comment", "_discussions", ("o", "r", 3, "marker"), {}),
+        ("check_token_health", "_api", (), {}),
+        ("set_repo_variable", "_cb", ("o/r", "NAME", "value"), {}),
+        ("retrieve_cb_patterns", "_cb", (7, "CB-test"), {}),
+        ("_get", "_api", ("https://api.github.com/test",), {}),
+        (
+            "_request",
+            "_api",
+            ("POST", "https://api.github.com/test", {"a": "b"}),
+            {"headers": {"Accept": "test"}, "max_retries": 2},
+        ),
+    ],
+)
+def test_operation_delegates_without_changing_payload(
+    poster, monkeypatch, method, collaborator, args, kwargs
+):
+    """Injected managers receive every argument and return their exact result object."""
+    delegate = mock.Mock(return_value=mock.sentinel.manager_result)
+    monkeypatch.setattr(getattr(poster, collaborator), method, delegate)
+    assert getattr(poster, method)(*args, **kwargs) is mock.sentinel.manager_result
+    delegate.assert_called_once_with(*args, **kwargs)
+
+
+@pytest.mark.parametrize(
+    "module_name", ["codex.github.mcp_poster", "aries_serpent_core.github.mcp_poster"]
+)
+def test_constructor_dependency_injection_surfaces(monkeypatch, module_name):
+    """Module-level constructor patches still supply all operation families."""
+    module = importlib.import_module(module_name)
+    api_factory = mock.Mock()
+    api = api_factory.return_value
+    api._token_source = "explicit"
+    monkeypatch.setattr(module, "APIClient", api_factory)
+    factories = {}
+    for name, attribute in [
+        ("DiscussionManager", "_discussions"),
+        ("PullRequestManager", "_prs"),
+        ("GitOperations", "_git"),
+        ("CognitiveBrainIntegration", "_cb"),
+    ]:
+        factory = mock.Mock()
+        monkeypatch.setattr(module, name, factory)
+        factories[attribute] = factory
+
+    instance = module.GitHubMCPPoster(token="explicit-test-token")
+    api_factory.assert_called_once_with("explicit-test-token")
+    for attribute, factory in factories.items():
+        factory.assert_called_once_with(api)
+        assert getattr(instance, attribute) is factory.return_value
+    assert instance._token_source == "explicit"
+    assert api._record_cb_pattern == instance._record_cb_pattern
+    assert api._resolve_discussion_node_id == instance._resolve_discussion_node_id
+    assert api._find_discussion_comment == instance._find_discussion_comment
+
+
+@pytest.mark.parametrize("hook", ["_request", "_get", "_record_cb_pattern"])
+def test_instance_hook_patches_propagate_and_restore(poster, monkeypatch, hook):
+    original = getattr(poster, hook)
+    replacement = mock.Mock()
+    with monkeypatch.context() as patch:
+        patch.setattr(poster, hook, replacement)
+        assert getattr(poster._api, hook) is replacement
+    assert getattr(poster, hook) == original
+    assert getattr(poster._api, hook) == original
+
+
+def test_missing_token_retains_legacy_none_value(no_token_poster):
+    """The old str annotation must not cause coercion or a new exception."""
+    assert no_token_poster._token is None
+
+
+@pytest.mark.parametrize(
+    "nodes, expected", [([], ""), ([{"id": "DC_7", "body": "marker"}], "DC_7")]
+)
+def test_comment_lookup_retains_legacy_node_id_payload(poster, monkeypatch, nodes, expected):
+    """The old dict annotation must not reshape the manager's real string result."""
+    graphql = mock.Mock(
+        return_value={"data": {"repository": {"discussion": {"comments": {"nodes": nodes}}}}}
+    )
+    monkeypatch.setattr(poster._api, "_graphql", graphql)
+    assert poster._find_discussion_comment("o", "r", 7, "marker") == expected
+    assert poster._api._find_discussion_comment("o", "r", 7, "marker") == expected
+
+
+def test_subclass_overrides_and_super_dispatch(monkeypatch):
+    """Inherited operations honor subclass overrides, including constructor-bound hooks."""
+    create = mock.Mock(return_value=mock.sentinel.discussion)
+    upsert = mock.Mock(return_value=mock.sentinel.summary)
+    add = mock.Mock(return_value=mock.sentinel.continuation)
+
+    class CustomPoster(GitHubMCPPoster):
+        def create_discussion(self, *args, **kwargs):
+            return create(*args, **kwargs)
+
+        def upsert_discussion_comment(self, *args, **kwargs):
+            return upsert(*args, **kwargs)
+
+        def add_discussion_comment(self, *args, **kwargs):
+            return add(*args, **kwargs)
+
+        def _resolve_discussion_node_id(self, owner, repo, discussion_number):
+            return "DI_custom"
+
+        def _find_discussion_comment(self, owner, repo, discussion_number, marker):
+            return {"id": "DC_custom"}
+
+        def list_discussions(self, *args, **kwargs):
+            return super().list_discussions(*args, **kwargs)
+
+    instance = CustomPoster(token="explicit-test-token")
+    assert instance.post_session_summary_discussion("o/r", 7, "summary") is mock.sentinel.discussion
+    create.assert_called_once_with(
+        repo="o/r",
+        title="Session S7 — Completion Summary",
+        body="summary",
+        category_slug="session-summaries",
+    )
+    assert instance.post_ci_pattern_summary("o/r", 7, "body", "run") is mock.sentinel.summary
+    upsert.assert_called_once_with(
+        "o/r", 7, "<!-- ci-pattern-summary:run -->\nbody", "<!-- ci-pattern-summary:run -->"
+    )
+    assert instance.post_continuation_chain("o/r", 7, "chain") is mock.sentinel.continuation
+    add.assert_called_once_with("o/r", 7, "chain")
+    assert instance._api._resolve_discussion_node_id("o", "r", 7) == "DI_custom"
+    assert instance._api._find_discussion_comment("o", "r", 7, "marker") == {"id": "DC_custom"}
+    delegate = mock.Mock(return_value=mock.sentinel.page)
+    monkeypatch.setattr(instance._discussions, "list_discussions", delegate)
+    assert instance.list_discussions("o/r") is mock.sentinel.page
+    delegate.assert_called_once_with("o/r", None, 20, None)

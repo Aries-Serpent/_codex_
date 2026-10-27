@@ -1,0 +1,184 @@
+........................................................................ [ 24%]
+........................................................................ [ 49%]
+........................................................................ [ 74%]
+..................................................................FFFF.. [ 99%]
+.                                                                        [100%]
+=================================== FAILURES ===================================
+_________________________ test_exact_document_mapping __________________________
+
+    def test_exact_document_mapping() -> None:
+>       text = DOCUMENT.read_text(encoding="utf-8")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+../harness/test_review_formulas.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/docs/design/azimuthal-formal-model.rst'), mode = 'r'
+buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/docs/design/azimuthal-formal-model.rst'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:1013: FileNotFoundError
+______ test_source_expression_preservation_is_distinct_from_normalization ______
+
+    def test_source_expression_preservation_is_distinct_from_normalization() -> None:
+        data = registry()
+        preserved = data["source_preservation"]
+        sources = preserved["source_expressions"]
+        normalized = {entry["id"]: entry["latex"] for entry in data["formulas"]}
+        assert set(sources) == set(normalized)
+        assert len(sources) == 58
+        assert all(isinstance(source, str) and source for source in sources.values())
+        assert sources["RD4-F001"] == r"\mathcal F_n=Findings(\mathcal G_n)"
+        assert sources["RD4-F005"] == (
+            r"\mathcal I_n=(\mathcal C_n,\mathcal X_n),"
+            r"\qquad\mathcal S_n=(\mathcal I_n,\mathcal G_n,\mathcal V_n)"
+        )
+        assert sources["RD4-F024"] == (
+            r"\mathcal H_n^{known}=\frac{\sum_{j\in J_{known}}\omega_jh_j}"
+            r"{\sum_{j\in J_{known}}\omega_j}"
+        )
+        assert sources["RD4-F031"] == (
+            r"(\mathcal G_n^{r0},\mathcal Q_n,\mathcal D_n^{prop},\Theta_{n+1})"
+            r"=\mathscr R_0(\mathcal S_n,\{\mathcal L_{i,n}\},\mathcal L_n^{dissent})"
+        )
+        assert sources["RD4-F022"] == (
+            r"EligibleEvidence(e)=Status(e)=ACTIVE\land Applicable(e)"
+            r"\land BindingsCurrent(e)\land\neg Disputed(e)"
+        )
+        assert r"Fallback_n=preserve\_prior" in sources["RD4-F019"]
+        assert r"D_n^{req}" in sources["RD4-F029"]
+        assert r"\mathrm{required}" not in sources["RD4-F029"]
+        assert preserved["prose_source_ids"] == ["RD4-F038", "RD4-F046", "RD4-F047"]
+        assert {
+            identifier for identifier, source in sources.items() if source.startswith("PROSE SOURCE:")
+        } == set(preserved["prose_source_ids"])
+        assert preserved["composite_extracted_ids"] == ["RD4-F056", "RD4-F057"]
+        assert sources["RD4-F056"] == (
+            r"\mathcal G_{n+1}=DeriveGraph(\mathcal V_{n+1},EligibleEvidence_n)"
+        )
+        assert set(preserved["separate_source_displays"]) == {"RD4-F008", "RD4-F027"}
+        for identifier, displays in preserved["separate_source_displays"].items():
+            assert len(displays) == 2
+            assert all(display in sources[identifier] for display in displays)
+        composite = sources["RD4-F058"]
+        assert composite.startswith(r"\boxed{\begin{aligned}")
+        assert composite.endswith(r"\end{aligned}}")
+        assert r"Next_n&\in\{" in composite
+        assert r"\begin{cases}" not in composite
+        assert r"\mathcal L_n^{dissent}&=" not in composite
+        assert "ApplyAuthorizedRoutes" in composite
+        assert "ReviewAuthorizedClosure" in composite
+        assert r"\begin{cases}" in normalized["RD4-F058"]
+        assert sources["RD4-F001"] != normalized["RD4-F001"]
+        assert sources["RD4-F058"] != normalized["RD4-F058"]
+        assert not any(r"\setminus" in source for source in sources.values())
+        mapped = re.findall(
+            r"^   SOURCE (RD4-F\d{3}): ([^\n]+)",
+>           DOCUMENT.read_text(encoding="utf-8"),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            flags=re.MULTILINE,
+        )
+
+../harness/test_review_formulas.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/docs/design/azimuthal-formal-model.rst'), mode = 'r'
+buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/docs/design/azimuthal-formal-model.rst'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_________________ test_lineage_and_package_claims_are_bounded __________________
+
+    def test_lineage_and_package_claims_are_bounded() -> None:
+        data = registry()
+        assert data["lineage"] == {
+            "assertion": "75f7dab1dbff1521ab530dd32c5d7cf028f57669f24147676a5dbf917c9b69f6",
+            "verification": "unverified",
+            "is_asset_content_digest": False,
+            "source": "iteration-004 user-supplied formal requirements",
+        }
+        discovery = data["discovery"]
+        assert discovery["compatible_registry_found"] is False
+        assert "references directory absent" in discovery["bounded_search"]
+        assert "No exhaustive nonexistence claim" in discovery["bounded_search"]
+        assert ".github/agents" in discovery["bounded_search"]
+        references = discovery["references"]
+        assert len(references) == 8
+        for reference in references:
+>           assert (ROOT / reference["path"]).is_file(), reference["path"]
+E           AssertionError: src/tools/coverage_physics_toolkit.py
+E           assert False
+E            +  where False = is_file()
+E            +    where is_file = (PosixPath('/tmp') / 'src/tools/coverage_physics_toolkit.py').is_file
+
+../harness/test_review_formulas.py:219: AssertionError
+___ test_structural_sdk_mappings_resolve_without_claiming_formula_execution ____
+
+    def test_structural_sdk_mappings_resolve_without_claiming_formula_execution() -> None:
+        data = registry()
+        mapping = data["review_sdk_mapping"]
+>       source = ast.parse((ROOT / mapping["source"]).read_text(encoding="utf-8"))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+../harness/test_review_formulas.py:241: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/src/codex/institutional/review.py'), mode = 'r'
+buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/src/codex/institutional/review.py'
+
+/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/pathlib.py:1013: FileNotFoundError
+=========================== short test summary info ============================
+FAILED ../harness/test_review_formulas.py::test_exact_document_mapping - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/docs/design/azimuthal-formal-model.rst'
+FAILED ../harness/test_review_formulas.py::test_source_expression_preservation_is_distinct_from_normalization - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/docs/design/azimuthal-formal-model.rst'
+FAILED ../harness/test_review_formulas.py::test_lineage_and_package_claims_are_bounded - AssertionError: src/tools/coverage_physics_toolkit.py
+assert False
+ +  where False = is_file()
+ +    where is_file = (PosixPath('/tmp') / 'src/tools/coverage_physics_toolkit.py').is_file
+FAILED ../harness/test_review_formulas.py::test_structural_sdk_mappings_resolve_without_claiming_formula_execution - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/src/codex/institutional/review.py'
+4 failed, 285 passed in 35.59s

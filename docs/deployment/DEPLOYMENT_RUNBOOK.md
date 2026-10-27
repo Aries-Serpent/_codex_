@@ -19,11 +19,16 @@ This runbook documents the deployment process for the Codex platform, including 
 
 ### 1. Code Quality Gates
 
-- [ ] All tests pass (40500+ tests)
+- [ ] Verify all release-required tests pass before deployment (estimated test inventory: 41000+; not a pass count)
 - [ ] Coverage threshold met (75%)
 - [ ] CodeQL security scan passes
 - [ ] Ruff linting passes
 - [ ] Type checking passes (mypy)
+
+The inventory is a static source estimate, not evidence that this gate is met.
+Attach results from the required release test runs before checking this item.
+The bounded broad-suite run stopped with **5 failed, 372 passed, and 132 skipped**;
+it was not a completed all-green run and does not satisfy this prerequisite.
 
 ### 2. Documentation Check
 

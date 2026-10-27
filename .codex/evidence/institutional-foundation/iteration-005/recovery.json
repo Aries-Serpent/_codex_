@@ -1,0 +1,83 @@
+{
+  "schema": "codex.institutional.recovery-observation.v1",
+  "iteration": "005",
+  "entry_head": "8b15df2da9a0cd8cddf5266a53c3da53dca0621d",
+  "branch": {
+    "exit": 0,
+    "stdout": "copilot/codex-institutional-foundation-001",
+    "stderr": ""
+  },
+  "available_base": {
+    "origin/main": "05dd1b53802f4e4d2ceca95336ab555ad81d0248",
+    "origin/0D_base_": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667"
+  },
+  "worktrees": {
+    "exit": 0,
+    "stdout": "/home/runner/work/_codex_/_codex_ 8b15df2d [copilot/codex-institutional-foundation-001]",
+    "stderr": ""
+  },
+  "user_changes": {
+    "path": ".codex/session_startup_packet.json",
+    "sha256": "305f2128a5f1eaf1e26598481c234aa2cc6c34a30d2c0fab55d82369b55ddcd9",
+    "index": "unchanged from HEAD, unstaged",
+    "scope": "generated_at only; current actual value preserved, historical change not recreated"
+  },
+  "historical_recovery": {
+    "source": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+    "evidence": "40e5e363160896b035a36ce69b4f3473521c6f76",
+    "attempts": [
+      "Initial source lookup missing in shallow clone",
+      "git fetch --no-tags origin 3d7babe7233401e0dfd7b792f87a376898db61d0 succeeded",
+      "git fetch --no-tags --deepen=3 origin copilot/codex-institutional-foundation-001 recovered ancestry"
+    ],
+    "ancestry": {
+      "exit": 0,
+      "stdout": "8b15df2da9a0cd8cddf5266a53c3da53dca0621d 40e5e363160896b035a36ce69b4f3473521c6f76\n40e5e363160896b035a36ce69b4f3473521c6f76 3d7babe7233401e0dfd7b792f87a376898db61d0\n3d7babe7233401e0dfd7b792f87a376898db61d0 fe1401832bdb97ea5597745a5c9ab56ac3ec5d9f\nfe1401832bdb97ea5597745a5c9ab56ac3ec5d9f eb21a0dfb1ab3055c313133f98fc193dd11720e7",
+      "stderr": ""
+    },
+    "source_ancestor": {
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "artifact_hashes": "121 manifest entries plus manifest = 122 retained artifacts; 19 source blobs verified against exact committed bytes",
+    "runtime_baseline": "No institutional runtime/test/pyproject differences between original source and entry HEAD",
+    "post_evidence_diff": "Entry HEAD changes only startup packet timestamp from evidence commit",
+    "checkpoint": {
+      "sequence": 4,
+      "canonical_sha256": "037c590db60882b429a833eec3775cd4b99a36ed0164063f76d124dc327d94fe",
+      "schema": "codex.continuation-state.v1",
+      "structure": "PASS",
+      "current_diagnostics": [
+        "STALE_CHECKPOINT",
+        "WORKTREE_DRIFT"
+      ],
+      "explanation": "Expected bookkeeping HEAD/tree drift plus actual current dirty timestamp differs from previous checkpoint. Not repaired by editing old hashes."
+    }
+  },
+  "retention": "Current fetched origin/copilot/codex-institutional-foundation-001 advertises entry HEAD 8b15df2, whose recovered ancestry contains the historical source/evidence commits. Their earlier local-only report is historical, not current remote absence. This iteration has performed no push; new commits remain local unless separately observed. No PR requested.",
+  "progress_publisher": "No path-selective parameter; prior observed publisher/analysis auto-staging behavior endangered dirty user file. Preserve user work and use explicit local task paths, no broad publish.",
+  "plan": [
+    "Recover exact predecessor and relevant source hashes",
+    "Evaluate immutable iteration004 source through external wheel before extending runtime",
+    "Implement inert bounded assurance DAG/readiness/result/evidence/final recommendation subset with disjoint ownership",
+    "Exercise source and newly identified installed wheel, adversarial dissent and security limits",
+    "Retain compatible experience/sequence successor and exact pending node/gates"
+  ],
+  "template": "Adapt sprint_execution_plan/TEMPLATE.md planning/test/acceptance/troubleshoot/rollback conventions without mandatory examples or five retries",
+  "budgets": {
+    "parallelism": "Two research/review contexts plus package executor; serialize runtime/contracts edits",
+    "retry": "At most two unchanged failures; proceed only with new causal evidence",
+    "scope": "One assurance path, no full architecture or formula rewrite",
+    "artifacts": "Retain wheels/harnesses/failures/manifests before owned scratch cleanup",
+    "rollback": "Selective task-path revert only after review; retain historical observations and never reset/stash user work"
+  },
+  "lanes": {
+    "A": "rd5-package-verifier immutable package evaluation",
+    "B": "rd5-assurance-research read-only extension analysis",
+    "C": "rd5-adversarial read-only challenge",
+    "D": "Coordinator directly inspects continuation/authority/formula/deployment reuse; no redundant separate agent"
+  },
+  "independence": "Same platform contexts do not establish G5 or approval",
+  "authorization": "Local development/tests/disposable fixtures/builds/evidence only; no merge/release/publish/activation/retirement/self-dispatch"
+}

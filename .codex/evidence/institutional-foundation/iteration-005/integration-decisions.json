@@ -1,0 +1,81 @@
+{
+  "schema": "codex.institutional.integration-observation.v1",
+  "status": "Draft",
+  "classification": "Repository-Internal",
+  "baseline": "8b15df2da9a0cd8cddf5266a53c3da53dca0621d",
+  "immutable_package_candidate": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+  "ordering": "Historical package evaluation completed before assurance source edits. An export-preparation failure was retained and repaired by restoring exact export-ignored blobs; no original SDK/harness change was needed.",
+  "reuse": [
+    "core.canonical, digest, record, validate and Rejected",
+    "review manifest/context/dispatch/lane-output validation and original source-attributed findings",
+    "review.reconcile and remediation_adequacy remain non-authorizing",
+    "Existing continuation envelope, experience records and previewed storage coordinator",
+    "Existing packaged contracts.json and review-formulas.json",
+    "Existing agent types; no permanent profiles or second memory store"
+  ],
+  "selected_slice": "Separate bounded inert assurance plan/history/recommendation envelope and SDK. External result ingestion only; no imported commands executed. Parent serializes shared contracts; implementation lane owns assurance module/tests/docs.",
+  "role_separation": {
+    "coordinator": "Implementation, evidence integration and explicit local persistence",
+    "package_lane": "Technical wheel execution; same-platform, not independent assurance",
+    "research_lane": "Read-only source investigation",
+    "dissent_lane": "Read-only analytical challenge, no implementation/execution/approval",
+    "implementation_lane": "Source implementation and self-testing, not independent verifier",
+    "approval": "NOT_RUN",
+    "activation": "unsupported"
+  },
+  "canonical_bearings": [
+    {"coordinate": "000", "identity": "Policy"},
+    {"coordinate": "045", "identity": "Security"},
+    {"coordinate": "090", "identity": "Architecture"},
+    {"coordinate": "135", "identity": "Adversarial"},
+    {"coordinate": "180", "identity": "Verification"},
+    {"coordinate": "225", "identity": "Operations"},
+    {"coordinate": "270", "identity": "Portability"},
+    {"coordinate": "315", "identity": "History"}
+  ],
+  "bearing_source": "docs/design/azimuthal-reasoning-integrity.rst:113-147",
+  "dissent": "Cross-cutting, not a ninth compass coordinate. Center reasoning integrity is not another independent reviewer.",
+  "rejected_proposals_and_counterevidence": [
+    {
+      "source": "rd5-assurance-research initial output",
+      "proposal": "Add knowledge-lifecycle, decision and dissent schemas for the slice.",
+      "decision": "REJECTED_WITH_EVIDENCE",
+      "reason": "User distinguishes evidence status from institutional knowledge lifecycle and forbids standalone decision/dissent contracts merely for checklist coverage. Use one scoped assurance envelope and existing findings/experience."
+    },
+    {
+      "source": "rd5-assurance-research initial output",
+      "proposal": "Eight independence coordinates represent the eight canonical bearings.",
+      "decision": "REJECTED_WITH_EVIDENCE",
+      "reason": "Retained design names Policy/Security/Architecture/Adversarial/Verification/Operations/Portability/History; actor/model/prompt/evidence/environment/procedure/organization/custody are different independence dimensions."
+    },
+    {
+      "source": "rd5-assurance-research followup",
+      "proposal": "Add INCONCLUSIVE to continuation task-gate enum and treat absent evidence status as implicitly ACTIVE.",
+      "decision": "REJECTED_WITH_EVIDENCE",
+      "reason": "Task gates and assurance outcomes are explicitly distinct. The existing trust-evidence schema's missing status does not establish active eligibility; the new assurance path must represent eligibility explicitly."
+    },
+    {
+      "source": "rd5-assurance-research followup",
+      "proposal": "Continuation next_action is text only and requires redefining.",
+      "decision": "REJECTED_WITH_EVIDENCE",
+      "reason": "Existing contracts.json codex.continuation-state.v1 already uses an object; core.candidate constructs action/preconditions/acceptance_test/idempotency. Reuse rather than break compatibility."
+    },
+    {
+      "source": "rd5-adversarial",
+      "proposal": "Consider fresh/stale/disputed/missing/unknown enum for eligibility.",
+      "decision": "ADAPTED",
+      "reason": "Preserve the user's exact six evidence statuses instead. Applicability/binding/critical unknowns remain separate fail-closed fields."
+    }
+  ],
+  "retained_challenges": [
+    "A technical PASS cannot establish independent reproduction, authenticated identity or approval.",
+    "Sibling success or numeric aggregation cannot erase disputed evidence or source dissent.",
+    "Bind assurance evidence/results to original finding requirements, exact plan and procedure/version.",
+    "Revalidate downstream results after prerequisite replacement or evidence invalidation.",
+    "Require structural non-authority fields rather than prose-only disclaimers.",
+    "Imported procedures remain inert data; no shell or arbitrary runner."
+  ],
+  "formula_design_policy": "Keep existing 58 source/normalized references, 27 design contracts and seven text alternatives unchanged. Add bounded executable mapping receipts; do not rewrite the registry or claim numeric calibration.",
+  "selected_deployment": "Installed offline SDK with explicitly supplied inputs and separately previewed coordinator persistence. Hosted profiles, MCP filters and renderer-specific readiness remain unverified.",
+  "institutional_effectiveness": "Descriptive component reuse, observed defects and reproducible results only; no causal effectiveness score or agent creation/retirement."
+}

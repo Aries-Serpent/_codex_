@@ -1,0 +1,192 @@
+{
+  "artifact_type": "source-backed-cross-cutting-dissent-observation",
+  "format_version": 1,
+  "iteration": "006",
+  "role": "dissent-lane",
+  "bearing": "cross-cutting; deliberately not a fixed compass bearing",
+  "lane_constraints": {
+    "read_only": true,
+    "is_reconciler": false,
+    "is_executor": false,
+    "is_approver": false,
+    "authority": "none",
+    "activation": false,
+    "G5": "NOT_RUN",
+    "runtime_execution": "NOT_RUN",
+    "security_exploit_claimed": false,
+    "writes_performed": "This file only; no other writes, tests, commit or push performed by this lane."
+  },
+  "agent_run_context": {
+    "identity_caveat": "All fields in this block are supplied process-environment metadata (CI/platform-injected strings) read by this lane at runtime. They are not an authenticated identity, not an independent attestation, and not a trust or authority signal. They are retained verbatim below for traceability only, because none are flagged as sensitive secrets.",
+    "actual_tool_agent_id": "rd6-dissent",
+    "platform_relationship": "Same platform/session as the architecture and verification lanes already present in this iteration; this is a same-platform analytical role, not an independent reviewer or authority.",
+    "github_repository": "Aries-Serpent/_codex_",
+    "github_run_id": "40156802566",
+    "github_run_number": "7062",
+    "github_run_attempt": "1",
+    "github_workflow": "dynamic/copilot-swe-agent/copilot",
+    "github_workflow_sha": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+    "github_job": "copilot",
+    "github_actor": "copilot-swe-agent[bot]",
+    "github_actor_id": "198982749",
+    "codex_agent_name": "ai_org_repo_admin",
+    "codex_agent_name_caveat": "codex_agent_name is a supplied environment string only. It is not a granted role, not an authenticated privilege, and must not be treated by any consumer as conferring 'admin' or any other authority over this analysis or its disposition.",
+    "copilot_agent_session_id": "309fbfd5-54e1-41a5-a318-b05d16d06396",
+    "note": "github_workflow_sha textually agrees with the candidate commit under review (fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c). This agrees with the Git source observation recorded below; it is not a separate or independent attestation of candidate identity, since both values originate from the same platform-supplied process environment and the same git history, not from two independent sources."
+  },
+  "repository_path": "/home/runner/work/_codex_/_codex_",
+  "candidate": {
+    "commit": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+    "observed_head": "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+    "ancestry_check_command": "git merge-base --is-ancestor fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c 64cd6ebed63d14a16e21079e4c67a318ccc92373",
+    "ancestry_check_result": "true (candidate is an ancestor of observed head)",
+    "scoped_diff_check_command": "git log --oneline fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c..64cd6ebed63d14a16e21079e4c67a318ccc92373 -- src/codex/institutional/",
+    "scoped_diff_check_result": "0 commits; no change in src/codex/institutional/ between candidate and observed head",
+    "source_parity_conclusion": "Scoped files are byte-identical between the candidate commit and the observed head; analysis below applies equally to both.",
+    "confidence": "observed"
+  },
+  "scope_file_digests": [
+    {
+      "path": "src/codex/institutional/assurance.py",
+      "git_blob_sha1": "071ddd078372de5c25b71556d47e331d2a4db635",
+      "sha256": "ba67ea4d6201dd3c3243ec86715c54f21f1b620ac8dc8bc48732b818e020402c",
+      "confidence": "observed"
+    },
+    {
+      "path": "src/codex/institutional/core.py",
+      "git_blob_sha1": "4cfadd86670759a1f97a6612d51cc63024a58d13",
+      "sha256": "636c45dc7eed70d0bed4bc80602f6831fd76ef5a688119f082ae7f8fe4743cef",
+      "confidence": "observed"
+    },
+    {
+      "path": "src/codex/institutional/storage.py",
+      "git_blob_sha1": "a18cf253b803807646a058a0f9316c794ad0b224",
+      "sha256": "35e7122d388e44eb1badf025a2e69f2dffee0cf473822ca001e4f9f52b2a947f",
+      "confidence": "observed"
+    },
+    {
+      "path": "src/codex/institutional/contracts.json",
+      "git_blob_sha1": "5bbfe410bcb7d55e27a2b211f6d054c872954ca6",
+      "sha256": "21026df523f2445bd0ade774603f7facd823aadabed96f59b983ad8f56b52e30",
+      "confidence": "observed"
+    },
+    {
+      "path": "tests/institutional/test_assurance.py",
+      "git_blob_sha1": "9ebadf1dae8daf4ef41a2bf0a904dfafb6d18789",
+      "sha256": "716e7ae1919429cfd42b878ab83aad8dc35f6f123a3360d041a41ddc5b558a88",
+      "confidence": "observed"
+    }
+  ],
+  "quoted_initial_hypothesis": {
+    "text": "A caller can clear an original concern merely by changing the cached recommendation string.",
+    "quote_origin": "Analyst-authored suspicion carried into this lane from the architecture review discussion; this sentence is not itself a quotation of repository source code.",
+    "wording_attribution": "This hypothesis text and the verdict wording below are attributable to the analytical lane only. Any code-styled token in quotes (e.g. RECOMMENDATION_MISMATCH) is a verbatim source-code identifier, individually cited with path/line; the surrounding sentence is analyst prose and must not be read as a source quotation.",
+    "status": "BROADLY_STATED_REMAINS_UNRESOLVED",
+    "reasoning": "As a broad, unscoped claim about the system ('a caller can clear an original concern merely by changing the cached recommendation string'), this is neither fully confirmed nor fully closed. It is false for one specific call path (assurance.attach_continuation / assurance.validate_artifact) and remains open for a second call path (storage.plan / storage.apply / core.inspect_candidate) that does not invoke the recomputing validator at all. A disposition that rejects the broad hypothesis outright, citing only the first path, overstates what the source supports.",
+    "confidence": "inference (synthesis across two call paths); each underlying path finding is individually observed"
+  },
+  "narrow_attach_path_counterevidence": {
+    "claim": "On the assurance.attach_continuation path, a cached-string-only recommendation substitution is rejected because the recommendation is recomputed and compared, not trusted as supplied.",
+    "status": "VALID_BUT_NARROW",
+    "confidence": "observed",
+    "evidence": [
+      {
+        "path": "src/codex/institutional/assurance.py",
+        "lines": [808, 809],
+        "exact_quote": "expected = reconcile(data[\"history\"], data[\"current_manifest\"], data[\"dispositions\"])\n        _require(data == expected[\"payload\"][\"data\"], \"RECOMMENDATION_MISMATCH\")",
+        "observation": "validate_artifact recomputes the recommendation via reconcile(...) and requires full equality with the supplied data, not just the 'recommendation' field.",
+        "confidence": "observed"
+      },
+      {
+        "path": "src/codex/institutional/assurance.py",
+        "lines": [823, 824],
+        "exact_quote": "for artifact in artifacts:\n        validate_artifact(artifact)",
+        "observation": "attach_continuation calls validate_artifact on every artifact it attaches, including recommendation-kind assurance records.",
+        "confidence": "observed"
+      },
+      {
+        "path": "tests/institutional/test_assurance.py",
+        "lines": [837, 840],
+        "exact_quote": "bad = copy.deepcopy(final)\n    bad[\"payload\"][\"data\"][\"recommendation\"] = \"APPROVED\"\n    with pytest.raises(core.Rejected, match=\"RECOMMENDATION_MISMATCH\"):\n        assurance.attach_continuation(original, [reseal(bad)])",
+        "observation": "Existing test source demonstrates a tampered, re-sealed (self-consistent id/integrity) recommendation string is rejected on this path.",
+        "confidence": "observed; test source read only, not executed by this lane (runtime_execution: NOT_RUN)"
+      },
+      {
+        "path": "tests/institutional/test_assurance.py",
+        "lines": [39, 43],
+        "exact_quote": "def reseal(value):\n    value = copy.deepcopy(value)\n    value[\"id\"] = f\"{value['schema']}:{core.digest(value['payload'])}\"\n    value[\"integrity\"] = core.digest({k: v for k, v in value.items() if k != \"integrity\"})\n    return value",
+        "observation": "reseal recomputes id/integrity over attacker-controlled payload; it restores self-consistency, not non-tampering. This is why validate_artifact's semantic recompute (not the hash) is what catches the tampering on this path.",
+        "confidence": "observed"
+      }
+    ],
+    "narrow_scope_statement": "This counterevidence closes only the cached-string-substitution sub-case of the hypothesis, and only on the assurance.attach_continuation call path. It does not establish that every call path which can persist a continuation-state record performs the same semantic recompute."
+  },
+  "residual_runtime_gap": {
+    "id": "C1",
+    "title": "Generic persistence admission does not dispatch assurance semantic validation",
+    "status": "OPEN_RESIDUAL; no_activation",
+    "confidence": "observed (structural code path), not executed/reproduced by this lane",
+    "evidence": [
+      {
+        "path": "src/codex/institutional/storage.py",
+        "lines": [13, 24],
+        "exact_quote": "from .core import (\n    MAX_BYTES,\n    NAMESPACE,\n    Rejected,\n    canonical,\n    contracts,\n    digest,\n    inspect_candidate,\n    load,\n    validate,\n    verify,\n)",
+        "observation": "storage.py imports only from .core; it has no import of, or dependency on, assurance.validate_artifact.",
+        "confidence": "observed"
+      },
+      {
+        "path": "src/codex/institutional/storage.py",
+        "lines": [50, 54],
+        "exact_quote": "def plan(root: Path, value: dict[str, Any], expected: str | None = None) -> dict[str, Any]:\n    validate(value)\n    findings = inspect_candidate(value)\n    if findings:\n        raise Rejected(\"INVALID_CANDIDATE:\" + \",\".join(findings))",
+        "observation": "The storage admission entry point (plan, used ahead of apply) gates only on core.validate and core.inspect_candidate.",
+        "confidence": "observed"
+      },
+      {
+        "path": "src/codex/institutional/core.py",
+        "lines": [373, 384],
+        "exact_quote": "def inspect_candidate(value: dict[str, Any]) -> list[str]:\n    validate(value)\n    if value[\"schema\"] != \"codex.continuation-state.v1\":\n        raise Rejected(\"EXPECTED_CONTINUATION\", 5)\n    findings = []\n    supported = []\n    for index, child in enumerate(value[\"payload\"][\"records\"]):\n        try:\n            validate(child)\n            supported.append(child)\n        except Rejected as exc:\n            findings.append(f\"record[{index}]:{exc.reason}\")",
+        "observation": "Embedded records (including codex.assurance.v1 recommendation records) are validated with the generic structural core.validate(child), not with assurance.validate_artifact.",
+        "confidence": "observed"
+      },
+      {
+        "path": "src/codex/institutional/contracts.json",
+        "lines": [5, 13],
+        "exact_quote": "\"codex.assurance.v1\": {\n      \"type\": \"object\",\n      \"required\": [\"kind\", \"data\"],\n      \"properties\": {\n        \"kind\": {\"enum\": [\"plan\", \"history\", \"recommendation\"]},\n        \"data\": {\"type\": \"object\"}\n      },\n      \"additionalProperties\": false\n    },",
+        "observation": "The generic schema registered for codex.assurance.v1 constrains only 'kind' and that 'data' is an object; it imposes no equality or recompute constraint on data.recommendation, data.blockers, or any other field.",
+        "confidence": "observed"
+      }
+    ],
+    "inferred_risk": "A continuation-state record assembled directly (not via assurance.attach_continuation) and consistently re-sealed, containing a codex.assurance.v1 'recommendation' record with an altered recommendation/blockers field, is not excluded by core.validate or core.inspect_candidate, and therefore is not excluded by storage.plan/storage.apply as currently wired. This is a structural reading of the source; it has not been executed, reproduced, or demonstrated as a working exploit by this lane.",
+    "counterevidence_acknowledged": "The intended constructor for new continuation successors (assurance.attach_continuation) does perform the semantic recompute; persistence remains Draft/candidate-state only and grants no authority or activation (see core.py producer.assurance const 'unverified', authority_refs maxItems 0, validation_state const 'candidate', lifecycle const 'Draft', all structurally enforced by the envelope schema in core.validate). This bounds impact to the same 'no activation' posture already established elsewhere in this evidence lane.",
+    "not_claimed": [
+      "No claim that this gap has been exploited or demonstrated at runtime.",
+      "No claim this gap defeats activation controls, since activation is unsupported throughout this module regardless of this gap.",
+      "No G5/approval status is asserted or implied by this observation."
+    ]
+  },
+  "observed_vs_inference_confidence_summary": [
+    {"item": "assurance.validate_artifact recomputes and compares full recommendation data", "confidence": "observed"},
+    {"item": "attach_continuation calls validate_artifact per artifact", "confidence": "observed"},
+    {"item": "storage.py has no dependency on assurance module", "confidence": "observed"},
+    {"item": "core.inspect_candidate validates embedded records with generic core.validate only", "confidence": "observed"},
+    {"item": "codex.assurance.v1 generic schema has no semantic/equality constraint", "confidence": "observed"},
+    {"item": "candidate commit and observed head are scope-identical for these files", "confidence": "observed (git ancestry + empty scoped diff)"},
+    {"item": "a hand-assembled, re-sealed continuation bypassing attach_continuation would be admitted by storage.plan/apply", "confidence": "inference from static code reading; NOT_RUN, not reproduced"},
+    {"item": "broad hypothesis is resolved system-wide", "confidence": "inference: rejected as overstated; true only for the attach_continuation path"}
+  ],
+  "handoff": {
+    "format": "JSON, suitable for installed workflow adapter ingestion",
+    "intended_consumer": "Coordinator-owned pure Reconciler; this lane does not reconcile, execute, or approve.",
+    "reconciler_output_scope": "The pure Reconciler, when it consumes this artifact, returns a recommendation. A recommendation is not an institutional disposition and not an approval; it carries no authority, activation, or G5 status by itself.",
+    "decision_ownership": "The coordinator owns disposition of the quoted_initial_hypothesis and residual_runtime_gap, and owns any subsequent institutional disposition or approval step. This file supplies source-backed observations and inferences only.",
+    "authorization_caveat": "No field in this artifact, including any environment-supplied agent/role name such as codex_agent_name, confers authorization, approval, or elevated trust. The parent/coordinator should not treat any environment name string in agent_run_context as authorization; such strings are retained only for traceability.",
+    "this_artifact_is_not": [
+      "a codex.assurance.v1 artifact",
+      "a codex.continuation-state.v1 record",
+      "a runtime followup or eligible assurance result",
+      "an adjudication, approval, or G5 grant",
+      "an institutional disposition (a Reconciler recommendation derived from this artifact is also not an institutional disposition or approval)"
+    ],
+    "writes_scope": "This single file was created by this lane. No other file was written, edited, tested, committed, or pushed."
+  }
+}

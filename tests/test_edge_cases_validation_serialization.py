@@ -9,6 +9,7 @@ Author: autonomous-test-healer-agent (v2.0.0-s228)
 """
 
 import json
+import math
 
 import pytest
 
@@ -218,28 +219,13 @@ class TestSerializationEdgeCases:
         assert loaded["empty_string"] == "", "Condition must be true"
 
     def test_serialize_special_floats(self):
-        """Test that special floats fail JSON serialization"""
-
-        class SafeJSONEncoder(json.JSONEncoder):
-            def default(self, obj):
-                if isinstance(obj, float):
-                    if obj != obj:  # NaN
-                        return "NaN"
-                    elif obj == float("inf"):
-                        return "Infinity"
-                    elif obj == float("-inf"):
-                        return "-Infinity"
-                return super().default(obj)
-
+        """Strict JSON rejects nonfinite floats; Python's opt-in extension round-trips."""
         data = {"inf": float("inf"), "nan": float("nan")}
-
-        # Standard JSON should fail
-        with pytest.raises((ValueError, TypeError)):
-            json.dumps(data)
-
-        # Custom encoder should work
-        json_str = json.dumps(data, cls=SafeJSONEncoder)
-        assert "Infinity" in json_str or "NaN" in json_str, "Condition must be true"
+        with pytest.raises(ValueError, match="Out of range float"):
+            json.dumps(data, allow_nan=False)
+        restored = json.loads(json.dumps(data, allow_nan=True))
+        assert math.isinf(restored["inf"]) and restored["inf"] > 0
+        assert math.isnan(restored["nan"])
 
     def test_serialize_unicode_strings(self):
         """Test serializing unicode strings"""
@@ -408,7 +394,7 @@ class TestPerformanceBoundaries:
 
         # Navigate to deepest
         current = lst
-        for _ in range(depth - 1):
+        for _ in range(depth):
             current = current[0]
 
         assert current == 0, "current is not valid"

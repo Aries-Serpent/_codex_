@@ -1,0 +1,18 @@
+{
+  "schema": "codex.institutional.predecessor-verification.v1",
+  "predecessor_path": ".codex/evidence/institutional-foundation/iteration-003/continuation.json.gz",
+  "compressed_sha256": "c3a0c0441f10b9f70b57f37d22e7298ceae5a32dacd7cdebfe8bacecd6768132",
+  "canonical_sha256": "3437c62ddfd6951c98f1219604dad5bb6e1e037ae8ce0657e10a6244010e24e7",
+  "sequence": 3,
+  "next_sequence": 4,
+  "structure": "PASS",
+  "core_inspect_candidate": [],
+  "current_binding_diagnostics": [
+    "CONTRACT_DRIFT",
+    "STALE_CHECKPOINT",
+    "WORKTREE_DRIFT"
+  ],
+  "diagnostic_scope": "At pre-source-commit current worktree; not a current authorization/acceptance. Added review contract implies expected CONTRACT_DRIFT. Final successor must bind final source and contract identities.",
+  "historical_evidence": "Preserved immutable; drift does not rewrite or erase historical technical results.",
+  "authority": "No operational authority follows from predecessor integrity."
+}

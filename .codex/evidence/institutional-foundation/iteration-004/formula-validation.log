@@ -1,0 +1,109 @@
+Lane C final validation; no commits, staging, push or PR operations.
+Python 3.12.10
+......                                                                   [100%]
+6 passed in 0.08s
+All done! ✨ 🍰 ✨
+1 file would be left unchanged.
+All checks passed!
+mypy.ini: note: unused section(s): [mypy-torch], [mypy-omegaconf]
+Success: no issues found in 1 source file
+.github/workflows/pr-followup-generator.md:57: trailing whitespace.
++**Status**: Historical reference; current hosted activation unverified  
+
+Scoped new-file whitespace checks (expected no-index difference exit 1):
+PASS docs/design/azimuthal-formal-model.rst (no whitespace diagnostics; exit 1)
+PASS src/codex/institutional/review-formulas.json (no whitespace diagnostics; exit 1)
+PASS tests/institutional/test_review_formulas.py (no whitespace diagnostics; exit 1)
+PASS evidence JSON parse. Global diff check was blocked by an unrelated concurrent file; see formula-validation.json.
+
+Final rerun after adding RST heading-length assertions:
+......                                                                   [100%]
+6 passed in 0.08s
+All done! ✨ 🍰 ✨
+1 file would be left unchanged.
+All checks passed!
+mypy.ini: note: unused section(s): [mypy-torch], [mypy-omegaconf]
+Success: no issues found in 1 source file
+PASS all final focused tests/static checks; six tests, including RST heading-length checks.
+
+Parent clarification: intended explicit package-data inclusion, external wheel verification pending; corrected architecture link; SDK mapping awaits runtime API.
+......                                                                   [100%]
+6 passed in 0.11s
+All done! ✨ 🍰 ✨
+1 file would be left unchanged.
+All checks passed!
+mypy.ini: note: unused section(s): [mypy-torch], [mypy-omegaconf]
+Success: no issues found in 1 source file
+PASS parent-clarification targeted validation.
+
+Final bounded structural API correspondence validation (no numeric equations implemented):
+.......                                                                  [100%]
+7 passed in 0.09s
+All done! ✨ 🍰 ✨
+1 file would be left unchanged.
+All checks passed!
+mypy.ini: note: unused section(s): [mypy-torch], [mypy-omegaconf]
+Success: no issues found in 1 source file
+PASS final formula source and structural-mapping checks.
+
+Source preservation versus normalized typography: exact visible lane-source snippets and integration-supplied original notation tokens; upstream complete LaTeX remains explicitly unverified.
+........                                                                 [100%]
+8 passed in 0.10s
+All done! ✨ 🍰 ✨
+1 file would be left unchanged.
+All checks passed!
+mypy.ini: note: unused section(s): [mypy-torch], [mypy-omegaconf]
+Success: no issues found in 1 source file
+PASS focused source-preservation tests and static checks; not mathematical proof.
+
+Known uncertainty/source D_n^req correction; parent manifest declaration observed, external wheel verification pending.
+.F......                                                                 [100%]
+=================================== FAILURES ===================================
+_________________________ test_exact_document_mapping __________________________
+
+    def test_exact_document_mapping() -> None:
+        text = DOCUMENT.read_text(encoding="utf-8")
+        lines = text.splitlines()
+        for index, line in enumerate(lines):
+            if index and len(line) > 2 and set(line) <= {"=", "-"}:
+>               assert len(line) >= len(lines[index - 1])
+E               AssertionError: assert 50 >= 51
+E                +  where 50 = len('--------------------------------------------------')
+E                +  and   51 = len('Risk, resources, evidence, uncertainty and adequacy')
+
+tests/institutional/test_review_formulas.py:94: AssertionError
+=========================== short test summary info ============================
+FAILED tests/institutional/test_review_formulas.py::test_exact_document_mapping - AssertionError: assert 50 >= 51
+ +  where 50 = len('--------------------------------------------------')
+ +  and   51 = len('Risk, resources, evidence, uncertainty and adequacy')
+1 failed, 7 passed in 0.12s
+
+Final rerun after fixing uncertainty-section RST underline:
+........                                                                 [100%]
+8 passed in 0.11s
+All done! ✨ 🍰 ✨
+1 file would be left unchanged.
+All checks passed!
+mypy.ini: note: unused section(s): [mypy-torch], [mypy-omegaconf]
+Success: no issues found in 1 source file
+PASS all final uncertainty/source-notation and static checks.
+
+Parent-provided user transcription preservation: 58 source/document mappings separate from normalized expressions; prose 038/046/047; extracted 056/057; no set-difference invention or upstream bytehash claim.
+........                                                                 [100%]
+8 passed in 0.11s
+All done! ✨ 🍰 ✨
+1 file would be left unchanged.
+All checks passed!
+mypy.ini: note: unused section(s): [mypy-torch], [mypy-omegaconf]
+Success: no issues found in 1 source file
+PASS all final parent-transcription/source-vs-normalized and static checks.
+
+Final source-transcription metadata linkage rerun:
+........                                                                 [100%]
+8 passed in 0.11s
+All done! ✨ 🍰 ✨
+1 file would be left unchanged.
+All checks passed!
+mypy.ini: note: unused section(s): [mypy-torch], [mypy-omegaconf]
+Success: no issues found in 1 source file
+PASS final eight tests, exact 58 source mappings, normalized mappings and all static checks.

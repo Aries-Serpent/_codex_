@@ -1,7 +1,7 @@
 # Codex Documentation Hub
 
 **Version:** v0.3.0  
-**Last Updated:** 2026-10-02  
+**Last Updated:** 2026-10-24  
 **Status:** Active documentation source-of-truth for the current branch
 
 > Current operational truth: use `README.md`, `docs/`, and `mkdocs.yml` as the live documentation source. Historical narrative pages, older rebuild snapshots, and phase reports remain archive evidence and are not the current branch state unless explicitly labeled historical.
@@ -27,6 +27,8 @@ Choose your entry point based on your role:
 Shared orientation:
 
 - **[Repository map](REPOSITORY_MAP.md)** — Canonical boundaries and directory map
+- **[Repository explanation](REPOSITORY_EXPLANATION.md)** — Evidence-based overview and status vocabulary
+- **[Documentation source of truth](DOCUMENTATION_SOURCE_OF_TRUTH.md)** — Active, historical, and compatibility-only documentation
 - **[Quick start by profile](QUICKSTART_BY_PROFILE.md)** — Core, runtime, and full setup
 - **[Workflow and governance map](WORKFLOW_MAP.md)** — CI, security, coverage, and policy
 - **[Session and agent-state guide](SESSION_STATE_GUIDE.md)** — Memory, checkpoints, and accountability
@@ -172,4 +174,4 @@ pip install -e .
 
 ---
 
-**Last updated:** 2026-09-12
+**Last updated:** 2026-10-24

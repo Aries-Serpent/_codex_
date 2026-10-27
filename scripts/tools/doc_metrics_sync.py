@@ -18,6 +18,10 @@ HOW IT WORKS
 3. In ``--check`` mode the script exits 1 when any match is found that differs
    from the live value — suitable for CI gates and pre-commit hooks.
 
+Test metrics are static source-inventory estimates, not pytest collection or
+execution results. They cannot establish how many tests pass, or satisfy a
+release gate; those require separate run evidence.
+
 ADDING A NEW RULE
 -----------------
 Append a ``Rule`` to RULES:
@@ -36,6 +40,7 @@ Then add the corresponding metric to ``gather_metrics()``::
 
 The pre-commit hook and CI workflow pick up new rules automatically.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -223,9 +228,9 @@ RULES: list[Rule] = [
     Rule(
         id="sar_layer1_test_count",
         files=["docs/ops/SAR_METHODOLOGY.md"],
-        pattern=r'Test Suite (\d{3,5}\+)',
-        replacement="Test Suite {test_count_display}",
-        description="Test count in SAR_METHODOLOGY.md L1 layer diagram",
+        pattern=r"Test (?:Suite|Inventory \(estimated\)) (\d+\+)",
+        replacement="Test Inventory (estimated) {test_inventory_display}",
+        description="Estimated test inventory in SAR_METHODOLOGY.md L1 layer diagram",
     ),
     # ── docs/LEVEL_4_MLOPS_ASSESSMENT.md ─────────────────────────────────
     Rule(
@@ -263,32 +268,35 @@ RULES: list[Rule] = [
     Rule(
         id="codebase_map_test_count",
         files=["docs/evolution/COGNITIVE_CODEBASE_MAP.md"],
-        pattern=r'tests/ \((\d{3,5}\+)\)',
-        replacement="tests/ ({test_count_display})",
-        description="Test count in COGNITIVE_CODEBASE_MAP.md Mermaid node",
+        pattern=r"tests/ \((\d+\+)(?: estimated inventory)?\)",
+        replacement="tests/ ({test_inventory_display} estimated inventory)",
+        description="Estimated test inventory in COGNITIVE_CODEBASE_MAP.md Mermaid node",
     ),
     Rule(
         id="codebase_map_test_table",
         files=["docs/evolution/COGNITIVE_CODEBASE_MAP.md"],
-        pattern=r"(\d{3,5}\+) tests, (\d{2})% threshold",
-        replacement="{test_count_display} tests, {coverage_threshold}% threshold",
-        description="Test/coverage counts in COGNITIVE_CODEBASE_MAP.md table",
+        pattern=r"(\d+\+)(?: tests| estimated test inventory), (\d{2})% threshold",
+        replacement="{test_inventory_display} estimated test inventory, {coverage_threshold}% threshold",
+        description="Test inventory/coverage threshold in COGNITIVE_CODEBASE_MAP.md table",
     ),
     # ── docs/evolution/INDEX.md ───────────────────────────────────────────
     Rule(
         id="evolution_index_tests",
         files=["docs/evolution/INDEX.md"],
-        pattern=r"\| Tests Passing \| (\d{3,5}\+) \|",
-        replacement="| Tests Passing | {test_count_display} |",
-        description="Test count in evolution INDEX.md table",
+        pattern=r"\| (?:Tests Passing|Test Inventory \(estimated\)) \| (\d+\+) \|",
+        replacement="| Test Inventory (estimated) | {test_inventory_display} |",
+        description="Estimated test inventory, not passing results, in evolution INDEX.md",
     ),
     # ── docs/deployment/DEPLOYMENT_RUNBOOK.md ─────────────────────────────
     Rule(
         id="runbook_test_count",
         files=["docs/deployment/DEPLOYMENT_RUNBOOK.md"],
-        pattern=r"All tests pass \((\d{3,5}\+) tests\)",
-        replacement="All tests pass ({test_count_display} tests)",
-        description="Test count in DEPLOYMENT_RUNBOOK.md checklist",
+        pattern=r"(?:All tests pass \(\d+\+ tests\)|"
+        r"Verify all release-required tests pass before deployment "
+        r"\(estimated test inventory: \d+\+; not a pass count\))",
+        replacement="Verify all release-required tests pass before deployment "
+        "(estimated test inventory: {test_inventory_display}; not a pass count)",
+        description="Test inventory alongside an unverified release prerequisite in the runbook",
     ),
     # ── docs/REPOSITORY_ARCHITECTURE_DIAGRAMS.md ─────────────────────────
     Rule(
@@ -354,19 +362,26 @@ def gather_metrics(repo_root: Path) -> dict[str, str]:  # noqa: C901 (complexity
                 break
     m.setdefault("coverage_threshold", 75)
 
-    # --- test count ----------------------------------------------------------
+    # --- static test inventory (not collected cases or passing results) -------
     test_dir = repo_root / "tests"
     count = 0
     if test_dir.is_dir():
         for tf in test_dir.rglob("test_*.py"):
             try:
-                count += tf.read_text(errors="ignore").count("\ndef test_")
-                count += tf.read_text(errors="ignore").count("\n    def test_")
+                # Textual estimate of synchronous top-level and class test
+                # definitions. Does not expand parametrization, import tests,
+                # execute bodies, or read reports; no pass/fail status is known.
+                content = tf.read_text(errors="ignore")
+                count += len(re.findall(r"^(?:def test_|    def test_)", content, re.MULTILINE))
             except OSError:
                 logger.debug("Suppressed exception in handler", exc_info=True)
-    # Floor to nearest 500 for a conservative round-number claim
-    display = max(500, (count // 500) * 500)
-    m["test_count_display"] = f"{display}+"
+    # Floor to nearest 500; never invent a minimum inventory.
+    display = (count // 500) * 500
+    m["test_inventory_count"] = count
+    m["test_inventory_display"] = f"{display}+"
+    # Backward-compatible inventory aliases for existing diagrams and badges.
+    # None of these metrics represents verified passing tests.
+    m["test_count_display"] = m["test_inventory_display"]
     m["test_count_url"] = f"{display}%2B"  # URL-encoded for badge
 
     # --- workflow count ------------------------------------------------------
@@ -404,7 +419,9 @@ def gather_metrics(repo_root: Path) -> dict[str, str]:  # noqa: C901 (complexity
     # --- SAR-G05 (observability/tracing) score & quadrant -------------------
     devcontainer = repo_root / ".devcontainer" / "devcontainer.json"
     tracing = repo_root / "src" / "mcp" / "server" / "tracing.py"
-    has_otel_env = devcontainer.exists() and "OTEL_EXPORTER_OTLP_ENDPOINT" in devcontainer.read_text()
+    has_otel_env = (
+        devcontainer.exists() and "OTEL_EXPORTER_OTLP_ENDPOINT" in devcontainer.read_text()
+    )
     has_drift_span = tracing.exists() and "drift_span" in tracing.read_text()
     if has_otel_env and has_drift_span:
         g05 = 100
@@ -434,7 +451,7 @@ def gather_metrics(repo_root: Path) -> dict[str, str]:  # noqa: C901 (complexity
     if g05 >= 100:
         base += 0.015  # G05 resolved
     if g01_x >= 0.90:
-        base += 0.01   # G01 resolved
+        base += 0.01  # G01 resolved
     m["mlops_level"] = str(round(min(base, 3.99), 2))
 
     # --- today's date --------------------------------------------------------
@@ -521,10 +538,7 @@ def _print_report(findings: list[Finding], metrics: dict[str, str]) -> None:
     print(f"{'Rule ID':<40} {'File':<45} {'L':<5} {'Old':<40} {'New'}")
     print("-" * 150)
     for f in findings:
-        print(
-            f"{f.rule_id:<40} {f.file:<45} {f.line_no:<5} "
-            f"{f.old_text!r:<40} {f.new_text!r}"
-        )
+        print(f"{f.rule_id:<40} {f.file:<45} {f.line_no:<5} {f.old_text!r:<40} {f.new_text!r}")
     print(f"\n{len(findings)} stale metric(s) found.")
     print("\nLive metrics used:")
     for k, v in sorted(metrics.items()):

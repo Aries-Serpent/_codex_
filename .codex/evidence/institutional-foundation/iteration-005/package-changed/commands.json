@@ -1,0 +1,464 @@
+[
+  {
+    "argv": [
+      "git",
+      "-C",
+      "/home/runner/work/_codex_/_codex_",
+      "archive",
+      "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+      "--",
+      "src",
+      "packages/contracts",
+      "pyproject.toml",
+      "MANIFEST.in",
+      "README.md",
+      "LICENSE",
+      "LICENSES",
+      ".copilot-space/workflow.yaml"
+    ],
+    "cwd": "/home/runner/work/_codex_/_codex_",
+    "started_at": "2026-10-25T01:38:38.430842+00:00",
+    "exit": 0,
+    "log": "scoped-source.tar",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "python",
+      "-m",
+      "venv",
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/build-venv"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025",
+    "started_at": "2026-10-25T01:38:39.406729+00:00",
+    "exit": 0,
+    "log": "build-venv.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "python",
+      "-m",
+      "venv",
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/runtime-venv"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025",
+    "started_at": "2026-10-25T01:38:41.858645+00:00",
+    "exit": 0,
+    "log": "runtime-venv.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "python",
+      "-m",
+      "venv",
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/test-venv"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025",
+    "started_at": "2026-10-25T01:38:44.317197+00:00",
+    "exit": 0,
+    "log": "test-venv.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/build-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "setuptools==81.0.0",
+      "wheel==0.48.0",
+      "hatchling==1.32.0",
+      "packaging==26.3",
+      "pathspec==1.1.1",
+      "pluggy==1.7.0",
+      "tomlkit==0.15.2",
+      "trove-classifiers==2026.9.21.13"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025",
+    "started_at": "2026-10-25T01:38:46.836761+00:00",
+    "exit": 0,
+    "log": "provision-build.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/runtime-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "jsonschema==4.25.1",
+      "attrs==26.1.0",
+      "jsonschema-specifications==2025.9.1",
+      "referencing==0.37.0",
+      "rpds-py==2026.9.1",
+      "typing-extensions==4.16.0"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025",
+    "started_at": "2026-10-25T01:38:48.998300+00:00",
+    "exit": 0,
+    "log": "provision-runtime.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/test-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "jsonschema==4.25.1",
+      "attrs==26.1.0",
+      "jsonschema-specifications==2025.9.1",
+      "referencing==0.37.0",
+      "rpds-py==2026.9.1",
+      "typing-extensions==4.16.0",
+      "pytest==9.1.1",
+      "packaging==26.3",
+      "pluggy==1.7.0",
+      "iniconfig==2.3.0",
+      "pygments==2.21.0"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025",
+    "started_at": "2026-10-25T01:38:50.343931+00:00",
+    "exit": 0,
+    "log": "provision-test.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/build-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "wheel",
+      "--no-index",
+      "--no-build-isolation",
+      "--no-deps",
+      "--no-cache-dir",
+      "--wheel-dir",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts",
+      "packages/contracts"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/source-export",
+    "started_at": "2026-10-25T01:38:53.078178+00:00",
+    "exit": 0,
+    "log": "contracts-build.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/build-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "wheel",
+      "--no-index",
+      "--no-build-isolation",
+      "--no-deps",
+      "--no-cache-dir",
+      "--wheel-dir",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts",
+      "."
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/source-export",
+    "started_at": "2026-10-25T01:38:53.662353+00:00",
+    "exit": 0,
+    "log": "wheel-build.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/runtime-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "install",
+      "--no-index",
+      "--no-deps",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025",
+    "started_at": "2026-10-25T01:38:57.042399+00:00",
+    "exit": 0,
+    "log": "runtime-wheel-install.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/runtime-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "list",
+      "--format=json"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025",
+    "started_at": "2026-10-25T01:39:00.614443+00:00",
+    "exit": 0,
+    "log": "runtime-distributions.json",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/test-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "install",
+      "--no-index",
+      "--no-deps",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025",
+    "started_at": "2026-10-25T01:39:00.837729+00:00",
+    "exit": 0,
+    "log": "test-wheel-install.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/test-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "list",
+      "--format=json"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025",
+    "started_at": "2026-10-25T01:39:04.393654+00:00",
+    "exit": 0,
+    "log": "test-distributions.json",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/build-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "list",
+      "--format=json"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025",
+    "started_at": "2026-10-25T01:39:04.619920+00:00",
+    "exit": 0,
+    "log": "build-distributions.json",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/runtime-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025",
+    "started_at": "2026-10-25T01:39:04.829384+00:00",
+    "exit": 1,
+    "log": "full-dependency-pip-check.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/test-venv/bin/python",
+      "-I",
+      "-m",
+      "pytest",
+      "-c",
+      "/dev/null",
+      "--rootdir",
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/external-tests",
+      "--noconftest",
+      "--import-mode=importlib",
+      "--basetemp",
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch/pytest-base",
+      "-p",
+      "no:cacheprovider",
+      "-q",
+      "-rA",
+      "--junitxml",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/assurance-tests.junit.xml",
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/external-tests/test_assurance.py"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/external-tests",
+    "started_at": "2026-10-25T01:39:13.731240+00:00",
+    "exit": 0,
+    "log": "assurance-tests.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch",
+    "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/runtime-venv/bin/python",
+      "-I",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-harness.py",
+      "--release",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/release.json",
+      "--output",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-artifacts"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/external-runtime",
+    "started_at": "2026-10-25T01:39:48.754114+00:00",
+    "exit": 0,
+    "log": "baseline-review-runtime.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/runtime-venv/bin/python",
+      "-I",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-harness.py",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/external-runtime",
+    "started_at": "2026-10-25T01:40:54.671650+00:00",
+    "exit": 0,
+    "log": "installed-assurance-runtime-001.log",
+    "harness_snapshot": "installed-assurance-harness-attempt-001.py",
+    "harness_sha256": "cb13906f9dc4a7a359e9408397da0273250f4a0f450aacde7628d3d056dc80f2",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/runtime-venv/bin/python",
+      "-I",
+      "-c",
+      "import json,sys,hashlib; from pathlib import Path; from importlib import metadata; from codex.institutional import assurance,core,review,storage; import codex_contracts; modules={name:module.__file__ for name,module in [('assurance',assurance),('core',core),('review',review),('storage',storage),('codex_contracts',codex_contracts)]}; assert all(Path(p).is_relative_to(sys.prefix) for p in modules.values()); print(json.dumps({'python':sys.version,'prefix':sys.prefix,'sys_path':sys.path,'origins':modules,'sha256':{n:hashlib.sha256(Path(p).read_bytes()).hexdigest() for n,p in modules.items()},'installed':{d.metadata['Name']:{'version':d.version,'requires':d.requires or []} for d in metadata.distributions()}},indent=2))"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/external-runtime",
+    "exit": 0,
+    "log": "runtime-import-origins.json",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/test-venv/bin/python",
+      "-I",
+      "-c",
+      "import json,sys,hashlib; from pathlib import Path; from importlib import metadata; from codex.institutional import assurance,core,review,storage; import codex_contracts; modules={name:module.__file__ for name,module in [('assurance',assurance),('core',core),('review',review),('storage',storage),('codex_contracts',codex_contracts)]}; assert all(Path(p).is_relative_to(sys.prefix) for p in modules.values()); print(json.dumps({'python':sys.version,'prefix':sys.prefix,'sys_path':sys.path,'origins':modules,'sha256':{n:hashlib.sha256(Path(p).read_bytes()).hexdigest() for n,p in modules.items()},'installed':{d.metadata['Name']:{'version':d.version,'requires':d.requires or []} for d in metadata.distributions()}},indent=2))"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/external-runtime",
+    "exit": 0,
+    "log": "test-import-origins.json",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "python",
+      "-m",
+      "black",
+      "--check",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-harness.py"
+    ],
+    "cwd": "/home/runner/work/_codex_/_codex_",
+    "exit": 1,
+    "log": "harness-black-check.log",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch",
+    "PYTHONPATH": "absent"
+  },
+  {
+    "argv": [
+      "python",
+      "-m",
+      "ruff",
+      "check",
+      "--select",
+      "E,F,I",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-harness.py"
+    ],
+    "cwd": "/home/runner/work/_codex_/_codex_",
+    "exit": 1,
+    "log": "harness-ruff-check.log",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch",
+    "PYTHONPATH": "absent"
+  },
+  {
+    "argv": [
+      "python",
+      "-m",
+      "black",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-harness.py"
+    ],
+    "cwd": "/home/runner/work/_codex_/_codex_",
+    "exit": 0,
+    "log": "harness-black-format.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "python",
+      "-m",
+      "black",
+      "--check",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-harness.py"
+    ],
+    "cwd": "/home/runner/work/_codex_/_codex_",
+    "exit": 0,
+    "log": "harness-black-final.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "python",
+      "-m",
+      "ruff",
+      "check",
+      "--select",
+      "E,F,I",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-harness.py"
+    ],
+    "cwd": "/home/runner/work/_codex_/_codex_",
+    "exit": 0,
+    "log": "harness-ruff-final.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/runtime-venv/bin/python",
+      "-I",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-harness.py",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed",
+      "installed-assurance-artifacts-formatted"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/external-runtime",
+    "exit": 0,
+    "log": "installed-assurance-runtime-002.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/scratch",
+    "harness_snapshot": "installed-assurance-harness-attempt-002.py",
+    "harness_sha256": "72b495d259051f37d10cb421bb86683c37f400897b77cd3c282ca9a3e1b45146"
+  }
+]

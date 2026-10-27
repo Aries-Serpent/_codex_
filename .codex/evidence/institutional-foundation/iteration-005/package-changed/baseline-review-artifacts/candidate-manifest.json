@@ -1,0 +1,39 @@
+{
+  "authority_refs": [],
+  "created_at": "2026-10-25T00:00:00Z",
+  "evidence_refs": [],
+  "extensions": {},
+  "id": "codex.review.v1:48fc79cca061aad75d7fca19c5d5418e1a07eb783649cb078b45cf8ba5ee6b53",
+  "integrity": "4f3903fd30c1acb19ec4f0f73d1eb27cb1ffe3c6c488f4fabde46de7d9d3834e",
+  "lifecycle": "Draft",
+  "payload": {
+    "data": {
+      "classification": "Repository-Internal",
+      "context_digest": "950c065fb0eb0a7fad632dfa0e063fdb5d0f0ef0ca9d12b450205e617d5542f7",
+      "entries": [
+        {
+          "mode": 420,
+          "path": "src/example.py",
+          "sha256": "8c4c92212a384a14b0cda01dbbb5cc76580513550339da6d13affbf939c60f54",
+          "size": 25
+        }
+      ],
+      "rules": {
+        "archives": "opaque-no-expansion",
+        "hardlinks": "independent-bytes",
+        "line_endings": "raw",
+        "permissions": "explicit-posix-mode",
+        "submodules": "reject",
+        "symlinks": "reject"
+      }
+    },
+    "kind": "manifest"
+  },
+  "producer": {
+    "assurance": "unverified",
+    "identity": "codex-institutional"
+  },
+  "schema": "codex.review.v1",
+  "supersedes": null,
+  "validation_state": "candidate"
+}

@@ -141,7 +141,9 @@ def load_checkpoint(
     if _torch_supports_weights_only():
         kwargs["weights_only"] = False
     try:
-        payload = torch_load(weights, **kwargs)  # nosec B614 - weights_only=False required for optimizer/RNG state
+        payload = torch_load(
+            weights, **kwargs
+        )  # nosec B614 - weights_only=False required for optimizer/RNG state
     except (TypeError, ValueError, RuntimeError) as exc:
         type(exc).__name__
         logger.debug("Checkpoint load rejected with %s: %s", type(exc).__name__, exc)

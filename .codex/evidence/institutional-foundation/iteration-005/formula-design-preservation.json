@@ -1,0 +1,41 @@
+{
+  "schema": "codex.institutional.design-preservation-observation.v1",
+  "original_source": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+  "assets": {
+    "docs/design/azimuthal-reasoning-integrity.rst": {
+      "sha256": "37afbda1e93a1a9b0322edbdff11ff15a8cda9cddc98e4829a433c71b7bab873",
+      "bytes": 29445,
+      "original_bytes_preserved": true
+    },
+    "docs/design/azimuthal-formal-model.rst": {
+      "sha256": "4fdbc0891cece14357bd2df79acb03fc901e699a5a7c9f6f4053cb79002bff3a",
+      "bytes": 43725,
+      "original_bytes_preserved": true
+    },
+    "src/codex/institutional/review-formulas.json": {
+      "sha256": "bb334de789fc66e6704b752268c84f32860a218bbc4858b6888822c4f5e23537",
+      "bytes": 54986,
+      "original_bytes_preserved": true
+    }
+  },
+  "formula_ids": 58,
+  "standalone_evaluators": 0,
+  "unchanged_contract_inventory": 27,
+  "unchanged_diagram_sources_and_text_alternatives": 7,
+  "package_receipt": "package-original/formula-identities.json and supplemental-runtime-results.json verify installed review-formulas.json bytes and source notation",
+  "renderers": {
+    "Mermaid": "NOT_RUN; mmdc unavailable",
+    "MathJax": "NOT_RUN; no configured available renderer",
+    "RST": "NOT_RUN; docutils absent"
+  },
+  "interpretation": "Preservation/metadata and installed-byte checks are not mathematical proof, empirical calibration or rendered-output validation. New assurance mappings will be bounded structural predicates only; scores never close/approve/activate.",
+  "proposed_mappings": [
+    "RD4-F022 evidence eligibility",
+    "RD4-F026 stage readiness",
+    "RD4-F039 assurance plan",
+    "RD4-F040 final result reconciliation",
+    "RD4-F050 exact resume conjunction subset",
+    "RD4-F058 composite structural correspondence only"
+  ],
+  "source_mapping_status": "Source commit 47daeb752582a8f03cd59341d95eb87141a9c7bf implements bounded structural eligibility, DAG readiness, result reconciliation and exact resume predicates in assurance.py, exercised by 107 assurance source tests. These are partial correspondences to the listed references, not full equation implementation, calibration or mathematical proof."
+}

@@ -109,9 +109,7 @@ class TestOutputValidation:
     def test_output_status_field_presence(self):
         """Test output always has status field."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         result = agent.execute_agent({})
@@ -129,9 +127,7 @@ class TestOutputValidation:
     def test_output_data_field_presence(self):
         """Test success output has data field."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         result = agent.execute_agent({})
@@ -146,17 +142,13 @@ class TestOutputValidation:
     def test_output_metadata_field_presence(self):
         """Test output has metadata field."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         result = agent.execute_agent({})
 
         if "metadata" in result:
-            assert isinstance(
-                result["metadata"], dict
-            ), "Metadata must be dict"
+            assert isinstance(result["metadata"], dict), "Metadata must be dict"
             if "execution_time_ms" in result["metadata"]:
                 assert isinstance(
                     result["metadata"]["execution_time_ms"], (int, float)
@@ -168,9 +160,7 @@ class TestOutputValidation:
     def test_error_output_format(self):
         """Test error output has required fields."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         # Manually create error output
@@ -190,9 +180,7 @@ class TestOutputValidation:
     def test_output_json_serializable(self):
         """Test output is JSON serializable."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         result = agent.execute_agent({})
@@ -211,9 +199,7 @@ class TestOutputValidation:
     def test_output_consistency(self):
         """Test output format consistency across multiple executions."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         results = []
@@ -241,9 +227,7 @@ class TestPerformance:
     def test_execution_time_tracking(self):
         """Test execution time is tracked correctly."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         result = agent.test_basic_execution({})
@@ -257,9 +241,7 @@ class TestPerformance:
     def test_fast_agent_performance(self):
         """Test fast agent meets performance requirements."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         benchmark = agent.benchmark_execution({}, iterations=10)
@@ -274,9 +256,7 @@ class TestPerformance:
     def test_slow_agent_performance(self):
         """Test slow agent performance characteristics."""
         agent = SlowAgent("agent", "slow")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="slow", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="slow", session_id="test")
         agent.setup(context)
 
         benchmark = agent.benchmark_execution({}, iterations=5)
@@ -290,9 +270,7 @@ class TestPerformance:
     def test_throughput_measurement(self):
         """Test throughput measurement."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         start = time.time()
@@ -307,21 +285,25 @@ class TestPerformance:
         agent.teardown()
 
     @pytest.mark.quality
-    def test_performance_variance(self):
-        """Test execution time variance."""
+    def test_performance_variance(self, monkeypatch):
+        """Test benchmark aggregation with a deterministic monotonic clock."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
-        benchmark = agent.benchmark_execution({}, iterations=20)
+        ticks = iter(index / 1000 for index in range(42))
+        with monkeypatch.context() as context:
+            context.setattr(time, "perf_counter", lambda: next(ticks))
+            benchmark = agent.benchmark_execution({}, iterations=20)
+        assert benchmark["successes"] == 20
+        assert benchmark["errors"] == 0
+        assert benchmark["avg_duration_ms"] == pytest.approx(1.0)
 
         # Calculate variance
         if benchmark["max_duration_ms"] > 0:
-            variance = (
-                benchmark["max_duration_ms"] - benchmark["min_duration_ms"]
-            ) / benchmark["avg_duration_ms"]
+            variance = (benchmark["max_duration_ms"] - benchmark["min_duration_ms"]) / benchmark[
+                "avg_duration_ms"
+            ]
             assert variance < 5.0, "Execution time variance too high"
 
         agent.teardown()
@@ -339,14 +321,14 @@ class TestReliability:
     def test_error_rate(self):
         """Test error rate measurement."""
         agent = PartialSuccessAgent("agent", "partial")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="partial", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="partial", session_id="test")
         agent.setup(context)
 
         benchmark = agent.benchmark_execution({}, iterations=20)
 
-        error_rate = benchmark["errors"] / benchmark["iterations"] if benchmark["iterations"] > 0 else 0
+        error_rate = (
+            benchmark["errors"] / benchmark["iterations"] if benchmark["iterations"] > 0 else 0
+        )
         assert error_rate < 0.5, f"Error rate {error_rate} too high"
 
         agent.teardown()
@@ -355,17 +337,13 @@ class TestReliability:
     def test_success_rate(self):
         """Test success rate measurement."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         benchmark = agent.benchmark_execution({}, iterations=10)
 
         success_rate = (
-            benchmark["successes"] / benchmark["iterations"]
-            if benchmark["iterations"] > 0
-            else 0
+            benchmark["successes"] / benchmark["iterations"] if benchmark["iterations"] > 0 else 0
         )
         assert success_rate == 1.0, "Success rate should be 100%"
 
@@ -375,9 +353,7 @@ class TestReliability:
     def test_error_recovery(self):
         """Test agent can recover from errors."""
         agent = PartialSuccessAgent("agent", "partial")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="partial", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="partial", session_id="test")
         agent.setup(context)
 
         # Execute multiple times to test recovery
@@ -405,9 +381,7 @@ class TestMetricsCollection:
     def test_metrics_initialization(self):
         """Test metrics are initialized correctly."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         assert agent.metrics.duration_ms == 0, "duration_ms is not valid"
@@ -419,9 +393,7 @@ class TestMetricsCollection:
     def test_metrics_collection_during_execution(self):
         """Test metrics are collected during execution."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         agent.test_basic_execution({})
@@ -435,9 +407,7 @@ class TestMetricsCollection:
     def test_test_result_metrics(self):
         """Test individual test result metrics."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         result = agent.test_basic_execution({})
@@ -451,9 +421,7 @@ class TestMetricsCollection:
     def test_summary_metrics(self):
         """Test summary metrics are accurate."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         for _ in range(5):
@@ -482,9 +450,7 @@ class TestCoverageMetrics:
     def test_code_path_coverage(self):
         """Test different code paths are executed."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         # Test initialization path
@@ -508,9 +474,7 @@ class TestCoverageMetrics:
     def test_test_coverage_tracking(self):
         """Test coverage tracking during test execution."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         initial_results = len(agent.test_results)
@@ -538,9 +502,7 @@ class TestResourceUsage:
     def test_memory_is_tracked(self):
         """Test memory usage is tracked."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         # Memory tracking is optional but should not error
@@ -552,9 +514,7 @@ class TestResourceUsage:
     def test_cpu_is_tracked(self):
         """Test CPU usage is tracked."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         # CPU tracking is optional but should not error
@@ -566,9 +526,7 @@ class TestResourceUsage:
     def test_no_resource_leaks(self):
         """Test no resource leaks during execution."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         # Execute many times
@@ -592,9 +550,7 @@ class TestQualityGates:
     def test_pass_rate_gate(self):
         """Test pass rate meets minimum threshold."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         for _ in range(10):
@@ -610,9 +566,7 @@ class TestQualityGates:
     def test_performance_gate(self):
         """Test performance meets requirements."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         benchmark = agent.benchmark_execution({}, iterations=10)
@@ -625,17 +579,13 @@ class TestQualityGates:
     def test_reliability_gate(self):
         """Test reliability meets requirements."""
         agent = FastAgent("agent", "fast")
-        context = ExecutionContext(
-            agent_id="agent", agent_type="fast", session_id="test"
-        )
+        context = ExecutionContext(agent_id="agent", agent_type="fast", session_id="test")
         agent.setup(context)
 
         benchmark = agent.benchmark_execution({}, iterations=10)
 
         error_rate = (
-            benchmark["errors"] / benchmark["iterations"]
-            if benchmark["iterations"] > 0
-            else 0
+            benchmark["errors"] / benchmark["iterations"] if benchmark["iterations"] > 0 else 0
         )
         assert error_rate < 0.1, "Error rate above 10%"
 
@@ -656,9 +606,7 @@ class TestComparativePerformance:
         fast_agent = FastAgent("fast", "fast")
         slow_agent = SlowAgent("slow", "slow")
 
-        context = ExecutionContext(
-            agent_id="test", agent_type="test", session_id="test"
-        )
+        context = ExecutionContext(agent_id="test", agent_type="test", session_id="test")
         fast_agent.setup(context)
         slow_agent.setup(context)
 
@@ -666,10 +614,7 @@ class TestComparativePerformance:
         slow_benchmark = slow_agent.benchmark_execution({}, iterations=5)
 
         # Fast agent should be faster
-        assert (
-            fast_benchmark["avg_duration_ms"]
-            < slow_benchmark["avg_duration_ms"]
-        )
+        assert fast_benchmark["avg_duration_ms"] < slow_benchmark["avg_duration_ms"]
 
         fast_agent.teardown()
         slow_agent.teardown()
@@ -680,9 +625,7 @@ class TestComparativePerformance:
         agent1 = FastAgent("agent1", "fast")
         agent2 = FastAgent("agent2", "fast")
 
-        context = ExecutionContext(
-            agent_id="test", agent_type="test", session_id="test"
-        )
+        context = ExecutionContext(agent_id="test", agent_type="test", session_id="test")
         agent1.setup(context)
         agent2.setup(context)
 

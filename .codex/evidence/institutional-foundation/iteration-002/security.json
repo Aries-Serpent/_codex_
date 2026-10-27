@@ -1,0 +1,76 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001/iteration-002",
+  "candidate_commit": "22a75dda20c14ccf0753bfde6d7d72e9b1268397",
+  "collected_at": "2026-10-24T21:44:04Z",
+  "CodeQL": {
+    "status": "NOT_RUN",
+    "attempt": "codeql_checker isTrivial=false after committing changed code",
+    "response": "Analysis Result for python: Found 0 alerts; Analysis was skipped because the database size is too large.",
+    "tractable_scope": "Native codeql executable absent. Available checker API has no scope/database selector; a smaller CodeQL database could not be requested through this tool. No alternative scanner is labeled CodeQL.",
+    "next_action": "Maintainer/security tooling: run tractable institutional-module CodeQL database with approved toolchain; retain actual scan results."
+  },
+  "bandit": {
+    "command": "python -m bandit -r src/codex/institutional -f json",
+    "exit": 1,
+    "scope": "six institutional runtime modules only, not entire repository",
+    "raw": "source/bandit.json",
+    "dispositions": [
+      {
+        "id": "B101",
+        "severity": "LOW",
+        "location": "src/codex/institutional/__main__.py:35",
+        "assessment": "Existing predecessor type assertion is not an authority gate; CLI handles missing predecessor before use. Not suppressed."
+      },
+      {
+        "id": "B404",
+        "severity": "LOW",
+        "location": "src/codex/institutional/core.py:10",
+        "assessment": "Expected import for native Git error classification, no shell invocation."
+      },
+      {
+        "id": "B404",
+        "severity": "LOW",
+        "location": "src/codex/institutional/git_capture.py:6",
+        "assessment": "Expected native subprocess module; caller-supplied executable toolchain remains a local trust boundary."
+      },
+      {
+        "id": "B603",
+        "severity": "LOW",
+        "location": "src/codex/institutional/git_capture.py:21",
+        "assessment": "No shell; core supplies fixed Git options and validated revision IDs, sanitized environment and output/time budgets. Direct Python callers are trusted application code, not imported command instructions."
+      }
+    ]
+  },
+  "review": {
+    "actor": "authority-boundary-review",
+    "assurance": "Same-platform source review; not independently authenticated verifier or final approval.",
+    "finding": "Aware datetime comparisons sharing DST tzinfo can compare wall-clock rather than elapsed time.",
+    "resolution": "Normalize validated clock/validity/revocation timestamps to UTC; DST-fold regression tests pass in source and installed wheel.",
+    "remaining": "Externally supplied provider assertions remain untrusted for operational activation."
+  },
+  "resource_tests": {
+    "output_limits": "128-byte exact combined stdout/stderr sample, 129-byte rejection, 1024-byte flood rejection",
+    "timeout": "Injected 0.05-second deadline rejects a sleeping child; default production deadline 20 seconds.",
+    "default_capture_budget": 8388608,
+    "limitations": "Bounded output accumulation plus a <=64KiB read and bytes conversion; not a hard host/child peak-memory cap. Concurrent subprocess input and untrusted toolchain are outside the guarantee."
+  },
+  "platform": {
+    "tested": "Linux/Python 3.12.10, selectors/pipes and POSIX locking/dir_fd paths",
+    "unsupported_locking_test": "Simulated missing fcntl returns LOCKING_UNSUPPORTED exit6 before namespace mutation.",
+    "cross_platform": "Not verified; Git selector-pipe errors may select filesystem baseline with declared coverage. No universal Windows write support claimed."
+  },
+  "open_findings": [
+    {
+      "owner": "Governance/evidence maintainers",
+      "finding": "Raw ecology investigation identified possible domain persistence/idempotency/integration gaps.",
+      "status": "Source leads, no exploitable vulnerability or global enforcement conclusion established.",
+      "mitigation": "Not used as institutional approval. Domain-specific call-site/tests review precedes changes."
+    },
+    {
+      "owner": "Local operator",
+      "finding": "PATH-resolved native Git and Python executable trust remains external.",
+      "mitigation": "Use a trusted controlled toolchain; do not treat record hashes as executable identity."
+    }
+  ],
+  "secrets": "Changed source, tests, reports, build logs and own wheels scanned before implementation commit; final evidence scan performed before handoff commit."
+}

@@ -285,7 +285,8 @@ def ingest(
     Args:
         source: File path, ZIP archive path, or Git URL
         manifest_path: Optional path to ingestion manifest
-        snapshot_id: Optional custom snapshot ID
+        snapshot_id: Optional custom snapshot ID. When omitted, an atomic unique
+            directory is allocated with a timestamp and content-hash prefix.
         artifacts_dir: Optional custom artifacts directory
 
     Returns:
@@ -293,6 +294,7 @@ def ingest(
 
     Raises:
         FileNotFoundError: If source file doesn't exist
+        FileExistsError: If a custom snapshot ID already exists
         ValueError: If source is invalid or exceeds limits
 
     Example:
@@ -355,13 +357,15 @@ def ingest(
         content_hash = _compute_content_hash(work_dir)
         short_hash = content_hash[:8]
 
-        # Generate snapshot ID
+        artifacts_base.mkdir(parents=True, exist_ok=True)
         if not snapshot_id:
-            snapshot_id = f"{timestamp}-{short_hash}"
-
-        # Create snapshot directory
-        snapshot_dir = artifacts_base / snapshot_id
-        snapshot_dir.mkdir(parents=True, exist_ok=True)
+            snapshot_dir = Path(
+                tempfile.mkdtemp(prefix=f"{timestamp}-{short_hash}-", dir=artifacts_base)
+            )
+            snapshot_id = snapshot_dir.name
+        else:
+            snapshot_dir = artifacts_base / snapshot_id
+            snapshot_dir.mkdir(parents=True, exist_ok=False)
 
         # Copy source to snapshot
         source_dir = snapshot_dir / "source"

@@ -76,27 +76,27 @@ CRITICAL_VARIABLES = [
     ),
     Variable(
         name="COPILOT_AGENT_CCA_VERSION_LOCK",
-        description="Lock CCA version to stable release (CAD-Mandate Rule 2)",
-        required=True,
+        description="Local evolution compatibility label; does not pin GitHub CCA",
+        required=False,
         default="stable",
-        validator=lambda v: v == "stable",
-        category="governance",
+        validator=lambda v: bool(v.strip()),
+        category="local-evolution",
     ),
     Variable(
         name="COPILOT_AGENT_DEDUPLICATION_ENABLED",
-        description="Enable CCA prompt deduplication (MSPV requirement)",
-        required=True,
+        description="Local evolution flag convention; not platform payload control",
+        required=False,
         default="true",
-        validator=lambda v: v.lower() == "true",
-        category="governance",
+        validator=lambda v: v.lower() in ("true", "false"),
+        category="local-evolution",
     ),
     Variable(
         name="COPILOT_AGENT_TURN_ISOLATION_ENABLED",
-        description="Enable CCA turn isolation (MSPV requirement)",
-        required=True,
+        description="Local evolution flag convention; not platform turn control",
+        required=False,
         default="true",
-        validator=lambda v: v.lower() == "true",
-        category="governance",
+        validator=lambda v: v.lower() in ("true", "false"),
+        category="local-evolution",
     ),
 ]
 
@@ -178,7 +178,7 @@ def validate_all_variables() -> tuple[int, int]:
 
 def generate_agent_context() -> dict[str, Any]:
     """Generate .codex/agent_context.json with current variable values."""
-    context = {}
+    context: dict[str, object] = {}
 
     for var in CRITICAL_VARIABLES + HIGH_PRIORITY_VARIABLES:
         value = os.getenv(var.name, var.default)

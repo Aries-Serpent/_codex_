@@ -55,9 +55,18 @@ def run_mypy() -> int:
         text=True,
         cwd=REPO_ROOT,
     )
-    error_lines = [
-        line for line in result.stdout.splitlines() if ": error:" in line
-    ]
+    error_lines = [line for line in result.stdout.splitlines() if ": error:" in line]
+    # Exit 2 means discovery/configuration failed: even any diagnostics printed
+    # before that failure represent an incomplete check, not a usable baseline.
+    # Missing mypy and other invocation failures may exit 1 without error lines.
+    if result.returncode not in (0, 1) or (result.returncode == 1 and not error_lines):
+        diagnostics = "\n".join(
+            part.strip() for part in (result.stdout, result.stderr) if part.strip()
+        )
+        raise RuntimeError(
+            f"mypy did not complete (exit {result.returncode}): "
+            f"{diagnostics or 'no diagnostics returned'}"
+        )
     return len(error_lines)
 
 
@@ -92,7 +101,11 @@ def main() -> int:
     args = parser.parse_args()
 
     print(f"🔍 Running mypy on {SRC_DIR.relative_to(REPO_ROOT)} …")
-    current = run_mypy()
+    try:
+        current = run_mypy()
+    except RuntimeError as exc:
+        print(f"::error::{exc}", file=sys.stderr)
+        return 2
     print(f"   mypy errors found: {current}")
 
     if args.update:

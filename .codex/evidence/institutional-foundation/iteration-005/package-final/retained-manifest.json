@@ -1,0 +1,266 @@
+{
+  "files": {
+    "advisory-observation.json": {
+      "bytes": 590,
+      "sha256": "fffd546e9ff93c8a999cbcdfc91acb9f7d524897654957dbcb8beee5e38bb6cc"
+    },
+    "artifacts/codex_contracts-0.1.0a1-py3-none-any.whl": {
+      "bytes": 9381,
+      "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96"
+    },
+    "artifacts/codex_ml-0.3.0-py3-none-any.whl": {
+      "bytes": 4412691,
+      "sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00"
+    },
+    "assurance-tests.junit.xml": {
+      "bytes": 14169,
+      "sha256": "3c7ff4921430114f5b1399f3aaee5d2e50eeef55954a4ebf0355b193379f2550"
+    },
+    "assurance-tests.log": {
+      "bytes": 10369,
+      "sha256": "a0d67438f5cb7da8a56bde28d27ca05893dff7218e44a80d701d64b2bf15ee1e"
+    },
+    "baseline-artifacts/blocked-history.json": {
+      "bytes": 5916,
+      "sha256": "ed2337db6d2e0178a221c636c7226817971cdcd7cf7481e45c7b5903e9a65d2f"
+    },
+    "baseline-artifacts/candidate-manifest.json": {
+      "bytes": 1154,
+      "sha256": "f30870ebc952834bbe107f0df0faab0d860f71f006f99dc6ea0ed18bd21a5178"
+    },
+    "baseline-artifacts/event-cache.json": {
+      "bytes": 182,
+      "sha256": "aeb6ad3b3f9a46eb0aa70cb716473317ed433d5c4c4c81f8720675a65834d83e"
+    },
+    "baseline-artifacts/history.json": {
+      "bytes": 9120,
+      "sha256": "d06649346b91a0a30078f892a1ad086f0b79db994e84ada6dbed55d8a4499b90"
+    },
+    "baseline-artifacts/lane-outputs.json": {
+      "bytes": 5679,
+      "sha256": "e33e2165868f61469660802ddf1ce2bfbe5035b27c63f49ee3fb4a3318ce858b"
+    },
+    "baseline-artifacts/recommendations.json": {
+      "bytes": 26307,
+      "sha256": "05ea6fab2d7504f26976a1df85628dc69f2eb553641f082e45f4f9aeed8501e1"
+    },
+    "baseline-artifacts/results.json": {
+      "bytes": 4937,
+      "sha256": "887c692968c0e054be73aef71f373e4fc640da08fad7d615e878c9602cbcfcd9"
+    },
+    "baseline-artifacts/review-context.json": {
+      "bytes": 187,
+      "sha256": "1d42dfff7c517a46d9b11182ed817b0d3c14eae4531e3e259643121e27b43ec3"
+    },
+    "baseline-artifacts/review-plan.json": {
+      "bytes": 3811,
+      "sha256": "f0720edc396a9ff004852addb28a182874e1eb086d8d35d0a82b948a679a554b"
+    },
+    "baseline-artifacts/rotated-adequacy.json": {
+      "bytes": 184,
+      "sha256": "edf0f76036d20017530da862d515f9bdeb68fe1795dff456e7960052db5f8a21"
+    },
+    "baseline-artifacts/rotated-evidence.json": {
+      "bytes": 370,
+      "sha256": "9b530e33fb783866bd4c71f9f79d9fd45db755f56a18c25c9187f8c5a883463a"
+    },
+    "baseline-review-harness.py": {
+      "bytes": 12305,
+      "sha256": "7f03b6379b0872afbdaf5ab6ddffec094a08f0c0d3cf69c4bea6b51549992c44"
+    },
+    "baseline-runtime.log": {
+      "bytes": 185,
+      "sha256": "16fa419518ac431b443c3bb8abc9c095a543ac81ad201aa0c2d2eaf55e994592"
+    },
+    "build-distributions.json": {
+      "bytes": 392,
+      "sha256": "b91d7de4301ca328563e4c78e8a373740f0215651d1e0489fde543782ee650b1"
+    },
+    "build-provision.log": {
+      "bytes": 1631,
+      "sha256": "8bedc60cc4da7bd0b3ab725d09a4e0014137ac6a8ac17042b364ecd12084912d"
+    },
+    "build-venv.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "commands.json": {
+      "bytes": 17089,
+      "sha256": "4c7beff6dabf74ef3c841b4db314bb9f5c1b5067e241f9ec3745cbe8bac98184"
+    },
+    "contracts-build.log": {
+      "bytes": 745,
+      "sha256": "a2efe43efe0586b7fbb36458180cdffe52df6696187093bd5521f0134c363006"
+    },
+    "distributions-after-test-tools.json": {
+      "bytes": 2612,
+      "sha256": "e3175156262269ba10b244f854dfc70a381beb25a0a81c7490937b3bf515854b"
+    },
+    "documentation-block-comparison.json": {
+      "bytes": 483,
+      "sha256": "2c61b7d44f7451b9ce4631ecdf09a26827e91cd65156117e778a1b97da2b0d38"
+    },
+    "environment.json": {
+      "bytes": 1398,
+      "sha256": "0f4e33b919c85f3fb5e0d1fa050d85d77bfb2dea9fb60435c989a87672ed76c3"
+    },
+    "full-base-distributions.json": {
+      "bytes": 2489,
+      "sha256": "f087868a789040321e210798953efd0e93537f14d99ec98ec638ec080358b18c"
+    },
+    "full-base-import-origins.json": {
+      "bytes": 4682,
+      "sha256": "f2be1b7c43e7b14e10e380385659413d68744b3a2aeb4e56645c3ab2f7f3e195"
+    },
+    "full-base-install.log": {
+      "bytes": 13213,
+      "sha256": "164e6535fa42f300a8062be4f828a8a482e61b26a594a13afa052e00960d1e14"
+    },
+    "full-base-pip-check.log": {
+      "bytes": 30,
+      "sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09"
+    },
+    "full-base-resolution.log": {
+      "bytes": 12824,
+      "sha256": "e38058313a7d90c45c1c494966781bc8f3a78ca311567b6952e3c9d38b2499fe"
+    },
+    "full-base-venv.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "gate-status.json": {
+      "bytes": 5643,
+      "sha256": "bd79aa4d9a036f7110eb5d6a8cf9dea74987693f040d44a14f691b819ceab79e"
+    },
+    "harness-origins.json": {
+      "bytes": 764,
+      "sha256": "0fd0fd0dab2ef10fbb917553da3853c559e8e6c2e67ff714938aa3a2211c3098"
+    },
+    "inputs/assurance-fixture-check.py": {
+      "bytes": 7587,
+      "sha256": "0cb4cd7022ed9ab8f61246e7f26e46ca0996a09d2a474fd191d3b619c960335d"
+    },
+    "inputs/assurance-review-005.json": {
+      "bytes": 5675,
+      "sha256": "6de457f34bbbf6ec5ac5796f311503cffffa6f760186d67ec7243e94275bfbbf"
+    },
+    "inputs/assurance-review.rst": {
+      "bytes": 16518,
+      "sha256": "8ec28a65be37d9443d64ccab62e411e260b850706dd3f84f5cba8a743ee5cdce"
+    },
+    "inputs/test_assurance.py": {
+      "bytes": 45038,
+      "sha256": "716e7ae1919429cfd42b878ab83aad8dc35f6f123a3360d041a41ddc5b558a88"
+    },
+    "install-report.json": {
+      "bytes": 710740,
+      "sha256": "ef1ca8b215be2ffed2b8e5e938321460cb8829fb5729e0f1b88d5dc261d12e05"
+    },
+    "installed-assurance-harness.py": {
+      "bytes": 22155,
+      "sha256": "e3ec72e8c237688434c6258ae22e3a41771316b3d1d4b2d7ca78291b25fe5301"
+    },
+    "installed-sdk-artifacts/documentation-blocks.json": {
+      "bytes": 4688,
+      "sha256": "3941734657bcf715e6d677d4c2ad8f1c61f8c5a75c70ee0e919a188ddcb06108"
+    },
+    "installed-sdk-artifacts/exempt-bridge-history.json": {
+      "bytes": 26001,
+      "sha256": "6e4c2217f4820e15ca5584660d2097499880799ab97350826d005abbdad0eff0"
+    },
+    "installed-sdk-artifacts/findings-history.json": {
+      "bytes": 36477,
+      "sha256": "8e41d33232cf250b3b74a7c8a5860ffac46c37aa6e5a6b4c5a875d8d2d64c5d5"
+    },
+    "installed-sdk-artifacts/fixed-unresolved.json": {
+      "bytes": 62794,
+      "sha256": "437dc55902d881e6ef6f62eb53e8232167b236d173d2d6ebe4d5481e740576d0"
+    },
+    "installed-sdk-artifacts/formula-identities.json": {
+      "bytes": 43117,
+      "sha256": "7770195d4e936c7242ab676c8a1e47004b720e3a73f8a80c083e57282d8f20ec"
+    },
+    "installed-sdk-artifacts/identically-restored-history.json": {
+      "bytes": 33058,
+      "sha256": "f5e3ed954e1893c527276f345c5a89afeed3cf10cbc7c626aa26fddbfd2ffe33"
+    },
+    "installed-sdk-artifacts/nonmutating-fixture-rejection.json": {
+      "bytes": 73980,
+      "sha256": "04a5af7f1bb5bade6bcd1f81a5eb7947bcb1ee32351a65a604791fcc203c2815"
+    },
+    "installed-sdk-artifacts/original-history.json": {
+      "bytes": 31443,
+      "sha256": "a2c49d89e5159992e37d0dff2aed02b3476e3e8427668f059e6a089c6d8b8f27"
+    },
+    "installed-sdk-artifacts/plan.json": {
+      "bytes": 21676,
+      "sha256": "d056b56bf227fdb5b7123ab0690772b3e62e82d8e38467f2f05e1a16447080a6"
+    },
+    "installed-sdk-artifacts/recovered-continuation.json": {
+      "bytes": 1281610,
+      "sha256": "fece3618bcdf7443250ac9ce53fe89289bb8302d98c13c30d9ccce6d97a12356"
+    },
+    "installed-sdk-artifacts/reopened-history.json": {
+      "bytes": 32267,
+      "sha256": "378b69a72174238f435c7c8b012785f86514978d07b9c86c8b07eb43ed64a52a"
+    },
+    "installed-sdk-artifacts/reopened-recommendation.json": {
+      "bytes": 54108,
+      "sha256": "a824d4542ac2f19101ab882256dc4a694171ef8e6447cbbcbfb2f6c2284be78f"
+    },
+    "installed-sdk-artifacts/results.json": {
+      "bytes": 10202,
+      "sha256": "97472d54d2816a727f889ecce6b2cccd84b87621580299fed6ce1cd0320e5839"
+    },
+    "installed-sdk-artifacts/revoked-history.json": {
+      "bytes": 32253,
+      "sha256": "716ad4b77f2d1c5a879f4e95b2bc92602fd08b2b91924b10ecc5d1bc8ee007b7"
+    },
+    "installed-sdk-runtime.log": {
+      "bytes": 40,
+      "sha256": "ad7a2f458d8b33eff638d3118e5f2d201889bf8b22ee2cf2391dbf89bc0db1f1"
+    },
+    "pip-check-after-test-tools.log": {
+      "bytes": 30,
+      "sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09"
+    },
+    "prior-evidence-preservation.json": {
+      "bytes": 263,
+      "sha256": "8f65f7273a232f45a0ff015747fd93b188fd95bcf65b3de99955c211742f5e82"
+    },
+    "release.json": {
+      "bytes": 250404,
+      "sha256": "a57f8905c47ee1bb1b0a07360ee92185cf0b20851d89605d4213cb79a7c52b12"
+    },
+    "resolution-report.json": {
+      "bytes": 710740,
+      "sha256": "ef1ca8b215be2ffed2b8e5e938321460cb8829fb5729e0f1b88d5dc261d12e05"
+    },
+    "runtime-build-tools.log": {
+      "bytes": 569,
+      "sha256": "02d97b844428d5e19811a00ce1de7fbafe7ad332e21461ba1090aad453a24692"
+    },
+    "scoped-source.tar": {
+      "bytes": 17059840,
+      "sha256": "ac5c628ae9c7951c985a8e04a299016291c98ca3b7a22be5d8611c1a491c4243"
+    },
+    "source-manifest.json": {
+      "bytes": 543472,
+      "sha256": "f54649df368accd2538f98b5bb66ade40914856bbb9a1dbe08dc86ab4ebff080"
+    },
+    "test-tools-install.log": {
+      "bytes": 918,
+      "sha256": "2d149818a29a24cbc3396884424e2aaad17a58309b12ade03619b5b69467f8c6"
+    },
+    "wheel-build.log": {
+      "bytes": 728,
+      "sha256": "867ab563f3a9cdc0911b841bec81117137585d42aa5837169b641e6f05c16fd1"
+    },
+    "wheel-manifest.json": {
+      "bytes": 376041,
+      "sha256": "8b92c416ca1342bf3463e36d5cb91703069addf73ac33e625256d55b33945d6e"
+    }
+  },
+  "scope": "All owned package-final files except this self-referential manifest",
+  "source_commit": "00306262216ef95d7cf1b927fe15e2ef073572ac"
+}

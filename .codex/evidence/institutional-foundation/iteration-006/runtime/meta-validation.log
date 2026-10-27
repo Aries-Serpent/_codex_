@@ -1,0 +1,10 @@
++ /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m black --check /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/workflow.py /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/meta_workflow.py
+All done! ✨ 🍰 ✨
+2 files would be left unchanged.
++ /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m ruff check --no-cache /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/workflow.py /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/meta_workflow.py
+All checks passed!
++ /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m isort --check-only /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/workflow.py /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/meta_workflow.py
++ /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m mypy --cache-dir /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/mypy --follow-imports=skip --ignore-missing-imports /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/workflow.py /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/meta_workflow.py
+mypy.ini: note: unused section(s): [mypy-tests.*], [mypy-torch], [mypy-omegaconf]
+Success: no issues found in 2 source files
++ git -C /home/runner/work/_codex_/_codex_ diff --check -- .codex/evidence/institutional-foundation/iteration-006/runtime

@@ -1,0 +1,1150 @@
+{
+  "scope": "SOURCE-ONLY local validation; no installed assurance wheel, G5, acceptance or approval claim",
+  "environment": {
+    "TMPDIR": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-scratch"
+  },
+  "commands": [
+    {
+      "name": "black",
+      "argv": [
+        "python",
+        "-m",
+        "black",
+        "--check",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-verified-black.log"
+    },
+    {
+      "name": "isort",
+      "argv": [
+        "python",
+        "-m",
+        "isort",
+        "--check-only",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-verified-isort.log"
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-verified-ruff.log"
+    },
+    {
+      "name": "security-ruff",
+      "argv": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "--select",
+        "S",
+        "src/codex/institutional/assurance.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-verified-security-ruff.log"
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "python",
+        "-m",
+        "mypy",
+        "--follow-imports=silent",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-verified-mypy.log"
+    },
+    {
+      "name": "compile",
+      "argv": [
+        "python",
+        "-m",
+        "py_compile",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-verified-compile.log"
+    },
+    {
+      "name": "tests",
+      "argv": [
+        "python",
+        "-m",
+        "pytest",
+        "--confcutdir=tests/institutional",
+        "-o",
+        "addopts=",
+        "--basetemp=.codex/evidence/institutional-foundation/iteration-005/assurance-scratch/pytest-final",
+        "tests/institutional/test_assurance.py",
+        "tests/institutional/test_review.py",
+        "tests/institutional/test_review_formulas.py",
+        "tests/institutional/test_foundation.py",
+        "tests/institutional/test_authority.py",
+        "tests/institutional/test_git_capture.py",
+        "--junitxml=.codex/evidence/institutional-foundation/iteration-005/assurance-verified-junit.xml"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-verified-tests.log"
+    },
+    {
+      "name": "fixture-example",
+      "argv": [
+        "python",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-verified-fixture-example.log"
+    },
+    {
+      "name": "diff-check",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        "docs/assurance-review.rst",
+        "docs/adr/assurance-review-005.json"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-verified-diff-check.log"
+    },
+    {
+      "name": "bandit",
+      "argv": [
+        "python",
+        "-m",
+        "bandit",
+        "-q",
+        "-f",
+        "json",
+        "-o",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-bandit.json",
+        "src/codex/institutional/assurance.py"
+      ],
+      "exit_code": 0,
+      "version": "1.9.4",
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-bandit.log",
+      "report": ".codex/evidence/institutional-foundation/iteration-005/assurance-bandit.json",
+      "scope": [
+        "src/codex/institutional/assurance.py"
+      ],
+      "findings": 0
+    },
+    {
+      "name": "security-ruff-followup",
+      "argv": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "--select",
+        "S",
+        "src/codex/institutional/assurance.py"
+      ],
+      "exit_code": 0,
+      "version": "0.17.2",
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-security-ruff-followup.log",
+      "scope": [
+        "src/codex/institutional/assurance.py"
+      ],
+      "findings": 0
+    }
+  ],
+  "new_file_whitespace_checked": [
+    "src/codex/institutional/assurance.py",
+    "tests/institutional/test_assurance.py",
+    ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py",
+    "docs/assurance-review.rst",
+    "docs/adr/assurance-review-005.json"
+  ],
+  "source_test_count": 285,
+  "assurance_test_count": 107,
+  "retained_failures": [
+    {
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-first-mypy-failure.log",
+      "finding": "Two mypy errors in initial assurance implementation; fixed before final validation"
+    },
+    {
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-black-final.log",
+      "finding": "Evidence helper needed Black formatting; fixed before final validation"
+    },
+    {
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-prefix-defects.log",
+      "junit": ".codex/evidence/institutional-foundation/iteration-005/assurance-prefix-defects-junit.xml",
+      "finding": "5 pre-fix failing regressions reproduced identical-status proof revival and exempt-bridge gating/invalidation defects; corrected with event revisions and dependency-sensitive exemption proofs",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "--confcutdir=tests/institutional",
+        "-o",
+        "addopts=",
+        "--basetemp=.codex/evidence/institutional-foundation/iteration-005/assurance-scratch/prefix-defects",
+        "tests/institutional/test_assurance.py",
+        "-k",
+        "restoring_identical or exempt_execution or exempt_bridge_proof",
+        "--junitxml=.codex/evidence/institutional-foundation/iteration-005/assurance-prefix-defects-junit.xml"
+      ],
+      "exit_code": 1
+    },
+    {
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-prefix-aggregate.log",
+      "junit": ".codex/evidence/institutional-foundation/iteration-005/assurance-prefix-aggregate-junit.xml",
+      "finding": ">1 MiB compatible existing continuation rejected before inherited aggregate cap fix",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "-o",
+        "addopts=",
+        "--basetemp=.codex/evidence/institutional-foundation/iteration-005/assurance-scratch/prefix-aggregate",
+        "tests/institutional/test_assurance.py",
+        "-k",
+        "aggregate_continuation_larger",
+        "--junitxml=.codex/evidence/institutional-foundation/iteration-005/assurance-prefix-aggregate-junit.xml"
+      ],
+      "exit_code": 1
+    },
+    {
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-tests.log",
+      "junit": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-junit.xml",
+      "finding": "Aggregate boundary test exposed RESOURCE_LIMIT Rejected caught as ValueError and mislabeled JSON; size check moved outside serialization exception handler. Initial run 284 passed, 1 failed; final rerun fully passes.",
+      "exit_code": 1
+    }
+  ],
+  "secret_scan": {
+    "tool": "runtime-tools-secret_scanning",
+    "result": "No secrets detected",
+    "paths": [
+      "src/codex/institutional/assurance.py",
+      "tests/institutional/test_assurance.py",
+      ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py",
+      "docs/assurance-review.rst",
+      "docs/adr/assurance-review-005.json",
+      ".codex/evidence/institutional-foundation/iteration-005/assurance-fixtures.json"
+    ]
+  },
+  "limits": [
+    "No commits, staging, push, PR mutations or package rebuild",
+    "Unverified fixture claims do not establish trusted production independence",
+    "Implementation lane did not run CodeQL; parent owns required postcommit CodeQL and disclosure of actual outcome, including any size skip."
+  ],
+  "sha256": {
+    "src/codex/institutional/assurance.py": "ba67ea4d6201dd3c3243ec86715c54f21f1b620ac8dc8bc48732b818e020402c",
+    "tests/institutional/test_assurance.py": "716e7ae1919429cfd42b878ab83aad8dc35f6f123a3360d041a41ddc5b558a88",
+    ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py": "0cb4cd7022ed9ab8f61246e7f26e46ca0996a09d2a474fd191d3b619c960335d",
+    "docs/assurance-review.rst": "b6fa0c520995af39c34f4e5abf3f493db81456dc8512523a49dca222a3a33bae",
+    "docs/adr/assurance-review-005.json": "6de457f34bbbf6ec5ac5796f311503cffffa6f760186d67ec7243e94275bfbbf"
+  },
+  "recovery_followup_commands": [
+    {
+      "name": "black",
+      "argv": [
+        "python",
+        "-m",
+        "black",
+        "--check",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-recovery-black.log"
+    },
+    {
+      "name": "isort",
+      "argv": [
+        "python",
+        "-m",
+        "isort",
+        "--check-only",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-recovery-isort.log"
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-recovery-ruff.log"
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "python",
+        "-m",
+        "mypy",
+        "--follow-imports=silent",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-recovery-mypy.log"
+    },
+    {
+      "name": "compile",
+      "argv": [
+        "python",
+        "-m",
+        "py_compile",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-recovery-compile.log"
+    },
+    {
+      "name": "tests",
+      "argv": [
+        "python",
+        "-m",
+        "pytest",
+        "--confcutdir=tests/institutional",
+        "-o",
+        "addopts=",
+        "--basetemp=.codex/evidence/institutional-foundation/iteration-005/assurance-scratch/pytest-recovery",
+        "tests/institutional/test_assurance.py",
+        "tests/institutional/test_review.py",
+        "tests/institutional/test_review_formulas.py",
+        "tests/institutional/test_foundation.py",
+        "tests/institutional/test_authority.py",
+        "tests/institutional/test_git_capture.py",
+        "--junitxml=.codex/evidence/institutional-foundation/iteration-005/assurance-recovery-junit.xml"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-recovery-tests.log"
+    },
+    {
+      "name": "fixture-example",
+      "argv": [
+        "python",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-recovery-fixture-example.log"
+    },
+    {
+      "name": "diff-check",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        "docs/assurance-review.rst",
+        "docs/adr/assurance-review-005.json"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-recovery-diff-check.log"
+    }
+  ],
+  "recovery_followup": "Actual existing-storage apply/reload, append revocation successor, apply/reload, restore evidence and prerequisite-checked exact pending-node resume; stable session and unchanged extensions asserted. No storage source changes.",
+  "defect_fix_commands": [
+    {
+      "name": "black",
+      "argv": [
+        "python",
+        "-m",
+        "black",
+        "--check",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-black.log"
+    },
+    {
+      "name": "isort",
+      "argv": [
+        "python",
+        "-m",
+        "isort",
+        "--check-only",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-isort.log"
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-ruff.log"
+    },
+    {
+      "name": "security-ruff",
+      "argv": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "--select",
+        "S",
+        "src/codex/institutional/assurance.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-security-ruff.log"
+    },
+    {
+      "name": "bandit",
+      "argv": [
+        "python",
+        "-m",
+        "bandit",
+        "-q",
+        "-f",
+        "json",
+        "-o",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-bandit.json",
+        "src/codex/institutional/assurance.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-bandit.log"
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "python",
+        "-m",
+        "mypy",
+        "--follow-imports=silent",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-mypy.log"
+    },
+    {
+      "name": "compile",
+      "argv": [
+        "python",
+        "-m",
+        "py_compile",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-compile.log"
+    },
+    {
+      "name": "tests",
+      "argv": [
+        "python",
+        "-m",
+        "pytest",
+        "--confcutdir=tests/institutional",
+        "-o",
+        "addopts=",
+        "--basetemp=.codex/evidence/institutional-foundation/iteration-005/assurance-scratch/pytest-defect-fix",
+        "tests/institutional/test_assurance.py",
+        "tests/institutional/test_review.py",
+        "tests/institutional/test_review_formulas.py",
+        "tests/institutional/test_foundation.py",
+        "tests/institutional/test_authority.py",
+        "tests/institutional/test_git_capture.py",
+        "--junitxml=.codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-junit.xml"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-tests.log"
+    },
+    {
+      "name": "fixture-example",
+      "argv": [
+        "python",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-fixture-example.log"
+    },
+    {
+      "name": "diff-check",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        "docs/assurance-review.rst",
+        "docs/adr/assurance-review-005.json"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-defect-fix-diff-check.log"
+    }
+  ],
+  "defect_fix_secret_scan": {
+    "tool": "runtime-tools-secret_scanning",
+    "result": "No secrets detected",
+    "paths": [
+      "src/codex/institutional/assurance.py",
+      "tests/institutional/test_assurance.py",
+      "docs/adr/assurance-review-005.json",
+      "docs/assurance-review.rst"
+    ]
+  },
+  "final_cohort_commands": [
+    {
+      "name": "black",
+      "argv": [
+        "python",
+        "-m",
+        "black",
+        "--check",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-black.log"
+    },
+    {
+      "name": "isort",
+      "argv": [
+        "python",
+        "-m",
+        "isort",
+        "--check-only",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-isort.log"
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-ruff.log"
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "python",
+        "-m",
+        "mypy",
+        "--follow-imports=silent",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-mypy.log"
+    },
+    {
+      "name": "compile",
+      "argv": [
+        "python",
+        "-m",
+        "py_compile",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-compile.log"
+    },
+    {
+      "name": "tests",
+      "argv": [
+        "python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "-o",
+        "addopts=",
+        "--basetemp=.codex/evidence/institutional-foundation/iteration-005/assurance-scratch/pytest-final-cohort",
+        "tests/institutional/test_assurance.py",
+        "tests/institutional/test_review.py",
+        "tests/institutional/test_review_formulas.py",
+        "tests/institutional/test_foundation.py",
+        "tests/institutional/test_authority.py",
+        "tests/institutional/test_git_capture.py",
+        "tests/ci/test_followup_consumer.py",
+        "tests/test_packaging_metadata.py",
+        "tests/test_packaging_entrypoints.py",
+        "tests/test_package_dependency_contract.py",
+        "--junitxml=.codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-junit.xml"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-tests.log"
+    },
+    {
+      "name": "fixture-example",
+      "argv": [
+        "python",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-fixture-example.log"
+    },
+    {
+      "name": "diff-check",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        "docs/assurance-review.rst",
+        "docs/adr/assurance-review-005.json"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-final-cohort-diff-check.log"
+    }
+  ],
+  "final_cohort": {
+    "distinct_cases": 285,
+    "failures_errors": 0,
+    "skipped": 0,
+    "by_classname": {
+      "tests.ci.test_followup_consumer": 17,
+      "tests.institutional.test_assurance": 107,
+      "tests.institutional.test_authority": 31,
+      "tests.institutional.test_foundation": 40,
+      "tests.institutional.test_git_capture": 6,
+      "tests.institutional.test_review": 70,
+      "tests.institutional.test_review_formulas": 8,
+      "tests.test_package_dependency_contract": 3,
+      "tests.test_packaging_entrypoints": 1,
+      "tests.test_packaging_metadata": 2
+    },
+    "scope": "Bounded source regression cohort; no installed-package acceptance inferred; inherited conftest disabled"
+  },
+  "institutional_cohort_count": 262,
+  "fixture_helper_final_secret_scan": "No secrets detected",
+  "disposition_commands": [
+    {
+      "name": "black",
+      "argv": [
+        "python",
+        "-m",
+        "black",
+        "--check",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-disposition-black.log"
+    },
+    {
+      "name": "isort",
+      "argv": [
+        "python",
+        "-m",
+        "isort",
+        "--check-only",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-disposition-isort.log"
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-disposition-ruff.log"
+    },
+    {
+      "name": "security-ruff",
+      "argv": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "--select",
+        "S",
+        "src/codex/institutional/assurance.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-disposition-security-ruff.log"
+    },
+    {
+      "name": "bandit",
+      "argv": [
+        "python",
+        "-m",
+        "bandit",
+        "-q",
+        "-f",
+        "json",
+        "-o",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-disposition-bandit.json",
+        "src/codex/institutional/assurance.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-disposition-bandit.log"
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "python",
+        "-m",
+        "mypy",
+        "--follow-imports=silent",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-disposition-mypy.log"
+    },
+    {
+      "name": "compile",
+      "argv": [
+        "python",
+        "-m",
+        "py_compile",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-disposition-compile.log"
+    },
+    {
+      "name": "tests",
+      "argv": [
+        "python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "-o",
+        "addopts=",
+        "--basetemp=.codex/evidence/institutional-foundation/iteration-005/assurance-scratch/pytest-disposition",
+        "tests/institutional/test_assurance.py",
+        "tests/institutional/test_review.py",
+        "tests/institutional/test_review_formulas.py",
+        "tests/institutional/test_foundation.py",
+        "tests/institutional/test_authority.py",
+        "tests/institutional/test_git_capture.py",
+        "tests/ci/test_followup_consumer.py",
+        "tests/test_packaging_metadata.py",
+        "tests/test_packaging_entrypoints.py",
+        "tests/test_package_dependency_contract.py",
+        "--junitxml=.codex/evidence/institutional-foundation/iteration-005/assurance-disposition-junit.xml"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-disposition-tests.log"
+    },
+    {
+      "name": "fixture-example",
+      "argv": [
+        "python",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-disposition-fixture-example.log"
+    },
+    {
+      "name": "diff-check",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        "docs/assurance-review.rst",
+        "docs/adr/assurance-review-005.json"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-disposition-diff-check.log"
+    }
+  ],
+  "disposition_scope": "One supported fixture-only nonmutating disposition: REJECTED_WITH_EVIDENCE with route=nonmutating and rejection rationale grounded in rotated followup and bound evidence. FIXED is proposed-mutation and always unresolved. No real accepted risk, authorized adjudication or other formal disposition support.",
+  "disposition_secret_scan": {
+    "tool": "runtime-tools-secret_scanning",
+    "result": "No secrets detected",
+    "scope": [
+      "src/codex/institutional/assurance.py",
+      "tests/institutional/test_assurance.py",
+      "docs/adr/assurance-review-005.json",
+      "docs/assurance-review.rst"
+    ]
+  },
+  "aggregate_commands": [
+    {
+      "name": "black",
+      "argv": [
+        "python",
+        "-m",
+        "black",
+        "--check",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-black.log"
+    },
+    {
+      "name": "isort",
+      "argv": [
+        "python",
+        "-m",
+        "isort",
+        "--check-only",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-isort.log"
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-ruff.log"
+    },
+    {
+      "name": "security-ruff",
+      "argv": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "--select",
+        "S",
+        "src/codex/institutional/assurance.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-security-ruff.log"
+    },
+    {
+      "name": "bandit",
+      "argv": [
+        "python",
+        "-m",
+        "bandit",
+        "-q",
+        "-f",
+        "json",
+        "-o",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-bandit.json",
+        "src/codex/institutional/assurance.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-bandit.log"
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "python",
+        "-m",
+        "mypy",
+        "--follow-imports=silent",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-mypy.log"
+    },
+    {
+      "name": "compile",
+      "argv": [
+        "python",
+        "-m",
+        "py_compile",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-compile.log"
+    },
+    {
+      "name": "tests",
+      "argv": [
+        "python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "-o",
+        "addopts=",
+        "--basetemp=.codex/evidence/institutional-foundation/iteration-005/assurance-scratch/pytest-aggregate",
+        "tests/institutional/test_assurance.py",
+        "tests/institutional/test_review.py",
+        "tests/institutional/test_review_formulas.py",
+        "tests/institutional/test_foundation.py",
+        "tests/institutional/test_authority.py",
+        "tests/institutional/test_git_capture.py",
+        "tests/ci/test_followup_consumer.py",
+        "tests/test_packaging_metadata.py",
+        "tests/test_packaging_entrypoints.py",
+        "tests/test_package_dependency_contract.py",
+        "--junitxml=.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-junit.xml"
+      ],
+      "exit_code": 1,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-tests.log"
+    },
+    {
+      "name": "fixture-example",
+      "argv": [
+        "python",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-fixture-example.log"
+    },
+    {
+      "name": "diff-check",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        "docs/assurance-review.rst",
+        "docs/adr/assurance-review-005.json"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-diff-check.log"
+    }
+  ],
+  "aggregate_compatibility": "Adapter inherits core.MAX_BYTES for aggregate continuation, attachments, payload and final envelope; individual assurance artifact/event limits unchanged. >1 MiB continuation core.validate/inspect and storage apply/reload verified; reduced-cap input/successor overflow tests fail closed.",
+  "aggregate_verified_commands": [
+    {
+      "name": "black",
+      "argv": [
+        "python",
+        "-m",
+        "black",
+        "--check",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-black.log"
+    },
+    {
+      "name": "isort",
+      "argv": [
+        "python",
+        "-m",
+        "isort",
+        "--check-only",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-isort.log"
+    },
+    {
+      "name": "ruff",
+      "argv": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-ruff.log"
+    },
+    {
+      "name": "security-ruff",
+      "argv": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "--select",
+        "S",
+        "src/codex/institutional/assurance.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-security-ruff.log"
+    },
+    {
+      "name": "bandit",
+      "argv": [
+        "python",
+        "-m",
+        "bandit",
+        "-q",
+        "-f",
+        "json",
+        "-o",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-bandit.json",
+        "src/codex/institutional/assurance.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-bandit.log"
+    },
+    {
+      "name": "mypy",
+      "argv": [
+        "python",
+        "-m",
+        "mypy",
+        "--follow-imports=silent",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-mypy.log"
+    },
+    {
+      "name": "compile",
+      "argv": [
+        "python",
+        "-m",
+        "py_compile",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-compile.log"
+    },
+    {
+      "name": "tests",
+      "argv": [
+        "python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "-o",
+        "addopts=",
+        "--basetemp=.codex/evidence/institutional-foundation/iteration-005/assurance-scratch/pytest-aggregate-verified",
+        "tests/institutional/test_assurance.py",
+        "tests/institutional/test_review.py",
+        "tests/institutional/test_review_formulas.py",
+        "tests/institutional/test_foundation.py",
+        "tests/institutional/test_authority.py",
+        "tests/institutional/test_git_capture.py",
+        "tests/ci/test_followup_consumer.py",
+        "tests/test_packaging_metadata.py",
+        "tests/test_packaging_entrypoints.py",
+        "tests/test_package_dependency_contract.py",
+        "--junitxml=.codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-junit.xml"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-tests.log"
+    },
+    {
+      "name": "fixture-example",
+      "argv": [
+        "python",
+        ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-fixture-example.log"
+    },
+    {
+      "name": "diff-check",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "src/codex/institutional/assurance.py",
+        "tests/institutional/test_assurance.py",
+        "docs/assurance-review.rst",
+        "docs/adr/assurance-review-005.json"
+      ],
+      "exit_code": 0,
+      "log": ".codex/evidence/institutional-foundation/iteration-005/assurance-aggregate-verified-diff-check.log"
+    }
+  ],
+  "aggregate_verified_secret_scan": {
+    "tool": "runtime-tools-secret_scanning",
+    "result": "No secrets detected",
+    "paths": [
+      "src/codex/institutional/assurance.py",
+      "tests/institutional/test_assurance.py",
+      "docs/adr/assurance-review-005.json",
+      "docs/assurance-review.rst",
+      ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py"
+    ]
+  }
+}

@@ -12,8 +12,9 @@ import argparse
 import json
 import re
 from collections.abc import Iterator, Sequence
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from pathlib import Path
+from typing import TypedDict
 
 # Patterns are intentionally conservative to minimize false positives while still
 # catching common credential formats.
@@ -33,6 +34,24 @@ class SecretHit:
     line_number: int
     pattern: str
     match: str
+
+
+class SecretHitPayload(TypedDict):
+    path: str
+    line_number: int
+    pattern: str
+    match: str
+
+
+class ScanSummary(TypedDict):
+    scanned_root: str
+    patterns: list[str]
+    total_hits: int
+
+
+class ScanReport(TypedDict):
+    summary: ScanSummary
+    hits: list[SecretHitPayload]
 
 
 def _iter_files(root: Path) -> Iterator[Path]:
@@ -69,16 +88,17 @@ def _scan_file(path: Path, patterns: dict[str, re.Pattern[str]]) -> list[SecretH
     return hits
 
 
-def run_scan(
-    repo_root: Path, patterns: dict[str, re.Pattern[str]] | None = None
-) -> dict[str, object]:
+def run_scan(repo_root: Path, patterns: dict[str, re.Pattern[str]] | None = None) -> ScanReport:
     active_patterns = patterns or SECRET_PATTERNS
     all_hits: list[SecretHit] = []
     for file_path in _iter_files(repo_root):
         all_hits.extend(_scan_file(file_path, active_patterns))
 
-    hits_payload = [asdict(h) for h in all_hits]
-    summary = {
+    hits_payload: list[SecretHitPayload] = [
+        {"path": h.path, "line_number": h.line_number, "pattern": h.pattern, "match": h.match}
+        for h in all_hits
+    ]
+    summary: ScanSummary = {
         "scanned_root": str(repo_root),
         "patterns": list(active_patterns.keys()),
         "total_hits": len(hits_payload),
@@ -86,11 +106,11 @@ def run_scan(
     return {"summary": summary, "hits": hits_payload}
 
 
-def _write_json(payload: dict[str, object], out_path: Path) -> None:
+def _write_json(payload: ScanReport, out_path: Path) -> None:
     out_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(payload: dict[str, object], out_path: Path) -> None:
+def _write_markdown(payload: ScanReport, out_path: Path) -> None:
     lines = ["# Codex Secret Scan", "", f"Scanned root: `{payload['summary']['scanned_root']}`", ""]
     lines.append(f"Total hits: {payload['summary']['total_hits']}")
     lines.append("")

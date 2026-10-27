@@ -319,9 +319,9 @@ class ABTestingHarness:
             "start_time": self.start_time.isoformat() if self.start_time else None,
             "end_time": self.end_time.isoformat() if self.end_time else None,
             "baseline_metrics": self.baseline_metrics.to_dict() if self.baseline_metrics else None,
-            "treatment_metrics": self.treatment_metrics.to_dict()
-            if self.treatment_metrics
-            else None,
+            "treatment_metrics": (
+                self.treatment_metrics.to_dict() if self.treatment_metrics else None
+            ),
             "statistical_test": stats_test,
             "total_samples": len(self.metrics),
         }

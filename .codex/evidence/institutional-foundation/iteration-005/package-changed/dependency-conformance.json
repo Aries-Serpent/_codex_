@@ -1,0 +1,197 @@
+{
+  "command": "runtime-venv/bin/python -I -m pip check",
+  "exit": 1,
+  "status": "FAIL_UNSATISFIED_DECLARED_FULL_DISTRIBUTION_DEPENDENCIES",
+  "raw_log": "full-dependency-pip-check.log",
+  "exact_pip_check_lines": [
+    "codex-ml 0.3.0 requires bcrypt, which is not installed.",
+    "codex-ml 0.3.0 requires certifi, which is not installed.",
+    "codex-ml 0.3.0 requires click, which is not installed.",
+    "codex-ml 0.3.0 requires cryptography, which is not installed.",
+    "codex-ml 0.3.0 requires defusedxml, which is not installed.",
+    "codex-ml 0.3.0 requires filelock, which is not installed.",
+    "codex-ml 0.3.0 requires hydra-core, which is not installed.",
+    "codex-ml 0.3.0 requires idna, which is not installed.",
+    "codex-ml 0.3.0 requires jinja2, which is not installed.",
+    "codex-ml 0.3.0 requires libcst, which is not installed.",
+    "codex-ml 0.3.0 requires marshmallow, which is not installed.",
+    "codex-ml 0.3.0 requires omegaconf, which is not installed.",
+    "codex-ml 0.3.0 requires parso, which is not installed.",
+    "codex-ml 0.3.0 requires pyasn1, which is not installed.",
+    "codex-ml 0.3.0 requires pydantic, which is not installed.",
+    "codex-ml 0.3.0 requires pydantic-settings, which is not installed.",
+    "codex-ml 0.3.0 requires pyjwt, which is not installed.",
+    "codex-ml 0.3.0 requires pynacl, which is not installed.",
+    "codex-ml 0.3.0 requires pyopenssl, which is not installed.",
+    "codex-ml 0.3.0 requires pyotp, which is not installed.",
+    "codex-ml 0.3.0 requires pyyaml, which is not installed.",
+    "codex-ml 0.3.0 requires radon, which is not installed.",
+    "codex-ml 0.3.0 requires requests, which is not installed.",
+    "codex-ml 0.3.0 requires structlog, which is not installed.",
+    "codex-ml 0.3.0 requires tenacity, which is not installed.",
+    "codex-ml 0.3.0 requires typer, which is not installed.",
+    "codex-ml 0.3.0 requires urllib3, which is not installed."
+  ],
+  "missing_requirements_from_wheel_METADATA": {
+    "bcrypt": [
+      "bcrypt<6.0.0,>=5.0.0"
+    ],
+    "certifi": [
+      "certifi>=2026.7.22"
+    ],
+    "click": [
+      "click<9.0,>=8.4.2",
+      "click<9.0,>=8.4.2; extra == \"core\"",
+      "click<9.0,>=8.4.2; extra == \"full\"",
+      "click<9.0,>=8.4.2; extra == \"all\"",
+      "click<9.0,>=8.4.2; extra == \"dev\"",
+      "click<9.0,>=8.4.2; extra == \"train\"",
+      "click<9.0,>=8.4.2; extra == \"test-core\""
+    ],
+    "cryptography": [
+      "cryptography<51.0.0,>=50.0.1",
+      "cryptography<51.0.0,>=50.0.1; extra == \"full\"",
+      "cryptography<51.0.0,>=50.0.1; extra == \"all\"",
+      "cryptography<51.0.0,>=50.0.1; extra == \"train\""
+    ],
+    "defusedxml": [
+      "defusedxml>=0.7.1"
+    ],
+    "filelock": [
+      "filelock>=3.32.4"
+    ],
+    "hydra-core": [
+      "hydra-core==1.3.7",
+      "hydra-core==1.3.7; extra == \"core\"",
+      "hydra-core==1.3.7; extra == \"full\"",
+      "hydra-core==1.3.7; extra == \"all\"",
+      "hydra-core==1.3.7; extra == \"dev\"",
+      "hydra-core==1.3.7; extra == \"train\"",
+      "hydra-core==1.3.7; extra == \"test-core\""
+    ],
+    "idna": [
+      "idna>=3.19"
+    ],
+    "jinja2": [
+      "jinja2>=3.1.6"
+    ],
+    "libcst": [
+      "libcst>=1.9.0",
+      "libcst>=1.9.0; extra == \"core\"",
+      "libcst>=1.9.0; extra == \"full\"",
+      "libcst>=1.9.0; extra == \"all\"",
+      "libcst>=1.9.0; extra == \"dev\"",
+      "libcst>=1.9.0; extra == \"train\"",
+      "libcst>=1.9.0; extra == \"test-core\""
+    ],
+    "marshmallow": [
+      "marshmallow<5,>=4.3.1",
+      "marshmallow<5,>=4.3.1; extra == \"core\"",
+      "marshmallow<5,>=4.3.1; extra == \"full\"",
+      "marshmallow<5,>=4.3.1; extra == \"all\"",
+      "marshmallow<5,>=4.3.1; extra == \"dev\"",
+      "marshmallow<5,>=4.3.1; extra == \"train\"",
+      "marshmallow<5,>=4.3.1; extra == \"test-core\""
+    ],
+    "omegaconf": [
+      "omegaconf>=2.3.1",
+      "omegaconf>=2.3.1; extra == \"core\"",
+      "omegaconf>=2.3.1; extra == \"full\"",
+      "omegaconf>=2.3.1; extra == \"all\"",
+      "omegaconf>=2.3.1; extra == \"dev\"",
+      "omegaconf>=2.3.1; extra == \"train\"",
+      "omegaconf>=2.3.1; extra == \"test-core\""
+    ],
+    "parso": [
+      "parso>=0.8.7",
+      "parso>=0.8.7; extra == \"core\"",
+      "parso>=0.8.7; extra == \"full\"",
+      "parso>=0.8.7; extra == \"all\"",
+      "parso>=0.8.7; extra == \"dev\"",
+      "parso>=0.8.7; extra == \"train\"",
+      "parso>=0.8.7; extra == \"test-core\""
+    ],
+    "pyasn1": [
+      "pyasn1>=0.4.8"
+    ],
+    "pydantic": [
+      "pydantic>=2.13.4",
+      "pydantic>=2.13.4; extra == \"core\"",
+      "pydantic>=2.13.4; extra == \"full\"",
+      "pydantic>=2.13.4; extra == \"all\"",
+      "pydantic>=2.13.4; extra == \"dev\"",
+      "pydantic>=2.13.4; extra == \"train\"",
+      "pydantic>=2.13.4; extra == \"test-core\""
+    ],
+    "pydantic-settings": [
+      "pydantic-settings>=2.15.0",
+      "pydantic-settings>=2.15.0; extra == \"core\"",
+      "pydantic-settings>=2.15.0; extra == \"full\"",
+      "pydantic-settings>=2.15.0; extra == \"all\"",
+      "pydantic-settings>=2.15.0; extra == \"dev\"",
+      "pydantic-settings>=2.15.0; extra == \"train\"",
+      "pydantic-settings>=2.15.0; extra == \"test-core\""
+    ],
+    "pyjwt": [
+      "PyJWT<3.0.0,>=2.15.0",
+      "PyJWT<3.0.0,>=2.15.0; extra == \"full\"",
+      "PyJWT<3.0.0,>=2.15.0; extra == \"all\"",
+      "PyJWT<3.0.0,>=2.15.0; extra == \"train\""
+    ],
+    "pynacl": [
+      "PyNaCl<2.0.0,>=1.6.2",
+      "PyNaCl<2.0.0,>=1.6.2; extra == \"full\"",
+      "PyNaCl<2.0.0,>=1.6.2; extra == \"all\"",
+      "PyNaCl<2.0.0,>=1.6.2; extra == \"train\""
+    ],
+    "pyopenssl": [
+      "pyOpenSSL<27.0.0,>=26.4.0"
+    ],
+    "pyotp": [
+      "pyotp>=2.10.0",
+      "pyotp>=2.10.0; extra == \"full\"",
+      "pyotp>=2.10.0; extra == \"auth\"",
+      "pyotp>=2.10.0; extra == \"all\"",
+      "pyotp>=2.10.0; extra == \"dev\"",
+      "pyotp>=2.10.0; extra == \"train\""
+    ],
+    "pyyaml": [
+      "pyyaml>=6.0.1",
+      "PyYAML>=6.0.1; extra == \"core\"",
+      "PyYAML>=6.0.1; extra == \"full\"",
+      "PyYAML>=6.0.1; extra == \"all\"",
+      "PyYAML>=6.0.1; extra == \"dev\"",
+      "PyYAML>=6.0.1; extra == \"train\"",
+      "PyYAML>=6.0.1; extra == \"test-core\""
+    ],
+    "radon": [
+      "radon>=6.0.1"
+    ],
+    "requests": [
+      "requests>=2.33.0",
+      "requests>=2.34.2; extra == \"full\"",
+      "requests>=2.34.2; extra == \"all\"",
+      "requests>=2.34.2; extra == \"train\""
+    ],
+    "structlog": [
+      "structlog>=26.1.0"
+    ],
+    "tenacity": [
+      "tenacity>=8.2.3"
+    ],
+    "typer": [
+      "typer>=0.27.1",
+      "typer>=0.27.1; extra == \"core\"",
+      "typer>=0.27.1; extra == \"full\"",
+      "typer>=0.27.1; extra == \"all\"",
+      "typer>=0.27.1; extra == \"dev\"",
+      "typer>=0.27.1; extra == \"train\"",
+      "typer>=0.27.1; extra == \"test-core\""
+    ],
+    "urllib3": [
+      "urllib3>=2.8.0"
+    ]
+  },
+  "missing_count": 27,
+  "sdk_scope": "Selected institutional SDK closure present; complete distribution conformance remains unresolved. No source dependency changes or heavyweight stack provisioning."
+}
