@@ -47,7 +47,7 @@ flate2 = "1.1"  # DEFLATE compression for Compression module
 
 # System Interfaces & Communication
 crossbeam = "0.8.4"  # Multi-producer, multi-consumer channels
-parking_lot = "0.12"  # Fast synchronization primitives
+parking_lot = "0.13"  # Fast synchronization primitives
 anyhow = "1.0.80"  # Flexible error handling
 tracing = "0.1.40"  # High-performance instrumentation
 tracing-subscriber = "0.3.18"
