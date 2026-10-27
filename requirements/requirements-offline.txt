@@ -44,4 +44,4 @@ rich>=13.0.0
 attrs>=23.0.0
 
 # Memory management (offline)
-filelock>=3.32.4
+filelock>=4.2.1
