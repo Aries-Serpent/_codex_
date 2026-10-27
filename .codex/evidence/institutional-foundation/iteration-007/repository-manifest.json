@@ -1,0 +1,57 @@
+{
+  "schema": "codex.review.v1",
+  "id": "codex.review.v1:f84eb6639e35c661e75d039f98f35ea2d8ba28915d40878a500db336a1088788",
+  "created_at": "2026-10-25T05:03:14Z",
+  "producer": {
+    "identity": "codex-institutional",
+    "assurance": "unverified"
+  },
+  "evidence_refs": [],
+  "authority_refs": [],
+  "validation_state": "candidate",
+  "lifecycle": "Draft",
+  "supersedes": null,
+  "extensions": {},
+  "payload": {
+    "kind": "manifest",
+    "data": {
+      "entries": [
+        {
+          "path": "src/codex/institutional/admission.py",
+          "sha256": "af04b9c811a9941ecc057700c2cf5dd04ea3418de948f8153bd2ff4b9c902124",
+          "size": 8088,
+          "mode": 436
+        },
+        {
+          "path": "src/codex/institutional/contracts.json",
+          "sha256": "58de947bc90caff37208a047d1d4e310757e51c867d96fd12a0b728d718bc316",
+          "size": 7063,
+          "mode": 420
+        },
+        {
+          "path": "src/codex/institutional/core.py",
+          "sha256": "cb7bce232df6d5b993739c83def42b4ca743bcc849663ad9bffecd6390dc806a",
+          "size": 23750,
+          "mode": 420
+        },
+        {
+          "path": "src/codex/institutional/storage.py",
+          "sha256": "6b68b135185350d60efcd2ade5b8ac04ae1d680ae8045a99833d428d02d7a1c6",
+          "size": 12823,
+          "mode": 420
+        }
+      ],
+      "context_digest": "2a159be83c5066c3d52d2e0278112c7a12d8753db0c07f64a44861a4d490fcb5",
+      "rules": {
+        "symlinks": "reject",
+        "submodules": "reject",
+        "archives": "opaque-no-expansion",
+        "hardlinks": "independent-bytes",
+        "permissions": "explicit-posix-mode",
+        "line_endings": "raw"
+      },
+      "classification": "Repository-Internal"
+    }
+  },
+  "integrity": "4d2fb773c4fe2ac87308be0d8f47a959a11693b155290f3b3e10f2fc619e931f"
+}

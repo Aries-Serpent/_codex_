@@ -85,7 +85,9 @@ class TestParsingValidWorkflows:
         yaml_content = "name: pr-workflow\non: pull_request\njobs: {}\n"
         result = parser.parse(yaml_content, Path("test.yml"))
         assert result is not None, "result must be initialized"
-        assert any(t.type == TriggerType.PULL_REQUEST for t in result.triggers), "Result must not be empty"
+        assert any(
+            t.type == TriggerType.PULL_REQUEST for t in result.triggers
+        ), "Result must not be empty"
 
     def test_parse_workflow_with_schedule_trigger(self):
         """Test parsing workflow with schedule trigger."""
@@ -93,7 +95,9 @@ class TestParsingValidWorkflows:
         yaml_content = "name: scheduled\non:\n  schedule:\n    - cron: '0 0 * * *'\njobs: {}\n"
         result = parser.parse(yaml_content, Path("test.yml"))
         assert result is not None, "result must be initialized"
-        assert any(t.type == TriggerType.SCHEDULE for t in result.triggers), "Result must not be empty"
+        assert any(
+            t.type == TriggerType.SCHEDULE for t in result.triggers
+        ), "Result must not be empty"
 
     def test_parse_workflow_with_workflow_dispatch(self):
         """Test parsing workflow with workflow_dispatch trigger."""
@@ -474,12 +478,12 @@ class TestErrorHandlingExceptions:
         result = parser.parse_content("name: test\non: push\njobs: {}\n", Path("test.yml"))
         assert result is None, "Result must not be empty"
 
-    def test_parse_content_handles_unexpected_error(self, monkeypatch):
-        """Test parse_content handles unexpected exceptions gracefully."""
+    def test_parse_content_propagates_unexpected_error(self, monkeypatch):
+        """Unexpected programming errors must not become normal parse failures."""
         parser = WorkflowParser()
         monkeypatch.setattr(parser, "_parse_triggers", raise_exception(RuntimeError("boom")))
-        result = parser.parse_content("name: test\non: push\njobs: {}\n", Path("test.yml"))
-        assert result is None, "Result must not be empty"
+        with pytest.raises(RuntimeError, match="boom"):
+            parser.parse_content("name: test\non: push\njobs: {}\n", Path("test.yml"))
 
     def test_parse_triggers_handles_invalid_config(self):
         """Test _parse_triggers handles invalid config."""

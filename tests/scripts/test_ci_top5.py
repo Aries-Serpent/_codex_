@@ -184,6 +184,27 @@ class TestCheckDeferralLanguage:
         assert cls.predict("Will fix later") is False, "Condition must be true"
         assert cls.is_available() is False, "Condition must be true"
 
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "No agent needed for this direct lookup.",
+            "I will work directly rather than delegating; nested agents are forbidden.",
+            "Implementation is out of scope until the user authorizes edits.",
+            "A pre-existing issue is documented with owner and mitigation.",
+            "We documented a follow-up issue with acceptance criteria and an owner.",
+            "The read-only task is complete; there is no PR.",
+        ],
+    )
+    def test_authorized_scope_and_direct_work_are_not_diagnostics(self, mod, text):
+        assert mod.scan(text) == []
+
+    @pytest.mark.parametrize("flags", [[], ["--warn-only"], ["--strict"]])
+    def test_wording_never_blocks_even_legacy_strict_callers(self, mod, flags):
+        assert mod.main([*flags, "--text", "Will fix this in a future PR."]) == 0
+
+    def test_advisory_mode_preserves_input_error(self, mod, tmp_path):
+        assert mod.main(["--warn-only", "--pr-body", str(tmp_path / "missing")]) == 2
+
 
 # ---------------------------------------------------------------------------
 # 3. batch_scan_integration.py

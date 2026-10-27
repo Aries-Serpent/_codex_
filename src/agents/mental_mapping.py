@@ -52,6 +52,8 @@ def set_clock(clock_fn: Callable[[], str]) -> None:
     Args:
         clock_fn: A callable that returns an ISO format timestamp string.
     """
+    if not callable(clock_fn):
+        raise TypeError("clock_fn must be callable")
     global _clock
     _clock = clock_fn
 

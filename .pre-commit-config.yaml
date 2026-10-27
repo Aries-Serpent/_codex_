@@ -339,16 +339,15 @@ repos:
         # Run: pre-commit run doc-metrics-check
         # Fix: python scripts/tools/doc_metrics_sync.py --fix
 
-      # Deferral Language Gate — enforces Codebase Agency Policy §3a
-      # Triggers on any commit message containing deferral language.
-      # See: .codex/CODEBASE_AGENCY_POLICY.md §3a and scripts/ci/check_deferral_language.py
+      # Advisory handoff wording; scope/direct execution do not fail commits.
+      # Input/tool errors still fail. Security owner/reason checks are separate.
       - id: deferral-language-check
-        name: "🚨 Deferral Language Policy Check (Agency Policy §3a)"
-        entry: python scripts/ci/check_deferral_language.py --commit-msg
+        name: "Handoff wording review (advisory)"
+        entry: python scripts/ci/check_deferral_language.py --warn-only --commit-msg
         language: system
         stages: [commit-msg]
         pass_filenames: true
-        # If this fails: load .codex/CODEBASE_AGENCY_POLICY.md and fix immediately
+        # If this fails: diagnose the input/tool error; do not expand authorization.
 
       # ── mypy isolated-venv pre-push gate ─────────────────────────────────
       # Runs the EXACT same mypy check that CI runs (isolated venv, same flags)
@@ -501,11 +500,8 @@ repos:
               echo "⚠️  mypy not installed — skipping (pip install mypy)";
               exit 0;
             fi;
-            python -m mypy src/
-              --config-file=mypy.ini
-              --no-error-summary
-              --no-pretty
-            ; EXIT=$?;
+            python -m mypy src/ --config-file=mypy.ini --no-error-summary --no-pretty;
+            EXIT=$?;
             if [ "$EXIT" -ne 0 ]; then
               echo "ℹ️  mypy found type errors in src/ (non-blocking).";
               echo "ℹ️  Run: python scripts/ci/mypy_baseline.py --update  to refresh baseline.";

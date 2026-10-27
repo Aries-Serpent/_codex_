@@ -1,0 +1,173 @@
+{
+  "schema": "codex.institutional.gate-observation.v1",
+  "status": "Draft",
+  "source_candidate": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+  "final_acceptance": "incomplete",
+  "approval": "NOT_RUN",
+  "activation": "disabled",
+  "release_or_publication": "not authorized or performed",
+  "scope_rule": "A PASS below refers only to its stated bounded task scope, not completion of the institutional program, approved governance, mathematical proof or independent verification.",
+  "RD4": {
+    "RD4-01": {
+      "status": "PASS",
+      "scope": "Preflight, immutable predecessor, source/dirty-user preservation and conservative historical census reconciliation",
+      "evidence": [
+        "preflight.json",
+        "predecessor-verification.json"
+      ]
+    },
+    "RD4-02": {
+      "status": "PASS",
+      "scope": "Actual bounded followup source/generator/caller/output/validator/consumer chain, 17 cases and four counterfactual failures",
+      "evidence": [
+        "consumer-chain.json",
+        "consumer-tests.txt",
+        "consumer-counterfactual.txt",
+        "consumer-output-fixture.txt"
+      ]
+    },
+    "RD4-03": {
+      "status": "PASS",
+      "scope": "Complete proposed architecture and seven literal visual sources/text alternatives retained; not adoption or rendering proof",
+      "evidence": [
+        "implementation-status.json",
+        "visual-check.json",
+        "minority-review.json"
+      ]
+    },
+    "RD4-04": {
+      "status": "PASS",
+      "scope": "58 source/normalized references, conditions/provenance/status and bounded existing-registry discovery; eight metadata/mapping tests, not numerical implementations",
+      "evidence": [
+        "formula-validation.json",
+        "formula-junit.xml"
+      ]
+    },
+    "RD4-05": {
+      "status": "PASS",
+      "scope": "Existing core/continuation/namespace and consumer components reused; additive subset ADR, no parallel memory system",
+      "evidence": [
+        "implementation-status.json",
+        "runtime-review/context.json"
+      ]
+    },
+    "RD4-06": {
+      "status": "PASS",
+      "scope": "Supplied-input candidate/context/dispatch/output binding and resource/path rejection fixtures",
+      "evidence": [
+        "runtime-review/confidence-final.xml"
+      ]
+    },
+    "RD4-07": {
+      "status": "PASS",
+      "scope": "Attributed findings/dissent/relations, ordered bounded events/cache checks; not complete evidence-trust service",
+      "evidence": [
+        "runtime-review/context.json",
+        "runtime-review/confidence-final.xml"
+      ]
+    },
+    "RD4-08": {
+      "status": "PASS",
+      "scope": "Rotated source fixtures, original-finding-bound evidence coverage, typed blocker and exact resume checks; no independent reproduction implied",
+      "evidence": [
+        "runtime-review/confidence-final.xml"
+      ]
+    },
+    "RD4-09": {
+      "status": "PASS",
+      "scope": "SDK returns non-authorizing recommendations, no mutation/dispatch/activation/approval path",
+      "evidence": [
+        "runtime-review/context.json",
+        "sdk-review.json"
+      ]
+    },
+    "RD4-10": {
+      "status": "NOT_RUN",
+      "scope": "New committed source wheel build, non-editable external installation and installed resource/runtime proof remain unperformed",
+      "pending_requirement": "Eligible executor builds and installs exact source candidate externally; run retained committed harness and retain new wheel/manifest/origins/offline results"
+    },
+    "RD4-11": {
+      "status": "PASS",
+      "scope": "Visibility limits recorded honestly: no deployed profiles, unknown effective hosted tools/MCP/precedence/runtime; renderer unavailable and seven text fallbacks retained",
+      "subchecks": {
+        "hosted_enforcement": "NOT_RUN",
+        "Mermaid_rendering": "NOT_RUN",
+        "MathJax_rendering": "NOT_RUN"
+      },
+      "evidence": [
+        "implementation-status.json",
+        "visual-check.json"
+      ]
+    },
+    "RD4-12": {
+      "status": "PASS",
+      "scope": "Compatible sequence-four predecessor/source/fixture-bound checkpoint and local retention preparation; rebind on later bookkeeping drift",
+      "evidence": [
+        "continuation.json.gz",
+        "checkpoint-verification.json",
+        "retention-manifest.json"
+      ]
+    }
+  },
+  "G0_G8": {
+    "G0": {
+      "status": "PASS",
+      "scope": "Bounded preflight and preservation"
+    },
+    "G1": {
+      "status": "NOT_RUN",
+      "scope": "Program-wide semantic component/ecology/effectiveness investigation remains open; bounded consumer/formula investigation is recorded separately"
+    },
+    "G2": {
+      "status": "PASS",
+      "scope": "This slice's proposed design, reuse ADR and implementation boundary only"
+    },
+    "G3": {
+      "status": "PASS",
+      "scope": "This slice's implemented SDK and consumer source tests only"
+    },
+    "G4": {
+      "status": "NOT_RUN",
+      "scope": "CodeQL Python analysis skipped for database size; targeted scans and secret checks do not close this gap"
+    },
+    "G5": {
+      "status": "NOT_RUN",
+      "scope": "No independently established verifier, custody or approval; same-platform separate contexts are insufficient"
+    },
+    "G6": {
+      "status": "NOT_RUN",
+      "scope": "Six packaging regressions and explicit resource declaration are source checks, not a newly built wheel"
+    },
+    "G7": {
+      "status": "NOT_RUN",
+      "scope": "No new wheel installed/executed outside checkout"
+    },
+    "G8": {
+      "status": "PASS",
+      "scope": "Compatible local checkpoint structure, predecessor and exact source/current dirty binding; remote retention unperformed"
+    }
+  },
+  "required_unknowns": [
+    {
+      "requirement": "runtime-security-analysis",
+      "affected_operation": "full G4 acceptance",
+      "mitigation": "No activation/approval, bounded data-only SDK; retain targeted scan results and resolve through an eligible analysis service"
+    },
+    {
+      "requirement": "build-and-external-wheel-proof",
+      "affected_operation": "RD4-10/G6/G7 and downstream package acceptance",
+      "mitigation": "Retain exact committed harness/source identity and package-data expectations; never substitute iteration-002 wheel evidence"
+    },
+    {
+      "requirement": "independent-reproduction-and-approval",
+      "affected_operation": "dependent acceptance/activation",
+      "mitigation": "G5 stays NOT_RUN; development authorization is not self-verification"
+    },
+    {
+      "requirement": "hosted-profile-and-renderer-visibility",
+      "affected_operation": "profile activation and renderer-specific claims",
+      "mitigation": "No profile creation/activation; retain literal source and accessible text"
+    }
+  ],
+  "continuation_rule": "Unknown required predicates cannot imply convergence. Stop affected acceptance operations, not unrelated assigned-workspace development. Rebind before the deterministic next slice."
+}

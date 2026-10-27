@@ -1,0 +1,9 @@
+{
+  "stage": "contracts-build",
+  "exit": 1,
+  "log": "contracts-build.log",
+  "cause": "git archive honors historical .gitattributes *.md export-ignore, excluding the required package README.md (and root README.md).",
+  "classification": "export preparation defect, not an observed SDK runtime or package source failure",
+  "action": "Restore only scoped immutable committed blobs omitted by git archive; no candidate source changes or harness modifications.",
+  "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0"
+}

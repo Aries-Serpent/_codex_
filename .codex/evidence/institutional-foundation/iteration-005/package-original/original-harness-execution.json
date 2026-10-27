@@ -1,0 +1,9 @@
+{
+  "exit": 0,
+  "status": "PASS",
+  "harness_modified": false,
+  "harness_sha256": "7f03b6379b0872afbdaf5ab6ddffec094a08f0c0d3cf69c4bea6b51549992c44",
+  "log": "external-runtime.log",
+  "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+  "wheel_sha256": "e88afdbc52d79f2155fdadacddac9d2e16cab15e7307822aecdccfe13c9a9c33"
+}

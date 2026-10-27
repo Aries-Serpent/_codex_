@@ -1,0 +1,45 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001",
+  "status": "inactive-development-decision",
+  "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+  "hypothesis": "An offline inventory-to-candidate pipeline with closed installed contracts can preserve evidence and support technical challenge without importing existing operational approval assumptions.",
+  "expected_observation": "Fixed inputs and clock produce identical candidates; malformed, stale, colliding and self-authorizing inputs cannot enable activation or overwrite state silently.",
+  "reuse_analysis": [
+    {"path": "src/codex/deep_research/storage.py", "observation": "Content-addressed records, safe names and atomic replacement are compatible patterns; research topic indexes are not institutional continuation contracts.", "decision": "reuse patterns, not duplicate research memory"},
+    {"path": "scripts/cognitive/session_checkpoint_manager.py", "observation": "Script-local compressed checkpoint manager has a different schema and storage lifecycle; not an installed codex runtime dependency.", "decision": "retain existing mechanism; add a narrowly scoped installed candidate adapter"},
+    {"path": "src/codex/cognitive_brain/authority.py", "observation": "Existing approval input is a boolean, not authenticated artifact-bound separation evidence.", "decision": "do not equate boolean approval with institutional activation; deny activation in this slice"},
+    {"path": "src/codex_ml/cli/main.py", "observation": "Existing codex entry point loads optional ML CLI infrastructure.", "decision": "add codex-institutional entry point and module invocation, leaving legacy CLI behavior unchanged"}
+  ],
+  "contradiction_search": {
+    "method": "Read-only exploration of existing authority, evidence, checkpoint and governance modules; direct packaging/CLI tracing; filename census.",
+    "alternative_cause": "The gap is integration and portable contract enforcement, not evidence that existing agents are ineffective.",
+    "dissent": "A separate continuation adapter adds maintenance cost; extending the script manager could be preferable after packaging and contract compatibility are established.",
+    "uncertainty": "No exhaustive semantic census or independent effectiveness evaluation was performed.",
+    "scope_limits": "Agent-profile contents are inaccessible under the task environment boundary. Governance YAML paths requested by the task are absent in this checkout."
+  },
+  "slice": "Read-only inventory, deterministic assessment/challenge, validated Draft experience, atomic candidate checkpoint, explicit preview/write, classified export, technical verification and non-destructive disengagement plan.",
+  "acceptance_matrix": {
+    "G0": "Preserve initial startup packet; record policy and source identity.",
+    "G1": "Complete source tree path census, reconciled primary classifications; semantic coverage separate.",
+    "G2": "This inactive ADR and frozen test expectations precede implementation.",
+    "G3": "Installed contracts and runnable inventory-to-candidate path.",
+    "G4": "Negative schema, poison, drift, authority, mutation, disclosure and recovery tests.",
+    "G5": "NOT_RUN until independently established reproduction; review agents do not establish final approval.",
+    "G6": "Record wheel digest, contents and installed resources.",
+    "G7": "External harness with no source-path assistance; dependency provisioning limitations disclosed.",
+    "G8": "Validated experience and continuation candidate with next deterministic action."
+  },
+  "template_adaptation": {
+    "template": ".github/prompts/sprint_execution_plan/TEMPLATE.md",
+    "steps": ["preflight/census/ADR", "runtime/contracts", "focused negative tests", "wheel/external reproduction", "evidence/checkpoint"],
+    "testing": "Existing pytest, coverage, Ruff, Black, isort, mypy and compile tools; fixed-clock expectations; minimum 80% new-module line coverage.",
+    "troubleshooting": "At most two retries per unchanged failure; preserve failed observations; report environment/dependency limits rather than weakening assertions.",
+    "rollback": "Revert only this task's changes through reviewed commits; installed disengagement is read-only and preserves historical artifacts; no destructive cleanup.",
+    "progress": "Use actual gate results, not scores or role names. Candidate self-tests do not establish independent approval."
+  },
+  "next_cycles": [
+    "Independent reproduction and withheld tests against a bound candidate wheel.",
+    "Trusted identity/approval integration with operation-specific authority and expiry/revocation evidence before any activation.",
+    "Knowledge supersession and conflicting-decision workflows with preserved dissent and actual supported migrations."
+  ]
+}

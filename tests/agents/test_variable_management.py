@@ -9,23 +9,27 @@ from __future__ import annotations
 
 import json
 import os
-import sys
 import unittest
 from unittest.mock import MagicMock, patch
 
-from scripts.ci._token_resolver import get_token
+import pytest
 
-# Ensure scripts/ and src/ are importable
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
-# scripts/tools is on the path directly so `import variable_manager` works
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "scripts", "tools"))
-
-from variable_manager import (
+from scripts.tools.variable_manager import (
     GitHubAPIError,
     VariableManager,
+    _gh_request,
     _resolve_token,
 )
+
+
+@pytest.fixture(autouse=True)
+def isolated_token_environment():
+    """Synthetic auth fixtures must restore the process environment after every case."""
+    with patch.dict(os.environ):
+        for name in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "AGENT_GITHUB_TOKEN", "GITHUB_TOKEN"):
+            os.environ.pop(name, None)
+        yield
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Token resolution tests
@@ -40,8 +44,8 @@ class TestResolveToken(unittest.TestCase):
 
     def test_priority_order_master_key_first(self):
         self._clear_tokens()
-        get_token(required_elevated=True)[0] = "master_token"
-        get_token(required_elevated=True)[0] = "backup_token"
+        os.environ["CODEX_MASTER_KEY"] = "master_token"
+        os.environ["CODEX_BACKUP_KEY"] = "backup_token"
         os.environ["GITHUB_TOKEN"] = "gh_token"
         tok, src = _resolve_token()
         self.assertEqual(tok, "master_token")
@@ -49,7 +53,7 @@ class TestResolveToken(unittest.TestCase):
 
     def test_priority_backup_key_when_master_absent(self):
         self._clear_tokens()
-        get_token(required_elevated=True)[0] = "backup_token"
+        os.environ["CODEX_BACKUP_KEY"] = "backup_token"
         os.environ["GITHUB_TOKEN"] = "gh_token"
         tok, src = _resolve_token()
         self.assertEqual(tok, "backup_token")
@@ -92,7 +96,7 @@ class TestRepoVariables(unittest.TestCase):
     REPO = "_codex_"
 
     def setUp(self):
-        get_token(required_elevated=True)[0] = "test_master_token"
+        os.environ["CODEX_MASTER_KEY"] = "test_master_token"
         self.vm = VariableManager(brain=None)
 
     def tearDown(self):
@@ -100,7 +104,7 @@ class TestRepoVariables(unittest.TestCase):
 
     # ── list ──────────────────────────────────────────────────────────────
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_list_repo_vars_success(self, mock_req):
         mock_req.return_value = (
             200,
@@ -122,13 +126,13 @@ class TestRepoVariables(unittest.TestCase):
             brain=None,
         )
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_list_repo_vars_empty(self, mock_req):
         mock_req.return_value = (200, {"total_count": 0, "variables": []})
         result = self.vm.list_repo_vars(self.OWNER, self.REPO)
         self.assertEqual(result, [])
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_list_repo_vars_403_raises(self, mock_req):
         mock_req.return_value = (403, {"message": "Resource not accessible"})
         with self.assertRaises(GitHubAPIError) as ctx:
@@ -137,7 +141,7 @@ class TestRepoVariables(unittest.TestCase):
 
     # ── get ───────────────────────────────────────────────────────────────
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_get_repo_var_success(self, mock_req):
         mock_req.return_value = (
             200,
@@ -146,7 +150,7 @@ class TestRepoVariables(unittest.TestCase):
         result = self.vm.get_repo_var(self.OWNER, self.REPO, "MY_VAR")
         self.assertEqual(result["value"], "hello")
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_get_repo_var_404_raises(self, mock_req):
         mock_req.return_value = (404, {"message": "Not Found"})
         with self.assertRaises(GitHubAPIError) as ctx:
@@ -155,7 +159,7 @@ class TestRepoVariables(unittest.TestCase):
 
     # ── create ────────────────────────────────────────────────────────────
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_create_repo_var_success(self, mock_req):
         mock_req.return_value = (201, None)  # GitHub returns 201 No Content
         status = self.vm.create_repo_var(self.OWNER, self.REPO, "NEW_VAR", "new_value")
@@ -168,7 +172,7 @@ class TestRepoVariables(unittest.TestCase):
             brain=None,
         )
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_create_repo_var_409_conflict_raises(self, mock_req):
         mock_req.return_value = (422, {"message": "Validation Failed"})
         with self.assertRaises(GitHubAPIError):
@@ -176,7 +180,7 @@ class TestRepoVariables(unittest.TestCase):
 
     # ── update ────────────────────────────────────────────────────────────
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_update_repo_var_success(self, mock_req):
         mock_req.return_value = (204, None)
         status = self.vm.update_repo_var(self.OWNER, self.REPO, "MY_VAR", "updated")
@@ -191,7 +195,7 @@ class TestRepoVariables(unittest.TestCase):
 
     # ── delete ────────────────────────────────────────────────────────────
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_delete_repo_var_success(self, mock_req):
         mock_req.return_value = (204, None)
         status = self.vm.delete_repo_var(self.OWNER, self.REPO, "OLD_VAR")
@@ -216,13 +220,13 @@ class TestEnvironmentVariables(unittest.TestCase):
     ENV = "production"
 
     def setUp(self):
-        get_token(required_elevated=True)[0] = "test_master_token"
+        os.environ["CODEX_MASTER_KEY"] = "test_master_token"
         self.vm = VariableManager(brain=None)
 
     def tearDown(self):
         os.environ.pop("CODEX_MASTER_KEY", None)
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_list_env_vars(self, mock_req):
         mock_req.return_value = (200, {"variables": [{"name": "ENV_VAR", "value": "ev"}]})
         result = self.vm.list_env_vars(self.OWNER, self.REPO, self.ENV)
@@ -234,7 +238,7 @@ class TestEnvironmentVariables(unittest.TestCase):
             brain=None,
         )
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_create_env_var(self, mock_req):
         mock_req.return_value = (201, None)
         self.vm.create_env_var(self.OWNER, self.REPO, self.ENV, "E_VAR", "e_val")
@@ -246,7 +250,7 @@ class TestEnvironmentVariables(unittest.TestCase):
             brain=None,
         )
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_update_env_var(self, mock_req):
         mock_req.return_value = (204, None)
         self.vm.update_env_var(self.OWNER, self.REPO, self.ENV, "E_VAR", "new_val")
@@ -258,7 +262,7 @@ class TestEnvironmentVariables(unittest.TestCase):
             brain=None,
         )
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_delete_env_var(self, mock_req):
         mock_req.return_value = (204, None)
         self.vm.delete_env_var(self.OWNER, self.REPO, self.ENV, "E_VAR")
@@ -280,13 +284,13 @@ class TestOrgVariables(unittest.TestCase):
     ORG = "Aries-Serpent"
 
     def setUp(self):
-        get_token(required_elevated=True)[0] = "test_master_token"
+        os.environ["CODEX_MASTER_KEY"] = "test_master_token"
         self.vm = VariableManager(brain=None)
 
     def tearDown(self):
         os.environ.pop("CODEX_MASTER_KEY", None)
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_list_org_vars(self, mock_req):
         mock_req.return_value = (200, {"variables": [{"name": "ORG_V", "value": "ov"}]})
         result = self.vm.list_org_vars(self.ORG)
@@ -298,7 +302,7 @@ class TestOrgVariables(unittest.TestCase):
             brain=None,
         )
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_create_org_var_default_visibility(self, mock_req):
         mock_req.return_value = (201, None)
         self.vm.create_org_var(self.ORG, "O_VAR", "o_val")
@@ -310,7 +314,7 @@ class TestOrgVariables(unittest.TestCase):
             brain=None,
         )
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_create_org_var_selected_repos(self, mock_req):
         mock_req.return_value = (201, None)
         self.vm.create_org_var(
@@ -329,7 +333,7 @@ class TestOrgVariables(unittest.TestCase):
             brain=None,
         )
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_delete_org_var(self, mock_req):
         mock_req.return_value = (204, None)
         self.vm.delete_org_var(self.ORG, "O_OLD")
@@ -356,29 +360,26 @@ class TestBrainClientMechanism(unittest.TestCase):
             "body": {"total_count": 0, "variables": []},
         }
 
-        get_token(required_elevated=True)[0] = "tok"
+        os.environ["CODEX_MASTER_KEY"] = "tok"
         vm = VariableManager(brain=mock_brain)
         vm.list_repo_vars("Aries-Serpent", "_codex_")
         mock_brain.proxy_request.assert_called_once()
         call_args = mock_brain.proxy_request.call_args
         self.assertEqual(call_args.args[0], "GET")
         self.assertIn("actions/variables", call_args.args[1])
+        self.assertEqual(call_args.kwargs["headers"]["Authorization"], "Bearer tok")
         os.environ.pop("CODEX_MASTER_KEY", None)
 
     def test_falls_back_to_urllib_on_brain_error(self):
         """BrainClientError causes fallback to urllib."""
         import importlib
 
-        tools_vm = importlib.import_module("variable_manager")
+        tools_vm = importlib.import_module("scripts.tools.variable_manager")
 
         mock_brain = MagicMock()
-        mock_brain.proxy_request.side_effect = (
-            tools_vm.BrainClientError("server down")
-            if hasattr(tools_vm, "BrainClientError")
-            else Exception("server down")
-        )
+        mock_brain.proxy_request.side_effect = tools_vm.BrainClientError("server down")
 
-        with patch("variable_manager.urllib.request.urlopen") as mock_urlopen:
+        with patch("scripts.tools.variable_manager.urllib.request.urlopen") as mock_urlopen:
             mock_response = MagicMock()
             mock_response.__enter__ = lambda s: s
             mock_response.__exit__ = MagicMock(return_value=False)
@@ -388,13 +389,28 @@ class TestBrainClientMechanism(unittest.TestCase):
             ).encode()
             mock_urlopen.return_value = mock_response
 
-            get_token(required_elevated=True)[0] = "tok"
+            os.environ["CODEX_MASTER_KEY"] = "tok"
             vm = VariableManager(brain=mock_brain)
-            try:
-                vm.list_repo_vars("Aries-Serpent", "_codex_")
-            except (RuntimeError, OSError, KeyError, ValueError):
-                pass  # brain error may propagate differently without full import
+            self.assertEqual(vm.list_repo_vars("Aries-Serpent", "_codex_"), [])
+            mock_brain.proxy_request.assert_called_once()
+            mock_urlopen.assert_called_once()
+            request = mock_urlopen.call_args.args[0]
+            self.assertEqual(request.get_header("Authorization"), "Bearer tok")
             os.environ.pop("CODEX_MASTER_KEY", None)
+
+    @patch("scripts.tools.variable_manager._brain_available", return_value=False)
+    @patch("scripts.tools.variable_manager.urllib.request.urlopen")
+    def test_direct_urllib_authentication(self, mock_urlopen, mock_available):
+        """The direct transport carries the selected synthetic credential."""
+        os.environ["CODEX_MASTER_KEY"] = "test-token"
+        response = mock_urlopen.return_value.__enter__.return_value
+        response.status = 200
+        response.read.return_value = b'{"variables": []}'
+        status, body = _gh_request("GET", "/repos/owner/repo/actions/variables")
+        self.assertEqual(status, 200)
+        self.assertEqual(body, {"variables": []})
+        request = mock_urlopen.call_args.args[0]
+        self.assertEqual(request.get_header("Authorization"), "Bearer test-token")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -406,12 +422,12 @@ class TestLiveTestDryRun(unittest.TestCase):
     """Simulate the full create→verify→update→verify→delete cycle via mocks."""
 
     def setUp(self):
-        get_token(required_elevated=True)[0] = "test_tok"
+        os.environ["CODEX_MASTER_KEY"] = "test_tok"
 
     def tearDown(self):
         os.environ.pop("CODEX_MASTER_KEY", None)
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_full_cycle_all_pass(self, mock_req):
         """Happy-path: every API call returns expected status."""
         OWNER, REPO = "Aries-Serpent", "_codex_"
@@ -445,7 +461,7 @@ class TestLiveTestDryRun(unittest.TestCase):
         # Should not raise
         vm.run_live_test(OWNER, REPO)
 
-    @patch("variable_manager._gh_request")
+    @patch("scripts.tools.variable_manager._gh_request")
     def test_full_cycle_fails_gracefully_on_403(self, mock_req):
         """403 on LIST should print failure and return cleanly."""
         mock_req.return_value = (403, {"message": "Resource not accessible"})

@@ -1,0 +1,62 @@
+{
+  "authority": "none",
+  "checkpoint": {
+    "actors": {
+      "activation": "unsupported",
+      "approval": "NOT_RUN",
+      "implementer": "unverified",
+      "independent_verifier": "unknown"
+    },
+    "candidate_ref": "ab9641d65b4d50550950ca2271f560eb069069e1ee10c51cc3b3d6c9863f7131",
+    "canonical_digest": "e2ed9e24c5c7ea3f9e17745830059c39cb492fd2c8c478caeba5e1b2b145f12b",
+    "compressed_sha256": "7c5041eba8ab8b120bb6a1d9e1c1790a111e5c7a49acd73142f9b5be29ad8c3a",
+    "envelope_integrity_matches": true,
+    "lifecycle": "Draft",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz",
+    "source_binding_matches": true,
+    "source_binding_receipt": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/final-source-binding.json",
+    "source_sha": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+    "validation_state": "candidate"
+  },
+  "created_at": "2026-10-25T03:15:25Z",
+  "root_runtime_scan": {
+    "actual_tool_response": "No secrets detected in the scanned files. Safe to proceed with commit.",
+    "exact_hashes_rechecked": [
+      {
+        "bytes": 2727,
+        "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-resume-cache.json",
+        "sha256": "2983eaccf1600fb0c1aa5bdab26f490d073e048faafa385ee3176e24f7cb224d"
+      },
+      {
+        "bytes": 897,
+        "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/checkpoint-verification.json",
+        "sha256": "a4b3d79cf30cff01d38dbb75957ecdbe6342096f647d20f64adfd4f03e2cddc8"
+      },
+      {
+        "bytes": 4508,
+        "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/experience-final.json",
+        "sha256": "6caf22772dd52d62e15b13d616a1de908bc1063f49b0351d73756d8219f8fa97"
+      },
+      {
+        "bytes": 147143,
+        "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/final-secret-scan.json",
+        "sha256": "fd0f09b84cf53edb2321798e5ce5322c436f3f549fde08859621e8fb43059f2c"
+      },
+      {
+        "bytes": 3301,
+        "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/gate-adjudication.json",
+        "sha256": "5a3e26778570833bf2d61851df3c986fe84772717b8ab0bb88160aac042698fb"
+      }
+    ],
+    "file_count": 5,
+    "interpretation": "Five named root text files reported no secrets; no inference concerning archive traversal or other files.",
+    "receipt": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/security/runtime-root-scan.json",
+    "tool_version": "Not supplied"
+  },
+  "schema": "codex.security.candidate-binding-review.v1",
+  "triage": {
+    "disposition": "60 findings classified as checksums/hash-or-source-identifiers; 13 credential-like matches remain unresolved, not confirmed credentials and not clean.",
+    "publication": "Affected content remains withheld pending coordinator/security-owner review. No validity checks or external verification attempted.",
+    "receipt": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/security/triage-summary.json"
+  }
+}

@@ -14,6 +14,7 @@ Tests cover:
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 import zipfile
 from pathlib import Path
@@ -50,7 +51,9 @@ class TestSnapshot:
         )
 
         assert snapshot.snapshot_id == "20251217-abc123", "snapshot_id is not valid"
-        assert snapshot.source_path == os.path.join(tempfile.gettempdir(), "source"), "source_path is not valid"
+        assert snapshot.source_path == os.path.join(
+            tempfile.gettempdir(), "source"
+        ), "source_path is not valid"
         assert snapshot.content_hash == "deadbeef", "Content must not be empty"
 
     def test_get_source_dir(self, tmp_path: Path) -> None:
@@ -98,7 +101,9 @@ class TestSnapshot:
 
         data = snapshot.to_dict()
         assert data["snapshot_id"] == "test", "Data must not be empty"
-        assert data["source_path"] == os.path.join(tempfile.gettempdir(), "test"), "Data must not be empty"
+        assert data["source_path"] == os.path.join(
+            tempfile.gettempdir(), "test"
+        ), "Data must not be empty"
         assert data["content_hash"] == "hash123", "Data must not be empty"
         assert data["metadata"] == {"key": "value"}, "Data must not be empty"
         assert data["created_at"] == now.isoformat(), "Data must not be empty"
@@ -196,7 +201,8 @@ class TestSizeBounds:
         large_file = tmp_path / "large.txt"
         # Create file larger than MAX_FILE_SIZE_MB
         size_bytes = (MAX_FILE_SIZE_MB + 1) * 1024 * 1024
-        large_file.write_bytes(b"x" * int(size_bytes))
+        with large_file.open("wb") as stream:
+            stream.truncate(size_bytes)
 
         with pytest.raises(ValueError, match="File size .* exceeds limit"):
             _check_size_bounds(large_file)
@@ -212,7 +218,8 @@ class TestSizeBounds:
         """Test directory total size limit enforcement."""
         # Create directory exceeding MAX_TOTAL_SIZE_MB
         size_per_file = (MAX_TOTAL_SIZE_MB + 10) * 1024 * 1024
-        (tmp_path / "huge.bin").write_bytes(b"x" * int(size_per_file))
+        with (tmp_path / "huge.bin").open("wb") as stream:
+            stream.truncate(size_per_file)
 
         with pytest.raises(ValueError, match="Total size .* exceeds limit"):
             _check_size_bounds(tmp_path)
@@ -221,8 +228,10 @@ class TestSizeBounds:
         """Test file count limit enforcement."""
         # This test would be slow, so we'll mock the count
         with patch.object(Path, "rglob") as mock_rglob:
-            mock_files = [MagicMock(is_file=lambda: True) for _ in range(MAX_FILES_COUNT + 1)]
-            mock_rglob.return_value = mock_files
+            entry = MagicMock(spec=Path)
+            entry.is_file.return_value = True
+            entry.stat.return_value.st_size = 0
+            mock_rglob.return_value = [entry] * (MAX_FILES_COUNT + 1)
 
             with pytest.raises(ValueError, match="File count .* exceeds limit"):
                 _check_size_bounds(tmp_path)
@@ -286,7 +295,9 @@ class TestIngestSingleFile:
         artifacts_dir = tmp_path / "artifacts"
         snapshot = ingest(source_file, artifacts_dir=artifacts_dir)
 
-        assert snapshot.snapshot_id.startswith(snapshot.created_at.strftime("%Y%m%d")), "Condition must be true"
+        assert snapshot.snapshot_id.startswith(
+            snapshot.created_at.strftime("%Y%m%d")
+        ), "Condition must be true"
         assert snapshot.source_path == str(source_file), "source_path is not valid"
         assert snapshot.content_hash, "Content must not be empty"
         assert snapshot.snapshot_dir.exists(), "Condition must be true"
@@ -357,7 +368,9 @@ class TestIngestDirectory:
         snapshot = ingest(source_dir, artifacts_dir=artifacts_dir)
 
         assert (snapshot.snapshot_dir / "patches").exists(), "Condition must be true"
-        assert (snapshot.snapshot_dir / "tests" / "codex_generated").exists(), "Condition must be true"
+        assert (
+            snapshot.snapshot_dir / "tests" / "codex_generated"
+        ).exists(), "Condition must be true"
         assert (snapshot.snapshot_dir / "llm_provenance").exists(), "Condition must be true"
 
 
@@ -395,7 +408,8 @@ class TestIngestErrors:
         """Test ingestion fails for oversized file."""
         large_file = tmp_path / "large.py"
         size_bytes = (MAX_FILE_SIZE_MB + 1) * 1024 * 1024
-        large_file.write_bytes(b"x" * int(size_bytes))
+        with large_file.open("wb") as stream:
+            stream.truncate(size_bytes)
 
         artifacts_dir = tmp_path / "artifacts"
 

@@ -1,0 +1,406 @@
+{
+  "artifact_type": "source-backed-architecture-review",
+  "format_version": 1,
+  "iteration": "006",
+  "bearing": "090",
+  "role": "architecture-analyst",
+  "status": "analytical-handoff-only",
+  "repository": "/home/runner/work/_codex_/_codex_",
+  "candidate": {
+    "commit": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+    "observed_head": "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+    "comparison_method": "Read-only git diff and SHA-256 comparison of git-show candidate bytes with working-tree files.",
+    "observed_commit_difference": [
+      ".codex/session_startup_packet.json"
+    ],
+    "scoped_candidate_head_diff_exit_code": 0,
+    "source_bytes_match": true,
+    "digest_algorithm": "sha256",
+    "digest_scope": "Raw file bytes, not an institutional canonical-record digest."
+  },
+  "source_files": {
+    "assurance": {
+      "path": "/home/runner/work/_codex_/_codex_/src/codex/institutional/assurance.py",
+      "candidate_sha256": "ba67ea4d6201dd3c3243ec86715c54f21f1b620ac8dc8bc48732b818e020402c",
+      "working_tree_sha256": "ba67ea4d6201dd3c3243ec86715c54f21f1b620ac8dc8bc48732b818e020402c"
+    },
+    "core": {
+      "path": "/home/runner/work/_codex_/_codex_/src/codex/institutional/core.py",
+      "candidate_sha256": "636c45dc7eed70d0bed4bc80602f6831fd76ef5a688119f082ae7f8fe4743cef",
+      "working_tree_sha256": "636c45dc7eed70d0bed4bc80602f6831fd76ef5a688119f082ae7f8fe4743cef"
+    },
+    "storage": {
+      "path": "/home/runner/work/_codex_/_codex_/src/codex/institutional/storage.py",
+      "candidate_sha256": "35e7122d388e44eb1badf025a2e69f2dffee0cf473822ca001e4f9f52b2a947f",
+      "working_tree_sha256": "35e7122d388e44eb1badf025a2e69f2dffee0cf473822ca001e4f9f52b2a947f"
+    },
+    "review": {
+      "path": "/home/runner/work/_codex_/_codex_/src/codex/institutional/review.py",
+      "working_tree_sha256": "12ef9992b0b1a7412076cc26abc49cf42028bcb1b8fa94f65ecff9d41fc2d959",
+      "candidate_head_bytes_match_by_git_diff": true
+    },
+    "contracts": {
+      "path": "/home/runner/work/_codex_/_codex_/src/codex/institutional/contracts.json",
+      "candidate_head_bytes_match_by_git_diff": true
+    },
+    "assurance_tests": {
+      "path": "/home/runner/work/_codex_/_codex_/tests/institutional/test_assurance.py",
+      "working_tree_sha256": "716e7ae1919429cfd42b878ab83aad8dc35f6f123a3360d041a41ddc5b558a88",
+      "candidate_head_bytes_match_by_git_diff": true
+    },
+    "foundation_tests": {
+      "path": "/home/runner/work/_codex_/_codex_/tests/institutional/test_foundation.py",
+      "working_tree_sha256": "f6d5bd11cc4049ba92e47f0fc900d98f2ca97f3d433b3364228785b053f2984b",
+      "candidate_head_bytes_match_by_git_diff": true
+    }
+  },
+  "line_binding_contract": "Every source_file key resolves to an absolute path above. Line ranges are inclusive and bind to the fixed candidate; inspected source bytes match current HEAD.",
+  "observations": [
+    {
+      "id": "O1",
+      "source_file": "assurance",
+      "function": "module docstring",
+      "lines": [3, 4],
+      "source_quote": "Procedures are declarations, never executable commands. Actor, provenance and\neligibility claims remain unverified. No result grants approval or activation.",
+      "observed": "The module explicitly limits its evidence and authority semantics.",
+      "confidence": "high-source-inspection"
+    },
+    {
+      "id": "O2",
+      "source_file": "assurance",
+      "function": "ingest_result",
+      "lines": [588, 589],
+      "source_quote": "``result`` fields are documented in assurance-review.rst. Nothing here\n    executes the registered procedure or authenticates the attributed actor.",
+      "observed": "Result ingestion accepts externally supplied assertions rather than executing or authenticating them.",
+      "related_implementation": {
+        "function": "_result",
+        "lines": [313, 346],
+        "checks": [
+          "Plan digest and review binding",
+          "Procedure and environment digest equality",
+          "Actor string equality and unverified identity assurance",
+          "Payload bounds, output names and evidence structure"
+        ]
+      },
+      "confidence": "high-source-inspection"
+    },
+    {
+      "id": "O3",
+      "source_file": "assurance",
+      "function": "validate_artifact",
+      "lines": [808, 809],
+      "source_quote": "expected = reconcile(data[\"history\"], data[\"current_manifest\"], data[\"dispositions\"])\n        _require(data == expected[\"payload\"][\"data\"], \"RECOMMENDATION_MISMATCH\")",
+      "observed": "Recommendation validation recomputes the supplied history, manifest and dispositions rather than accepting a cached recommendation string.",
+      "confidence": "high-source-inspection"
+    },
+    {
+      "id": "O4",
+      "source_file": "assurance",
+      "function": "reconcile",
+      "lines": [749, 751],
+      "source_quote": "Every original finding and relation is retained. FIXED routes are proposals,\n    never executed or treated as closure. Responses require public review\n    remediation coverage plus currently eligible finding-bound assurance evidence.",
+      "observed": "The implementation recomputes its baseline and uses a disposition ledger; nonmutating rejection requires current finding-bound evidence.",
+      "related_implementation": {
+        "function": "_dispositions",
+        "lines": [637, 737],
+        "checks": [
+          "REJECTED_WITH_EVIDENCE route restriction",
+          "Original dissent source quote retention",
+          "Latest result and PASSED node checks",
+          "Finding requirement digest and source coverage",
+          "Response source and disposition reason coverage"
+        ]
+      },
+      "confidence": "high-source-inspection"
+    },
+    {
+      "id": "O5",
+      "source_file": "assurance",
+      "function": "fold_events",
+      "lines": [520, 523],
+      "source_quote": "Replay every event; caches are comparisons, never trusted inputs.\n\n    Hash chains detect accidental corruption, not hostile resealing. Prior\n    result assertions remain in events; retries never erase their predecessors.",
+      "observed": "The declared append-only guarantee is bounded and explicitly excludes hostile resealing.",
+      "related_implementation": {
+        "function": "_fold",
+        "lines": [425, 516],
+        "checks": [
+          "Event UUID, order, predecessor and digest",
+          "Retry predecessor",
+          "Evidence status predecessor",
+          "Result prerequisite binding"
+        ]
+      },
+      "confidence": "high-source-inspection"
+    },
+    {
+      "id": "O6",
+      "source_file": "assurance",
+      "function": "attach_continuation",
+      "lines": [815, 816],
+      "source_quote": "The coordinator must still preview/revalidate repository drift and use its\n    existing write path. No files are written and no new store is created here.",
+      "observed": "Attachment is a pure successor constructor, not persistence or authorization.",
+      "related_implementation": {
+        "function": "attach_continuation",
+        "lines": [818, 840],
+        "checks": [
+          "Continuation envelope validation",
+          "Semantic validation of supplied new assurance artifacts",
+          "Duplicate attachment IDs",
+          "Sequence increment and predecessor digest",
+          "Session payload and extension preservation"
+        ]
+      },
+      "confidence": "high-source-inspection"
+    },
+    {
+      "id": "O7",
+      "source_file": "core",
+      "function": "inventory",
+      "lines": [347, 349],
+      "source_quote": "\"Path census only; no usage, effectiveness or permission conclusions.\",\n                \"Git census describes the identified tree, not untracked or dirty content.\",\n                \"Filesystem census excludes .git, symlink directories and framework state.\",",
+      "observed": "The inventory itself disclaims semantic and permission conclusions; Git-tree inventory and worktree drift are distinct checks.",
+      "related_implementation": {
+        "function": "verify / worktree",
+        "lines": [564, 594],
+        "checks": [
+          "Contract digest and target root",
+          "Tracked dirty-content digest",
+          "Current inventory payload equality",
+          "Dirty diff excludes agent profiles and framework state; untracked content is not included by git diff HEAD"
+        ]
+      },
+      "confidence": "high-source-inspection"
+    },
+    {
+      "id": "O8",
+      "source_file": "storage",
+      "function": "plan",
+      "lines": [92, 95],
+      "source_quote": "\"lifecycle\": \"Draft -> Draft\",\n        \"authority\": \"explicit ordinary write only; no activation\",\n        \"activation\": \"unsupported\",\n        \"previous\": digest(old) if old else None,",
+      "observed": "Persistence is explicitly ordinary Draft-state writing, not governance adoption.",
+      "related_implementation": {
+        "function": "plan / apply",
+        "lines": [50, 211],
+        "checks": [
+          "Ownership marker and historical filename digest",
+          "Compare-and-swap predecessor, sequence, session and extensions",
+          "Preview and repository drift rechecks before and under writer lock",
+          "Anchored no-follow directory access",
+          "Predecessor checkpoint preservation and atomic checkpoint replacement"
+        ]
+      },
+      "confidence": "high-source-inspection"
+    },
+    {
+      "id": "O9",
+      "source_file": "review",
+      "function": "remediation_adequacy",
+      "lines": [618, 620],
+      "source_quote": "Evidence is a claimed observation, not independently verified truth. The\n    rotated lane must reproduce the original quote/normalization with its own\n    exact attributed source. Contradictions remain a reconciliation concern.",
+      "observed": "Remediation checks evidence coverage and rotated attributed outputs, not independent truth or authenticated identities.",
+      "confidence": "high-source-inspection"
+    }
+  ],
+  "test_source_evidence": [
+    {
+      "source_file": "assurance_tests",
+      "function": "test_existing_continuation_storage_roundtrip_and_tampered_recommendation",
+      "lines": [837, 840],
+      "source_quote": "bad = copy.deepcopy(final)\n    bad[\"payload\"][\"data\"][\"recommendation\"] = \"APPROVED\"\n    with pytest.raises(core.Rejected, match=\"RECOMMENDATION_MISMATCH\"):\n        assurance.attach_continuation(original, [reseal(bad)])",
+      "meaning": "Test source expects semantic rejection even after envelope resealing.",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "source_file": "assurance_tests",
+      "function": "test_candidate_context_drift_reopens_and_cannot_be_resumed",
+      "lines": [607, 620],
+      "source_quote": "assert state[\"current_binding\"] is False",
+      "quote_lines": [610, 610],
+      "meaning": "Test source covers candidate-byte and context changes reopening nodes and blocking resume/ingestion.",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "source_file": "assurance_tests",
+      "function": "test_retry_preserves_original_and_invalidates_transitive_results",
+      "lines": [541, 560],
+      "source_quote": "assert successor[\"payload\"][\"data\"][\"events\"][:-1] == history[\"payload\"][\"data\"][\"events\"]",
+      "quote_lines": [560, 560],
+      "meaning": "Test source checks retry preservation and transitive invalidation.",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "source_file": "assurance_tests",
+      "function": "test_finding_response_retains_minority_and_original_contradiction_ledger",
+      "lines": [684, 708],
+      "source_quote": "assert data[\"original_review\"][\"relations\"][0][\"type\"] == \"contradicts\"",
+      "quote_lines": [692, 692],
+      "meaning": "Test source preserves minority wording and relations despite a fixture rejection recommendation.",
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "source_file": "foundation_tests",
+      "function": "test_integrity_and_identity_are_not_authorization",
+      "lines": [111, 132],
+      "source_quote": "assert \"TRUSTED_IDENTITY_UNAVAILABLE\" in reasons\n    assert \"ACTIVATION_UNSUPPORTED\" in reasons\n    assert \"EXPIRY_UNVERIFIED\" in reasons",
+      "quote_lines": [130, 132],
+      "meaning": "Test source explicitly distinguishes resealable integrity from trusted authorization.",
+      "execution_status": "NOT_RUN"
+    }
+  ],
+  "initial_to_meta_proposal": {
+    "id": "H1",
+    "initial": {
+      "claim_type": "speculative-analyst-hypothesis",
+      "hypothesis_quote": "A caller can clear an original concern merely by changing the cached recommendation string.",
+      "quote_origin": "Analyst-authored suspicion; not a quotation from repository source.",
+      "source_quote": null,
+      "confidence": "speculative-before-counterevidence",
+      "clearance_conditions": [
+        "Locate whether recommendation contents are recomputed rather than trusted.",
+        "Locate whether nonmutating finding rejection requires current finding-bound evidence.",
+        "Check source tests for resealed recommendation-string tampering."
+      ]
+    },
+    "meta": {
+      "response_type": "proposed-analytical-response-only",
+      "proposed_disposition": "REJECTED_WITH_EVIDENCE",
+      "proposed_route": "nonmutating",
+      "disposition_reason": "The cached-string-only hypothesis is contradicted by recommendation recomputation and current finding-bound disposition checks on the semantically validated assurance attachment path.",
+      "counterevidence_observation_ids": ["O3", "O4", "O6", "O9"],
+      "counterevidence_test": {
+        "source_file": "assurance_tests",
+        "lines": [837, 840],
+        "execution_status": "NOT_RUN"
+      },
+      "retained_initial_hypothesis_quote": "A caller can clear an original concern merely by changing the cached recommendation string.",
+      "narrow_scope": "Rejects only cached-string substitution as sufficient on the semantically validated assurance path. Does not reject concerns C1, C2 or C3.",
+      "confidence": "high-source-reasoning-not-execution",
+      "workflow_executed": false,
+      "institutional_disposition_emitted": false,
+      "runtime_adequacy_or_clearance_claimed": false,
+      "handoff_requirement": "Coordinator may package this actual analysis into the existing workflow. This JSON is not itself a codex.assurance.v1 artifact, a rotated runtime followup, an eligible assurance result or an adjudication."
+    }
+  },
+  "residual_concerns": [
+    {
+      "id": "C1",
+      "title": "Semantic validation differs between assurance attachment and generic persistence admission",
+      "status": "OPEN_UNCLOSED",
+      "observed": "attach_continuation semantically validates supplied new artifacts. inspect_candidate uses generic validate(child); the assurance schema leaves data as an object without assurance replay.",
+      "evidence": [
+        {"source_file": "assurance", "function": "attach_continuation", "lines": [823, 824]},
+        {"source_file": "assurance", "function": "validate_artifact", "lines": [790, 809]},
+        {"source_file": "core", "function": "inspect_candidate", "lines": [379, 384]},
+        {"source_file": "contracts", "function": "codex.assurance.v1 schema", "lines": [5, 12]},
+        {"source_file": "storage", "function": "plan / apply", "lines": [50, 54]},
+        {"source_file": "storage", "function": "apply", "lines": [158, 164]}
+      ],
+      "inferred_risk": "A directly assembled and consistently resealed continuation is not guaranteed assurance-semantic validation by generic persistence admission.",
+      "counterevidence": "The intended assurance attachment constructor does perform semantic validation; persistence remains Draft-only and provides no authority.",
+      "confidence": {
+        "observation": "high",
+        "inference": "high-static-reasoning",
+        "executed_reproduction": "none"
+      },
+      "classification": "composition admission-consistency concern; not an established authorization bypass",
+      "proposed_owner": "Existing institutional continuation/storage maintainers",
+      "next_step": "Compose schema-dispatched assurance semantic validation into existing admission and recovery paths without changing authority limits."
+    },
+    {
+      "id": "C2",
+      "title": "Co-storage does not establish assurance-to-repository-candidate cross-binding",
+      "status": "OPEN_UNCLOSED",
+      "observed": "attach_continuation validates artifacts individually without comparing their manifest binding to the continuation inventory. Review bindings hash explicitly supplied manifests and context.",
+      "evidence": [
+        {"source_file": "assurance", "function": "attach_continuation", "lines": [818, 840]},
+        {"source_file": "assurance", "function": "_current", "lines": [276, 283]},
+        {"source_file": "review", "function": "candidate_manifest", "lines": [145, 185]},
+        {"source_file": "review", "function": "review_plan", "lines": [224, 239]},
+        {"source_file": "core", "function": "inspect_candidate", "lines": [392, 402]},
+        {"source_file": "assurance_tests", "function": "manifest", "lines": [46, 50]},
+        {"source_file": "assurance_tests", "function": "test_existing_continuation_storage_roundtrip_and_tampered_recommendation", "lines": [819, 836]}
+      ],
+      "inferred_risk": "Consumers could mistake an attached assurance artifact for evidence about the persisted repository candidate when no such cross-binding was established.",
+      "counterevidence": "Assurance results bind their own plan and supplied candidate/context; core independently binds its inventory and checks repository drift. The roundtrip fixture intentionally demonstrates independent composition, not authenticated candidate equivalence.",
+      "confidence": {
+        "observation": "high",
+        "inference": "high-static-reasoning",
+        "executed_reproduction": "none"
+      },
+      "classification": "consumer interpretation and cross-binding concern",
+      "proposed_owner": "Existing institutional review/continuation maintainers",
+      "next_step": "Define an explicit candidate/context mapping or classify attachments as unbound; do not infer equivalence from shared storage."
+    },
+    {
+      "id": "C3",
+      "title": "Cooperative append-only construction is not hostile-reseal resistance",
+      "status": "OPEN_UNCLOSED",
+      "observed": "Assurance constructors copy and append events and replay chain checks. Storage preserves prior checkpoint bytes, but lineage checks do not enforce retention of every prior record in the successor or an externally trusted history head.",
+      "evidence": [
+        {"source_file": "assurance", "function": "fold_events", "lines": [519, 524]},
+        {"source_file": "assurance", "function": "_append", "lines": [559, 574]},
+        {"source_file": "storage", "function": "plan", "lines": [72, 86]},
+        {"source_file": "storage", "function": "apply", "lines": [198, 211]},
+        {"source_file": "assurance_tests", "function": "test_retry_preserves_original_and_invalidates_transitive_results", "lines": [541, 560]}
+      ],
+      "inferred_risk": "A consumer treating resealable hashes or local predecessor archives as authenticated immutable history would overstate the guarantee.",
+      "counterevidence": "The source explicitly disclaims hostile-reseal protection, checks event predecessor/order/retry linkage, and preserves historical checkpoints through the cooperative write path.",
+      "confidence": {
+        "observation": "high",
+        "inference": "high-static-reasoning",
+        "executed_reproduction": "none"
+      },
+      "classification": "documented trust-boundary limitation and continuity-composition concern, not a newly demonstrated defect",
+      "proposed_owner": "Existing institutional assurance/storage maintainers",
+      "next_step": "If append-only continuity is required, add explicit successor-history extension checks in existing components; retain the hostile-reseal disclaimer unless an authorized external trust anchor is separately established."
+    }
+  ],
+  "institutional_result": {
+    "type": "concrete-component-composition-recommendation",
+    "status": "PROPOSED_NOT_IMPLEMENTED",
+    "recommendation": "Enhance the existing continuation coordinator to compose assurance semantic admission/recovery validation, explicit assurance-to-candidate/context binding or unbound labeling, and history-extension checks where continuity is required.",
+    "reuse_existing_components": [
+      "codex.institutional.assurance.validate_artifact",
+      "codex.institutional.assurance.attach_continuation",
+      "codex.institutional.core.inspect_candidate",
+      "codex.institutional.core.verify",
+      "codex.institutional.storage.plan",
+      "codex.institutional.storage.apply"
+    ],
+    "evidence_observation_ids": ["O3", "O5", "O6", "O7", "O8"],
+    "addresses_open_concerns": ["C1", "C2", "C3"],
+    "new_agent": false,
+    "new_store": false,
+    "new_reconciler": false,
+    "runtime_changes_this_iteration": false,
+    "acceptance_criteria_for_future_authorized_work": [
+      "Direct admission and recovery cannot treat a semantically invalid assurance recommendation as validated merely because its envelope is consistently resealed.",
+      "Attachments explicitly identify whether their assurance manifest/context maps to the persisted repository candidate.",
+      "Required history-continuity policy rejects successor truncation or replacement while retaining prior evidence.",
+      "Draft-only, unverified-identity, no-approval and no-activation boundaries remain unchanged."
+    ]
+  },
+  "execution_and_authority": {
+    "analysis_method": "Direct bounded source, test-source, git-diff and file-digest inspection.",
+    "test_execution": "NOT_RUN",
+    "linters": "NOT_RUN",
+    "builds": "NOT_RUN",
+    "G5": "NOT_RUN",
+    "independent_reproduction": "NOT_RUN",
+    "reconciler_execution": "NOT_RUN",
+    "runtime_adapter_execution": "NOT_RUN",
+    "approval": "NOT_GRANTED",
+    "authority": "none",
+    "activation": false,
+    "commit_or_push": false,
+    "new_runtime_changes": false,
+    "permitted_output_only": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/architecture-bearing.json",
+    "limitations": [
+      "No test result is claimed from inspected test source.",
+      "No actor authentication, trusted independence, eligibility truth or authorization is established.",
+      "No institutional reconciliation or adjudication has been performed.",
+      "The three residual composition concerns remain unclosed.",
+      "No agent-profile files were inspected."
+    ]
+  }
+}

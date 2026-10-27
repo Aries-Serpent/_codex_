@@ -1,11 +1,11 @@
 # GitHub API Reference for Copilot Coding agent
-**Last Updated:** 2026-07-11
-**Version:** v0.2.0
+**Last Updated:** 2026-10-22
+**Version:** v0.3.0
 
 > **Scope:** Aries-Serpent/_codex_ repository
 > **Audience:** GitHub Copilot Coding agent (Web UI)
-> **Authority:** Acting on behalf of maintainer `@mbaetiong`
-> **Last Updated: 2026-07-11
+> **Authority boundary:** Repository guidance is not a GitHub permission grant.
+> **Last Updated:** 2026-10-22
 > **Full Secrets/Variables Reference:** [`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`](../reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md)
 > **CB Knowledge Entry:** [`.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md`](../../.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md)
 > **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` §0–§4
@@ -14,18 +14,22 @@
 
 ## TOKEN HIERARCHY — WHICH TOKEN TO USE WHEN
 
-Every GitHub API call requires the correct token. Using the wrong token causes silent
-permission errors. Follow this hierarchy **exactly**:
+Use an available credential with the smallest permission set suitable for the
+operation. Report HTTP permission failures explicitly. Repository fallback
+preferences do not establish scope, validity, role, or bypass eligibility:
 
 | Priority | Token / Secret | Scopes | When to Use |
 |----------|---------------|--------|-------------|
-| 1st | `secrets.CODEX_MASTER_KEY` | `repo` + `workflow` + `actions:write` | PR edits, workflow approvals, variable writes, force-push |
-| 2nd | `secrets.CODEX_BACKUP_KEY` | `repo` + `workflow` | Same as above when MASTER_KEY unavailable |
-| 3rd | `secrets._GITHUB_APP_PRIVATE_KEY` + `_GITHUB_APP_ID` | App installation scopes | Cognitive Brain App — commit signing, PR creation as App identity |
-| 4th | `github.token` / `secrets.GITHUB_TOKEN` | `contents:read`, `pull-requests:write` (limited) | Read-only operations, posting comments |
+| Preferred configured fallback | `secrets.CODEX_MASTER_KEY` | Verify actual token type and grants | Only authorized operations requiring its grants |
+| Backup configured fallback | `secrets.CODEX_BACKUP_KEY` | Verify independently; do not assume identical grants | Appropriate authorized fallback |
+| Optional App integration | `secrets._GITHUB_APP_PRIVATE_KEY` + `_GITHUB_APP_ID` | Actual installation permissions and repository selection | Authorized Cognitive Brain App operations |
+| Job-local token | `github.token` / `secrets.GITHUB_TOKEN` | Actual job permissions and platform eligibility | Available operations within that workflow job |
 
-> `GITHUB_TOKEN` **cannot** approve workflow runs, write Actions variables, or push
-> to protected branches. Always use `CODEX_MASTER_KEY` for those operations.
+Classic PAT scopes such as `repo`/`workflow` and fine-grained permissions such as
+Actions write are different authorization models. Protected operations depend on
+actual credentials and controls, never the credential's name. A workflow's
+`GITHUB_TOKEN` is not Copilot's separate operating token; neither implies
+unrestricted protected-branch or administrative access.
 
 ### Secret availability and agent boundaries
 
@@ -43,7 +47,13 @@ configured CODEX credential fails this read check. Do not expose a privileged
 organization token to every agent; use the smallest permission set and short-lived
 credentials needed by each workflow.
 
-### Fallback Pattern (canonical)
+Current GitHub documentation uses dedicated [Agents secrets and variables](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/configure-secrets-and-variables),
+including migration from the legacy Actions `copilot` environment. Ordinary
+Actions, Codespaces and Dependabot stores are not automatically cloud-agent
+credentials. The actual Agents inventories were inaccessible during the
+2026-10-22 read-only audit; no migration or universal inheritance is assumed.
+
+### Existing Workflow Fallback Pattern
 ```yaml
 env:
  GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -58,7 +68,7 @@ current session context; write them to record outcomes.
 
 | Variable | Type | Purpose | Write Method |
 |----------|------|---------|--------------|
-| `COPILOT_AGENT_AUTH_ENABLED` | `vars.*` | `"true"` when token delegation is active | `gh api PATCH /repos/{owner}/{repo}/actions/variables/COPILOT_AGENT_AUTH_ENABLED` |
+| `COPILOT_AGENT_AUTH_ENABLED` | `vars.*` | Repository feature gate, not proof of an active credential | `gh api -X PATCH /repos/{owner}/{repo}/actions/variables/COPILOT_AGENT_AUTH_ENABLED` |
 | `COPILOT_AGENT_STATE` | `vars.*` | `ACTIVE` / `IDLE` / `SUSPENDED` | Same pattern |
 | `COPILOT_AGENT_SESSION_EXPIRES` | `vars.*` | ISO-8601 TTL for current session | Same pattern |
 | `COPILOT_AGENT_LAST_SESSION_ID` | `vars.*` | Last session UUID | Same pattern |
@@ -71,13 +81,13 @@ current session context; write them to record outcomes.
 
 ### Read a Variable (gh CLI)
 ```bash
-gh api GET /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_AUTH_ENABLED \
+gh api -X GET /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_AUTH_ENABLED \
  --jq '.value'
 ```
 
 ### Write a Variable (gh CLI)
 ```bash
-gh api PATCH /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE \
+gh api -X PATCH /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE \
  -f name='COPILOT_AGENT_STATE' \
  -f value='ACTIVE'
 ```
@@ -86,7 +96,7 @@ gh api PATCH /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE 
 ```bash
 CURRENT=$(gh api /repos/$REPO/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER --jq '.value // "0"')
 NEXT=$((CURRENT + 1))
-gh api PATCH /repos/$REPO/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \
+gh api -X PATCH /repos/$REPO/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \
  -f name='COGNITIVE_BRAIN_SESSION_NUMBER' \
  -f value="$NEXT"
 ```
@@ -228,12 +238,12 @@ await github.rest.actions.approveWorkflowRun({
 ```bash
 # gh CLI equivalent
 GH_TOKEN="${CODEX_MASTER_KEY}" \
- gh api POST "/repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}/approve"
+ gh api -X POST "/repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}/approve"
 ```
 
 ## Cancel a run
 ```bash
-gh api POST "/repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}/cancel"
+gh api -X POST "/repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}/cancel"
 ```
 
 ### Trigger a workflow manually (workflow_dispatch)
@@ -267,27 +277,24 @@ gh api \
 
 ---
 
-## TOKEN DELEGATION — ACTING ON BEHALF OF MAINTAINER
+## REPOSITORY DELEGATION PROVENANCE — NOT PLATFORM AUTHORITY
 
-The `agent-auth-delegation.yml` workflow implements a secure provenance chain that
-grants the Copilot Coding agent maintainer-equivalent authority within a TTL window.
+The `agent-auth-delegation.yml` workflow records repository-local provenance and
+checks configured automation conditions. A checkbox, TTL, feature flag, or local
+file cannot grant GitHub-issued privileges or bypass owner, branch, environment,
+organization, or platform controls. Verify the current workflow implementation
+rather than treating historical checkbox instructions as the current trigger.
 
-### Activation Flow
+### Operation-specific authorization boundary
 
-```
-Maintainer checks [x] COPILOT_AGENT_AUTH_ENABLED in PR body
-
-agent-auth-delegation.yml detects checkbox (REQ-1)
-
-Writes COPILOT_AGENT_AUTH_ENABLED=true to repo vars (requires CODEX_MASTER_KEY)
-
-Issues provenance session token .codex/agent_auth_session.json
-
-Writes COPILOT_AGENT_STATE=ACTIVE, COPILOT_AGENT_SESSION_EXPIRES=<TTL>
-
-Updates COGNITIVE_BRAIN_ALLOWED_ACTORS to include agent actor
-
-agent can now: approve runs, write vars, edit PR bodies, push commits
+```mermaid
+flowchart TD
+    T[Task-authorized operation] --> C{Suitable credential available?}
+    C -- No --> L[Prepare locally or report the capability gap]
+    C -- Yes --> G{Actual grants and platform controls permit it?}
+    G -- No --> L
+    G -- Yes --> O[Perform only the authorized operation]
+    O --> P[Record the actual outcome and relevant provenance]
 ```
 
 ### Session Token File (`.codex/agent_auth_session.json`)
@@ -298,11 +305,11 @@ agent can now: approve runs, write vars, edit PR bodies, push commits
  "issued_by": "agent-auth-delegation",
  "expires_at": "2026-04-05T23:22:00Z",
  "pr_number": 3873,
- "note": "Provenance-chain token. Allows all agent sessions to bypass owner_approval_guard within TTL."
+ "note": "Repository provenance only; not a GitHub credential or an owner-approval bypass."
 }
 ```
 
-### Checking Active Session Before Acting
+### Inspecting local provenance when relevant
 ```python
 import json
 from pathlib import Path
@@ -313,18 +320,23 @@ if session_file.exists():
  session = json.loads(session_file.read_text())
  expires = datetime.fromisoformat(session["expires_at"])
  if datetime.now(timezone.utc) < expires:
- print(f" Session active until {expires.isoformat()}")
+ print(f" Local provenance record unexpired until {expires.isoformat()}")
  else:
- print(" Session expired — request re-delegation")
+ print(" Local provenance record expired; check the relevant integration contract")
 else:
- print(" No session token — maintainer must check COPILOT_AGENT_AUTH_ENABLED")
+ print(" No local provenance record; inspect the relevant repository workflow if needed")
 ```
 
-### Required Secrets for Full Maintainer-Equivalent Authority
+### Optional Integration Credentials
+
+These names describe configured integrations, not a required credential bundle
+for ordinary work or a guarantee of maintainer-equivalent access. Never distribute
+them broadly to compensate for an unavailable capability.
+
 | Secret | Purpose |
 |--------|---------|
-| `CODEX_MASTER_KEY` | PAT (`repo` + `workflow` + `actions:write`) — primary |
-| `CODEX_BACKUP_KEY` | Fallback PAT with same scopes |
+| `CODEX_MASTER_KEY` | Configured credential; verify token type, grants and eligibility |
+| `CODEX_BACKUP_KEY` | Independently verified fallback credential |
 | `_GITHUB_APP_ID` | Cognitive Brain App ID (GitHub App) |
 | `_GITHUB_APP_PRIVATE_KEY` | Cognitive Brain App private key (PEM) |
 | `_GITHUB_APP_INSTALLATION_ID` | Installation ID for this repo |
@@ -574,9 +586,16 @@ detect-secrets scan --baseline .secrets.baseline
 python scripts/ci/check_deferral_language.py --pr-body "$(gh pr view $PR --json body -q .body)"
 ```
 
-## Pattern: Push a commit as agent (report_progress)
-```
-# ALWAYS use report_progress tool — never git push directly
+## Pattern: Publish through the available authorized mechanism
+
+Use `report_progress` when the host provides and requires it. Otherwise use the
+available authorized repository tooling; do not invent an unavailable function.
+Preparing local changes is separate from permission to push, run privileged
+workflows, merge, deploy, or change settings. Preserve existing PR/WEC state when
+a PR exists; local work does not require inventing one.
+
+```python
+# Only when this tool is exposed by the host:
 report_progress(
  commitMessage="fix: <description>",
  prDescription=f"{checklist}\n{canonical_wec_block}",
@@ -587,18 +606,19 @@ report_progress(
 
 ## PRE-CONCLUSION CHECKLIST (§0 CODEBASE_AGENCY_POLICY.md)
 
-Before ending any session the agent MUST verify:
+Before concluding, report the checks relevant to the objective and affected
+areas, their actual results, and any unresolved or unavailable evidence. Apply PR
+checks only when a PR exists, and do not claim that a check ran from a selection
+or text attestation.
 
 ```
- 0a. ALL new PR comments reviewed (comment_new + review threads)
- 0b. ALL failing CI checks on latest commit investigated and fixed
- 0c. No deferral language in any commit message, PR body, or comment
- 0d. WEC block appended to PR body via report_progress — all [x] preserved
- 0e. CHANGELOG.md updated with ### Fixed entry for this session
- 0f. .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with session summary
- 0g. .secrets.baseline regenerated if CODEX_MANIFEST.json or agent_context.json changed
- 0h. All tests pass locally (pytest -q)
- 0i. Cognitive Brain AfterMath closed (POST /api/v1/session/complete)
+ Applicable PR feedback and affected CI findings reviewed
+ Task-relevant fixes validated; other findings and limitations recorded honestly
+ Existing WEC selections preserved when updating an existing PR
+ Required changelog/accountability records updated in their active locations
+ Any changed manifest/baseline integrity contract preserved
+ Relevant tests and security checks reported with their real outcomes
+ Optional local session services used only when available and applicable
 ```
 
 ---
@@ -698,7 +718,7 @@ Fix: use CODEX_MASTER_KEY (repo-scoped PAT) for variable CRUD.
 REPO_ID=$(gh api /repos/Aries-Serpent/_codex_ --jq '.id')
 
 # Create environment variable
-gh api POST /repositories/$REPO_ID/environments/production/variables \
+gh api -X POST /repositories/$REPO_ID/environments/production/variables \
  -f name='MY_VAR' -f value='my_value'
 ```
 

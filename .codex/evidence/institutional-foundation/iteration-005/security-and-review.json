@@ -1,0 +1,52 @@
+{
+  "schema": "codex.institutional.security-review-observation.v1",
+  "source_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+  "classification": "Nontrivial runtime behavior change",
+  "codeql": {
+    "gate_status": "NOT_RUN",
+    "raw_tool_result": "Analysis Result for 'python'. Found 0 alerts:\n- **python**: Analysis was skipped because the database size is too large.",
+    "interpretation": "Skipped Python analysis is not a clean security result.",
+    "scope_limit": "The available checker has no path-scoping parameter; no local CodeQL CLI was observed."
+  },
+  "tractable_runtime_checks": {
+    "bandit": {
+      "version": "1.9.4",
+      "scope": ["src/codex/institutional/assurance.py"],
+      "findings": 0,
+      "errors": 0,
+      "receipt": "assurance-aggregate-verified-bandit.json"
+    },
+    "ruff_security": {
+      "version": "0.17.2",
+      "selection": "S",
+      "scope": ["src/codex/institutional/assurance.py"],
+      "exit_code": 0,
+      "receipt": "assurance-aggregate-verified-security-ruff.log"
+    },
+    "secret_scan_before_source_commit": {
+      "files": 6,
+      "result": "No secrets detected in the scanned files."
+    }
+  },
+  "same_platform_review": {
+    "initial_review": "Two medium dependency-invalidation defects accepted; see review-feedback.json.",
+    "coordinator_integration": "Aggregate continuation compatibility defect accepted; see review-feedback.json.",
+    "final_reviewer": "rd5-final-static-review",
+    "final_result": "No additional high-confidence finding.",
+    "limits": "Static feedback only; not independent reproduction, audit, approval or G5."
+  },
+  "analysis_tool_index_side_effect": {
+    "observation": "Checker incidentally staged 64 existing task/user paths after the source commit.",
+    "response": "Explicitly restored those index entries from HEAD; no working bytes discarded, no commit/push occurred.",
+    "result": "Index empty; original user file remains dirty, byte-identical and unstaged.",
+    "user_file_sha256": "305f2128a5f1eaf1e26598481c234aa2cc6c34a30d2c0fab55d82369b55ddcd9"
+  },
+  "coordinator_documentation_delta": {
+    "path": "docs/assurance-review.rst",
+    "observation": "After the implementation agent's final checks, coordinator added only installation/origin-identification prose and a console block.",
+    "limits": "Existing Python examples, runtime, tests and fixture harness were unchanged. Final source commit binds the updated documentation; source-only receipt's earlier document hash is not relabeled."
+  },
+  "independent_verification": "NOT_RUN",
+  "approval": "NOT_RUN",
+  "activation": "unsupported"
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "codex.review.v1",
+  "id": "codex.review.v1:8f60898806b57f82bb2920432f94d42c832ad40ddbd818d8c490d2e115895c2c",
+  "created_at": "2026-10-25T00:00:00Z",
+  "producer": {
+    "identity": "codex-institutional",
+    "assurance": "unverified"
+  },
+  "evidence_refs": [],
+  "authority_refs": [],
+  "validation_state": "candidate",
+  "lifecycle": "Draft",
+  "supersedes": null,
+  "extensions": {},
+  "payload": {
+    "kind": "manifest",
+    "data": {
+      "entries": [
+        {
+          "path": "core.py",
+          "sha256": "cb7bce232df6d5b993739c83def42b4ca743bcc849663ad9bffecd6390dc806a",
+          "size": 23750,
+          "mode": 420
+        }
+      ],
+      "context_digest": "e3f7792242530b6d8555a40248850536582ce1d93b9fb43b21547cf8365d2300",
+      "rules": {
+        "symlinks": "reject",
+        "submodules": "reject",
+        "archives": "opaque-no-expansion",
+        "hardlinks": "independent-bytes",
+        "permissions": "explicit-posix-mode",
+        "line_endings": "raw"
+      },
+      "classification": "Repository-Internal"
+    }
+  },
+  "integrity": "8fa12b44701bfd4cf2008074d2d09931ac79bc888d653b0d70f91bc35ba5ba6d"
+}

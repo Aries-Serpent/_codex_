@@ -63,43 +63,43 @@ class CiImporterrorAgent:
         self.token = get_token(required_elevated=True)
         if not self.token:
             raise RuntimeError("Agent requires elevated token")
-        
+
         # Validate required scopes
         required_scopes = ['repo', 'contents:write', 'actions:read_self']
         validate_scope(self.token, required_scopes)
-        
+
         self.logger = logging.getLogger(__name__)
-    
+
     def diagnose_and_fix_import_errors(self, repo, **kwargs):
         """
         Core operation requiring elevated token access.
-        
+
         Args:
             repo: Repository in 'owner/repo' format
             **kwargs: Operation-specific parameters
-        
+
         Returns:
             Result dict with status and details
         """
         url = f"https://api.github.com/repos/{repo}/..."
-        
+
         headers = {
             "Authorization": f"token {self.token}",
             "Accept": "application/vnd.github.v3+json"
         }
-        
+
         try:
             response = requests.post(url, headers=headers, timeout=30)
             response.raise_for_status()
-            
+
             # Log operation metadata (NOT token)
             self.logger.info(
                 "diagnose_and_fix_import_errors",
                 extra={"repo": repo, "status": "success"}
             )
-            
+
             return {"status": "success", "message": "Operation completed"}
-        
+
         except requests.HTTPError as e:
             if e.response.status_code == 403:
                 self.logger.error("Insufficient scope or permission denied")
@@ -121,7 +121,7 @@ class CiImporterrorAgent:
    ```python
    # ✓ CORRECT: Log operation metadata
    logger.info("operation", extra={"repo": repo, "status": "success"})
-   
+
    # ✗ WRONG: Never log token values
    # logger.info(f"Using token: {token[:10]}...")
    ```
@@ -154,13 +154,13 @@ from scripts.ci._hidden_scripts import execute_hidden_script, retrieve_hidden_sc
 
 def execute_stored_pattern(repo, pattern_type):
     """Execute stored operational pattern."""
-    
+
     # Retrieve pattern (stored securely, checksum validated)
     pattern = retrieve_hidden_script(
         script_id=f"pattern_{pattern_type}",
         version="latest"
     )
-    
+
     # Execute in sandbox with audit logging
     result = execute_hidden_script(
         script_id=pattern.id,
@@ -168,7 +168,7 @@ def execute_stored_pattern(repo, pattern_type):
         timeout_ms=60000,
         audit_log=True
     )
-    
+
     return result
 ```
 
@@ -448,7 +448,7 @@ python -m pytest tests/ --collect-only | grep "collected"
 - `.codex/cognitive_brain/import_error_patterns/`
 
 ### Related Policies
-- `.codex/CODEBASE_AGENCY_POLICY.md` - Must fix ALL issues found
+- `.codex/CODEBASE_AGENCY_POLICY.md` - Scoped remediation and evidence-backed handoff
 - `.codex/DEVOPS_TERMINOLOGY_POLICY.md` - Use sprint/iteration/phase
 
 ### Related Agents

@@ -39,14 +39,21 @@
 - [ ] All validation checks passed
 - [ ] Documentation updated
 - [ ] CI/CD checks green
-- [ ] Self-review completed (5 passes, 0 concerns)
+- [ ] Risk-appropriate review recorded; incomplete work and dissent preserved
 
 ### Starting Next Phase
 To begin Phase {next_phase}:
 1. Review current phase completion
 2. Load Phase {next_phase} continuation prompt
-3. Execute `@copilot continue with Phase {next_phase} tasks`
+3. Record exact pending requirements and resume target; do not post trigger-bearing
+   text or start another session without applicable authorization
 
 ---
 
-**Copilot Agent Instructions**: Execute current phase tasks. Upon completion, generate Phase {next_phase} continuation prompt and update this overview.
+**Copilot Agent Instructions**: Prepare current authorized phase tasks using actual
+available tools. Follow `.codex/CODEBASE_AGENCY_POLICY.md`; optional context or
+specialists are not startup gates. Read-only work permits no edits or dispatch.
+Keep blocked/deferred/pending work explicit with evidence, dissent, proposed owner
+and next action. Retaining a continuation is not authority to execute it.
+Security owner/reason checks and actual review/execution approvals remain binding.
+No merge, publication, settings change or activation without applicable authority.

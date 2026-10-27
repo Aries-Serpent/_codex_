@@ -1,0 +1,9 @@
+Processing ./.
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: codex-ml
+  Building wheel for codex-ml (pyproject.toml): started
+  Building wheel for codex-ml (pyproject.toml): finished with status 'done'
+  Created wheel for codex-ml: filename=codex_ml-0.3.0-py3-none-any.whl size=4213929 sha256=de5d8791451bd3ac713f944bf3c0543db20e662f17ca976d413b4c2b071a5930
+  Stored in directory: /tmp/pip-ephem-wheel-cache-nx3lz8sr/wheels/bc/74/3c/206ba13a1316345832c9c930b42c9ab93fa5b66a538ea4ec2a
+Successfully built codex-ml

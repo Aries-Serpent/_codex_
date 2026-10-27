@@ -1,9 +1,116 @@
 """Tests for normalized duplicate detection."""
 
+import ast
 import tempfile
 from pathlib import Path
 
+import pytest
+
 from codex.logging.structured_logger import logger
+from tools.dupinv.normalize import PythonNormalizer
+
+
+@pytest.mark.parametrize(
+    ("outer", "inner", "deep"),
+    [
+        ("  ", "    ", "      "),
+        ("    ", "        ", "            "),
+        ("        ", "                ", "                        "),
+        ("\t", "\t\t", "\t\t\t"),
+        ("  ", "      ", "          "),
+    ],
+)
+def test_python_normalizer_canonicalizes_nesting_depth(outer: str, inner: str, deep: str) -> None:
+    code = (
+        "def process(items):\n"
+        f"{outer}for item in items:\n"
+        f"{inner}if item:\n"
+        f"{deep}use(item)\n"
+        f"{inner}else:\n"
+        f"{deep}skip(item)\n"
+        f"{outer}finish()\n"
+        "next_task()\n"
+    )
+    expected = (
+        "def process(items):\n"
+        "    for item in items:\n"
+        "        if item:\n"
+        "            use(item)\n"
+        "        else:\n"
+        "            skip(item)\n"
+        "    finish()\n"
+        "next_task()"
+    )
+    assert ast.dump(ast.parse(code)) == ast.dump(ast.parse(expected))
+    assert PythonNormalizer().normalize(code) == expected
+
+
+def test_normalized_detector_preserves_block_structure(tmp_path: Path) -> None:
+    inside = "def process(item):\n  if item:\n    use(item)\n    finish()\n"
+    outside = "def process(item):\n  if item:\n    use(item)\n  finish()\n"
+    assert ast.dump(ast.parse(inside)) != ast.dump(ast.parse(outside))
+    assert PythonNormalizer().normalize(inside) != PythonNormalizer().normalize(outside)
+    (tmp_path / "inside.py").write_text(inside, encoding="utf-8")
+    (tmp_path / "outside.py").write_text(outside, encoding="utf-8")
+
+    from tools.dupinv.normalize import NormalizedDetector
+
+    assert NormalizedDetector(tmp_path).scan() == []
+
+
+@pytest.mark.parametrize("indent", ["  ", "    ", "\t"])
+@pytest.mark.parametrize("alignment", ["", " ", "            "])
+@pytest.mark.parametrize(
+    ("continuation", "expected"),
+    [
+        ("use(\n{alignment}item\n{alignment})\n", "use(\n        item\n        )\n"),
+        ("value = \\\n{alignment}item\n", "value = \\\n        item\n"),
+    ],
+)
+def test_python_normalizer_preserves_suites_after_continuations(
+    tmp_path: Path, indent: str, alignment: str, continuation: str, expected: str
+) -> None:
+    prefix = (
+        f"def process(item):\n{indent}if item:\n"
+        f"{indent * 2}{continuation.format(alignment=alignment)}"
+    )
+    inside = prefix + f"{indent * 2}finish()\n"
+    outside = prefix + f"{indent}finish()\n"
+    assert ast.dump(ast.parse(inside)) != ast.dump(ast.parse(outside))
+
+    normalizer = PythonNormalizer()
+    normalized_prefix = "def process(item):\n    if item:\n        " + expected
+    assert normalizer.normalize(inside) == normalized_prefix + "        finish()"
+    assert normalizer.normalize(outside) == normalized_prefix + "    finish()"
+
+    (tmp_path / "inside.py").write_text(inside, encoding="utf-8")
+    (tmp_path / "outside.py").write_text(outside, encoding="utf-8")
+
+    from tools.dupinv.normalize import NormalizedDetector
+
+    assert NormalizedDetector(tmp_path).scan() == []
+
+
+@pytest.mark.parametrize(
+    ("code", "expected"),
+    [
+        ("def f():\n  use(\n", "def f():\n    use("),
+        ("if item:\n    use(item)\n  finish()\n", "if item:\n    use(item)\n    finish()"),
+    ],
+)
+def test_python_normalizer_handles_incomplete_or_invalid_input(code: str, expected: str) -> None:
+    assert PythonNormalizer().normalize(code) == expected
+
+
+def test_python_normalizer_preserves_whitespace_inside_spanning_string_literals() -> None:
+    first = 'def build():\n    text = "hello \\\n    world"\n'
+    second = 'def build():\n    text = "hello\\\nworld"\n'
+    normalized_first = PythonNormalizer().normalize(first)
+    normalized_second = PythonNormalizer().normalize(second)
+
+    assert normalized_first != normalized_second
+    assert 'hello \\\n    world' in normalized_first
+    assert 'hello\\\n    world' in normalized_second
 
 
 def test_normalized_detector_ignores_comments():

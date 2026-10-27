@@ -1,0 +1,326 @@
+{
+  "artifact_type": "retention_manifest",
+  "source_candidate": "a183f97e4f534cd6712588d12d22f821931f5c9c",
+  "file_count": 62,
+  "files": [
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/baseline.json",
+      "bytes": 4994,
+      "sha256": "0a9c7762a23646e4bb683a86e4eb62d729a5fed751689bcb7ae7b7ddeec97242"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/checkpoint-verification.json",
+      "bytes": 4854,
+      "sha256": "4b79b4babd412302f95a3ea9dc64da0dd773712d13de753471784c4ccb32173a"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/commands.json",
+      "bytes": 4916,
+      "sha256": "eea1b8865160e8179383ad66a5a83d29421864a8e4ed36c79423a2157f1fc759"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/continuation.json.gz",
+      "bytes": 2740661,
+      "sha256": "276de71e5fcc637f524c96e19a2ea3fad442cdca90daaaabf3dcff80a48725a6"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/decoded-secret-scan.json",
+      "bytes": 308,
+      "sha256": "8d0b90358e4dab6fa8e6e2143f33b7656efc15012722f651349ca3448b7ea7ba"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/experience-final.json",
+      "bytes": 3026,
+      "sha256": "39d7006fa57ac1da9ac9262bd08575e9eea9d71d99a9aade36df176641956cb7"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/final-secret-scan.json",
+      "bytes": 920,
+      "sha256": "203c4581c785c0dd7bacba7f1d3002d1f017e5e0430baea7ce4509605e951ef3"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/gate-adjudication.json",
+      "bytes": 5440,
+      "sha256": "170402c2187ae7f814dfd318035422a214cefa162658779f3230b18eb502671c"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/handoff.json",
+      "bytes": 6796,
+      "sha256": "336792b92ede69c75849271d115910df4db0b811a94490136621976aa002c2ff"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/owner-decision-packet.json",
+      "bytes": 3132,
+      "sha256": "690f4f1a937953097c092dfc512d29d0503410a23064e560b7c3351212181f64"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/harness/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/harness/test_admission.py",
+      "bytes": 18576,
+      "sha256": "1e8c5f3de072ba7a68e5de6e037e3e8e6d9201861d4db3d1be2d6f6c0ab8f886"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/harness/test_assurance.py",
+      "bytes": 45038,
+      "sha256": "716e7ae1919429cfd42b878ab83aad8dc35f6f123a3360d041a41ddc5b558a88"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/harness/test_authority.py",
+      "bytes": 8067,
+      "sha256": "f841b4bf131dc9d250c1d5fd444de7c838f33e6d5a388e39fa73a34326a5544d"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/harness/test_foundation.py",
+      "bytes": 20404,
+      "sha256": "f6d5bd11cc4049ba92e47f0fc900d98f2ca97f3d433b3364228785b053f2984b"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/harness/test_git_capture.py",
+      "bytes": 3446,
+      "sha256": "030a7150c88ab50eb3db29acc5f47bd6f1ccf47fbd88150dd60715cd9c2425e4"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/harness/test_review.py",
+      "bytes": 22322,
+      "sha256": "92d4de07a9efbdb71ce3fe8c604c81813d5fa6ff46ba0ce3a6b98a85d05f93bd"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/harness/test_review_formulas.py",
+      "bytes": 17334,
+      "sha256": "a18132321ffd0198ad3c0d45b1859d518e7e7a7b402633cc647a9da4deed16e8"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/install-report.json",
+      "bytes": 715009,
+      "sha256": "4021266ab67056c486aaa38a13101960c43dfc6c0529b3783663e70fa4171cc3"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/installed-final-junit.xml",
+      "bytes": 34985,
+      "sha256": "cc6e0d6588b4ac3c355043b263062b95bc16a7bc83b66c7370200a8349251c6f"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/installed-initial-junit.xml",
+      "bytes": 44598,
+      "sha256": "a8b63f87614f5d9a5d98b52221eae0c772768a2fd0dcb8648bee8e12d005f3e5"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/installed-offline-junit.xml",
+      "bytes": 34985,
+      "sha256": "d9a92220c9a60d8ec10f1ead49c994a6e8ce8ffa4582e456d1944a27136d2f80"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/installed-resources.json",
+      "bytes": 25285,
+      "sha256": "021e1cd0f5217bf9ff0b303d33f32e951f61978a5ace77ada7f77322cf993b5b"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/logs/build.txt",
+      "bytes": 646,
+      "sha256": "a78cf92672fc6bd950b43634d7844fb0f04a9103083e1becb531d85cd63654ae"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/logs/contracts-build.txt",
+      "bytes": 922,
+      "sha256": "50e698a03531d0cacb651827e5ecbde7438913d752ec19687e44b8ae12e3ed37"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/logs/install.txt",
+      "bytes": 12395,
+      "sha256": "0435014ab37f9813275045a2d80b14fbebacdd75729380ddbbc335f65443b105"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/logs/installed-final-tests.txt",
+      "bytes": 355,
+      "sha256": "3bdfaf1081ea43fb5c5fe7d610aa6c96e1bb4a99fc07e2c3242a0713f66db454"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/logs/installed-offline-tests.txt",
+      "bytes": 355,
+      "sha256": "5b949ac92476e5d883097845b7cd7241cbe9965ea94a791fc95016d31be0a9de"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/logs/installed-tests.txt",
+      "bytes": 10269,
+      "sha256": "f5314b1719e0aa03f0ae0ed6ac8496217d8f25555204466a06c1f9fd85a03dbf"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/logs/pip-check-after-tests.txt",
+      "bytes": 30,
+      "sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/logs/pip-check.txt",
+      "bytes": 30,
+      "sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/logs/test-provision.txt",
+      "bytes": 986,
+      "sha256": "16e4643c0b2ae2beb81184ce4cea5d3063279210d83471a4a3e7a37da9cb6140"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/source-commit.txt",
+      "bytes": 41,
+      "sha256": "6d2c884b29f00affb1971dc75b4f280514f10b6b7e68732b09f298b7d321d22a"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/source-manifest.json",
+      "bytes": 470576,
+      "sha256": "6ac371bddc635034e3213e3ab0c8b86aa815509b86a0c160596fe22b517b56c1"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/test-install-report.json",
+      "bytes": 18935,
+      "sha256": "879dbe97560beab842afbd51eba0ddf6797645750064cc3ca655bfe45c56cf67"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/wheels/codex_contracts-0.1.0a1-py3-none-any.whl",
+      "bytes": 9381,
+      "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/package/wheels/codex_ml-0.3.0-py3-none-any.whl",
+      "bytes": 4416171,
+      "sha256": "6795b031ff100e2de965d84dde7bdcc437984deaeffb36791d0032d0c17b5eda"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/program-roadmap.json",
+      "bytes": 30981,
+      "sha256": "7974472eee6cbde6b9ee6b4bdd5dc277a330e32f6116b1c17d132508e82a975f"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/repository-adequacy.json",
+      "bytes": 194,
+      "sha256": "90f7c784dea0967463ad9f278f030e34b63926dec16dfa5403ff1613a97914fe"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/repository-assurance-plan.json",
+      "bytes": 17767,
+      "sha256": "5111ef8ea601c219f7a0c1c3a8977e34f85215be0882b5ce1b5cad1018c4e982"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/repository-final.json",
+      "bytes": 41869,
+      "sha256": "637ef26f9c517064ade1168bb5b19faacedd5725014624d6c1e5996f2948228a"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/repository-history.json",
+      "bytes": 23961,
+      "sha256": "b0c9f392c911b2d7644c87900e832f9348616190de609680c373b3b1f23bad07"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/repository-initial.json",
+      "bytes": 9300,
+      "sha256": "8fcfe2bcd30bac143c92b4b2f0a8f1ee185cbf0c6f63b8c58c7e084f8f053f6c"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/repository-manifest.json",
+      "bytes": 1814,
+      "sha256": "f8c2482c0570062a4df0f20063c8de5585d4939d95e8f435fc738903a4f170fd"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/repository-meta.json",
+      "bytes": 11846,
+      "sha256": "9d09066f2c73347d36c95586d1c365a0b5df270cf507c9224a6743a3c11dc663"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/repository-response.json",
+      "bytes": 1471,
+      "sha256": "737430aabc43d28160d7ff5e6abd7e0923bf0d29a7eea06b7be1991d6650cc29"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/repository-resume.json",
+      "bytes": 112,
+      "sha256": "258b01562fcdba113adcd210eb2d6b374f9f127278225ae8681ba2f5c3d5e7fc"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/repository-review-plan.json",
+      "bytes": 4515,
+      "sha256": "ac81310c42604aeac9813582d9a9ab5593761b1480851a6d8924e304fe63242e"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/scoped-bandit.json",
+      "bytes": 2166,
+      "sha256": "44a7583863f395f042d87b7b4f0170aca579a31bf60f34ae2901015d76904276"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/source-review/adequacy.json",
+      "bytes": 194,
+      "sha256": "90f7c784dea0967463ad9f278f030e34b63926dec16dfa5403ff1613a97914fe"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/source-review/assurance_plan.json",
+      "bytes": 16882,
+      "sha256": "919cde63fbad92aa197a49a04e9a7b0e32c4c3aa1561c6459bdc1a5e5b3d6fc8"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/source-review/bound_candidate.json",
+      "bytes": 104718,
+      "sha256": "058e09711ceaff17c56d29b5da72c69d042b6848d5abbd74f5b06c8a59eebbeb"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/source-review/final.json",
+      "bytes": 39704,
+      "sha256": "c0f17c0cdcfefc9ad53c88a99acf68058c8f2551965adda3c5e03a4e0dd456cf"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/source-review/history.json",
+      "bytes": 22725,
+      "sha256": "a049bf744a2221ffc93695e40dc6e473ebbad9a2d2d7a2a867569f7eddb46fe2"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/source-review/initial.json",
+      "bytes": 9300,
+      "sha256": "3ff0f0e0beb967e6d25b73bc044761102a12e27ede2b0d909236ea79c0007627"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/source-review/limits.json",
+      "bytes": 80,
+      "sha256": "7d7939bcfd4a66458eac1c2e58925550e9aa490f4910f0fecd96ace4eab91ac2"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/source-review/manifest.json",
+      "bytes": 1150,
+      "sha256": "726048277a2477c24a43649e236925e31d678a14cf6bca8f0a74aec87d28fe9d"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/source-review/meta.json",
+      "bytes": 11846,
+      "sha256": "1ebd6c99f6357bd3bb501529b1ccb503c4be950a08df6d80b68296e5dede1a2b"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/source-review/outputs.json",
+      "bytes": 4697,
+      "sha256": "bdaf93bae515296cf9bb8a9746258b889b2d244106e534a304e89c6410baa01d"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/source-review/response.json",
+      "bytes": 1471,
+      "sha256": "eac3d3c95b15a2a718c019074859d54ff96810fc674a981a7f2ca4601c20b921"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/source-review/review_plan.json",
+      "bytes": 3743,
+      "sha256": "5df0c8df2a0cf2fc1c83ad82c79cf8e78de7c5aa780e2ff16029532159cc6503"
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-007/validation.json",
+      "bytes": 6133,
+      "sha256": "0b3e2a2587c86fc9b03fd2f0ebedcfbe249fe1be96709346180a62b08ba3f81e"
+    }
+  ],
+  "exclusions": {
+    "paths": [
+      "retention-binding.json",
+      "retention-manifest.json"
+    ],
+    "reason": "Manifest avoids self reference; binding separately checks manifest. Actual final feature-branch Git commit binds both. No missing historical original is manufactured."
+  },
+  "historical_retention": "INCOMPLETE;151 original logs missing as inventoried in iteration006/security/retention-aggregate.json",
+  "authority": "Integrity only; no authenticated custody, clean security, approval or activation."
+}

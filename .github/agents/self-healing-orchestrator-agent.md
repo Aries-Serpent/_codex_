@@ -73,43 +73,43 @@ class SelfHealingOrchestratorAgent:
         self.token = get_token(required_elevated=True)
         if not self.token:
             raise RuntimeError("Agent requires elevated token")
-        
+
         # Validate required scopes
         required_scopes = ['repo', 'workflow', 'actions:write']
         validate_scope(self.token, required_scopes)
-        
+
         self.logger = logging.getLogger(__name__)
-    
+
     def orchestrate_healing_cascade(self, repo, **kwargs):
         """
         Core operation requiring elevated token access.
-        
+
         Args:
             repo: Repository in 'owner/repo' format
             **kwargs: Operation-specific parameters
-        
+
         Returns:
             Result dict with status and details
         """
         url = f"https://api.github.com/repos/{repo}/..."
-        
+
         headers = {
             "Authorization": f"token {self.token}",
             "Accept": "application/vnd.github.v3+json"
         }
-        
+
         try:
             response = requests.post(url, headers=headers, timeout=30)
             response.raise_for_status()
-            
+
             # Log operation metadata (NOT token)
             self.logger.info(
                 "orchestrate_healing_cascade",
                 extra={"repo": repo, "status": "success"}
             )
-            
+
             return {"status": "success", "message": "Operation completed"}
-        
+
         except requests.HTTPError as e:
             if e.response.status_code == 403:
                 self.logger.error("Insufficient scope or permission denied")
@@ -131,7 +131,7 @@ class SelfHealingOrchestratorAgent:
    ```python
    # ✓ CORRECT: Log operation metadata
    logger.info("operation", extra={"repo": repo, "status": "success"})
-   
+
    # ✗ WRONG: Never log token values
    # logger.info(f"Using token: {token[:10]}...")
    ```
@@ -164,13 +164,13 @@ from scripts.ci._hidden_scripts import execute_hidden_script, retrieve_hidden_sc
 
 def execute_stored_pattern(repo, pattern_type):
     """Execute stored operational pattern."""
-    
+
     # Retrieve pattern (stored securely, checksum validated)
     pattern = retrieve_hidden_script(
         script_id=f"pattern_{pattern_type}",
         version="latest"
     )
-    
+
     # Execute in sandbox with audit logging
     result = execute_hidden_script(
         script_id=pattern.id,
@@ -178,7 +178,7 @@ def execute_stored_pattern(repo, pattern_type):
         timeout_ms=60000,
         audit_log=True
     )
-    
+
     return result
 ```
 
@@ -394,15 +394,17 @@ When `iteration_count == 5` and CI is still failing:
 
 ---
 
-## Self-Review Protocol (5-Pass)
+## Risk-based review
 
-Before posting any fix commit or PR comment, run in order:
+For authorized healing work, assess the relevant checks below, not a fixed
+number of review iterations. Existing iteration/cooldown and execution approval
+guards remain intact. Posting comments/commits requires separate authorization.
 
-- [ ] **Pass 1 — Iteration guard**: confirm `iteration_count ≤ 5` and cooldown has elapsed
-- [ ] **Pass 2 — Dedup check**: failure signature not already resolved in last 2h window
-- [ ] **Pass 3 — Fix validity**: specialist agent's self-review passed (ruff + import smoke)
-- [ ] **Pass 4 — No regressions**: diff reviewed; no new lint violations or test removals
-- [ ] **Pass 5 — Policy compliance**: all changes align with `.codex/CODEBASE_AGENCY_POLICY.md §0`
+- [ ] **Iteration guard**: confirm `iteration_count ≤ 5` and cooldown has elapsed
+- [ ] **Dedup check**: failure signature not already resolved in last 2h window
+- [ ] **Fix validity**: actual relevant validation passed (ruff + import smoke)
+- [ ] **No regressions**: diff reviewed; no new lint violations or test removals
+- [ ] **Policy compliance**: authorized scope and actual healing approvals preserved
 
 ---
 

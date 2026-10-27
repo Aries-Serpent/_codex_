@@ -1,0 +1,698 @@
+{
+  "final": {
+    "authority_refs": [],
+    "created_at": "2026-10-25T00:00:00Z",
+    "evidence_refs": [],
+    "extensions": {},
+    "id": "codex.review.v1:5eb38c7ec246472832b1c96374f88f27c649cb932ef085f719d6ce48ebf3bb49",
+    "integrity": "194cd872a59d436326d27288bb1a3b10a72b0b97723fd4965974d156734a6759",
+    "lifecycle": "Draft",
+    "payload": {
+      "data": {
+        "authorization": "none",
+        "binding": "adbd6f4a11ce04d188f5629d784f50bf3de98b0c3c5900b9262e0360fe2e70d9",
+        "blockers": [
+          {
+            "blocked_from_state": "final",
+            "cause": "unresolved-conflict",
+            "clearance_conditions": [
+              "finding-bound-evidence",
+              "explicit-dissent-disposition"
+            ],
+            "pending_requirement": "resolve-conflict",
+            "scope": "logic/f1|dissent/f1"
+          }
+        ],
+        "classification": "Repository-Internal",
+        "findings": {
+          "dissent/f1": {
+            "actor": "same-platform:dissent",
+            "clearance_conditions": [
+              "finding-bound-observation"
+            ],
+            "confidence": 0.4,
+            "coverage": [
+              "security"
+            ],
+            "id": "f1",
+            "identity": "unverified",
+            "kind": "inference",
+            "normalized": "Retained risk",
+            "run": "wheel-fixture:dissent",
+            "source": "same-platform:dissent: Original wording: risk remains. Fixture reproduced.",
+            "source_quote": "Original wording: risk remains."
+          },
+          "logic/f1": {
+            "actor": "same-platform:logic",
+            "clearance_conditions": [
+              "finding-bound-observation"
+            ],
+            "confidence": 0.4,
+            "coverage": [
+              "security"
+            ],
+            "id": "f1",
+            "identity": "unverified",
+            "kind": "inference",
+            "normalized": "Retained risk",
+            "run": "wheel-fixture:logic",
+            "source": "same-platform:logic: Original wording: risk remains. Fixture reproduced.",
+            "source_quote": "Original wording: risk remains."
+          },
+          "risk/f1": {
+            "actor": "same-platform:risk",
+            "clearance_conditions": [
+              "finding-bound-observation"
+            ],
+            "confidence": 0.4,
+            "coverage": [
+              "security"
+            ],
+            "id": "f1",
+            "identity": "unverified",
+            "kind": "inference",
+            "normalized": "Retained risk",
+            "run": "wheel-fixture:risk",
+            "source": "same-platform:risk: Original wording: risk remains. Fixture reproduced.",
+            "source_quote": "Original wording: risk remains."
+          }
+        },
+        "independence": "unverified",
+        "outputs": [
+          {
+            "authority_refs": [],
+            "created_at": "2026-10-25T00:00:00Z",
+            "evidence_refs": [],
+            "extensions": {},
+            "id": "codex.review.v1:1baafe77e66aa553cb1e2d54b5ead39830c62dd1b8706cbd397cac74adfea6a9",
+            "integrity": "91d2e2e9437d0b2c5c876bb46310daf5ad1805cf951e4e3cf22917a35d7643f1",
+            "lifecycle": "Draft",
+            "payload": {
+              "data": {
+                "actor": "same-platform:logic",
+                "binding": "adbd6f4a11ce04d188f5629d784f50bf3de98b0c3c5900b9262e0360fe2e70d9",
+                "findings": [
+                  {
+                    "clearance_conditions": [
+                      "finding-bound-observation"
+                    ],
+                    "confidence": 0.4,
+                    "coverage": [
+                      "security"
+                    ],
+                    "id": "f1",
+                    "kind": "inference",
+                    "normalized": "Retained risk",
+                    "source_quote": "Original wording: risk remains."
+                  }
+                ],
+                "identity": "unverified",
+                "lane": "logic",
+                "plan_digest": "c4b9e70f8dba2ebda87886f969ea4aeaf20e9c694dc9c04c79e0393103572f9e",
+                "run": "wheel-fixture:logic",
+                "source": "same-platform:logic: Original wording: risk remains. Fixture reproduced."
+              },
+              "kind": "lane-output"
+            },
+            "producer": {
+              "assurance": "unverified",
+              "identity": "codex-institutional"
+            },
+            "schema": "codex.review.v1",
+            "supersedes": null,
+            "validation_state": "candidate"
+          },
+          {
+            "authority_refs": [],
+            "created_at": "2026-10-25T00:00:00Z",
+            "evidence_refs": [],
+            "extensions": {},
+            "id": "codex.review.v1:e0daea6b3d31dda943224f07248a9659edf2bfbea85c443e73fcb7ad059f1db0",
+            "integrity": "169b8031758164b1fcc43323147a9412fdc429eb4adbdb8e68bc7f92cdf3c0be",
+            "lifecycle": "Draft",
+            "payload": {
+              "data": {
+                "actor": "same-platform:risk",
+                "binding": "adbd6f4a11ce04d188f5629d784f50bf3de98b0c3c5900b9262e0360fe2e70d9",
+                "findings": [
+                  {
+                    "clearance_conditions": [
+                      "finding-bound-observation"
+                    ],
+                    "confidence": 0.4,
+                    "coverage": [
+                      "security"
+                    ],
+                    "id": "f1",
+                    "kind": "inference",
+                    "normalized": "Retained risk",
+                    "source_quote": "Original wording: risk remains."
+                  }
+                ],
+                "identity": "unverified",
+                "lane": "risk",
+                "plan_digest": "c4b9e70f8dba2ebda87886f969ea4aeaf20e9c694dc9c04c79e0393103572f9e",
+                "run": "wheel-fixture:risk",
+                "source": "same-platform:risk: Original wording: risk remains. Fixture reproduced."
+              },
+              "kind": "lane-output"
+            },
+            "producer": {
+              "assurance": "unverified",
+              "identity": "codex-institutional"
+            },
+            "schema": "codex.review.v1",
+            "supersedes": null,
+            "validation_state": "candidate"
+          },
+          {
+            "authority_refs": [],
+            "created_at": "2026-10-25T00:00:00Z",
+            "evidence_refs": [],
+            "extensions": {},
+            "id": "codex.review.v1:de2d88617b3539a304147118cbc091d82a482d943913ca6c670fb759029d97e2",
+            "integrity": "73b8ab79d8fa11db74b206861afb29e9d5da42b06ffd2015515bef610b2d9472",
+            "lifecycle": "Draft",
+            "payload": {
+              "data": {
+                "actor": "same-platform:dissent",
+                "binding": "adbd6f4a11ce04d188f5629d784f50bf3de98b0c3c5900b9262e0360fe2e70d9",
+                "findings": [
+                  {
+                    "clearance_conditions": [
+                      "finding-bound-observation"
+                    ],
+                    "confidence": 0.4,
+                    "coverage": [
+                      "security"
+                    ],
+                    "id": "f1",
+                    "kind": "inference",
+                    "normalized": "Retained risk",
+                    "source_quote": "Original wording: risk remains."
+                  }
+                ],
+                "identity": "unverified",
+                "lane": "dissent",
+                "plan_digest": "c4b9e70f8dba2ebda87886f969ea4aeaf20e9c694dc9c04c79e0393103572f9e",
+                "run": "wheel-fixture:dissent",
+                "source": "same-platform:dissent: Original wording: risk remains. Fixture reproduced."
+              },
+              "kind": "lane-output"
+            },
+            "producer": {
+              "assurance": "unverified",
+              "identity": "codex-institutional"
+            },
+            "schema": "codex.review.v1",
+            "supersedes": null,
+            "validation_state": "candidate"
+          }
+        ],
+        "plan_digest": "c4b9e70f8dba2ebda87886f969ea4aeaf20e9c694dc9c04c79e0393103572f9e",
+        "recommendation": "blocked",
+        "relations": [
+          {
+            "from": "logic/f1",
+            "to": "dissent/f1",
+            "type": "contradicts"
+          }
+        ],
+        "routing": "diagnostic-only; FIXED mutation is never executed",
+        "stage": "final"
+      },
+      "kind": "recommendation"
+    },
+    "producer": {
+      "assurance": "unverified",
+      "identity": "codex-institutional"
+    },
+    "schema": "codex.review.v1",
+    "supersedes": null,
+    "validation_state": "candidate"
+  },
+  "initial": {
+    "authority_refs": [],
+    "created_at": "2026-10-25T00:00:00Z",
+    "evidence_refs": [],
+    "extensions": {},
+    "id": "codex.review.v1:7a3919bdba2a126fa1c1c9a0fd8885039c31c247e205ce2cfef394ed01419382",
+    "integrity": "f4dc901cdbd66dabda3d0c98453d2bd57ebd3aa011fb18f6161aa056c8065e97",
+    "lifecycle": "Draft",
+    "payload": {
+      "data": {
+        "authorization": "none",
+        "binding": "adbd6f4a11ce04d188f5629d784f50bf3de98b0c3c5900b9262e0360fe2e70d9",
+        "blockers": [
+          {
+            "blocked_from_state": "initial",
+            "cause": "unresolved-conflict",
+            "clearance_conditions": [
+              "finding-bound-evidence",
+              "explicit-dissent-disposition"
+            ],
+            "pending_requirement": "resolve-conflict",
+            "scope": "logic/f1|dissent/f1"
+          }
+        ],
+        "classification": "Repository-Internal",
+        "findings": {
+          "dissent/f1": {
+            "actor": "same-platform:dissent",
+            "clearance_conditions": [
+              "finding-bound-observation"
+            ],
+            "confidence": 0.4,
+            "coverage": [
+              "security"
+            ],
+            "id": "f1",
+            "identity": "unverified",
+            "kind": "inference",
+            "normalized": "Retained risk",
+            "run": "wheel-fixture:dissent",
+            "source": "same-platform:dissent: Original wording: risk remains. Fixture reproduced.",
+            "source_quote": "Original wording: risk remains."
+          },
+          "logic/f1": {
+            "actor": "same-platform:logic",
+            "clearance_conditions": [
+              "finding-bound-observation"
+            ],
+            "confidence": 0.4,
+            "coverage": [
+              "security"
+            ],
+            "id": "f1",
+            "identity": "unverified",
+            "kind": "inference",
+            "normalized": "Retained risk",
+            "run": "wheel-fixture:logic",
+            "source": "same-platform:logic: Original wording: risk remains. Fixture reproduced.",
+            "source_quote": "Original wording: risk remains."
+          },
+          "risk/f1": {
+            "actor": "same-platform:risk",
+            "clearance_conditions": [
+              "finding-bound-observation"
+            ],
+            "confidence": 0.4,
+            "coverage": [
+              "security"
+            ],
+            "id": "f1",
+            "identity": "unverified",
+            "kind": "inference",
+            "normalized": "Retained risk",
+            "run": "wheel-fixture:risk",
+            "source": "same-platform:risk: Original wording: risk remains. Fixture reproduced.",
+            "source_quote": "Original wording: risk remains."
+          }
+        },
+        "independence": "unverified",
+        "outputs": [
+          {
+            "authority_refs": [],
+            "created_at": "2026-10-25T00:00:00Z",
+            "evidence_refs": [],
+            "extensions": {},
+            "id": "codex.review.v1:1baafe77e66aa553cb1e2d54b5ead39830c62dd1b8706cbd397cac74adfea6a9",
+            "integrity": "91d2e2e9437d0b2c5c876bb46310daf5ad1805cf951e4e3cf22917a35d7643f1",
+            "lifecycle": "Draft",
+            "payload": {
+              "data": {
+                "actor": "same-platform:logic",
+                "binding": "adbd6f4a11ce04d188f5629d784f50bf3de98b0c3c5900b9262e0360fe2e70d9",
+                "findings": [
+                  {
+                    "clearance_conditions": [
+                      "finding-bound-observation"
+                    ],
+                    "confidence": 0.4,
+                    "coverage": [
+                      "security"
+                    ],
+                    "id": "f1",
+                    "kind": "inference",
+                    "normalized": "Retained risk",
+                    "source_quote": "Original wording: risk remains."
+                  }
+                ],
+                "identity": "unverified",
+                "lane": "logic",
+                "plan_digest": "c4b9e70f8dba2ebda87886f969ea4aeaf20e9c694dc9c04c79e0393103572f9e",
+                "run": "wheel-fixture:logic",
+                "source": "same-platform:logic: Original wording: risk remains. Fixture reproduced."
+              },
+              "kind": "lane-output"
+            },
+            "producer": {
+              "assurance": "unverified",
+              "identity": "codex-institutional"
+            },
+            "schema": "codex.review.v1",
+            "supersedes": null,
+            "validation_state": "candidate"
+          },
+          {
+            "authority_refs": [],
+            "created_at": "2026-10-25T00:00:00Z",
+            "evidence_refs": [],
+            "extensions": {},
+            "id": "codex.review.v1:e0daea6b3d31dda943224f07248a9659edf2bfbea85c443e73fcb7ad059f1db0",
+            "integrity": "169b8031758164b1fcc43323147a9412fdc429eb4adbdb8e68bc7f92cdf3c0be",
+            "lifecycle": "Draft",
+            "payload": {
+              "data": {
+                "actor": "same-platform:risk",
+                "binding": "adbd6f4a11ce04d188f5629d784f50bf3de98b0c3c5900b9262e0360fe2e70d9",
+                "findings": [
+                  {
+                    "clearance_conditions": [
+                      "finding-bound-observation"
+                    ],
+                    "confidence": 0.4,
+                    "coverage": [
+                      "security"
+                    ],
+                    "id": "f1",
+                    "kind": "inference",
+                    "normalized": "Retained risk",
+                    "source_quote": "Original wording: risk remains."
+                  }
+                ],
+                "identity": "unverified",
+                "lane": "risk",
+                "plan_digest": "c4b9e70f8dba2ebda87886f969ea4aeaf20e9c694dc9c04c79e0393103572f9e",
+                "run": "wheel-fixture:risk",
+                "source": "same-platform:risk: Original wording: risk remains. Fixture reproduced."
+              },
+              "kind": "lane-output"
+            },
+            "producer": {
+              "assurance": "unverified",
+              "identity": "codex-institutional"
+            },
+            "schema": "codex.review.v1",
+            "supersedes": null,
+            "validation_state": "candidate"
+          },
+          {
+            "authority_refs": [],
+            "created_at": "2026-10-25T00:00:00Z",
+            "evidence_refs": [],
+            "extensions": {},
+            "id": "codex.review.v1:de2d88617b3539a304147118cbc091d82a482d943913ca6c670fb759029d97e2",
+            "integrity": "73b8ab79d8fa11db74b206861afb29e9d5da42b06ffd2015515bef610b2d9472",
+            "lifecycle": "Draft",
+            "payload": {
+              "data": {
+                "actor": "same-platform:dissent",
+                "binding": "adbd6f4a11ce04d188f5629d784f50bf3de98b0c3c5900b9262e0360fe2e70d9",
+                "findings": [
+                  {
+                    "clearance_conditions": [
+                      "finding-bound-observation"
+                    ],
+                    "confidence": 0.4,
+                    "coverage": [
+                      "security"
+                    ],
+                    "id": "f1",
+                    "kind": "inference",
+                    "normalized": "Retained risk",
+                    "source_quote": "Original wording: risk remains."
+                  }
+                ],
+                "identity": "unverified",
+                "lane": "dissent",
+                "plan_digest": "c4b9e70f8dba2ebda87886f969ea4aeaf20e9c694dc9c04c79e0393103572f9e",
+                "run": "wheel-fixture:dissent",
+                "source": "same-platform:dissent: Original wording: risk remains. Fixture reproduced."
+              },
+              "kind": "lane-output"
+            },
+            "producer": {
+              "assurance": "unverified",
+              "identity": "codex-institutional"
+            },
+            "schema": "codex.review.v1",
+            "supersedes": null,
+            "validation_state": "candidate"
+          }
+        ],
+        "plan_digest": "c4b9e70f8dba2ebda87886f969ea4aeaf20e9c694dc9c04c79e0393103572f9e",
+        "recommendation": "blocked",
+        "relations": [
+          {
+            "from": "logic/f1",
+            "to": "dissent/f1",
+            "type": "contradicts"
+          }
+        ],
+        "routing": "diagnostic-only; FIXED mutation is never executed",
+        "stage": "initial"
+      },
+      "kind": "recommendation"
+    },
+    "producer": {
+      "assurance": "unverified",
+      "identity": "codex-institutional"
+    },
+    "schema": "codex.review.v1",
+    "supersedes": null,
+    "validation_state": "candidate"
+  },
+  "meta": {
+    "authority_refs": [],
+    "created_at": "2026-10-25T00:00:00Z",
+    "evidence_refs": [],
+    "extensions": {},
+    "id": "codex.review.v1:6bf3cdb6e8296e294b055e0a666415fda2cd3721a61b356b925413e448bfd41b",
+    "integrity": "6e4302f6e2daa21bdf650cc0e40a31893d89774f2af77d1cde4dbf22ff57d793",
+    "lifecycle": "Draft",
+    "payload": {
+      "data": {
+        "authorization": "none",
+        "binding": "adbd6f4a11ce04d188f5629d784f50bf3de98b0c3c5900b9262e0360fe2e70d9",
+        "blockers": [
+          {
+            "blocked_from_state": "meta",
+            "cause": "unresolved-conflict",
+            "clearance_conditions": [
+              "finding-bound-evidence",
+              "explicit-dissent-disposition"
+            ],
+            "pending_requirement": "resolve-conflict",
+            "scope": "logic/f1|dissent/f1"
+          }
+        ],
+        "classification": "Repository-Internal",
+        "findings": {
+          "dissent/f1": {
+            "actor": "same-platform:dissent",
+            "clearance_conditions": [
+              "finding-bound-observation"
+            ],
+            "confidence": 0.4,
+            "coverage": [
+              "security"
+            ],
+            "id": "f1",
+            "identity": "unverified",
+            "kind": "inference",
+            "normalized": "Retained risk",
+            "run": "wheel-fixture:dissent",
+            "source": "same-platform:dissent: Original wording: risk remains. Fixture reproduced.",
+            "source_quote": "Original wording: risk remains."
+          },
+          "logic/f1": {
+            "actor": "same-platform:logic",
+            "clearance_conditions": [
+              "finding-bound-observation"
+            ],
+            "confidence": 0.4,
+            "coverage": [
+              "security"
+            ],
+            "id": "f1",
+            "identity": "unverified",
+            "kind": "inference",
+            "normalized": "Retained risk",
+            "run": "wheel-fixture:logic",
+            "source": "same-platform:logic: Original wording: risk remains. Fixture reproduced.",
+            "source_quote": "Original wording: risk remains."
+          },
+          "risk/f1": {
+            "actor": "same-platform:risk",
+            "clearance_conditions": [
+              "finding-bound-observation"
+            ],
+            "confidence": 0.4,
+            "coverage": [
+              "security"
+            ],
+            "id": "f1",
+            "identity": "unverified",
+            "kind": "inference",
+            "normalized": "Retained risk",
+            "run": "wheel-fixture:risk",
+            "source": "same-platform:risk: Original wording: risk remains. Fixture reproduced.",
+            "source_quote": "Original wording: risk remains."
+          }
+        },
+        "independence": "unverified",
+        "outputs": [
+          {
+            "authority_refs": [],
+            "created_at": "2026-10-25T00:00:00Z",
+            "evidence_refs": [],
+            "extensions": {},
+            "id": "codex.review.v1:1baafe77e66aa553cb1e2d54b5ead39830c62dd1b8706cbd397cac74adfea6a9",
+            "integrity": "91d2e2e9437d0b2c5c876bb46310daf5ad1805cf951e4e3cf22917a35d7643f1",
+            "lifecycle": "Draft",
+            "payload": {
+              "data": {
+                "actor": "same-platform:logic",
+                "binding": "adbd6f4a11ce04d188f5629d784f50bf3de98b0c3c5900b9262e0360fe2e70d9",
+                "findings": [
+                  {
+                    "clearance_conditions": [
+                      "finding-bound-observation"
+                    ],
+                    "confidence": 0.4,
+                    "coverage": [
+                      "security"
+                    ],
+                    "id": "f1",
+                    "kind": "inference",
+                    "normalized": "Retained risk",
+                    "source_quote": "Original wording: risk remains."
+                  }
+                ],
+                "identity": "unverified",
+                "lane": "logic",
+                "plan_digest": "c4b9e70f8dba2ebda87886f969ea4aeaf20e9c694dc9c04c79e0393103572f9e",
+                "run": "wheel-fixture:logic",
+                "source": "same-platform:logic: Original wording: risk remains. Fixture reproduced."
+              },
+              "kind": "lane-output"
+            },
+            "producer": {
+              "assurance": "unverified",
+              "identity": "codex-institutional"
+            },
+            "schema": "codex.review.v1",
+            "supersedes": null,
+            "validation_state": "candidate"
+          },
+          {
+            "authority_refs": [],
+            "created_at": "2026-10-25T00:00:00Z",
+            "evidence_refs": [],
+            "extensions": {},
+            "id": "codex.review.v1:e0daea6b3d31dda943224f07248a9659edf2bfbea85c443e73fcb7ad059f1db0",
+            "integrity": "169b8031758164b1fcc43323147a9412fdc429eb4adbdb8e68bc7f92cdf3c0be",
+            "lifecycle": "Draft",
+            "payload": {
+              "data": {
+                "actor": "same-platform:risk",
+                "binding": "adbd6f4a11ce04d188f5629d784f50bf3de98b0c3c5900b9262e0360fe2e70d9",
+                "findings": [
+                  {
+                    "clearance_conditions": [
+                      "finding-bound-observation"
+                    ],
+                    "confidence": 0.4,
+                    "coverage": [
+                      "security"
+                    ],
+                    "id": "f1",
+                    "kind": "inference",
+                    "normalized": "Retained risk",
+                    "source_quote": "Original wording: risk remains."
+                  }
+                ],
+                "identity": "unverified",
+                "lane": "risk",
+                "plan_digest": "c4b9e70f8dba2ebda87886f969ea4aeaf20e9c694dc9c04c79e0393103572f9e",
+                "run": "wheel-fixture:risk",
+                "source": "same-platform:risk: Original wording: risk remains. Fixture reproduced."
+              },
+              "kind": "lane-output"
+            },
+            "producer": {
+              "assurance": "unverified",
+              "identity": "codex-institutional"
+            },
+            "schema": "codex.review.v1",
+            "supersedes": null,
+            "validation_state": "candidate"
+          },
+          {
+            "authority_refs": [],
+            "created_at": "2026-10-25T00:00:00Z",
+            "evidence_refs": [],
+            "extensions": {},
+            "id": "codex.review.v1:de2d88617b3539a304147118cbc091d82a482d943913ca6c670fb759029d97e2",
+            "integrity": "73b8ab79d8fa11db74b206861afb29e9d5da42b06ffd2015515bef610b2d9472",
+            "lifecycle": "Draft",
+            "payload": {
+              "data": {
+                "actor": "same-platform:dissent",
+                "binding": "adbd6f4a11ce04d188f5629d784f50bf3de98b0c3c5900b9262e0360fe2e70d9",
+                "findings": [
+                  {
+                    "clearance_conditions": [
+                      "finding-bound-observation"
+                    ],
+                    "confidence": 0.4,
+                    "coverage": [
+                      "security"
+                    ],
+                    "id": "f1",
+                    "kind": "inference",
+                    "normalized": "Retained risk",
+                    "source_quote": "Original wording: risk remains."
+                  }
+                ],
+                "identity": "unverified",
+                "lane": "dissent",
+                "plan_digest": "c4b9e70f8dba2ebda87886f969ea4aeaf20e9c694dc9c04c79e0393103572f9e",
+                "run": "wheel-fixture:dissent",
+                "source": "same-platform:dissent: Original wording: risk remains. Fixture reproduced."
+              },
+              "kind": "lane-output"
+            },
+            "producer": {
+              "assurance": "unverified",
+              "identity": "codex-institutional"
+            },
+            "schema": "codex.review.v1",
+            "supersedes": null,
+            "validation_state": "candidate"
+          }
+        ],
+        "plan_digest": "c4b9e70f8dba2ebda87886f969ea4aeaf20e9c694dc9c04c79e0393103572f9e",
+        "recommendation": "blocked",
+        "relations": [
+          {
+            "from": "logic/f1",
+            "to": "dissent/f1",
+            "type": "contradicts"
+          }
+        ],
+        "routing": "diagnostic-only; FIXED mutation is never executed",
+        "stage": "meta"
+      },
+      "kind": "recommendation"
+    },
+    "producer": {
+      "assurance": "unverified",
+      "identity": "codex-institutional"
+    },
+    "schema": "codex.review.v1",
+    "supersedes": null,
+    "validation_state": "candidate"
+  }
+}

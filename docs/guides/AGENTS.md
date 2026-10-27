@@ -39,7 +39,7 @@ from codex.security.storage import SecureStorage
 
 ---
 
-**See**: [Main .codex/archive/deprecated/AGENTS.md](../agents.md) | [Security Module Docs](../src/codex/security)
+**See**: [Current agency policy](../../.codex/CODEBASE_AGENCY_POLICY.md) | [Security Guidelines](../security/SECURITY_GUIDELINES.md)
 
 ---
 

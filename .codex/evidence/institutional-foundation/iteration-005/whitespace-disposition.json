@@ -1,0 +1,12 @@
+{
+  "schema": "codex.institutional.whitespace-disposition.v1",
+  "original_receipt": "iteration-004/evidence-whitespace.json",
+  "observed_count": 38,
+  "classification": {
+    "raw pytest trace/log/JUnit and copied historical diagnostics": 32,
+    "literal emitted Markdown hard breaks": 6
+  },
+  "changed_runtime_defects": 0,
+  "decision": "Preserve historical raw observations and digests unchanged. Former workflow-reference trailing whitespace was corrected in iteration004 source; log quoting it remains historical. New changed source must pass scoped diff check.",
+  "not_claimed": "No blanket global clean-diff claim over raw historical evidence; no attributes/hook bypass to suppress diagnostics."
+}

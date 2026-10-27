@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
 """
-codex.logging.query_logs: Query transcripts from a SQLite database.
+Query transcripts from a SQLite database with role and timestamp filters.
 
 Usage examples:
-  python -m codex.logging.query_logs --help
-  python -m codex.logging.query_logs --db codex.logging.config.DEFAULT_LOG_DB \
+  python -m aries_serpent_core.logging.query_logs --help
+  python -m aries_serpent_core.logging.query_logs --db .codex/session_logs.db \
       --session-id S123 --role user --after 2025-01-01 --format json
 
 Behavior:
 - Auto-detects table and column names via PRAGMA introspection
 - Accepts filters: session_id, role, after/before (ISO-8601), limit/offset, order
-- Outputs 'text' (default) or 'json'
+- Emits 'text' (default) or 'json' through the configured logger; when Rich is
+  installed, text output uses a console table instead.
+- Requires timestamp, role, and message columns. Timestamp bounds are compared
+  by SQLite against stored values; this reader does not convert numeric epoch
+  columns into ISO text or normalize stored timestamps.
 
 Environment:
 - CODEX_LOG_DB_PATH (or CODEX_DB_PATH) may point to the SQLite file
-  (default: codex.logging.config.DEFAULT_LOG_DB)
+  (default: .codex/session_logs.db)
 
 Supported timestamp formats for `parse_when`:
   - Zulu/UTC:       2025-08-19T12:34:56Z
@@ -156,6 +160,37 @@ def build_query(
     limit: Optional[int],
     offset: Optional[int],
 ) -> tuple[str, list[Any]]:
+    """Build transcript-selection SQL and its ordered bound-value list.
+
+    ``table`` and ``mapcol`` must come from trusted schema introspection:
+    identifiers are interpolated, not validated or quoted here. The mapping
+    must include nonempty ``timestamp``, ``role``, and ``message`` entries or
+    ``ValueError`` is raised (absent keys raise ``KeyError``). Optional
+    ``id``, ``session_id``, and ``metadata`` columns become NULL projections
+    when unavailable.
+
+    Truthy role filters use equality, as do session filters when the mapping
+    contains a ``session_id`` key. Truthy ``after``/``before`` bounds use
+    inclusive timestamp comparisons. Bounds are passed unchanged, so callers
+    must supply values comparable to their stored timestamps. A session
+    filter needs an actual column name, not a ``None`` mapping entry.
+    Filter values are bound in session, role, after, before order.
+
+    ``order`` accepts case-insensitive asc/desc, falling back to asc.
+    Non-``None`` limit/offset values are coerced to integers and appended as
+    parameters; supply a limit when using offset to produce valid SQLite SQL.
+    No query is executed and no timestamp parsing occurs here.
+
+    Example with a known table schema::
+
+        columns = {"timestamp": "ts", "role": "role", "message": "message",
+                   "session_id": "session_id", "metadata": "meta"}
+        sql, params = build_query(
+            "session_events", columns, "S123", "user",
+            None, None, "desc", 20, None,
+        )
+        rows = conn.execute(sql, params).fetchall()
+    """
     ts = mapcol["timestamp"]
     role_col = mapcol["role"]
     message_col = mapcol["message"]
@@ -258,6 +293,18 @@ def format_text(rows: list[sqlite3.Row], mapcol: dict[str, Optional[str]], show_
 
 
 def main(argv: Optional[list[str]] = None) -> int:
+    """Parse query flags and render matching transcript rows.
+
+    ``argv`` omits the executable name; ``None`` uses process arguments.
+    ``--tail N`` overrides limit, order, and offset, selecting the newest N
+    rows and then reversing them for chronological display. Time bounds are
+    parsed with :func:`parse_when` and serialized to second-resolution ISO
+    strings before comparison.
+
+    Returns ``0`` on success, ``2`` for caught value/schema-selection errors,
+    or ``1`` for caught I/O/import errors. Argument parsing can raise
+    ``SystemExit`` before those handlers; SQLite errors propagate.
+    """
     parser = argparse.ArgumentParser(description="Query transcripts from session_events.")
     parser.add_argument(
         "--db",

@@ -88,7 +88,7 @@ class GitMetadataCollector:
                 return None, None
 
             # Find top author
-            top_author = max(author_counts, key=author_counts.get)
+            top_author = max(author_counts, key=author_counts.__getitem__)
             top_email = author_emails.get(top_author)
 
             return top_author, top_email

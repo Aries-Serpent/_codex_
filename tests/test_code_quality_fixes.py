@@ -36,47 +36,33 @@ class TestUninitializedVariablesFixed:
         # These should all exist after module load
         assert hasattr(cli_module, "__all__"), "__all__ export list should exist"
 
-    def test_cli_initialization_variables_have_type_hints(self):
-        """Verify that CLI module variables are properly typed."""
-        from codex.cli import (
-            ALLOWED_TASKS,
-            auth_group,
-            chronicle,
-            clean_logs_cmd,
-            export_env_cmd,
-            init_db_cmd,
-            list_sessions_cmd,
-            logs,
-            query_logs_cmd,
-            repro_group,
-            session_logger_cmd,
-            tokenizer_group,
-            validate_env_cmd,
-            viewer_cmd,
-        )
+    def test_cli_compatibility_exports_match_canonical_facade(self) -> None:
+        """Legacy imports must preserve the complete canonical CLI contract."""
+        from aries_serpent_core import cli as canonical
+        from codex import cli as legacy
 
-        # Each should be either None (properly initialized) or a valid object
-        # The key is they're no longer just floating None assignments
-        variables = [
-            logs,
-            tokenizer_group,
-            repro_group,
-            auth_group,
-            chronicle,
-            init_db_cmd,
-            export_env_cmd,
-            clean_logs_cmd,
-            session_logger_cmd,
-            query_logs_cmd,
-            validate_env_cmd,
-            list_sessions_cmd,
-            viewer_cmd,
-            ALLOWED_TASKS,
-        ]
+        assert set(legacy.__all__) == set(canonical.__all__)
+        for name in canonical.__all__:
+            assert getattr(legacy, name) is getattr(canonical, name), name
 
-        # Verify all can be accessed without errors
-        for var in variables:
-            assert var is None or var is not None, "var must be initialized"
+    def test_legacy_cli_chronicle_commands_are_registered(self) -> None:
+        """Compatibility exports must reference working Chronicle commands."""
+        import click
+
+        from codex.cli import chronicle, cli
+
+        assert isinstance(cli, click.Group)
+        assert isinstance(chronicle, click.Group)
+        assert cli.commands["chronicle"] is chronicle
+        assert {"cost-tips", "standup", "improve", "search"} <= chronicle.commands.keys()
+
+    def test_legacy_cli_main_module_is_the_canonical_module(self) -> None:
+        """Legacy submodule imports must not create a second Typer application."""
+        import importlib
+
+        canonical = importlib.import_module("aries_serpent_core.cli.main")
+        legacy = importlib.import_module("codex.cli.main")
+        assert legacy is canonical
 
     def test_github_api_client_elevated_token_initialized(self):
         """Verify APIClient properly initializes token variables."""
@@ -126,8 +112,9 @@ class TestUnusedGlobalsRemoved:
         import codex.cli
 
         # Should be able to access primary exports without issues
-        assert codex.cli.app is not None or codex.cli.app is None, "app must be initialized"
-        assert codex.cli.main is not None or codex.cli.main is None, "main must be initialized"
+        for name in ("app", "main", "cli", "auth_group", "chronicle"):
+            assert hasattr(codex.cli, name), f"{name} must be initialized"
+            assert callable(getattr(codex.cli, name)), f"{name} must be callable"
 
 
 class TestResourceManagementImprovements:
@@ -188,6 +175,7 @@ class TestResourceManagementImprovements:
 
     def test_generator_resource_efficiency(self):
         """Test that generators are used for resource-efficient iteration."""
+
         def inefficient_list_builder():
             """Creates a full list in memory."""
             return [i for i in range(10000)]
@@ -210,6 +198,7 @@ class TestTypeConversionSafety:
 
     def test_safe_integer_conversion(self):
         """Test safe conversion of values to integers."""
+
         def safe_int_convert(value: Any) -> Optional[int]:
             """Safely convert value to int with error handling."""
             try:
@@ -225,6 +214,7 @@ class TestTypeConversionSafety:
 
     def test_safe_float_conversion(self):
         """Test safe conversion of values to float."""
+
         def safe_float_convert(value: Any) -> Optional[float]:
             """Safely convert value to float with error handling."""
             try:
@@ -239,6 +229,7 @@ class TestTypeConversionSafety:
 
     def test_type_checking_before_operations(self):
         """Ensure type checking before arithmetic operations."""
+
         def safe_multiply(a: Any, b: Any) -> Optional[float]:
             """Multiply two values after type checking."""
             try:
@@ -277,6 +268,7 @@ class TestIntegerOverflowProtection:
 
     def test_safe_multiplication(self):
         """Test safe multiplication with overflow detection."""
+
         def safe_multiply(a: int, b: int) -> Optional[int]:
             """Safely multiply two integers."""
             # Check for potential overflow before operation
@@ -297,6 +289,7 @@ class TestIntegerOverflowProtection:
 
     def test_safe_division(self):
         """Test safe division with zero-check."""
+
         def safe_divide(a: float, b: float) -> Optional[float]:
             """Safely divide with zero-check."""
             if b == 0:
@@ -327,6 +320,7 @@ class TestPerformanceBenchmarks:
 
     def test_type_conversion_overhead(self):
         """Measure performance of safe type conversions."""
+
         def safe_int_convert(value):
             try:
                 return int(value)
@@ -416,10 +410,9 @@ class TestRegressionPrevention:
         from codex.cli import app, cli, main
 
         # All primary entry points should be available
-        assert app is not None, "Typer app should be available"
-        assert main is not None, "main function should be available"
-        # cli might be None if Click module fails to load, which is acceptable
-        assert cli is None or cli is not None, "cli must be initialized"
+        assert callable(app), "Typer app should be callable"
+        assert callable(main), "main function should be callable"
+        assert callable(cli), "Click CLI should be callable"
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)

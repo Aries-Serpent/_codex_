@@ -1,22 +1,122 @@
 """PART 9: Agent Execution Standard — 8-Step Protocol for All Agents Operating on Machine-Readable Campaign Data."""
 
-from typing import Any, Dict, List
+from __future__ import annotations
+
+from typing import TypedDict
 
 from tools.docs_agent.copilot_tools_new import CopilotToolsInterface
 
 
-class AgentExecutionStandard:
-    """Defines and enforces the 8-step execution protocol for all agents."""
+class _BriefStep(TypedDict):
+    step: int
+    task_brief: dict[str, object]
+    contains: list[str]
 
-    def __init__(self):
+
+class _RelatedStep(TypedDict):
+    step: int
+    dependencies: dict[str, object]
+    contains: list[str]
+
+
+class _ImpactStep(TypedDict):
+    step: int
+    impact: dict[str, object]
+    decision_criteria: list[str]
+
+
+class _TaskExecution(TypedDict):
+    task_id: str
+    actions_executed: list[str]
+    state_before: str
+    changes_made: str
+    validation: str
+
+
+class _ExecuteStep(TypedDict):
+    step: int
+    task_execution: _TaskExecution
+
+
+class _UpdateScope(TypedDict):
+    deliverable_status: str
+    metrics_update: str
+    decision_record: str
+    timestamps: str
+
+
+class _UpdateStep(TypedDict):
+    step: int
+    update_scope: _UpdateScope
+    record_updates: dict[str, object]
+    validation: str
+
+
+class _RebuildStep(TypedDict):
+    step: int
+    index_rebuild: dict[str, object]
+    rebuilds: list[str]
+    validates: str
+
+
+class _Persistence(TypedDict):
+    session_checkpoint: str
+    memory_consolidation: str
+    audit_trail: str
+
+
+class _ValidateStep(TypedDict):
+    step: int
+    validation: dict[str, object]
+    persistence: _Persistence
+
+
+class _ContextStep(TypedDict):
+    step: int
+    result: dict[str, object]
+
+
+class _TemplateStep(TypedDict):
+    step: int
+    action: str
+    input: str
+
+
+_ProtocolStep = (
+    _ContextStep
+    | _BriefStep
+    | _RelatedStep
+    | _ImpactStep
+    | _TemplateStep
+    | _RebuildStep
+    | _ValidateStep
+)
+
+
+class _ProtocolExecution(TypedDict):
+    protocol_name: str
+    version: str
+    steps: list[_ProtocolStep]
+
+
+class AgentExecutionStandard:
+    """Assemble the campaign execution protocol using a SQLite-backed tool interface.
+
+    The default constructor opens ``docs-data/generated/docs.sqlite`` relative
+    to the working directory. Full execution performs context reads, index
+    rebuilding, and validation; task actions and record updates are templates,
+    not automatically applied mutations.
+    """
+
+    def __init__(self) -> None:
         self.tools = CopilotToolsInterface()
 
-    def step_1_get_context(self, phase_id: str = None) -> Dict[str, Any]:
-        """Step 1: Get agent context with full campaign state."""
+    def step_1_get_context(self, phase_id: str | None = None) -> dict[str, object]:
+        """Read campaign counts; the reserved phase_id does not filter the query."""
         return self.tools.get_agent_context()
 
-    def step_2_get_task_brief(self, task_id: str = None) -> Dict[str, Any]:
-        """Step 2: Get task/deliverable brief with requirements and dependencies."""
+    def step_2_get_task_brief(self, task_id: str | None = None) -> _BriefStep:
+        """Wrap a task brief, or current-phase context when task_id is omitted."""
         brief = self.tools.get_task_brief(task_id)
         return {
             "step": 2,
@@ -24,8 +124,8 @@ class AgentExecutionStandard:
             "contains": ["task definition", "requirements", "constraints", "status"],
         }
 
-    def step_3_get_related_context(self, entity_id: str) -> Dict[str, Any]:
-        """Step 3: Get all related entities and dependencies."""
+    def step_3_get_related_context(self, entity_id: str) -> _RelatedStep:
+        """Wrap relationships returned by the tool for the specified entity ID."""
         context = self.tools.get_related_context(entity_id)
         return {
             "step": 3,
@@ -34,9 +134,9 @@ class AgentExecutionStandard:
         }
 
     def step_4_impact_analysis(
-        self, entity_id: str, proposed_changes: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """Step 4: Analyze impact of proposed changes."""
+        self, entity_id: str, proposed_changes: dict[str, object]
+    ) -> _ImpactStep:
+        """Describe dependency impact and risk without applying proposed changes."""
         impact = self.tools.impact_analysis(entity_id, proposed_changes)
         return {
             "step": 4,
@@ -48,8 +148,8 @@ class AgentExecutionStandard:
             ],
         }
 
-    def step_5_execute_task(self, task_id: str, action_plan: List[str]) -> Dict[str, Any]:
-        """Step 5: Execute task-specific actions from deliverables.jsonl."""
+    def step_5_execute_task(self, task_id: str, action_plan: list[str]) -> _ExecuteStep:
+        """Describe task actions and validation metadata without executing the actions."""
         return {
             "step": 5,
             "task_execution": {
@@ -61,8 +161,8 @@ class AgentExecutionStandard:
             },
         }
 
-    def step_6_update_records(self, updates: Dict[str, Any]) -> Dict[str, Any]:
-        """Step 6: Update structured records after execution."""
+    def step_6_update_records(self, updates: dict[str, object]) -> _UpdateStep:
+        """Describe record updates and audit requirements without writing records."""
         return {
             "step": 6,
             "update_scope": {
@@ -75,8 +175,8 @@ class AgentExecutionStandard:
             "validation": "All records have source_trace for auditability",
         }
 
-    def step_7_rebuild_indexes(self) -> Dict[str, Any]:
-        """Step 7: Rebuild FTS indexes and campaign graph."""
+    def step_7_rebuild_indexes(self) -> _RebuildStep:
+        """Invoke the tool's FTS rebuild and wrap its success/error result."""
         result = self.tools.rebuild_indexes()
         return {
             "step": 7,
@@ -85,8 +185,8 @@ class AgentExecutionStandard:
             "validates": "All foreign keys and linkages",
         }
 
-    def step_8_validate_and_persist(self) -> Dict[str, Any]:
-        """Step 8: Validate campaign integrity and persist session state."""
+    def step_8_validate_and_persist(self) -> _ValidateStep:
+        """Validate campaign integrity and describe, but do not persist, checkpoints."""
         validation = self.tools.validate_docs()
         return {
             "step": 8,
@@ -99,10 +199,17 @@ class AgentExecutionStandard:
         }
 
     def execute_full_protocol(
-        self, task_id: str = None, proposed_changes: Dict[str, Any] = None
-    ) -> Dict[str, Any]:
-        """Execute complete 8-step protocol."""
-        protocol_execution = {
+        self, task_id: str | None = None, proposed_changes: dict[str, object] | None = None
+    ) -> _ProtocolExecution:
+        """Collect protocol steps in order, leaving steps 5 and 6 as templates.
+
+        Step 3 runs only with a supplied task ID or a task in the brief. Step 4
+        requires both a supplied task ID and nonempty proposed changes. Index
+        rebuilding and validation always run. For example,
+        ``standard.execute_full_protocol("D-1", {"status": "Complete"})`` includes
+        all eight steps but does not change deliverable status.
+        """
+        protocol_execution: _ProtocolExecution = {
             "protocol_name": "Agent Execution Standard",
             "version": "0.1.0",
             "steps": [],
@@ -117,8 +224,17 @@ class AgentExecutionStandard:
         protocol_execution["steps"].append(step_2)
 
         # Step 3 - Use task_id from step 2 if available
-        if task_id or (step_2.get("task_brief") and step_2["task_brief"].get("task")):
-            entity = task_id or step_2["task_brief"]["task"]["id"]
+        task = step_2["task_brief"].get("task")
+        if task_id or task:
+            if task_id:
+                entity = task_id
+            else:
+                if not isinstance(task, dict):
+                    raise TypeError("Task brief must contain a task object")
+                identifier: object = task["id"]
+                if not isinstance(identifier, str):
+                    raise TypeError("Task ID must be a string")
+                entity = identifier
             step_3 = self.step_3_get_related_context(entity)
             protocol_execution["steps"].append(step_3)
 
@@ -149,7 +265,7 @@ class AgentExecutionStandard:
         return protocol_execution
 
     def generate_agent_implementation_guide(self) -> str:
-        """Generate guide for implementing agent execution standard."""
+        """Return the static Markdown implementation guide; no tools or I/O are used."""
         guide = """
 # PART 9: Agent Execution Standard
 

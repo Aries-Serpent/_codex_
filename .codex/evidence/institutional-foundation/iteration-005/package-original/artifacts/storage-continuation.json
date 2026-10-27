@@ -1,0 +1,319 @@
+{
+  "schema": "codex.continuation-state.v1",
+  "id": "codex.continuation-state.v1:bd4cea3af16dd6c0f98cb0c29b79b75f47d465a7ab29ba91492dff7b601c4ed5",
+  "created_at": "2026-10-25T00:00:00Z",
+  "producer": {
+    "identity": "codex-institutional",
+    "assurance": "unverified"
+  },
+  "evidence_refs": [],
+  "authority_refs": [],
+  "validation_state": "candidate",
+  "lifecycle": "Draft",
+  "supersedes": null,
+  "extensions": {},
+  "payload": {
+    "session_id": "external-wheel-storage-fixture",
+    "sequence": 2,
+    "source_sha": null,
+    "candidate_ref": "d28d0d5cc63de3fd1d378da4ca8f04c6e91a77d52c16ba427ba731a91ce0b1b3",
+    "dirty_tree": "not_applicable",
+    "configuration": {
+      "contracts_digest": "f7fa2047a9a8453b8c36b645c52379125d189da1aa2cb8a3fd060590f0ce1030",
+      "root": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/external-runtime/storage-fixture"
+    },
+    "predecessor": "2438d3add5ab7806483bbea3c972edf0299e8306af9c1228a9df38b1e6947e94",
+    "gates": {
+      "G3": "NOT_RUN",
+      "G4": "NOT_RUN",
+      "G5": "NOT_RUN",
+      "G6": "NOT_RUN",
+      "G7": "NOT_RUN",
+      "G8": "NOT_RUN"
+    },
+    "records": [
+      {
+        "schema": "codex.trust-evidence.v1",
+        "id": "codex.trust-evidence.v1:72583973c622e79b9bddf0aafc96242cb9c9daa7a4a2ed77bf807b4e1d79742b",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "source_identity": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/external-runtime/storage-fixture",
+          "location": "path-census",
+          "source_sha": null,
+          "digest": "eafe25d436ea28099c2ef4ac4a6978d535acf74317c95afdd59f47d8d40a874a",
+          "method": "filesystem",
+          "observation": "0 paths inventoried",
+          "limitations": [
+            "Metadata only; integrity is not authenticated provenance."
+          ],
+          "predecessor": null
+        },
+        "integrity": "e6558a64ca8873919d2a332010527a13bcfc89b50190f58238b8756b69126170"
+      },
+      {
+        "schema": "codex.inventory.v1",
+        "id": "codex.inventory.v1:eafe25d436ea28099c2ef4ac4a6978d535acf74317c95afdd59f47d8d40a874a",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [
+          "codex.trust-evidence.v1:72583973c622e79b9bddf0aafc96242cb9c9daa7a4a2ed77bf807b4e1d79742b"
+        ],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "source": {
+            "identity": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/external-runtime/storage-fixture",
+            "sha": null,
+            "path_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "entries": [],
+          "counts": {},
+          "component_defaults": {
+            "declared_purpose": "not_observed",
+            "observed_behavior": "not_observed",
+            "inputs": "unknown",
+            "outputs": "unknown",
+            "declared_authority": "unknown",
+            "verified_authority": "not_observed",
+            "effective_authority": {},
+            "authority_evidence": [],
+            "authority_scope": "unknown",
+            "authority_expiry": "unknown",
+            "revocation": "unknown",
+            "artifact_digest": "not_observed",
+            "authority_conflicts": [
+              "authority not established"
+            ],
+            "dependencies": "not_observed",
+            "invoked_workflows": "not_observed",
+            "memory_read": "not_observed",
+            "memory_written": "not_observed",
+            "verification": "not_observed",
+            "package_inclusion": "not_observed",
+            "overlap": "unknown",
+            "tests": "not_observed",
+            "execution": "not_observed",
+            "gaps": [
+              "metadata is not semantic evidence"
+            ],
+            "contradictions": "not_observed",
+            "disposition": "unknown",
+            "confidence": "unknown",
+            "evidence": []
+          },
+          "coverage": "filesystem",
+          "limitations": [
+            "Path census only; no usage, effectiveness or permission conclusions.",
+            "Git census describes the identified tree, not untracked or dirty content.",
+            "Filesystem census excludes .git, symlink directories and framework state."
+          ]
+        },
+        "integrity": "e16d380f577446c5728046be939032f5f3ff1fd590c1007302ad31fdcb7c0759"
+      },
+      {
+        "schema": "codex.agent-role.v1",
+        "id": "codex.agent-role.v1:ed6f236b9aa963c2b05a90b45c68eac3e9bfbdfe7a7c86d913e0f621ae94ef24",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "purpose": "Architect: propose inactive candidate",
+          "capability": "codex.institutional.core.candidate",
+          "authority": "none"
+        },
+        "integrity": "8159838f67bfe8fb441f875c42120b654f93f159ab61963bae62c6b69fafeadf"
+      },
+      {
+        "schema": "codex.agent-role.v1",
+        "id": "codex.agent-role.v1:6b86e447942365b619a06fae3c42f05ca9578fa159c75bb11a6e830a3e483f94",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "purpose": "Auditor: deterministic checks, not independent approval",
+          "capability": "codex.institutional.core.inspect_candidate",
+          "authority": "none"
+        },
+        "integrity": "d61a8858a4b0546ed1305b61a70a9b86e8d87533f7ad879ac497cdadc375ec65"
+      },
+      {
+        "schema": "codex.audit-finding.v1",
+        "id": "codex.audit-finding.v1:672447dcf442e4d8c16eca768368384f18d493203717336d0553b2d55c3557f1",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [
+          "codex.inventory.v1:eafe25d436ea28099c2ef4ac4a6978d535acf74317c95afdd59f47d8d40a874a"
+        ],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "stage": "assessment",
+          "findings": [
+            "Authority, overlap, semantic usage and effectiveness remain unverified."
+          ],
+          "semantic_review": "NOT_RUN",
+          "independent_reproduction": "NOT_RUN"
+        },
+        "integrity": "e78d217db30e3ab04b8790890b2ed8a647f94f018cf3a15672e923b753194d81"
+      },
+      {
+        "schema": "codex.audit-finding.v1",
+        "id": "codex.audit-finding.v1:3db290b353b0b9e9cc6bd73479fb6fba16da26a9d0709a69e41671ae329f1029",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [
+          "codex.trust-evidence.v1:72583973c622e79b9bddf0aafc96242cb9c9daa7a4a2ed77bf807b4e1d79742b",
+          "codex.audit-finding.v1:672447dcf442e4d8c16eca768368384f18d493203717336d0553b2d55c3557f1"
+        ],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "stage": "challenge",
+          "findings": [
+            "DETERMINISTIC_CHECK_ONLY",
+            "Alternative cause: integration gap does not establish agent ineffectiveness.",
+            "Contradiction search limited to structural checks; semantic review pending.",
+            "Untrusted content and its digest can both be replaced; no authenticated approval."
+          ],
+          "semantic_review": "NOT_RUN",
+          "independent_reproduction": "NOT_RUN"
+        },
+        "integrity": "0662af6f69ed486d1f917eca3bfca42047da158c07317f28f4160ac8d975cbe0"
+      },
+      {
+        "schema": "codex.experience.v1",
+        "id": "codex.experience.v1:8fdae7a1ff82b57925a5f1488e488af20c24019b27001cf00c65e2e908959d40",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [
+          "codex.trust-evidence.v1:72583973c622e79b9bddf0aafc96242cb9c9daa7a4a2ed77bf807b4e1d79742b",
+          "codex.audit-finding.v1:3db290b353b0b9e9cc6bd73479fb6fba16da26a9d0709a69e41671ae329f1029"
+        ],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "problem": "Portable evidence-gated institutional candidate",
+          "context": "Inactive development; imported records are inert data.",
+          "environment": {
+            "coverage": "filesystem"
+          },
+          "hypotheses": [
+            "Closed contracts and previews permit safe candidate development."
+          ],
+          "support": [
+            "codex.trust-evidence.v1:72583973c622e79b9bddf0aafc96242cb9c9daa7a4a2ed77bf807b4e1d79742b"
+          ],
+          "against": [
+            "Semantic review not performed."
+          ],
+          "alternatives": [
+            "Enhance existing script checkpoint manager after compatibility work."
+          ],
+          "decision": "Retain Draft candidate; do not activate.",
+          "dissent": [
+            "A separate installed adapter adds maintenance."
+          ],
+          "uncertainty": [
+            "Effectiveness and downstream outcomes unknown."
+          ],
+          "implementation": [
+            "codex.institutional"
+          ],
+          "verification": [],
+          "outcomes": "unknown",
+          "failure_modes": [
+            "DETERMINISTIC_CHECK_ONLY",
+            "Alternative cause: integration gap does not establish agent ineffectiveness.",
+            "Contradiction search limited to structural checks; semantic review pending.",
+            "Untrusted content and its digest can both be replaced; no authenticated approval."
+          ],
+          "applicability": "Local metadata inspection only",
+          "confidence": "unknown",
+          "next_review": "Independent reproduction or source/configuration drift"
+        },
+        "integrity": "940991ebc4b010e062d78ccb2686539613d6b91b6235a0903c618375c541bb3e"
+      }
+    ],
+    "actors": {
+      "implementer": "unverified",
+      "independent_verifier": "unknown",
+      "approval": "NOT_RUN",
+      "activation": "unsupported"
+    },
+    "blockers": [
+      "Independent reproduction and trusted authority unavailable."
+    ],
+    "findings": [
+      "DETERMINISTIC_CHECK_ONLY",
+      "Alternative cause: integration gap does not establish agent ineffectiveness.",
+      "Contradiction search limited to structural checks; semantic review pending.",
+      "Untrusted content and its digest can both be replaced; no authenticated approval."
+    ],
+    "rejected_hypotheses": [
+      "A path census establishes semantic effectiveness."
+    ],
+    "uncertainty": [
+      "No operational authority can be derived from these records."
+    ],
+    "next_action": {
+      "action": "verify",
+      "preconditions": [
+        "Revalidate source tree and installed contract digests."
+      ],
+      "acceptance_test": "Technical validation only; independent gates remain NOT_RUN.",
+      "idempotency": "Fixed tree, configuration and clock produce identical bytes."
+    },
+    "recovery": "Preserve original; regenerate stale previews. Never reset user work."
+  },
+  "integrity": "8f155948178f21bfdef6fc3c7d0fbb946c056f6f95326694b69bcd34cee5d62c"
+}

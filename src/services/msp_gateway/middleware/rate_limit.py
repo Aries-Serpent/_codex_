@@ -15,7 +15,7 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
-from src.utils.log_sanitizer import sanitize_log_input
+from utils.log_sanitizer import sanitize_log_input
 
 from ..config import settings
 
@@ -296,10 +296,16 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 # Read response body
                 response_body = b""
                 try:
-                    async for chunk in response.body_iterator:
-                        response_body += chunk
+                    body_iterator = getattr(response, "body_iterator", None)
+                    if body_iterator is None:
+                        response_body = bytes(response.body)
+                    else:
+                        async for chunk in body_iterator:
+                            response_body += chunk
                 finally:
-                    await response.aclose()
+                    close = getattr(response, "aclose", None)
+                    if close is not None:
+                        await close()
 
                 # Parse JSON response
                 response_data = None

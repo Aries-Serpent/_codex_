@@ -8,6 +8,28 @@ from typing import TYPE_CHECKING
 from .__about__ import __version__
 
 if TYPE_CHECKING:
+    from .evidence import (  # noqa: F401
+        EVIDENCE_SCHEMA_VERSION,
+        DataAvailability,
+        EvidenceValidationError,
+        ExecutionEnvironment,
+        GateResult,
+        GateStatus,
+        ImprovementEvent,
+        ImprovementResult,
+        MergeState,
+        PatchProposal,
+        PatternRef,
+        PostMergeOutcome,
+        SchemaVersionError,
+        SignalEvidence,
+        SignalSource,
+        event_from_dict,
+        event_to_dict,
+        make_event_id,
+        result_from_dict,
+        result_to_dict,
+    )
     from .governance import (  # noqa: F401
         GovernanceDecision,
         GovernanceProtocol,
@@ -25,17 +47,37 @@ if TYPE_CHECKING:
 
 _EXPORTS = {
     "ActionResult": ".ooda",
+    "DataAvailability": ".evidence",
     "Decision": ".ooda",
+    "EVIDENCE_SCHEMA_VERSION": ".evidence",
+    "EvidenceValidationError": ".evidence",
+    "ExecutionEnvironment": ".evidence",
+    "GateResult": ".evidence",
+    "GateStatus": ".evidence",
     "GovernanceDecision": ".governance",
     "GovernanceProtocol": ".governance",
     "GovernanceRequest": ".governance",
+    "ImprovementEvent": ".evidence",
+    "ImprovementResult": ".evidence",
     "MemoryProtocol": ".memory",
     "MemoryQuery": ".memory",
     "MemoryRecord": ".memory",
+    "MergeState": ".evidence",
     "Observation": ".ooda",
     "OODACycle": ".ooda",
     "OODAProtocol": ".ooda",
     "Orientation": ".ooda",
+    "PatchProposal": ".evidence",
+    "PatternRef": ".evidence",
+    "PostMergeOutcome": ".evidence",
+    "SchemaVersionError": ".evidence",
+    "SignalEvidence": ".evidence",
+    "SignalSource": ".evidence",
+    "event_from_dict": ".evidence",
+    "event_to_dict": ".evidence",
+    "make_event_id": ".evidence",
+    "result_from_dict": ".evidence",
+    "result_to_dict": ".evidence",
 }
 
 __all__ = [*_EXPORTS, "__version__"]
