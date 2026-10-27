@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools>=78.1.1,<82",  # Security: PYSEC-2025-49, PYSEC-2026-1918 fixes
+    "setuptools>=84.1.0,<85",  # Security: PYSEC-2025-49, PYSEC-2026-1918 fixes
     "wheel>=0.48.0",  # Security: CVE-2026-24049 - arbitrary code execution fix
 ]
 build-backend = "setuptools.build_meta"
