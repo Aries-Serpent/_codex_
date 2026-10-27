@@ -56,6 +56,7 @@ from typing import Any, Dict, Optional, Tuple
 @dataclass
 class ScoringFactors:
     """Components of confidence score."""
+
     historical_accuracy: float
     context_complexity: float
     test_coverage: float
@@ -111,13 +112,16 @@ class ConfidenceScorer:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT
                     COUNT(*) as total,
                     SUM(CASE WHEN outcome = 'SUCCESS' THEN 1 ELSE 0 END) as successful
                 FROM decision_log
                 WHERE agent_id = ? AND outcome IN ('SUCCESS', 'FAILED')
-            """, (agent_id,))
+            """,
+                (agent_id,),
+            )
 
             row = cursor.fetchone()
             conn.close()
@@ -181,11 +185,11 @@ class ConfidenceScorer:
         """Convert complexity level to confidence score component."""
         mapping = {
             0: 100.0,  # Simple → full confidence
-            1: 80.0,   # Low complexity → 80% confidence
-            2: 60.0,   # Medium complexity → 60% confidence
-            3: 40.0,   # High complexity → 40% confidence
-            4: 20.0,   # Critical complexity → 20% confidence
-            5: 0.0,    # Unknown → 0% confidence
+            1: 80.0,  # Low complexity → 80% confidence
+            2: 60.0,  # Medium complexity → 60% confidence
+            3: 40.0,  # High complexity → 40% confidence
+            4: 20.0,  # Critical complexity → 20% confidence
+            5: 0.0,  # Unknown → 0% confidence
         }
         return mapping.get(complexity_level, 0.0)
 
@@ -265,10 +269,10 @@ class ConfidenceScorer:
 
         # Calculate weighted confidence score
         confidence = (
-            historical_accuracy * self.WEIGHTS["historical_accuracy"] +
-            complexity_score * self.WEIGHTS["context_complexity"] +
-            test_coverage * self.WEIGHTS["test_coverage"] +
-            manual_signals * self.WEIGHTS["manual_signals"]
+            historical_accuracy * self.WEIGHTS["historical_accuracy"]
+            + complexity_score * self.WEIGHTS["context_complexity"]
+            + test_coverage * self.WEIGHTS["test_coverage"]
+            + manual_signals * self.WEIGHTS["manual_signals"]
         )
 
         return max(0.0, min(100.0, confidence))
@@ -308,7 +312,9 @@ class ConfidenceScorer:
         )
 
         escalation_threshold = self.ESCALATION_THRESHOLDS.get(agent_id, 60.0)
-        requires_escalation = confidence < escalation_threshold or (signals and signals.get("block"))
+        requires_escalation = confidence < escalation_threshold or bool(
+            signals and signals.get("block")
+        )
 
         return {
             "agent_id": agent_id,
@@ -319,7 +325,9 @@ class ConfidenceScorer:
                 "historical_accuracy": {
                     "value": round(historical_accuracy, 2),
                     "weight": self.WEIGHTS["historical_accuracy"],
-                    "contribution": round(historical_accuracy * self.WEIGHTS["historical_accuracy"], 2),
+                    "contribution": round(
+                        historical_accuracy * self.WEIGHTS["historical_accuracy"], 2
+                    ),
                 },
                 "context_complexity": {
                     "level": complexity_level,
@@ -341,9 +349,9 @@ class ConfidenceScorer:
                 },
             },
             "decision_action": (
-                "BLOCK" if signals and signals.get("block")
-                else "ESCALATE" if requires_escalation
-                else "EXECUTE"
+                "BLOCK"
+                if signals and signals.get("block")
+                else "ESCALATE" if requires_escalation else "EXECUTE"
             ),
             "timestamp": datetime.utcnow().isoformat() + "Z",
         }
@@ -354,7 +362,8 @@ class ConfidenceScorer:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT
                     COUNT(*) as total,
                     AVG(confidence_score) as avg,
@@ -363,7 +372,9 @@ class ConfidenceScorer:
                     STDDEV(confidence_score) as stddev
                 FROM decision_log
                 WHERE agent_id = ?
-            """, (agent_id,))
+            """,
+                (agent_id,),
+            )
 
             row = cursor.fetchone()
             conn.close()

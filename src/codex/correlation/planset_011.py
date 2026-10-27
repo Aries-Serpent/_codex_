@@ -139,14 +139,16 @@ class GateCriterionValidator:
             "passed_criteria": passed_count,
             "total_criteria": len(self.CRITERIA),
             "criteria_results": [
-                self.results.get(i, {}).to_dict()
-                if i in self.results
-                else {
-                    "criterion": i,
-                    "name": self.CRITERIA[i][0],
-                    "passed": False,
-                    "status": "NOT_RUN",
-                }
+                (
+                    self.results.get(i, {}).to_dict()
+                    if i in self.results
+                    else {
+                        "criterion": i,
+                        "name": self.CRITERIA[i][0],
+                        "passed": False,
+                        "status": "NOT_RUN",
+                    }
+                )
                 for i in range(1, 9)
             ],
         }
@@ -577,9 +579,9 @@ class Planset012IntegrationAdapter:
             "type": "root_cause_feedback",
             "timestamp": datetime.utcnow().isoformat(),
             "root_causes": [rc.to_json() for rc in root_causes],
-            "feedback_confidence": np.mean([rc.confidence for rc in root_causes])
-            if root_causes
-            else 0.0,
+            "feedback_confidence": (
+                np.mean([rc.confidence for rc in root_causes]) if root_causes else 0.0
+            ),
         }
 
     @staticmethod

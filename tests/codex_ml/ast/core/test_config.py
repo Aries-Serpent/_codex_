@@ -5,6 +5,7 @@ Covers default values, constructor overrides, environment variable overrides,
 serialization/deserialization, validation, and edge cases.
 """
 
+import os
 import tempfile
 from pathlib import Path
 

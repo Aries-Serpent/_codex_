@@ -154,7 +154,10 @@ def sanitize_log_message(
         # JWT tokens (three base64 segments separated by dots)
         (r"eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", "[REDACTED]"),
         # Mask credential placeholders such as "JWT: ******" or "token: ********"
-        (r"(?i)\b(?:jwt|token|secret|password|api[_-]?key|authorization|bearer)\s*[:=]?\s*\*{4,}", "[REDACTED]"),
+        (
+            r"(?i)\b(?:jwt|token|secret|password|api[_-]?key|authorization|bearer)\s*[:=]?\s*\*{4,}",
+            "[REDACTED]",
+        ),
         # Long base64-like strings (40+ chars) - catches tokens while avoiding short identifiers
         # This threshold balances security (catching tokens) with false positive reduction
         # Most legitimate short identifiers (UUIDs, SHAs) are <36 chars and whitelisted
@@ -270,8 +273,8 @@ def redact_dict_with_secret_keys(data: Optional[dict[str, Any]]) -> dict[str, An
         Dictionary with redacted keys (indexed)
 
     Example:
-        >>> redact_dict_with_secret_keys({"SECRET_1": "value", "SECRET_2": "value"})
-        {"secret_1": "value", "secret_2": "value"}
+        >>> sorted(redact_dict_with_secret_keys({"SECRET_1": "value", "SECRET_2": "value"}))  # pragma: allowlist secret -- illustrative key names
+        ['secret_1', 'secret_2']
     """
     if not data:
         return {}

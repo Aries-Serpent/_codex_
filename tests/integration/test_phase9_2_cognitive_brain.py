@@ -1,611 +1,608 @@
-"""
-Integration tests for PHASE 9.2 Cognitive Brain & Session Memory Integration.
+"""Contract checks for the *archived* Phase 9.2 design specifications.
 
-Covers:
-- 50+ Pattern catalog ingestion
-- STM → LTM pattern promotion
-- Session context injection with token budgeting
-- Checkpoint/recovery procedures
-- 20+ recovery scenarios
+These documents are historical design evidence, not the live runtime contract.
+Validate their concrete schemas, examples and references without promoting their
+sample metrics, FINAL front matter or catalog presence to current phase status.
+See .codex/archive/README.md for the historical/active documentation boundary.
 """
 
+import re
 from pathlib import Path
 
 import pytest
 
-# ============================================================================
-# Pattern Ingestion Tests (10 tests)
-# ============================================================================
+ROOT = Path(__file__).resolve().parents[2]
+ARCHIVE = ROOT / ".codex/archive/phase-reports/phase-1-10"
+NAMES = (
+    "LTM_PATTERNS",
+    "PATTERN_PROMOTION_RULES",
+    "SESSION_CONTEXT",
+    "CHECKPOINT_PROCEDURES",
+    "RECOVERY_PROCEDURES",
+)
+
+
+def document(name):
+    assert name in NAMES
+    path = ARCHIVE / f"PHASE_9_2_{name}.md"
+    assert path.is_file(), f"Missing archived specification: {path}"
+    content = path.read_text(encoding="utf-8")
+    assert re.search(r'^version: "1\.0"$', content, re.M), path
+    return content
+
+
+def section(name, heading):
+    """Return a design section, excluding headings inside fenced examples.
+
+    The archive embeds Markdown examples containing inner shell fences. Track
+    those nested example fences too; Python comments are not document headings.
+    """
+    content = document(name)
+    headings = []
+    fences = []
+    offset = 0
+    for line in content.splitlines(keepends=True):
+        fence = re.match(r"^(`{3,})(.*)$", line.strip())
+        if fence:
+            if fence[2].strip() or not fences:
+                fences.append(len(fence[1]))
+            elif len(fence[1]) >= fences[-1]:
+                fences.pop()
+        elif not fences:
+            match = re.match(r"^(#{2,4}) (.+?)\s*$", line)
+            if match:
+                headings.append((offset, offset + len(line), len(match[1]), match[2]))
+        offset += len(line)
+    matches = [entry for entry in headings if entry[3] == heading]
+    assert len(matches) == 1, f"{name}: expected one heading {heading!r}"
+    start, body_start, level, _ = matches[0]
+    end = next(
+        (pos for pos, _, depth, _ in headings if pos > start and depth <= level), len(content)
+    )
+    body = content[body_start:end]
+    assert body.strip(), f"{name}: empty section {heading!r}"
+    return body
+
+
+def pattern_records():
+    content = document("LTM_PATTERNS").split("## Summary Statistics")[0]
+    records = {}
+    for match in re.finditer(
+        r"^### ((?:RP|L|C)-\d{3}): ([^\n]+)\n(.*?)(?=^### |^## |\Z)",
+        content,
+        re.M | re.S,
+    ):
+        pattern_id, title, body = match.groups()
+        assert pattern_id not in records, f"Duplicate {pattern_id}"
+        fields = {
+            key: value.strip()
+            for key, value in re.findall(r"^\*\*([^*]+):\*\*[ \t]*(.*)$", body, re.M)
+        }
+        records[pattern_id] = (title, fields, body)
+    assert len(records) == 23, "Archive defines 12 RP + 8 L + 3 C entries, not 50"
+    return records
+
+
+def field_values(field):
+    values = []
+    for pattern_id, (_, fields, _) in pattern_records().items():
+        assert field in fields, f"{pattern_id}: missing {field}"
+        assert fields[field], f"{pattern_id}: empty {field}"
+        values.append(fields[field])
+    return values
+
+
+def recovery(procedure):
+    return section("RECOVERY_PROCEDURES", procedure)
+
 
 class TestPatternIngestion:
-    """Tests for loading and validating pattern catalog."""
+    """Validate actual archive records rather than summary/example metrics."""
 
     def test_load_ltm_pattern_catalog(self):
-        """Load pattern catalog from LTM (12 core RP + 8 learned L + 3 composite C = 23)."""
-        catalog_path = Path('.codex/PHASE_9_2_LTM_PATTERNS.md')
-        assert catalog_path.exists(), "LTM patterns catalog not found"
-
-        content = catalog_path.read_text()
-        # Count patterns in catalog
-        rp_patterns = content.count('### RP-')
-        l_patterns = content.count('### L-')
-        c_patterns = content.count('### C-')
-
-        total = rp_patterns + l_patterns + c_patterns
-        # Verify we have patterns from all three categories
-        assert rp_patterns >= 12, f"Expected 12 Phase 9.2 patterns, found {rp_patterns}"
-        assert l_patterns >= 8, f"Expected 8+ Phase 8 learned patterns, found {l_patterns}"
-        assert c_patterns >= 3, f"Expected 3+ composite patterns, found {c_patterns}"
-        assert total >= 20, f"Expected 20+ total patterns, found {total}"
+        records = pattern_records()
+        for prefix, count in (("RP", 12), ("L", 8), ("C", 3)):
+            assert sum(key.startswith(prefix + "-") for key in records) == count
 
     def test_pattern_schema_validation(self):
-        """Validate pattern schema contains required fields."""
-        required_fields = [
-            'Category', 'Success Rate', 'Confidence Threshold',
-            'Fix Time', 'Routing Agent', 'Fallback Agent',
-            'Description', 'Improvement Areas', 'Complexity Level'
-        ]
-
-        catalog_path = Path('.codex/PHASE_9_2_LTM_PATTERNS.md')
-        content = catalog_path.read_text()
-
-        for field in required_fields[:5]:  # Check subset
-            assert field.lower() in content.lower(), f"Missing field: {field}"
+        common = (
+            "Category",
+            "Success Rate",
+            "Confidence Threshold",
+            "Fix Time (minutes)",
+            "Routing Agent",
+            "Fallback Agent",
+            "Description",
+            "Complexity Level",
+            "Prerequisite Patterns",
+        )
+        for pattern_id, (_, fields, body) in pattern_records().items():
+            for field in common:
+                assert field in fields, f"{pattern_id}: missing {field}"
+            assert re.search(r"\*\*Description:\*\*\s+\S", body), pattern_id
+            # Composite records intentionally have no Improvement Areas field.
+            if not pattern_id.startswith("C-"):
+                assert re.search(r"\*\*Improvement Areas:\*\*\s+- \S", body), pattern_id
 
     def test_pattern_confidence_range(self):
-        """Validate pattern confidence values are in [0.0, 1.0] range."""
-        # Parse patterns and check confidence
-        catalog_path = Path('.codex/PHASE_9_2_LTM_PATTERNS.md')
-        content = catalog_path.read_text()
-
-        # Extract confidence values
-        import re
-        confidence_matches = re.findall(r'Confidence[^:]*:\s*(0\.\d+)', content)
-
-        for conf_str in confidence_matches:
-            conf = float(conf_str)
-            assert 0.0 <= conf <= 1.0, f"Invalid confidence: {conf}"
+        for value in field_values("Confidence Threshold"):
+            assert re.fullmatch(r"(?:0\.\d+|1\.0+)", value)
+            assert 0 <= float(value) <= 1
 
     def test_pattern_success_rate_format(self):
-        """Validate pattern success rates are percentages."""
-        catalog_path = Path('.codex/PHASE_9_2_LTM_PATTERNS.md')
-        content = catalog_path.read_text()
-
-        import re
-        sr_matches = re.findall(r'Success Rate:\s*(\d+)%', content)
-
-        for sr_str in sr_matches:
-            sr = int(sr_str)
-            assert 0 <= sr <= 100, f"Invalid success rate: {sr}%"
+        for value in field_values("Success Rate"):
+            assert re.fullmatch(r"\d+%", value), value
+            assert 0 <= int(value[:-1]) <= 100
 
     def test_pattern_routing_agent_exists(self):
-        """Validate routing agents are defined."""
-        catalog_path = Path('.codex/PHASE_9_2_LTM_PATTERNS.md')
-        content = catalog_path.read_text()
-
-        # Check for agent references
-        valid_agents = [
-            'ci-auto-healer', 'python-312-type-fixer',
-            'autonomous-test-healer', 'dependency-conflict'
-        ]
-
-        for agent in valid_agents:
-            assert agent.lower() in content.lower(), f"Agent {agent} not referenced"
+        # Historical routing identifiers, not a claim about today's registry.
+        for field in ("Routing Agent", "Fallback Agent"):
+            for value in field_values(field):
+                assert re.fullmatch(r"[a-z][a-z0-9-]+", value), value
+        routes = field_values("Routing Agent")
+        assert "ci-auto-healer-agent" in routes
+        assert "python-312-type-fixer" in routes
 
     def test_pattern_prerequisite_consistency(self):
-        """Validate pattern prerequisites exist in catalog."""
-        catalog_path = Path('.codex/PHASE_9_2_LTM_PATTERNS.md')
-        content = catalog_path.read_text()
-
-        # Extract pattern IDs and prerequisites
-        import re
-        pattern_ids = set(re.findall(r'### (RP-\d+|L-\d+|C-\d+)', content))
-        prerequisites = re.findall(r'Prerequisite Patterns:\s*(.+)', content)
-
-        for prereq_line in prerequisites:
-            # Simple validation that prerequisites reference existing patterns
-            if 'None' not in prereq_line:
-                assert len(pattern_ids) > 0, "No patterns found for prerequisite validation"
+        records = pattern_records()
+        for pattern_id, (_, fields, _) in records.items():
+            value = fields["Prerequisite Patterns"]
+            if value == "None":
+                continue
+            refs = re.findall(r"(?:RP|L|C)-\d{3}", value)
+            assert refs, f"{pattern_id}: invalid prerequisites {value}"
+            assert set(refs) <= records.keys(), f"{pattern_id}: unresolved {refs}"
+            assert pattern_id not in refs
 
     def test_pattern_category_consistency(self):
-        """Validate pattern categories are consistent."""
-        valid_categories = [
-            'Import & Dependency Errors', 'Type System & Compatibility',
-            'Test Assertions & Validation', 'Linting & Code Quality',
-            'Workflow & CI Configuration', 'Documentation & Links',
-            'Runtime & Execution Errors', 'Multi-pattern composite'
-        ]
-
-        catalog_path = Path('.codex/PHASE_9_2_LTM_PATTERNS.md')
-        content = catalog_path.read_text()
-
-        for category in valid_categories:
-            assert category.lower() in content.lower(), f"Missing category: {category}"
+        expected = {
+            "Import & Dependency Errors",
+            "Type System & Compatibility",
+            "Test Assertions & Validation",
+            "Linting & Code Quality",
+            "Workflow & CI Configuration",
+            "Documentation & Links",
+            "Runtime & Execution Errors",
+            "Multi-pattern composite",
+            "Code Quality",  # Learned L-003/L-006 use this historical category.
+        }
+        assert set(field_values("Category")) == expected
 
     def test_phase_9_2_vs_phase_8_patterns(self):
-        """Validate mix of Phase 9.2 and Phase 8 patterns."""
-        catalog_path = Path('.codex/PHASE_9_2_LTM_PATTERNS.md')
-        content = catalog_path.read_text()
-
-        # Count pattern sources
-        rp_count = content.count('### RP-')  # Phase 9.2 core
-        l_count = content.count('### L-')    # Phase 8 learned
-
-        assert rp_count >= 12, f"Expected 12+ Phase 9.2 patterns, found {rp_count}"
-        assert l_count >= 8, f"Expected 8+ Phase 8 patterns, found {l_count}"
+        records = pattern_records()
+        assert {key for key in records if key.startswith("RP-")} == {
+            f"RP-{i:03}" for i in range(1, 13)
+        }
+        learned = [fields for key, (_, fields, _) in records.items() if key.startswith("L-")]
+        assert len(learned) == 8
+        assert all(fields["Phase Introduced"] == "8" for fields in learned)
 
     def test_pattern_false_positive_risk(self):
-        """Validate false positive risk is documented."""
-        catalog_path = Path('.codex/PHASE_9_2_LTM_PATTERNS.md')
-        content = catalog_path.read_text()
+        # Only core RP entries define this field in the historical schema.
+        for pattern_id, (_, fields, _) in pattern_records().items():
+            if pattern_id.startswith("RP-"):
+                value = fields["False Positive Risk"]
+                assert re.fullmatch(r"\d+%", value), pattern_id
+                assert 0 <= int(value[:-1]) <= 50
 
-        import re
-        fp_matches = re.findall(r'False Positive Risk:\s*(\d+)%', content)
-
-        for fp_str in fp_matches:
-            fp = int(fp_str)
-            assert 0 <= fp <= 50, f"Unrealistic false positive rate: {fp}%"
-
-
-# ============================================================================
-# Pattern Promotion Tests (20 tests)
-# ============================================================================
 
 class TestPatternPromotion:
-    """Tests for STM → LTM pattern promotion."""
+    """Validate documented promotion criteria, not execution of pseudocode."""
 
     def test_promotion_rules_loaded(self):
-        """Load pattern promotion rules."""
-        rules_path = Path('.codex/PHASE_9_2_PATTERN_PROMOTION_RULES.md')
-        assert rules_path.exists(), "Promotion rules not found"
-
-        content = rules_path.read_text()
-        assert 'STM' in content and 'LTM' in content, "Content must not be empty"
+        assert "STM → LTM" in document("PATTERN_PROMOTION_RULES")
 
     def test_minimum_observations_requirement(self):
-        """Validate minimum observations threshold (5)."""
-        rules_path = Path('.codex/PHASE_9_2_PATTERN_PROMOTION_RULES.md')
-        content = rules_path.read_text()
-
-        assert '5' in content, "Min observations (5) not documented"
+        body = section("PATTERN_PROMOTION_RULES", "Minimum Observations Requirement")
+        assert re.search(r"\| \*\*Gold\*\* \| 5 \|", body)
+        assert "pattern.observations >= 5" in section(
+            "PATTERN_PROMOTION_RULES", "Final Confidence Score"
+        )
 
     def test_success_rate_threshold(self):
-        """Validate success rate threshold (80%)."""
-        rules_path = Path('.codex/PHASE_9_2_PATTERN_PROMOTION_RULES.md')
-        content = rules_path.read_text()
-
-        assert '80%' in content or '0.80' in content, "Content must not be empty"
+        assert "pattern.success_rate >= 0.80" in section(
+            "PATTERN_PROMOTION_RULES", "Final Confidence Score"
+        )
 
     def test_confidence_scoring_algorithm(self):
-        """Test confidence scoring formula."""
-        rules_path = Path('.codex/PHASE_9_2_PATTERN_PROMOTION_RULES.md')
-        content = rules_path.read_text()
-
-        # Verify components of scoring
-        components = ['base_conf', 'recency', 'conflict', 'success_mult']
-        for comp in components:
-            assert comp.lower() in content.lower(), "Content must not be empty"
+        body = section("PATTERN_PROMOTION_RULES", "Final Confidence Score")
+        for expression in (
+            "base_conf +",
+            "recency_boost +",
+            "conflict_penalty",
+            ") * success_mult",
+            "max(0.0, min(1.0, final_confidence))",
+        ):
+            assert expression in body
 
     def test_recency_decay_schedule(self):
-        """Validate recency decay schedule."""
-        rules_path = Path('.codex/PHASE_9_2_PATTERN_PROMOTION_RULES.md')
-        content = rules_path.read_text()
-
-        # Check decay periods
-        assert 'fresh' in content.lower(), "Content must not be empty"
-        assert 'stale' in content.lower(), "Content must not be empty"
-        assert '30 day' in content.lower(), "Content must not be empty"
+        body = section("PATTERN_PROMOTION_RULES", "Decay Schedule")
+        for category in (
+            "fresh (0-7 days)",
+            "current (8-30 days)",
+            "stale (31-60 days)",
+            "very_stale (61-90 days)",
+            "archival (91+ days)",
+        ):
+            assert category in body
+        # The archive's table and scoring pseudocode disagree on decay magnitude.
+        # Do not turn either into a live runtime constant.
 
     def test_confidence_boost_for_recent_patterns(self):
-        """Validate recency boost for patterns < 7 days old."""
-        rules_path = Path('.codex/PHASE_9_2_PATTERN_PROMOTION_RULES.md')
-        content = rules_path.read_text()
-
-        assert '7 day' in content.lower() or '+10%' in content, "Content must not be empty"
+        body = section("PATTERN_PROMOTION_RULES", "Recency Boost")
+        assert re.search(r"if days_old <= 7:\s+return \+0.10", body)
 
     def test_conflict_detection_categories(self):
-        """Validate conflict detection covers multiple categories."""
-        rules_path = Path('.codex/PHASE_9_2_PATTERN_PROMOTION_RULES.md')
-        content = rules_path.read_text()
-
-        conflicts = [
-            'overlapping', 'contradictory', 'agent', 'prerequisite'
-        ]
-        for conflict in conflicts:
-            assert conflict.lower() in content.lower(), "Content must not be empty"
+        for heading in (
+            "1. Contradictory Fix Strategies",
+            "2. Overlapping Signatures",
+            "3. Agent Capability Conflicts",
+        ):
+            assert "Resolution:" in section("PATTERN_PROMOTION_RULES", heading)
+        assert (
+            "prerequisite"
+            in section("PATTERN_PROMOTION_RULES", "Conflict Detection Algorithm").lower()
+        )
 
     def test_promotion_workflow_documented(self):
-        """Validate promotion workflow (detect → aggregate → score → decide → integrate)."""
-        rules_path = Path('.codex/PHASE_9_2_PATTERN_PROMOTION_RULES.md')
-        content = rules_path.read_text()
-
-        workflow_steps = ['detect', 'aggregat', 'scor', 'decis', 'integrat']
-        for step in workflow_steps:
-            assert step in content.lower(), "Content must not be empty"
+        body = section("PATTERN_PROMOTION_RULES", "Automated Promotion Workflow")
+        headings = re.findall(r"^### Step \d: (.+)", body, re.M)
+        assert headings == [
+            "Detection",
+            "Aggregation",
+            "Confidence Scoring",
+            "Promotion Decision",
+            "Integration into LTM",
+        ]
 
     def test_promotion_metrics_defined(self):
-        """Validate promotion success metrics."""
-        rules_path = Path('.codex/PHASE_9_2_PATTERN_PROMOTION_RULES.md')
-        content = rules_path.read_text()
-
-        metrics = ['success rate', 'stability', 'conflict resolution']
-        for metric in metrics:
-            assert metric.lower() in content.lower(), "Content must not be empty"
+        for heading in (
+            "Promotion Success Rate",
+            "LTM Pattern Stability",
+            "Conflict Resolution Efficiency",
+        ):
+            assert section("PATTERN_PROMOTION_RULES", heading).strip()
 
     def test_pattern_supersession_procedure(self):
-        """Validate pattern supersession procedure."""
-        rules_path = Path('.codex/PHASE_9_2_PATTERN_PROMOTION_RULES.md')
-        content = rules_path.read_text()
+        body = section("PATTERN_PROMOTION_RULES", "Pattern Supersession")
+        assert "supersed" in body.lower()
+        assert "historical reference" in body
 
-        assert 'superses' in content.lower(), "Content must not be empty"
-
-
-# ============================================================================
-# Session Context Injection Tests (25 tests)
-# ============================================================================
 
 class TestSessionContextInjection:
-    """Tests for session context injection with token budgeting."""
+    """Validate the archived token budget and context format."""
 
     def test_session_context_spec_loaded(self):
-        """Load session context specification."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        assert spec_path.exists(), "Session context spec not found"
+        assert "# PHASE 9.2 Session Context Injection Specification" in document("SESSION_CONTEXT")
 
     def test_token_budget_defined(self):
-        """Validate token budget (2000 tokens)."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = spec_path.read_text()
-
-        assert '2000' in content, "Token budget not documented"
+        assert section("SESSION_CONTEXT", "Total Budget: 2000 tokens")
 
     def test_token_allocation_breakdown(self):
-        """Validate token allocation across categories."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = spec_path.read_text()
-
-        allocations = ['40%', '30%', '20%', '10%']
-        for alloc in allocations:
-            assert alloc in content, "Content must not be empty"
+        body = section("SESSION_CONTEXT", "Total Budget: 2000 tokens")
+        allocations = re.findall(r": (\d+) tokens \((\d+)%\)", body)
+        assert [(int(a), int(b)) for a, b in allocations] == [
+            (800, 40),
+            (600, 30),
+            (400, 20),
+            (200, 10),
+        ]
+        assert sum(int(a) for a, _ in allocations) == 2000
+        assert sum(int(b) for _, b in allocations) == 100
 
     def test_priority_scoring_function(self):
-        """Validate priority scoring includes recency, confidence, success."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = spec_path.read_text()
-
-        scoring_factors = ['recency', 'confidence', 'success rate', 'relevance']
-        for factor in scoring_factors:
-            assert factor.lower() in content.lower(), "Content must not be empty"
+        body = section("SESSION_CONTEXT", "Scoring Function")
+        weights = dict(re.findall(r"(\w+)_score \* (0\.\d+)", body))
+        assert weights == {
+            "recency": "0.35",
+            "confidence": "0.25",
+            "success": "0.20",
+            "relevance": "0.20",
+        }
+        assert sum(map(float, weights.values())) == pytest.approx(1)
 
     def test_priority_tier_definitions(self):
-        """Validate 4+ priority tiers defined."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = spec_path.read_text()
-
-        for tier in ['tier_1', 'tier_2', 'tier_3', 'tier_4']:
-            assert tier in content.lower(), "Content must not be empty"
+        body = section("SESSION_CONTEXT", "Priority Tiers")
+        assert len(re.findall(r"^tier_[1-5]", body, re.M)) == 5
+        assert sum(map(int, re.findall(r"allocation: (\d+) tokens", body))) == 2000
 
     def test_recency_component_weight(self):
-        """Validate recency component weight (35%)."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = spec_path.read_text()
-
-        assert '35%' in content or '0.35' in content, "Content must not be empty"
+        assert "recency_score * 0.35" in section("SESSION_CONTEXT", "Scoring Function")
 
     def test_confidence_component_weight(self):
-        """Validate confidence component weight (25%)."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = spec_path.read_text()
-
-        assert '25%' in content or '0.25' in content, "Content must not be empty"
+        assert "confidence_score * 0.25" in section("SESSION_CONTEXT", "Scoring Function")
 
     def test_fallback_degradation_strategy(self):
-        """Validate fallback strategy when budget exceeded."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = spec_path.read_text()
-
-        strategies = ['truncate', 'remov', 'collaps', 'minimal']
-        for strategy in strategies:
-            assert strategy.lower() in content.lower(), "Content must not be empty"
+        body = section("SESSION_CONTEXT", "Dynamic Allocation").lower()
+        for step in ("1. truncate", "2. remove", "3. collapse", "4. remove"):
+            assert step in body
+        assert "minimal" in section("SESSION_CONTEXT", "Budget Exceeded Scenarios").lower()
 
     def test_pattern_format_versions(self):
-        """Validate v0.9 and v1.0 pattern formats supported."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = spec_path.read_text()
-
-        assert '0.9' in content and '1.0' in content, "Content must not be empty"
+        body = section("SESSION_CONTEXT", "Pattern Format Versions")
+        assert "version_1_0:" in body and "version_0_9_deprecated:" in body
+        assert "migration:" in body
 
     def test_backward_compatibility_migration(self):
-        """Validate migration from v0.9 to v1.0."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = spec_path.read_text()
-
-        assert 'migrat' in content.lower(), "Content must not be empty"
+        body = section("SESSION_CONTEXT", "Migration Procedure")
+        assert "def migrate_v0_9_to_v1_0" in body
+        assert "return" in body
 
     def test_session_context_injection_format(self):
-        """Validate session context format (YAML + Markdown)."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = spec_path.read_text()
-
-        assert 'yaml' in content.lower() or '---' in content, "Content must not be empty"
-        assert 'markdown' in content.lower(), "Content must not be empty"
+        body = section("SESSION_CONTEXT", "YAML Header")
+        for field in (
+            "session_context_version",
+            "injected_at",
+            "budget_used",
+            "budget_available",
+            "budget_utilization",
+            "patterns_included",
+        ):
+            assert re.search(rf"^{field}:", body, re.M), field
+        assert "```markdown" in section("SESSION_CONTEXT", "Pattern Entry Format")
 
     def test_compact_format_for_low_budget(self):
-        """Validate compact format when budget limited."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = spec_path.read_text()
-
-        assert 'compact' in content.lower(), "Content must not be empty"
+        body = section("SESSION_CONTEXT", "Compact Format (Low Token Budget)")
+        assert "| Pattern | Confidence | Success | Routing Agent |" in body
+        assert "RP-001" in body
 
     def test_budget_exceeded_handling(self):
-        """Validate graceful degradation when budget exceeded."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = spec_path.read_text()
-
-        assert 'budget exceeded' in content.lower() or 'exceed' in content.lower(), "Content must not be empty"
+        body = section("SESSION_CONTEXT", "Budget Exceeded Scenarios")
+        assert "budget" in body and "return" in body
 
     def test_integration_points_documented(self):
-        """Validate integration points (CLI, Agent, Checkpoint)."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = spec_path.read_text()
-
-        integrations = ['cli', 'agent', 'checkpoint', 'session']
-        for integration in integrations:
-            assert integration.lower() in content.lower(), "Content must not be empty"
+        body = section("SESSION_CONTEXT", "Integration Points").lower()
+        for integration in ("cli", "agent", "checkpoint", "session"):
+            assert integration in body
 
     def test_metrics_and_monitoring_defined(self):
-        """Validate metrics for context utilization."""
-        spec_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = spec_path.read_text()
+        body = document("SESSION_CONTEXT")
+        assert "budget_utilization:" in body
+        assert re.search(r"^## .*Metric", body, re.M)
 
-        assert 'utilization' in content.lower(), "Content must not be empty"
-        assert 'metric' in content.lower(), "Content must not be empty"
-
-
-# ============================================================================
-# Checkpoint Tests (15 tests)
-# ============================================================================
 
 class TestCheckpointProcedures:
-    """Tests for checkpoint creation and management."""
+    """Validate fields actually declared by CascadeCheckpoint."""
 
     def test_checkpoint_spec_loaded(self):
-        """Load checkpoint procedures."""
-        proc_path = Path('.codex/PHASE_9_2_CHECKPOINT_PROCEDURES.md')
-        assert proc_path.exists(), "Checkpoint procedures not found"
+        assert "# PHASE 9.2 Checkpoint Procedures" in document("CHECKPOINT_PROCEDURES")
 
     def test_checkpoint_frequency_defined(self):
-        """Validate checkpoint frequency (50 failures or 5 minutes)."""
-        proc_path = Path('.codex/PHASE_9_2_CHECKPOINT_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert '50' in content and 'failure' in content.lower(), "Content must not be empty"
-        assert '5' in content and 'minute' in content.lower(), "Content must not be empty"
+        body = section("CHECKPOINT_PROCEDURES", "Frequency")
+        assert re.search(
+            r"failure_count_since_last_checkpoint >= 50 or\s+time_since_last_checkpoint >= 300",
+            body,
+        )
 
     def test_checkpoint_contents_defined(self):
-        """Validate checkpoint contents structure."""
-        proc_path = Path('.codex/PHASE_9_2_CHECKPOINT_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        required_fields = [
-            'session_id', 'timestamp', 'total_failures',
-            'git_state', 'validation_results'
-        ]
-        for field in required_fields:
-            assert field in content.lower(), "Content must not be empty"
+        body = section("CHECKPOINT_PROCEDURES", "Data Structure")
+        fields = set(re.findall(r"^    (\w+):", body, re.M))
+        assert {
+            "session_id",
+            "checkpoint_id",
+            "timestamp",
+            "total_failures_processed",
+            "git_branch",
+            "git_commit_hash",
+            "git_working_dir_clean",
+            "git_staged_changes",
+            "validation_results",
+            "checkpoint_hash",
+            "checksum_validation",
+        } <= fields
 
     def test_checkpoint_validation_checks(self):
-        """Validate checkpoint includes multiple validation checks."""
-        proc_path = Path('.codex/PHASE_9_2_CHECKPOINT_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        checks = ['checksum', 'git', 'pattern', 'timestamp', 'consistency']
-        for check in checks:
-            assert check.lower() in content.lower(), "Content must not be empty"
+        body = section("CHECKPOINT_PROCEDURES", "Pre-Recovery Checks")
+        for check in (
+            "checksum",
+            "git_state",
+            "pattern_catalog",
+            "ltm_freshness",
+            "session_context",
+        ):
+            assert f"'{check}': validate_" in body
+        assert "all(checks.values())" in body
 
     def test_checkpoint_storage_strategy(self):
-        """Validate multiple storage backends (SQLite + JSON)."""
-        proc_path = Path('.codex/PHASE_9_2_CHECKPOINT_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert 'sqlite' in content.lower(), "Content must not be empty"
-        assert 'json' in content.lower(), "Content must not be empty"
+        body = section("CHECKPOINT_PROCEDURES", "Checkpoint Storage")
+        assert "**Primary:** SQLite" in body
+        assert "**Backup:** JSON" in body
 
     def test_checkpoint_retention_policy(self):
-        """Validate retention policy (keep last 10, delete > 7 days)."""
-        proc_path = Path('.codex/PHASE_9_2_CHECKPOINT_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert '10' in content and 'checkpoint' in content.lower(), "Content must not be empty"
-        assert '7 day' in content.lower(), "Content must not be empty"
+        body = section("CHECKPOINT_PROCEDURES", "Checkpoint Storage")
+        assert "Keep last 10 checkpoints per session" in body
+        assert "after 7 days" in body
 
     def test_recovery_scenarios_documented(self):
-        """Validate multiple recovery scenarios (5+)."""
-        proc_path = Path('.codex/PHASE_9_2_CHECKPOINT_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        scenarios = ['clean', 'crash', 'network', 'corruption', 'timeout']
-        for scenario in scenarios:
-            assert scenario.lower() in content.lower(), "Content must not be empty"
-
-    def test_consistency_validation_before_recovery(self):
-        """Validate pre-recovery consistency checks."""
-        proc_path = Path('.codex/PHASE_9_2_CHECKPOINT_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert 'consistency' in content.lower(), "Content must not be empty"
-        assert 'validat' in content.lower(), "Content must not be empty"
-
-
-# ============================================================================
-# Recovery Procedures Tests (20+ tests)
-# ============================================================================
-
-class TestRecoveryProcedures:
-    """Tests for recovery from various failure scenarios."""
-
-    def test_recovery_procedures_loaded(self):
-        """Load recovery procedures."""
-        proc_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-        assert proc_path.exists(), "Recovery procedures not found"
-
-    def test_network_failure_recovery(self):
-        """Validate network failure recovery with exponential backoff."""
-        proc_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert 'network' in content.lower(), "Content must not be empty"
-        assert 'backoff' in content.lower(), "Content must not be empty"
-        assert 'retry' in content.lower(), "Content must not be empty"
-
-    def test_network_failure_max_retries(self):
-        """Validate max retries for network failure (5)."""
-        proc_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert 'max_attempt' in content.lower() or 'attempt' in content.lower(), "Content must not be empty"
-
-    def test_process_crash_recovery(self):
-        """Validate process crash recovery via checkpoint."""
-        proc_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert 'process crash' in content.lower(), "Content must not be empty"
-        assert 'checkpoint' in content.lower(), "Content must not be empty"
-
-    def test_timeout_handling(self):
-        """Validate timeout handling and escalation."""
-        proc_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert 'timeout' in content.lower(), "Content must not be empty"
-        assert 'escalate' in content.lower(), "Content must not be empty"
-
-    def test_timeout_sla_threshold(self):
-        """Validate timeout SLA (5 seconds)."""
-        proc_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert '5' in content and 'second' in content.lower(), "Content must not be empty"
-
-    def test_data_corruption_recovery(self):
-        """Validate data corruption detection and recovery."""
-        proc_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert 'corruption' in content.lower(), "Content must not be empty"
-        assert 'checksum' in content.lower(), "Content must not be empty"
-
-    def test_data_corruption_max_attempts(self):
-        """Validate max corruption recovery attempts (2)."""
-        proc_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert 'corruption' in content.lower(), "Content must not be empty"
-
-    def test_unknown_pattern_recovery(self):
-        """Validate unknown pattern handling."""
-        proc_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert 'unknown' in content.lower(), "Content must not be empty"
-        assert 'stm' in content.lower(), "Content must not be empty"
-
-    def test_unknown_pattern_max_attempts(self):
-        """Validate max attempts for unknown pattern (5)."""
-        proc_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert 'unknown' in content.lower(), "Content must not be empty"
-
-    def test_recovery_matrix_defined(self):
-        """Validate recovery strategy matrix."""
-        proc_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert 'matrix' in content.lower() or 'table' in content.lower(), "Content must not be empty"
-
-    def test_compound_recovery_scenarios(self):
-        """Validate compound recovery scenarios (5+)."""
-        proc_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        compound_scenarios = ['network.*timeout', 'crash.*corruption', 'unknown.*retry']
-        # At least look for compound/multi-failure scenarios
-        assert 'compound' in content.lower() or 'scenario' in content.lower(), "Content must not be empty"
-
-    def test_escalation_criteria_defined(self):
-        """Validate escalation criteria for each scenario."""
-        proc_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert 'escalat' in content.lower(), "Content must not be empty"
-
-    def test_monitoring_and_alerting(self):
-        """Validate monitoring and alerting rules."""
-        proc_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-        content = proc_path.read_text()
-
-        assert 'monitoring' in content.lower() or 'metric' in content.lower(), "Content must not be empty"
-        assert 'alert' in content.lower(), "Content must not be empty"
-
-
-# ============================================================================
-# End-to-End Integration Tests (5 tests)
-# ============================================================================
-
-class TestEndToEndIntegration:
-    """End-to-end integration tests combining all components."""
-
-    def test_all_deliverables_present(self):
-        """Verify all 6 deliverables created."""
-        deliverables = [
-            '.codex/PHASE_9_2_LTM_PATTERNS.md',
-            '.codex/PHASE_9_2_PATTERN_PROMOTION_RULES.md',
-            '.codex/PHASE_9_2_SESSION_CONTEXT.md',
-            '.codex/PHASE_9_2_CHECKPOINT_PROCEDURES.md',
-            '.codex/PHASE_9_2_RECOVERY_PROCEDURES.md',
+        body = section("CHECKPOINT_PROCEDURES", "Failure Recovery Scenarios")
+        headings = re.findall(r"^### Scenario \d: (.+)", body, re.M)
+        assert headings == [
+            "Clean Recovery (Normal Path)",
+            "Process Crash Recovery",
+            "Network Failure Recovery",
+            "Data Corruption Recovery",
+            "Timeout During Classification",
         ]
 
-        for deliverable in deliverables:
-            assert Path(deliverable).exists(), f"Missing: {deliverable}"
+    def test_consistency_validation_before_recovery(self):
+        body = section("CHECKPOINT_PROCEDURES", "Pre-Recovery Checks")
+        assert "def validate_consistency_before_recovery(checkpoint)" in body
+        assert "return all_passed, checks" in body
+
+
+class TestRecoveryProcedures:
+    """Validate concrete retry, escalation and recovery design examples."""
+
+    def test_recovery_procedures_loaded(self):
+        assert "# PHASE 9.2 Recovery Procedures" in document("RECOVERY_PROCEDURES")
+
+    def test_network_failure_recovery(self):
+        body = recovery("Procedure 1: Network Failure Recovery")
+        for term in ("backoff", "retry", "escalat"):
+            assert term in body.lower()
+
+    def test_network_failure_max_retries(self):
+        assert re.search(r"max_attempts\s*=\s*5", recovery("Procedure 1: Network Failure Recovery"))
+
+    def test_process_crash_recovery(self):
+        body = recovery("Procedure 2: Process Crash Recovery")
+        assert "checkpoint" in body and "heartbeat" in body
+
+    def test_timeout_handling(self):
+        body = recovery("Procedure 3: Timeout Handling & Escalation")
+        assert "escalate_failure" in body
+        assert "'action': 'ESCALATE'" in body
+        assert "trigger='timeout_emergency'" in body
+
+    def test_timeout_sla_threshold(self):
+        body = recovery("Procedure 3: Timeout Handling & Escalation")
+        assert re.search(r"(?:timeout|sla)\w*\s*=\s*5(?:\.0)?", body, re.I)
+
+    def test_data_corruption_recovery(self):
+        body = recovery("Procedure 4: Data Corruption Recovery")
+        for term in ("checksum", "backup", "previous"):
+            assert term in body.lower()
+
+    def test_data_corruption_max_attempts(self):
+        # This is the algorithm's retry limit, not the matrix's total-attempt count.
+        body = recovery("Procedure 4: Data Corruption Recovery")
+        assert "max_corruption_attempts = 2" in body
+        assert "attempt_count >= max_corruption_attempts" in body
+
+    def test_unknown_pattern_recovery(self):
+        body = recovery("Procedure 5: Unknown Pattern Recovery")
+        assert "stm" in body.lower()
+        assert "pattern" in body and "escalate" in body
+
+    def test_unknown_pattern_max_attempts(self):
+        body = recovery("Procedure 5: Unknown Pattern Recovery")
+        assert re.search(r"max_unknown_attempts\s*=\s*5", body)
+        assert "attempt_count >= max_unknown_attempts" in body
+        # The design also escalates at attempt_count >= 3 below this guard.
+        # The declared cap is not proof that five retries actually execute.
+        assert "if attempt_count >= 3:" in body
+
+    def test_recovery_matrix_defined(self):
+        body = recovery("Recovery Strategy Matrix")
+        assert "| Failure Type | Detection | Strategy | Retry | Escalate | Max Attempts |" in body
+        for failure in (
+            "Network",
+            "Process crash",
+            "Timeout",
+            "Data corruption",
+            "Unknown pattern",
+        ):
+            assert f"| {failure} |" in body
+
+    def test_compound_recovery_scenarios(self):
+        body = recovery("Compound Recovery Scenarios (5)")
+        ids = re.findall(r"^### (CR-\d{3}):", body, re.M)
+        assert ids == [f"CR-{i:03}" for i in range(1, 6)]
+
+    def test_escalation_criteria_defined(self):
+        for index, title in enumerate(
+            (
+                "Network Failure Recovery",
+                "Process Crash Recovery",
+                "Timeout Handling & Escalation",
+                "Data Corruption Recovery",
+                "Unknown Pattern Recovery",
+            ),
+            1,
+        ):
+            body = recovery(f"Procedure {index}: {title}")
+            assert "### Escalation Criteria" in body
+            assert "escalat" in body.lower()
+
+    def test_monitoring_and_alerting(self):
+        assert "metrics:" in section("RECOVERY_PROCEDURES", "Recovery Metrics")
+        assert "alerts:" in section("RECOVERY_PROCEDURES", "Alert Rules")
+
+
+class TestEndToEndIntegration:
+    """Cross-document historical design references, not phase-completion gates."""
+
+    def test_all_deliverables_present(self):
+        for name in NAMES:
+            assert document(name)
 
     def test_pattern_catalog_referenced_in_promotion(self):
-        """Validate pattern catalog referenced in promotion rules."""
-        catalog_path = Path('.codex/PHASE_9_2_LTM_PATTERNS.md')
-        promotion_path = Path('.codex/PHASE_9_2_PATTERN_PROMOTION_RULES.md')
-
-        promotion_content = promotion_path.read_text()
-        assert 'LTM_PATTERNS' in promotion_content or 'pattern' in promotion_content.lower(), "Content must not be empty"
+        body = section("PATTERN_PROMOTION_RULES", "Step 5: Integration into LTM")
+        assert "ltm.patterns.append(ltm_entry)" in body
+        assert "stm.patterns.remove(pattern_id)" in body
+        assert "PHASE_9_2_LTM_PATTERNS.md" in section("PATTERN_PROMOTION_RULES", "Reference")
 
     def test_pattern_promotion_referenced_in_session_context(self):
-        """Validate promotion rules referenced in session context."""
-        session_path = Path('.codex/PHASE_9_2_SESSION_CONTEXT.md')
-        content = session_path.read_text()
-
-        assert 'promotion' in content.lower() or 'ltm' in content.lower(), "Content must not be empty"
+        body = document("SESSION_CONTEXT")
+        assert "LTM" in body
+        assert "PHASE_9_2_PATTERN_PROMOTION_RULES.md" in body
 
     def test_checkpoint_procedures_reference_recovery(self):
-        """Validate checkpoint procedures reference recovery procedures."""
-        checkpoint_path = Path('.codex/PHASE_9_2_CHECKPOINT_PROCEDURES.md')
-        recovery_path = Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md')
-
-        checkpoint_content = checkpoint_path.read_text()
-        assert 'recovery' in checkpoint_content.lower(), "Content must not be empty"
+        body = section("CHECKPOINT_PROCEDURES", "Integration with Recovery Procedures")
+        assert "PHASE_9_2_RECOVERY_PROCEDURES.md" in body
+        assert (ARCHIVE / "PHASE_9_2_RECOVERY_PROCEDURES.md").is_file()
 
     def test_cross_references_valid(self):
-        """Validate all cross-references between documents."""
-        docs = {
-            'LTM_PATTERNS': Path('.codex/PHASE_9_2_LTM_PATTERNS.md'),
-            'PATTERN_PROMOTION': Path('.codex/PHASE_9_2_PATTERN_PROMOTION_RULES.md'),
-            'SESSION_CONTEXT': Path('.codex/PHASE_9_2_SESSION_CONTEXT.md'),
-            'CHECKPOINT': Path('.codex/PHASE_9_2_CHECKPOINT_PROCEDURES.md'),
-            'RECOVERY': Path('.codex/PHASE_9_2_RECOVERY_PROCEDURES.md'),
-        }
-
-        for name, path in docs.items():
-            assert path.exists(), f"Document missing: {name}"
+        references = set()
+        for name in NAMES:
+            refs = re.findall(r"PHASE_9_2_(?:" + "|".join(NAMES) + r")\.md", document(name))
+            references.update(refs)
+            for ref in refs:
+                assert (ARCHIVE / ref).is_file(), f"{name}: unresolved {ref}"
+        assert len(references) >= 4, "Expected connected historical design references"
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+class TestHistoricalContractGuards:
+    """Regression guards: malformed artifacts must not pass vacuously."""
+
+    @pytest.mark.parametrize(
+        "old,new,check",
+        [
+            (
+                "**Confidence Threshold:** 0.90",
+                "**Confidence Threshold:** 9.90",
+                "test_pattern_confidence_range",
+            ),
+            (
+                "**Success Rate:** 92%",
+                "**Success Rate:** invalid",
+                "test_pattern_success_rate_format",
+            ),
+            (
+                "**Prerequisite Patterns:** None",
+                "**Prerequisite Patterns:** RP-999",
+                "test_pattern_prerequisite_consistency",
+            ),
+            (
+                "**Fallback Agent:** code-scanning-remediation-agent",
+                "**Removed Field:** code-scanning-remediation-agent",
+                "test_pattern_schema_validation",
+            ),
+        ],
+    )
+    def test_invalid_record_is_rejected(self, monkeypatch, old, new, check):
+        content = document("LTM_PATTERNS")
+        assert old in content
+        monkeypatch.setitem(
+            pattern_records.__globals__, "document", lambda _: content.replace(old, new, 1)
+        )
+        with pytest.raises(AssertionError):
+            getattr(TestPatternIngestion(), check)()
+
+    def test_empty_catalog_is_rejected(self, monkeypatch):
+        monkeypatch.setitem(pattern_records.__globals__, "document", lambda _: "# No records")
+        with pytest.raises(AssertionError, match="23"):
+            pattern_records()
+
+    def test_fenced_examples_are_not_section_boundaries(self, monkeypatch):
+        content = (
+            "## Target\n```python\n# comment\n## Not a heading\n```\n"
+            "```markdown\n### Example\n```bash\ntrue\n```\n```\n"
+            "required body\n## Next\nnot part of target\n"
+        )
+        monkeypatch.setitem(section.__globals__, "document", lambda _: content)
+        body = section("SESSION_CONTEXT", "Target")
+        assert "required body" in body
+        assert "not part of target" not in body
+        with pytest.raises(AssertionError):
+            section("SESSION_CONTEXT", "Not a heading")

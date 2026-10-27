@@ -1,0 +1,77 @@
+{
+  "schema": "codex.institutional.visual-observation.v1",
+  "status": "Draft",
+  "source": "docs/design/azimuthal-reasoning-integrity.rst",
+  "source_sha256": "37afbda1e93a1a9b0322edbdff11ff15a8cda9cddc98e4829a433c71b7bab873",
+  "check": "Literal source and text-alternative presence only; NOT renderer parsing or semantic/math correctness.",
+  "blocks": [
+    {
+      "start_line": 424,
+      "kind": "flowchart LR",
+      "source_sha256": "cca80109da2bc81e1ba718199cdb0cbc4531eb6182fe850bb6a6e82a5b5b3b07",
+      "text_alternative": "Text alternative: solid edges are authorized transitions; dashed edges are\nadvice/evidence; labeled decision edges are conditional routes; backward edges\nmean invalidation or state-aware resumption.",
+      "presence": "PASS"
+    },
+    {
+      "start_line": 436,
+      "kind": "flowchart TB",
+      "source_sha256": "1a6dced355ce666b64be6d44fc98ae9eb4d6dc40a8fea0ae79b48c7e6e5c3af5",
+      "text_alternative": "Text alternative: parallel review feeds sequential initial/meta/final\nreconciliation. Mutating/nonmutating routes differ. Assurance follows dependencies.\nClosure, convergence and candidate approval are separate. Resume targets the\nrecorded pending state, not universally assurance.",
+      "presence": "PASS"
+    },
+    {
+      "start_line": 472,
+      "kind": "flowchart LR",
+      "source_sha256": "b9d4d64c26099f1d282c2308034f47b35becbe25c18f41d81f34d5a4f4cbf5ad",
+      "text_alternative": "Text alternative: verification, reproduction and audit are separate nodes.\nInter-node dependencies shown are optional examples; validated plans determine order.",
+      "presence": "PASS"
+    },
+    {
+      "start_line": 488,
+      "kind": "stateDiagram-v2",
+      "source_sha256": "c16520f752650b619cda291cf8e833df477ae210db0ac33e42ee43efc0e19f8a",
+      "text_alternative": "Text alternative: findings are analyzed, reconciled, remediated or dispositioned,\nassured, authorized where required and closure-reviewed. Conflict can remain;\nfindings can block/reopen. This simplified view does not replace validated event\ntransitions and the assurance DAG for other legal blocked/nonmutating paths.",
+      "presence": "PASS"
+    },
+    {
+      "start_line": 535,
+      "kind": "xychart",
+      "source_sha256": "fa0d6343c1fe2d4f21a41a2e19e26cfece4e8c121ad5df171bf024c6e7675d36",
+      "text_alternative": "DATA STATUS: SYNTHETIC ILLUSTRATION; no measurements or confidence interval.\nText/fallback: logical 0.79; adversarial 0.73; institutional 0.68; operational 0.77;\nhistorical 0.72; portability 0.81; epistemic 0.76; ecological 0.66; resource 0.70;\ngovernance 0.64; architectural 0.75; evidentiary 0.78; temporal 0.69.",
+      "presence": "PASS"
+    },
+    {
+      "start_line": 548,
+      "kind": "xychart",
+      "source_sha256": "29207cc39f9c137e1f42e36310f1698ab7a94e2f6e607b5128028e666c47238d",
+      "text_alternative": "Text/fallback: synthetic sequence 42, 55, 78, 66, 61, 43, 31, 24.\nProduction output separately reports unknown-weight.",
+      "presence": "PASS"
+    },
+    {
+      "start_line": 559,
+      "kind": "xychart",
+      "source_sha256": "317a07857562360b2c76bf06ffe42cc93cb4a442da788d7174a5a534bb889246",
+      "text_alternative": "Text/fallback: synthetic sequence 0.92, 0.81, 0.69, 0.53, 0.34, 0.18, 0.08.\nThe complete information-return vector remains primary.\n\nStaged implementation and validation\n------------------------------------\n\nCurrent target: consumer corrections, complete proposed design/formula\npreservation, candidate-bound review/event foundation. Next: remediation/\ndisposition routing, assurance DAG, evidence eligibility and response adequacy.\nFollowing: rotation, recurrence, dynamic bearings, richer independence,\nresilience/sensitivity. Later: authorized disposition/approval integrations,\ninstitutional audit, retention controls and representative downstream profiles.\nNo roadmap item grants operational authority.\n\nPreserve broader institutional decisions/dissent, knowledge lifecycle, ecology,\ncapability export and independent reproduction objectives. Reuse existing\ncontinuation semantics and a predecessor-verified noncolliding successor.\n\nExecutable acceptance targets: manifest determinism/path rules; context drift;\nmixed/undeclared/missing-lane handling; source attribution/dissent; typed relations;\nevent ordering/transitions; event-digest/cache mismatch; mutating/nonmutating\nrouting; DAG cycles/blocked prerequisites; unknown/zero-weight formula cases;\ncritical failures hidden by averages; stale/disputed/revoked evidence; exact\nresumption; no approval/activation from reconciliation; no fixture-principal trust;\ndisclosure/path/resource limits; no automatic dispatch; installed resources.\nFor planned formulas, test presence/mapping/assumptions/status, not mathematical\ncorrectness. Implemented numerics need analytic examples, boundaries and\ninvariants. Renderer results require actual renderer/version and text alternatives.\n\nWhen runtime/assets change, build from an identified candidate, retain wheel\ndigest/manifest, install without editable/source assistance, exercise the external\nfixture, verify origins/offline runtime and retain logs/limits. Unchanged-subset\nparity is not complete package assurance; documentation skips never close previous\nruntime security-analysis gaps. Publication remains unauthorized.\n\nContinuation retains source/candidate/context/manifest digests; predecessor;\ndesign/formula traceability; implemented/planned contracts/formulas; attributed\nlanes and assurance; event/cache digest; completed/pending assurance nodes;\nblocker state/clearance; findings, dissent, alternatives and failures;\npackage/renderer/profile limits; local/remote retention; next action and test.\nNever use a self-referential commit digest or hide bookkeeping drift.\n\nAcceptance identifiers RD4-01 through RD4-12 respectively cover baseline\nreconciliation; consumer chain; complete design preservation; formula mapping;\nreuse ADR; binding; findings/events/cache; rotation/blockers/resume; read-only\nrecommendation; package/external validation; profile/tool/renderer visibility;\nsuccessor continuation/roadmap. They supplement rather than redefine G0 preflight,\nG1 investigation, G2 design, G3 implementation, G4 safety, G5 independent\nverification, G6 packaging, G7 external-wheel validation and G8 continuation.\nTask-gate statuses are PASS, FAIL, NOT_RUN, BLOCKED_AUTHORITY,\nBLOCKED_RESOURCE_LIMIT and NOT_APPLICABLE_WITH_RATIONALE; assurance outcomes\nremain a separate vocabulary.",
+      "presence": "PASS"
+    }
+  ],
+  "rendering": {
+    "Mermaid": {
+      "status": "NOT_RUN",
+      "requested": "11-style syntax",
+      "installed_mmdc": null,
+      "renderer_version": null
+    },
+    "MathJax": {
+      "status": "NOT_RUN",
+      "requested": "3-compatible LaTeX",
+      "renderer_version": null
+    },
+    "RST_CommonMark": {
+      "status": "NOT_RUN",
+      "reason": "docutils and configured Markdown renderer unavailable; RST literal source does not claim CommonMark rendering."
+    }
+  },
+  "diagram_data": "Synthetic sequences are illustrations, not measured evidence or confidence intervals.",
+  "fallback": "Essential text alternatives remain readable; renderer absence does not block unrelated runtime development."
+}

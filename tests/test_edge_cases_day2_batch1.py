@@ -4,23 +4,14 @@ Test Suite for Agent Memory, Physics Orchestrator, Mental Mapping, and Cognitive
 Focus: Boundary conditions, exception handling, state transitions, integration scenarios
 """
 
-import sys
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 
 import pytest
-from codex.utils.path_extended import get_repo_root
 
-# Add project paths
-sys.path.insert(0, str(get_repo_root() / "src"))
-sys.path.insert(0, "/home/runner/work/_codex_/_codex_")
-
-# Import target modules
-try:
-    from agents.agent_memory import ContextFrame, MemoryEntry, PatternLibrary
-    from agents.mental_mapping import reset_clock, set_clock
-    from agents.physics_orchestrator import ActionPath, ActionType, ForceVector
-except ImportError as e:
-    pytest.skip(f"Import error: {e}", allow_module_level=True)
-
+from agents.agent_memory import ContextFrame, MemoryEntry, PatternLibrary
+from agents.mental_mapping import get_timestamp, reset_clock, set_clock
+from agents.physics_orchestrator import ActionPath, ActionType, ForceVector
 
 # ============================================================================
 # FIXTURES: Reusable test object factories to reduce boilerplate
@@ -30,6 +21,7 @@ except ImportError as e:
 @pytest.fixture
 def memory_entry_factory():
     """Factory for creating test MemoryEntry objects with sensible defaults"""
+
     def _create(
         memory_id="test",
         category="test",
@@ -38,7 +30,7 @@ def memory_entry_factory():
         confidence=0.5,
         access_count=0,
         tags=None,
-        **kwargs
+        **kwargs,
     ):
         defaults = {
             "memory_id": memory_id,
@@ -52,22 +44,33 @@ def memory_entry_factory():
             defaults["tags"] = tags
         defaults.update(kwargs)
         return MemoryEntry(**defaults)
+
     return _create
 
 
 @pytest.fixture
 def context_frame_factory():
     """Factory for creating test ContextFrame objects"""
+
     def _create(task_id="task1", **kwargs):
-        return ContextFrame(task_id=task_id, **kwargs)
+        defaults = {
+            "frame_id": task_id,
+            "task_description": "Test task",
+            "start_time": "2026-01-01T00:00:00+00:00",
+        }
+        defaults.update(kwargs)
+        return ContextFrame(**defaults)
+
     return _create
 
 
 @pytest.fixture
 def force_vector_factory():
     """Factory for creating test ForceVector objects"""
+
     def _create(x=0, y=0, z=0, **kwargs):
         return ForceVector(x=x, y=y, z=z, **kwargs)
+
     return _create
 
 
@@ -195,7 +198,7 @@ class TestMemoryEntryRelationships:
 
     @pytest.mark.skipif(
         not hasattr(MemoryEntry, "add_related_memory"),
-        reason="add_related_memory method not implemented"
+        reason="add_related_memory method not implemented",
     )
     def test_related_memories_self_reference_rejected(self, memory_entry_factory):
         """MemoryEntry should reject self-reference in related_memories"""
@@ -205,7 +208,7 @@ class TestMemoryEntryRelationships:
 
     @pytest.mark.skipif(
         not hasattr(MemoryEntry, "add_related_memory"),
-        reason="add_related_memory method not implemented"
+        reason="add_related_memory method not implemented",
     )
     def test_related_memories_circular_chain_no_hang(self, memory_entry_factory):
         """MemoryEntry chain A->B->C->A should not create infinite loop"""
@@ -228,14 +231,13 @@ class TestContextFrameStateTransitions:
     """Edge cases for ContextFrame status transitions and state management"""
 
     def test_context_frame_creation(self, context_frame_factory):
-        """ContextFrame should initialize with task_id"""
+        """ContextFrame identifies tasks using its documented frame_id field."""
         frame = context_frame_factory(task_id="task1")
-        assert frame.task_id == "task1", "task_id should be set correctly"
+        assert frame.frame_id == "task1"
         assert hasattr(frame, "status"), "frame should have status attribute"
 
     @pytest.mark.skipif(
-        not hasattr(ContextFrame, "set_status"),
-        reason="set_status method not implemented"
+        not hasattr(ContextFrame, "set_status"), reason="set_status method not implemented"
     )
     def test_context_frame_status_transitions(self, context_frame_factory):
         """ContextFrame should transition through valid statuses"""
@@ -246,8 +248,7 @@ class TestContextFrameStateTransitions:
             assert frame.status == status, f"status should be set to {status}"
 
     @pytest.mark.skipif(
-        not hasattr(ContextFrame, "set_status"),
-        reason="set_status method not implemented"
+        not hasattr(ContextFrame, "set_status"), reason="set_status method not implemented"
     )
     def test_context_frame_invalid_status_rejected(self, context_frame_factory):
         """ContextFrame should reject invalid status values"""
@@ -271,12 +272,12 @@ class TestContextFrameStateTransitions:
     def test_context_frame_error_tracking(self, context_frame_factory):
         """ContextFrame should track errors"""
         frame = context_frame_factory(task_id="task1")
-        if hasattr(frame, "errors"):
-            assert frame.errors >= 0 or frame.errors == [], "errors should initialize to 0 or empty"
+        assert frame.errors_encountered == 0
+        frame.errors_encountered += 1
+        assert frame.to_dict()["errors_encountered"] == 1
 
     @pytest.mark.skipif(
-        not hasattr(ContextFrame, "record_error"),
-        reason="record_error method not implemented"
+        not hasattr(ContextFrame, "record_error"), reason="record_error method not implemented"
     )
     def test_context_frame_error_recording(self, context_frame_factory):
         """ContextFrame should record errors"""
@@ -293,8 +294,7 @@ class TestContextFrameStateTransitions:
             ), "files_modified should initialize empty"
 
     @pytest.mark.skipif(
-        not hasattr(ContextFrame, "add_file"),
-        reason="add_file method not implemented"
+        not hasattr(ContextFrame, "add_file"), reason="add_file method not implemented"
     )
     def test_context_frame_add_single_file(self, context_frame_factory):
         """ContextFrame should add file to files_modified"""
@@ -304,8 +304,7 @@ class TestContextFrameStateTransitions:
             assert "test.py" in frame.files_modified, "file should be in files_modified"
 
     @pytest.mark.skipif(
-        not hasattr(ContextFrame, "add_file"),
-        reason="add_file method not implemented"
+        not hasattr(ContextFrame, "add_file"), reason="add_file method not implemented"
     )
     def test_context_frame_duplicate_files_deduplicated(self, context_frame_factory):
         """ContextFrame should handle duplicate file additions gracefully"""
@@ -317,8 +316,7 @@ class TestContextFrameStateTransitions:
             assert count <= 1, "duplicate files should not be added"
 
     @pytest.mark.skipif(
-        not hasattr(ContextFrame, "add_file"),
-        reason="add_file method not implemented"
+        not hasattr(ContextFrame, "add_file"), reason="add_file method not implemented"
     )
     def test_context_frame_multiple_files(self, context_frame_factory):
         """ContextFrame should track multiple modified files"""
@@ -337,6 +335,18 @@ class TestContextFrameStateTransitions:
 class TestPatternLibraryEdgeCases:
     """Edge cases for PatternLibrary pattern matching and success tracking"""
 
+    def _add_pattern(self, library, pattern_id="pattern1", tags=None):
+        library.add_pattern(
+            pattern_id=pattern_id,
+            name="Test pattern",
+            description="Pattern for matching test situations",
+            triggers=["test"],
+            recommended_actions=["inspect"],
+            success_rate=0.8,
+            examples=[],
+            tags=list(tags or []),
+        )
+
     def test_pattern_library_empty_creation(self):
         """PatternLibrary should initialize with no patterns"""
         lib = PatternLibrary()
@@ -344,29 +354,31 @@ class TestPatternLibraryEdgeCases:
             assert len(lib.patterns) == 0, "patterns should initialize empty"
 
     @pytest.mark.skipif(
-        not hasattr(PatternLibrary, "add_pattern"),
-        reason="add_pattern method not implemented"
+        not hasattr(PatternLibrary, "add_pattern"), reason="add_pattern method not implemented"
     )
     def test_pattern_library_add_single_pattern(self):
         """PatternLibrary should add pattern"""
         lib = PatternLibrary()
-        lib.add_pattern("pattern1", {"tag1"})
-        # Pattern should be added
+        self._add_pattern(lib, tags={"tag1"})
+        assert lib.patterns["pattern1"]["name"] == "Test pattern"
+        assert lib.pattern_index["tag1"] == ["pattern1"]
 
     @pytest.mark.skipif(
-        not hasattr(PatternLibrary, "add_pattern"),
-        reason="add_pattern method not implemented"
+        not hasattr(PatternLibrary, "add_pattern"), reason="add_pattern method not implemented"
     )
     def test_pattern_library_duplicate_pattern_handling(self):
         """PatternLibrary should handle duplicate pattern IDs"""
         lib = PatternLibrary()
-        lib.add_pattern("pattern1", {"tag1"})
-        lib.add_pattern("pattern1", {"tag1"})
-        # Should handle gracefully (overwrite or ignore)
+        self._add_pattern(lib, tags={"tag1"})
+        self._add_pattern(lib, tags={"tag1"})
+        assert len(lib.patterns) == 1
+        assert lib.pattern_index["tag1"] == ["pattern1"]
+        self._add_pattern(lib, tags={"tag2"})
+        assert "tag1" not in lib.pattern_index
+        assert lib.pattern_index["tag2"] == ["pattern1"]
 
     @pytest.mark.skipif(
-        not hasattr(PatternLibrary, "search"),
-        reason="search method not implemented"
+        not hasattr(PatternLibrary, "search"), reason="search method not implemented"
     )
     def test_pattern_library_search_nonexistent_tags(self):
         """PatternLibrary search with nonexistent tags should return empty"""
@@ -376,7 +388,7 @@ class TestPatternLibraryEdgeCases:
 
     @pytest.mark.skipif(
         not hasattr(PatternLibrary, "filter_by_success_rate"),
-        reason="filter_by_success_rate method not implemented"
+        reason="filter_by_success_rate method not implemented",
     )
     def test_pattern_library_success_rate_lower_boundary(self):
         """PatternLibrary filter_by_success_rate should accept 0.0"""
@@ -386,7 +398,7 @@ class TestPatternLibraryEdgeCases:
 
     @pytest.mark.skipif(
         not hasattr(PatternLibrary, "filter_by_success_rate"),
-        reason="filter_by_success_rate method not implemented"
+        reason="filter_by_success_rate method not implemented",
     )
     def test_pattern_library_success_rate_upper_boundary(self):
         """PatternLibrary filter_by_success_rate should accept 1.0"""
@@ -396,7 +408,7 @@ class TestPatternLibraryEdgeCases:
 
     @pytest.mark.skipif(
         not hasattr(PatternLibrary, "filter_by_success_rate"),
-        reason="filter_by_success_rate method not implemented"
+        reason="filter_by_success_rate method not implemented",
     )
     def test_pattern_library_success_rate_invalid_negative(self):
         """PatternLibrary should reject negative success rate"""
@@ -406,7 +418,7 @@ class TestPatternLibraryEdgeCases:
 
     @pytest.mark.skipif(
         not hasattr(PatternLibrary, "filter_by_success_rate"),
-        reason="filter_by_success_rate method not implemented"
+        reason="filter_by_success_rate method not implemented",
     )
     def test_pattern_library_success_rate_invalid_over_one(self):
         """PatternLibrary should reject success rate > 1.0"""
@@ -416,25 +428,26 @@ class TestPatternLibraryEdgeCases:
 
     @pytest.mark.skipif(
         not hasattr(PatternLibrary, "record_success"),
-        reason="record_success method not implemented"
+        reason="record_success method not implemented",
     )
     def test_pattern_library_success_tracking(self):
         """PatternLibrary should track pattern success"""
         lib = PatternLibrary()
         if hasattr(lib, "add_pattern"):
-            lib.add_pattern("p1", {"tag1"})
+            self._add_pattern(lib, "p1", {"tag1"})
             for _ in range(10):
                 lib.record_success("p1")
             # Success should be tracked
 
     @pytest.mark.skipif(
-        not hasattr(PatternLibrary, "add_pattern"),
-        reason="add_pattern method not implemented"
+        not hasattr(PatternLibrary, "add_pattern"), reason="add_pattern method not implemented"
     )
     def test_pattern_library_empty_tags(self):
         """PatternLibrary should handle pattern with empty tags"""
         lib = PatternLibrary()
-        lib.add_pattern("p1", set())
+        self._add_pattern(lib, "p1")
+        assert lib.patterns["p1"]["tags"] == []
+        assert lib.pattern_index == {}
         # Should handle gracefully
 
 
@@ -469,8 +482,7 @@ class TestForceVectorBoundaryConditions:
         assert fv.x == 10 and fv.y == -20 and fv.z == 30
 
     @pytest.mark.skipif(
-        not hasattr(ForceVector, "magnitude"),
-        reason="magnitude property not implemented"
+        not hasattr(ForceVector, "magnitude"), reason="magnitude property not implemented"
     )
     def test_force_vector_magnitude_zero(self, force_vector_factory):
         """ForceVector magnitude when all components are zero"""
@@ -478,8 +490,7 @@ class TestForceVectorBoundaryConditions:
         assert fv.magnitude == 0, "magnitude should equal 0 for zero vector"
 
     @pytest.mark.skipif(
-        not hasattr(ForceVector, "magnitude"),
-        reason="magnitude property not implemented"
+        not hasattr(ForceVector, "magnitude"), reason="magnitude property not implemented"
     )
     def test_force_vector_magnitude_pythagorean_triple(self, force_vector_factory):
         """ForceVector magnitude using 3-4-5 Pythagorean triple"""
@@ -487,8 +498,7 @@ class TestForceVectorBoundaryConditions:
         assert abs(fv.magnitude - 5.0) < 0.01, "magnitude should be approximately 5.0"
 
     @pytest.mark.skipif(
-        not hasattr(ForceVector, "direction"),
-        reason="direction property not implemented"
+        not hasattr(ForceVector, "direction"), reason="direction property not implemented"
     )
     def test_force_vector_direction_zero_vector_handling(self, force_vector_factory):
         """ForceVector direction with zero magnitude should handle gracefully"""
@@ -501,8 +511,7 @@ class TestForceVectorBoundaryConditions:
             pass
 
     @pytest.mark.skipif(
-        not hasattr(ForceVector, "normalize"),
-        reason="normalize method not implemented"
+        not hasattr(ForceVector, "normalize"), reason="normalize method not implemented"
     )
     def test_force_vector_normalization_to_unit(self, force_vector_factory):
         """ForceVector normalization should produce unit vector"""
@@ -523,78 +532,65 @@ class TestActionPathPhysicsProperties:
 
     def test_action_path_energy_zero(self):
         """ActionPath with energy=0 (no energy)"""
-        ap = ActionPath(action_type=ActionType.MOVE)
-        if hasattr(ap, "energy"):
-            ap.energy = 0
-            assert ap.energy == 0, "energy should equal 0"
+        ap = ActionPath(action_type=ActionType.ANALYZE, energy=0)
+        assert ap.calculate_total_energy() == 0
 
     def test_action_path_energy_max(self):
         """ActionPath with energy=100 (full energy)"""
-        ap = ActionPath(action_type=ActionType.MOVE)
-        if hasattr(ap, "energy"):
-            ap.energy = 100
-            assert ap.energy == 100, "energy should equal 100"
+        ap = ActionPath(action_type=ActionType.ANALYZE, energy=100)
+        assert ap.potential_energy == 100
+        assert ap.calculate_total_energy() == 100
 
-    def test_action_path_energy_overflow_rejected(self):
-        """ActionPath should reject energy > 100"""
-        ap = ActionPath(action_type=ActionType.MOVE)
-        if hasattr(ap, "energy"):
-            with pytest.raises((ValueError, AssertionError)):
-                ap.energy = 101
+    def test_action_path_energy_composition(self):
+        """The documented energy formula combines components without clipping totals."""
+        ap = ActionPath(potential_energy=100, kinetic_energy=100, friction=10, momentum=10)
+        assert ap.calculate_total_energy() == 250
 
     def test_action_path_friction_zero(self):
         """ActionPath with friction=0 (no friction)"""
-        ap = ActionPath(action_type=ActionType.MOVE)
-        if hasattr(ap, "friction"):
-            ap.friction = 0
-            assert ap.friction == 0, "friction should equal 0"
+        ap = ActionPath(potential_energy=10, friction=0)
+        assert ap.calculate_total_energy() == 10
 
     def test_action_path_friction_max(self):
-        """ActionPath with friction=100 (full friction)"""
-        ap = ActionPath(action_type=ActionType.MOVE)
-        if hasattr(ap, "friction"):
-            ap.friction = 100
-            assert ap.friction == 100, "friction should equal 100"
+        """Friction at the documented upper scale contributes ten times its value."""
+        ap = ActionPath(potential_energy=10, friction=10)
+        assert ap.calculate_total_energy() == 110
 
     def test_action_path_confidence_lower_boundary(self):
         """ActionPath confidence at 0.0"""
-        ap = ActionPath(action_type=ActionType.MOVE)
-        if hasattr(ap, "confidence"):
-            ap.confidence = 0.0
-            assert ap.confidence == 0.0, "confidence should equal 0.0"
+        ap = ActionPath(confidence=0, impact=1, momentum=1, potential_energy=10)
+        ap.calculate_total_energy()
+        assert ap.calculate_optimization_score() == 0
 
     def test_action_path_confidence_upper_boundary(self):
         """ActionPath confidence at 1.0"""
-        ap = ActionPath(action_type=ActionType.MOVE)
-        if hasattr(ap, "confidence"):
-            ap.confidence = 1.0
-            assert ap.confidence == 1.0, "confidence should equal 1.0"
+        ap = ActionPath(confidence=1, impact=1, momentum=1, potential_energy=10)
+        ap.calculate_total_energy()
+        assert ap.calculate_optimization_score() == pytest.approx(0.2)
 
     def test_action_path_risk_zero(self):
         """ActionPath risk=0.0 (safe action)"""
-        ap = ActionPath(action_type=ActionType.MOVE)
-        if hasattr(ap, "risk"):
-            ap.risk = 0.0
-            assert ap.risk == 0.0, "risk should equal 0.0"
+        ap = ActionPath(risk=0, confidence=1, impact=1, momentum=1, potential_energy=10)
+        ap.calculate_total_energy()
+        assert ap.calculate_optimization_score() == pytest.approx(0.2)
 
     def test_action_path_risk_one(self):
         """ActionPath risk=1.0 (dangerous action)"""
-        ap = ActionPath(action_type=ActionType.MOVE)
-        if hasattr(ap, "risk"):
-            ap.risk = 1.0
-            assert ap.risk == 1.0, "risk should equal 1.0"
+        ap = ActionPath(risk=1, confidence=1, impact=1, momentum=1, potential_energy=10)
+        ap.calculate_total_energy()
+        assert ap.calculate_optimization_score() == pytest.approx(0.1)
 
     def test_action_path_impact_zero(self):
         """ActionPath impact=0.0 (no impact)"""
-        ap = ActionPath(action_type=ActionType.MOVE)
-        if hasattr(ap, "impact"):
-            ap.impact = 0.0
+        ap = ActionPath(impact=0, confidence=1, momentum=1, potential_energy=10)
+        ap.calculate_total_energy()
+        assert ap.calculate_optimization_score() == 0
 
     def test_action_path_impact_one(self):
         """ActionPath impact=1.0 (maximum impact)"""
-        ap = ActionPath(action_type=ActionType.MOVE)
-        if hasattr(ap, "impact"):
-            ap.impact = 1.0
+        ap = ActionPath(impact=1, confidence=1, momentum=1, potential_energy=10)
+        ap.calculate_total_energy()
+        assert ap.calculate_optimization_score() == pytest.approx(0.2)
 
 
 # ============================================================================
@@ -605,17 +601,17 @@ class TestActionPathPhysicsProperties:
 class TestActionTypeEnumCompleteness:
     """Edge cases for ActionType enumeration"""
 
-    def test_action_type_move(self):
-        """ActionType.MOVE should exist"""
-        assert hasattr(ActionType, "MOVE"), "ActionType should have MOVE"
+    def test_action_type_analyze(self):
+        """The analysis action has a stable serialized value."""
+        assert ActionType.ANALYZE.value == "analyze"
 
-    def test_action_type_wait(self):
-        """ActionType.WAIT should exist"""
-        assert hasattr(ActionType, "WAIT"), "ActionType should have WAIT"
+    def test_action_type_execute(self):
+        """The execution action has a stable serialized value."""
+        assert ActionType.EXECUTE.value == "execute"
 
-    def test_action_type_cancel(self):
-        """ActionType.CANCEL should exist"""
-        assert hasattr(ActionType, "CANCEL"), "ActionType should have CANCEL"
+    def test_action_type_reflect(self):
+        """The reflection action has a stable serialized value."""
+        assert ActionType.REFLECT.value == "reflect"
 
     def test_action_type_enum_values_unique(self):
         """ActionType enum values should be unique"""
@@ -631,18 +627,27 @@ class TestActionTypeEnumCompleteness:
 class TestClockAbstraction:
     """Edge cases for clock abstraction and test injection"""
 
+    @pytest.fixture(autouse=True)
+    def restore_clock(self):
+        """Clock injection must not affect later tests or source modules."""
+        reset_clock()
+        try:
+            yield
+        finally:
+            reset_clock()
+
     def test_clock_default_callable(self):
         """Clock should return current time by default"""
         reset_clock()
-        import time
-        current = time.time()
-        # Clock should return something close to current time
+        timestamp = datetime.fromisoformat(get_timestamp())
+        assert timestamp.tzinfo is not None
+        assert timestamp.utcoffset().total_seconds() == 0
 
     def test_clock_set_custom(self):
         """Clock should accept custom callable"""
-        custom_value = 12345.0
+        custom_value = "2026-01-01T00:00:00+00:00"
         set_clock(lambda: custom_value)
-        # Verify clock returns custom value (implementation-specific)
+        assert get_timestamp() == custom_value
 
     def test_clock_set_none_rejected(self):
         """Clock should reject None"""
@@ -651,21 +656,32 @@ class TestClockAbstraction:
 
     def test_clock_reset(self):
         """Clock reset should restore default behavior"""
-        set_clock(lambda: 99999.0)
+        custom_value = "2026-01-01T00:00:00+00:00"
+        set_clock(lambda: custom_value)
         reset_clock()
-        # Should be back to normal time
+        assert get_timestamp() != custom_value
 
     def test_clock_concurrent_calls(self):
         """Clock should handle multiple concurrent calls"""
-        set_clock(lambda: 100.0)
-        for _ in range(100):
-            # Call clock multiple times - should not hang or error
-            pass
+        custom_value = "2026-01-01T00:00:00+00:00"
+        set_clock(lambda: custom_value)
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            values = list(executor.map(lambda _: get_timestamp(), range(100)))
+        assert values == [custom_value] * 100
 
     def test_clock_invalid_callable_rejected(self):
         """Clock should reject non-callable"""
         with pytest.raises(TypeError):
             set_clock("not_a_callable")
+
+    @pytest.mark.parametrize("invalid", [None, "not_a_callable", 0, object()])
+    def test_invalid_clock_preserves_previous_clock(self, invalid):
+        """Rejected injection must not corrupt the previously configured clock."""
+        timestamp = "2026-01-01T00:00:00Z"
+        set_clock(lambda: timestamp)
+        with pytest.raises(TypeError, match="clock_fn must be callable"):
+            set_clock(invalid)
+        assert get_timestamp() == timestamp
 
 
 # ============================================================================
@@ -749,7 +765,9 @@ class TestCognitiveAdapterIntegration:
 class TestMemoryAndPhysicsIntegration:
     """Integration: agent_memory + physics_orchestrator"""
 
-    def test_memory_entry_with_force_vector_context(self, memory_entry_factory, force_vector_factory):
+    def test_memory_entry_with_force_vector_context(
+        self, memory_entry_factory, force_vector_factory
+    ):
         """MemoryEntry should store ForceVector reference in context"""
         fv = force_vector_factory(x=1, y=2, z=3)
         entry = memory_entry_factory(
@@ -763,7 +781,9 @@ class TestMemoryAndPhysicsIntegration:
         )
         assert entry.context["x"] == 1, "context should contain force vector x component"
 
-    def test_context_frame_with_multiple_memory_entries(self, context_frame_factory, memory_entry_factory):
+    def test_context_frame_with_multiple_memory_entries(
+        self, context_frame_factory, memory_entry_factory
+    ):
         """ContextFrame should manage multiple MemoryEntries"""
         frame = context_frame_factory(task_id="task1")
         entries = [
@@ -802,7 +822,7 @@ class TestRegressionPrevention:
     def test_context_frame_creation_regression(self, context_frame_factory):
         """ContextFrame creation should not regress"""
         frame = context_frame_factory(task_id="task1")
-        assert frame.task_id == "task1", "task_id should be set correctly"
+        assert frame.frame_id == "task1"
 
 
 if __name__ == "__main__":

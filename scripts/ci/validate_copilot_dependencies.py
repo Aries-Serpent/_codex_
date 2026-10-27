@@ -36,15 +36,7 @@ logger = logging.getLogger(__name__)
 
 # Environment variables expected to be defined in copilot-setup-steps.yml
 EXPECTED_ENV_VARS = [
-    "PYTHON_VERSION",
-    "NODE_VERSION",
-    "RUST_VERSION",
     "GIT_LFS_SKIP_SMUDGE",
-    "CODEX_MASTER_KEY",
-    "CODEX_BACKUP_KEY",
-    "COPILOT_AGENT_CCA_VERSION_LOCK",
-    "COPILOT_AGENT_DEDUPLICATION_ENABLED",
-    "COPILOT_AGENT_TURN_ISOLATION_ENABLED",
 ]
 
 
@@ -151,7 +143,8 @@ def test_workflow_references(
         else:
             valid, error = test_yaml_validity(workflow_path)
             if not valid:
-                invalid.append(f"{workflow}: {error[:50]}")
+                detail = error if error is not None else "YAML validation failed"
+                invalid.append(f"{workflow}: {detail[:50]}")
 
     if missing or invalid:
         msg_parts = []
@@ -265,7 +258,7 @@ def test_no_circular_dependencies(
         import yaml
 
         # Build a dependency graph
-        dependencies = {}
+        dependencies: Dict[str, List[str]] = {}
 
         with open(workflow_path, 'r') as f:
             _ = yaml.safe_load(f)

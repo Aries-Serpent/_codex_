@@ -62,6 +62,16 @@ class ConfigError(ValueError):
 
 @dataclass
 class TokenizationConfig:
+    """Tokenizer-training inputs and encoding policy, without loading a model.
+
+    ``corpus_glob``, ``out_dir``, and ``name`` identify input and output artifacts;
+    ``model_type``, ``vocab_size``, ``character_coverage``, and
+    ``normalization_rule`` describe training. ``seed`` and ``workers`` control
+    reproducibility and parallelism. ``padding``, ``truncation``, and optional
+    ``max_length`` describe subsequent encoding; ``dry_run`` is a caller flag.
+    Construction does not validate fields or access the filesystem.
+    """
+
     corpus_glob: str = "corpus.txt"
     model_type: str = "unigram"
     vocab_size: int = 32000
@@ -77,6 +87,19 @@ class TokenizationConfig:
     dry_run: bool = False
 
     def validate(self, path: str = "tokenization") -> None:
+        """Check training sizes, required names, and the encoding policy.
+
+        Args:
+            path: Prefix used in field-specific ``ConfigError`` messages.
+
+        Raises:
+            ConfigError: For empty corpus/model/output names, nonpositive
+                vocabulary, worker or length limits, coverage outside (0, 1],
+                or padding other than max_length, longest, or do_not_pad.
+
+        Returns:
+            None. No files are checked and no fields are rewritten.
+        """
         if not self.corpus_glob:
             raise ConfigError(f"{path}.corpus_glob", "cannot be empty")
         if not self.model_type:
@@ -108,12 +131,35 @@ class TokenizationConfig:
 
 @dataclass
 class OptimizerConfig:
+    """Optimizer name and numerical settings, not an optimizer instance.
+
+    ``weight_decay`` is nonnegative, ``betas`` is a pair in [0, 1), and ``eps``
+    is positive when validated. ``name`` defaults to ``adamw_torch`` but is not
+    checked against an installed optimizer registry. Call ``validate`` to
+    normalize beta values to floats; construction alone does not do so.
+    """
+
     name: str = "adamw_torch"
     weight_decay: float = 0.01
     betas: tuple[float, float] = (0.9, 0.999)
     eps: float = 1e-8
 
     def validate(self, path: str = "training.optimizer") -> None:
+        """Validate optimizer settings and replace ``betas`` with two floats.
+
+        Args:
+            path: Field-path prefix for diagnostics.
+
+        Raises:
+            ConfigError: For an empty/non-string name, negative decay, beta
+                values outside [0, 1), or nonpositive epsilon.
+            ValueError: If a beta cannot be converted to float.
+            IndexError: If fewer than two beta values are supplied.
+            TypeError: If beta values cannot be indexed or converted.
+
+        Returns:
+            None. Beta normalization occurs only after all checks succeed.
+        """
         if not isinstance(self.name, str) or not self.name:
             raise ConfigError(path + ".name", "cannot be empty", self.name)
         if self.weight_decay < 0:
@@ -136,11 +182,24 @@ class OptimizerConfig:
 
 @dataclass
 class SchedulerConfig:
+    """Scheduler selection with nonnegative warmup steps and positive cycles.
+
+    ``name`` defaults to ``linear``; validation checks that it is nonempty, not
+    that a scheduler implementation is installed. ``num_cycles`` defaults to
+    1.0. This schema neither creates a scheduler nor advances training steps.
+    """
+
     name: str = "linear"
     warmup_steps: int = 0
     num_cycles: float = 1.0
 
     def validate(self, path: str = "training.scheduler") -> None:
+        """Check the scheduler name, warmup count, and cycle count.
+
+        ``path`` prefixes ``ConfigError`` diagnostics for an empty/non-string
+        name, negative ``warmup_steps``, or nonpositive ``num_cycles``.
+        Return None without mutating the configuration or loading a backend.
+        """
         if not isinstance(self.name, str) or not self.name:
             raise ConfigError(path + ".name", "cannot be empty")
         if self.warmup_steps < 0:
@@ -151,12 +210,27 @@ class SchedulerConfig:
 
 @dataclass
 class ReasoningHeadConfig:
+    """Dimensions and dropout for a reasoning projection/trace head.
+
+    ``hidden_size``, ``projection_size``, and ``trace_vocab_size`` must be
+    positive; ``dropout`` must be in [0, 1). These values describe a head but
+    do not allocate tensors. Use ``validate`` explicitly after construction.
+    """
+
     hidden_size: int = 512
     projection_size: int = 256
     trace_vocab_size: int = 32
     dropout: float = 0.1
 
     def validate(self, path: str = "training.reasoning.head") -> None:
+        """Check head dimensions and dropout, returning None without mutation.
+
+        Args:
+            path: Diagnostic prefix identifying the nested head.
+
+        Raises:
+            ConfigError: If a size is nonpositive or dropout is outside [0, 1).
+        """
         if self.hidden_size <= 0:
             raise ConfigError(f"{path}.hidden_size", "must be positive", self.hidden_size)
         if self.projection_size <= 0:
@@ -168,6 +242,12 @@ class ReasoningHeadConfig:
 
     @classmethod
     def from_mapping(cls, payload: Mapping[str, Any]) -> ReasoningHeadConfig:
+        """Build an unvalidated head from recognized ``payload`` fields.
+
+        Copy hidden_size, projection_size, trace_vocab_size, and dropout when
+        present; ignore other keys and leave omitted values at their defaults.
+        Return a new instance without converting values or mutating the mapping.
+        """
         allowed = {"hidden_size", "projection_size", "trace_vocab_size", "dropout"}
         filtered = {k: payload[k] for k in allowed if k in payload}
         return cls(**filtered)
@@ -175,6 +255,14 @@ class ReasoningHeadConfig:
 
 @dataclass
 class ToolAdapterConfig:
+    """Optional tool-selection adapter settings, without tool execution.
+
+    ``enabled`` gates the requirement for a nonempty ``tools`` tuple.
+    ``temperature`` must be positive, ``pooling`` is mean/cls/last, and
+    ``hidden_size`` may be None or positive. Validation is explicit and does
+    not check whether named tools are registered or available.
+    """
+
     enabled: bool = False
     tools: tuple[str, ...] = ()
     temperature: float = 1.0
@@ -182,6 +270,12 @@ class ToolAdapterConfig:
     hidden_size: int | None = None
 
     def validate(self, path: str = "training.reasoning.tool_adapter") -> None:
+        """Check tool availability declarations and adapter hyperparameters.
+
+        ``path`` prefixes ``ConfigError`` for nonpositive temperature or supplied
+        hidden size, unsupported pooling, or an enabled adapter with no tools.
+        Return None without resolving tools or modifying fields.
+        """
         if self.temperature <= 0:
             raise ConfigError(f"{path}.temperature", "must be positive", self.temperature)
         allowed = {"mean", "cls", "last"}
@@ -194,6 +288,12 @@ class ToolAdapterConfig:
 
     @classmethod
     def from_mapping(cls, payload: Mapping[str, Any]) -> ToolAdapterConfig:
+        """Return an unvalidated adapter from recognized ``payload`` keys.
+
+        Ignore unknown keys. A list-valued ``tools`` entry becomes a tuple of
+        strings; other values pass through unchanged. The input is not mutated,
+        and omitted settings retain dataclass defaults.
+        """
         allowed = {"enabled", "tools", "temperature", "pooling", "hidden_size"}
         filtered = {k: payload[k] for k in allowed if k in payload}
         tools = filtered.get("tools")
@@ -204,6 +304,14 @@ class ToolAdapterConfig:
 
 @dataclass
 class ReasoningObjectiveConfig:
+    """Reasoning loss weights, trace limits, and optional trace-store location.
+
+    ``mode`` selects chain_of_thought or tool_execution; ``weight`` and
+    ``tool_supervision_weight`` are positive. ``max_traces_per_epoch`` may be
+    zero, while ``log_top_k`` must be positive. ``trace_store`` is only a path
+    declaration: construction and validation do not open or create it.
+    """
+
     mode: str = "chain_of_thought"
     weight: float = 1.0
     tool_supervision_weight: float = 1.0
@@ -212,6 +320,12 @@ class ReasoningObjectiveConfig:
     trace_store: str | None = None
 
     def validate(self, path: str = "training.reasoning.objective") -> None:
+        """Check objective mode, weights, trace counts, and optional store name.
+
+        ``path`` prefixes ``ConfigError`` diagnostics. Reject unsupported modes,
+        nonpositive weights/top-k, negative trace limits, and a supplied blank
+        trace-store string. Return None without changing fields or creating files.
+        """
         allowed_modes = {"chain_of_thought", "tool_execution"}
         if self.mode not in allowed_modes:
             raise ConfigError(f"{path}.mode", f"must be one of {sorted(allowed_modes)}", self.mode)
@@ -236,6 +350,12 @@ class ReasoningObjectiveConfig:
 
     @classmethod
     def from_mapping(cls, payload: Mapping[str, Any]) -> ReasoningObjectiveConfig:
+        """Return an objective using only recognized ``payload`` settings.
+
+        Accept mode, both loss weights, max_traces_per_epoch, log_top_k, and
+        trace_store; silently discard other keys. Values are neither converted
+        nor validated, and the source mapping is left untouched.
+        """
         allowed = {
             "mode",
             "weight",
@@ -250,6 +370,14 @@ class ReasoningObjectiveConfig:
 
 @dataclass
 class ReasoningConfig:
+    """Group reasoning head, optional tool adapter, objective, and trace policy.
+
+    ``enabled=False`` bypasses all nested validation. Otherwise ``trace_history``
+    is positive, an optional ``log_probability_threshold`` lies in (0, 1], and
+    ``trace_mode`` is disabled/weights/activations. Nested defaults are separate
+    instances per configuration; this schema does not enable runtime hooks.
+    """
+
     enabled: bool = True
     head: ReasoningHeadConfig = field(default_factory=ReasoningHeadConfig)
     tool_adapter: ToolAdapterConfig | None = field(default_factory=ToolAdapterConfig)
@@ -259,6 +387,13 @@ class ReasoningConfig:
     trace_mode: str = "weights"
 
     def validate(self, path: str = "training.reasoning") -> None:
+        """Validate enabled reasoning and nested schemas with ``path`` prefixes.
+
+        Return None immediately when disabled. Otherwise validate head, optional
+        adapter, and objective before checking history, probability threshold,
+        and trace mode. Raise ``ConfigError`` for invalid values; no trace
+        capture is started and no fields are normalized here.
+        """
         if not self.enabled:
             return
         self.head.validate(f"{path}.head")
@@ -285,6 +420,14 @@ class ReasoningConfig:
 
     @classmethod
     def from_mapping(cls, payload: Mapping[str, Any]) -> ReasoningConfig:
+        """Convert nested mappings to reasoning schemas without validation.
+
+        Copy ``payload`` and convert head, tool_adapter, and objective mappings.
+        A trace_capture mapping supplies trace_mode only if not already set,
+        but its key is not removed: supplying trace_capture therefore raises
+        TypeError at construction, as do other unknown top-level keys.
+        Return a new configuration without mutating the source mapping.
+        """
         data = dict(payload)
         trace_capture = data.get("trace_capture")
         if isinstance(trace_capture, Mapping):
@@ -305,6 +448,16 @@ class ReasoningConfig:
 
 @dataclass
 class TrainingConfig:
+    """Training hyperparameters, dataset/logging mappings, and checkpoint policy.
+
+    Model/output names, optimizer/scheduler schemas, reproducibility flags,
+    batching, epochs, warmup, gradient accumulation, and optional reasoning are
+    declarations only; no training or I/O starts during construction.
+    Construction raises ValueError for negative epochs, batch/accumulation below
+    one, or seeds outside [0, 2**32). Explicit ``validate`` is stricter: epochs
+    must be positive, and it synchronizes the two warmup settings.
+    """
+
     seed: int = 42
     deterministic: bool = True
     learning_rate: float = 0.0003
@@ -353,6 +506,22 @@ class TrainingConfig:
             raise ValueError("training.seed out of range")
 
     def validate(self, path: str = "training") -> None:
+        """Check training fields and normalize optimizer/warmup settings.
+
+        Args:
+            path: Prefix for nested ``ConfigError`` diagnostics.
+
+        Raises:
+            ConfigError: For nonpositive learning rate, batch/epoch/accumulation
+                or checkpoint interval; negative/conflicting warmup; empty output
+                directory; malformed dataset declarations; or invalid sub-schemas.
+
+        Returns:
+            None. Optimizer betas become floats. A zero scheduler warmup inherits
+            training warmup; otherwise training warmup inherits the scheduler's.
+            Changes made before a later failure are not rolled back. No dataset
+            files are opened and iterable train_texts are not consumed.
+        """
         if self.learning_rate <= 0:
             raise ConfigError(f"{path}.learning_rate", "must be positive", self.learning_rate)
         if self.batch_size <= 0:
@@ -411,6 +580,15 @@ class TrainingConfig:
 
 @dataclass
 class EvaluationConfig:
+    """Evaluation dataset fields, metric names, limits, and report destinations.
+
+    ``dataset_format`` supports jsonl/ndjson/text/csv; prediction, target, and
+    text field names identify record columns. Batch/sample limits and ``strict``
+    guide callers. Report filenames and ``metrics_sink`` select output formats;
+    optional model/dataset/run identifiers, split, seed, and manifest flag provide
+    provenance. Construction does not validate settings, read data, or emit files.
+    """
+
     dataset_path: str = "data/eval_samples.jsonl"
     dataset_format: str = "jsonl"
     prediction_field: str = "prediction"
@@ -435,6 +613,15 @@ class EvaluationConfig:
     write_dataset_manifest: bool = True
 
     def validate(self, path: str = "evaluation") -> None:
+        """Check evaluation declarations and canonicalize ``metrics_sink``.
+
+        ``path`` prefixes ConfigError for empty data/metrics, non-string metric
+        names, invalid sizes/formats/suffixes/sinks, empty split, or a nonboolean
+        manifest flag. A comma string or sequence of sinks is stripped,
+        lowercased, deduplicated in order, and joined; empty input selects ndjson.
+        Return None; normalization can precede a later validation failure.
+        No metric implementation or dataset path is resolved.
+        """
         if not self.dataset_path:
             raise ConfigError(f"{path}.dataset_path", "cannot be empty")
         if self.max_samples is not None and self.max_samples <= 0:
@@ -517,10 +704,21 @@ class EvaluationConfig:
 
 @dataclass
 class ShardConfig:
+    """Zero-based shard index and total shard count for data partitioning.
+
+    Defaults describe the sole shard (index 0 of 1). Call ``validate`` to require
+    a positive total and index in [0, total); this schema does not partition data.
+    """
+
     index: int = 0
     total: int = 1
 
     def validate(self, path: str = "data.shard") -> None:
+        """Check shard bounds without mutation, returning None on success.
+
+        Raise ``ConfigError`` with the supplied ``path`` prefix when total is
+        nonpositive or index is outside [0, total).
+        """
         if self.total <= 0:
             raise ConfigError(f"{path}.total", "must be positive", self.total)
         if self.index < 0 or self.index >= self.total:
@@ -533,6 +731,15 @@ class ShardConfig:
 
 @dataclass
 class DataConfig:
+    """Data source/cache paths, decoding policy, splitting, and filtering flags.
+
+    Encoding/fallback and newline normalization describe text handling;
+    streaming, UTF-8 validation, empty-row skipping, and safety_filter are
+    caller policies. ``shard``, optional shuffle seed, split ratios, and
+    ``max_items`` constrain selection. Manifest names describe cache metadata.
+    Neither construction nor validation reads, shuffles, or filters a dataset.
+    """
+
     source_path: str = "data/raw/sample.txt"
     cache_dir: str = "data/cache"
     manifest_path: str | None = None
@@ -552,6 +759,15 @@ class DataConfig:
     cache_manifest_name: str = "manifest.json"
 
     def validate(self, path: str = "data") -> None:
+        """Check data declarations and nested shard bounds.
+
+        ``path`` prefixes ConfigError for empty source, invalid item/seed limits,
+        unsupported newline policy, empty/nonmapping splits, split totals outside
+        [0.999, 1.001], or a nonempty manifest name lacking .json. Ratio values
+        are converted to floats for summation only; conversion errors propagate,
+        and individual ratios are not checked for positivity. Return None
+        without normalizing stored ratios or checking filesystem paths.
+        """
         if not self.source_path:
             raise ConfigError(f"{path}.source_path", "cannot be empty")
         if self.max_items is not None and self.max_items <= 0:
@@ -589,6 +805,20 @@ class DataConfig:
 
 @dataclass
 class CodexConfig:
+    """Application configuration grouping tokenization, training, evaluation, data.
+
+    ``model_name``, ``batch_size``, and ``learning_rate`` are top-level values
+    distinct from nested training settings; ``validate`` checks only the four
+    nested sections. Each instance owns fresh default section objects. No ML
+    framework is required to construct or validate these dataclasses.
+
+    Example:
+        >>> cfg = CodexConfig()
+        >>> cfg.validate()
+        >>> cfg.data.shard.index
+        0
+    """
+
     # Top-level ML configuration attributes
     model_name: str = "default"
     batch_size: int = 32
@@ -600,6 +830,13 @@ class CodexConfig:
     data: DataConfig = field(default_factory=DataConfig)
 
     def validate(self) -> None:
+        """Validate all four sections in tokenization/training/evaluation/data order.
+
+        Return None or propagate the first nested validation error, generally
+        ``ConfigError``. Training beta/warmup and evaluation sink normalization
+        may mutate nested objects; earlier mutations are not rolled back.
+        Top-level model_name, batch_size, and learning_rate are not checked.
+        """
         self.tokenization.validate("tokenization")
         self.training.validate("training")
         self.evaluation.validate("evaluation")

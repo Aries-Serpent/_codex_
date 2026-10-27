@@ -1,0 +1,9 @@
+{
+  "tool": "runtime-tools-gh-advisory-database",
+  "result": "No vulnerabilities found for these same selected dependency versions, already checked earlier this session before changed-candidate full-base provisioning.",
+  "prior_report": ".codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/resolution-report.json",
+  "prior_checked_third_party_versions": 52,
+  "final_selected_versions_match_prechecked_versions": true,
+  "build_and_test_tool_versions": "Same prechecked versions; exact provision commands retained.",
+  "new_unchecked_versions": []
+}

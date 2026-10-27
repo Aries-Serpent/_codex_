@@ -1,0 +1,20 @@
+{
+  "bytes_revisited": 12385899,
+  "classification_counts": {
+    "HASH_OR_SOURCE_IDENTIFIER_CONTEXT": 20,
+    "LOCKFILE_CHECKSUM_NOT_CREDENTIAL": 40,
+    "UNRESOLVED_CREDENTIAL_LIKE_REQUIRES_OWNER_TRIAGE": 13
+  },
+  "classification_limit": "Context classification is local and bounded, not proof of credential validity or universal absence. Unresolved findings require owner triage; affected content must not be published.",
+  "command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -B .codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py",
+  "existing_findings_reidentified": 73,
+  "existing_unique_contents_revisited": 12,
+  "limits": "Only 12 existing finding contents revisited. No external verification, raw extraction, repository-wide scan or matched-value disclosure.",
+  "plugin_counts": {
+    "Basic Auth Credentials": 1,
+    "Hex High Entropy String": 63,
+    "Private Key": 2,
+    "Secret Keyword": 7
+  },
+  "status": "BOUNDED_TRIAGE_NOT_A_CLEAN_SCAN"
+}

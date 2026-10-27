@@ -63,8 +63,9 @@ import logging
 import sys
 import urllib.error
 import urllib.request
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any
+from typing import Any, TypeVar, cast
 
 from aries_serpent_core.github.api_client import APIClient
 from aries_serpent_core.github.cognitive_brain_integration import CognitiveBrainIntegration
@@ -75,7 +76,306 @@ from aries_serpent_core.github.pull_request_manager import PullRequestManager
 logger = logging.getLogger(__name__)
 
 
-class GitHubMCPPoster:
+_PosterMethod = TypeVar("_PosterMethod", bound=Callable[..., Any])
+
+
+def _poster_method(method: _PosterMethod) -> _PosterMethod:
+    """Keep the public qualified name when a method lives on a private mixin.
+
+    Return the original function, not a wrapper: signatures, annotations,
+    docstrings, module globals and normal descriptor/monkeypatch behavior stay
+    intact. The mixins remain ordinary, statically defined operation families.
+    """
+    method.__qualname__ = f"GitHubMCPPoster.{method.__name__}"
+    return method
+
+
+class _RepositoryOperations:
+    """PR comments, pull requests and Git writes using the poster's managers.
+
+    Construction and transport wiring belong to GitHubMCPPoster. These typed
+    attributes describe its injected collaborators, without creating new ones.
+    """
+
+    _prs: PullRequestManager
+    _git: GitOperations
+
+    @_poster_method
+    def post_pr_comment(self, repo: str, pr_number: int, body: str) -> dict[str, Any]:
+        """Post a comment on a PR. See PullRequestManager.post_pr_comment()."""
+        return self._prs.post_pr_comment(repo, pr_number, body)
+
+    @_poster_method
+    def post_pr_comment_from_file(
+        self, repo: str, pr_number: int, body_file: str | Path
+    ) -> dict[str, Any]:
+        """Read a file and post as a PR comment. See PullRequestManager.post_pr_comment_from_file()."""  # noqa: E501
+        return self._prs.post_pr_comment_from_file(repo, pr_number, body_file)
+
+    @_poster_method
+    def create_ref(self, repo: str, ref: str, sha: str) -> dict[str, Any]:
+        """Create a git reference (branch or tag). See GitOperations.create_ref()."""
+        return self._git.create_ref(repo, ref, sha)
+
+    @_poster_method
+    def create_pull_request(
+        self,
+        repo: str,
+        title: str,
+        body: str,
+        head: str,
+        base: str,
+        draft: bool = False,
+    ) -> dict[str, Any]:
+        """Open a pull request. See PullRequestManager.create_pull_request()."""
+        return self._prs.create_pull_request(repo, title, body, head, base, draft)
+
+    @_poster_method
+    def list_pull_requests(
+        self,
+        repo: str,
+        state: str = "open",
+        head: str = "",
+        base: str = "",
+        per_page: int = 30,
+    ) -> list[dict[str, Any]]:
+        """List pull requests. See PullRequestManager.list_pull_requests()."""
+        return self._prs.list_pull_requests(repo, state, head, base, per_page)
+
+    @_poster_method
+    def merge_branch(
+        self,
+        repo: str,
+        base: str,
+        head: str,
+        commit_message: str = "",
+    ) -> dict[str, Any]:
+        """Merge branches server-side. See GitOperations.merge_branch()."""
+        return self._git.merge_branch(repo, base, head, commit_message)
+
+    @_poster_method
+    def commit_files(
+        self,
+        repo: str,
+        branch: str,
+        files: dict[str, str],
+        message: str,
+        force: bool = False,
+    ) -> str:
+        """Commit files via Git Data API. See GitOperations.commit_files()."""
+        return self._git.commit_files(repo, branch, files, message, force)
+
+
+class _DiscussionLifecycleOperations:
+    """Discussion discovery, creation, lifecycle and category operations."""
+
+    _discussions: DiscussionManager
+
+    @_poster_method
+    def create_discussion(
+        self,
+        repo: str,
+        title: str,
+        body: str,
+        category_slug: str = "cognitive-brain-patterns",
+    ) -> dict[str, Any]:
+        """Create a GitHub Discussion. See DiscussionManager.create_discussion()."""
+        return self._discussions.create_discussion(repo, title, body, category_slug)
+
+    @_poster_method
+    def post_session_summary_discussion(
+        self, repo: str, session_num: int, summary_md: str
+    ) -> dict[str, Any]:
+        """Post a session summary as a Discussion.
+
+        Compatibility note: preserve the façade contract expected by tests and
+        older callers that monkeypatch ``GitHubMCPPoster.create_discussion`` and
+        then invoke ``post_session_summary_discussion()``.
+        """
+        title = f"Session S{session_num} — Completion Summary"
+        return self.create_discussion(
+            repo=repo,
+            title=title,
+            body=summary_md,
+            category_slug="session-summaries",
+        )
+
+    @_poster_method
+    def find_or_create_pr_discussion(
+        self,
+        repo: str,
+        pr_number: int,
+        purpose: str,
+        category_slug: str = "show-and-tell",
+    ) -> tuple[int, str]:
+        """Find or create a per-PR Discussion. See DiscussionManager.find_or_create_pr_discussion()."""  # noqa: E501
+        return self._discussions.find_or_create_pr_discussion(
+            repo, pr_number, purpose, category_slug
+        )
+
+    @_poster_method
+    def update_discussion(
+        self,
+        repo: str,
+        discussion_number: int,
+        *,
+        title: str | None = None,
+        body: str | None = None,
+        category_slug: str | None = None,
+    ) -> dict[str, Any]:
+        """Update a Discussion. See DiscussionManager.update_discussion()."""
+        return self._discussions.update_discussion(
+            repo, discussion_number, title=title, body=body, category_slug=category_slug
+        )
+
+    @_poster_method
+    def lock_discussion(
+        self, repo: str, discussion_number: int, reason: str = "RESOLVED"
+    ) -> dict[str, Any]:
+        """Lock a Discussion. See DiscussionManager.lock_discussion()."""
+        return self._discussions.lock_discussion(repo, discussion_number, reason)
+
+    @_poster_method
+    def unlock_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
+        """Unlock a Discussion. See DiscussionManager.unlock_discussion()."""
+        return self._discussions.unlock_discussion(repo, discussion_number)
+
+    @_poster_method
+    def delete_discussion(self, repo: str, discussion_number: int) -> bool:
+        """Delete a Discussion. See DiscussionManager.delete_discussion()."""
+        return self._discussions.delete_discussion(repo, discussion_number)
+
+    @_poster_method
+    def list_discussions(
+        self,
+        repo: str,
+        category_slug: str | None = None,
+        first: int = 20,
+        after: str | None = None,
+    ) -> dict[str, Any]:
+        """List Discussions in a repo. See DiscussionManager.list_discussions()."""
+        return self._discussions.list_discussions(repo, category_slug, first, after)
+
+    @_poster_method
+    def get_discussion(
+        self,
+        repo: str,
+        discussion_number: int,
+        comments_first: int = 50,
+        comments_after: str | None = None,
+    ) -> dict[str, Any]:
+        """Get a single Discussion with comments. See DiscussionManager.get_discussion()."""
+        return self._discussions.get_discussion(
+            repo, discussion_number, comments_first, comments_after
+        )
+
+    @_poster_method
+    def pin_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
+        """Pin a Discussion. See DiscussionManager.pin_discussion()."""
+        return self._discussions.pin_discussion(repo, discussion_number)
+
+    @_poster_method
+    def unpin_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
+        """Unpin a Discussion. See DiscussionManager.unpin_discussion()."""
+        return self._discussions.unpin_discussion(repo, discussion_number)
+
+    @_poster_method
+    def list_discussion_categories(self, repo: str) -> list[dict[str, Any]]:
+        """List Discussion categories. See DiscussionManager.list_discussion_categories()."""
+        return self._discussions.list_discussion_categories(repo)
+
+    @_poster_method
+    def _resolve_discussion_node_id(self, owner: str, repo: str, discussion_number: int) -> str:
+        """Resolve discussion number to GraphQL node ID. Delegates to DiscussionManager."""
+        return self._discussions._resolve_discussion_node_id(owner, repo, discussion_number)
+
+
+class _DiscussionCommentOperations:
+    """Discussion replies, idempotent summaries, continuation and answers."""
+
+    _discussions: DiscussionManager
+
+    @_poster_method
+    def add_discussion_comment(
+        self, repo: str, discussion_number: int, body: str
+    ) -> dict[str, Any]:
+        """Add a comment to a Discussion. See DiscussionManager.add_discussion_comment()."""
+        return self._discussions.add_discussion_comment(repo, discussion_number, body)
+
+    @_poster_method
+    def upsert_discussion_comment(
+        self, repo: str, discussion_number: int, body: str, marker: str = ""
+    ) -> dict[str, Any]:
+        """Add or update a Discussion comment. See DiscussionManager.upsert_discussion_comment()."""
+        return self._discussions.upsert_discussion_comment(repo, discussion_number, body, marker)
+
+    @_poster_method
+    def post_ci_pattern_summary(
+        self, repo: str, discussion_number: int, summary_md: str, session_id: str = ""
+    ) -> dict[str, Any]:
+        """Post a CI pattern summary to a Discussion.
+
+        Uses upsert_discussion_comment to replace previous summary.
+        """
+        marker = (
+            f"<!-- ci-pattern-summary:{session_id} -->"
+            if session_id
+            else "<!-- ci-pattern-summary -->"
+        )
+        full_body = f"{marker}\n{summary_md}"
+        return self.upsert_discussion_comment(repo, discussion_number, full_body, marker)
+
+    @_poster_method
+    def post_continuation_chain(
+        self, repo: str, discussion_number: int, chain_md: str
+    ) -> dict[str, Any]:
+        """Post a continuation chain as a Discussion comment."""
+        return self.add_discussion_comment(repo, discussion_number, chain_md)
+
+    @_poster_method
+    def check_discussion_replies(
+        self,
+        repo: str,
+        discussion_number: int,
+        since_marker: str = "",
+        max_comments: int = 200,
+    ) -> list[dict[str, Any]]:
+        """Check for unread human replies in a Discussion. See DiscussionManager.check_discussion_replies()."""  # noqa: E501
+        return self._discussions.check_discussion_replies(
+            repo, discussion_number, since_marker, max_comments
+        )
+
+    @_poster_method
+    def delete_discussion_comment(self, comment_id: str) -> bool:
+        """Delete a Discussion comment. See DiscussionManager.delete_discussion_comment()."""
+        return self._discussions.delete_discussion_comment(comment_id)
+
+    @_poster_method
+    def mark_answer(self, comment_id: str) -> dict[str, Any]:
+        """Mark a comment as the answer. See DiscussionManager.mark_answer()."""
+        return self._discussions.mark_answer(comment_id)
+
+    @_poster_method
+    def unmark_answer(self, comment_id: str) -> dict[str, Any]:
+        """Unmark a comment as the answer. See DiscussionManager.unmark_answer()."""
+        return self._discussions.unmark_answer(comment_id)
+
+    @_poster_method
+    def _find_discussion_comment(
+        self, owner: str, repo: str, discussion_number: int, marker: str
+    ) -> dict[str, str] | None:
+        """Find a discussion comment by marker. Delegates to DiscussionManager."""
+        # Preserve the legacy annotation as well as the manager's actual node-ID
+        # return value. A cast is type-only; it must not reshape that payload.
+        return cast(
+            dict[str, str] | None,
+            self._discussions._find_discussion_comment(owner, repo, discussion_number, marker),
+        )
+
+
+class GitHubMCPPoster(
+    _RepositoryOperations, _DiscussionLifecycleOperations, _DiscussionCommentOperations
+):
     """Thin GitHub REST client authenticated with CODEX_MASTER_KEY.
 
     Designed to be called from CI workflows after each Copilot session to:
@@ -105,17 +405,17 @@ class GitHubMCPPoster:
         super().__setattr__(name, value)
         if name == "_record_cb_pattern":
             try:
-                self._api._record_cb_pattern = value
+                setattr(self._api, name, value)
             except AttributeError:
                 logger.debug("Unable to propagate %s to API client", name, exc_info=True)
         elif name == "_request":
             try:
-                self._api._request = value
+                setattr(self._api, name, value)
             except AttributeError:
                 logger.debug("Unable to propagate %s to API client", name, exc_info=True)
         elif name == "_get":
             try:
-                self._api._get = value
+                setattr(self._api, name, value)
             except AttributeError:
                 logger.debug("Unable to propagate %s to API client", name, exc_info=True)
 
@@ -143,258 +443,25 @@ class GitHubMCPPoster:
         # managers. We do not alias ``_request`` / ``_get`` back to the poster
         # itself at initialization time because that creates a recursive call
         # chain when managers call through the APIClient wrapper.
-        self._api._record_cb_pattern = self._record_cb_pattern
-        self._api._resolve_discussion_node_id = self._resolve_discussion_node_id
-        self._api._find_discussion_comment = self._find_discussion_comment
+        # These are intentional instance-level injection points, not overrides
+        # of the APIClient class's statically declared methods.
+        setattr(self._api, "_record_cb_pattern", self._record_cb_pattern)
+        setattr(self._api, "_resolve_discussion_node_id", self._resolve_discussion_node_id)
+        setattr(self._api, "_find_discussion_comment", self._find_discussion_comment)
 
     @property
     def _token(self) -> str:
         """Backward compatibility: expose token from APIClient."""
-        return self._api._token
-
-    # ------------------------------------------------------------------
-    # Token health check (delegates to APIClient)
-    # ------------------------------------------------------------------
+        # The legacy annotation is str, but missing credentials still yield None.
+        return cast(str, self._api._token)
 
     def check_token_health(self) -> dict[str, object]:
         """Check GitHub token health and scopes. See APIClient.check_token_health()."""
         return self._api.check_token_health()
 
-    # ------------------------------------------------------------------
-    # PR comments (delegates to PullRequestManager)
-    # ------------------------------------------------------------------
-
-    def post_pr_comment(self, repo: str, pr_number: int, body: str) -> dict[str, Any]:
-        """Post a comment on a PR. See PullRequestManager.post_pr_comment()."""
-        return self._prs.post_pr_comment(repo, pr_number, body)
-
-    def post_pr_comment_from_file(
-        self, repo: str, pr_number: int, body_file: str | Path
-    ) -> dict[str, Any]:
-        """Read a file and post as a PR comment. See PullRequestManager.post_pr_comment_from_file()."""  # noqa: E501
-        return self._prs.post_pr_comment_from_file(repo, pr_number, body_file)
-
-    # ------------------------------------------------------------------
-    # GitHub Discussions (delegates to DiscussionManager)
-    # ------------------------------------------------------------------
-
-    def create_discussion(
-        self,
-        repo: str,
-        title: str,
-        body: str,
-        category_slug: str = "cognitive-brain-patterns",
-    ) -> dict[str, Any]:
-        """Create a GitHub Discussion. See DiscussionManager.create_discussion()."""
-        return self._discussions.create_discussion(repo, title, body, category_slug)
-
-    def post_session_summary_discussion(
-        self, repo: str, session_num: int, summary_md: str
-    ) -> dict[str, Any]:
-        """Post a session summary as a Discussion.
-
-        Compatibility note: preserve the façade contract expected by tests and
-        older callers that monkeypatch ``GitHubMCPPoster.create_discussion`` and
-        then invoke ``post_session_summary_discussion()``.
-        """
-        title = f"Session S{session_num} — Completion Summary"
-        return self.create_discussion(
-            repo=repo,
-            title=title,
-            body=summary_md,
-            category_slug="session-summaries",
-        )
-
-    def add_discussion_comment(
-        self, repo: str, discussion_number: int, body: str
-    ) -> dict[str, Any]:
-        """Add a comment to a Discussion. See DiscussionManager.add_discussion_comment()."""
-        return self._discussions.add_discussion_comment(repo, discussion_number, body)
-
-    def upsert_discussion_comment(
-        self, repo: str, discussion_number: int, body: str, marker: str = ""
-    ) -> dict[str, Any]:
-        """Add or update a Discussion comment. See DiscussionManager.upsert_discussion_comment()."""
-        return self._discussions.upsert_discussion_comment(repo, discussion_number, body, marker)
-
-    def post_ci_pattern_summary(
-        self, repo: str, discussion_number: int, summary_md: str, session_id: str = ""
-    ) -> dict[str, Any]:
-        """Post a CI pattern summary to a Discussion.
-
-        Uses upsert_discussion_comment to replace previous summary.
-        """
-        marker = (
-            f"<!-- ci-pattern-summary:{session_id} -->"
-            if session_id
-            else "<!-- ci-pattern-summary -->"
-        )
-        full_body = f"{marker}\n{summary_md}"
-        return self.upsert_discussion_comment(repo, discussion_number, full_body, marker)
-
-    def post_continuation_chain(
-        self, repo: str, discussion_number: int, chain_md: str
-    ) -> dict[str, Any]:
-        """Post a continuation chain as a Discussion comment."""
-        return self.add_discussion_comment(repo, discussion_number, chain_md)
-
-    def find_or_create_pr_discussion(
-        self,
-        repo: str,
-        pr_number: int,
-        purpose: str,
-        category_slug: str = "show-and-tell",
-    ) -> tuple[int, str]:
-        """Find or create a per-PR Discussion. See DiscussionManager.find_or_create_pr_discussion()."""  # noqa: E501
-        return self._discussions.find_or_create_pr_discussion(
-            repo, pr_number, purpose, category_slug
-        )
-
-    def check_discussion_replies(
-        self,
-        repo: str,
-        discussion_number: int,
-        since_marker: str = "",
-        max_comments: int = 200,
-    ) -> list[dict[str, Any]]:
-        """Check for unread human replies in a Discussion. See DiscussionManager.check_discussion_replies()."""  # noqa: E501
-        return self._discussions.check_discussion_replies(
-            repo, discussion_number, since_marker, max_comments
-        )
-
-    def update_discussion(
-        self,
-        repo: str,
-        discussion_number: int,
-        *,
-        title: str | None = None,
-        body: str | None = None,
-        category_slug: str | None = None,
-    ) -> dict[str, Any]:
-        """Update a Discussion. See DiscussionManager.update_discussion()."""
-        return self._discussions.update_discussion(
-            repo, discussion_number, title=title, body=body, category_slug=category_slug
-        )
-
-    def lock_discussion(
-        self, repo: str, discussion_number: int, reason: str = "RESOLVED"
-    ) -> dict[str, Any]:
-        """Lock a Discussion. See DiscussionManager.lock_discussion()."""
-        return self._discussions.lock_discussion(repo, discussion_number, reason)
-
-    def unlock_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
-        """Unlock a Discussion. See DiscussionManager.unlock_discussion()."""
-        return self._discussions.unlock_discussion(repo, discussion_number)
-
-    def delete_discussion(self, repo: str, discussion_number: int) -> bool:
-        """Delete a Discussion. See DiscussionManager.delete_discussion()."""
-        return self._discussions.delete_discussion(repo, discussion_number)
-
-    def delete_discussion_comment(self, comment_id: str) -> bool:
-        """Delete a Discussion comment. See DiscussionManager.delete_discussion_comment()."""
-        return self._discussions.delete_discussion_comment(comment_id)
-
-    def mark_answer(self, comment_id: str) -> dict[str, Any]:
-        """Mark a comment as the answer. See DiscussionManager.mark_answer()."""
-        return self._discussions.mark_answer(comment_id)
-
-    def unmark_answer(self, comment_id: str) -> dict[str, Any]:
-        """Unmark a comment as the answer. See DiscussionManager.unmark_answer()."""
-        return self._discussions.unmark_answer(comment_id)
-
-    def list_discussions(
-        self,
-        repo: str,
-        category_slug: str | None = None,
-        first: int = 20,
-        after: str | None = None,
-    ) -> dict[str, Any]:
-        """List Discussions in a repo. See DiscussionManager.list_discussions()."""
-        return self._discussions.list_discussions(repo, category_slug, first, after)
-
-    def get_discussion(
-        self,
-        repo: str,
-        discussion_number: int,
-        comments_first: int = 50,
-        comments_after: str | None = None,
-    ) -> dict[str, Any]:
-        """Get a single Discussion with comments. See DiscussionManager.get_discussion()."""
-        return self._discussions.get_discussion(
-            repo, discussion_number, comments_first, comments_after
-        )
-
-    def pin_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
-        """Pin a Discussion. See DiscussionManager.pin_discussion()."""
-        return self._discussions.pin_discussion(repo, discussion_number)
-
-    def unpin_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
-        """Unpin a Discussion. See DiscussionManager.unpin_discussion()."""
-        return self._discussions.unpin_discussion(repo, discussion_number)
-
-    def list_discussion_categories(self, repo: str) -> list[dict[str, Any]]:
-        """List Discussion categories. See DiscussionManager.list_discussion_categories()."""
-        return self._discussions.list_discussion_categories(repo)
-
-    # ------------------------------------------------------------------
-    # Repository variables
-    # ------------------------------------------------------------------
-
     def set_repo_variable(self, repo: str, name: str, value: str) -> dict[str, Any]:
         """Create or update a repository variable. See CognitiveBrainIntegration.set_repo_variable()."""  # noqa: E501
         return self._cb.set_repo_variable(repo, name, value)
-
-    # ------------------------------------------------------------------
-    # Branch & PR management (delegates to GitOperations and PullRequestManager)
-    # ------------------------------------------------------------------
-
-    def create_ref(self, repo: str, ref: str, sha: str) -> dict[str, Any]:
-        """Create a git reference (branch or tag). See GitOperations.create_ref()."""
-        return self._git.create_ref(repo, ref, sha)
-
-    def create_pull_request(
-        self,
-        repo: str,
-        title: str,
-        body: str,
-        head: str,
-        base: str,
-        draft: bool = False,
-    ) -> dict[str, Any]:
-        """Open a pull request. See PullRequestManager.create_pull_request()."""
-        return self._prs.create_pull_request(repo, title, body, head, base, draft)
-
-    def list_pull_requests(
-        self,
-        repo: str,
-        state: str = "open",
-        head: str = "",
-        base: str = "",
-        per_page: int = 30,
-    ) -> list[dict[str, Any]]:
-        """List pull requests. See PullRequestManager.list_pull_requests()."""
-        return self._prs.list_pull_requests(repo, state, head, base, per_page)
-
-    def merge_branch(
-        self,
-        repo: str,
-        base: str,
-        head: str,
-        commit_message: str = "",
-    ) -> dict[str, Any]:
-        """Merge branches server-side. See GitOperations.merge_branch()."""
-        return self._git.merge_branch(repo, base, head, commit_message)
-
-    def commit_files(
-        self,
-        repo: str,
-        branch: str,
-        files: dict[str, str],
-        message: str,
-        force: bool = False,
-    ) -> str:
-        """Commit files via Git Data API. See GitOperations.commit_files()."""
-        return self._git.commit_files(repo, branch, files, message, force)
 
     # ------------------------------------------------------------------
     # Cognitive brain integration (delegates to CognitiveBrainIntegration)
@@ -423,7 +490,9 @@ class GitHubMCPPoster:
         if context is None:
             context = {}
         self._cb._record_cb_pattern(pattern_id, summary, context, outcome)
-        logger.info("CB lifecycle: %s | %s | outcome=%s | %s", pattern_id, summary, outcome, context)
+        logger.info(
+            "CB lifecycle: %s | %s | outcome=%s | %s", pattern_id, summary, outcome, context
+        )
 
     def _request(
         self,
@@ -439,16 +508,6 @@ class GitHubMCPPoster:
     def _get(self, url: str) -> dict:
         """Make a GET request. Delegates to APIClient."""
         return self._api._get(url)
-
-    def _resolve_discussion_node_id(self, owner: str, repo: str, discussion_number: int) -> str:
-        """Resolve discussion number to GraphQL node ID. Delegates to DiscussionManager."""
-        return self._discussions._resolve_discussion_node_id(owner, repo, discussion_number)
-
-    def _find_discussion_comment(
-        self, owner: str, repo: str, discussion_number: int, marker: str
-    ) -> dict[str, str] | None:
-        """Find a discussion comment by marker. Delegates to DiscussionManager."""
-        return self._discussions._find_discussion_comment(owner, repo, discussion_number, marker)
 
 
 def _build_parser() -> argparse.ArgumentParser:

@@ -1,0 +1,93 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001",
+  "iteration": "007",
+  "state": "bounded_implementation_and_installed_validation_complete_draft_review_required",
+  "repository_root_context": "/home/runner/work/_codex_/_codex_",
+  "path_policy": "Repository-relative discovery paths are authoritative; temporary /tmp environments are not retention.",
+  "baseline": "baseline.json",
+  "source_candidate": "a183f97e4f534cd6712588d12d22f821931f5c9c",
+  "source_target": "0D_base_",
+  "assigned_feature_branch": "copilot/codex-institutional-foundation-001-again",
+  "merge_attribution": "PR5717 merged into 0D_base_ at 83e5187a; no former feature-branch ancestry requirement.",
+  "final_head_binding": "Actual pushed commit/PR externally binds final evidence; no circular final commit hash embedded.",
+  "predecessor": {
+    "path": ".codex/evidence/institutional-foundation/iteration-006/continuation.json.gz",
+    "sequence": 6,
+    "canonical_digest": "385b07cd28b557df1fc48b2ddf6f070c01c5f8095dfb609730fbe2162407bd20",
+    "immutable": true
+  },
+  "checkpoint": {
+    "path": ".codex/evidence/institutional-foundation/iteration-007/continuation.json.gz",
+    "sequence": 7,
+    "canonical_digest": "6248576676842c041e720b0c76f4d25567bf96bf956992249fc87391a9c68954",
+    "verification": "checkpoint-verification.json",
+    "records": 44,
+    "current_bound_artifacts": 3,
+    "historical_assurance_artifacts": "11 valid unbound diagnostic artifacts preserved; their plan results do not establish current acceptance.",
+    "applicability": "Validated against immutable source candidate before evidence publication. Later source advancement is expected STALE_CHECKPOINT, requiring a new rebound successor, not rewritten hashes."
+  },
+  "artifact_discovery": {
+    "retention_binding": "retention-binding.json",
+    "manifest": "retention-manifest.json",
+    "gates": "gate-adjudication.json",
+    "roadmap": "program-roadmap.json",
+    "experience": "experience-final.json",
+    "validation": "validation.json",
+    "owner_decisions": "owner-decision-packet.json",
+    "installed_wheel": "package/wheels/codex_ml-0.3.0-py3-none-any.whl",
+    "wheel_sha256": "6795b031ff100e2de965d84dde7bdcc437984deaeffb36791d0032d0c17b5eda",
+    "harness": "package/harness/",
+    "installed_results": "package/installed-final-junit.xml",
+    "offline_results": "package/installed-offline-junit.xml",
+    "initial_installed_failures": "package/installed-initial-junit.xml",
+    "resource_origins": "package/installed-resources.json",
+    "installed_source_review": "source-review/",
+    "current_repository_review": "repository-review-plan.json; repository-initial.json; repository-response.json; repository-adequacy.json; repository-meta.json; repository-final.json; repository-resume.json"
+  },
+  "source_review_scope": {
+    "FACT": "Exact validate_artifact(child) quotation exists in tested installed/source core module; semantic dispatch, explicit bindings and fixture storage/recovery execute.",
+    "INFERENCE": "Composition addresses the demonstrated supported-path gaps, not every institutional threat.",
+    "SPECULATION": "No broader effectiveness, trusted custody or ecology conclusions established.",
+    "fixture_assertion": "Supplied contradicts relation models unresolved scope dissent; identical quoted source does not itself establish logically contradictory code facts.",
+    "rotation_rationale": "315-history bearing challenges interpreting semantic admission as authenticated history. Same platform and actor attribution disclosed; stronger observed regression evidence does not create independent assurance.",
+    "non_authorizing_result": "BLOCKED; technical evidence coverage only, not approved or adopted.",
+    "historical_narrow_rejection": "Iteration006 090/H1-attach-only nonmutating recommendation preserved; not repeated as broad C1-C3 closure."
+  },
+  "pending": {
+    "historical_node": "retention_security",
+    "historical_ready": false,
+    "historical_reason": "declared-blocked",
+    "current_scoped_node": "independent_reproduction",
+    "current_ready": false,
+    "current_resume": "ASSURANCE_PREREQUISITES",
+    "distinction": "New technical cohort does not replace, satisfy or dispatch historical owner-security predicates."
+  },
+  "remaining_blockers": [
+    "151 original historical log paths unavailable; full inventory retained in iteration006 security/retention-aggregate.json.",
+    "11 credential-like security-owner findings after 13-to-11 scope reconciliation; values never disclosed or probed.",
+    "Three distinct timestamp captures need owner disposition; latest 621a57ce retained rather than silently reversed.",
+    "Full Python CodeQL NOT_RUN after database-size skip.",
+    "G5 independent exact-artifact custody/verifier/approval NOT_RUN.",
+    "Actual PR-head hosted checks and required reviews remain separate from local results."
+  ],
+  "next_action": {
+    "task": "Independent exact-wheel reproduction and owner retention/security/snapshot decision packet, then bounded trusted-anchor/provider integration.",
+    "prerequisites": ["Verify retained bindings and original bytes", "Use actual independent actor/custody rather than role labels", "Obtain only operation-specific owner decisions", "Rebind current source/configuration before a later successor"],
+    "acceptance_test": "Independent verifier identifies wheel digest 6795b031..., installs full declared base outside checkout, reproduces portable admission/binding/continuity and baseline scope, records limitations and actual separation. Owner decisions cover their own predicates only.",
+    "recovery": "Preserve iteration006/007 immutable bytes. Inspect with structural-only mode if semantic admission rejects legacy data; do not persist it as accepted. Regenerate previews after drift; never reset user work or append synthetic PASS to blocked nodes."
+  },
+  "roadmap_preservation": "All 32 predecessor items and original statuses/dependencies/evidence unchanged; additive iteration_007_updates record partial composition progress and full-program continuation.",
+  "retention": {
+    "local": "Wheel, unchanged harness copies, JUnit, logs, dependency reports, resource/source manifests, analytical receipts and checkpoint retained here.",
+    "remote": "Published feature-branch commit/PR establishes retrievability; no claim of complete historical raw-log retention.",
+    "unavailable": "Historical missing bytes remain missing; no reconstructed logs or credentials."
+  },
+  "G5": "NOT_RUN",
+  "reviewed": "Read-only same-platform source review; two findings fixed and follow-up found no significant issues.",
+  "adopted": false,
+  "approved": false,
+  "activated": false,
+  "published_or_released": false,
+  "next_session_started": false,
+  "profile_contents_inspected": false
+}

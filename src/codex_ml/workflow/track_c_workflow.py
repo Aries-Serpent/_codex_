@@ -31,6 +31,18 @@ SIX_PHASES: Sequence[str] = (
 
 @dataclass
 class ErrorRecord:
+    """Captured workflow failure with its phase, step, and capability identity.
+
+    Args:
+        timestamp: Capture time, normally an aware UTC datetime.
+        phase: Phase label recorded in failed_phases.
+        capability: Canonical capability name.
+        step: Name of the failing action.
+        message: Exception text.
+        exception_type: Exception class name.
+        context: Additional metadata, defaulting to a new empty dictionary.
+    """
+
     timestamp: datetime
     phase: str
     capability: str
@@ -40,6 +52,11 @@ class ErrorRecord:
     context: dict[str, object] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, object]:
+        """Return error fields with timestamp formatted to second precision.
+
+        The context dictionary is shared, not copied, and its values are not
+        made JSON-safe. An aware UTC timestamp keeps its +00:00 offset.
+        """
         return {
             "timestamp": self.timestamp.isoformat(timespec="seconds"),
             "phase": self.phase,
@@ -53,6 +70,24 @@ class ErrorRecord:
 
 @dataclass
 class WorkflowContext:
+    """Mutable per-run state shared by phase actions and rollback callbacks.
+
+    Args:
+        capability: Canonical capability name used by error records.
+        offline_mode: Informational flag; it does not enforce network isolation.
+        phase_history: Completed phase-attempt labels in execution order.
+        routes: Capability-to-search-target mapping.
+        artifacts: Constructed artifact labels, not filesystem handles.
+        pruned: Labels removed by pruning.
+        errors: Captured ErrorRecord instances.
+        rollbacks: Stack of labeled cleanup callbacks.
+        notes: Free-form phase annotations.
+        failed_phases: Failure labels, including caught rollback failures.
+        summary: Finalization output; later phases need not refresh it.
+
+    Collection fields default to independent empty containers per instance.
+    """
+
     capability: str
     offline_mode: bool = True
     phase_history: list[str] = field(default_factory=list)
@@ -66,9 +101,26 @@ class WorkflowContext:
     summary: dict[str, object] = field(default_factory=dict)
 
     def register_rollback(self, label: str, rollback: RollbackAction) -> None:
+        """Push a labeled cleanup action onto this run's rollback stack.
+
+        Args:
+            label: Diagnostic identifier used if cleanup fails.
+            rollback: Callable receiving this context when apply_rollbacks runs.
+
+        Returns:
+            None. Registration alone does not execute the callback.
+        """
         self.rollbacks.append((label, rollback))
 
     def apply_rollbacks(self) -> None:
+        """Pop and execute registered callbacks in last-in, first-out order.
+
+        Returns:
+            None. ValueError, TypeError, and RuntimeError from a callback are
+            logged and recorded as rollback:<label>; remaining cleanup continues.
+
+        Other exceptions propagate, leaving still-unpopped callbacks registered.
+        """
         while self.rollbacks:
             label, rollback = self.rollbacks.pop()
             try:
@@ -81,6 +133,18 @@ class WorkflowContext:
 
 @dataclass
 class CapabilityPlan:
+    """Declarative inputs and optional phase actions for one capability.
+
+    Args:
+        name: Canonical route name.
+        aliases: Additional case-insensitive route keys.
+        search_targets: Labels recorded during search, or baseline-scan if empty.
+        construction_steps: Artifact suffixes, or prototype if empty.
+        pruning_rules: Substrings whose matching artifacts are pruned.
+        phase_overrides: Exact SIX_PHASES labels mapped to replacement
+            callables accepting WorkflowContext and this plan.
+    """
+
     name: str
     aliases: Sequence[str] = field(default_factory=tuple)
     search_targets: Sequence[str] = field(default_factory=tuple)
@@ -89,12 +153,23 @@ class CapabilityPlan:
     phase_overrides: Mapping[str, PhaseAction] | None = None
 
     def get_action(self, phase_name: str) -> PhaseAction | None:
+        """Return the override for an exact phase_name, or None if absent.
+
+        No default implementation is resolved here; the orchestrator supplies it.
+        """
         if self.phase_overrides and phase_name in self.phase_overrides:
             return self.phase_overrides[phase_name]
         return None
 
 
 class CapabilityRouter:
+    """Resolve case-insensitive capability names and aliases to shared plans.
+
+    Args:
+        plans: Optional iterable registered in order. Later registrations
+            overwrite colliding keys; names are lowercased, not stripped.
+    """
+
     def __init__(self, plans: Iterable[CapabilityPlan] | None = None) -> None:
         self._plans: dict[str, CapabilityPlan] = {}
         if plans:
@@ -102,11 +177,27 @@ class CapabilityRouter:
                 self.register(plan)
 
     def register(self, plan: CapabilityPlan) -> None:
+        """Map plan.name and each alias to plan, overwriting colliding keys.
+
+        Args:
+            plan: CapabilityPlan retained by reference, not copied.
+
+        Returns:
+            None. Re-registering does not remove aliases from an earlier plan.
+        """
         self._plans[plan.name.lower()] = plan
         for alias in plan.aliases:
             self._plans[alias.lower()] = plan
 
     def resolve(self, capability: str) -> CapabilityPlan:
+        """Return the shared plan registered for capability, ignoring case.
+
+        Args:
+            capability: Canonical name or alias; whitespace remains significant.
+
+        Raises:
+            KeyError: If no matching route has been registered.
+        """
         key = capability.lower()
         if key not in self._plans:
             raise KeyError(f"Unknown capability: {capability}")
@@ -121,6 +212,18 @@ def record_error(
     *,
     extra_context: Mapping[str, object] | None = None,
 ) -> ErrorRecord:
+    """Append a UTC-stamped error record and mark the phase as failed.
+
+    Args:
+        ctx: Run context to mutate.
+        phase: Failed phase label, appended even if already recorded.
+        step: Failing operation's diagnostic name.
+        exc: Exception whose text and class name are captured, not re-raised.
+        extra_context: Optional metadata shallow-copied into the record.
+
+    Returns:
+        The same ErrorRecord instance appended to ctx.errors.
+    """
     record = ErrorRecord(
         timestamp=datetime.now(UTC),
         phase=phase,
@@ -144,6 +247,22 @@ def step_context(
     rollback: RollbackAction | None = None,
     extra_context: Mapping[str, object] | None = None,
 ):
+    """Capture and suppress an Exception raised inside one workflow step.
+
+    Args:
+        ctx: Context receiving error and failed-phase records.
+        phase: Phase label for captured errors.
+        step: Diagnostic action label.
+        rollback: Optional immediate cleanup callable receiving ctx on failure;
+            it is not registered on the rollback stack.
+        extra_context: Metadata passed to record_error on failure.
+
+    Yields:
+        None, allowing the caller's action to execute.
+
+    Exceptions from rollback propagate; BaseException subclasses from the
+    body are not intercepted. Successful steps do not invoke rollback.
+    """
     try:
         yield
     except Exception as exc:
@@ -269,6 +388,16 @@ DEFAULT_ROUTER = CapabilityRouter(CAPABILITY_ROUTING.values())
 
 
 class WorkflowOrchestrator:
+    """Run six ordered phase actions against a newly allocated context.
+
+    Args:
+        router: Capability lookup table; None uses DEFAULT_ROUTER.
+        offline_mode: Metadata passed into contexts, not a network restriction.
+
+    Built-in actions manipulate in-memory labels rather than building models
+    or writing artifacts. Overrides may perform their own side effects.
+    """
+
     def __init__(
         self, router: CapabilityRouter | None = None, *, offline_mode: bool = True
     ) -> None:
@@ -276,6 +405,21 @@ class WorkflowOrchestrator:
         self.offline_mode = offline_mode
 
     def run(self, capability: str) -> WorkflowContext:
+        """Resolve capability and attempt every phase in SIX_PHASES order.
+
+        Args:
+            capability: Name or alias recognized by this orchestrator's router.
+
+        Returns:
+            New WorkflowContext containing attempted phase history and captured
+            errors. Action Exceptions are suppressed by step_context so later
+            phases run. The default Error Capture phase applies pending rollbacks.
+            Finalization's summary is built before its own history entry is added.
+
+        Raises:
+            KeyError: If capability cannot be resolved.
+            AttributeError: If a phase callable has no __name__ attribute.
+        """
         plan = self.router.resolve(capability)
         ctx = WorkflowContext(capability=plan.name, offline_mode=self.offline_mode)
 
@@ -303,5 +447,25 @@ def run_capability(
     offline_mode: bool = True,
     router: CapabilityRouter | None = None,
 ) -> WorkflowContext:
+    """Execute a capability with a fresh WorkflowOrchestrator.
+
+    Args:
+        capability: Canonical route name or case-insensitive alias.
+        offline_mode: Informational context flag, default True.
+        router: Optional custom CapabilityRouter; None selects DEFAULT_ROUTER.
+
+    Returns:
+        WorkflowContext with phase history, summary, and captured errors.
+
+    Raises:
+        KeyError: If the chosen router does not recognize capability.
+
+    Example:
+        >>> context = run_capability("token")
+        >>> context.capability
+        'tokenization'
+        >>> context.phase_history == list(SIX_PHASES)
+        True
+    """
     orchestrator = WorkflowOrchestrator(router=router, offline_mode=offline_mode)
     return orchestrator.run(capability)

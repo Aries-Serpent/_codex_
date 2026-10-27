@@ -1,0 +1,107 @@
+{
+  "G5": "NOT_RUN",
+  "authority": "none",
+  "checks": [
+    "PYTHONPATH absent",
+    "Python isolated mode",
+    "fresh virtual environment",
+    "system site packages disabled",
+    "dedicated external runtime working directory",
+    "checkout and export source paths absent from import path",
+    "all SDK imports originate in runtime venv",
+    "non-editable installation",
+    "installed distribution came from wheel archive",
+    "actual wheel digest matches release manifest",
+    "formula registry declared for validation",
+    "exact source/wheel/installed bytes: review.py",
+    "exact source/wheel/installed bytes: contracts.json",
+    "exact source/wheel/installed bytes: review-formulas.json",
+    "all 58 planned formulas packaged",
+    "formula registry confers no authority",
+    "formulas remain planned, not numerical SDK claims",
+    "versioned review contract packaged",
+    "declared local contracts distribution installed",
+    "initial has no authorization",
+    "initial identities remain unverified",
+    "initial retains conflict",
+    "initial retains exact attributed source",
+    "meta has no authorization",
+    "meta identities remain unverified",
+    "meta retains conflict",
+    "meta retains exact attributed source",
+    "final has no authorization",
+    "final identities remain unverified",
+    "final retains conflict",
+    "final retains exact attributed source",
+    "missing required lanes explicit",
+    "candidate drift blocks resume",
+    "context drift blocks resume",
+    "inexact clearance blocks resume",
+    "exact resume retains original pending requirement",
+    "strict event progression reaches final review stage",
+    "cache exactly bound to event digest",
+    "stale cache rejected",
+    "duplicate event identity rejected",
+    "reordered history rejected",
+    "rotated response is coverage only",
+    "rotated actor is not verified independence",
+    "adequate boolean cannot replace original finding-bound checks",
+    "huge integer confidence rejected before float conversion",
+    "huge imported integer confidence rejected",
+    "huge integer confidence rejected before float conversion",
+    "huge imported integer confidence rejected",
+    "runtime network attempt denied"
+  ],
+  "checks_passed": 49,
+  "codex_contracts_version": "0.1.0a1",
+  "cwd": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/external-runtime",
+  "direct_url": {
+    "archive_info": {
+      "hash": "sha256=0a684e9e09a787b15004cad1582ad2470b5e2bf8c4584d8bfcb9b568e75895f0",
+      "hashes": {
+        "sha256": "0a684e9e09a787b15004cad1582ad2470b5e2bf8c4584d8bfcb9b568e75895f0"
+      }
+    },
+    "url": "file:///home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl"
+  },
+  "distribution_version": "0.3.0",
+  "harness_sha256": "7f03b6379b0872afbdaf5ab6ddffec094a08f0c0d3cf69c4bea6b51549992c44",
+  "import_origins": {
+    "core": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/runtime-venv/lib/python3.12/site-packages/codex/institutional/core.py",
+    "review": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/runtime-venv/lib/python3.12/site-packages/codex/institutional/review.py"
+  },
+  "independence": "unverified same-platform fixture",
+  "limits": [
+    "SDK-only dependency environment, not full codex-ml dependency conformance",
+    "No numerical formula evaluator or assurance DAG",
+    "No authenticated identities, acceptance, activation or operational routing",
+    "Event digests are not tamperproof; cross-store UUID uniqueness not enforced",
+    "Remediation checks source-bound evidence coverage, not truth"
+  ],
+  "network": "Python audit hook denies all socket events; subprocess creation denied",
+  "python": "3.12.10 (main, Apr  8 2025, 22:38:13) [GCC 13.3.0]",
+  "resource_manifest": {
+    "contracts.json": {
+      "bytes": 6154,
+      "sha256": "21026df523f2445bd0ade774603f7facd823aadabed96f59b983ad8f56b52e30"
+    },
+    "review-formulas.json": {
+      "bytes": 54986,
+      "sha256": "bb334de789fc66e6704b752268c84f32860a218bbc4858b6888822c4f5e23537"
+    },
+    "review.py": {
+      "bytes": 28021,
+      "sha256": "12ef9992b0b1a7412076cc26abc49cf42028bcb1b8fa94f65ecff9d41fc2d959"
+    }
+  },
+  "runtime_prefix": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/runtime-venv",
+  "source_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+  "sys_path": [
+    "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python312.zip",
+    "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12",
+    "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/lib-dynload",
+    "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025/runtime-venv/lib/python3.12/site-packages"
+  ],
+  "wheel": "codex_ml-0.3.0-py3-none-any.whl",
+  "wheel_sha256": "0a684e9e09a787b15004cad1582ad2470b5e2bf8c4584d8bfcb9b568e75895f0"
+}

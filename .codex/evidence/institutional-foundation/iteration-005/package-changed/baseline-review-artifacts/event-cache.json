@@ -1,0 +1,8 @@
+{
+  "event_digest": "ec459cd6efcd46127a7020da43037bc956d8623a8a54ff94b54b312d7adb73c8",
+  "state": {
+    "blocker": null,
+    "pending_requirement": null,
+    "stage": "final"
+  }
+}

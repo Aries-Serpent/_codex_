@@ -1,0 +1,65 @@
+{
+  "status": "PASS_FULL_DECLARED_BASE_DEPENDENCY_CLOSURE",
+  "changed_source_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+  "changed_wheel_sha256": "0a684e9e09a787b15004cad1582ad2470b5e2bf8c4584d8bfcb9b568e75895f0",
+  "base_install_exit": 0,
+  "pip_check_exit": 0,
+  "pip_check_after_test_tools_exit": 0,
+  "base_requirements_checked": 29,
+  "selected_third_party_versions_advisory_checked": 52,
+  "sdk_harness": {
+    "status": "PASS",
+    "checks": 55,
+    "harness": "full-base-installed-assurance-harness.py",
+    "sha256": "e3ec72e8c237688434c6258ae22e3a41771316b3d1d4b2d7ca78291b25fe5301",
+    "results": "full-base-sdk-artifacts-002/results.json",
+    "note": "Same 51 bounded SDK assertions plus four local-origin assertions; not additive independent coverage."
+  },
+  "baseline_harness": {
+    "status": "PASS",
+    "checks": 49,
+    "results": "baseline-artifacts/results.json"
+  },
+  "assurance_tests": {
+    "status": "PASS",
+    "tests": 107,
+    "note": "Same exact copied assurance tests rerun in full-base environment. Overlapping coverage, not 107 additional unique tests.",
+    "junit": "assurance-tests.junit.xml",
+    "log": "assurance-tests.log",
+    "isolated_configuration": "-I, PYTHONPATH removed, plugin autoload disabled, --noconftest, standalone config, owned external basetemp"
+  },
+  "initial_harness_failure": {
+    "status": "PRESERVED",
+    "log": "sdk-harness.log",
+    "cause": "Harness assumed local --find-links dependency would have direct_url.json; corrected only in separate full-base harness to verify installer-report file URL and SHA256.",
+    "observation": "harness-first-failure.json"
+  },
+  "original_immutable_wheel": {
+    "status": "PASS_FULL_BASE_CLOSURE_AND_SELECTED_SDK",
+    "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+    "wheel_sha256": "e88afdbc52d79f2155fdadacddac9d2e16cab15e7307822aecdccfe13c9a9c33",
+    "base_install_exit": 0,
+    "pip_check_exit": 0,
+    "baseline_harness_checks": 49,
+    "base_requirements_checked": 29,
+    "directory": "original-immutable",
+    "historical_package_original_evidence_modified": false
+  },
+  "prior_sdk_only_environment": {
+    "pip_check_exit": 1,
+    "missing_requirements": 27,
+    "observation_preserved": "../dependency-conformance.json",
+    "interpretation": "Prior voluntary subset environment had missing base dependencies; it was not a resolution/access/resource blocker. New full-base environment succeeds. Base dependencies are configuration/security/CLI packages; optional ML extras were not requested or installed."
+  },
+  "local_contracts": "Both environments use retained locally built codex-contracts wheel selected via --find-links, not registry-only assurance. Install report binds wheel URL/digest; find-links dependency has no direct_url.json.",
+  "limits": [
+    "Observed base dependency metadata conformance and exercised SDK functions only; not all distribution features or optional extras.",
+    "No authenticated independence, G5, institutional acceptance, approval or activation.",
+    "Dependency advisory check is bounded known-advisory evidence, not proof of security."
+  ],
+  "G5": "NOT_RUN",
+  "authority": "none",
+  "approval": false,
+  "workspace_removed": true,
+  "retention": "All commands, dependency reports/versions, failed and successful harnesses, logs and test outputs retained in owned package-changed namespace."
+}

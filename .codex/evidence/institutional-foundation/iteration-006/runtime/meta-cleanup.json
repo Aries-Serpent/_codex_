@@ -1,0 +1,19 @@
+{
+  "status": "COMPLETE",
+  "removed_owned_paths": {
+    "cache": {
+      "files": 4075
+    },
+    "work": {
+      "files": 0
+    }
+  },
+  "synthetic_and_initial_dependency_logs_unchanged": true,
+  "actual_execution_location": "Inside checkout; isolated installed SDK, not external execution",
+  "retained": "Both install histories, fixed adapters, inputs/results, actual command logs; no venv/cache/temporary fixtures retained",
+  "scenario_attempts": {
+    "first": "Scoped meta passed; original results retained in meta-before-confidence-normalization",
+    "second": "Corrected speculative/unknown hypothesis confidence normalization; scoped meta passed"
+  },
+  "historical_tests_rerun": 0
+}

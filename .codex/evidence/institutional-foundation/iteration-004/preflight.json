@@ -1,0 +1,89 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001/RD4",
+  "entry_head": "fe1401832bdb97ea5597745a5c9ab56ac3ec5d9f",
+  "branch": {
+    "exit": 0,
+    "stdout": "copilot/codex-institutional-foundation-001",
+    "stderr": ""
+  },
+  "refs": {
+    "exit": 0,
+    "stdout": "refs/remotes/origin/0D_base_ 159830ca8b9e689cae443fb7c1cc0f36cfb7d667\nrefs/remotes/origin/copilot/apply-scheduling-patch 76e3525a0291914bee20bf8b3a694c05cdd44b1e\nrefs/remotes/origin/copilot/codex-institutional-foundation-001 fe1401832bdb97ea5597745a5c9ab56ac3ec5d9f\nrefs/remotes/origin/main 05dd1b53802f4e4d2ceca95336ab555ad81d0248",
+    "stderr": ""
+  },
+  "worktrees": {
+    "exit": 0,
+    "stdout": "/home/runner/work/_codex_/_codex_ fe140183 [copilot/codex-institutional-foundation-001]",
+    "stderr": ""
+  },
+  "entry_dirty": [
+    {
+      "path": ".codex/session_startup_packet.json",
+      "sha256": "97229ef4b723a01c4d458d3ec868197506c88924c3ac2f0513d8d8d5c3768caf",
+      "operation": "Preserve exact bytes without reset/stash/index flags/replacement or staging"
+    }
+  ],
+  "historical_objects": {
+    "174a7771160725bb6edf54f85d38ed5484753789": {
+      "exit": 128,
+      "stdout": "",
+      "stderr": "fatal: git cat-file: could not get object info"
+    },
+    "eb21a0dfb1ab3055c313133f98fc193dd11720e7": {
+      "exit": 0,
+      "stdout": "commit",
+      "stderr": ""
+    }
+  },
+  "historical_verification": {
+    "iteration_002": {
+      "artifacts": 49,
+      "digests": "PASS"
+    },
+    "iteration_003": {
+      "artifacts": 25,
+      "digests": "PASS",
+      "sequence": 3,
+      "canonical_sha256": "3437c62ddfd6951c98f1219604dad5bb6e1e037ae8ce0657e10a6244010e24e7",
+      "structure": "PASS",
+      "drift": [
+        "STALE_CHECKPOINT",
+        "WORKTREE_DRIFT"
+      ]
+    },
+    "guidance_census": {
+      "tracked": 33375,
+      "candidates": 33183,
+      "inspected": 18,
+      "unreviewed": 32498,
+      "inaccessible": 667,
+      "scope": "Entry-snapshot conservative text/consumer superset; literal refs only, 2MiB decode budget. Not semantic agent denominator."
+    }
+  },
+  "authority": "Assigned-workspace source, guidance, tests, evidence and local builds; no adoption/approval/publication/merge/protected settings/self-triggering.",
+  "plan": [
+    "Finish actual followup template-generator-consumer batch with source/output regressions",
+    "Preserve complete proposed architecture/formal/visual assets and existing-registry bridge",
+    "Implement core-reusing bound SDK path with untrusted fixture provenance and event/cache integrity",
+    "Review source/security and validate a committed candidate wheel externally/offline",
+    "Append predecessor-bound continuation with exact pending requirements and remaining roadmap"
+  ],
+  "template_adaptation": {
+    "source": ".github/prompts/sprint_execution_plan/TEMPLATE.md",
+    "acceptance": "RD4-01..12 plus original G0..G8 separately adjudicated",
+    "retry_budget": "Two retries per unchanged failure; inspect new evidence; no universal pass count",
+    "rollback": "Reviewed narrow task-path revert; preserve user work and historical evidence",
+    "resources": "Three independent work lanes then sequential minority/integration review; no new dependencies; resource limits explicit in SDK"
+  },
+  "publication": {
+    "status": "BLOCKED_AUTHORITY",
+    "reason": "Exposed automatic progress/publishing tool has no path-selective staging parameter and historical calls committed dirty packet. Preserve user bytes; selective local task commits only, no push/PR creation."
+  },
+  "classification": "Repository-Internal",
+  "renderer_preflight": {
+    "mmdc": null,
+    "docutils_available": false,
+    "MathJax": "NOT_RUN; no configured local renderer verified",
+    "hosted_profile_enforcement": "NOT_RUN; no deployable profiles created or activated"
+  }
+}

@@ -48,7 +48,7 @@ async def handler(request: Request):
 
 ---
 
-**See**: [Main .codex/archive/deprecated/AGENTS.md](../../.codex/archive/deprecated/AGENTS.md) | [Security Guidelines](../../docs/security/SECURITY_GUIDELINES.md) | [MCP Docs](server/README.md)
+**See**: [Current agency policy](../../.codex/CODEBASE_AGENCY_POLICY.md) | [Security Guidelines](../../docs/security/SECURITY_GUIDELINES.md) | [MCP Docs](server/README.md)
 
 ---
 

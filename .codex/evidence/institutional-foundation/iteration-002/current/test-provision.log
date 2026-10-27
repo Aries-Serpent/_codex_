@@ -1,0 +1,16 @@
+Collecting pytest==9.1.1
+  Using cached pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+Collecting iniconfig>=1.0.1 (from pytest==9.1.1)
+  Using cached iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+Requirement already satisfied: packaging>=22 in /tmp/institutional-resume/current/venv/lib/python3.12/site-packages (from pytest==9.1.1) (26.3)
+Collecting pluggy<2,>=1.5 (from pytest==9.1.1)
+  Using cached pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+Requirement already satisfied: pygments>=2.7.2 in /tmp/institutional-resume/current/venv/lib/python3.12/site-packages (from pytest==9.1.1) (2.21.0)
+Using cached pytest-9.1.1-py3-none-any.whl (386 kB)
+Using cached iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+Using cached pluggy-1.7.0-py3-none-any.whl (27 kB)
+Installing collected packages: pluggy, iniconfig, pytest
+Successfully installed iniconfig-2.3.1 pluggy-1.7.0 pytest-9.1.1
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.2
+[notice] To update, run: python -m pip install --upgrade pip

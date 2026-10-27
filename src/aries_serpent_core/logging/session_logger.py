@@ -312,6 +312,19 @@ def get_session_id() -> str:
 
 
 def fetch_messages(session_id: str, db_path: Optional[Path] = None) -> list[dict[str, Any]]:
+    """Read a session's messages in ascending timestamp order.
+
+    Args:
+        session_id: Exact session identifier to select.
+        db_path: SQLite path, defaulting to ``CODEX_LOG_DB_PATH`` or
+            ``DEFAULT_LOG_DB`` when omitted.
+
+    Returns:
+        Dictionaries with ``ts``, ``role``, and ``message`` keys. The
+        delegated reader initializes a missing database and returns an empty
+        list for an unknown session or a database error during retrieval.
+        Initialization errors are not covered by that retrieval fallback.
+    """
     path = Path(db_path or _default_db_path())
     return _fetch_messages_mod.fetch_messages(session_id, db_path=path)
 
@@ -331,6 +344,10 @@ def log_message(
         message: Any object; will be coerced to str().
         db_path: Optional path (Path/str). If None, uses CODEX_LOG_DB_PATH or
             DEFAULT_LOG_DB.
+        meta: Optional event metadata forwarded to the active logging backend.
+
+    Raises:
+        ValueError: If ``role`` is not one of the allowed, case-sensitive roles.
 
     Usage:
         >>> from aries_serpent_core.logging.session_logger import log_message
@@ -388,6 +405,14 @@ class SessionLogger:
         return False
 
     def log(self, role: str, message) -> None:
+        """Append a message using this logger's session ID and database path.
+
+        Delegates to :func:`log_message`, including its role validation and
+        string conversion. Accepted roles are ``system``, ``user``,
+        ``assistant``, ``tool``, ``INFO``, and ``WARN``; others raise
+        ``ValueError``. Can be called directly or inside the context manager;
+        only context entry/exit adds session boundary events.
+        """
         log_message(self.session_id, role, message, db_path=self.db_path)
 
 

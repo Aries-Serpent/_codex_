@@ -1,0 +1,84 @@
+{
+  "schema": "codex.experience.v1",
+  "id": "codex.experience.v1:26928e91c231986ab290983eefbe1c8b9778a51fe548c06bbabec3c3d8254c84",
+  "created_at": "2026-10-25T03:25:10Z",
+  "producer": {
+    "identity": "codex-institutional",
+    "assurance": "unverified"
+  },
+  "evidence_refs": [],
+  "authority_refs": [],
+  "validation_state": "candidate",
+  "lifecycle": "Draft",
+  "supersedes": null,
+  "extensions": {},
+  "payload": {
+    "problem": "Evidence/handoff acceptance gaps and assurance-semantic versus generic continuation-admission composition.",
+    "context": "Inactive consolidation slice: recover exact retained wheel evidence, resume the historical fixture and run a separate fixed repository-source review with two bearings and dissent.",
+    "environment": {
+      "runtime_candidate": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+      "review_candidate": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+      "wheel_sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00",
+      "runtime_receipts": [
+        "runtime/summary.json",
+        "runtime/meta-completion.json"
+      ],
+      "scope": "Isolated installed-origin SDK execution inside checkout; SDK-only dependency subset. Historical external full-base validation remains separate."
+    },
+    "hypotheses": [
+      "Previously reported retention meant all referenced logs were committed.",
+      "Changing a cached recommendation string alone clears a concern across every admission path.",
+      "A completed secret-scanning lane establishes independent verification."
+    ],
+    "support": [
+      "260 surviving historical submitted files match prior scanner hashes.",
+      "Historical synthetic technical_verification explicitly retried; downstream stale proofs remain blocked.",
+      "Two source-backed bearings and cross-cutting dissent executed through initial,rotated meta,assurance and final reconciliation.",
+      "Narrow attach/semantic-validator hypothesis rejected with bound evidence; all eight broad residual findings retained."
+    ],
+    "against": [
+      "151 historical log paths absent from inspected commits; no original bytes fabricated.",
+      "Generic envelope validation/inspection admitted an invalid recommendation that semantic validation/attachment rejected; no invalid storage.apply occurred.",
+      "73 archive-detector findings classified with 11 residual owner-review items; no blanket clean scan.",
+      "Same-platform lanes and supplied actor identifiers are unverified and not G5."
+    ],
+    "alternatives": [
+      "Compose existing assurance.validate_artifact with the continuation coordinator instead of adding another agent or memory store.",
+      "Retain missing-log and suspected-secret blockers rather than regenerate historical evidence or claim PASS.",
+      "Open a clearly limited draft consolidation PR rather than demand full architecture completion or declare merge readiness."
+    ],
+    "decision": "Recommend existing-coordinator semantic admission/recovery, explicit assurance-candidate association and required continuity checks. Preserve the blocked inactive candidate and request human/security review.",
+    "dissent": [
+      "The broad cached-string concern remains valid at the generic storage-admission boundary despite narrow validator-path rejection.",
+      "Co-storage alone does not establish assurance about the continuation inventory.",
+      "Cooperative history/digests are not hostile-reseal protection or authenticated custody."
+    ],
+    "uncertainty": [
+      "Credential validity and historical log recoverability unresolved.",
+      "Applicable hosted required checks/reviews and merge exceptions not established.",
+      "No causal institutional-effectiveness conclusion from this bounded review."
+    ],
+    "implementation": [
+      "No production runtime,contract,resource or dependency declarations changed in iteration006.",
+      "Existing supplied-data SDK,continuation envelope and experience mechanism reused.",
+      "Standalone roadmap and unexecuted next-session prompt retained."
+    ],
+    "verification": [
+      "runtime/resumption.json:25 synthetic assertions within overlapping34/54 stages; no historical suites rerun.",
+      "runtime/meta-completion.json:20 separate scoped meta assertions; final BLOCKED at retention_security.",
+      "security/retention-aggregate.json:266 present historical artifacts and151 missing log references.",
+      "security/scan-result.json:11 bounded archives,101820542 expanded bytes,2227 deduplicated contents.",
+      "Historical285-source/107-wheel/55-SDK/49-baseline/two-example receipts retained with exact source parity,not relabeled as new tests."
+    ],
+    "outcomes": "unknown",
+    "failure_modes": [
+      "Automatic publisher captured pre-existing user timestamps despite exclusion notes; retain attribution,not silent reversal.",
+      "Ignored raw logs were not in the published snapshot,so local retention claims did not establish remote bytes.",
+      "Narrow validator guarantee generalized to unguarded generic admission would erase minority evidence."
+    ],
+    "applicability": "Offline inactive institutional SDK composition and evidence acceptance only; no authenticated independent assurance,approval,governance activation or release.",
+    "confidence": "unknown",
+    "next_review": "Security-owner triage and original-byte recovery or authorized retention adjudication,then a versioned safe-admission slice after actual merged-base revalidation."
+  },
+  "integrity": "b4b3dc9919a785e1b37d28968069bfbb4914e58d89b1dda7719889245872ed70"
+}

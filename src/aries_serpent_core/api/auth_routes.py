@@ -23,7 +23,6 @@ from __future__ import annotations
 
 import logging
 import os
-import re
 import time
 from typing import Optional
 
@@ -31,15 +30,12 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field, field_validator
 
 from aries_serpent_core.auth.authenticator import Authenticator, LoginResult
-from aries_serpent_core.auth.exceptions import InvalidCredentialsError
+from aries_serpent_core.auth.exceptions import AuthError, InvalidCredentialsError
 from aries_serpent_core.auth.token_manager import TokenManager
 from aries_serpent_core.auth.user_store import UserStore
 from aries_serpent_core.security_utils import sanitize_log_message
 
 logger = logging.getLogger(__name__)
-
-# Simple e-mail pattern — intentionally permissive but catches obvious junk.
-_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
 def _safe_log_value(value: object) -> str:
@@ -106,8 +102,7 @@ class RegisterRequest(BaseModel):
     @field_validator("email")
     @classmethod
     def _validate_email(cls, v: str) -> str:
-        if not _EMAIL_RE.match(v):
-            raise ValueError("Invalid e-mail address format")
+        UserStore._validate_email_format(v)
         return v.lower().strip()
 
 
@@ -310,7 +305,7 @@ def create_auth_router(
         except InvalidCredentialsError as exc:
             logger.warning("Login failed from %s: %s", _safe_log_value(ip_address), str(exc))
             raise HTTPException(status_code=401, detail="Invalid credentials") from exc
-        except (ConnectionError, TimeoutError) as exc:
+        except AuthError as exc:
             code = getattr(exc, "code", "")
             if code == "mfa_required":
                 logger.info("MFA required for login attempt from %s", _safe_log_value(ip_address))
@@ -366,7 +361,7 @@ def create_auth_router(
         _enforce_rate_limit(_default_limiter, request)
         try:
             new_token = auth.refresh(body.refresh_token)
-        except (ConnectionError, TimeoutError) as exc:
+        except (AuthError, ValueError) as exc:
             if isinstance(exc, ValueError) or hasattr(exc, "code"):
                 # codeql[py/clear-text-logging-sensitive-data]: only the exception
                 # type name is logged; the message (and any token material it may
