@@ -216,11 +216,11 @@ jobs:
   job-name:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     steps:
       # 6. Job steps
       - uses: actions/checkout@v5
-      
+
       # ... other steps
 ```
 
@@ -322,7 +322,7 @@ permissions:
 # ❌ WRONG - Implicit or overly broad
 permissions:
   contents: write          # Writing to contents is rare
-  
+
 # ❌ WRONG - No permissions declaration
 # (inherits from GitHub defaults, unclear)
 ```
@@ -357,7 +357,7 @@ env:
 
 # ❌ WRONG - Hardcoded secret
 env:
-  API_KEY: 'sk-12345678901234567890'
+  API_KEY: '<hardcoded-key-placeholder>'
 
 # ❌ WRONG - Secret in workflow file
 with:
@@ -537,7 +537,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30     # Must be present
-    
+
     steps:
       - uses: actions/checkout@v5
 ```
@@ -562,7 +562,7 @@ jobs:
       - uses: github/codeql-action/analyze@v3
         continue-on-error: true  # Optional: allow continuation
         if: always()              # Run regardless of previous steps
-        
+
       - name: Upload results
         if: always()              # Always upload, even if analyze fails
         uses: actions/upload-artifact@v5
@@ -715,7 +715,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # ... codeql job steps
-    
+
   secrets:
     if: github.event.inputs.scan-type == 'secrets' || github.event.inputs.scan-type == 'all'
     runs-on: ubuntu-latest
@@ -744,10 +744,16 @@ jobs:
 
 ### 1. Mandatory Review
 
-**All workflow changes require:**
+**Before workflow changes are published, merged or executed, require:**
 - ✅ Code review (minimum 1 approval)
 - ✅ `actionlint` validation pass
 - ✅ No hardcoded secrets
+
+Authorized local inspection, patch preparation and isolated validation may
+precede that review without an existing PR. Preparation does not activate or
+dispatch a workflow, grant token permissions, waive owner/security approvals
+or authorize branch/settings/merge/deployment writes. Verify the actual
+applicable GitHub controls rather than inferring them from this document.
 
 ### 2. Consolidation Reviews
 
@@ -933,10 +939,10 @@ jobs:
   job-name:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     steps:
       - uses: actions/checkout@v5
-      
+
       - name: Step description
         run: echo "Hello, workflow!"
 ```

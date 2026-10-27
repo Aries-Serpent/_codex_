@@ -1,4 +1,4 @@
-"""Compatibility package for the repo-root `agents` namespace.
+"""Compatibility package for the repo-root agent orchestration namespace.
 
 The repo keeps a src-first pytest config (`pythonpath = src agents/codex_client`).
 The canonical human-facing agent modules still live under the repository-root
@@ -11,12 +11,14 @@ from __future__ import annotations
 
 from importlib import import_module
 from pathlib import Path
+from types import ModuleType
 
 _ROOT = Path(__file__).resolve().parents[2]
 _ROOT_AGENTS = _ROOT / "agents"
 __path__ = [str(Path(__file__).resolve().parent), str(_ROOT_AGENTS)]
 __version__ = "0.0.0"
 __all__: list[str] = ["__version__"]
+_modules: list[ModuleType] = []
 
 for _module_name in (
     "mental_mapping",
@@ -35,6 +37,7 @@ for _module_name in (
         _module = import_module(f"{__name__}.{_module_name}")
     except ModuleNotFoundError:
         continue
+    _modules.append(_module)
     for _name in getattr(_module, "__all__", []):
         if _name.startswith("_"):
             continue
@@ -102,7 +105,12 @@ for _name in (
     "RateLimiter",
 ):
     if _name not in globals():
-        continue
+        for _module in _modules:
+            if hasattr(_module, _name):
+                globals()[_name] = getattr(_module, _name)
+                break
+        else:
+            continue
     if _name not in __all__:
         __all__.append(_name)
 

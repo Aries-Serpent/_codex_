@@ -6,9 +6,7 @@ from pathlib import Path
 
 import yaml
 
-WORKFLOW_PATH = (
-    Path(__file__).resolve().parents[2] / ".github" / "workflows" / "pypi-publish.yml"
-)
+WORKFLOW_PATH = Path(__file__).resolve().parents[2] / ".github" / "workflows" / "pypi-publish.yml"
 
 
 def _load_workflow() -> dict:
@@ -71,9 +69,10 @@ def test_build_job_contains_phase5_assurance_steps() -> None:
     assert "Install built wheel in isolated virtualenv" in step_names
     assert "Attest release artifacts" not in step_names
     assert "Verify build provenance" not in step_names
-    assert "--require-hashes -r requirements/lock-release.txt" in _step(
-        build_job, "Install build dependencies"
-    )["run"]
+    assert (
+        "--require-hashes -r requirements/lock-release.txt"
+        in _step(build_job, "Install build dependencies")["run"]
+    )
     assert "python -m build --no-isolation" in _step(build_job, "Build package")["run"]
     install_command = _step(
         build_job,
@@ -113,9 +112,9 @@ def test_job_conditions_are_matrix_free_and_selection_guards_operational_steps()
     jobs = workflow["jobs"]
 
     for job_name, job in jobs.items():
-        assert "matrix." not in str(job.get("if", "")), (
-            f"{job_name} job-level if cannot use matrix context"
-        )
+        assert "matrix." not in str(
+            job.get("if", "")
+        ), f"{job_name} job-level if cannot use matrix context"
 
     guarded_steps = {
         "publish-testpypi": {"Download artifacts", "Publish to TestPyPI"},
@@ -126,9 +125,9 @@ def test_job_conditions_are_matrix_free_and_selection_guards_operational_steps()
         assert "SELECTED_DISTRIBUTION" not in job.get("env", {})
         for step_name in step_names:
             condition = str(_step(job, step_name).get("if", ""))
-            assert "matrix.distribution" in condition, (
-                f"{job_name}/{step_name} must select its matrix distribution at step level"
-            )
+            assert (
+                "matrix.distribution" in condition
+            ), f"{job_name}/{step_name} must select its matrix distribution at step level"
 
     verify_job = jobs["verify-installation"]
     assert "SELECTED_DISTRIBUTION" not in verify_job.get("env", {})
@@ -139,3 +138,19 @@ def test_job_conditions_are_matrix_free_and_selection_guards_operational_steps()
             f"{step.get('name', step.get('uses', '<unnamed>'))} must select its matrix "
             "distribution at step level"
         )
+
+
+def test_selected_distribution_values_are_github_expressions() -> None:
+    workflow = _load_workflow()
+    for name in ("build", "attest", "validate"):
+        selection = workflow["jobs"][name]["env"]["SELECTED_DISTRIBUTION"].strip()
+        assert selection.startswith("${{"), name
+        assert selection.endswith("}}"), name
+
+
+def test_post_publish_import_uses_the_verification_virtualenv() -> None:
+    workflow = _load_workflow()
+    step = _step(workflow["jobs"]["verify-installation"], "Test installed import")
+    assert '"$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}/bin/python"' in step["run"]
+    assert 'os.environ["IMPORT_NAME"]' in step["run"]
+    assert step["env"]["DISTRIBUTION_NAME"] == "${{ matrix.distribution.name }}"

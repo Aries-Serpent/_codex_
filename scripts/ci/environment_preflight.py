@@ -1,14 +1,8 @@
 #!/usr/bin/env python3
-"""Classify the required Copilot environment before heavy ML/RAG work runs.
+"""Classify task requirements; this does not provision a runner or fetch assets.
 
-The local sandbox is intentionally a staging layer for quick diagnosis and patch
-assembly. When the task touches ML/RAG code or dependency names, the repo should
-prefer the GitHub-hosted ``ml-heavy`` Copilot environment instead of trying to
-reproduce the full CI matrix in a stripped sandbox.
-
-The script writes a repo-owned configuration file in ``.codex/agent_environment_config.yaml``
-so future sessions can reuse the same decision without a human re-selecting the
-workflow input each time.
+ML classification never authorizes LFS downloads. Explicit required paths use
+fetch_lfs_assets.py. Dependency discovery is advisory, not import/readiness proof.
 """
 
 from __future__ import annotations
@@ -142,7 +136,12 @@ def _detect_missing_runtime_dependencies(required_deps: Sequence[str]) -> list[s
         module_name = module_name.replace("-", "_")
         if module_name in {"pyyaml", "yaml"}:
             module_name = "yaml"
-        spec = importlib.util.find_spec(module_name)
+        if normalized == "scikit-learn":
+            module_name = "sklearn"
+        try:
+            spec = importlib.util.find_spec(module_name)
+        except (ImportError, ValueError):
+            spec = None
         if spec is None or _is_stubbed_dependency(module_name, spec):
             missing.append(dep)
     return missing
@@ -161,12 +160,9 @@ def _write_github_output(environment_type: str, reason: str, lfs_mode: str, conf
 
 def _build_config(environment_type: str, reason: str, repo_root: Path) -> dict:
     ml_runtime = _load_runtime_dependencies(repo_root)
-    if environment_type == "ml-heavy":
-        default_lfs_mode = "targeted"
-        default_lfs_include = ["data/models/*", "artifacts/*"]
-    else:
-        default_lfs_mode = "none"
-        default_lfs_include = []
+    # Classification is not task authorization to download a directory of models.
+    default_lfs_mode = "none"
+    default_lfs_include: list[str] = []
 
     config = {
         "environment_type": environment_type,
@@ -174,19 +170,16 @@ def _build_config(environment_type: str, reason: str, repo_root: Path) -> dict:
         "lfs_mode": default_lfs_mode,
         "lfs_include_paths": default_lfs_include,
         "local_sandbox_policy": {
-            "sandbox_is_staging_only": True,
-            "prefer_prepared_primary_environment": environment_type == "ml-heavy",
-            "transfer_via_repo_bundle": True,
+            "scope_validation_to_available_capabilities": True,
         },
         "runtime": {
             "python": "3.12",
-            "runner_profile": "ubuntu-8-core" if environment_type == "ml-heavy" else "ubuntu-latest-m",
             "required_dependencies": ml_runtime,
             "missing_dependencies": _detect_missing_runtime_dependencies(ml_runtime),
         },
         "notes": [
-            "The local sandbox is for diagnosis and patch prep, not full ML/RAG matrix validation.",
-            "For ml-heavy tasks, prefer the GitHub-hosted prepared environment before full suite runs.",
+            "Classification does not change the already selected runner or install dependencies.",
+            "LFS assets require explicit narrow intent and verified materialization.",
         ],
     }
     return config
@@ -247,6 +240,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--repo-root", type=Path, default=Path("."), help="Repository root to scan")
     parser.add_argument("--task-context", nargs="*", default=[], help="Task text, PR title, CI failure summary, or file paths")
     parser.add_argument("--head-ref", default="", help="Branch or ref name to inspect when auto-detecting the environment")
+    parser.add_argument(
+        "--environment-type",
+        choices=["auto", "standard", "ml-heavy", "security-scan", "documentation"],
+        default="auto",
+        help="Explicit classification overrides heuristics, without authorizing assets",
+    )
     parser.add_argument("--ci-job", default="", help="CI job or workflow name to inspect when auto-detecting the environment")
     parser.add_argument("--output", type=Path, default=None, help="Override output path for the YAML config")
     return parser.parse_args()
@@ -262,6 +261,9 @@ def main() -> int:
         task_context.append(args.ci_job)
 
     environment_type, reason = _detect_environment_type(task_context)
+    explicit_type = getattr(args, "environment_type", "auto")
+    if explicit_type != "auto":
+        environment_type, reason = explicit_type, "Explicit requested classification"
     config = _build_config(environment_type, reason, repo_root)
     output = args.output or (repo_root / ".codex" / "agent_environment_config.yaml")
     output_path = output.resolve(strict=False)

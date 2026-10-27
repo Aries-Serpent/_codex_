@@ -134,7 +134,9 @@ def train_classifier(training_data: list, output_path: str):
     # enforces the class allowlist at read time. sklearn estimator classes are
     # not JSON-serializable, so pickle remains the interchange format here.
     with open(output_path, "wb") as f:
-        pickle.dump(model_data, f)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-load, python.lang.security.deserialization.pickle.avoid-pickle
+        pickle.dump(
+            model_data, f
+        )  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-load, python.lang.security.deserialization.pickle.avoid-pickle
 
     print(f"Model trained and saved to {output_path}")
     print(f"  Classes: {model.classes_}")

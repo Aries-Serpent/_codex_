@@ -1,0 +1,34 @@
+{
+  "status": "COMPLETE",
+  "removed_owned_paths": {
+    "cache": {
+      "existed": true,
+      "files": 4075
+    },
+    "work": {
+      "existed": true,
+      "files": 0
+    }
+  },
+  "protected_retained_sha256": {
+    "resumption.json": "477ff61ccd47eb7687a286a85f7390e5e67ac67ac8b294e14ed13554ddc3aad1",
+    "input-history.json": "4cb6d42e2f2cf1a8911338c20668c1b513afde98d680c58bc8f2c62bab616656",
+    "input-manifest.json": "82fa761e15661b41bfec7ede4fdca6a0b9c8af4037edc6936f4a551bace291b3",
+    "input-cache.json": "30c91bbf3343cfe7238fd1e49c6268c6d6d6ea3393d3b3d11a8e67c2888e9dd8",
+    "input-dispositions.json": "3e56a0ee1d5f523e034e024f285ee693e7dc3c2e0519e2ad6d212345fb1a2a20",
+    "dispatch.json": "64832ae8c141bf506ec38eca8482b81bd77f23278893d4c20597f7dba7a492c9",
+    "retry-result.json": "7446ea49d5ed397619acdee684ef9877bc5da61399f84d6cba0c1db18a7c26ea",
+    "after-history.json": "b87f2086f95a0f26bfaf0af5381d8505ccae4c123605c09993c7e009c601f3d7",
+    "after-cache.json": "cf950379879a01cb5b50b8c20fdee8a55a7460380ca3a33559c9f9097aea35f0",
+    "after-readiness.json": "610c0a7114c9f2f861b0ccc767a944e62eddd00cf5aaaa68560fd1f50c868c6b",
+    "final-recommendation.json": "1996797a1b4539a0d56a5a76c4e7c39d10149080676f591173513f569acb010c",
+    "setup.log": "fa78b39c4ad91c0512058f4dc98d047aa806dd851f5342c47278e6ece666cf83",
+    "closure-correction.log": "9acecaabf591eb13f44089e8d43b6b977a5c59c5fc353be02efeaf86ea1bb5c4",
+    "install-report.json": "4bb968accda219aabbb6e3a826d4dec093424ac0c41e5476084aa248385844cd",
+    "install-closure-correction.json": "51cf64f2554ae293c10d537b19aca129b2f6c99640f02efec5d8882242dcbe85"
+  },
+  "synthetic_resumption_unchanged": true,
+  "initial_failure_and_correction_logs_unchanged": true,
+  "other_paths_removed": false,
+  "validation_rerun": false
+}

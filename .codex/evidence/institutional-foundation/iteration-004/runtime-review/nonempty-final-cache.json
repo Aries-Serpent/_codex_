@@ -1,0 +1,17 @@
+{
+  "event_digest": "f4ee599d6ce3d88a88f83a75408c84aa2a62bc4d5ef794d2a1b81df0816695f2",
+  "state": {
+    "blocker": {
+      "blocked_from_state": "final",
+      "cause": "unresolved-conflict",
+      "clearance_conditions": [
+        "finding-bound-evidence",
+        "explicit-dissent-disposition"
+      ],
+      "pending_requirement": "resolve-conflict",
+      "scope": "logic/f1|dissent/f1"
+    },
+    "pending_requirement": "resolve-conflict",
+    "stage": "final"
+  }
+}

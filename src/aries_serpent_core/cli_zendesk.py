@@ -37,6 +37,7 @@ from aries_serpent_core.zendesk.model import (  # noqa: E402
 )
 from aries_serpent_core.zendesk.monitoring import register_zendesk_metrics  # noqa: E402
 from aries_serpent_core.zendesk.plan.diff_engine import (  # noqa: E402
+    ModelInput,
     diff_apps,
     diff_fields,
     diff_forms,
@@ -56,7 +57,7 @@ app = typer.Typer(help="Manage Zendesk admin resources with Codex.")
 
 ResourceConfig = tuple[
     type[BaseModel],
-    Callable[[Iterable[object], Iterable[object]], list[dict[str, Any]]],
+    Callable[[Iterable[ModelInput], Iterable[ModelInput]], list[dict[str, Any]]],
 ]
 _RESOURCE_CONFIG: dict[str, ResourceConfig] = {
     "triggers": (Trigger, diff_triggers),

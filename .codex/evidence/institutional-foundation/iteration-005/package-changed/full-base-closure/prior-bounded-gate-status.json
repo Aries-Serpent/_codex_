@@ -1,0 +1,129 @@
+{
+  "schema": "codex.external-wheel-observation.v1",
+  "source_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+  "source_tree": "9ecfe8cc59db0fc159d26144ac2ecb2543496a76",
+  "status": "PASS_BOUNDED_SDK_VALIDATION_FULL_DISTRIBUTION_DEPENDENCIES_UNRESOLVED",
+  "source_candidate_mutated": false,
+  "build": "PASS",
+  "installation": "PASS_NONEDITABLE_WHEELS",
+  "source_snapshot": {
+    "files": 2205,
+    "git_archive_files": 2136,
+    "restored_export_ignored_exact_blobs": 69,
+    "all_original_blobs_reverified_unchanged_after_build": true,
+    "excluded": [
+      ".github/agents",
+      "working tree changes",
+      "untracked files"
+    ]
+  },
+  "wheels": [
+    {
+      "wheel": "codex_contracts-0.1.0a1-py3-none-any.whl",
+      "name": "codex-contracts",
+      "version": "0.1.0a1",
+      "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+      "origin": "locally built immutable reviewed source; not registry"
+    },
+    {
+      "wheel": "codex_ml-0.3.0-py3-none-any.whl",
+      "name": "codex-ml",
+      "version": "0.3.0",
+      "sha256": "0a684e9e09a787b15004cad1582ad2470b5e2bf8c4584d8bfcb9b568e75895f0",
+      "origin": "locally built immutable reviewed source; not registry"
+    }
+  ],
+  "installed_assurance_tests": {
+    "status": "PASS",
+    "exit": 0,
+    "tests": 107,
+    "exact_copy": true,
+    "test_source_sha256": "716e7ae1919429cfd42b878ab83aad8dc35f6f123a3360d041a41ddc5b558a88",
+    "origins": "test-import-origins.json",
+    "configuration": "Isolated Python, no source PYTHONPATH, plugin autoload disabled, --noconftest, standalone /dev/null config, external basetemp"
+  },
+  "unchanged_baseline_review_harness": {
+    "status": "PASS",
+    "checks": 49,
+    "sha256": "7f03b6379b0872afbdaf5ab6ddffec094a08f0c0d3cf69c4bea6b51549992c44",
+    "results": "baseline-review-artifacts/results.json"
+  },
+  "separately_authored_installed_assurance_harness": {
+    "status": "PASS",
+    "checks": 51,
+    "sha256": "72b495d259051f37d10cb421bb86683c37f400897b77cd3c282ca9a3e1b45146",
+    "attempts": [
+      {
+        "execution": 1,
+        "status": "PASS",
+        "checks": 51,
+        "harness": "installed-assurance-harness-attempt-001.py",
+        "results": "installed-assurance-artifacts/results.json"
+      },
+      {
+        "execution": 2,
+        "status": "PASS",
+        "checks": 51,
+        "harness": "installed-assurance-harness-attempt-002.py",
+        "results": "installed-assurance-artifacts-formatted/results.json"
+      }
+    ],
+    "note": "First passed version retained; Black/Ruff found harness formatting/import order/lambda style issues, corrected only in this owned harness. Optional output namespace added to keep both successful observations. No SDK/test/source candidate edits."
+  },
+  "documentation": {
+    "python_blocks_executed": 2,
+    "status": "PASS",
+    "source": "inputs/assurance-review.rst",
+    "exact_executed_blocks": "installed-assurance-artifacts-formatted/documentation-blocks.json"
+  },
+  "source_only_parent_fixture_harness": {
+    "retained": "inputs/assurance-fixture-check.py",
+    "modified": false,
+    "executed": false,
+    "reason": "Root-relative source-only fixture. Separately authored installed harness does not relabel that source-only script."
+  },
+  "runtime_scope": [
+    "Exact source/wheel/installed bytes for every institutional module and resource",
+    "58 planned formula IDs and source notation, no numerical evaluation",
+    "Fixture DAG, candidate drift and forged cache rejection",
+    "Revision-sensitive identical-status restoration keeps downstream proofs stale",
+    "Required/exempt/required dependency bridge remains blocked",
+    "Nonmutating REJECTED_WITH_EVIDENCE fixture coverage preserves dissent and original contradictions",
+    "FIXED remains an unresolved nonexecuted mutation proposal",
+    "Actual preview/apply/checkpoint storage roundtrip and predecessor bytes",
+    "Greater-than-1-MiB existing continuation remains under inherited 64-MiB core aggregate budget",
+    "Sequence 3 durable recovery reopens exact pending node and resume rechecks prerequisites",
+    "Process-local runtime audit guards deny socket and subprocess attempts"
+  ],
+  "full_distribution_dependency_conformance": {
+    "status": "FAIL_UNSATISFIED_DECLARED_FULL_DISTRIBUTION_DEPENDENCIES",
+    "exit": 1,
+    "missing_count": 27,
+    "exact_missing_requirements": "dependency-conformance.json",
+    "raw_log": "full-dependency-pip-check.log",
+    "heavyweight_dependencies_auto_installed": false
+  },
+  "dependency_assurance": "SDK-relevant declared jsonschema closure and locally built codex-contracts only; test-only pytest isolated in separate test venv. Full codex-ml declared dependency conformance NOT satisfied.",
+  "validation": {
+    "Black_final": "PASS",
+    "Ruff_E_F_I_final": "PASS",
+    "harness_compile": "PASS",
+    "initial_style_failures": "harness-black-check.log and harness-ruff-check.log retained",
+    "artifact_hash_validation": "All retained artifact hashes checked after final manifest generation"
+  },
+  "authority": "none",
+  "approval": false,
+  "activation": false,
+  "independence": "unverified same-platform fixtures; separately authored harness is not authenticated independent production assurance",
+  "G5": "NOT_RUN",
+  "G7_scope": "Bounded selected institutional SDK external runtime observation PASS; not full-distribution packaging acceptance",
+  "institutional_checkpoint": "Not modified by this lane; all continuation writes were external disposable test fixtures",
+  "codeql": "Parent owns required post-commit scan; no CodeQL success asserted by this lane",
+  "workspace": {
+    "path": "/home/runner/work/_codex_/lane-a-package-changed-47daeb7-20261025",
+    "location_note": "External sibling workspace outside checkout; actual path retained, removed after evidence retention.",
+    "removed": true,
+    "useful_artifacts_retained": true
+  },
+  "timestamp": "2026-10-25T01:42:48Z"
+}

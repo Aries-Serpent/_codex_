@@ -42,6 +42,8 @@ def _sanitize_chronicle_scope(scope: str | Path | None) -> str:
         return "local Chronicle session store"
     path = Path(value)
     if path.is_absolute():
+        if ".codex" in path.parts:
+            return str(Path(*path.parts[path.parts.index(".codex") :]))
         try:
             return str(path.relative_to(Path.cwd()))
         except ValueError:
@@ -307,7 +309,7 @@ class ChronicleStore:
         )
         lane_bucket = (
             _first(
-                session_rows[0] if session_rows else sqlite3.Row,
+                session_rows[0],
                 columns,
                 "lane_bucket",
                 "lane",
@@ -319,7 +321,7 @@ class ChronicleStore:
         )
         checkpoint_state = (
             _first(
-                session_rows[0] if session_rows else sqlite3.Row,
+                session_rows[0],
                 columns,
                 "checkpoint_state",
                 "checkpoint_status",
@@ -330,7 +332,7 @@ class ChronicleStore:
         )
         budget_remaining = (
             _first(
-                session_rows[0] if session_rows else sqlite3.Row,
+                session_rows[0],
                 columns,
                 "budget_remaining",
                 "remaining_budget",
@@ -341,7 +343,7 @@ class ChronicleStore:
         )
         estimated_cost = (
             _first(
-                session_rows[0] if session_rows else sqlite3.Row,
+                session_rows[0],
                 columns,
                 "estimated_cost",
                 "cost_estimate",
@@ -352,7 +354,7 @@ class ChronicleStore:
         )
         cost_score = (
             _first(
-                session_rows[0] if session_rows else sqlite3.Row,
+                session_rows[0],
                 columns,
                 "cost_score",
                 "budget_score",
@@ -364,12 +366,20 @@ class ChronicleStore:
         return {
             "tool_calls": len(tool_rows),
             "repeated_tool_calls": len(tool_names) - len(set(tool_names)),
-            "input_tokens": input_tokens
-            if self._has_token_value(session_rows, columns, "input_tokens", "usage_input_tokens")
-            else None,
-            "output_tokens": output_tokens
-            if self._has_token_value(session_rows, columns, "output_tokens", "usage_output_tokens")
-            else None,
+            "input_tokens": (
+                input_tokens
+                if self._has_token_value(
+                    session_rows, columns, "input_tokens", "usage_input_tokens"
+                )
+                else None
+            ),
+            "output_tokens": (
+                output_tokens
+                if self._has_token_value(
+                    session_rows, columns, "output_tokens", "usage_output_tokens"
+                )
+                else None
+            ),
             "credits": self._sum_credits(session_rows, columns),
             "commits": len(set(_COMMIT_RE.findall(text))),
             "tests": len(_TEST_RE.findall(text)),
@@ -935,10 +945,12 @@ def analyze_costs(
             "warning_budget": details["warning_budget"],
             "hard_budget": details["hard_budget"],
             "budget_remaining": details["budget_remaining"],
-            "status": "warning"
-            if details["budget_remaining"] is not None
-            and details["budget_remaining"] <= details["warning_budget"]
-            else "healthy",
+            "status": (
+                "warning"
+                if details["budget_remaining"] is not None
+                and details["budget_remaining"] <= details["warning_budget"]
+                else "healthy"
+            ),
         }
         for bucket, details in lane_summary.items()
     }
@@ -976,9 +988,11 @@ def analyze_costs(
     if lane is not None:
         report["lane_focus"] = lane_filter
         lane_cost_proxy = sum(
-            float(record.credits)
-            if record.credits is not None
-            else float(record.estimated_cost or 0.0)
+            (
+                float(record.credits)
+                if record.credits is not None
+                else float(record.estimated_cost or 0.0)
+            )
             for record in sessions
         )
         report["lane_pattern"] = (

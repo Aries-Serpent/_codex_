@@ -1,0 +1,74 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001/iteration-002",
+  "candidate_commit": "22a75dda20c14ccf0753bfde6d7d72e9b1268397",
+  "historical_candidate": "592e882f516744937957a2287fd93ad9d0c870ee",
+  "collected_at": "2026-10-24T21:43:13Z",
+  "wheels": [
+    {
+      "candidate_commit": "592e882f516744937957a2287fd93ad9d0c870ee",
+      "wheel": "reproduction/codex_ml-0.3.0-py3-none-any.whl",
+      "wheel_sha256": "085fc8312e53379d8b0bad002963748bdd8f2d51dff8c942b8ff78aa5b01d054",
+      "wheel_bytes": 4210349,
+      "resources_match_commit": true
+    },
+    {
+      "candidate_commit": "22a75dda20c14ccf0753bfde6d7d72e9b1268397",
+      "wheel": "current/codex_ml-0.3.0-py3-none-any.whl",
+      "wheel_sha256": "de5d8791451bd3ac713f944bf3c0543db20e662f17ca976d413b4c2b071a5930",
+      "wheel_bytes": 4213929,
+      "resources_match_commit": true
+    }
+  ],
+  "build_requirements": {
+    "declared": "setuptools>=78.1.1,<82; wheel>=0.48.0; contracts hatchling==1.32.0",
+    "actual": "Existing environment setuptools/wheel plus declared hatchling provisioning; no build isolation. Build log retained; exact versions recorded below.",
+    "provisioning_separate_from_runtime": true,
+    "installed_versions": {
+      "setuptools": "81.0.0",
+      "wheel": "0.48.0",
+      "hatchling": "1.32.0",
+      "pytest": "9.1.1",
+      "jsonschema": "4.25.1"
+    }
+  },
+  "dependencies": {
+    "new_runtime_requirements": [],
+    "installation": "fresh venv; declared dependencies enabled and own local contracts wheel supplied; not editable, registry-only, offline installation or general downstream compatibility",
+    "pip_check": "PASS: no broken requirements",
+    "freeze": "current/installed-requirements.txt",
+    "contracts_wheel": "reproduction/codex_contracts-0.1.0a1-py3-none-any.whl",
+    "contracts_reuse": "Unchanged contracts distribution rebuilt from historical immutable candidate; no new contracts dependency introduced."
+  },
+  "external_harness": {
+    "source_commit": "22a75dda20c14ccf0753bfde6d7d72e9b1268397",
+    "files": {
+      "test_authority.py.txt": "f841b4bf131dc9d250c1d5fd444de7c838f33e6d5a388e39fa73a34326a5544d",
+      "test_git_capture.py.txt": "030a7150c88ab50eb3db29acc5f47bd6f1ccf47fbd88150dd60715cd9c2425e4",
+      "test_foundation.py.txt": "f6d5bd11cc4049ba92e47f0fc900d98f2ca97f3d433b3364228785b053f2984b"
+    },
+    "command": "env -u PYTHONPATH -u PYTHONHOME PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 <venv>/bin/python -I -m pytest -c /dev/null -p no:cacheprovider --noconftest <absolute-harness> -q",
+    "exit": 0,
+    "test_count": 77,
+    "passed": 77,
+    "failed": 0,
+    "skipped": 0,
+    "source_assistance": false,
+    "origins": "current/import-origins.json",
+    "offline_reexecution": "Same 77 cases run with socket.socket and socket.create_connection replaced by functions raising AssertionError, before importing pytest. Native Git transport configuration separately disabled and tested.",
+    "offline_exit": 0,
+    "offline_results": "current/offline-junit.xml",
+    "counting": "Source/external/offline observations overlap; do not sum."
+  },
+  "console": {
+    "candidate_write_exit": 0,
+    "authority_exit": 3,
+    "authority_status": "unavailable",
+    "activation_allowed": false,
+    "outputs": [
+      "current/console-candidate.json",
+      "current/console-authority.json"
+    ]
+  },
+  "retention": "Both own codex-ml wheels, own contracts wheel, exact harnesses, build/install/test logs, freeze and resources retained under this versioned evidence directory. No package publication performed. Rebuild retained artifacts if dependency indexes later change; hashes are not signatures.",
+  "independence": "Implementer-owned harness and coordinator execution; same-platform review does not establish G5."
+}

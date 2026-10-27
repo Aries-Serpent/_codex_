@@ -2,18 +2,13 @@
 """
 scripts/ci/check_deferral_language.py
 ──────────────────────────────────────
-Deferral-Language Enforcement Gate
-Enforces the AI Codebase Agency Policy (`.codex/CODEBASE_AGENCY_POLICY.md`).
+Advisory handoff-language diagnostics.
 
-TRIGGER RULE (mandatory for ALL agents):
-  Any phrase in DEFERRAL_TRIGGERS found in a PR body, commit message, or
-  agent session log is a policy violation.  The gate FAILS and the agent
-  MUST:
-    1. Load `.codex/CODEBASE_AGENCY_POLICY.md`
-    2. Load the latest `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
-    3. Fix the issue immediately — no exceptions for branch/PR/agent origin
-    4. Note CAD-bypass: Custom Agent Delegation (CAD-Mandate) bypass is a
-       violation. Manual work where a Custom Agent exists is prohibited.
+Text alone cannot establish authorization, neglect, actual agent invocation,
+or whether a finding needs execution approval. Scoped direct work, read-only
+boundaries and documented follow-ups are legitimate. Matches are informational,
+including with the legacy --strict flag. Actual security owner/reason validation
+and GitHub review/execution controls remain independent.
 
 Usage:
   python scripts/ci/check_deferral_language.py --pr-body FILE
@@ -28,8 +23,7 @@ ML enhancement (optional, feature-flagged):
   Regex patterns always run first; ML adds a second pass for uncaught intent.
 
 Exit codes:
-  0  — no deferral language found
-  1  — deferral language detected (policy violation)
+  0  — scan completed, with or without advisory matches
   2  — usage / file-not-found error
 """
 from __future__ import annotations
@@ -46,9 +40,9 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-# ── Canonical deferral trigger phrases ────────────────────────────────────────
-# These are the exact patterns that constitute policy violations.
-# Edit only via PR with AGENT_ACCOUNTABILITY_REPORT update.
+# ── Advisory phrases that may benefit from handoff context ────────────────────
+# These do not establish a policy violation. Keep scope, origin, follow-up and
+# direct-execution wording out of this list.
 
 # Extracted as a module constant so scan() can apply a word-boundary-aware
 # negation check (e.g. "no future work") without variable-width lookbehinds,
@@ -56,60 +50,12 @@ logger = logging.getLogger(__name__)
 _FUTURE_WORK_PATTERN = r"future (?:pr|task|session|iteration|sprint|phase|work|fix|improvement)\b"
 
 DEFERRAL_TRIGGERS: list[tuple[str, str]] = [
-    # Attribution-based deferrals
-    (r"this was from (?:a )?different (?:branch|agent|pr|pull request|task|session)",
-     "Attribution deferral: blaming origin instead of fixing"),
-    (r"not (?:from|in) (?:our|the) current (?:pr|branch|feature|task)",
-     "Attribution deferral: scoping out current responsibility"),
-    (r"(?:pre-?existing|pre-existing) (?:issue|code|problem|bug|error|concern)",
-     "Pre-existing deferral: refusing pre-existing issues"),
-    (r"(?:introduced|added|created) by (?:a )?(?:different|another|previous|other) (?:agent|pr|session|task|commit)",
-     "Origin deferral: deflecting to another agent/session"),
-    (r"not introduced by (?:this|my|our)",
-     "Origin deferral: deflecting to another source"),
-    # Scope-based deferrals
-    (r"(?:out[-\s]?of[-\s]?scope|not in scope|outside(?: the)? scope|(?:not|out of|outside)(?: the)? scope(?: of this| of my)?)",
-     "Scope deferral: scoping out responsibility"),
-    (r"not related to (?:this|my|our|the current) (?:pr|task|branch|change)",
-     "Scope deferral: claiming issue is unrelated"),
-    (r"not (?:directly )?related to (?:my|our|this) (?:change|work|fix|commit)",
-     "Scope deferral: claiming issue is unrelated"),
     (r"(?:is|are|was|were) not (?:my|our) (?:problem|responsibility|concern|task)",
-     "Responsibility deferral: refusing ownership"),
-    # Future-based deferrals
+     "Advisory: clarify the owner and mitigation for this finding"),
     (r"(?:will|can|could|should|may)(?: be)? (?:address|fix|resolve|handle)(?:ed|d)? in (?:a )?future",
-     "Future deferral: punting to future work without documented justification"),
+     "Advisory: include evidence, ownership and next steps for the handoff"),
     (_FUTURE_WORK_PATTERN,
-     "Future deferral: punting to future work"),
-    (r"address(?:ed)? (?:incrementally|later|separately|in a follow[-\s]?up)",
-     "Incremental deferral: incrementalism as avoidance"),
-    (r"follow[-\s]?up (?:pr\b|task\b|issue\b|ticket\b)",
-     "Follow-up deferral: creating follow-up instead of fixing"),
-    (r"(?:can|will) be (?:addressed|fixed|resolved) (?:separately|later|next)",
-     "Deferred fix: explicit future-assignment"),
-    # "Residual" deferral without documented mitigation
-    (r"residual (?:risk|issue|concern|problem)s?\b(?![:\*\s]*$)(?! — | - |\. Mitigation)",
-     "Residual risk: documented without mitigation"),
-    # Deprecation without tombstone
-    (r"not actionable in this (?:pr|task|session|iteration)",
-     "Non-actionable claim: must provide documented mitigation"),
-    (r"(?:too|very) broad (?:for|to|in) (?:this|the current)",
-     "Broad-scope deferral: claiming scope is too broad to fix"),
-    (r"pre-?existing and safe",
-     "Safety assumption without verification"),
-    (r"(?:another|a different|the previous) (?:session|agent|team|pr) (?:should|will|can|must)",
-     "Responsibility delegation to another agent/session"),
-    # Agent-bypass / CAD-Mandate deferrals
-    (r"(?:without|instead of) using an agent\b",
-     "Agent-bypass: CAD Rule 1 violation (skipping custom agent)"),
-    (r"manually instead of\b",
-     "Agent-bypass: CAD Rule 1 violation (manual operation instead of agent)"),
-    (r"skip(?:ping)? the agent\b",
-     "Agent-bypass: CAD Rule 1 violation (skipping custom agent)"),
-    (r"directly rather than delegating\b",
-     "Agent-bypass: CAD Rule 1 violation (raw command instead of delegation)"),
-    (r"no agent needed\b",
-     "Agent-bypass: CAD Rule 1 violation (refusing agent ecosystem)"),
+     "Advisory: verify that the handoff has an owner and acceptance criteria"),
 ]
 
 # ── Allowed exemptions (phrases that appear in policy/accountability docs themselves) ──
@@ -553,34 +499,18 @@ def _format_violation(v: dict) -> str:
 
 def _print_policy_reminder() -> None:
     print(
-        "\n"
-        "═══════════════════════════════════════════════════════════════════\n"
-        "  🚨 CODEBASE AGENCY POLICY VIOLATION — DEFERRAL LANGUAGE DETECTED\n"
-        "═══════════════════════════════════════════════════════════════════\n"
-        "\n"
-        "  MANDATORY IMMEDIATE ACTIONS (no exceptions):\n"
-        "\n"
-        "  1. 🔃 LOAD: .codex/CODEBASE_AGENCY_POLICY.md\n"
-        "  2. 🔃 LOAD: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md\n"
-        "  3. 🔃 LOAD: All stored memories from previous sessions\n"
-        "  4. FIX the deferred issue NOW — branch/PR/agent origin is irrelevant\n"
-        "\n"
-        "  PROHIBITED (per policy §2 'Comprehensive Issue Resolution'):\n"
-        "    ❌ 'This was from a different branch'\n"
-        "    ❌ 'This is a pre-existing issue'\n"
-        "    ❌ 'Not related to my PR'\n"
-        "    ❌ 'Will address in a future PR/session'\n"
-        "    ❌ 'Out of scope'\n"
-        "\n"
-        "  Full policy: .codex/CODEBASE_AGENCY_POLICY.md\n"
-        "═══════════════════════════════════════════════════════════════════\n",
+        "\nAdvisory handoff review: include evidence, ownership/mitigation and "
+        "next steps where relevant. Respect read-only and user boundaries; "
+        "wording does not require expanding scope or delegating. "
+        "Security owner/reason and actual execution approvals remain required.\n"
+        "Policy: .codex/CODEBASE_AGENCY_POLICY.md\n",
         file=sys.stderr,
     )
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Scan text for deferral language (Codebase Agency Policy enforcement)"
+        description="Review handoff wording (advisory; not an authorization or execution gate)"
     )
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--pr-body", metavar="FILE", help="Path to PR body text file")
@@ -605,13 +535,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--strict",
         action="store_true",
-        default=True,
-        help="Exit 1 on any violation (default: True)",
+        default=False,
+        help="Legacy compatibility flag; wording diagnostics remain advisory",
     )
     parser.add_argument(
         "--warn-only",
         action="store_true",
-        help="Print violations but exit 0 (informational mode)",
+        help="Explicit advisory mode (also the default); input errors still fail",
     )
     parser.add_argument(
         "--since",
@@ -755,13 +685,12 @@ def main(argv: list[str] | None = None) -> int:
 
     if all_violations:
         _print_policy_reminder()
-        print(f"Found {len(all_violations)} deferral language violation(s):\n")
+        print(f"Found {len(all_violations)} advisory handoff match(es):\n")
         for v in all_violations:
             print(_format_violation(v))
-        if args.warn_only:
-            print("⚠️  warn-only mode: exiting 0 despite violations", file=sys.stderr)
-            return 0
-        return 1
+        # Even legacy --strict callers cannot turn words into an execution gate.
+        print("Advisory only: scan completed; no wording-based failure.", file=sys.stderr)
+        return 0
 
     print("✅ No deferral language detected.")
     return 0

@@ -39,9 +39,11 @@ class AnomalyCorrelationAdapter(IntegrationAdapter):
             Prediction formatted for anomaly correlation
         """
         return {
-            "anomaly_score": 1.0 - prediction.confidence
-            if prediction.prediction == "negative"
-            else prediction.confidence,
+            "anomaly_score": (
+                1.0 - prediction.confidence
+                if prediction.prediction == "negative"
+                else prediction.confidence
+            ),
             "confidence": prediction.confidence,
             "escalated": prediction.escalated,
             "escalation_reason": prediction.escalation_reason,

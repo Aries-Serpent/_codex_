@@ -43,8 +43,17 @@ LIKELY_MAP = {
 def open_db(
     path: Optional[str] = None, env_keys=("CODEX_DB_PATH", "CODEX_LOG_DB_PATH")
 ) -> sqlite3.Connection:
-    """
-    Open a SQLite DB at `path` or from known env vars; if none exist, attempt common paths.
+    """Open a logging database, attempting WAL mode before returning it.
+
+    A nonblank ``path`` wins, followed by the first nonblank environment value
+    in ``env_keys`` order. Otherwise, try existing files at ``data/codex.db``,
+    ``data/logs.sqlite``, ``.codex/session_logs.db``, then ``logs.db``. If none
+    exists, return a new in-memory database, not a persistent default.
+
+    Explicit and environment paths use SQLite's normal create-if-missing
+    behavior; their parent directories must already exist. The caller owns
+    the returned connection and must close it. SQLite connection errors
+    propagate.
     """
     if path and path.strip():
         conn = sqlite3.connect(path)
@@ -112,11 +121,22 @@ def _sanitize_table(name: str) -> str:
 
 
 def list_tables(con: sqlite3.Connection) -> list[str]:
+    """Return table names from ``con``'s main ``sqlite_master`` catalog.
+
+    Includes SQLite internal tables when present, but not views or temporary
+    tables. No ordering is imposed, and the caller's connection remains open.
+    """
     cur = con.execute("SELECT name FROM sqlite_master WHERE type='table'")
     return [r[0] for r in cur.fetchall()]
 
 
 def get_columns(con: sqlite3.Connection, table: str) -> list[str]:
+    """Return declared column names in SQLite's table-info order.
+
+    ``table`` must match ``[A-Za-z_][A-Za-z0-9_]*`` or ``ValueError`` is
+    raised before executing the PRAGMA. A valid but nonexistent table returns
+    an empty list. Names retain their original case; ``con`` is not closed.
+    """
     cur = con.execute(f"PRAGMA table_info({_sanitize_table(table)})")
     return [r[1] for r in cur.fetchall()]
 
@@ -132,6 +152,18 @@ def _first_match(columns: list[str], candidates: list[str]) -> Optional[str]:
 def infer_probable_table(
     con: sqlite3.Connection, candidates=("session_events", "logs", "events", "messages")
 ) -> Optional[str]:
+    """Choose a likely event table, or return ``None`` if none is usable.
+
+    Prefer the first exact, case-sensitive name in ``candidates`` that appears
+    in :func:`list_tables`, without checking its columns. Otherwise, score
+    each table by how many logical fields in ``LIKELY_MAP`` it supplies.
+    Column matching is case-insensitive; tied scores retain the first table
+    encountered, even when the score is zero. Tables with names rejected by
+    :func:`get_columns` are skipped during scoring.
+
+    This is a heuristic, not schema validation: callers must check that the
+    returned table has all columns their query requires.
+    """
     tables = list_tables(con)
     if not tables:
         return None
@@ -159,6 +191,22 @@ def infer_probable_table(
 
 
 def infer_columns(con: sqlite3.Connection, table: str) -> dict[str, Optional[str]]:
+    """Map logical logging fields to actual column names or ``None``.
+
+    The result always contains the keys of ``LIKELY_MAP``: ``session_id``,
+    ``timestamp``, ``message``, ``level``, ``role``, and ``metadata``. Each
+    field uses its first matching alias in candidate order, compares names
+    case-insensitively, and preserves the database spelling in the result.
+    An empty table argument yields an all-``None`` mapping; a nonempty unsafe
+    identifier raises ``ValueError`` through :func:`get_columns`.
+
+    For a table declared with ``sid``, ``ts``, and ``content`` columns::
+
+        mapping = infer_columns(conn, "events")
+        # mapping["session_id"] == "sid"
+        # mapping["timestamp"] == "ts"; mapping["message"] == "content"
+        # mapping["role"] is None: check it before building a role filter.
+    """
     cols = get_columns(con, table) if table else []
     mapping = {}
     for logical, cands in LIKELY_MAP.items():

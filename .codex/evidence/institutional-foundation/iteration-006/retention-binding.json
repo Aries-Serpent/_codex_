@@ -1,0 +1,24 @@
+{
+  "artifact_type": "retention_binding",
+  "checkpoint": {
+    "canonical_digest": "385b07cd28b557df1fc48b2ddf6f070c01c5f8095dfb609730fbe2162407bd20",
+    "path": "continuation.json.gz",
+    "predecessor": "e2ed9e24c5c7ea3f9e17745830059c39cb492fd2c8c478caeba5e1b2b145f12b",
+    "sequence": 6,
+    "sha256": "12fe1d40be420bbbbdc0844e926752f03fbce5cc93b80a133891920e93014f91"
+  },
+  "excluded_files_bound_by": "Actual final Git commit and externally observed PR/head; not an invented self-referential commit hash.",
+  "final_secret_scan": "final-secret-scan.json; self/cycle excluded and bound by final Git commit",
+  "historical_retention": "INCOMPLETE:151 original log paths unavailable; full inventory in security/retention-aggregate.json",
+  "manifest": {
+    "canonical_digest": "7f6d33d37964e12ab3fdc201975fad6ef5d0700440b562c6dfc31412716ac6ca",
+    "path": "retention-manifest.json",
+    "sha256": "5e759b24cd0fd4580939c1deeecef9641f45d6429df6b3cb14b578a6848931bf"
+  },
+  "scope": "Integrity binding, not authenticated custody, clean security, independent approval or activation.",
+  "source_candidate": "234a846f45e78ae4f3729f00808ced752f8ba405",
+  "verification": {
+    "path": "checkpoint-verification.json",
+    "sha256": "3559d93e76d75a1c7436d49096aeab92f4b48b34cceed1ebe6f0b79ebd04344a"
+  }
+}

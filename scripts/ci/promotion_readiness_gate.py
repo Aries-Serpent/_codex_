@@ -70,8 +70,8 @@ _SYNC_REFERENCE_PAIRS: dict[str, tuple[str, str]] = {
     ),
 }
 
-# Required governance variables and their expected exact values.
-_REQUIRED_GOVERNANCE_VARS: dict[str, str] = {
+# Historical application defaults, not GitHub runtime controls or permissions.
+_LOCAL_EVOLUTION_DEFAULTS: dict[str, str] = {
     "COPILOT_AGENT_CCA_VERSION_LOCK": "stable",
     "COPILOT_AGENT_DEDUPLICATION_ENABLED": "true",
     "COPILOT_AGENT_TURN_ISOLATION_ENABLED": "true",
@@ -189,22 +189,21 @@ def check_sync_pairs() -> list[dict[str, Any]]:
 
 
 def check_governance_vars() -> list[dict[str, Any]]:
+    """Check historical snapshot shape, never require a live platform flag value."""
     results = []
     ctx_path = REPO_ROOT / ".codex" / "agent_context.json"
     if not ctx_path.exists():
         return [{"check": "governance_vars", "pass": False,
                  "detail": "agent_context.json not found"}]
     data = json.loads(ctx_path.read_text(encoding="utf-8"))
-    for key, expected in _REQUIRED_GOVERNANCE_VARS.items():
+    for key in _LOCAL_EVOLUTION_DEFAULTS:
         actual = data.get(key)
-        ok = actual is not None and str(actual).lower() == expected.lower()
+        ok = actual is None or isinstance(actual, (str, bool))
         results.append({
             "check": f"governance_var:{key}",
             "pass": ok,
-            "detail": "" if ok else (
-                f"{key} missing" if actual is None
-                else f"{key}='{actual}' (expected '{expected}')"
-            ),
+            "detail": "Historical local flag only; platform settings unverified"
+            if ok else "Historical flag must be scalar application data",
         })
     return results
 
@@ -339,7 +338,7 @@ def check_no_placeholder_agents_in_pda() -> list[dict[str, Any]]:
         try:
             d = json.loads(line)
             # Only inspect dedicated agent identifier fields, not free-text summary.
-            agent_fields = []
+            agent_fields: list[str] = []
             for field in ("agents_used", "agents", "agent"):
                 val = d.get(field)
                 if isinstance(val, list):

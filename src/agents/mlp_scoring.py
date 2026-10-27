@@ -5,6 +5,10 @@ from __future__ import annotations
 import logging
 from collections.abc import Iterable
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from numpy.typing import NDArray
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +44,10 @@ class MLPScorer:
 
     def __post_init__(self) -> None:
         """Initialize deterministic weights."""
+        self.W1: NDArray[np.float64] | list[list[float]]
+        self.b1: NDArray[np.float64] | list[float]
+        self.W2: NDArray[np.float64] | list[list[float]]
+        self.b2: NDArray[np.float64] | list[float]
         # Deterministic initialization for reproducibility
         seed = 42
 
@@ -99,29 +107,29 @@ class MLPScorer:
             x = np.array(features_list)
 
             # Hidden layer
-            h = np.maximum(0, self.W1 @ x + self.b1)  # ReLU
+            h = np.maximum(0, np.asarray(self.W1) @ x + self.b1)  # ReLU
 
             # Output layer
-            y = self.W2 @ h + self.b2
+            y = np.asarray(self.W2) @ h + self.b2
 
             return float(y[0])
         # Pure Python fallback
 
         # Hidden layer: h = ReLU(W1 @ x + b1)
-        h = []
+        hidden: list[float] = []
         for i in range(self.hidden_dim):
             # Dot product
             activation = sum(w * f for w, f in zip(self.W1[i], features_list))
             activation += self.b1[i]
 
             # ReLU
-            h.append(max(0.0, activation))
+            hidden.append(max(0.0, activation))
 
         # Output layer: y = W2 @ h + b2
-        y = sum(w * h_val for w, h_val in zip(self.W2[0], h))
-        y += self.b2[0]
+        output = sum(w * h_val for w, h_val in zip(self.W2[0], hidden))
+        output += self.b2[0]
 
-        return y
+        return float(output)
 
     def batch_score(self, feature_batch: Iterable[Iterable[float]]) -> list[float]:
         """

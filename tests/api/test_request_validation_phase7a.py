@@ -65,7 +65,7 @@ class TestValidRequests:
             json={
                 "username": "validuser",
                 "email": "valid@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic registration fixture
             },
         )
         assert response.status_code == 201, "Response must not be empty"
@@ -80,7 +80,7 @@ class TestValidRequests:
             json={
                 "username": "userwithroles",
                 "email": "roles@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic roles fixture
                 "roles": ["user", "admin"],
             },
         )
@@ -94,12 +94,16 @@ class TestValidRequests:
             json={
                 "username": "logintest",
                 "email": "login@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic fixture
             },
         )
         # Then login
         response = test_client.post(
-            "/auth/login", json={"username": "logintest", "password": "SecurePass123!"}
+            "/auth/login",
+            json={
+                "username_or_email": "logintest",
+                "password": "SecurePass123!",  # pragma: allowlist secret
+            },
         )
         assert response.status_code == 200, "Response must not be empty"
         data = response.json()
@@ -112,7 +116,7 @@ class TestValidRequests:
             json={
                 "username": "a" * 50,  # Assuming 50 char limit
                 "email": "maxlen@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         # Should succeed or fail gracefully
@@ -125,7 +129,7 @@ class TestValidRequests:
             json={
                 "username": "specialemail",
                 "email": "user+tag@example.co.uk",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         assert response.status_code in [201, 400]
@@ -137,7 +141,7 @@ class TestValidRequests:
             json={
                 "username": "userñáéíóú",
                 "email": "intl@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         # Should handle or reject gracefully
@@ -150,11 +154,10 @@ class TestValidRequests:
             json={
                 "username": "minpass",
                 "email": "minpass@example.com",
-                "password": "Pass1!",  # 6 chars, but needs uppercase, lowercase, digit, special
+                "password": "Pass123!",  # pragma: allowlist secret - synthetic minimum-length fixture
             },
         )
-        # May fail password validation
-        assert response.status_code in [201, 400]
+        assert response.status_code == 201
 
 
 # ---------------------------------------------------------------------------
@@ -174,6 +177,7 @@ class TestInvalidRequestBodies:
         """Null required field should fail."""
         response = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": None, "email": "test@example.com", "password": "SecurePass123!"},
         )
         assert response.status_code == 422, "Response must not be empty"
@@ -182,14 +186,18 @@ class TestInvalidRequestBodies:
         """Empty string username should fail."""
         response = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": "", "email": "test@example.com", "password": "SecurePass123!"},
         )
-        assert response.status_code == 400 or response.status_code == 422, "Response must not be empty"
+        assert (
+            response.status_code == 400 or response.status_code == 422
+        ), "Response must not be empty"
 
     def test_whitespace_only_username(self, test_client):
         """Whitespace-only username should fail."""
         response = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": "   ", "email": "test@example.com", "password": "SecurePass123!"},
         )
         assert response.status_code in [400, 422]
@@ -197,6 +205,7 @@ class TestInvalidRequestBodies:
     def test_missing_username_field(self, test_client):
         """Missing username field should fail."""
         response = test_client.post(
+            # pragma: allowlist nextline secret - synthetic API fixture
             "/auth/register", json={"email": "test@example.com", "password": "SecurePass123!"}
         )
         assert response.status_code == 422, "Response must not be empty"
@@ -204,6 +213,7 @@ class TestInvalidRequestBodies:
     def test_missing_email_field(self, test_client):
         """Missing email field should fail."""
         response = test_client.post(
+            # pragma: allowlist nextline secret - synthetic API fixture
             "/auth/register", json={"username": "test", "password": "SecurePass123!"}
         )
         assert response.status_code == 422, "Response must not be empty"
@@ -228,6 +238,7 @@ class TestTypeMismatches:
         """Username as integer should fail."""
         response = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": 12345, "email": "test@example.com", "password": "SecurePass123!"},
         )
         assert response.status_code in [400, 422]
@@ -236,6 +247,7 @@ class TestTypeMismatches:
         """Email as integer should fail."""
         response = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": "test", "email": 12345, "password": "SecurePass123!"},
         )
         assert response.status_code in [400, 422]
@@ -252,6 +264,7 @@ class TestTypeMismatches:
         """Username as array should fail."""
         response = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": ["test"], "email": "test@example.com", "password": "SecurePass123!"},
         )
         assert response.status_code in [400, 422]
@@ -271,7 +284,7 @@ class TestTypeMismatches:
             json={
                 "username": "test",
                 "email": "test@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
                 "roles": "admin",  # Should be array
             },
         )
@@ -306,6 +319,7 @@ class TestEmailValidation:
         """Invalid email formats should fail."""
         response = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": "test", "email": invalid_email, "password": "SecurePass123!"},
         )
         assert response.status_code in [400, 422]
@@ -328,7 +342,7 @@ class TestEmailValidation:
             json={
                 "username": f"user{hash(valid_email) % 10000}",
                 "email": valid_email,
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         assert response.status_code in [201, 400]  # May fail if email already exists
@@ -371,6 +385,7 @@ class TestPasswordValidation:
     @pytest.mark.parametrize(
         "strong_password",
         [
+            # pragma: allowlist nextline secret - synthetic API fixture
             "SecurePass123!",
             "MyP@ssw0rd",
             "Correct!Horse1",
@@ -396,7 +411,7 @@ class TestPasswordValidation:
             json={
                 "username": "spacedpass",
                 "email": "spaced@example.com",
-                "password": "My Pass Word 123!",
+                "password": "My Pass Word 123!",  # pragma: allowlist secret - synthetic whitespace fixture
             },
         )
         # Should accept or reject
@@ -409,7 +424,7 @@ class TestPasswordValidation:
             json={
                 "username": "unicodepass",
                 "email": "unicode@example.com",
-                "password": "Pässwörd123!",
+                "password": "Pässwörd123!",  # pragma: allowlist secret - synthetic Unicode fixture
             },
         )
         # Should handle unicode
@@ -444,7 +459,7 @@ class TestUsernameValidation:
             json={
                 "username": "user name",
                 "email": "userspace@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         # Should accept or reject
@@ -457,7 +472,7 @@ class TestUsernameValidation:
             json={
                 "username": "user@name",
                 "email": "userspecial@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         # Should accept or reject
@@ -470,7 +485,7 @@ class TestUsernameValidation:
             json={
                 "username": "123user",
                 "email": "numuser@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         assert response.status_code in [201, 400]
@@ -482,7 +497,7 @@ class TestUsernameValidation:
             json={
                 "username": "user_name",
                 "email": "underscore@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         assert response.status_code in [201, 400]
@@ -494,7 +509,7 @@ class TestUsernameValidation:
             json={
                 "username": "user-name",
                 "email": "dash@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         assert response.status_code in [201, 400]
@@ -515,7 +530,7 @@ class TestExtraFields:
             json={
                 "username": "test",
                 "email": "test@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
                 "unknown_field": "value",
             },
         )
@@ -529,7 +544,7 @@ class TestExtraFields:
             json={
                 "username": "test",
                 "email": "test@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
                 "extra1": "value1",
                 "extra2": "value2",
                 "extra3": "value3",
@@ -544,7 +559,7 @@ class TestExtraFields:
             json={
                 "username": "test",
                 "email": "test@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
                 "metadata": {"key": "value"},
             },
         )
@@ -563,6 +578,7 @@ class TestBoundaryValues:
         """Username with minimum length."""
         response = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": "a", "email": "minuser@example.com", "password": "SecurePass123!"},
         )
         assert response.status_code in [201, 400, 422]
@@ -574,7 +590,7 @@ class TestBoundaryValues:
             json={
                 "username": "a" * 255,
                 "email": "maxuser@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         assert response.status_code in [201, 400, 422]
@@ -631,7 +647,7 @@ class TestSpecialCharacters:
             json={
                 "username": special_username,
                 "email": f"special{hash(special_username)}@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         assert response.status_code in [201, 400, 422]
@@ -643,7 +659,7 @@ class TestSpecialCharacters:
             json={
                 "username": "user\nname",
                 "email": "newline@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         assert response.status_code in [400, 422]
@@ -652,6 +668,7 @@ class TestSpecialCharacters:
         """Tab character in email."""
         response = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": "test", "email": "user\t@example.com", "password": "SecurePass123!"},
         )
         assert response.status_code in [400, 422]
@@ -663,7 +680,7 @@ class TestSpecialCharacters:
             json={
                 "username": "'; DROP TABLE users; --",
                 "email": "sqli@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         # Should safely reject or handle
@@ -676,7 +693,7 @@ class TestSpecialCharacters:
             json={
                 "username": "<script>alert('xss')</script>",
                 "email": "xss@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         # Should safely reject or handle
@@ -699,7 +716,7 @@ class TestParameterCombinations:
             json={
                 "username": "combo1",
                 "email": "combo1a@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         assert response1.status_code == 201, "Response must not be empty"
@@ -710,7 +727,7 @@ class TestParameterCombinations:
             json={
                 "username": "combo1",
                 "email": "combo1b@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         # Should fail - duplicate username
@@ -724,7 +741,7 @@ class TestParameterCombinations:
             json={
                 "username": "combo2a",
                 "email": "combo@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         assert response1.status_code == 201, "Response must not be empty"
@@ -735,7 +752,7 @@ class TestParameterCombinations:
             json={
                 "username": "combo2b",
                 "email": "combo@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         # Should fail - duplicate email
@@ -748,7 +765,7 @@ class TestParameterCombinations:
             json={
                 "username": "CaseTest",
                 "email": "case1@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         assert response1.status_code == 201, "Response must not be empty"
@@ -758,7 +775,7 @@ class TestParameterCombinations:
             json={
                 "username": "casetest",
                 "email": "case2@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         # May allow or reject based on case sensitivity
@@ -768,12 +785,14 @@ class TestParameterCombinations:
         """Email case insensitivity."""
         response1 = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": "email1", "email": "Test@Example.COM", "password": "SecurePass123!"},
         )
         assert response1.status_code == 201, "Response must not be empty"
 
         response2 = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": "email2", "email": "test@example.com", "password": "SecurePass123!"},
         )
         # Should fail if emails match case-insensitively

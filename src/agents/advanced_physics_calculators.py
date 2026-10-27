@@ -19,6 +19,7 @@ import math
 logger = logging.getLogger(__name__)
 import random  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
+from types import ModuleType  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
 try:
@@ -91,10 +92,13 @@ except ImportError as e:
                 return _math.sqrt(sum(v * v for v in x))
             return float(x)
 
-    class NumpyStub:  # type: ignore
+    class NumpyStub(ModuleType):
         ndarray = Any
         pi = _math.pi
         linalg = _LinalgStub()
+
+        def __init__(self) -> None:
+            super().__init__("numpy")
 
         @staticmethod
         def array(obj: Any, *args: Any, **kwargs: Any) -> Any:
@@ -219,7 +223,7 @@ except ImportError as e:
     builtins_abs = abs
     builtins_min = min
 
-    np = NumpyStub
+    np = NumpyStub()
 
 # Optional scipy dependency for optimized algorithms
 try:
@@ -229,7 +233,7 @@ try:
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
-    maximum_filter = None  # type: ignore[assignment]
+    maximum_filter = None
     SCIPY_AVAILABLE = False
 
 
@@ -1011,9 +1015,14 @@ class FluidFlowScheduler:
         """Add a new channel to the network.
 
         Can be called as ``add_channel(channel)`` or ``add_channel(channel_id, channel)``.
+        Registration uses the channel object's own ID in either form; the first
+        string argument is retained for compatibility. A string alone raises
+        TypeError because it does not supply a channel.
         """
         if channel is None:
-            channel = channel_or_id  # type: ignore[assignment]
+            if not isinstance(channel_or_id, FluidChannel):
+                raise TypeError("A FluidChannel is required when no channel is supplied")
+            channel = channel_or_id
         self.channels[channel.channel_id] = channel
 
     def inject_flow(self, channel_id: str, flow_rate: float) -> bool:
@@ -1189,7 +1198,14 @@ class EMFieldRouter:
     - Attention focusing
     """
 
-    def __init__(self, grid_resolution: int = 20, grid_size: int = None):
+    def __init__(self, grid_resolution: int = 20, grid_size: Optional[int] = None):
+        """Create an empty square field with lazy potential/gradient calculation.
+
+        ``grid_size`` is a compatibility alias and takes precedence over
+        ``grid_resolution`` when provided. Use a resolution of at least two
+        for NumPy's gradient calculation. Before the first charge is added,
+        field queries return zero potential and a zero vector.
+        """
         # Support both grid_resolution and grid_size parameters
         if grid_size is not None:
             self.grid_resolution = grid_size
@@ -1249,7 +1265,7 @@ class EMFieldRouter:
         Returns:
             (potential, electric_field_vector)
         """
-        if self.potential_field is None:
+        if self.potential_field is None or self.electric_field is None:
             return 0.0, np.array([0.0, 0.0])
 
         # Convert position to grid indices
@@ -1303,7 +1319,7 @@ class EMFieldRouter:
 
         Returns regions sorted by field magnitude (highest priority first).
         """
-        if self.potential_field is None or not NUMPY_AVAILABLE:
+        if self.potential_field is None or self.electric_field is None or not NUMPY_AVAILABLE:
             return []
 
         # Calculate field magnitude at each point
@@ -1589,7 +1605,7 @@ class RelativityScheduler:
         self,
         agent_id: str,
         position: np.ndarray,
-        velocity: np.ndarray = None,
+        velocity: Optional[np.ndarray] = None,
         clock_offset: float = 0.0,
     ) -> None:
         """
@@ -1790,6 +1806,12 @@ class AdvancedPhysicsOrchestrator:
     """
 
     def __init__(self):
+        """Create independent engines for all six physics paradigms.
+
+        Engines retain state across ``full_analysis`` calls, including fluid
+        flows, field charges, wave history, and registered agents. Construct a
+        new orchestrator when analyses must not share that state.
+        """
         self.chaos = ChaoticNeuralNetwork()
         self.fractal = FractalAnalyzer()
         self.fluid = FluidFlowScheduler()
@@ -1805,13 +1827,14 @@ class AdvancedPhysicsOrchestrator:
 
         Combines all paradigms for comprehensive evaluation.
         """
-        results = {"timestamp": 0.0, "paradigms": {}}
+        paradigms: dict[str, object] = {}
+        results: dict[str, object] = {"timestamp": 0.0, "paradigms": paradigms}
 
         # 1. Chaos analysis
         if "exploration" in decision_space:
             param_ranges = decision_space.get("param_ranges", [(0, 1)])
             test_cases = self.chaos.generate_test_parameters(param_ranges, num_tests=10)
-            results["paradigms"]["chaos"] = {
+            paradigms["chaos"] = {
                 "test_cases_generated": len(test_cases),
                 "lyapunov_exponent": self.chaos.neurons[0].lyapunov_exponent(),
             }
@@ -1820,33 +1843,33 @@ class AdvancedPhysicsOrchestrator:
         if "structure" in decision_space:
             structure = decision_space["structure"]
             fractal_analysis = self.fractal.analyze_code_tree(structure)
-            results["paradigms"]["fractal"] = fractal_analysis
+            paradigms["fractal"] = fractal_analysis
 
         # 3. Fluid dynamics
         if "workflow" in decision_space:
             optimization = self.fluid.optimize_flow()
-            results["paradigms"]["fluid"] = optimization
+            paradigms["fluid"] = optimization
 
         # 4. EM field routing
         if "hotspots" in decision_space:
             for pos, charge in decision_space["hotspots"]:
                 self.em_field.add_charge(np.array(pos), charge)
             priorities = self.em_field.prioritize_regions()
-            results["paradigms"]["em_field"] = {"priority_regions": priorities}
+            paradigms["em_field"] = {"priority_regions": priorities}
 
         # 5. Wave propagation
         if "signals" in decision_space:
             for signal in decision_space["signals"]:
                 self.wave.add_source(**signal)
             self.wave.propagate(steps=50)
-            results["paradigms"]["wave"] = {"propagation_steps": len(self.wave.history)}
+            paradigms["wave"] = {"propagation_steps": len(self.wave.history)}
 
         # 6. Relativistic scheduling
         if "agents" in decision_space:
             for agent in decision_space["agents"]:
                 self.relativity.add_agent(**agent)
             sync_result = self.relativity.synchronize_clocks()
-            results["paradigms"]["relativity"] = {"agents_synchronized": len(sync_result)}
+            paradigms["relativity"] = {"agents_synchronized": len(sync_result)}
 
         self.orchestration_log.append(results)
         return results

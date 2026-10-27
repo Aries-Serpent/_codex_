@@ -409,7 +409,7 @@ async def test_metrics_aggregation_across_cycles():
 @pytest.mark.timeout(30)
 async def test_ooda_handles_state_provider_failure():
     """Test graceful handling of state provider failures."""
-    executor = OODAExecutor(state_provider=MockStateProvider(fail_on_call="get_agent_state"))
+    executor = OODAExecutor(state_provider=MockStateProvider(fail_on_call="get_repo_state"))
 
     # Should not crash, but handle error
     state = await executor.execute_cycle("task_001", "ci_fix", "P1")

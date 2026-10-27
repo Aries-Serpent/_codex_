@@ -1,0 +1,41 @@
+{
+  "schema": "codex.institutional.review-observation.v1",
+  "status": "Draft",
+  "classification": "Repository-Internal",
+  "lane": "rd4-sdk-review",
+  "actor_kind": "read-only code-review subagent",
+  "scope": ["src/codex/institutional/review.py", "tests/institutional/test_review.py", "src/codex/institutional/contracts.json", "docs/adr/azimuthal-review-004.json"],
+  "method": "Separate-context static inspection of uncommitted SDK changes; no reviewer test execution.",
+  "binding": "SDK worktree before confidence-bound correction; implementation validation after correction retained separately.",
+  "findings": [
+    {
+      "id": "RD4-SDK-1",
+      "severity": "Medium",
+      "source_wording": "Oversized confidence integers escape validation",
+      "observation": "math.isfinite on 10**400 can raise OverflowError before the [0,1] range check.",
+      "scope": "Lane creation and imported/resealed output reconciliation",
+      "original_reproduction": "Reviewer supplied static reasoning; implementer subsequently added positive and negative adversarial cases and retained their pre-fix failures.",
+      "remediation": "Validate numeric type and [0,1] bounds before math.isfinite.",
+      "technical_result": "70 SDK cases plus 77 baseline institutional and six packaging cases pass; see runtime-review/confidence-final.xml and context.json.",
+      "assurance_limit": "A validation robustness correction, not evidence of authenticated principals, semantic remediation truth or independent approval."
+    }
+  ],
+  "other_high_confidence_findings": [],
+  "independence": {
+    "context": "separate",
+    "organization": "same platform",
+    "critical_dimensions": [],
+    "assessment": "not_assessed",
+    "G5": "NOT_RUN",
+    "approval": false
+  },
+  "unsupported_not_disguised_as_complete": [
+    "Operational mutating FIXED routes",
+    "Assurance DAG execution",
+    "Trusted evidence eligibility, expiry and revocation",
+    "Full numerical formulas or convergence",
+    "Cross-store event uniqueness enforcement",
+    "Authenticated identity and independent verification",
+    "Governance activation, authority and final acceptance"
+  ]
+}

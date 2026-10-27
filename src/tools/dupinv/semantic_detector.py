@@ -17,7 +17,7 @@ class MinHashDetector:
         threshold: float = 0.75,
         num_perm: int = 128,
         shingle_size: int = 5,
-        exclude_patterns: list[str] = None,
+        exclude_patterns: list[str] | None = None,
         respect_gitignore: bool = True,
     ):
         """
@@ -93,7 +93,9 @@ class MinHashDetector:
 
         signature = []
         for i in range(self.num_perm):
-            min_hash = float("inf")
+            # SHA256 is truncated to 32 bits below, so this upper bound
+            # keeps every populated signature integer-valued.
+            min_hash = 1 << 32
             for shingle in shingles:
                 # Use deterministic hash (SHA256) for consistent results
                 hash_input = f"{shingle}:{i}".encode("utf-8")

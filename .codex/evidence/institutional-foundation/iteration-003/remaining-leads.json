@@ -1,0 +1,2745 @@
+{
+  "status": "unconfirmed leads; not findings",
+  "source_commit": "a30d759e2a15d6c566e9e825d3efa8b3040e77e0",
+  "leads": [
+    {
+      "path": ".codex/archive/legacy-root/AAIS_COMPLIANCE_REPORT.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/legacy-root/COMPLETE_SESSION_SUMMARY_PHASES_1_5.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/legacy-root/COMPLETE_SESSION_SUMMARY_PHASES_1_6.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/legacy-root/FOLLOWUP_PROMPT_NEXT_PHASE.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/legacy-root/FOLLOWUP_PROMPT_PHASE_2_IMPLEMENTATION.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/legacy-root/FOLLOWUP_PROMPT_PR3178_VALIDATION.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/legacy-root/FOLLOWUP_PROMPT_RAG_META_TENSOR.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/legacy-root/FOLLOWUP_PROMPT_RAG_PHASE2.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/legacy-root/FOLLOWUP_PROMPT_RAG_PHASE3.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/legacy-root/PR_3248_ATTEMPT_20_COMPLETION_ANALYSIS.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/legacy-root/PR_3248_ATTEMPT_22_COMPREHENSIVE_PLAN.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/legacy-root/RAG_INTEGRATION_COMPLETE_SESSION_SUMMARY.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/legacy-root/update_pr_template_for_continuation.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/phase-reports/phase-1-10/PHASE_4_SESSION_SUMMARY.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/phases/PHASE_7_COMPLETE_PHASE_8_PLANNING.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2635-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2636-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2637-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2638-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2641-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2642-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2643-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2644-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2645-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2646-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2647-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2648-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2649-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2650-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2651-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2652-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2653-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2654-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2655-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-2656-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/root-consolidation/deprecated-reports/misc/repo-owner-review/auto-generated-prompts/PR-9999-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/sessions/SESSION_COMPLETE_2026-02-08.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/sessions/SESSION_COMPLETE_PR3178_AI_AGENCY_POLICY.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/archive/sessions/SESSION_COMPLETE_SUMMARY.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/cognitive_brain/PHASE_65_COMPLETE.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/cognitive_brain/PHASE_66_COMPLETE.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/cognitive_brain/PHASE_67_COMPLETE.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/cognitive_brain/PR_SECURITY_ROOT_CLEANUP_SESSION_STATUS.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/cognitive_brain/archive/PHASE_29_WORKFLOW_CONSOLIDATION_COMPLETE.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/cognitive_brain/pr_3155_cognitive_update_phase2_5.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md",
+      "signals": [
+        "Before ANY bash/grep/edit",
+        "Plans without agent bindings are non-compliant"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/docs/SESSION_RESTORE_PR3421.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".codex/rag_indexes/runtime_index.json",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/AGENTS.md",
+      "signals": [
+        "Complete ALL tasks",
+        "Zero omissions allowed"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/HOTFIX-post-PR3375-infra-failures.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-2665-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-2666-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-2668-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-2682-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-2688-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3136-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3137-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3138-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3144-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3145-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3146-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3151-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3161-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3174-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3237-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3238-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3239-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3245-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3248-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3252-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3254-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3269-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3328-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3330-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3332-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3333-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3336-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3348-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3359-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3360-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3364-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3367-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3369-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3372-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3375-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3376-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3379-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3380-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3389-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3395-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3403-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3406-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3407-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3429-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3435-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3443-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3474-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3477-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3488-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3501-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3512-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3513-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3514-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3515-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3516-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3517-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3518-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3519-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3522-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3533-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3542-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3554-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3563-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3571-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3572-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3576-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3604-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3605-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3625-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3628-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3639-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3664-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3671-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3676-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3686-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3690-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3691-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3692-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3693-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3694-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3695-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3697-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3698-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3699-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3700-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3703-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3707-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3719-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3728-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3732-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3738-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3748-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3749-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3765-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3770-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3774-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3777-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3793-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3813-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3818-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3820-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3834-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3835-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3840-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3843-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3846-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3847-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3849-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3852-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3856-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3857-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3858-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3873-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3876-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3878-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3881-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3901-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3905-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3910-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3915-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3926-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3927-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3928-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3930-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3931-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3932-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3939-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3942-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3952-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3954-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3960-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3962-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-3978-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4039-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4041-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4048-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4053-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4063-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4069-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4073-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4074-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4078-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4107-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4109-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4114-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4124-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4130-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4133-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4148-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4152-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4160-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4171-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4179-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4193-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4201-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4204-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4206-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4211-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4219-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4223-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4225-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4254-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4265-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4270-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4277-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4278-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4289-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4311-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4312-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4317-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4323-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4330-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4343-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4344-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4346-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4351-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4356-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4366-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4376-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4379-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4389-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4393-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4395-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4416-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4419-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4420-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4427-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4442-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4447-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4450-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4454-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4455-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4456-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4458-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4460-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4463-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4465-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4468-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4469-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4470-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4478-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4479-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4497-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4498-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4501-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4502-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4504-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4509-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4512-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4513-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4514-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4515-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4518-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4523-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4525-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4528-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4531-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4533-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4534-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4536-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4539-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4540-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4541-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4542-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4544-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4545-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4547-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4549-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4551-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4553-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4554-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4557-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4559-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4560-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4561-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4562-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4579-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4580-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4608-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4618-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4619-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4626-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4627-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4631-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4633-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4639-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4640-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4641-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4643-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4661-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4662-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4664-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4668-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4695-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4696-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4698-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4702-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4703-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4706-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4708-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4710-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4711-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4712-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4713-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4714-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4715-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4716-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4717-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4722-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4724-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4726-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4727-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4728-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4731-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4733-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4738-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4744-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4747-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4750-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4751-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4756-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4758-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4759-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4763-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4767-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4769-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4774-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4776-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4783-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4788-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4789-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4790-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4792-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4794-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4796-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4797-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4798-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4803-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4804-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4805-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4806-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4807-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4808-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4810-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4811-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4812-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4813-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4814-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4815-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4816-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4817-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4820-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4821-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4826-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4830-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4832-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4833-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4834-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4836-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4838-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4841-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4842-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4844-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4846-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4848-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4849-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4850-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4853-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4855-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4857-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4861-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4863-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4869-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4873-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4875-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/active/PR-4876-followup.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/copilot-prompts/templates/pr-continuation.md",
+      "signals": [
+        "mandatory 5-pass self-review"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/docs/CTEP_Quick_Reference.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/docs/CTEP_Usage_Examples.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": ".github/docs/Copilot_Task_Execution_Protocol.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    },
+    {
+      "path": "docs/templates/COPILOT_EXECUTION_DIRECTIVE.md",
+      "signals": [
+        "Complete ALL tasks"
+      ],
+      "state": "lead only; not confirmed semantic conflict"
+    }
+  ]
+}

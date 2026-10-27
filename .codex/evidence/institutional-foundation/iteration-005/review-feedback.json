@@ -1,0 +1,41 @@
+{
+  "schema": "codex.institutional.review-feedback-observation.v1",
+  "scope": "Uncommitted initial assurance slice; these observations are not independent verification or approval.",
+  "source_identity_limit": "The review inspected working files, not a published or independently attested artifact. Final correction receipts must bind the eventual source commit.",
+  "findings": [
+    {
+      "id": "RD5-REVIEW-001",
+      "observer": "rd5-assurance-review",
+      "severity": "medium",
+      "path": "src/codex/institutional/assurance.py",
+      "observation": "Dependency proof based only on current evidence state can revive old dependent results after revocation followed by restoration of the original state.",
+      "required_correction": "Include append-only evidence-status revision in prerequisite proofs; restoration must require a fresh dependent result.",
+      "disposition": "Accepted for correction; final result recorded separately."
+    },
+    {
+      "id": "RD5-REVIEW-002",
+      "observer": "rd5-assurance-review",
+      "severity": "medium",
+      "path": "src/codex/institutional/assurance.py",
+      "observation": "An exempt node discards prerequisite blockers and uses a dependency-insensitive proof, allowing a required descendant to bypass an unmet required ancestor.",
+      "required_correction": "Exempt execution only; propagate prerequisite blockers and dependency-sensitive proofs through the exempt node.",
+      "disposition": "Accepted for correction; final result recorded separately."
+    },
+    {
+      "id": "RD5-INTEGRATION-001",
+      "observer": "coordinator",
+      "severity": "compatibility",
+      "path": "src/codex/institutional/assurance.py",
+      "observation": "The one-MiB assurance-record ceiling also limits whole continuation aggregates, but the actual sequence-four institutional checkpoint decompresses to 11543409 bytes.",
+      "required_correction": "Retain per-artifact limits and reuse the existing core aggregate limit for continuation attachment; preserve session and extensions.",
+      "disposition": "Accepted for correction; final result recorded separately."
+    }
+  ],
+  "additional_scope_challenge": {
+    "observation": "A custom fixture-response label is not itself one of the formal disposition kinds.",
+    "requirement": "Exercise a justified supported nonmutating disposition, or disclose formal routing as incomplete; never reinterpret a fixture response as real approval."
+  },
+  "authority": "none",
+  "independent_verification": "NOT_RUN",
+  "approval": "NOT_RUN"
+}

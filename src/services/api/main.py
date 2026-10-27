@@ -90,7 +90,9 @@ if not hasattr(torch, "tensor") or not hasattr(torch, "as_tensor"):
         def __exit__(self, *exc_info: Any) -> bool:  # pragma: no cover - simple context manager
             return False
 
-    def _fake_tensor(value: Any, dtype: Any = None) -> _FakeTensor:  # noqa: ARG001 - dtype kept for API parity
+    def _fake_tensor(
+        value: Any, dtype: Any = None
+    ) -> _FakeTensor:  # noqa: ARG001 - dtype kept for API parity
         if isinstance(value, _FakeTensor):
             return value
         return _FakeTensor(value)
