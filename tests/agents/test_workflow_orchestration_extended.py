@@ -27,7 +27,7 @@ from agents.workflow_navigator import (
 @pytest.fixture(autouse=True)
 def setup_deterministic_clock():
     """Set deterministic clock for all tests"""
-    set_clock("2025-01-01T00:00:00Z")
+    set_clock(lambda: "2025-01-01T00:00:00Z")
     yield
     reset_clock()
 

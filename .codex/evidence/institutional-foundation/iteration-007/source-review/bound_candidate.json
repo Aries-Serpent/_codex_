@@ -1,0 +1,2229 @@
+{
+  "schema": "codex.continuation-state.v1",
+  "id": "codex.continuation-state.v1:04ea4a6ca04714596bd7b65de6e9e0de6b660675a800393d8e3ae2e12f44d191",
+  "created_at": "2026-10-25T00:00:00Z",
+  "producer": {
+    "identity": "codex-institutional",
+    "assurance": "unverified"
+  },
+  "evidence_refs": [],
+  "authority_refs": [],
+  "validation_state": "candidate",
+  "lifecycle": "Draft",
+  "supersedes": "codex.continuation-state.v1:083e9d0bde1711c0562188a736e53a22bd587a2a76f41279edcaa33672333dcb",
+  "extensions": {},
+  "payload": {
+    "session_id": "source-backed-composition",
+    "sequence": 2,
+    "source_sha": null,
+    "candidate_ref": "e41fde2f5aeb734b262ade37778ec2fad309bacd8b1ee2e11ac45d8f8e0ba7f3",
+    "dirty_tree": "not_applicable",
+    "configuration": {
+      "contracts_digest": "943d22b2ac581e274e4606074bb01cd46233c2796f9ccdc0052f07e1cef50301",
+      "root": "/tmp/institutional-007/review-target"
+    },
+    "predecessor": "0bd4256543a60833bb8d3f0b9a1b3c2803146e3246b6fa818bc04d6b9f35f63b",
+    "gates": {
+      "G3": "NOT_RUN",
+      "G4": "NOT_RUN",
+      "G5": "NOT_RUN",
+      "G6": "NOT_RUN",
+      "G7": "NOT_RUN",
+      "G8": "NOT_RUN"
+    },
+    "records": [
+      {
+        "schema": "codex.trust-evidence.v1",
+        "id": "codex.trust-evidence.v1:3ac7be32c278a8e4b5f7080873880eaeda9819011badf6231185ed2275b7581f",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "source_identity": "/tmp/institutional-007/review-target",
+          "location": "path-census",
+          "source_sha": null,
+          "digest": "728031e6ca5b33cd8acac99ce6082bb5bcb4474467a86c86667195805dbfe401",
+          "method": "filesystem",
+          "observation": "1 paths inventoried",
+          "limitations": [
+            "Metadata only; integrity is not authenticated provenance."
+          ],
+          "predecessor": null
+        },
+        "integrity": "c3c93665cf56c983888be4aae6e7231cc3ea9104722f36d47d68a4f13eab12e5"
+      },
+      {
+        "schema": "codex.inventory.v1",
+        "id": "codex.inventory.v1:728031e6ca5b33cd8acac99ce6082bb5bcb4474467a86c86667195805dbfe401",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [
+          "codex.trust-evidence.v1:3ac7be32c278a8e4b5f7080873880eaeda9819011badf6231185ed2275b7581f"
+        ],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "source": {
+            "identity": "/tmp/institutional-007/review-target",
+            "sha": null,
+            "path_digest": "e4082c38831de1c35189b785ab8f0fbb70439e6d926779a6debcf352c4e477cd"
+          },
+          "entries": [
+            {
+              "id": "component:134c64c1ce0b85f393d7645cde4e6b419238c597c5220a05d9707099e60980c6",
+              "path": "core.py",
+              "kind": "other",
+              "source_digest": "cb7bce232df6d5b993739c83def42b4ca743bcc849663ad9bffecd6390dc806a",
+              "depth": "metadata_only",
+              "inspection": "excluded",
+              "rationale": "outside lexical scope",
+              "tags": []
+            }
+          ],
+          "counts": {
+            "other": 1
+          },
+          "component_defaults": {
+            "declared_purpose": "not_observed",
+            "observed_behavior": "not_observed",
+            "inputs": "unknown",
+            "outputs": "unknown",
+            "declared_authority": "unknown",
+            "verified_authority": "not_observed",
+            "effective_authority": {},
+            "authority_evidence": [],
+            "authority_scope": "unknown",
+            "authority_expiry": "unknown",
+            "revocation": "unknown",
+            "artifact_digest": "not_observed",
+            "authority_conflicts": [
+              "authority not established"
+            ],
+            "dependencies": "not_observed",
+            "invoked_workflows": "not_observed",
+            "memory_read": "not_observed",
+            "memory_written": "not_observed",
+            "verification": "not_observed",
+            "package_inclusion": "not_observed",
+            "overlap": "unknown",
+            "tests": "not_observed",
+            "execution": "not_observed",
+            "gaps": [
+              "metadata is not semantic evidence"
+            ],
+            "contradictions": "not_observed",
+            "disposition": "unknown",
+            "confidence": "unknown",
+            "evidence": []
+          },
+          "coverage": "filesystem",
+          "limitations": [
+            "Path census only; no usage, effectiveness or permission conclusions.",
+            "Git census describes the identified tree, not untracked or dirty content.",
+            "Filesystem census excludes .git, symlink directories and framework state."
+          ]
+        },
+        "integrity": "fd44611ef6c1ef77a27dccecdb793d33e97a2b18309f06396d0a0cd45b9f21b9"
+      },
+      {
+        "schema": "codex.agent-role.v1",
+        "id": "codex.agent-role.v1:ed6f236b9aa963c2b05a90b45c68eac3e9bfbdfe7a7c86d913e0f621ae94ef24",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "purpose": "Architect: propose inactive candidate",
+          "capability": "codex.institutional.core.candidate",
+          "authority": "none"
+        },
+        "integrity": "8159838f67bfe8fb441f875c42120b654f93f159ab61963bae62c6b69fafeadf"
+      },
+      {
+        "schema": "codex.agent-role.v1",
+        "id": "codex.agent-role.v1:6b86e447942365b619a06fae3c42f05ca9578fa159c75bb11a6e830a3e483f94",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "purpose": "Auditor: deterministic checks, not independent approval",
+          "capability": "codex.institutional.core.inspect_candidate",
+          "authority": "none"
+        },
+        "integrity": "d61a8858a4b0546ed1305b61a70a9b86e8d87533f7ad879ac497cdadc375ec65"
+      },
+      {
+        "schema": "codex.audit-finding.v1",
+        "id": "codex.audit-finding.v1:672447dcf442e4d8c16eca768368384f18d493203717336d0553b2d55c3557f1",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [
+          "codex.inventory.v1:728031e6ca5b33cd8acac99ce6082bb5bcb4474467a86c86667195805dbfe401"
+        ],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "stage": "assessment",
+          "findings": [
+            "Authority, overlap, semantic usage and effectiveness remain unverified."
+          ],
+          "semantic_review": "NOT_RUN",
+          "independent_reproduction": "NOT_RUN"
+        },
+        "integrity": "924fedab1d600a25df92de5d4f8b12848322a6464612cc92a15f3dd2ec625ba9"
+      },
+      {
+        "schema": "codex.audit-finding.v1",
+        "id": "codex.audit-finding.v1:3db290b353b0b9e9cc6bd73479fb6fba16da26a9d0709a69e41671ae329f1029",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [
+          "codex.trust-evidence.v1:3ac7be32c278a8e4b5f7080873880eaeda9819011badf6231185ed2275b7581f",
+          "codex.audit-finding.v1:672447dcf442e4d8c16eca768368384f18d493203717336d0553b2d55c3557f1"
+        ],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "stage": "challenge",
+          "findings": [
+            "DETERMINISTIC_CHECK_ONLY",
+            "Alternative cause: integration gap does not establish agent ineffectiveness.",
+            "Contradiction search limited to structural checks; semantic review pending.",
+            "Untrusted content and its digest can both be replaced; no authenticated approval."
+          ],
+          "semantic_review": "NOT_RUN",
+          "independent_reproduction": "NOT_RUN"
+        },
+        "integrity": "05b38eef547ef9cb8411cb5fbfad406886b72e66d7d37dec9c56e2514d89a32b"
+      },
+      {
+        "schema": "codex.experience.v1",
+        "id": "codex.experience.v1:bc234b5a9518a3183f7369f6dbdbb4fe1419fde8d929429ce2daae2bef8ca839",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [
+          "codex.trust-evidence.v1:3ac7be32c278a8e4b5f7080873880eaeda9819011badf6231185ed2275b7581f",
+          "codex.audit-finding.v1:3db290b353b0b9e9cc6bd73479fb6fba16da26a9d0709a69e41671ae329f1029"
+        ],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "problem": "Portable evidence-gated institutional candidate",
+          "context": "Inactive development; imported records are inert data.",
+          "environment": {
+            "coverage": "filesystem"
+          },
+          "hypotheses": [
+            "Closed contracts and previews permit safe candidate development."
+          ],
+          "support": [
+            "codex.trust-evidence.v1:3ac7be32c278a8e4b5f7080873880eaeda9819011badf6231185ed2275b7581f"
+          ],
+          "against": [
+            "Semantic review not performed."
+          ],
+          "alternatives": [
+            "Enhance existing script checkpoint manager after compatibility work."
+          ],
+          "decision": "Retain Draft candidate; do not activate.",
+          "dissent": [
+            "A separate installed adapter adds maintenance."
+          ],
+          "uncertainty": [
+            "Effectiveness and downstream outcomes unknown."
+          ],
+          "implementation": [
+            "codex.institutional"
+          ],
+          "verification": [],
+          "outcomes": "unknown",
+          "failure_modes": [
+            "DETERMINISTIC_CHECK_ONLY",
+            "Alternative cause: integration gap does not establish agent ineffectiveness.",
+            "Contradiction search limited to structural checks; semantic review pending.",
+            "Untrusted content and its digest can both be replaced; no authenticated approval."
+          ],
+          "applicability": "Local metadata inspection only",
+          "confidence": "unknown",
+          "next_review": "Independent reproduction or source/configuration drift"
+        },
+        "integrity": "74e93d320f8a44faaabbd182dff912995ece6bbf0df9cd48c9f49fc4af502f59"
+      },
+      {
+        "schema": "codex.assurance.v1",
+        "id": "codex.assurance.v1:3f416ed2ccc62422b6df595128dd0c482b50b61fb1dbc51e920f659bc38205c7",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "kind": "plan",
+          "data": {
+            "review_plan": {
+              "schema": "codex.review.v1",
+              "id": "codex.review.v1:a5d79ceda68bf3e0ce712a8209f80986c920e8d4f6c5271fb81f7c62661c05f8",
+              "created_at": "2026-10-25T00:00:00Z",
+              "producer": {
+                "identity": "codex-institutional",
+                "assurance": "unverified"
+              },
+              "evidence_refs": [],
+              "authority_refs": [],
+              "validation_state": "candidate",
+              "lifecycle": "Draft",
+              "supersedes": null,
+              "extensions": {},
+              "payload": {
+                "kind": "plan",
+                "data": {
+                  "manifest": {
+                    "schema": "codex.review.v1",
+                    "id": "codex.review.v1:8f60898806b57f82bb2920432f94d42c832ad40ddbd818d8c490d2e115895c2c",
+                    "created_at": "2026-10-25T00:00:00Z",
+                    "producer": {
+                      "identity": "codex-institutional",
+                      "assurance": "unverified"
+                    },
+                    "evidence_refs": [],
+                    "authority_refs": [],
+                    "validation_state": "candidate",
+                    "lifecycle": "Draft",
+                    "supersedes": null,
+                    "extensions": {},
+                    "payload": {
+                      "kind": "manifest",
+                      "data": {
+                        "entries": [
+                          {
+                            "path": "core.py",
+                            "sha256": "cb7bce232df6d5b993739c83def42b4ca743bcc849663ad9bffecd6390dc806a",
+                            "size": 23750,
+                            "mode": 420
+                          }
+                        ],
+                        "context_digest": "e3f7792242530b6d8555a40248850536582ce1d93b9fb43b21547cf8365d2300",
+                        "rules": {
+                          "symlinks": "reject",
+                          "submodules": "reject",
+                          "archives": "opaque-no-expansion",
+                          "hardlinks": "independent-bytes",
+                          "permissions": "explicit-posix-mode",
+                          "line_endings": "raw"
+                        },
+                        "classification": "Repository-Internal"
+                      }
+                    },
+                    "integrity": "8fa12b44701bfd4cf2008074d2d09931ac79bc888d653b0d70f91bc35ba5ba6d"
+                  },
+                  "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                  "lanes": [
+                    {
+                      "id": "architecture",
+                      "bearing": "090",
+                      "actor": "same-platform:coordinator",
+                      "run": "source-composition:architecture",
+                      "dissent": false,
+                      "required": true,
+                      "coverage": [
+                        "admission"
+                      ],
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "id": "verification",
+                      "bearing": "180",
+                      "actor": "same-platform:coordinator",
+                      "run": "source-composition:verification",
+                      "dissent": false,
+                      "required": true,
+                      "coverage": [
+                        "admission"
+                      ],
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "id": "dissent",
+                      "bearing": "cross-cutting",
+                      "actor": "same-platform:coordinator",
+                      "run": "source-composition:dissent",
+                      "dissent": true,
+                      "required": true,
+                      "coverage": [
+                        "admission"
+                      ],
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "id": "rotated",
+                      "bearing": "315-history",
+                      "actor": "same-platform:coordinator",
+                      "run": "source-composition:rotated",
+                      "dissent": false,
+                      "required": false,
+                      "coverage": [
+                        "admission"
+                      ],
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    }
+                  ],
+                  "mandatory": [
+                    "admission"
+                  ],
+                  "critical": [
+                    "admission"
+                  ],
+                  "mode": "supplement",
+                  "coordinator_role": "implementer",
+                  "independence": "unverified"
+                }
+              },
+              "integrity": "9c14846b66dbde44b8c7c26df0d58584039bf0c973959da2e0b36d03029058da"
+            },
+            "original_outputs": [
+              {
+                "schema": "codex.review.v1",
+                "id": "codex.review.v1:f848c5b0fec96d9c8014389d6b5cf5c31cecca02a7038a413366fe90ec0af27b",
+                "created_at": "2026-10-25T00:00:00Z",
+                "producer": {
+                  "identity": "codex-institutional",
+                  "assurance": "unverified"
+                },
+                "evidence_refs": [],
+                "authority_refs": [],
+                "validation_state": "candidate",
+                "lifecycle": "Draft",
+                "supersedes": null,
+                "extensions": {},
+                "payload": {
+                  "kind": "lane-output",
+                  "data": {
+                    "plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c",
+                    "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                    "lane": "architecture",
+                    "actor": "same-platform:coordinator",
+                    "run": "source-composition:architecture",
+                    "identity": "unverified",
+                    "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                    "findings": [
+                      {
+                        "id": "semantic-dispatch",
+                        "source_quote": "validate_artifact(child)",
+                        "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                        "kind": "inference",
+                        "confidence": 0.8,
+                        "coverage": [
+                          "admission"
+                        ],
+                        "clearance_conditions": [
+                          "inspect-dispatch"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "integrity": "56ac605aedfdd56ddfbcc23c32ff50452c5a729a671cc281626a64bce2c99b18"
+              },
+              {
+                "schema": "codex.review.v1",
+                "id": "codex.review.v1:4f1aed41c2d1f096a45ad519a2e35d2ebfb9082e0b6b530092c355f7d5db8d52",
+                "created_at": "2026-10-25T00:00:00Z",
+                "producer": {
+                  "identity": "codex-institutional",
+                  "assurance": "unverified"
+                },
+                "evidence_refs": [],
+                "authority_refs": [],
+                "validation_state": "candidate",
+                "lifecycle": "Draft",
+                "supersedes": null,
+                "extensions": {},
+                "payload": {
+                  "kind": "lane-output",
+                  "data": {
+                    "plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c",
+                    "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                    "lane": "verification",
+                    "actor": "same-platform:coordinator",
+                    "run": "source-composition:verification",
+                    "identity": "unverified",
+                    "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                    "findings": [
+                      {
+                        "id": "semantic-dispatch",
+                        "source_quote": "validate_artifact(child)",
+                        "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                        "kind": "inference",
+                        "confidence": 0.8,
+                        "coverage": [
+                          "admission"
+                        ],
+                        "clearance_conditions": [
+                          "inspect-dispatch"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "integrity": "9d9c3c30f544f2b81ccd51138488c2ebc01d8448b117f8b36cf20e39a3d12f7b"
+              },
+              {
+                "schema": "codex.review.v1",
+                "id": "codex.review.v1:b36a42308b06487a29117a26caab13d516c35bce830ca7ec90a29681ad720bf2",
+                "created_at": "2026-10-25T00:00:00Z",
+                "producer": {
+                  "identity": "codex-institutional",
+                  "assurance": "unverified"
+                },
+                "evidence_refs": [],
+                "authority_refs": [],
+                "validation_state": "candidate",
+                "lifecycle": "Draft",
+                "supersedes": null,
+                "extensions": {},
+                "payload": {
+                  "kind": "lane-output",
+                  "data": {
+                    "plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c",
+                    "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                    "lane": "dissent",
+                    "actor": "same-platform:coordinator",
+                    "run": "source-composition:dissent",
+                    "identity": "unverified",
+                    "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                    "findings": [
+                      {
+                        "id": "semantic-dispatch",
+                        "source_quote": "validate_artifact(child)",
+                        "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                        "kind": "inference",
+                        "confidence": 0.8,
+                        "coverage": [
+                          "admission"
+                        ],
+                        "clearance_conditions": [
+                          "inspect-dispatch"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "integrity": "594c445e67b99e29d98aa354945f75ea8f9a97fef21fc123b356a722e7c4d76d"
+              }
+            ],
+            "relations": [
+              {
+                "type": "contradicts",
+                "from": "architecture/semantic-dispatch",
+                "to": "dissent/semantic-dispatch"
+              }
+            ],
+            "procedures": [
+              {
+                "id": "technical_verification-fixture",
+                "version": "1",
+                "kind": "technical_verification",
+                "expected_outputs": [
+                  "report"
+                ]
+              },
+              {
+                "id": "independent_reproduction-fixture",
+                "version": "1",
+                "kind": "independent_reproduction",
+                "expected_outputs": [
+                  "report"
+                ]
+              },
+              {
+                "id": "institutional_audit-fixture",
+                "version": "1",
+                "kind": "institutional_audit",
+                "expected_outputs": [
+                  "report"
+                ]
+              }
+            ],
+            "nodes": [
+              {
+                "id": "technical_verification",
+                "kind": "technical_verification",
+                "depends_on": [],
+                "requirement": "required",
+                "rationale": "Explicit fixture coverage, not an operational assurance decision.",
+                "role": "technical_verification",
+                "actor": "same-platform:technical_verification",
+                "identity_assurance": "unverified",
+                "independence": "fixture-only",
+                "procedure": {
+                  "id": "technical_verification-fixture",
+                  "version": "1"
+                },
+                "environment_digest": "db137ac9f56fbe07f81018060c6e1e914f556c8eaa3d468faba8f0d06eb7a8c9",
+                "expected_outputs": [
+                  "report"
+                ],
+                "resource_caps": {
+                  "max_bytes": 65536,
+                  "max_attempts": 8
+                },
+                "finding_requirements": [
+                  {
+                    "finding": "architecture/semantic-dispatch",
+                    "requirement_digest": "9667e874b02269a66f4d95f5e769246af97e52b5446c1af06569639d1765a73c"
+                  },
+                  {
+                    "finding": "verification/semantic-dispatch",
+                    "requirement_digest": "a793fbfbf9da942b576e9c8c67d0dd12bb00c86f24a0f02a8583eb67d8c691f5"
+                  },
+                  {
+                    "finding": "dissent/semantic-dispatch",
+                    "requirement_digest": "43208ec1bb7a5d12ba4942ceae5e1fc888005806bc465b5ddcc4eca4fc94ade1"
+                  }
+                ],
+                "evidence_requirements": [
+                  "procedure-observation"
+                ],
+                "pending": "Supply bound external fixture report",
+                "recovery": "Reevaluate prerequisites and append explicit retry"
+              },
+              {
+                "id": "independent_reproduction",
+                "kind": "independent_reproduction",
+                "depends_on": [
+                  "technical_verification"
+                ],
+                "requirement": "required",
+                "rationale": "Explicit fixture coverage, not an operational assurance decision.",
+                "role": "independent_reproduction",
+                "actor": "same-platform:independent_reproduction",
+                "identity_assurance": "unverified",
+                "independence": "fixture-only",
+                "procedure": {
+                  "id": "independent_reproduction-fixture",
+                  "version": "1"
+                },
+                "environment_digest": "db137ac9f56fbe07f81018060c6e1e914f556c8eaa3d468faba8f0d06eb7a8c9",
+                "expected_outputs": [
+                  "report"
+                ],
+                "resource_caps": {
+                  "max_bytes": 65536,
+                  "max_attempts": 8
+                },
+                "finding_requirements": [
+                  {
+                    "finding": "architecture/semantic-dispatch",
+                    "requirement_digest": "9667e874b02269a66f4d95f5e769246af97e52b5446c1af06569639d1765a73c"
+                  },
+                  {
+                    "finding": "verification/semantic-dispatch",
+                    "requirement_digest": "a793fbfbf9da942b576e9c8c67d0dd12bb00c86f24a0f02a8583eb67d8c691f5"
+                  },
+                  {
+                    "finding": "dissent/semantic-dispatch",
+                    "requirement_digest": "43208ec1bb7a5d12ba4942ceae5e1fc888005806bc465b5ddcc4eca4fc94ade1"
+                  }
+                ],
+                "evidence_requirements": [
+                  "procedure-observation"
+                ],
+                "pending": "Supply bound external fixture report",
+                "recovery": "Reevaluate prerequisites and append explicit retry"
+              },
+              {
+                "id": "institutional_audit",
+                "kind": "institutional_audit",
+                "depends_on": [
+                  "technical_verification"
+                ],
+                "requirement": "blocked",
+                "rationale": "Owner retention/security decisions absent",
+                "role": "institutional_audit",
+                "actor": "same-platform:institutional_audit",
+                "identity_assurance": "unverified",
+                "independence": "fixture-only",
+                "procedure": {
+                  "id": "institutional_audit-fixture",
+                  "version": "1"
+                },
+                "environment_digest": "db137ac9f56fbe07f81018060c6e1e914f556c8eaa3d468faba8f0d06eb7a8c9",
+                "expected_outputs": [
+                  "report"
+                ],
+                "resource_caps": {
+                  "max_bytes": 65536,
+                  "max_attempts": 8
+                },
+                "finding_requirements": [
+                  {
+                    "finding": "architecture/semantic-dispatch",
+                    "requirement_digest": "9667e874b02269a66f4d95f5e769246af97e52b5446c1af06569639d1765a73c"
+                  },
+                  {
+                    "finding": "verification/semantic-dispatch",
+                    "requirement_digest": "a793fbfbf9da942b576e9c8c67d0dd12bb00c86f24a0f02a8583eb67d8c691f5"
+                  },
+                  {
+                    "finding": "dissent/semantic-dispatch",
+                    "requirement_digest": "43208ec1bb7a5d12ba4942ceae5e1fc888005806bc465b5ddcc4eca4fc94ade1"
+                  }
+                ],
+                "evidence_requirements": [
+                  "procedure-observation"
+                ],
+                "pending": "Supply bound external fixture report",
+                "recovery": "Reevaluate prerequisites and append explicit retry"
+              }
+            ],
+            "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+            "limits": {
+              "fixture_only": true,
+              "identity_assurance": "unverified",
+              "authority": "none",
+              "approval": false,
+              "activation": false,
+              "full_convergence_model": "unsupported"
+            }
+          }
+        },
+        "integrity": "e15898cc5af08a0a52ca1a9d6d6a9508904c4aa2fec4e802e1f83b601c47e2f8"
+      },
+      {
+        "schema": "codex.assurance.v1",
+        "id": "codex.assurance.v1:b31152ea337d00b2c8fe5dd03ee50f4fe0c96d17269773493d086ee044c72d84",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "kind": "history",
+          "data": {
+            "plan": {
+              "schema": "codex.assurance.v1",
+              "id": "codex.assurance.v1:3f416ed2ccc62422b6df595128dd0c482b50b61fb1dbc51e920f659bc38205c7",
+              "created_at": "2026-10-25T00:00:00Z",
+              "producer": {
+                "identity": "codex-institutional",
+                "assurance": "unverified"
+              },
+              "evidence_refs": [],
+              "authority_refs": [],
+              "validation_state": "candidate",
+              "lifecycle": "Draft",
+              "supersedes": null,
+              "extensions": {},
+              "payload": {
+                "kind": "plan",
+                "data": {
+                  "review_plan": {
+                    "schema": "codex.review.v1",
+                    "id": "codex.review.v1:a5d79ceda68bf3e0ce712a8209f80986c920e8d4f6c5271fb81f7c62661c05f8",
+                    "created_at": "2026-10-25T00:00:00Z",
+                    "producer": {
+                      "identity": "codex-institutional",
+                      "assurance": "unverified"
+                    },
+                    "evidence_refs": [],
+                    "authority_refs": [],
+                    "validation_state": "candidate",
+                    "lifecycle": "Draft",
+                    "supersedes": null,
+                    "extensions": {},
+                    "payload": {
+                      "kind": "plan",
+                      "data": {
+                        "manifest": {
+                          "schema": "codex.review.v1",
+                          "id": "codex.review.v1:8f60898806b57f82bb2920432f94d42c832ad40ddbd818d8c490d2e115895c2c",
+                          "created_at": "2026-10-25T00:00:00Z",
+                          "producer": {
+                            "identity": "codex-institutional",
+                            "assurance": "unverified"
+                          },
+                          "evidence_refs": [],
+                          "authority_refs": [],
+                          "validation_state": "candidate",
+                          "lifecycle": "Draft",
+                          "supersedes": null,
+                          "extensions": {},
+                          "payload": {
+                            "kind": "manifest",
+                            "data": {
+                              "entries": [
+                                {
+                                  "path": "core.py",
+                                  "sha256": "cb7bce232df6d5b993739c83def42b4ca743bcc849663ad9bffecd6390dc806a",
+                                  "size": 23750,
+                                  "mode": 420
+                                }
+                              ],
+                              "context_digest": "e3f7792242530b6d8555a40248850536582ce1d93b9fb43b21547cf8365d2300",
+                              "rules": {
+                                "symlinks": "reject",
+                                "submodules": "reject",
+                                "archives": "opaque-no-expansion",
+                                "hardlinks": "independent-bytes",
+                                "permissions": "explicit-posix-mode",
+                                "line_endings": "raw"
+                              },
+                              "classification": "Repository-Internal"
+                            }
+                          },
+                          "integrity": "8fa12b44701bfd4cf2008074d2d09931ac79bc888d653b0d70f91bc35ba5ba6d"
+                        },
+                        "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                        "lanes": [
+                          {
+                            "id": "architecture",
+                            "bearing": "090",
+                            "actor": "same-platform:coordinator",
+                            "run": "source-composition:architecture",
+                            "dissent": false,
+                            "required": true,
+                            "coverage": [
+                              "admission"
+                            ],
+                            "tools": [
+                              "read",
+                              "search"
+                            ]
+                          },
+                          {
+                            "id": "verification",
+                            "bearing": "180",
+                            "actor": "same-platform:coordinator",
+                            "run": "source-composition:verification",
+                            "dissent": false,
+                            "required": true,
+                            "coverage": [
+                              "admission"
+                            ],
+                            "tools": [
+                              "read",
+                              "search"
+                            ]
+                          },
+                          {
+                            "id": "dissent",
+                            "bearing": "cross-cutting",
+                            "actor": "same-platform:coordinator",
+                            "run": "source-composition:dissent",
+                            "dissent": true,
+                            "required": true,
+                            "coverage": [
+                              "admission"
+                            ],
+                            "tools": [
+                              "read",
+                              "search"
+                            ]
+                          },
+                          {
+                            "id": "rotated",
+                            "bearing": "315-history",
+                            "actor": "same-platform:coordinator",
+                            "run": "source-composition:rotated",
+                            "dissent": false,
+                            "required": false,
+                            "coverage": [
+                              "admission"
+                            ],
+                            "tools": [
+                              "read",
+                              "search"
+                            ]
+                          }
+                        ],
+                        "mandatory": [
+                          "admission"
+                        ],
+                        "critical": [
+                          "admission"
+                        ],
+                        "mode": "supplement",
+                        "coordinator_role": "implementer",
+                        "independence": "unverified"
+                      }
+                    },
+                    "integrity": "9c14846b66dbde44b8c7c26df0d58584039bf0c973959da2e0b36d03029058da"
+                  },
+                  "original_outputs": [
+                    {
+                      "schema": "codex.review.v1",
+                      "id": "codex.review.v1:f848c5b0fec96d9c8014389d6b5cf5c31cecca02a7038a413366fe90ec0af27b",
+                      "created_at": "2026-10-25T00:00:00Z",
+                      "producer": {
+                        "identity": "codex-institutional",
+                        "assurance": "unverified"
+                      },
+                      "evidence_refs": [],
+                      "authority_refs": [],
+                      "validation_state": "candidate",
+                      "lifecycle": "Draft",
+                      "supersedes": null,
+                      "extensions": {},
+                      "payload": {
+                        "kind": "lane-output",
+                        "data": {
+                          "plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c",
+                          "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                          "lane": "architecture",
+                          "actor": "same-platform:coordinator",
+                          "run": "source-composition:architecture",
+                          "identity": "unverified",
+                          "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                          "findings": [
+                            {
+                              "id": "semantic-dispatch",
+                              "source_quote": "validate_artifact(child)",
+                              "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                              "kind": "inference",
+                              "confidence": 0.8,
+                              "coverage": [
+                                "admission"
+                              ],
+                              "clearance_conditions": [
+                                "inspect-dispatch"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "integrity": "56ac605aedfdd56ddfbcc23c32ff50452c5a729a671cc281626a64bce2c99b18"
+                    },
+                    {
+                      "schema": "codex.review.v1",
+                      "id": "codex.review.v1:4f1aed41c2d1f096a45ad519a2e35d2ebfb9082e0b6b530092c355f7d5db8d52",
+                      "created_at": "2026-10-25T00:00:00Z",
+                      "producer": {
+                        "identity": "codex-institutional",
+                        "assurance": "unverified"
+                      },
+                      "evidence_refs": [],
+                      "authority_refs": [],
+                      "validation_state": "candidate",
+                      "lifecycle": "Draft",
+                      "supersedes": null,
+                      "extensions": {},
+                      "payload": {
+                        "kind": "lane-output",
+                        "data": {
+                          "plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c",
+                          "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                          "lane": "verification",
+                          "actor": "same-platform:coordinator",
+                          "run": "source-composition:verification",
+                          "identity": "unverified",
+                          "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                          "findings": [
+                            {
+                              "id": "semantic-dispatch",
+                              "source_quote": "validate_artifact(child)",
+                              "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                              "kind": "inference",
+                              "confidence": 0.8,
+                              "coverage": [
+                                "admission"
+                              ],
+                              "clearance_conditions": [
+                                "inspect-dispatch"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "integrity": "9d9c3c30f544f2b81ccd51138488c2ebc01d8448b117f8b36cf20e39a3d12f7b"
+                    },
+                    {
+                      "schema": "codex.review.v1",
+                      "id": "codex.review.v1:b36a42308b06487a29117a26caab13d516c35bce830ca7ec90a29681ad720bf2",
+                      "created_at": "2026-10-25T00:00:00Z",
+                      "producer": {
+                        "identity": "codex-institutional",
+                        "assurance": "unverified"
+                      },
+                      "evidence_refs": [],
+                      "authority_refs": [],
+                      "validation_state": "candidate",
+                      "lifecycle": "Draft",
+                      "supersedes": null,
+                      "extensions": {},
+                      "payload": {
+                        "kind": "lane-output",
+                        "data": {
+                          "plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c",
+                          "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                          "lane": "dissent",
+                          "actor": "same-platform:coordinator",
+                          "run": "source-composition:dissent",
+                          "identity": "unverified",
+                          "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                          "findings": [
+                            {
+                              "id": "semantic-dispatch",
+                              "source_quote": "validate_artifact(child)",
+                              "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                              "kind": "inference",
+                              "confidence": 0.8,
+                              "coverage": [
+                                "admission"
+                              ],
+                              "clearance_conditions": [
+                                "inspect-dispatch"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "integrity": "594c445e67b99e29d98aa354945f75ea8f9a97fef21fc123b356a722e7c4d76d"
+                    }
+                  ],
+                  "relations": [
+                    {
+                      "type": "contradicts",
+                      "from": "architecture/semantic-dispatch",
+                      "to": "dissent/semantic-dispatch"
+                    }
+                  ],
+                  "procedures": [
+                    {
+                      "id": "technical_verification-fixture",
+                      "version": "1",
+                      "kind": "technical_verification",
+                      "expected_outputs": [
+                        "report"
+                      ]
+                    },
+                    {
+                      "id": "independent_reproduction-fixture",
+                      "version": "1",
+                      "kind": "independent_reproduction",
+                      "expected_outputs": [
+                        "report"
+                      ]
+                    },
+                    {
+                      "id": "institutional_audit-fixture",
+                      "version": "1",
+                      "kind": "institutional_audit",
+                      "expected_outputs": [
+                        "report"
+                      ]
+                    }
+                  ],
+                  "nodes": [
+                    {
+                      "id": "technical_verification",
+                      "kind": "technical_verification",
+                      "depends_on": [],
+                      "requirement": "required",
+                      "rationale": "Explicit fixture coverage, not an operational assurance decision.",
+                      "role": "technical_verification",
+                      "actor": "same-platform:technical_verification",
+                      "identity_assurance": "unverified",
+                      "independence": "fixture-only",
+                      "procedure": {
+                        "id": "technical_verification-fixture",
+                        "version": "1"
+                      },
+                      "environment_digest": "db137ac9f56fbe07f81018060c6e1e914f556c8eaa3d468faba8f0d06eb7a8c9",
+                      "expected_outputs": [
+                        "report"
+                      ],
+                      "resource_caps": {
+                        "max_bytes": 65536,
+                        "max_attempts": 8
+                      },
+                      "finding_requirements": [
+                        {
+                          "finding": "architecture/semantic-dispatch",
+                          "requirement_digest": "9667e874b02269a66f4d95f5e769246af97e52b5446c1af06569639d1765a73c"
+                        },
+                        {
+                          "finding": "verification/semantic-dispatch",
+                          "requirement_digest": "a793fbfbf9da942b576e9c8c67d0dd12bb00c86f24a0f02a8583eb67d8c691f5"
+                        },
+                        {
+                          "finding": "dissent/semantic-dispatch",
+                          "requirement_digest": "43208ec1bb7a5d12ba4942ceae5e1fc888005806bc465b5ddcc4eca4fc94ade1"
+                        }
+                      ],
+                      "evidence_requirements": [
+                        "procedure-observation"
+                      ],
+                      "pending": "Supply bound external fixture report",
+                      "recovery": "Reevaluate prerequisites and append explicit retry"
+                    },
+                    {
+                      "id": "independent_reproduction",
+                      "kind": "independent_reproduction",
+                      "depends_on": [
+                        "technical_verification"
+                      ],
+                      "requirement": "required",
+                      "rationale": "Explicit fixture coverage, not an operational assurance decision.",
+                      "role": "independent_reproduction",
+                      "actor": "same-platform:independent_reproduction",
+                      "identity_assurance": "unverified",
+                      "independence": "fixture-only",
+                      "procedure": {
+                        "id": "independent_reproduction-fixture",
+                        "version": "1"
+                      },
+                      "environment_digest": "db137ac9f56fbe07f81018060c6e1e914f556c8eaa3d468faba8f0d06eb7a8c9",
+                      "expected_outputs": [
+                        "report"
+                      ],
+                      "resource_caps": {
+                        "max_bytes": 65536,
+                        "max_attempts": 8
+                      },
+                      "finding_requirements": [
+                        {
+                          "finding": "architecture/semantic-dispatch",
+                          "requirement_digest": "9667e874b02269a66f4d95f5e769246af97e52b5446c1af06569639d1765a73c"
+                        },
+                        {
+                          "finding": "verification/semantic-dispatch",
+                          "requirement_digest": "a793fbfbf9da942b576e9c8c67d0dd12bb00c86f24a0f02a8583eb67d8c691f5"
+                        },
+                        {
+                          "finding": "dissent/semantic-dispatch",
+                          "requirement_digest": "43208ec1bb7a5d12ba4942ceae5e1fc888005806bc465b5ddcc4eca4fc94ade1"
+                        }
+                      ],
+                      "evidence_requirements": [
+                        "procedure-observation"
+                      ],
+                      "pending": "Supply bound external fixture report",
+                      "recovery": "Reevaluate prerequisites and append explicit retry"
+                    },
+                    {
+                      "id": "institutional_audit",
+                      "kind": "institutional_audit",
+                      "depends_on": [
+                        "technical_verification"
+                      ],
+                      "requirement": "blocked",
+                      "rationale": "Owner retention/security decisions absent",
+                      "role": "institutional_audit",
+                      "actor": "same-platform:institutional_audit",
+                      "identity_assurance": "unverified",
+                      "independence": "fixture-only",
+                      "procedure": {
+                        "id": "institutional_audit-fixture",
+                        "version": "1"
+                      },
+                      "environment_digest": "db137ac9f56fbe07f81018060c6e1e914f556c8eaa3d468faba8f0d06eb7a8c9",
+                      "expected_outputs": [
+                        "report"
+                      ],
+                      "resource_caps": {
+                        "max_bytes": 65536,
+                        "max_attempts": 8
+                      },
+                      "finding_requirements": [
+                        {
+                          "finding": "architecture/semantic-dispatch",
+                          "requirement_digest": "9667e874b02269a66f4d95f5e769246af97e52b5446c1af06569639d1765a73c"
+                        },
+                        {
+                          "finding": "verification/semantic-dispatch",
+                          "requirement_digest": "a793fbfbf9da942b576e9c8c67d0dd12bb00c86f24a0f02a8583eb67d8c691f5"
+                        },
+                        {
+                          "finding": "dissent/semantic-dispatch",
+                          "requirement_digest": "43208ec1bb7a5d12ba4942ceae5e1fc888005806bc465b5ddcc4eca4fc94ade1"
+                        }
+                      ],
+                      "evidence_requirements": [
+                        "procedure-observation"
+                      ],
+                      "pending": "Supply bound external fixture report",
+                      "recovery": "Reevaluate prerequisites and append explicit retry"
+                    }
+                  ],
+                  "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                  "limits": {
+                    "fixture_only": true,
+                    "identity_assurance": "unverified",
+                    "authority": "none",
+                    "approval": false,
+                    "activation": false,
+                    "full_convergence_model": "unsupported"
+                  }
+                }
+              },
+              "integrity": "e15898cc5af08a0a52ca1a9d6d6a9508904c4aa2fec4e802e1f83b601c47e2f8"
+            },
+            "events": [
+              {
+                "id": "00000000-0000-4000-8000-000000000050",
+                "sequence": 1,
+                "predecessor": null,
+                "action": "result",
+                "detail": {
+                  "result": {
+                    "node_id": "technical_verification",
+                    "plan_digest": "6b8f7acc77d60b913d52d73245a3cef05fd6b24e29ecea5c8be6ebe93cef42c7",
+                    "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                    "procedure": {
+                      "id": "technical_verification-fixture",
+                      "version": "1"
+                    },
+                    "environment_digest": "db137ac9f56fbe07f81018060c6e1e914f556c8eaa3d468faba8f0d06eb7a8c9",
+                    "actor": "same-platform:technical_verification",
+                    "identity_assurance": "unverified",
+                    "outcome": "PASS",
+                    "outputs": [
+                      "report"
+                    ],
+                    "bytes_used": 24,
+                    "prerequisites": {},
+                    "evidence": [
+                      {
+                        "id": "source-dispatch",
+                        "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                        "provenance": "unverified",
+                        "authority": "none",
+                        "status": "ACTIVE",
+                        "applicability": "applicable",
+                        "eligibility": "eligible",
+                        "critical": true,
+                        "requirements": [
+                          "procedure-observation"
+                        ],
+                        "finding_requirements": [
+                          {
+                            "finding": "architecture/semantic-dispatch",
+                            "requirement_digest": "9667e874b02269a66f4d95f5e769246af97e52b5446c1af06569639d1765a73c"
+                          },
+                          {
+                            "finding": "verification/semantic-dispatch",
+                            "requirement_digest": "a793fbfbf9da942b576e9c8c67d0dd12bb00c86f24a0f02a8583eb67d8c691f5"
+                          },
+                          {
+                            "finding": "dissent/semantic-dispatch",
+                            "requirement_digest": "43208ec1bb7a5d12ba4942ceae5e1fc888005806bc465b5ddcc4eca4fc94ade1"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "previous_result": null
+                },
+                "digest": "a7aa399c460da839ffd83da6502029131251267165a7973aebb4844b2982869c"
+              }
+            ]
+          }
+        },
+        "integrity": "249b2ab57337299a3fa3ea5d28df8cd1094e31509813e2d50418bb149e3ec8c7"
+      },
+      {
+        "schema": "codex.assurance.v1",
+        "id": "codex.assurance.v1:7ccf78294c48fba06dc3aa18b3ffcae14e82e2a687a2805241db2213fad2a227",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "kind": "recommendation",
+          "data": {
+            "history": {
+              "schema": "codex.assurance.v1",
+              "id": "codex.assurance.v1:b31152ea337d00b2c8fe5dd03ee50f4fe0c96d17269773493d086ee044c72d84",
+              "created_at": "2026-10-25T00:00:00Z",
+              "producer": {
+                "identity": "codex-institutional",
+                "assurance": "unverified"
+              },
+              "evidence_refs": [],
+              "authority_refs": [],
+              "validation_state": "candidate",
+              "lifecycle": "Draft",
+              "supersedes": null,
+              "extensions": {},
+              "payload": {
+                "kind": "history",
+                "data": {
+                  "plan": {
+                    "schema": "codex.assurance.v1",
+                    "id": "codex.assurance.v1:3f416ed2ccc62422b6df595128dd0c482b50b61fb1dbc51e920f659bc38205c7",
+                    "created_at": "2026-10-25T00:00:00Z",
+                    "producer": {
+                      "identity": "codex-institutional",
+                      "assurance": "unverified"
+                    },
+                    "evidence_refs": [],
+                    "authority_refs": [],
+                    "validation_state": "candidate",
+                    "lifecycle": "Draft",
+                    "supersedes": null,
+                    "extensions": {},
+                    "payload": {
+                      "kind": "plan",
+                      "data": {
+                        "review_plan": {
+                          "schema": "codex.review.v1",
+                          "id": "codex.review.v1:a5d79ceda68bf3e0ce712a8209f80986c920e8d4f6c5271fb81f7c62661c05f8",
+                          "created_at": "2026-10-25T00:00:00Z",
+                          "producer": {
+                            "identity": "codex-institutional",
+                            "assurance": "unverified"
+                          },
+                          "evidence_refs": [],
+                          "authority_refs": [],
+                          "validation_state": "candidate",
+                          "lifecycle": "Draft",
+                          "supersedes": null,
+                          "extensions": {},
+                          "payload": {
+                            "kind": "plan",
+                            "data": {
+                              "manifest": {
+                                "schema": "codex.review.v1",
+                                "id": "codex.review.v1:8f60898806b57f82bb2920432f94d42c832ad40ddbd818d8c490d2e115895c2c",
+                                "created_at": "2026-10-25T00:00:00Z",
+                                "producer": {
+                                  "identity": "codex-institutional",
+                                  "assurance": "unverified"
+                                },
+                                "evidence_refs": [],
+                                "authority_refs": [],
+                                "validation_state": "candidate",
+                                "lifecycle": "Draft",
+                                "supersedes": null,
+                                "extensions": {},
+                                "payload": {
+                                  "kind": "manifest",
+                                  "data": {
+                                    "entries": [
+                                      {
+                                        "path": "core.py",
+                                        "sha256": "cb7bce232df6d5b993739c83def42b4ca743bcc849663ad9bffecd6390dc806a",
+                                        "size": 23750,
+                                        "mode": 420
+                                      }
+                                    ],
+                                    "context_digest": "e3f7792242530b6d8555a40248850536582ce1d93b9fb43b21547cf8365d2300",
+                                    "rules": {
+                                      "symlinks": "reject",
+                                      "submodules": "reject",
+                                      "archives": "opaque-no-expansion",
+                                      "hardlinks": "independent-bytes",
+                                      "permissions": "explicit-posix-mode",
+                                      "line_endings": "raw"
+                                    },
+                                    "classification": "Repository-Internal"
+                                  }
+                                },
+                                "integrity": "8fa12b44701bfd4cf2008074d2d09931ac79bc888d653b0d70f91bc35ba5ba6d"
+                              },
+                              "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                              "lanes": [
+                                {
+                                  "id": "architecture",
+                                  "bearing": "090",
+                                  "actor": "same-platform:coordinator",
+                                  "run": "source-composition:architecture",
+                                  "dissent": false,
+                                  "required": true,
+                                  "coverage": [
+                                    "admission"
+                                  ],
+                                  "tools": [
+                                    "read",
+                                    "search"
+                                  ]
+                                },
+                                {
+                                  "id": "verification",
+                                  "bearing": "180",
+                                  "actor": "same-platform:coordinator",
+                                  "run": "source-composition:verification",
+                                  "dissent": false,
+                                  "required": true,
+                                  "coverage": [
+                                    "admission"
+                                  ],
+                                  "tools": [
+                                    "read",
+                                    "search"
+                                  ]
+                                },
+                                {
+                                  "id": "dissent",
+                                  "bearing": "cross-cutting",
+                                  "actor": "same-platform:coordinator",
+                                  "run": "source-composition:dissent",
+                                  "dissent": true,
+                                  "required": true,
+                                  "coverage": [
+                                    "admission"
+                                  ],
+                                  "tools": [
+                                    "read",
+                                    "search"
+                                  ]
+                                },
+                                {
+                                  "id": "rotated",
+                                  "bearing": "315-history",
+                                  "actor": "same-platform:coordinator",
+                                  "run": "source-composition:rotated",
+                                  "dissent": false,
+                                  "required": false,
+                                  "coverage": [
+                                    "admission"
+                                  ],
+                                  "tools": [
+                                    "read",
+                                    "search"
+                                  ]
+                                }
+                              ],
+                              "mandatory": [
+                                "admission"
+                              ],
+                              "critical": [
+                                "admission"
+                              ],
+                              "mode": "supplement",
+                              "coordinator_role": "implementer",
+                              "independence": "unverified"
+                            }
+                          },
+                          "integrity": "9c14846b66dbde44b8c7c26df0d58584039bf0c973959da2e0b36d03029058da"
+                        },
+                        "original_outputs": [
+                          {
+                            "schema": "codex.review.v1",
+                            "id": "codex.review.v1:f848c5b0fec96d9c8014389d6b5cf5c31cecca02a7038a413366fe90ec0af27b",
+                            "created_at": "2026-10-25T00:00:00Z",
+                            "producer": {
+                              "identity": "codex-institutional",
+                              "assurance": "unverified"
+                            },
+                            "evidence_refs": [],
+                            "authority_refs": [],
+                            "validation_state": "candidate",
+                            "lifecycle": "Draft",
+                            "supersedes": null,
+                            "extensions": {},
+                            "payload": {
+                              "kind": "lane-output",
+                              "data": {
+                                "plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c",
+                                "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                                "lane": "architecture",
+                                "actor": "same-platform:coordinator",
+                                "run": "source-composition:architecture",
+                                "identity": "unverified",
+                                "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                                "findings": [
+                                  {
+                                    "id": "semantic-dispatch",
+                                    "source_quote": "validate_artifact(child)",
+                                    "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                                    "kind": "inference",
+                                    "confidence": 0.8,
+                                    "coverage": [
+                                      "admission"
+                                    ],
+                                    "clearance_conditions": [
+                                      "inspect-dispatch"
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            "integrity": "56ac605aedfdd56ddfbcc23c32ff50452c5a729a671cc281626a64bce2c99b18"
+                          },
+                          {
+                            "schema": "codex.review.v1",
+                            "id": "codex.review.v1:4f1aed41c2d1f096a45ad519a2e35d2ebfb9082e0b6b530092c355f7d5db8d52",
+                            "created_at": "2026-10-25T00:00:00Z",
+                            "producer": {
+                              "identity": "codex-institutional",
+                              "assurance": "unverified"
+                            },
+                            "evidence_refs": [],
+                            "authority_refs": [],
+                            "validation_state": "candidate",
+                            "lifecycle": "Draft",
+                            "supersedes": null,
+                            "extensions": {},
+                            "payload": {
+                              "kind": "lane-output",
+                              "data": {
+                                "plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c",
+                                "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                                "lane": "verification",
+                                "actor": "same-platform:coordinator",
+                                "run": "source-composition:verification",
+                                "identity": "unverified",
+                                "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                                "findings": [
+                                  {
+                                    "id": "semantic-dispatch",
+                                    "source_quote": "validate_artifact(child)",
+                                    "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                                    "kind": "inference",
+                                    "confidence": 0.8,
+                                    "coverage": [
+                                      "admission"
+                                    ],
+                                    "clearance_conditions": [
+                                      "inspect-dispatch"
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            "integrity": "9d9c3c30f544f2b81ccd51138488c2ebc01d8448b117f8b36cf20e39a3d12f7b"
+                          },
+                          {
+                            "schema": "codex.review.v1",
+                            "id": "codex.review.v1:b36a42308b06487a29117a26caab13d516c35bce830ca7ec90a29681ad720bf2",
+                            "created_at": "2026-10-25T00:00:00Z",
+                            "producer": {
+                              "identity": "codex-institutional",
+                              "assurance": "unverified"
+                            },
+                            "evidence_refs": [],
+                            "authority_refs": [],
+                            "validation_state": "candidate",
+                            "lifecycle": "Draft",
+                            "supersedes": null,
+                            "extensions": {},
+                            "payload": {
+                              "kind": "lane-output",
+                              "data": {
+                                "plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c",
+                                "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                                "lane": "dissent",
+                                "actor": "same-platform:coordinator",
+                                "run": "source-composition:dissent",
+                                "identity": "unverified",
+                                "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                                "findings": [
+                                  {
+                                    "id": "semantic-dispatch",
+                                    "source_quote": "validate_artifact(child)",
+                                    "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                                    "kind": "inference",
+                                    "confidence": 0.8,
+                                    "coverage": [
+                                      "admission"
+                                    ],
+                                    "clearance_conditions": [
+                                      "inspect-dispatch"
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            "integrity": "594c445e67b99e29d98aa354945f75ea8f9a97fef21fc123b356a722e7c4d76d"
+                          }
+                        ],
+                        "relations": [
+                          {
+                            "type": "contradicts",
+                            "from": "architecture/semantic-dispatch",
+                            "to": "dissent/semantic-dispatch"
+                          }
+                        ],
+                        "procedures": [
+                          {
+                            "id": "technical_verification-fixture",
+                            "version": "1",
+                            "kind": "technical_verification",
+                            "expected_outputs": [
+                              "report"
+                            ]
+                          },
+                          {
+                            "id": "independent_reproduction-fixture",
+                            "version": "1",
+                            "kind": "independent_reproduction",
+                            "expected_outputs": [
+                              "report"
+                            ]
+                          },
+                          {
+                            "id": "institutional_audit-fixture",
+                            "version": "1",
+                            "kind": "institutional_audit",
+                            "expected_outputs": [
+                              "report"
+                            ]
+                          }
+                        ],
+                        "nodes": [
+                          {
+                            "id": "technical_verification",
+                            "kind": "technical_verification",
+                            "depends_on": [],
+                            "requirement": "required",
+                            "rationale": "Explicit fixture coverage, not an operational assurance decision.",
+                            "role": "technical_verification",
+                            "actor": "same-platform:technical_verification",
+                            "identity_assurance": "unverified",
+                            "independence": "fixture-only",
+                            "procedure": {
+                              "id": "technical_verification-fixture",
+                              "version": "1"
+                            },
+                            "environment_digest": "db137ac9f56fbe07f81018060c6e1e914f556c8eaa3d468faba8f0d06eb7a8c9",
+                            "expected_outputs": [
+                              "report"
+                            ],
+                            "resource_caps": {
+                              "max_bytes": 65536,
+                              "max_attempts": 8
+                            },
+                            "finding_requirements": [
+                              {
+                                "finding": "architecture/semantic-dispatch",
+                                "requirement_digest": "9667e874b02269a66f4d95f5e769246af97e52b5446c1af06569639d1765a73c"
+                              },
+                              {
+                                "finding": "verification/semantic-dispatch",
+                                "requirement_digest": "a793fbfbf9da942b576e9c8c67d0dd12bb00c86f24a0f02a8583eb67d8c691f5"
+                              },
+                              {
+                                "finding": "dissent/semantic-dispatch",
+                                "requirement_digest": "43208ec1bb7a5d12ba4942ceae5e1fc888005806bc465b5ddcc4eca4fc94ade1"
+                              }
+                            ],
+                            "evidence_requirements": [
+                              "procedure-observation"
+                            ],
+                            "pending": "Supply bound external fixture report",
+                            "recovery": "Reevaluate prerequisites and append explicit retry"
+                          },
+                          {
+                            "id": "independent_reproduction",
+                            "kind": "independent_reproduction",
+                            "depends_on": [
+                              "technical_verification"
+                            ],
+                            "requirement": "required",
+                            "rationale": "Explicit fixture coverage, not an operational assurance decision.",
+                            "role": "independent_reproduction",
+                            "actor": "same-platform:independent_reproduction",
+                            "identity_assurance": "unverified",
+                            "independence": "fixture-only",
+                            "procedure": {
+                              "id": "independent_reproduction-fixture",
+                              "version": "1"
+                            },
+                            "environment_digest": "db137ac9f56fbe07f81018060c6e1e914f556c8eaa3d468faba8f0d06eb7a8c9",
+                            "expected_outputs": [
+                              "report"
+                            ],
+                            "resource_caps": {
+                              "max_bytes": 65536,
+                              "max_attempts": 8
+                            },
+                            "finding_requirements": [
+                              {
+                                "finding": "architecture/semantic-dispatch",
+                                "requirement_digest": "9667e874b02269a66f4d95f5e769246af97e52b5446c1af06569639d1765a73c"
+                              },
+                              {
+                                "finding": "verification/semantic-dispatch",
+                                "requirement_digest": "a793fbfbf9da942b576e9c8c67d0dd12bb00c86f24a0f02a8583eb67d8c691f5"
+                              },
+                              {
+                                "finding": "dissent/semantic-dispatch",
+                                "requirement_digest": "43208ec1bb7a5d12ba4942ceae5e1fc888005806bc465b5ddcc4eca4fc94ade1"
+                              }
+                            ],
+                            "evidence_requirements": [
+                              "procedure-observation"
+                            ],
+                            "pending": "Supply bound external fixture report",
+                            "recovery": "Reevaluate prerequisites and append explicit retry"
+                          },
+                          {
+                            "id": "institutional_audit",
+                            "kind": "institutional_audit",
+                            "depends_on": [
+                              "technical_verification"
+                            ],
+                            "requirement": "blocked",
+                            "rationale": "Owner retention/security decisions absent",
+                            "role": "institutional_audit",
+                            "actor": "same-platform:institutional_audit",
+                            "identity_assurance": "unverified",
+                            "independence": "fixture-only",
+                            "procedure": {
+                              "id": "institutional_audit-fixture",
+                              "version": "1"
+                            },
+                            "environment_digest": "db137ac9f56fbe07f81018060c6e1e914f556c8eaa3d468faba8f0d06eb7a8c9",
+                            "expected_outputs": [
+                              "report"
+                            ],
+                            "resource_caps": {
+                              "max_bytes": 65536,
+                              "max_attempts": 8
+                            },
+                            "finding_requirements": [
+                              {
+                                "finding": "architecture/semantic-dispatch",
+                                "requirement_digest": "9667e874b02269a66f4d95f5e769246af97e52b5446c1af06569639d1765a73c"
+                              },
+                              {
+                                "finding": "verification/semantic-dispatch",
+                                "requirement_digest": "a793fbfbf9da942b576e9c8c67d0dd12bb00c86f24a0f02a8583eb67d8c691f5"
+                              },
+                              {
+                                "finding": "dissent/semantic-dispatch",
+                                "requirement_digest": "43208ec1bb7a5d12ba4942ceae5e1fc888005806bc465b5ddcc4eca4fc94ade1"
+                              }
+                            ],
+                            "evidence_requirements": [
+                              "procedure-observation"
+                            ],
+                            "pending": "Supply bound external fixture report",
+                            "recovery": "Reevaluate prerequisites and append explicit retry"
+                          }
+                        ],
+                        "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                        "limits": {
+                          "fixture_only": true,
+                          "identity_assurance": "unverified",
+                          "authority": "none",
+                          "approval": false,
+                          "activation": false,
+                          "full_convergence_model": "unsupported"
+                        }
+                      }
+                    },
+                    "integrity": "e15898cc5af08a0a52ca1a9d6d6a9508904c4aa2fec4e802e1f83b601c47e2f8"
+                  },
+                  "events": [
+                    {
+                      "id": "00000000-0000-4000-8000-000000000050",
+                      "sequence": 1,
+                      "predecessor": null,
+                      "action": "result",
+                      "detail": {
+                        "result": {
+                          "node_id": "technical_verification",
+                          "plan_digest": "6b8f7acc77d60b913d52d73245a3cef05fd6b24e29ecea5c8be6ebe93cef42c7",
+                          "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                          "procedure": {
+                            "id": "technical_verification-fixture",
+                            "version": "1"
+                          },
+                          "environment_digest": "db137ac9f56fbe07f81018060c6e1e914f556c8eaa3d468faba8f0d06eb7a8c9",
+                          "actor": "same-platform:technical_verification",
+                          "identity_assurance": "unverified",
+                          "outcome": "PASS",
+                          "outputs": [
+                            "report"
+                          ],
+                          "bytes_used": 24,
+                          "prerequisites": {},
+                          "evidence": [
+                            {
+                              "id": "source-dispatch",
+                              "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                              "provenance": "unverified",
+                              "authority": "none",
+                              "status": "ACTIVE",
+                              "applicability": "applicable",
+                              "eligibility": "eligible",
+                              "critical": true,
+                              "requirements": [
+                                "procedure-observation"
+                              ],
+                              "finding_requirements": [
+                                {
+                                  "finding": "architecture/semantic-dispatch",
+                                  "requirement_digest": "9667e874b02269a66f4d95f5e769246af97e52b5446c1af06569639d1765a73c"
+                                },
+                                {
+                                  "finding": "verification/semantic-dispatch",
+                                  "requirement_digest": "a793fbfbf9da942b576e9c8c67d0dd12bb00c86f24a0f02a8583eb67d8c691f5"
+                                },
+                                {
+                                  "finding": "dissent/semantic-dispatch",
+                                  "requirement_digest": "43208ec1bb7a5d12ba4942ceae5e1fc888005806bc465b5ddcc4eca4fc94ade1"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "previous_result": null
+                      },
+                      "digest": "a7aa399c460da839ffd83da6502029131251267165a7973aebb4844b2982869c"
+                    }
+                  ]
+                }
+              },
+              "integrity": "249b2ab57337299a3fa3ea5d28df8cd1094e31509813e2d50418bb149e3ec8c7"
+            },
+            "current_manifest": {
+              "schema": "codex.review.v1",
+              "id": "codex.review.v1:8f60898806b57f82bb2920432f94d42c832ad40ddbd818d8c490d2e115895c2c",
+              "created_at": "2026-10-25T00:00:00Z",
+              "producer": {
+                "identity": "codex-institutional",
+                "assurance": "unverified"
+              },
+              "evidence_refs": [],
+              "authority_refs": [],
+              "validation_state": "candidate",
+              "lifecycle": "Draft",
+              "supersedes": null,
+              "extensions": {},
+              "payload": {
+                "kind": "manifest",
+                "data": {
+                  "entries": [
+                    {
+                      "path": "core.py",
+                      "sha256": "cb7bce232df6d5b993739c83def42b4ca743bcc849663ad9bffecd6390dc806a",
+                      "size": 23750,
+                      "mode": 420
+                    }
+                  ],
+                  "context_digest": "e3f7792242530b6d8555a40248850536582ce1d93b9fb43b21547cf8365d2300",
+                  "rules": {
+                    "symlinks": "reject",
+                    "submodules": "reject",
+                    "archives": "opaque-no-expansion",
+                    "hardlinks": "independent-bytes",
+                    "permissions": "explicit-posix-mode",
+                    "line_endings": "raw"
+                  },
+                  "classification": "Repository-Internal"
+                }
+              },
+              "integrity": "8fa12b44701bfd4cf2008074d2d09931ac79bc888d653b0d70f91bc35ba5ba6d"
+            },
+            "dispositions": [],
+            "original_review": {
+              "plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c",
+              "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+              "stage": "final",
+              "outputs": [
+                {
+                  "schema": "codex.review.v1",
+                  "id": "codex.review.v1:f848c5b0fec96d9c8014389d6b5cf5c31cecca02a7038a413366fe90ec0af27b",
+                  "created_at": "2026-10-25T00:00:00Z",
+                  "producer": {
+                    "identity": "codex-institutional",
+                    "assurance": "unverified"
+                  },
+                  "evidence_refs": [],
+                  "authority_refs": [],
+                  "validation_state": "candidate",
+                  "lifecycle": "Draft",
+                  "supersedes": null,
+                  "extensions": {},
+                  "payload": {
+                    "kind": "lane-output",
+                    "data": {
+                      "plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c",
+                      "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                      "lane": "architecture",
+                      "actor": "same-platform:coordinator",
+                      "run": "source-composition:architecture",
+                      "identity": "unverified",
+                      "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                      "findings": [
+                        {
+                          "id": "semantic-dispatch",
+                          "source_quote": "validate_artifact(child)",
+                          "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                          "kind": "inference",
+                          "confidence": 0.8,
+                          "coverage": [
+                            "admission"
+                          ],
+                          "clearance_conditions": [
+                            "inspect-dispatch"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "integrity": "56ac605aedfdd56ddfbcc23c32ff50452c5a729a671cc281626a64bce2c99b18"
+                },
+                {
+                  "schema": "codex.review.v1",
+                  "id": "codex.review.v1:4f1aed41c2d1f096a45ad519a2e35d2ebfb9082e0b6b530092c355f7d5db8d52",
+                  "created_at": "2026-10-25T00:00:00Z",
+                  "producer": {
+                    "identity": "codex-institutional",
+                    "assurance": "unverified"
+                  },
+                  "evidence_refs": [],
+                  "authority_refs": [],
+                  "validation_state": "candidate",
+                  "lifecycle": "Draft",
+                  "supersedes": null,
+                  "extensions": {},
+                  "payload": {
+                    "kind": "lane-output",
+                    "data": {
+                      "plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c",
+                      "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                      "lane": "verification",
+                      "actor": "same-platform:coordinator",
+                      "run": "source-composition:verification",
+                      "identity": "unverified",
+                      "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                      "findings": [
+                        {
+                          "id": "semantic-dispatch",
+                          "source_quote": "validate_artifact(child)",
+                          "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                          "kind": "inference",
+                          "confidence": 0.8,
+                          "coverage": [
+                            "admission"
+                          ],
+                          "clearance_conditions": [
+                            "inspect-dispatch"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "integrity": "9d9c3c30f544f2b81ccd51138488c2ebc01d8448b117f8b36cf20e39a3d12f7b"
+                },
+                {
+                  "schema": "codex.review.v1",
+                  "id": "codex.review.v1:b36a42308b06487a29117a26caab13d516c35bce830ca7ec90a29681ad720bf2",
+                  "created_at": "2026-10-25T00:00:00Z",
+                  "producer": {
+                    "identity": "codex-institutional",
+                    "assurance": "unverified"
+                  },
+                  "evidence_refs": [],
+                  "authority_refs": [],
+                  "validation_state": "candidate",
+                  "lifecycle": "Draft",
+                  "supersedes": null,
+                  "extensions": {},
+                  "payload": {
+                    "kind": "lane-output",
+                    "data": {
+                      "plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c",
+                      "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+                      "lane": "dissent",
+                      "actor": "same-platform:coordinator",
+                      "run": "source-composition:dissent",
+                      "identity": "unverified",
+                      "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                      "findings": [
+                        {
+                          "id": "semantic-dispatch",
+                          "source_quote": "validate_artifact(child)",
+                          "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                          "kind": "inference",
+                          "confidence": 0.8,
+                          "coverage": [
+                            "admission"
+                          ],
+                          "clearance_conditions": [
+                            "inspect-dispatch"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "integrity": "594c445e67b99e29d98aa354945f75ea8f9a97fef21fc123b356a722e7c4d76d"
+                }
+              ],
+              "findings": {
+                "architecture/semantic-dispatch": {
+                  "id": "semantic-dispatch",
+                  "source_quote": "validate_artifact(child)",
+                  "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                  "kind": "inference",
+                  "confidence": 0.8,
+                  "coverage": [
+                    "admission"
+                  ],
+                  "clearance_conditions": [
+                    "inspect-dispatch"
+                  ],
+                  "actor": "same-platform:coordinator",
+                  "run": "source-composition:architecture",
+                  "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                  "identity": "unverified"
+                },
+                "verification/semantic-dispatch": {
+                  "id": "semantic-dispatch",
+                  "source_quote": "validate_artifact(child)",
+                  "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                  "kind": "inference",
+                  "confidence": 0.8,
+                  "coverage": [
+                    "admission"
+                  ],
+                  "clearance_conditions": [
+                    "inspect-dispatch"
+                  ],
+                  "actor": "same-platform:coordinator",
+                  "run": "source-composition:verification",
+                  "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                  "identity": "unverified"
+                },
+                "dissent/semantic-dispatch": {
+                  "id": "semantic-dispatch",
+                  "source_quote": "validate_artifact(child)",
+                  "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                  "kind": "inference",
+                  "confidence": 0.8,
+                  "coverage": [
+                    "admission"
+                  ],
+                  "clearance_conditions": [
+                    "inspect-dispatch"
+                  ],
+                  "actor": "same-platform:coordinator",
+                  "run": "source-composition:dissent",
+                  "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+                  "identity": "unverified"
+                }
+              },
+              "relations": [
+                {
+                  "type": "contradicts",
+                  "from": "architecture/semantic-dispatch",
+                  "to": "dissent/semantic-dispatch"
+                }
+              ],
+              "blockers": [
+                {
+                  "blocked_from_state": "final",
+                  "pending_requirement": "resolve-conflict",
+                  "cause": "unresolved-conflict",
+                  "clearance_conditions": [
+                    "finding-bound-evidence",
+                    "explicit-dissent-disposition"
+                  ],
+                  "scope": "architecture/semantic-dispatch|dissent/semantic-dispatch"
+                }
+              ],
+              "recommendation": "blocked",
+              "authorization": "none",
+              "classification": "Repository-Internal",
+              "independence": "unverified",
+              "routing": "diagnostic-only; FIXED mutation is never executed"
+            },
+            "disposition_ledger": [],
+            "state": {
+              "history_digest": "8af1a360878d60cf1bbb98e1ef5e50241797c5a5fbfc6177a5bef76f35d81056",
+              "nodes": {
+                "technical_verification": {
+                  "state": "PASSED",
+                  "ready": true,
+                  "blockers": [],
+                  "prerequisites": {},
+                  "proof_digest": "b565e065d881bf9ac178b76f4ae3adcf157e900716dab1f32d6464c9cf0bd278"
+                },
+                "independent_reproduction": {
+                  "state": "READY",
+                  "ready": true,
+                  "blockers": [],
+                  "prerequisites": {
+                    "technical_verification": "b565e065d881bf9ac178b76f4ae3adcf157e900716dab1f32d6464c9cf0bd278"
+                  },
+                  "proof_digest": null
+                },
+                "institutional_audit": {
+                  "state": "BLOCKED",
+                  "ready": false,
+                  "blockers": [
+                    "declared-blocked"
+                  ],
+                  "prerequisites": {
+                    "technical_verification": "b565e065d881bf9ac178b76f4ae3adcf157e900716dab1f32d6464c9cf0bd278"
+                  },
+                  "proof_digest": null
+                }
+              },
+              "pending_node": "independent_reproduction",
+              "latest_results": {
+                "technical_verification": "ea9b0874ba42da97670c19bea6923ba0808b669b1fbaae757b39eded9eafe15e"
+              },
+              "evidence_states": {
+                "ea9b0874ba42da97670c19bea6923ba0808b669b1fbaae757b39eded9eafe15e": {
+                  "source-dispatch": {
+                    "status": "ACTIVE",
+                    "applicability": "applicable",
+                    "eligibility": "eligible",
+                    "reason": "initial supplied assertion",
+                    "revision": "a7aa399c460da839ffd83da6502029131251267165a7973aebb4844b2982869c"
+                  }
+                }
+              },
+              "result_statuses": {
+                "ea9b0874ba42da97670c19bea6923ba0808b669b1fbaae757b39eded9eafe15e": "ACTIVE"
+              },
+              "current_binding": true
+            },
+            "blockers": [
+              "finding:architecture/semantic-dispatch",
+              "finding:verification/semantic-dispatch",
+              "finding:dissent/semantic-dispatch",
+              "unresolved-contradiction:architecture/semantic-dispatch|dissent/semantic-dispatch",
+              "node:independent_reproduction",
+              "node:institutional_audit"
+            ],
+            "recommendation": "BLOCKED",
+            "limits": {
+              "fixture_only": true,
+              "identity_assurance": "unverified",
+              "authority": "none",
+              "approval": false,
+              "activation": false,
+              "full_convergence_model": "unsupported"
+            }
+          }
+        },
+        "integrity": "3f75e1b13a30b4030bbac23164731900ddb3ba243651f4fc0891d6c86dd71100"
+      }
+    ],
+    "actors": {
+      "implementer": "unverified",
+      "independent_verifier": "unknown",
+      "approval": "NOT_RUN",
+      "activation": "unsupported"
+    },
+    "blockers": [
+      "Independent reproduction and trusted authority unavailable."
+    ],
+    "findings": [
+      "DETERMINISTIC_CHECK_ONLY",
+      "Alternative cause: integration gap does not establish agent ineffectiveness.",
+      "Contradiction search limited to structural checks; semantic review pending.",
+      "Untrusted content and its digest can both be replaced; no authenticated approval."
+    ],
+    "rejected_hypotheses": [
+      "A path census establishes semantic effectiveness."
+    ],
+    "uncertainty": [
+      "No operational authority can be derived from these records."
+    ],
+    "next_action": {
+      "action": "verify",
+      "preconditions": [
+        "Revalidate source tree and installed contract digests."
+      ],
+      "acceptance_test": "Technical validation only; independent gates remain NOT_RUN.",
+      "idempotency": "Fixed tree, configuration and clock produce identical bytes."
+    },
+    "recovery": "Preserve original; regenerate stale previews. Never reset user work.",
+    "assurance_bindings": [
+      {
+        "artifact_digest": "8af1a360878d60cf1bbb98e1ef5e50241797c5a5fbfc6177a5bef76f35d81056",
+        "candidate_ref": "e41fde2f5aeb734b262ade37778ec2fad309bacd8b1ee2e11ac45d8f8e0ba7f3",
+        "source_sha": null,
+        "dirty_tree": "not_applicable",
+        "configuration_digest": "0afdb131996cc2c462c49f1878955e340b7a7b7406d5ab54421f12b49aa39036",
+        "review_binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+        "review_plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c"
+      },
+      {
+        "artifact_digest": "c0f23b2ea5bc4e8a288eb26eeba40f87469645b768d311ba9e05538a82c9d021",
+        "candidate_ref": "e41fde2f5aeb734b262ade37778ec2fad309bacd8b1ee2e11ac45d8f8e0ba7f3",
+        "source_sha": null,
+        "dirty_tree": "not_applicable",
+        "configuration_digest": "0afdb131996cc2c462c49f1878955e340b7a7b7406d5ab54421f12b49aa39036",
+        "review_binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+        "review_plan_digest": "51b6d79242feba7574a9da9f3c403439677f1f3d322c25524f05bec5c541db4c"
+      }
+    ]
+  },
+  "integrity": "dd4fbe7163478db067298d20f8dc2ceccf0c5cca9c97e0bf2c5cfe1a39c80c03"
+}

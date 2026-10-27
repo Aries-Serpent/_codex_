@@ -1,0 +1,25 @@
+{
+  "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+  "source_identity": "git diff --exit-code against the source commit confirmed SDK and standalone harness match committed bytes; retained security-source-identity.log is empty on success.",
+  "scope": ["src/codex/institutional/review.py", ".codex/evidence/institutional-foundation/iteration-004/runtime-wheel/external-harness.py"],
+  "ruff": {
+    "version": "0.17.2",
+    "command": "python -m ruff check --select S src/codex/institutional/review.py .codex/evidence/institutional-foundation/iteration-004/runtime-wheel/external-harness.py",
+    "result": "All checks passed",
+    "qualification": "Explicit bounded S-rule invocation using existing Ruff; not a claim that repository default rule selection enabled security rules."
+  },
+  "bandit": {
+    "version": "1.9.4",
+    "command": "python -m bandit -q -f json -o .codex/evidence/institutional-foundation/iteration-004/runtime-wheel/security-bandit.json src/codex/institutional/review.py .codex/evidence/institutional-foundation/iteration-004/runtime-wheel/external-harness.py",
+    "result": "0 findings, 0 errors, 991 lines analyzed, 0 nosec suppressions",
+    "raw_report": "security-bandit.json"
+  },
+  "codeql": {
+    "source": "Parent report: Found 0 alerts BUT Python analysis SKIPPED database too large",
+    "interpretation": "Python analysis gap; not a clean CodeQL scan. This executor did not run or independently verify the parent CodeQL result."
+  },
+  "runtime": "External wheel execution NOT_RUN. Delegated executors did not perform required external disposable operations; no filesystem denial was observed or attempted. Not a missing user authorization or an independence prerequisite.",
+  "limits": "Bounded static alternatives do not replace CodeQL, dependency conformance, runtime verification, independent review, approval, activation or G5.",
+  "G5": "NOT_RUN",
+  "dependencies_added": false
+}

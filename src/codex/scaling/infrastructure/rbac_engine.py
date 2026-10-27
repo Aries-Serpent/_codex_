@@ -38,7 +38,7 @@ class ResourceType(Enum):
 
     POD = "pod"
     SERVICE = "service"
-    SECRET = "secret"
+    SECRET = "secret"  # pragma: allowlist secret -- resource kind, not a credential
     CONFIGMAP = "configmap"
     VOLUME = "volume"
     NAMESPACE = "namespace"
@@ -333,30 +333,33 @@ class RBACEngine:
         if key not in self.user_roles:
             return False, "No role assigned"
 
-        user_role = self.user_roles[key]
-        role_def = self.roles[user_role.role_type]
+        permissions = self.get_user_permissions(user_id, tenant_id)
 
         # Check explicit denials first
         denials = [
             p
-            for p in role_def.permissions
+            for p in permissions
             if (p.resource_type == resource_type or p.resource_type == ResourceType.ALL)
             and p.action == action
             and p.access_level == AccessLevel.DENY
         ]
         if denials:
-            return False, "Permission explicitly denied by role"
+            return False, "Permission explicitly denied"
 
         # Check grants (must match resource_type and action)
         grants = [
             p
-            for p in role_def.permissions
+            for p in permissions
             if (p.resource_type == resource_type or p.resource_type == ResourceType.ALL)
             and p.action == action
         ]
 
         # Get highest permission level
-        permission_level = max((g.access_level for g in grants), default=AccessLevel.NONE)
+        permission_level = max(
+            (g.access_level for g in grants),
+            key=lambda level: level.value,
+            default=AccessLevel.NONE,
+        )
 
         # Determine required level for action
         action_required_level = {
@@ -432,7 +435,7 @@ class RBACEngine:
 
         return permissions
 
-    def validate_permission_matrix(self) -> Dict[str, any]:
+    def validate_permission_matrix(self) -> Dict[str, object]:
         """
         Validate permission matrix completeness.
 
@@ -458,15 +461,15 @@ class RBACEngine:
             sum(1 for p in r.permissions if p.resource_type == ResourceType.ALL) for r in roles
         )
 
-        report = {
+        report: Dict[str, object] = {
             "total_resource_types": len(resource_types),
             "total_actions": len(actions),
             "total_roles": len(roles),
             "total_combinations": total_combinations,
             "total_permissions": total_permissions,
-            "coverage_percent": 100.0 * total_permissions / total_combinations
-            if total_combinations > 0
-            else 0,
+            "coverage_percent": (
+                100.0 * total_permissions / total_combinations if total_combinations > 0 else 0
+            ),
             "hierarchy_valid": hierarchy_valid,
             "wildcard_grants": wildcard_grants,
             "matrix_status": "VALID" if hierarchy_valid else "INVALID",

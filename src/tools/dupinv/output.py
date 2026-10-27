@@ -127,7 +127,7 @@ class InventoryWriter:
             lines.append("")
 
         # Summary by type
-        type_counts = {}
+        type_counts: dict[str, int] = {}
         for group in inventory.duplicate_groups:
             type_counts[group.type] = type_counts.get(group.type, 0) + 1
 

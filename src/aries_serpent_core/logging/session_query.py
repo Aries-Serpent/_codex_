@@ -1,24 +1,22 @@
-"""
-Query logs across sessions with flexible filters (id/role/time/contains).
+"""Query a session or the latest events from a SQLite logging database.
 
-Usage:
-    python -m codex.logging.session_query --session-id <ID>
-      [--role user|assistant|system|tool] [--contains substring]
-      [--after YYYY-MM-DD] [--before YYYY-MM-DD]
-      [--order asc|desc] [--limit N] [--offset N] [--table logs]
+Usage::
 
-Environment:
-    CODEX_LOG_DB_PATH   Path to SQLite file with log rows.
-    CODEX_SQLITE_POOL   If "1", prefer a pooled shared connection.
+    python -m aries_serpent_core.logging.session_query --db logs.db --session-id S123
+    python -m aries_serpent_core.logging.session_query --db logs.db --last 20 --desc
 
-Examples:
-    export CODEX_LOG_DB_PATH=".codex/session_logs.db"
-    python -m codex.logging.session_query --session-id S123 --role user \
-        --after 2025-01-01
+At least one of ``--session-id`` and ``--last`` is required; they can be
+combined to select the latest N events within a session. Results are printed
+as tab-separated timestamp/session/role/message fields, ascending by timestamp
+unless ``--desc`` is given. There are no role, substring, or time-bound flags
+in this module; use ``aries_serpent_core.logging.query_logs`` for role/time
+filters or ``aries_serpent_core.logging.viewer`` for substring filters.
 
-Columns:
-    Expects compatible column names (e.g., session_id/session, ts/timestamp,
-    message/content, level/severity).
+The database path comes from ``--db``, then ``CODEX_DB_PATH`` or
+``CODEX_LOG_DB_PATH``, then the first existing ``DEFAULT_DB_CANDIDATES`` entry.
+Each fetch opens and closes its own connection. Schema detection requires a
+timestamp and message column; a session ID column is required only when
+filtering by session. Role columns are optional.
 """
 
 from __future__ import annotations
@@ -136,6 +134,30 @@ def fetch_rows(
     last_n: Optional[int],
     desc: bool,
 ) -> tuple[list[sqlite3.Row], dict[str, str]]:
+    """Fetch events and the logical-to-actual column mapping used to read them.
+
+    Args:
+        db_path: SQLite filename passed directly to ``sqlite3.connect``.
+        session_id: Optional exact session filter; an empty string is unfiltered.
+        last_n: If not ``None``, select the latest N rows by descending
+            timestamp before reordering them for display. ``None`` selects all
+            matching rows. Passed to SQLite's LIMIT without range validation.
+        desc: Return the selected rows in descending rather than ascending
+            timestamp order.
+
+    Returns:
+        A pair of materialized ``sqlite3.Row`` objects and the mapping from
+        :func:`detect_schema`. Row keys use actual database column names.
+        The connection is closed before returning, including on errors.
+
+    Raises:
+        RuntimeError: No compatible table exists, or session filtering was
+            requested but no session ID column was detected.
+        sqlite3.Error: Opening or querying the database fails.
+
+    For example, ``fetch_rows("logs.db", "S123", 10, False)`` selects the latest
+    ten events in S123 but returns that subset in chronological order.
+    """
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     try:
@@ -167,9 +189,7 @@ def fetch_rows(
             sql = f"SELECT * FROM ({inner_sql}) sub ORDER BY {ts_col} {order_clause}"  # nosec B608
             params.append(last_n)
         else:
-            sql = (
-                f"SELECT {select_list} FROM {table}{where_clause} ORDER BY {ts_col} {order_clause}"  # nosec B608  # nosec B608
-            )
+            sql = f"SELECT {select_list} FROM {table}{where_clause} ORDER BY {ts_col} {order_clause}"  # nosec B608  # nosec B608
         cur = conn.cursor()
         rows = list(cur.execute(sql, params))
         return rows, cols
@@ -178,6 +198,14 @@ def fetch_rows(
 
 
 def print_rows(rows: list[sqlite3.Row], cols: dict[str, str]) -> None:
+    """Print fetched rows to stdout as an unescaped tab-separated table.
+
+    ``cols`` is the logical-to-actual mapping returned by :func:`fetch_rows`.
+    Fields appear in timestamp, session ID, role, message order, omitting
+    unavailable fields. SQL NULL values render as empty strings. Empty input
+    prints ``(no rows)`` instead of a header. Tabs/newlines within messages are
+    not escaped, so this is a display format rather than a lossless export.
+    """
     if not rows:
         print("(no rows)")
         return
@@ -188,6 +216,14 @@ def print_rows(rows: list[sqlite3.Row], cols: dict[str, str]) -> None:
 
 
 def main(argv: Optional[Iterable[str]] = None) -> int:
+    """Parse session/latest-event flags, fetch rows, and print the result.
+
+    ``argv`` omits the executable name; ``None`` uses process arguments.
+    Returns ``0`` on success (including an empty result) or ``2`` for caught
+    I/O/import errors, including a missing database found by path resolution.
+    Argument errors raise argparse's ``SystemExit``. Schema ``RuntimeError``
+    and ``sqlite3.Error`` propagate rather than becoming return codes.
+    """
     parser = argparse.ArgumentParser(
         description="Query session events from a SQLite database",
     )

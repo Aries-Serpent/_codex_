@@ -1,0 +1,132 @@
+{
+  "schema": "codex.review.v1",
+  "id": "codex.review.v1:a5d79ceda68bf3e0ce712a8209f80986c920e8d4f6c5271fb81f7c62661c05f8",
+  "created_at": "2026-10-25T00:00:00Z",
+  "producer": {
+    "identity": "codex-institutional",
+    "assurance": "unverified"
+  },
+  "evidence_refs": [],
+  "authority_refs": [],
+  "validation_state": "candidate",
+  "lifecycle": "Draft",
+  "supersedes": null,
+  "extensions": {},
+  "payload": {
+    "kind": "plan",
+    "data": {
+      "manifest": {
+        "schema": "codex.review.v1",
+        "id": "codex.review.v1:8f60898806b57f82bb2920432f94d42c832ad40ddbd818d8c490d2e115895c2c",
+        "created_at": "2026-10-25T00:00:00Z",
+        "producer": {
+          "identity": "codex-institutional",
+          "assurance": "unverified"
+        },
+        "evidence_refs": [],
+        "authority_refs": [],
+        "validation_state": "candidate",
+        "lifecycle": "Draft",
+        "supersedes": null,
+        "extensions": {},
+        "payload": {
+          "kind": "manifest",
+          "data": {
+            "entries": [
+              {
+                "path": "core.py",
+                "sha256": "cb7bce232df6d5b993739c83def42b4ca743bcc849663ad9bffecd6390dc806a",
+                "size": 23750,
+                "mode": 420
+              }
+            ],
+            "context_digest": "e3f7792242530b6d8555a40248850536582ce1d93b9fb43b21547cf8365d2300",
+            "rules": {
+              "symlinks": "reject",
+              "submodules": "reject",
+              "archives": "opaque-no-expansion",
+              "hardlinks": "independent-bytes",
+              "permissions": "explicit-posix-mode",
+              "line_endings": "raw"
+            },
+            "classification": "Repository-Internal"
+          }
+        },
+        "integrity": "8fa12b44701bfd4cf2008074d2d09931ac79bc888d653b0d70f91bc35ba5ba6d"
+      },
+      "binding": "76a75190a20a44f824666f4a21c2717b5bfefdd08fb9f08e53aa7f9202ffb66b",
+      "lanes": [
+        {
+          "id": "architecture",
+          "bearing": "090",
+          "actor": "same-platform:coordinator",
+          "run": "source-composition:architecture",
+          "dissent": false,
+          "required": true,
+          "coverage": [
+            "admission"
+          ],
+          "tools": [
+            "read",
+            "search"
+          ]
+        },
+        {
+          "id": "verification",
+          "bearing": "180",
+          "actor": "same-platform:coordinator",
+          "run": "source-composition:verification",
+          "dissent": false,
+          "required": true,
+          "coverage": [
+            "admission"
+          ],
+          "tools": [
+            "read",
+            "search"
+          ]
+        },
+        {
+          "id": "dissent",
+          "bearing": "cross-cutting",
+          "actor": "same-platform:coordinator",
+          "run": "source-composition:dissent",
+          "dissent": true,
+          "required": true,
+          "coverage": [
+            "admission"
+          ],
+          "tools": [
+            "read",
+            "search"
+          ]
+        },
+        {
+          "id": "rotated",
+          "bearing": "315-history",
+          "actor": "same-platform:coordinator",
+          "run": "source-composition:rotated",
+          "dissent": false,
+          "required": false,
+          "coverage": [
+            "admission"
+          ],
+          "tools": [
+            "read",
+            "search"
+          ]
+        }
+      ],
+      "mandatory": [
+        "admission"
+      ],
+      "critical": [
+        "admission"
+      ],
+      "mode": "supplement",
+      "coordinator_role": "implementer",
+      "independence": "unverified"
+    }
+  },
+  "integrity": "9c14846b66dbde44b8c7c26df0d58584039bf0c973959da2e0b36d03029058da"
+}

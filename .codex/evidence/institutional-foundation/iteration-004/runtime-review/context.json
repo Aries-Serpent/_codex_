@@ -1,0 +1,42 @@
+{
+  "task": "lane B+D supplied-input review SDK",
+  "entry_head": "fe1401832bdb97ea5597745a5c9ab56ac3ec5d9f",
+  "execution": "Direct execution by SDK implementer; no nested delegation, staging, commit, push, progress publisher or PR operation.",
+  "actor_context": {
+    "coordinator": "implementer",
+    "fixture_actors": ["same-platform:logic", "same-platform:risk", "same-platform:dissent", "same-platform:rotated"],
+    "fixture_runs": ["fixture-run:logic", "fixture-run:risk", "fixture-run:dissent", "fixture-run:rotated"],
+    "assurance": "unverified; rotated roles do not establish independent execution"
+  },
+  "sources": ["src/codex/institutional/review.py", "tests/institutional/test_review.py", "src/codex/institutional/contracts.json", "docs/adr/azimuthal-review-004.json"],
+  "fixture_source": "Original wording retained separately from normalized 'Retained risk'; rotated source repeats original quote with attributed reproduced fixture observation.",
+  "validation": {
+    "black": "python -m black --check src/codex/institutional/review.py tests/institutional/test_review.py",
+    "isort": "python -m isort --check-only src/codex/institutional/review.py tests/institutional/test_review.py",
+    "ruff": "python -m ruff check src/codex/institutional/review.py tests/institutional/test_review.py",
+    "mypy": "python -m mypy --follow-imports=skip src/codex/institutional/review.py tests/institutional/test_review.py",
+    "compile": "PYTHONPYCACHEPREFIX=.codex/evidence/institutional-foundation/iteration-004/runtime-review/pycache python -m py_compile src/codex/institutional/review.py tests/institutional/test_review.py",
+    "tests": "PYTHONPATH=src PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest --noconftest -o addopts='' tests/institutional tests/test_packaging_metadata.py tests/test_packaging_entrypoints.py tests/test_package_dependency_contract.py --basetemp=.codex/evidence/institutional-foundation/iteration-004/runtime-review/complete-work --junitxml=.codex/evidence/institutional-foundation/iteration-004/runtime-review/complete.xml",
+    "result": "All final quality checks passed. Complete test run: 157 passed, including 68 new SDK tests, 77 existing institutional tests, 6 concurrently added parent formula tests and 6 packaging tests.",
+    "warnings": "Two existing asyncio configuration warnings because plugin autoload was disabled. Mypy reports two unused configuration sections.",
+    "failures_retained": ["black-initial.log: formatting required, subsequently corrected", "mypy-verified.log: one optional history-plan type error, subsequently corrected"],
+    "artifacts": ["*-complete.log", "complete.log", "complete.xml", "diff-check.log", "earlier *.log and *.xml retained"],
+    "concurrent_parent_finding": "A later global git diff --check found trailing whitespace in parent-owned .github/workflows/pr-followup-generator.md:57. Retained in diff-check-concurrent.log; no edit made. Owned-file diff check passes (diff-check-owned.log). Parent owns remediation."
+  },
+  "limits": ["No hosted authority or identity verification", "No activation, mutation, approval or acceptance", "No evidence-eligibility/assurance DAG", "Remediation verifies bound evidence coverage, not semantic truth", "UUIDv4 cross-store uniqueness remains coordinator responsibility", "No external wheel build performed in this turn", "No CodeQL invocation because no commit is authorized"],
+  "preservation": "Existing dirty user packet and concurrent parent files left untouched.",
+  "scratch_cleanup": {
+    "removed_owned_directories": ["pytest-work", "final-work", "complete-work", "verified-work", "regression-work", "pycache"],
+    "retained": "All logs and JUnit, source test harness, exact persisted fixture-continuation.json and extracted manifest/plan/four lane-output/recommendation/empty-history records.",
+    "cache": "fixture-cache.json is the canonical digest and initial folded state of the retained empty fixture history, derived from JSON only without importing or running SDK source.",
+    "validation_boundary": "No additional source tests or builds run during cleanup."
+  },
+  "review_fix": {
+    "finding": "Large JSON integer confidence reached math.isfinite before range validation and raised uncaught OverflowError.",
+    "change": "Check numeric type, then [0,1] bounds before math.isfinite; oversized positive and negative integers now fail closed with REVIEW_CONFIDENCE.",
+    "regression": "Two adversarial cases exercise both lane_output and resealed imported reconcile. Before-fix failure logs/JUnit retained in confidence-before.*.",
+    "final_result": "153 passed: 70 SDK tests, 77 baseline institutional tests, 6 packaging tests. Black/isort/Ruff/mypy/compile and owned diff check passed; two plugin-autoload configuration warnings unchanged.",
+    "artifacts": "confidence-final.log, confidence-final.xml, confidence-{black,isort,ruff,mypy,compile,diff}.log",
+    "cleanup": "Removed only newly generated confidence-work and confidence-pycache after successful validation."
+  }
+}

@@ -309,9 +309,9 @@ class PredictionAPIServer:
             return {
                 "total_requests": self.total_requests,
                 "total_errors": self.total_errors,
-                "error_rate": self.total_errors / self.total_requests
-                if self.total_requests > 0
-                else 0.0,
+                "error_rate": (
+                    self.total_errors / self.total_requests if self.total_requests > 0 else 0.0
+                ),
                 "avg_request_time_ms": float(np.mean(request_times_array)),
                 "p50_request_time_ms": float(np.percentile(request_times_array, 50)),
                 "p95_request_time_ms": float(np.percentile(request_times_array, 95)),

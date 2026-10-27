@@ -1,0 +1,66 @@
+{
+  "schema": "codex.external-wheel-observation.v1",
+  "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+  "source_tree": "8372735da60360c51e995c9af567c90c87293212",
+  "status": "PASS_BOUNDED_EXTERNAL_WHEEL_VALIDATION",
+  "original_candidate": "unchanged historical source; no source-code modifications",
+  "exact_export_files": 2204,
+  "git_archive_only_files": 2135,
+  "git_archive_omitted_files_restored_from_exact_blobs": 69,
+  "original_preparation_failure": {
+    "stage": "contracts wheel metadata",
+    "exit": 1,
+    "cause": "Historical .gitattributes *.md export-ignore excluded required README files.",
+    "log": "contracts-build.log",
+    "resolution": "Only 69 omitted scoped exact git blobs restored; subsequent standard pip builds succeeded. No source or harness bug observed."
+  },
+  "wheel_build": "PASS",
+  "noneditable_install": "PASS",
+  "original_harness": {
+    "status": "PASS",
+    "exit": 0,
+    "checks": 49,
+    "sha256": "7f03b6379b0872afbdaf5ab6ddffec094a08f0c0d3cf69c4bea6b51549992c44",
+    "modified": false
+  },
+  "supplemental_offline_runtime": {
+    "status": "PASS",
+    "exit": 0,
+    "checks": 9,
+    "scope": "All installed institutional source bytes; formula IDs and source notation; safe writes, binding rejection, Draft continuation, predecessor preservation, stale preview/symlink rejection, dissent retention."
+  },
+  "wheels": [
+    {
+      "wheel": "codex_contracts-0.1.0a1-py3-none-any.whl",
+      "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+      "name": "codex-contracts",
+      "version": "0.1.0a1",
+      "origin": "locally built from exact historical scoped source; not registry download"
+    },
+    {
+      "wheel": "codex_ml-0.3.0-py3-none-any.whl",
+      "sha256": "e88afdbc52d79f2155fdadacddac9d2e16cab15e7307822aecdccfe13c9a9c33",
+      "name": "codex-ml",
+      "version": "0.3.0",
+      "origin": "locally built from exact historical scoped source; not registry download"
+    }
+  ],
+  "formula_count": 58,
+  "formula_semantics": "Exact packaged planned source notation only, not implemented numerical evaluation",
+  "network": "Runtime Python audit guards denied socket events; no kernel network namespace isolation asserted. Original harness also denied subprocesses. Supplemental guard OSError permits documented filesystem inventory fallback without spawning git.",
+  "dependencies": "SDK-only declared jsonschema closure plus locally built historical codex-contracts. Not complete codex-ml dependency conformance or registry codex-contracts assurance.",
+  "authority": "none",
+  "independence": "unverified same-platform fixtures; no authenticated external verifier",
+  "institutional_acceptance": "NOT_RUN",
+  "G5": "NOT_RUN",
+  "G6_G7": "No institutional status advanced; observed bounded package/runtime evidence handed to parent",
+  "continuation": "Isolated installed SDK storage fixture only; parent owns real institutional continuation",
+  "source_reverification": "2204 exported historical blobs rehashed unchanged after build/runtime",
+  "diff_check": "git diff --check -- owned evidence namespace: exit 0 (untracked evidence checked separately by artifact manifests)",
+  "cleanup": {
+    "owned_external_workspace": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025",
+    "removed": true,
+    "useful_artifacts_retained": true
+  },
+  "timestamp": "2026-10-25T01:13:29Z"
+}

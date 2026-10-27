@@ -459,9 +459,15 @@ class UserStore:
         """
         # Updated email format validation pattern to support unicode characters
         # Supports unicode in both local part and domain
-        # Matches: user@domain.tld, user+tag@domain, 用户@例え.jp, etc.
+        # Matches: user@domain.tld, user+tag@domain.tld, 用户@例え.jp, etc.
         email_pattern = r"^[\w._%+-]+@[\w.-]+\.[\w]{2,}$"
-        if not re.match(email_pattern, email, re.UNICODE):
+        if (
+            not re.match(email_pattern, email, re.UNICODE)
+            or email.startswith(".")
+            or email.split("@", 1)[0].endswith(".")
+            or "@." in email
+            or ".." in email
+        ):
             raise ValueError("Invalid email format")
 
     @staticmethod

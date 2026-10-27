@@ -13,7 +13,7 @@ from codex.rag.prompt import build_prompt
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.concurrency import run_in_threadpool
 
-from src.utils.log_sanitizer import sanitize_log_input
+from utils.log_sanitizer import sanitize_log_input
 
 from ..config import settings
 from ..providers.model_adapter import create_model_adapter

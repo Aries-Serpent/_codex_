@@ -1,0 +1,105 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001/iteration-002",
+  "collected_at": "2026-10-24T21:39:00Z",
+  "repository": "Aries-Serpent/_codex_",
+  "branch": "copilot/codex-institutional-foundation-001",
+  "source_head": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+  "comparison_base": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+  "base_label": "origin/0D_base_ observed locally",
+  "historical_candidate": "592e882f516744937957a2287fd93ad9d0c870ee",
+  "historical_evidence_commit": "085c54231e1ff6ac4486a1d6a26233be7e214f49",
+  "current_vs_historical_implementation": "git diff historical-candidate source-head -- src/codex/institutional tests/institutional pyproject.toml returned zero bytes",
+  "current_vs_evidence_commit": "Only startup-packet generated_at committed in 2f2de42b; implementation unchanged.",
+  "dirty_state": {
+    "path": ".codex/session_startup_packet.json",
+    "source_value": "2026-10-24T20:03:44Z",
+    "user_value": "2026-10-24T21:27:37Z",
+    "sha256": "5b4697d57142a051dfeacb4ef5bc27c432caf2201922fb3ce8a44c64f30a80ca",
+    "preservation": "No index flags. Exact dirty bytes backed up in task temp, temporarily separated only around automatic task commits and restored immediately; never claimed clean user state."
+  },
+  "continuation": {
+    "path": "../continuation.json.gz",
+    "sha256": "7cb079c4cc4ad396defbc560df6846e7f9114bf96525e96f59cd59f045a7332f",
+    "structural_validation": "PASS",
+    "initial_drift": [
+      "STALE_CHECKPOINT",
+      "WORKTREE_DRIFT"
+    ],
+    "policy": "Historical checkpoint not rewritten; successor required."
+  },
+  "census": {
+    "method": "git ls-tree -r --name-only -z source_head",
+    "tracked": 33320,
+    "relevant": 13147,
+    "paths_digest": "923bac56ebf819696d2e5f8efda565df43639d81c51c16ab88125e52165801e9",
+    "historical_tracked": 33298,
+    "historical_relevant": 13139,
+    "reason_for_change": "Added institutional source/tests/docs/evidence plus committed startup-packet timestamp; lexical classifier unchanged."
+  },
+  "semantic_reconciliation": {
+    "historical_reported": 13,
+    "historical_evidence_locations": 24,
+    "historical_evidence_locations_relevant": 13,
+    "explanation": "24 source inspection evidence locations were recorded, but only 13 matched the historical lexical relevant set. Eleven source integration/policy files outside that lexical set are not missing inspection records. No inferred semantic count is added from agent claims.",
+    "counting_rule": "Unique source paths; nested sections do not add counts. Current bounded semantic cohort is separately recorded; no cumulative 100-percent claim."
+  },
+  "context": {
+    "root_AGENTS": "absent",
+    "nested_implementation_instructions": "No applicable AGENTS under src/codex/institutional or tests/institutional. Python instructions read.",
+    "policy_digest": "ce2a12abfd53b91195352ba148ee9060aa85508c281ee5a34e07d16954622f4c",
+    "python_instructions_digest": "6f9aba6ff5e1185ddf6eea62506fa95e6f2089f1d7e9c0ee8c5f3ba4e4ad5b22",
+    "copilot_instructions_digest": "182d66e2680b97f214e84b83425e944205ed223cfdf1786b1f20b2dd42cc1219",
+    "template": "Planning/testing/acceptance/troubleshooting/rollback sections adapted in ADR; no exhaustive template read claim.",
+    "pr": "GitHub list_pull_requests current head returned empty list. No PR created, settings changed or workflow dispatched.",
+    "profile_limit": "No .github/agents content accessed; profile semantics inaccessible under environment boundary."
+  },
+  "budgets": {
+    "investigation_lanes": 2,
+    "review_lane": 1,
+    "unchanged_failure_retries": 2,
+    "pip_timeout_seconds": 120,
+    "git_capture_bytes": 8388608,
+    "git_timeout_seconds": 20,
+    "host_hard_limits": "unknown"
+  },
+  "actors": [
+    {
+      "id": "historical-reproduction",
+      "scope": "attempted reproduction lane",
+      "result": "No execution; lane reported a separate filesystem constraint; coordinator performed reproduction. Not evidence of a parent tool failure."
+    },
+    {
+      "id": "authority-ecology",
+      "scope": "read-only source investigation",
+      "assurance": "source leads only; overbroad integrated-gate conclusions rejected in semantic reconciliation."
+    },
+    {
+      "id": "authority-boundary-review",
+      "scope": "read-only implementation review",
+      "assurance": "same-platform feedback, not authenticated independent approval",
+      "finding": "DST-fold comparison fixed by UTC normalization and regression test."
+    }
+  ],
+  "searches": [
+    {
+      "command": "git status --short; git branch --show-current; git rev-parse HEAD; git log -4 --oneline",
+      "scope": "assigned checkout"
+    },
+    {
+      "command": "git diff 085c5423 HEAD -- src/codex/institutional tests/institutional pyproject.toml; git show --stat HEAD",
+      "scope": "implementation vs evidence-only changes"
+    },
+    {
+      "command": "git fetch --depth=1 origin 592e882f516744937957a2287fd93ad9d0c870ee",
+      "result": "success, one fetch, immutable candidate reachable"
+    },
+    {
+      "command": "bounded check /tmp/codex-institutional-wheel/wheels-final and current session temp locations",
+      "result": "original wheel unavailable; no whole-host scan claimed"
+    },
+    {
+      "command": "command -v codeql",
+      "result": "absent; tool scan attempted separately; no scope selector in available CodeQL tool schema"
+    }
+  ]
+}

@@ -9,8 +9,6 @@ from typing import Any
 
 import yaml
 
-from codex_ml.utils import reproducibility as _repro  # type: ignore[attr-defined]
-
 
 @dataclass
 class RunContext:
@@ -37,6 +35,7 @@ def load_yaml_config(path: Path) -> dict[str, Any]:
 
 def create_run_dir(base_dir: Path, mode: str, seed: int) -> RunContext:
     """Create a timestamped run directory and return a RunContext."""
+    from codex_ml.utils import reproducibility as _repro
 
     base_dir = base_dir.expanduser().resolve()
     now = _dt.datetime.now(_dt.UTC).replace(microsecond=0).isoformat().replace(":", "-")

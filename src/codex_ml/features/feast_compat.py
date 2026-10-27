@@ -340,6 +340,12 @@ class InMemoryBackend:
         self._lock = threading.Lock()
 
     def write(self, view_name: str, entity_key: str, features: dict[str, Any]) -> None:
+        """Replace one entity's feature map under ``view_name`` and return None.
+
+        Copy ``features`` shallowly and overwrite __written_at with a UTC ISO
+        timestamp while holding the lock. Nested values remain shared. No TTL,
+        serialization, or external dependency is involved.
+        """
         with self._lock:
             self._store.setdefault(view_name, {})[entity_key] = {
                 **features,
@@ -347,18 +353,45 @@ class InMemoryBackend:
             }
 
     def read(self, view_name: str, entity_key: str) -> dict[str, Any] | None:
+        """Return the live feature dictionary for ``view_name``/``entity_key``.
+
+        Return None if absent; include __written_at on a hit. Lookup is locked,
+        but mutations of the returned dictionary are not protected or copied.
+        No freshness/TTL check is performed.
+
+        Example:
+            >>> backend = InMemoryBackend()
+            >>> backend.write("users", "u1", {"age": 30})
+            >>> backend.read("users", "u1")["age"]
+            30
+        """
         with self._lock:
             return self._store.get(view_name, {}).get(entity_key)
 
     def delete(self, view_name: str, entity_key: str) -> None:
+        """Remove ``entity_key`` from ``view_name`` under the lock, returning None.
+
+        Missing views/entities are harmless. Keep the view container even when
+        its last entity is deleted, so list_views still includes that view.
+        """
         with self._lock:
             self._store.get(view_name, {}).pop(entity_key, None)
 
     def list_views(self) -> list[str]:
+        """Return a locked snapshot of view names in dictionary insertion order.
+
+        Include empty views left behind by delete. The returned list is new;
+        changing it does not alter storage.
+        """
         with self._lock:
             return list(self._store.keys())
 
     def close(self) -> None:
+        """Do nothing and return None; in-memory features remain accessible.
+
+        No connection is owned and close neither clears the store nor prevents
+        subsequent reads or writes.
+        """
         pass  # nothing to release
 
 
@@ -399,6 +432,13 @@ class SQLiteBackend:
         get_default_logger().info("SQLiteBackend initialized at %s", self._db_path)
 
     def write(self, view_name: str, entity_key: str, features: dict[str, Any]) -> None:
+        """Upsert JSON ``features`` for ``view_name``/``entity_key`` and commit.
+
+        Replace the full feature payload and store a separate UTC written_at
+        column (not injected into features). Return None. JSON TypeError and
+        SQLite errors propagate; database access is serialized by the lock.
+        No optional SDK or TTL service is required.
+        """
         written_at = datetime.now(timezone.utc).isoformat()
         payload = json.dumps(features)
         with self._lock:
@@ -415,6 +455,12 @@ class SQLiteBackend:
             self._conn.commit()
 
     def read(self, view_name: str, entity_key: str) -> dict[str, Any] | None:
+        """Return decoded JSON features for ``view_name``/``entity_key``, or None.
+
+        Select under the lock and decode into a new object after releasing it.
+        The separate written_at column is not returned and no TTL is enforced.
+        SQLite and JSON decoding errors propagate, including use after close.
+        """
         with self._lock:
             cur = self._conn.execute(
                 "SELECT features FROM features WHERE view_name=? AND entity_key=?",
@@ -426,6 +472,11 @@ class SQLiteBackend:
         return json.loads(row[0])
 
     def delete(self, view_name: str, entity_key: str) -> None:
+        """Delete a matching SQLite row and commit, returning None.
+
+        ``view_name`` and ``entity_key`` are bound query values. Missing rows
+        are harmless; SQLite errors propagate and access is locked.
+        """
         with self._lock:
             self._conn.execute(
                 "DELETE FROM features WHERE view_name=? AND entity_key=?",
@@ -434,11 +485,22 @@ class SQLiteBackend:
             self._conn.commit()
 
     def list_views(self) -> list[str]:
+        """Return distinct view names that currently have SQLite rows.
+
+        The query is locked and order is unspecified. Unlike the in-memory
+        backend, deleting a view's last row removes it from this result.
+        SQLite errors propagate.
+        """
         with self._lock:
             cur = self._conn.execute("SELECT DISTINCT view_name FROM features")
             return [row[0] for row in cur.fetchall()]
 
     def close(self) -> None:
+        """Close the SQLite connection under the lock and return None.
+
+        File-backed committed data persists; an in-memory database is lost.
+        Subsequent database operations fail with SQLite errors.
+        """
         with self._lock:
             self._conn.close()
 
@@ -499,6 +561,13 @@ class RedisBackend:
         return f"{view_name}:{entity_key}"
 
     def write(self, view_name: str, entity_key: str, features: dict[str, Any]) -> None:
+        """Replace Redis key view_name:entity_key with JSON features.
+
+        Add/overwrite __written_at with a UTC ISO timestamp. Use SETEX when a TTL
+        was configured, otherwise SET; each write resets that key's expiry.
+        Return None. JSON serialization and Redis connection/command errors
+        propagate. Requires the redis client and server configured at construction.
+        """
         payload = json.dumps(
             {
                 **features,
@@ -511,13 +580,30 @@ class RedisBackend:
             self._redis.set(self._key(view_name, entity_key), payload)
 
     def read(self, view_name: str, entity_key: str) -> dict[str, Any] | None:
+        """GET and JSON-decode key view_name:entity_key, returning None on a miss.
+
+        Hits include the stored __written_at field. Expiry is handled by Redis,
+        not by this method, and is not refreshed on read. Client/server and JSON
+        decoding failures propagate.
+        """
         raw = self._redis.get(self._key(view_name, entity_key))
         return json.loads(raw) if raw is not None else None
 
     def delete(self, view_name: str, entity_key: str) -> None:
+        """Delete Redis key view_name:entity_key and return None.
+
+        Missing keys are harmless and the deletion count is discarded. Redis
+        client/server errors propagate; no view registry is updated.
+        """
         self._redis.delete(self._key(view_name, entity_key))
 
     def list_views(self) -> list[str]:
+        """SCAN keys matching '*:*' and return their distinct last-colon prefixes.
+
+        Order is unspecified and scanning is not a consistent snapshot. Keys are
+        not namespaced: unrelated matching keys can appear, and entity keys that
+        contain colons contribute extra prefix segments. Redis failures propagate.
+        """
         # Use SCAN instead of KEYS to avoid blocking the Redis server during
         # a full-keyspace scan in production environments with many keys.
         views: set[str] = set()
@@ -531,6 +617,11 @@ class RedisBackend:
         return list(views)
 
     def close(self) -> None:
+        """Close the Redis client and return None without deleting server data.
+
+        Delegate connection cleanup and any failures to the optional redis SDK;
+        stored values retain their configured expiry.
+        """
         self._redis.close()
 
 
@@ -615,6 +706,14 @@ class DuckDBBackend:
     # ── FeastBackend protocol ─────────────────────────────────────────────────
 
     def write(self, view_name: str, entity_key: str, features: dict[str, Any]) -> None:
+        """Create the view table if needed and upsert one entity's JSON payload.
+
+        ``view_name`` accepts only ASCII letters/digits/underscores (ValueError
+        otherwise); ``entity_key`` is a bound value. Copy features and overwrite
+        __written_at, also storing a separate timestamp column. Return None.
+        The lock covers table creation and write. JSON and DuckDB errors
+        propagate; the optional duckdb package is required at construction.
+        """
         with self._lock:
             self._ensure_table(view_name)
             tbl = self._table(view_name)
@@ -634,6 +733,12 @@ class DuckDBBackend:
             )
 
     def read(self, view_name: str, entity_key: str) -> dict[str, Any] | None:
+        """Return decoded features for ``view_name``/``entity_key``, or None.
+
+        Create an empty table even on a miss, under the lock. Include the JSON
+        __written_at field but not the separate timestamp column; enforce no TTL.
+        Invalid view names raise ValueError; DuckDB/JSON errors propagate.
+        """
         with self._lock:
             self._ensure_table(view_name)
             tbl = self._table(view_name)
@@ -644,6 +749,12 @@ class DuckDBBackend:
         return json.loads(row[0]) if row else None
 
     def delete(self, view_name: str, entity_key: str) -> None:
+        """Ensure the view table exists, then delete its entity row under lock.
+
+        Return None; absent rows are harmless but even an absent view gets a
+        table. Invalid view names raise ValueError and DuckDB errors propagate.
+        The now-empty table remains visible to list_views.
+        """
         with self._lock:
             self._ensure_table(view_name)
             tbl = self._table(view_name)
@@ -653,6 +764,12 @@ class DuckDBBackend:
             )
 
     def list_views(self) -> list[str]:
+        """Return base-table names matching the configured prefix, with it removed.
+
+        Query the connection under lock; order is unspecified and empty tables
+        are included. Other tables sharing the prefix also qualify. DuckDB
+        connection/query errors propagate.
+        """
         with self._lock:
             rows = self._conn.execute(
                 "SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE'"
@@ -661,6 +778,11 @@ class DuckDBBackend:
         return [row[0][len(prefix) :] for row in rows if row[0].startswith(prefix)]
 
     def close(self) -> None:
+        """Close the DuckDB connection and return None, without acquiring the lock.
+
+        File-backed state persists; in-memory tables are lost. Callers must
+        coordinate concurrent use before closing. DuckDB errors propagate.
+        """
         self._conn.close()
 
     # ── Offline-materialization extra ─────────────────────────────────────────

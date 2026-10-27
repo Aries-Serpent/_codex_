@@ -1,0 +1,49 @@
++ sha256sum /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_ml-0.3.0-py3-none-any.whl /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl
+08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00  /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_ml-0.3.0-py3-none-any.whl
+bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96  /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl
++ /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m venv --without-pip /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv
++ /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m pip --python /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/bin/python install --no-deps --report /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/install-report.json /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_ml-0.3.0-py3-none-any.whl /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl jsonschema==4.25.1 jsonschema-specifications==2025.9.1 referencing==0.37.0 rpds-py==2026.9.1 attrs==26.1.0
+Processing ./.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_ml-0.3.0-py3-none-any.whl
+Processing ./.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl
+Collecting jsonschema==4.25.1
+  Downloading jsonschema-4.25.1-py3-none-any.whl.metadata (7.6 kB)
+Collecting jsonschema-specifications==2025.9.1
+  Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+Collecting referencing==0.37.0
+  Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+Collecting rpds-py==2026.9.1
+  Downloading rpds_py-2026.9.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+Collecting attrs==26.1.0
+  Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+Downloading jsonschema-4.25.1-py3-none-any.whl (90 kB)
+Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+Downloading rpds_py-2026.9.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (371 kB)
+Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+Installing collected packages: rpds-py, referencing, jsonschema-specifications, jsonschema, codex-ml, codex-contracts, attrs
+
+Successfully installed attrs-26.1.0 codex-contracts-0.1.0a1 codex-ml-0.3.0 jsonschema-4.25.1 jsonschema-specifications-2025.9.1 referencing-0.37.0 rpds-py-2026.9.1
++ cd /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/work
++ /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/bin/python -I -B /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/workflow.py synthetic
+Traceback (most recent call last):
+  File "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/workflow.py", line 32, in <module>
+    from codex.institutional import assurance, core, review, storage  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/lib/python3.12/site-packages/codex/institutional/__init__.py", line 3, in <module>
+    from .core import candidate, inventory, validate
+  File "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/lib/python3.12/site-packages/codex/institutional/core.py", line 17, in <module>
+    from jsonschema import Draft202012Validator, FormatChecker
+  File "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/lib/python3.12/site-packages/jsonschema/__init__.py", line 13, in <module>
+    from jsonschema._format import FormatChecker
+  File "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/lib/python3.12/site-packages/jsonschema/_format.py", line 11, in <module>
+    from jsonschema.exceptions import FormatError
+  File "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/lib/python3.12/site-packages/jsonschema/exceptions.py", line 15, in <module>
+    from referencing.exceptions import Unresolvable as _Unresolvable
+  File "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/lib/python3.12/site-packages/referencing/__init__.py", line 5, in <module>
+    from referencing._core import Anchor, Registry, Resource, Specification
+  File "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/lib/python3.12/site-packages/referencing/_core.py", line 18, in <module>
+    from referencing.typing import URI, Anchor as AnchorType, D, Mapping, Retrieve
+  File "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/lib/python3.12/site-packages/referencing/typing.py", line 22, in <module>
+    D = TypeVar("D", default=Any)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'default' is an invalid keyword argument for typevar()

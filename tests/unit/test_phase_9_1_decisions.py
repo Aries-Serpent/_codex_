@@ -33,6 +33,14 @@ from phase_9_1_confidence_scorer import ConfidenceScorer
 from phase_9_1_decision_logger import DecisionLogger, create_decision_record
 
 
+@pytest.fixture
+def setup(tmp_path):
+    """Provide the same isolated decision database to integration and scenario tests."""
+    db_path = str(tmp_path / "test_decisions.db")
+    logger = DecisionLogger(db_path)
+    return logger, ConfidenceScorer(db_path)
+
+
 class TestDecisionLogging:
     """Test decision logging functionality."""
 
@@ -170,7 +178,9 @@ class TestDecisionLogging:
 
         results_escalated = logger.query_decisions(escalated=True)
         assert len(results_escalated) == 1, "Results_escalated must not be empty"
-        assert results_escalated[0]["agent_id"] == "autonomous-test-healer-agent", "Result must not be empty"
+        assert (
+            results_escalated[0]["agent_id"] == "autonomous-test-healer-agent"
+        ), "Result must not be empty"
 
     def test_rollback_logging(self, logger):
         """Test decision rollback and tracking."""
@@ -557,14 +567,6 @@ class TestAgentDecisionPaths:
 class TestPhase91Integration:
     """Integration tests for Phase 9.1 framework."""
 
-    @pytest.fixture
-    def setup(self, tmp_path):
-        """Setup logger and scorer."""
-        db_path = str(tmp_path / "test_decisions.db")
-        logger = DecisionLogger(db_path)
-        scorer = ConfidenceScorer(db_path)
-        return logger, scorer
-
     def test_end_to_end_decision_workflow(self, setup):
         """Test complete decision workflow: score → log → verify."""
         logger, scorer = setup
@@ -697,7 +699,13 @@ TEST_SCENARIOS = [
     ("test-pattern-guardian", "pattern_enforcement", "high", 67.0, "Serialization pattern"),
     ("packaging-validation-agent", "security_validation", "low", 91.0, "Dependency audit"),
     ("packaging-validation-agent", "security_validation", "medium", 81.0, "Vulnerability patching"),
-    ("packaging-validation-agent", "security_validation", "high", 69.0, "Multi-scanner reconciliation"),
+    (
+        "packaging-validation-agent",
+        "security_validation",
+        "high",
+        69.0,
+        "Multi-scanner reconciliation",
+    ),
     ("copilot-session-chain", "orchestration", "low", 94.0, "Sub-PR chain creation"),
     ("copilot-session-chain", "orchestration", "medium", 83.0, "Branch strategy switching"),
     ("copilot-session-chain", "orchestration", "high", 71.0, "Integration branch conflict"),
@@ -713,39 +721,30 @@ EXTENDED_SCENARIOS = TEST_SCENARIOS + [
     ("ci-testing-agent", "test_fix", "high", 51.0, "Risky fix at threshold"),
     ("workflow-ci-fixer", "workflow_update", "low", 100.0, "Perfect confidence score"),
     ("packaging-validation-agent", "security_validation", "high", 49.0, "Below threshold risk"),
-
     # Multi-file scenarios
     ("ci-testing-agent", "test_fix", "medium", 78.0, "Multi-file test alignment"),
     ("workflow-ci-fixer", "workflow_update", "high", 63.0, "Multi-workflow orchestration"),
-
     # High-volume scenarios
     ("ci-health-alert-agent", "ci_healing", "low", 85.0, "Batch failure processing"),
     ("test-pattern-guardian", "pattern_enforcement", "low", 88.0, "Large codebase scan"),
-
     # Time-based scenarios
     ("ci-testing-agent", "test_fix", "low", 84.0, "First-run detection"),
     ("self-healing-orchestrator-agent", "orchestration", "medium", 75.0, "Delayed cascade healing"),
-
     # Rollback scenarios
     ("workflow-ci-fixer", "workflow_update", "medium", 77.0, "Rollback-safe update"),
     ("test-assertion-updater", "test_alignment", "high", 66.0, "Reversible modification"),
-
     # Performance scenarios
     ("packaging-validation-agent", "security_validation", "low", 89.0, "Fast scanning"),
     ("rust-error-validator", "code_review", "medium", 79.0, "Large file analysis"),
-
     # Integration scenarios
     ("copilot-session-chain", "orchestration", "medium", 82.0, "Cross-branch integration"),
     ("self-healing-orchestrator-agent", "orchestration", "low", 87.0, "Coordinated healing"),
-
     # Failure recovery scenarios
     ("ci-health-alert-agent", "ci_healing", "high", 59.0, "Transient failure detection"),
     ("workflow-ci-fixer", "workflow_update", "high", 61.0, "Permission escalation"),
-
     # Security scenarios
     ("packaging-validation-agent", "security_validation", "high", 70.0, "Zero-day mitigation"),
     ("rust-error-validator", "code_review", "high", 69.0, "Memory safety verification"),
-
     # Correctness scenarios
     ("test-assertion-updater", "test_alignment", "low", 86.0, "Semantic equivalence"),
     ("test-pattern-guardian", "pattern_enforcement", "medium", 78.0, "Pattern compliance"),
@@ -753,7 +752,13 @@ EXTENDED_SCENARIOS = TEST_SCENARIOS + [
 
 # Extend to ensure 100+ scenarios
 FINAL_SCENARIOS = EXTENDED_SCENARIOS + [
-    (agent, f"type_{i}", "low" if i % 3 == 0 else "medium" if i % 3 == 1 else "high", 50 + (i % 50), f"Synthetic scenario {i}")
+    (
+        agent,
+        f"type_{i}",
+        "low" if i % 3 == 0 else "medium" if i % 3 == 1 else "high",
+        50 + (i % 50),
+        f"Synthetic scenario {i}",
+    )
     for agent in D_CAPABLE_AGENTS
     for i in range(4)
 ]
@@ -762,8 +767,12 @@ FINAL_SCENARIOS = EXTENDED_SCENARIOS + [
 class TestDecisionScenarios:
     """Test 100+ decision scenarios across all D_CAPABLE agents."""
 
-    @pytest.mark.parametrize("agent_id,decision_type,risk_level,confidence,description", FINAL_SCENARIOS[:100])
-    def test_agent_decision_scenarios(self, setup, agent_id, decision_type, risk_level, confidence, description):
+    @pytest.mark.parametrize(
+        "agent_id,decision_type,risk_level,confidence,description", FINAL_SCENARIOS[:100]
+    )
+    def test_agent_decision_scenarios(
+        self, setup, agent_id, decision_type, risk_level, confidence, description
+    ):
         """Test individual agent decision scenarios."""
         logger, scorer = setup
 
@@ -778,7 +787,9 @@ class TestDecisionScenarios:
         )
 
         # Verify confidence within expected range
-        assert 0 <= result["confidence_score"] <= 100, f"Invalid confidence: {result['confidence_score']}"
+        assert (
+            0 <= result["confidence_score"] <= 100
+        ), f"Invalid confidence: {result['confidence_score']}"
 
         # Log decision
         record = create_decision_record(
@@ -813,7 +824,8 @@ class TestDecisionScenarios:
             )
 
             assert "confidence_score" in result, "Result must not be empty"
-            assert "recommendation" in result, "Result must not be empty"
+            assert result["decision_action"] in {"EXECUTE", "ESCALATE", "BLOCK"}
+            assert isinstance(result["escalation_required"], bool)
             count += 1
 
         assert count == len(D_CAPABLE_AGENTS), "D_capable_agents must not be empty"
@@ -831,12 +843,9 @@ class TestDecisionScenarios:
         # Verify all 9 agents appear in scenarios
         assert len(agent_set) >= 5, f"Only {len(agent_set)} agents tested, need 9"
 
-    def test_decision_accuracy_tracking(self, setup):
-        """Test tracking of decision accuracy across scenarios."""
+    def test_decision_scores_match_weighted_factors(self, setup):
+        """Synthetic confidence labels must not override measured scoring factors."""
         logger, scorer = setup
-
-        correct_count = 0
-        total_count = 0
 
         for agent_id, decision_type, risk_level, confidence, description in FINAL_SCENARIOS[:50]:
             result = scorer.score_with_context(
@@ -847,14 +856,26 @@ class TestDecisionScenarios:
                 },
             )
 
-            # Mark as correct if confidence >= 70
-            if result["confidence_score"] >= 70:
-                correct_count += 1
+            expected_score = scorer.AGENT_BASELINES.get(agent_id, 75.0) * 0.4 + 100.0 * 0.3
+            assert result["confidence_score"] == pytest.approx(expected_score)
+            expected_escalation = expected_score < scorer.ESCALATION_THRESHOLDS.get(agent_id, 60.0)
+            assert result["escalation_required"] is expected_escalation
+            assert result["decision_action"] == ("ESCALATE" if expected_escalation else "EXECUTE")
 
-            total_count += 1
-
-        accuracy = correct_count / total_count * 100 if total_count > 0 else 0
-        assert accuracy >= 85.0, f"Accuracy {accuracy}% below target of 85%"
+    @pytest.mark.parametrize(
+        "agent_id,manual_override,escalated,action",
+        [
+            ("unknown-agent", None, False, "EXECUTE"),
+            ("test-alignment-fixer", None, True, "ESCALATE"),
+            ("unknown-agent", "--block", True, "BLOCK"),
+        ],
+    )
+    def test_escalation_is_boolean(self, setup, agent_id, manual_override, escalated, action):
+        """No-signal and blocked decisions expose a real boolean escalation flag."""
+        _, scorer = setup
+        result = scorer.score_with_context(agent_id, {}, manual_override=manual_override)
+        assert result["escalation_required"] is escalated
+        assert result["decision_action"] == action
 
 
 class TestFalsePositiveRate:
@@ -867,7 +888,9 @@ class TestFalsePositiveRate:
         false_positives = 0
         total = 100
 
-        for i, (agent_id, decision_type, risk_level, confidence, description) in enumerate(FINAL_SCENARIOS[:total]):
+        for i, (agent_id, decision_type, risk_level, confidence, description) in enumerate(
+            FINAL_SCENARIOS[:total]
+        ):
             result = scorer.score_with_context(
                 agent_id=agent_id,
                 decision_context={

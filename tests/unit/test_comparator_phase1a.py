@@ -714,11 +714,16 @@ class TestRobustness:
     def test_comparison_detail_fields(self):
         """Test ComparisonDetail fields are accessible."""
         detail = ComparisonDetail(
-            output="test",
-            hash_value="abc123",
+            input_ref="case1",
+            mode=ComparisonMode.STRICT,
+            result="match",
+            baseline_output="test",
+            patched_output="test",
         )
-        assert detail.output == "test", "output is not valid"
-        assert detail.hash_value == "abc123", "Value must be initialized"
+        assert detail.input_ref == "case1"
+        assert detail.baseline_output == detail.patched_output == "test"
+        assert detail.mode is ComparisonMode.STRICT
+        assert detail.result == "match"
 
     def test_normalize_output_preserves_content(self):
         """Test normalize preserves essential content."""
@@ -815,15 +820,31 @@ class TestRobustness:
         for f in files:
             assert f.suffix == ".py", "suffix is not valid"
 
-    def test_comparison_detail_to_dict(self):
-        """Test ComparisonDetail to_dict."""
+    def test_comparison_detail_in_result_to_dict(self):
+        """Result serialization includes each detail's supported wire fields."""
         detail = ComparisonDetail(
-            output="test output",
-            hash_value="abc123",
+            input_ref="case1",
+            mode=ComparisonMode.STRICT,
+            result="divergence",
+            baseline_output="test output",
+            patched_output="changed output",
+            diff="-test output\n+changed output",
         )
-        if hasattr(detail, "to_dict"):
-            detail_dict = detail.to_dict()
-            assert isinstance(detail_dict, dict)
+        result = ComparisonResult(
+            result="fail",
+            baseline_hash="abc123",
+            patched_hash="def456",
+            comparisons=[detail],
+        )
+        assert result.to_dict()["comparisons"] == [
+            {
+                "input_ref": "case1",
+                "mode": "strict",
+                "result": "divergence",
+                "diff": "-test output\n+changed output",
+                "error": None,
+            }
+        ]
 
     def test_comparison_result_baseline_hash_preserved(self):
         """Test that baseline hash is preserved in comparison result."""

@@ -1,0 +1,80 @@
+{
+  "schema": "codex.experience.v1",
+  "id": "codex.experience.v1:2cc429921186c60a8edcd05fa6c3d8a56d8a3c8515f98584e36a3e051f8a0132",
+  "created_at": "2026-10-25T01:54:59Z",
+  "producer": {
+    "identity": "codex-institutional",
+    "assurance": "unverified"
+  },
+  "evidence_refs": [],
+  "authority_refs": [],
+  "validation_state": "candidate",
+  "lifecycle": "Draft",
+  "supersedes": "codex.experience.v1:05f177ae2ba608dd012efe598f86b2ae05d612eee21604ac8f0eb70a5d0f2d2d",
+  "extensions": {},
+  "payload": {
+    "problem": "Prevent evidence restoration and exemption bridges from falsely satisfying an assurance DAG while retaining institutional continuation compatibility.",
+    "context": "Final inactive candidate00306262216ef95d7cf1b927fe15e2ef073572ac; exact original and changed wheels externally validated; no independent approval.",
+    "environment": {
+      "source_commit": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+      "wheel_sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00",
+      "source_binding": "final-source-binding.json",
+      "package_receipts": [
+        "package-original/gate-status.json",
+        "package-changed/full-base-closure/summary.json",
+        "package-final/gate-status.json"
+      ]
+    },
+    "hypotheses": [
+      "Current evidence state alone is an adequate dependency proof.",
+      "Exempting node execution can safely discard ancestor prerequisites.",
+      "One-MiB assurance record limits can also bound existing institutional continuations."
+    ],
+    "support": [
+      "285 distinct source cases passed; runtime/test bytes identical in final candidate.",
+      "Final exact wheel:107 assurance cases,55 SDK checks,49 baseline checks and2 documentation Python blocks passed; overlapping reruns not summed.",
+      "All29 declared base requirements installed; pip check exited0 for exact original and final candidate in separate fresh environments."
+    ],
+    "against": [
+      "Preserved initial SDK-only environment had27 missing dependencies; corrected by complete base installation, not pin changes or source changes.",
+      "Pre-fix dependency and aggregate compatibility defects refuted initial hypotheses.",
+      "Python CodeQL skipped for database size; G5 remains NOT_RUN."
+    ],
+    "alternatives": [
+      "Reuse review/storage/core rather than create another memory or approval system.",
+      "Retain inert procedure descriptions instead of executing imported commands.",
+      "Reject unsupported disposition kinds instead of claiming seven implemented routes."
+    ],
+    "decision": "Retain an inactive Draft with event-revision-sensitive proofs, dependency-preserving exemptions, one bound nonmutating rejection recommendation and inherited continuation aggregate limits.",
+    "dissent": [
+      "Same-platform review and synthetic independence do not establish G5.",
+      "Integrity hashes and source-grounded fixture coverage do not establish evidence truth or authorized adjudication.",
+      "Whole-distribution dependency conformance remains distinct from the SDK subset experiment."
+    ],
+    "uncertainty": [
+      "Institutional effectiveness and causal benefit remain unknown.",
+      "Trusted lifecycle administration, authenticated independent actors, numerical assessment and production approval remain unsupported."
+    ],
+    "implementation": [
+      "codex.institutional.assurance",
+      "codex.assurance.v1 additive envelope",
+      "Existing core/review/storage reused without policy or authority activation."
+    ],
+    "verification": [
+      "assurance-aggregate-verified-cohort.json",
+      "retention-verification.json",
+      "package-final/gate-status.json",
+      "package-changed/full-base-closure/summary.json"
+    ],
+    "outcomes": "unknown",
+    "failure_modes": [
+      "Restoring identical evidence state revives dependent results without a new attempt.",
+      "Exempt intermediate node bypasses an unmet required ancestor.",
+      "Per-artifact limits accidentally reject compatible aggregate continuation records."
+    ],
+    "applicability": "Bounded offline supplied-data assurance mechanics; no executor, authenticated evidence provider, independent approval or activation.",
+    "confidence": "unknown",
+    "next_review": "Rebind after evidence-only bookkeeping commit, then obtain independently established reproduction for exact final wheel; do not activate or approve."
+  },
+  "integrity": "f8c2d256d8f3611cb9e7647157ceed5ee82e05e5626f146e7bfe98cfb24324e4"
+}

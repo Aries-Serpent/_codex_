@@ -1,0 +1,182 @@
+{
+  "G5": "NOT_RUN",
+  "authority": "none",
+  "checks": [
+    "PYTHONPATH absent",
+    "Python isolated mode",
+    "fresh virtual environment",
+    "system site packages disabled",
+    "external runtime cwd",
+    "checkout and exported source absent from import paths",
+    "all SDK and contracts imports originate in installed runtime environment",
+    "pytest absent from SDK runtime environment",
+    "wheel digest matches immutable release manifest",
+    "exact source/wheel/installed bytes: __init__.py",
+    "exact source/wheel/installed bytes: __main__.py",
+    "exact source/wheel/installed bytes: assurance.py",
+    "exact source/wheel/installed bytes: authority.py",
+    "exact source/wheel/installed bytes: contracts.json",
+    "exact source/wheel/installed bytes: core.py",
+    "exact source/wheel/installed bytes: git_capture.py",
+    "exact source/wheel/installed bytes: review-formulas.json",
+    "exact source/wheel/installed bytes: review.py",
+    "exact source/wheel/installed bytes: storage.py",
+    "assurance schema installed",
+    "all 58 formula identities preserved",
+    "two exact documentation Python blocks executed installed and offline",
+    "documentation fixture recommendation converges without approval",
+    "documentation revocation reopens recommendation",
+    "identical upstream fields can restore upstream technical fixture",
+    "identical upstream status restoration cannot restore stale downstream proofs",
+    "evidence revisions preserve intervening revocation",
+    "exact pending resume rechecks current prerequisites",
+    "wrong pending node rejected:ASSURANCE_PENDING_NODE",
+    "candidate drift rejected on resume:ASSURANCE_STALE_BINDING",
+    "candidate drift reopens recommendation",
+    "exact replay cache accepted",
+    "forged cache rejected:ASSURANCE_CACHE_MISMATCH",
+    "exempt dependency bridge cannot bypass missing upstream requirement",
+    "passed assurance results alone cannot clear original contradictory findings",
+    "FIXED mutation proposals remain unresolved and preserve contradictions",
+    "bound nonmutating rejection retains original dissent and contradictions without adjudication",
+    "existing continuation exceeds assurance artifact cap but fits inherited aggregate cap",
+    "attachment preserves session, extensions and exact predecessor",
+    "storage preview does not write",
+    "actual installed storage roundtrip retains assurance artifacts",
+    "checkpoint uses private 0600 mode",
+    "durable recovery preserves identity and reopens exact technical pending node",
+    "persisted recovery resumes pending downstream work without silent convergence",
+    "original predecessor bytes preserved",
+    "storage rejects candidate binding drift:INVALID_CANDIDATE:CANDIDATE_BINDING_MISMATCH",
+    "repeat/stale write rejected:CONCURRENT_MODIFICATION",
+    "socket denied offline",
+    "subprocess denied offline",
+    "all fixture convergence remains non-authorizing and unapproved",
+    "codex-ml selected from local wheel file",
+    "codex-ml installer report binds exact retained wheel digest",
+    "codex-contracts selected from local wheel file",
+    "codex-contracts installer report binds exact retained wheel digest",
+    "SDK and local contracts installed noneditably; find-links origins bound by install report"
+  ],
+  "checks_passed": 55,
+  "continuation_sizes": {
+    "original": 1058003,
+    "sequence3": 1162710,
+    "successor": 1116387
+  },
+  "cwd": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/runtime",
+  "direct_urls": {
+    "codex-contracts": null,
+    "codex-ml": {
+      "archive_info": {
+        "hash": "sha256=0a684e9e09a787b15004cad1582ad2470b5e2bf8c4584d8bfcb9b568e75895f0",
+        "hashes": {
+          "sha256": "0a684e9e09a787b15004cad1582ad2470b5e2bf8c4584d8bfcb9b568e75895f0"
+        }
+      },
+      "url": "file:///home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl"
+    }
+  },
+  "documentation_blocks_executed": 2,
+  "harness_sha256": "e3ec72e8c237688434c6258ae22e3a41771316b3d1d4b2d7ca78291b25fe5301",
+  "import_origins": {
+    "assurance": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/assurance.py",
+    "codex_contracts": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex_contracts/__init__.py",
+    "core": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/core.py",
+    "review": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/review.py",
+    "storage": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/storage.py"
+  },
+  "independence": "unverified same-platform fixtures, separately authored harness",
+  "install_report_origins": {
+    "codex-contracts": {
+      "archive_info": {
+        "hash": "sha256=bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+        "hashes": {
+          "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96"
+        }
+      },
+      "url": "file:///home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl"
+    },
+    "codex-ml": {
+      "archive_info": {
+        "hash": "sha256=0a684e9e09a787b15004cad1582ad2470b5e2bf8c4584d8bfcb9b568e75895f0",
+        "hashes": {
+          "sha256": "0a684e9e09a787b15004cad1582ad2470b5e2bf8c4584d8bfcb9b568e75895f0"
+        }
+      },
+      "url": "file:///home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl"
+    }
+  },
+  "installed_resources": {
+    "__init__.py": {
+      "bytes": 176,
+      "path": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/__init__.py",
+      "sha256": "9156844c6bf4c6095162cac331546fb5a4477027bce53838c16946a1570b47aa"
+    },
+    "__main__.py": {
+      "bytes": 5977,
+      "path": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/__main__.py",
+      "sha256": "dd1898fcc835a005dfa6a866e07c29703faf7efbe5c5ef73c1a1dbc9cb299d9c"
+    },
+    "assurance.py": {
+      "bytes": 33522,
+      "path": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/assurance.py",
+      "sha256": "ba67ea4d6201dd3c3243ec86715c54f21f1b620ac8dc8bc48732b818e020402c"
+    },
+    "authority.py": {
+      "bytes": 6076,
+      "path": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/authority.py",
+      "sha256": "95946e4a65191dcb8525f59f641abb31e874f3bfeacfc7aae641cf8349320d95"
+    },
+    "contracts.json": {
+      "bytes": 6154,
+      "path": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/contracts.json",
+      "sha256": "21026df523f2445bd0ade774603f7facd823aadabed96f59b983ad8f56b52e30"
+    },
+    "core.py": {
+      "bytes": 22677,
+      "path": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/core.py",
+      "sha256": "636c45dc7eed70d0bed4bc80602f6831fd76ef5a688119f082ae7f8fe4743cef"
+    },
+    "git_capture.py": {
+      "bytes": 2433,
+      "path": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/git_capture.py",
+      "sha256": "8bfb2b10066c2f475ef36fa151e6ace9d00e463b92bccfc1a58b7a46f822476e"
+    },
+    "review-formulas.json": {
+      "bytes": 54986,
+      "path": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/review-formulas.json",
+      "sha256": "bb334de789fc66e6704b752268c84f32860a218bbc4858b6888822c4f5e23537"
+    },
+    "review.py": {
+      "bytes": 28021,
+      "path": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/review.py",
+      "sha256": "12ef9992b0b1a7412076cc26abc49cf42028bcb1b8fa94f65ecff9d41fc2d959"
+    },
+    "storage.py": {
+      "bytes": 11707,
+      "path": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages/codex/institutional/storage.py",
+      "sha256": "35e7122d388e44eb1badf025a2e69f2dffee0cf473822ca001e4f9f52b2a947f"
+    }
+  },
+  "limits": [
+    "No authenticated identity, approval, activation or independent production assurance.",
+    "Full base dependency install and pip check observed separately; no optional extras.",
+    "Documentation source fixtures are fabricated observations, not external factual proof.",
+    "Process-local offline guard is not kernel network isolation.",
+    "Formula notation preserved; numerical evaluation not implemented.",
+    "Source-only parent fixture harness retained unchanged, not relabeled or executed here."
+  ],
+  "network": "Process-local audit hook denies sockets and subprocess creation with OSError.",
+  "python": "3.12.10 (main, Apr  8 2025, 22:38:13) [GCC 13.3.0]",
+  "runtime_prefix": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv",
+  "source_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+  "status": "PASS",
+  "sys_path": [
+    "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python312.zip",
+    "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12",
+    "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/lib-dynload",
+    "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025/full-base-venv/lib/python3.12/site-packages"
+  ],
+  "wheel_sha256": "0a684e9e09a787b15004cad1582ad2470b5e2bf8c4584d8bfcb9b568e75895f0"
+}

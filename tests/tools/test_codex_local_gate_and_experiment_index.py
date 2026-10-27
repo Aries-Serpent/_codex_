@@ -35,13 +35,14 @@ def test_local_gate_runner_uses_default_gate_when_config_missing(
 
 def test_local_gate_runner_with_custom_config(tmp_path: Path) -> None:
     config = tmp_path / "codex_local_gate.yaml"
+    # Isolate fixture output from repository/site startup hooks.
     config.write_text(
         """
 gates:
   - name: echo-one
-    cmd: [python, -c, "logger.info('one')"]
+    cmd: [python, -I, -S, -c, "print('one')"]
   - name: echo-two
-    cmd: [python, -c, "logger.info('two')"]
+    cmd: [python, -I, -S, -c, "print('two')"]
 """,
         encoding="utf-8",
     )
@@ -62,6 +63,49 @@ gates:
     data = json.loads(json_out.read_text(encoding="utf-8"))
     names = [entry["name"] for entry in data["results"]]
     assert names == ["echo-one", "echo-two"]
+    assert data["overall_returncode"] == 0
+    assert [entry["returncode"] for entry in data["results"]] == [0, 0]
+    assert [entry["stdout"] for entry in data["results"]] == ["one\n", "two\n"]
+    assert [entry["stderr"] for entry in data["results"]] == ["", ""]
+
+
+def test_local_gate_runner_reports_failed_command_and_continues(tmp_path: Path) -> None:
+    config = tmp_path / "gates.yaml"
+    # Exercise real subprocess failures with deterministic stdout/stderr.
+    config.write_text(
+        """
+gates:
+  - name: failing
+    cmd: [python, -I, -S, -c, "import sys; print('failed', file=sys.stderr); sys.exit(3)"]
+  - name: following
+    cmd: [python, -I, -S, -c, "print('continued')"]
+""",
+        encoding="utf-8",
+    )
+    json_out = tmp_path / "report.json"
+    md_out = tmp_path / "report.md"
+    rc = codex_local_gate_runner.main(
+        [
+            "--repo-root",
+            str(tmp_path),
+            "--config",
+            str(config),
+            "--json-out",
+            str(json_out),
+            "--md-out",
+            str(md_out),
+        ]
+    )
+    assert rc == 3
+    data = json.loads(json_out.read_text(encoding="utf-8"))
+    assert data["overall_returncode"] == 3
+    assert [entry["name"] for entry in data["results"]] == ["failing", "following"]
+    assert [entry["returncode"] for entry in data["results"]] == [3, 0]
+    assert [entry["stdout"] for entry in data["results"]] == ["", "continued\n"]
+    assert [entry["stderr"] for entry in data["results"]] == ["failed\n", ""]
+    markdown = md_out.read_text(encoding="utf-8")
+    assert "| failing | 3 |" in markdown
+    assert "| following | 0 |" in markdown
 
 
 def test_experiment_index_handles_empty_runs_dir(tmp_path: Path) -> None:

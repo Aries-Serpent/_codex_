@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="6" time="0.250" timestamp="2026-10-24T22:31:10.586967+00:00" hostname="runnervm1s3jh"><testcase classname="" name="test_ctep_accounts_for_incomplete_work_without_expanding_authority[.github/AGENTS.md]" time="0.001"><failure message="AssertionError: assert 'Total = Completed + Blocked + Deferred + Pending' in '# AGENTS.md - Repository Conventions for Autonomous AI Agents\n\n&gt; **Generated:** 2026-01-03T21:34:00Z\n&gt; **Author:**...Rs or create repository follow-up/status\nfiles. Preserve actual security, owner/reason, review and execution gates.\n'">path = '.github/AGENTS.md'
+
+    @pytest.mark.parametrize("path", CTEP_GUIDANCE)
+    def test_ctep_accounts_for_incomplete_work_without_expanding_authority(path):
+        text = (ROOT / path).read_text()
+&gt;       assert "Total = Completed + Blocked + Deferred + Pending" in text
+E       AssertionError: assert 'Total = Completed + Blocked + Deferred + Pending' in '# AGENTS.md - Repository Conventions for Autonomous AI Agents\n\n&gt; **Generated:** 2026-01-03T21:34:00Z\n&gt; **Author:**...Rs or create repository follow-up/status\nfiles. Preserve actual security, owner/reason, review and execution gates.\n'
+
+tests/ci/test_agent_instruction_contract.py:207: AssertionError</failure></testcase><testcase classname="" name="test_ctep_accounts_for_incomplete_work_without_expanding_authority[.github/docs/Copilot_Task_Execution_Protocol.md]" time="0.001"><failure message="AssertionError: assert 'Total = Completed + Blocked + Deferred + Pending' in '# Copilot Task Execution Protocol (CTEP)\n\n&gt; **Version:** 1.0.0  \n&gt; **Created:** 2025-12-16  \n&gt; **Purpose:** Compr...tion/deactivation commands defined\n- Progress tracking format established\n- Codebase audit requirements documented\n'">path = '.github/docs/Copilot_Task_Execution_Protocol.md'
+
+    @pytest.mark.parametrize("path", CTEP_GUIDANCE)
+    def test_ctep_accounts_for_incomplete_work_without_expanding_authority(path):
+        text = (ROOT / path).read_text()
+&gt;       assert "Total = Completed + Blocked + Deferred + Pending" in text
+E       AssertionError: assert 'Total = Completed + Blocked + Deferred + Pending' in '# Copilot Task Execution Protocol (CTEP)\n\n&gt; **Version:** 1.0.0  \n&gt; **Created:** 2025-12-16  \n&gt; **Purpose:** Compr...tion/deactivation commands defined\n- Progress tracking format established\n- Codebase audit requirements documented\n'
+
+tests/ci/test_agent_instruction_contract.py:207: AssertionError</failure></testcase><testcase classname="" name="test_ctep_accounts_for_incomplete_work_without_expanding_authority[.github/docs/CTEP_Quick_Reference.md]" time="0.000"><failure message="assert 'Total = Completed + Blocked + Deferred + Pending' in '# CTEP Quick Reference Card\n\n&gt; **Version:** 1.0.0  \n&gt; **Full Documentation:** [Copilot_Task_Execution_Protocol.md]...Complete all CTEP tasks now&quot; |\n| Status check | &quot;Show CTEP session status&quot; |\n| Exit immediately | &quot;Disable CTEP&quot; |\n'">path = '.github/docs/CTEP_Quick_Reference.md'
+
+    @pytest.mark.parametrize("path", CTEP_GUIDANCE)
+    def test_ctep_accounts_for_incomplete_work_without_expanding_authority(path):
+        text = (ROOT / path).read_text()
+&gt;       assert "Total = Completed + Blocked + Deferred + Pending" in text
+E       assert 'Total = Completed + Blocked + Deferred + Pending' in '# CTEP Quick Reference Card\n\n&gt; **Version:** 1.0.0  \n&gt; **Full Documentation:** [Copilot_Task_Execution_Protocol.md]...Complete all CTEP tasks now" |\n| Status check | "Show CTEP session status" |\n| Exit immediately | "Disable CTEP" |\n'
+
+tests/ci/test_agent_instruction_contract.py:207: AssertionError</failure></testcase><testcase classname="" name="test_ctep_accounts_for_incomplete_work_without_expanding_authority[.github/docs/CTEP_Usage_Examples.md]" time="0.000"><failure message="assert 'Total = Completed + Blocked + Deferred + Pending' in '# CTEP Usage Examples\n\n&gt; **Version:** 1.0.0  \n&gt; **Related:** [Copilot Task Execution Protocol](./Copilot_Task_Exec...rt as bug\n2. Request completion: &quot;Complete all remaining tasks per CTEP&quot;\n3. Re-submit task list for full execution\n'">path = '.github/docs/CTEP_Usage_Examples.md'
+
+    @pytest.mark.parametrize("path", CTEP_GUIDANCE)
+    def test_ctep_accounts_for_incomplete_work_without_expanding_authority(path):
+        text = (ROOT / path).read_text()
+&gt;       assert "Total = Completed + Blocked + Deferred + Pending" in text
+E       assert 'Total = Completed + Blocked + Deferred + Pending' in '# CTEP Usage Examples\n\n&gt; **Version:** 1.0.0  \n&gt; **Related:** [Copilot Task Execution Protocol](./Copilot_Task_Exec...rt as bug\n2. Request completion: "Complete all remaining tasks per CTEP"\n3. Re-submit task list for full execution\n'
+
+tests/ci/test_agent_instruction_contract.py:207: AssertionError</failure></testcase><testcase classname="" name="test_ctep_mixed_state_example_does_not_claim_completion" time="0.000"><failure message="IndexError: list index out of range">def test_ctep_mixed_state_example_does_not_claim_completion():
+        text = (ROOT / ".github/docs/CTEP_Usage_Examples.md").read_text()
+&gt;       example = text.split("### Mixed-state accounting example\n", 1)[1]
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+tests/ci/test_agent_instruction_contract.py:220: IndexError</failure></testcase><testcase classname="" name="test_preload_consumer_prints_scoped_reference_with_optional_context_missing" time="0.004"><failure message="AssertionError: assert 'ordinary authorized' in '::group::🔑 HISTORICAL REPO VARIABLE SNAPSHOT (agent_context.json)\n  agent_context.json not found\n::endgroup::\n::gr...quire explicit reading; logs are not prompt injection.\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'">tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-3/test_preload_consumer_prints_s0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7feab4bcde20&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7feab4bfce60&gt;
+
+    def test_preload_consumer_prints_scoped_reference_with_optional_context_missing(
+        tmp_path, monkeypatch, capsys
+    ):
+        # Exercise the real loader against disposable inputs, never the session index.
+        copy = ".codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md"
+        for relative in (copy, ".codex/CODEBASE_AGENCY_POLICY.md"):
+            destination = tmp_path / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text((ROOT / relative).read_text())
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.setitem(sys.modules, "scripts.ci.session_query", None)
+        optimizer = ModuleType("scripts.cognitive.context_window_optimizer")
+        optimizer.truncate_text = lambda text, max_chars: text[:max_chars]
+        monkeypatch.setitem(sys.modules, optimizer.__name__, optimizer)
+        runpy.run_path(str(ROOT / ".github/scripts/session_preload.py"))
+        output = capsys.readouterr().out
+        assert "agent_context.json not found" in output
+&gt;       assert "ordinary authorized" in output
+E       AssertionError: assert 'ordinary authorized' in '::group::🔑 HISTORICAL REPO VARIABLE SNAPSHOT (agent_context.json)\n  agent_context.json not found\n::endgroup::\n::gr...quire explicit reading; logs are not prompt injection.\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+
+/home/runner/work/_codex_/_codex_/tests/ci/test_agent_instruction_contract.py:248: AssertionError</failure></testcase></testsuite></testsuites>

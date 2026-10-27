@@ -20,16 +20,23 @@ Author: Codex Team
 from __future__ import annotations
 
 import json  # noqa: E402
-import sys  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any, Optional  # noqa: E402
+from typing import Any, Optional, Protocol  # noqa: E402
 
 from aries_serpent_core.logging.adapter import get_default_logger
 
 _FALLBACK_ACTIVE: bool = False
 _FALLBACK_PATH: Optional[Path] = None
 _FALLBACK_REASON: Optional[str] = None
+
+
+class _CounterMetric(Protocol):
+    def inc(self, amount: float = 1.0) -> None: ...
+
+
+class _GaugeMetric(Protocol):
+    def set(self, value: float) -> None: ...
 
 
 class _FallbackSink:
@@ -87,11 +94,15 @@ class _FallbackGauge:
         )
 
 
-def maybe_export_metrics(app=None, port: int = 9000, *, fallback_dir: Path | str | None = None):
+def maybe_export_metrics(
+    app=None, port: int = 9000, *, fallback_dir: Path | str | None = None
+) -> tuple[dict[str, _CounterMetric], dict[str, _GaugeMetric]]:
     """Start a Prometheus HTTP server or fall back to local NDJSON sinks."""
 
     global _FALLBACK_ACTIVE, _FALLBACK_PATH, _FALLBACK_REASON
 
+    counters: dict[str, _CounterMetric]
+    gauges: dict[str, _GaugeMetric]
     destination = (
         Path(fallback_dir) if fallback_dir is not None else Path("artifacts/metrics/prometheus")
     )
@@ -105,9 +116,8 @@ def maybe_export_metrics(app=None, port: int = 9000, *, fallback_dir: Path | str
         _FALLBACK_ACTIVE = True
         _FALLBACK_PATH = sink.path
         _FALLBACK_REASON = repr(exc)
-        get_default_logger().info(
+        get_default_logger().warning(
             f"[prometheus] falling back to NDJSON sink at {_FALLBACK_PATH} ({_FALLBACK_REASON})",
-            file=sys.stderr,
         )
         return counters, gauges
 

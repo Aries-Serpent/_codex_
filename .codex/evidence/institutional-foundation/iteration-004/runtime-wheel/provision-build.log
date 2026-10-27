@@ -1,0 +1,11 @@
+Looking in links: .codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse
+Processing ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/setuptools-81.0.0-py3-none-any.whl
+Processing ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/wheel-0.48.0-py3-none-any.whl
+Processing ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/hatchling-1.32.0-py3-none-any.whl
+Processing ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/packaging-26.3-py3-none-any.whl (from wheel==0.48.0)
+Processing ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/pathspec-1.1.1-py3-none-any.whl (from hatchling==1.32.0)
+Processing ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/pluggy-1.7.0-py3-none-any.whl (from hatchling==1.32.0)
+Processing ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/tomlkit-0.15.2-py3-none-any.whl (from hatchling==1.32.0)
+Processing ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/trove_classifiers-2026.9.21.13-py3-none-any.whl (from hatchling==1.32.0)
+Installing collected packages: trove-classifiers, tomlkit, setuptools, pluggy, pathspec, packaging, wheel, hatchling
+Successfully installed hatchling-1.32.0 packaging-26.3 pathspec-1.1.1 pluggy-1.7.0 setuptools-81.0.0 tomlkit-0.15.2 trove-classifiers-2026.9.21.13 wheel-0.48.0

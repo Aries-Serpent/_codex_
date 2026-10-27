@@ -1,0 +1,162 @@
+{
+  "changes_after_original_execution": "Black formatting, explicit container type annotations, distinct local stream/member variable names for mypy, typing.cast on the already-regular TAR file reader. No scan logic/budgets/detectors/classification rules changed. Original executed hashes retained above; no archive-content rescan performed.",
+  "checks": [
+    {
+      "command": [
+        ".venv_ci/bin/black",
+        "--check",
+        ".codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py",
+        ".codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py"
+      ],
+      "exit_code": 1,
+      "stderr": "would reformat .codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py\nwould reformat .codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py\n\nOh no! \ud83d\udca5 \ud83d\udc94 \ud83d\udca5\n2 files would be reformatted.\n",
+      "stdout": ""
+    },
+    {
+      "command": [
+        ".venv_ci/bin/isort",
+        "--check-only",
+        ".codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py",
+        ".codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "command": [
+        ".venv_ci/bin/ruff",
+        "check",
+        "--no-cache",
+        ".codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py",
+        ".codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "All checks passed!\n"
+    },
+    {
+      "command": [
+        ".venv_ci/bin/mypy",
+        "--follow-imports=skip",
+        "--ignore-missing-imports",
+        "--cache-dir",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/security/cache/mypy",
+        ".codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py",
+        ".codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py"
+      ],
+      "exit_code": 1,
+      "stderr": "",
+      "stdout": ".codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py:112: error: Incompatible types in assignment (expression has type \"IO[bytes]\", variable has type \"GzipFile\")  [assignment]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:102: error: Need type annotation for \"members\" (hint: \"members: list[<type>] = ...\")  [var-annotated]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:102: error: Need type annotation for \"unique\" (hint: \"unique: dict[<type>, <type>] = ...\")  [var-annotated]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:102: error: Need type annotation for \"findings\" (hint: \"findings: list[<type>] = ...\")  [var-annotated]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:162: error: Need type annotation for \"seen\" (hint: \"seen: set[<type>] = ...\")  [var-annotated]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:204: error: Incompatible types in assignment (expression has type \"TarInfo\", variable has type \"ZipInfo\")  [assignment]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:208: error: \"ZipInfo\" has no attribute \"name\"  [attr-defined]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:209: error: \"ZipInfo\" has no attribute \"isdir\"; maybe \"is_dir\"?  [attr-defined]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:209: error: \"ZipInfo\" has no attribute \"isfile\"  [attr-defined]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:212: error: \"ZipInfo\" has no attribute \"isdir\"; maybe \"is_dir\"?  [attr-defined]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:214: error: Item \"None\" of \"IO[bytes] | None\" has no attribute \"__enter__\"  [union-attr]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:214: error: Item \"None\" of \"IO[bytes] | None\" has no attribute \"__exit__\"  [union-attr]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:214: error: Argument 1 to \"extractfile\" of \"TarFile\" has incompatible type \"ZipInfo\"; expected \"str | TarInfo\"  [arg-type]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:215: error: \"ZipInfo\" has no attribute \"name\"  [attr-defined]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:215: error: \"ZipInfo\" has no attribute \"size\"  [attr-defined]\n.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py:217: error: Incompatible types in assignment (expression has type \"GzipFile\", variable has type \"IO[bytes]\")  [assignment]\nmypy.ini: note: unused section(s): [mypy-tests.*], [mypy-torch], [mypy-omegaconf]\nFound 16 errors in 2 files (checked 2 source files)\n"
+    },
+    {
+      "command": [
+        ".venv_ci/bin/isort",
+        ".codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py",
+        ".codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "command": [
+        ".venv_ci/bin/black",
+        ".codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py",
+        ".codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py"
+      ],
+      "exit_code": 0,
+      "stderr": "reformatted .codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py\nreformatted .codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py\n\nAll done! \u2728 \ud83c\udf70 \u2728\n2 files reformatted.\n",
+      "stdout": ""
+    },
+    {
+      "command": [
+        ".venv_ci/bin/black",
+        "--check",
+        ".codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py",
+        ".codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py"
+      ],
+      "exit_code": 0,
+      "stderr": "All done! \u2728 \ud83c\udf70 \u2728\n2 files would be left unchanged.\n",
+      "stdout": ""
+    },
+    {
+      "command": [
+        ".venv_ci/bin/isort",
+        "--check-only",
+        ".codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py",
+        ".codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "command": [
+        ".venv_ci/bin/ruff",
+        "check",
+        "--no-cache",
+        ".codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py",
+        ".codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "All checks passed!\n"
+    },
+    {
+      "command": [
+        ".venv_ci/bin/mypy",
+        "--follow-imports=skip",
+        "--ignore-missing-imports",
+        "--cache-dir",
+        "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/security/cache/mypy",
+        ".codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py",
+        ".codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "mypy.ini: note: unused section(s): [mypy-tests.*], [mypy-torch], [mypy-omegaconf]\nSuccess: no issues found in 2 source files\n"
+    },
+    {
+      "command": [
+        ".venv_ci/bin/python",
+        "-B",
+        "-c",
+        "import pathlib, py_compile; p=pathlib.Path(\".codex/evidence/institutional-foundation/iteration-006/security\"); [py_compile.compile(str(p/n), cfile=str(p/\"cache\"/(n+\"c\")), doraise=True) for n in (\"inspect_archives.py\", \"triage_findings.py\")]"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "created_at": "2026-10-25T03:17:55Z",
+  "final_check_status": "PASS",
+  "original_execution_note": "These hashes identify the scripts used for prior archive scanning and first triage. Any subsequent changes are hygiene-only; archive records are not rerun.",
+  "owned_cache_cleanup": {
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/security/cache",
+    "removed": true,
+    "removed_bytes": 2440796,
+    "removed_files": 23,
+    "scope": "Only owned security/cache directory removed"
+  },
+  "post_hygiene_script_hashes": {
+    "inspect_archives.py": "98e4ccea27b1991a22cf688fbcf1c1e1c8e30648bae12996e06bd6663eb7b773",
+    "triage_findings.py": "21181d75d276c352b504344e8002905e0feb26cbfceaa849bf4a5d87c53b7884"
+  },
+  "pre_hygiene_script_hashes": {
+    "inspect_archives.py": "74204cb4e51655891527ecb07731bd27ea9b51ab3babbba9657afcff6575c3b3",
+    "triage_findings.py": "b389a14568114f157f88c613fddece93f20b05eb747cda17b01d2d68c7d35f38"
+  },
+  "scope": [
+    "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py",
+    "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py"
+  ],
+  "source_package_files_modified": false,
+  "tool_versions": {
+    "black": "26.10.1",
+    "isort": "9.0.2",
+    "mypy": "2.4.0",
+    "python": "3.12.10",
+    "ruff": "0.17.2"
+  }
+}

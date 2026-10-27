@@ -11,10 +11,16 @@ import argparse
 import json
 import re
 from pathlib import Path
+from typing import TypedDict
 
 _AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"  # pragma: allowlist secret
 
 PATTERNS = ["AKIA", "SECRET_KEY", "PRIVATE_KEY", _AWS_SECRET_PATTERN]
+
+
+class ScanReport(TypedDict):
+    findings: list[dict[str, str]]
+    total_findings: int
 
 
 def _redact_snippet(snippet: str) -> str:
@@ -44,7 +50,7 @@ def _iter_text_files(root: Path) -> list[Path]:
     return files
 
 
-def scan(root: Path) -> dict[str, list[dict[str, str]]]:
+def scan(root: Path) -> ScanReport:
     findings: list[dict[str, str]] = []
     for f in _iter_text_files(root):
         try:
@@ -61,7 +67,7 @@ def scan(root: Path) -> dict[str, list[dict[str, str]]]:
     return {"findings": findings, "total_findings": len(findings)}
 
 
-def _write_json(path: Path, data: dict[str, object]) -> None:
+def _write_json(path: Path, data: ScanReport) -> None:
     # Sanitize: replace raw snippet content with a sentinel before persisting
     # to avoid clear-text storage of credential patterns (CodeQL HIGH).
     findings = data.get("findings") or []
@@ -73,7 +79,7 @@ def _write_json(path: Path, data: dict[str, object]) -> None:
     )
 
 
-def _write_markdown(path: Path, data: dict[str, object]) -> None:
+def _write_markdown(path: Path, data: ScanReport) -> None:
     raw_findings = data.get("findings", []) or []
     # Sanitize for persistence: never store dynamic pattern/snippet content.
     findings = [{**f, "pattern": "<redacted>", "snippet": "<redacted>"} for f in raw_findings]

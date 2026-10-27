@@ -1,0 +1,882 @@
+{
+  "authority_refs": [],
+  "created_at": "2026-10-25T00:00:00Z",
+  "evidence_refs": [],
+  "extensions": {},
+  "id": "codex.assurance.v1:672344ca85271ecf4e2c30727dfbf401483b0682228fad84fbef421525676258",
+  "integrity": "644db8e1207c3eaec84e47e3e4bd6c830452fa3760231c6123e7299a4879f848",
+  "lifecycle": "Draft",
+  "payload": {
+    "data": {
+      "events": [
+        {
+          "action": "result",
+          "detail": {
+            "previous_result": null,
+            "result": {
+              "actor": "fixture:technical_verification",
+              "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+              "bytes_used": 100,
+              "environment_digest": "6af15717a4b57726d23aaa9a7650203e8f9aa1edf4b91a2cd4a16788831fd35b",
+              "evidence": [
+                {
+                  "applicability": "applicable",
+                  "authority": "none",
+                  "critical": true,
+                  "eligibility": "eligible",
+                  "finding_requirements": [
+                    {
+                      "finding": "000/concern",
+                      "requirement_digest": "5c4b8c62dc8b09056fe1793445b6256cac9ce0225107fbe1460bca5762791534"
+                    },
+                    {
+                      "finding": "dissent/concern",
+                      "requirement_digest": "103c95de749fd668553082cc0631bc40d0d60f0aa9b275d3e89fc5801283be5e"
+                    }
+                  ],
+                  "id": "observation",
+                  "provenance": "unverified",
+                  "requirements": [
+                    "procedure-observation"
+                  ],
+                  "source": "Original source concern. Fixture rejection: supplied counterexample. Observation recorded.",
+                  "status": "ACTIVE"
+                }
+              ],
+              "identity_assurance": "unverified",
+              "node_id": "technical_verification",
+              "outcome": "PASS",
+              "outputs": [
+                "report"
+              ],
+              "plan_digest": "05e97ef7da018f1cf4746db8510180ae05c1c2c4b71e3feed0c5788b2e539828",
+              "prerequisites": {},
+              "procedure": {
+                "id": "technical_verification-fixture",
+                "version": "1"
+              }
+            }
+          },
+          "digest": "d7e562e26a5cbae81512acba78d0bc6e4b9cf72029de5857fd3ebe71ce364d33",
+          "id": "de5fa350-e093-40d1-bfde-2d344c8b363f",
+          "predecessor": null,
+          "sequence": 1
+        },
+        {
+          "action": "result",
+          "detail": {
+            "previous_result": null,
+            "result": {
+              "actor": "fixture:independent_reproduction",
+              "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+              "bytes_used": 100,
+              "environment_digest": "6af15717a4b57726d23aaa9a7650203e8f9aa1edf4b91a2cd4a16788831fd35b",
+              "evidence": [
+                {
+                  "applicability": "applicable",
+                  "authority": "none",
+                  "critical": true,
+                  "eligibility": "eligible",
+                  "finding_requirements": [
+                    {
+                      "finding": "000/concern",
+                      "requirement_digest": "5c4b8c62dc8b09056fe1793445b6256cac9ce0225107fbe1460bca5762791534"
+                    },
+                    {
+                      "finding": "dissent/concern",
+                      "requirement_digest": "103c95de749fd668553082cc0631bc40d0d60f0aa9b275d3e89fc5801283be5e"
+                    }
+                  ],
+                  "id": "observation",
+                  "provenance": "unverified",
+                  "requirements": [
+                    "procedure-observation"
+                  ],
+                  "source": "Original source concern. Fixture rejection: supplied counterexample. Observation recorded.",
+                  "status": "ACTIVE"
+                }
+              ],
+              "identity_assurance": "unverified",
+              "node_id": "independent_reproduction",
+              "outcome": "PASS",
+              "outputs": [
+                "report"
+              ],
+              "plan_digest": "05e97ef7da018f1cf4746db8510180ae05c1c2c4b71e3feed0c5788b2e539828",
+              "prerequisites": {
+                "technical_verification": "f9466ed701aa65a4c275c37626d9f0488edd92d34cf730731ef95ed29669fcf1"
+              },
+              "procedure": {
+                "id": "independent_reproduction-fixture",
+                "version": "1"
+              }
+            }
+          },
+          "digest": "6b2754ddcb0927dfcafaefba1a4dfdf81f262e2ce55dd04fe4a7cda0e6810500",
+          "id": "5b6801b6-68f4-4f84-bf08-97d28825c228",
+          "predecessor": "d7e562e26a5cbae81512acba78d0bc6e4b9cf72029de5857fd3ebe71ce364d33",
+          "sequence": 2
+        },
+        {
+          "action": "result",
+          "detail": {
+            "previous_result": null,
+            "result": {
+              "actor": "fixture:institutional_audit",
+              "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+              "bytes_used": 100,
+              "environment_digest": "6af15717a4b57726d23aaa9a7650203e8f9aa1edf4b91a2cd4a16788831fd35b",
+              "evidence": [
+                {
+                  "applicability": "applicable",
+                  "authority": "none",
+                  "critical": true,
+                  "eligibility": "eligible",
+                  "finding_requirements": [
+                    {
+                      "finding": "000/concern",
+                      "requirement_digest": "5c4b8c62dc8b09056fe1793445b6256cac9ce0225107fbe1460bca5762791534"
+                    },
+                    {
+                      "finding": "dissent/concern",
+                      "requirement_digest": "103c95de749fd668553082cc0631bc40d0d60f0aa9b275d3e89fc5801283be5e"
+                    }
+                  ],
+                  "id": "observation",
+                  "provenance": "unverified",
+                  "requirements": [
+                    "procedure-observation"
+                  ],
+                  "source": "Original source concern. Fixture rejection: supplied counterexample. Observation recorded.",
+                  "status": "ACTIVE"
+                }
+              ],
+              "identity_assurance": "unverified",
+              "node_id": "institutional_audit",
+              "outcome": "PASS",
+              "outputs": [
+                "report"
+              ],
+              "plan_digest": "05e97ef7da018f1cf4746db8510180ae05c1c2c4b71e3feed0c5788b2e539828",
+              "prerequisites": {
+                "technical_verification": "f9466ed701aa65a4c275c37626d9f0488edd92d34cf730731ef95ed29669fcf1"
+              },
+              "procedure": {
+                "id": "institutional_audit-fixture",
+                "version": "1"
+              }
+            }
+          },
+          "digest": "3bd2490a6912d8ced8bde623652c46bbafbf7dbbf4abb2d51e95600b263f9b6e",
+          "id": "ab7782af-1398-4ff2-8632-be386166ae7a",
+          "predecessor": "6b2754ddcb0927dfcafaefba1a4dfdf81f262e2ce55dd04fe4a7cda0e6810500",
+          "sequence": 3
+        }
+      ],
+      "plan": {
+        "authority_refs": [],
+        "created_at": "2026-10-25T00:00:00Z",
+        "evidence_refs": [],
+        "extensions": {},
+        "id": "codex.assurance.v1:a002ebedc20b2260df123931aa0788315c9cb53c4522d3e013252ac8b06a6bfd",
+        "integrity": "57000fc12a21b250b235ca14c7bebe154e0d34072aa27a981857534418ce9f93",
+        "lifecycle": "Draft",
+        "payload": {
+          "data": {
+            "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+            "limits": {
+              "activation": false,
+              "approval": false,
+              "authority": "none",
+              "fixture_only": true,
+              "full_convergence_model": "unsupported",
+              "identity_assurance": "unverified"
+            },
+            "nodes": [
+              {
+                "actor": "fixture:technical_verification",
+                "depends_on": [],
+                "environment_digest": "6af15717a4b57726d23aaa9a7650203e8f9aa1edf4b91a2cd4a16788831fd35b",
+                "evidence_requirements": [
+                  "procedure-observation"
+                ],
+                "expected_outputs": [
+                  "report"
+                ],
+                "finding_requirements": [
+                  {
+                    "finding": "000/concern",
+                    "requirement_digest": "5c4b8c62dc8b09056fe1793445b6256cac9ce0225107fbe1460bca5762791534"
+                  },
+                  {
+                    "finding": "dissent/concern",
+                    "requirement_digest": "103c95de749fd668553082cc0631bc40d0d60f0aa9b275d3e89fc5801283be5e"
+                  }
+                ],
+                "id": "technical_verification",
+                "identity_assurance": "unverified",
+                "independence": "fixture-only",
+                "kind": "technical_verification",
+                "pending": "Supply a bound external result.",
+                "procedure": {
+                  "id": "technical_verification-fixture",
+                  "version": "1"
+                },
+                "rationale": "Synthetic demonstration only.",
+                "recovery": "Recheck dependencies and append an explicit retry.",
+                "requirement": "required",
+                "resource_caps": {
+                  "max_attempts": 4,
+                  "max_bytes": 65536
+                },
+                "role": "technical_verification"
+              },
+              {
+                "actor": "fixture:independent_reproduction",
+                "depends_on": [
+                  "technical_verification"
+                ],
+                "environment_digest": "6af15717a4b57726d23aaa9a7650203e8f9aa1edf4b91a2cd4a16788831fd35b",
+                "evidence_requirements": [
+                  "procedure-observation"
+                ],
+                "expected_outputs": [
+                  "report"
+                ],
+                "finding_requirements": [
+                  {
+                    "finding": "000/concern",
+                    "requirement_digest": "5c4b8c62dc8b09056fe1793445b6256cac9ce0225107fbe1460bca5762791534"
+                  },
+                  {
+                    "finding": "dissent/concern",
+                    "requirement_digest": "103c95de749fd668553082cc0631bc40d0d60f0aa9b275d3e89fc5801283be5e"
+                  }
+                ],
+                "id": "independent_reproduction",
+                "identity_assurance": "unverified",
+                "independence": "fixture-only",
+                "kind": "independent_reproduction",
+                "pending": "Supply a bound external result.",
+                "procedure": {
+                  "id": "independent_reproduction-fixture",
+                  "version": "1"
+                },
+                "rationale": "Synthetic demonstration only.",
+                "recovery": "Recheck dependencies and append an explicit retry.",
+                "requirement": "required",
+                "resource_caps": {
+                  "max_attempts": 4,
+                  "max_bytes": 65536
+                },
+                "role": "independent_reproduction"
+              },
+              {
+                "actor": "fixture:institutional_audit",
+                "depends_on": [
+                  "technical_verification"
+                ],
+                "environment_digest": "6af15717a4b57726d23aaa9a7650203e8f9aa1edf4b91a2cd4a16788831fd35b",
+                "evidence_requirements": [
+                  "procedure-observation"
+                ],
+                "expected_outputs": [
+                  "report"
+                ],
+                "finding_requirements": [
+                  {
+                    "finding": "000/concern",
+                    "requirement_digest": "5c4b8c62dc8b09056fe1793445b6256cac9ce0225107fbe1460bca5762791534"
+                  },
+                  {
+                    "finding": "dissent/concern",
+                    "requirement_digest": "103c95de749fd668553082cc0631bc40d0d60f0aa9b275d3e89fc5801283be5e"
+                  }
+                ],
+                "id": "institutional_audit",
+                "identity_assurance": "unverified",
+                "independence": "fixture-only",
+                "kind": "institutional_audit",
+                "pending": "Supply a bound external result.",
+                "procedure": {
+                  "id": "institutional_audit-fixture",
+                  "version": "1"
+                },
+                "rationale": "Synthetic demonstration only.",
+                "recovery": "Recheck dependencies and append an explicit retry.",
+                "requirement": "required",
+                "resource_caps": {
+                  "max_attempts": 4,
+                  "max_bytes": 65536
+                },
+                "role": "institutional_audit"
+              }
+            ],
+            "original_outputs": [
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T00:00:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:a7287290b779cbb49c3aaaf687a86ae67e9ac282c43fd8e43fb139e48af906a3",
+                "integrity": "768022ba21cd734f4fed1210b744b148d255df3c03c4422ab73f4f9fd6226484",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:000",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [
+                      {
+                        "clearance_conditions": [
+                          "observed-response"
+                        ],
+                        "confidence": 0.4,
+                        "coverage": [
+                          "correctness"
+                        ],
+                        "id": "concern",
+                        "kind": "inference",
+                        "normalized": "Retain exact concern",
+                        "source_quote": "Original source concern."
+                      }
+                    ],
+                    "identity": "unverified",
+                    "lane": "000",
+                    "plan_digest": "e63c97c69bc07875d5641ba0981ee233141e28cf9fdb042b310f99fff6a408fe",
+                    "run": "run:000",
+                    "source": "Original source concern. Fixture rejection: supplied counterexample. Observation recorded."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T00:00:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:791d382d844b0a20b45fca7e32b63babd527f8fba85145977923ecdb064c30e2",
+                "integrity": "98293d45a1d23c11440693d5fec6f3cbeda8bac3b5dbcbd00251e7f8098595ba",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:045",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "045",
+                    "plan_digest": "e63c97c69bc07875d5641ba0981ee233141e28cf9fdb042b310f99fff6a408fe",
+                    "run": "run:045",
+                    "source": "Original source concern. Fixture rejection: supplied counterexample. Observation recorded."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T00:00:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:c28924ab69aabb0824079dc3c33c8ec382483e687f08794dd38edbcf00e392a6",
+                "integrity": "e467df9159c78bba3adddfbda03097c586b2a1f6f9c92569cf2554334ca902b2",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:090",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "090",
+                    "plan_digest": "e63c97c69bc07875d5641ba0981ee233141e28cf9fdb042b310f99fff6a408fe",
+                    "run": "run:090",
+                    "source": "Original source concern. Fixture rejection: supplied counterexample. Observation recorded."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T00:00:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:2a25d79310329551554abc03b1074980550ecba50724c2bcbc16d98cb55d10ec",
+                "integrity": "c58434ff3f94e33658f72a4bb38ec63d44f28d4fb275360f8f3356d4683b462c",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:135",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "135",
+                    "plan_digest": "e63c97c69bc07875d5641ba0981ee233141e28cf9fdb042b310f99fff6a408fe",
+                    "run": "run:135",
+                    "source": "Original source concern. Fixture rejection: supplied counterexample. Observation recorded."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T00:00:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:2bbbb76f3ca0ef60fe7c5b7b11769d6cc9f003ff07204e92cbec9d60dd4af1c6",
+                "integrity": "c09bacef55ddf8fdaab7f59317d485ffca2fa3d571ad003024982cf9c827aff8",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:180",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "180",
+                    "plan_digest": "e63c97c69bc07875d5641ba0981ee233141e28cf9fdb042b310f99fff6a408fe",
+                    "run": "run:180",
+                    "source": "Original source concern. Fixture rejection: supplied counterexample. Observation recorded."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T00:00:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:81354f3c5649cc1cc6ff8051afda386622ff3c659bb95505820b224106b2d270",
+                "integrity": "9a016e7c5475df11e7b3c338f8c0e9355d75d4102da2fa7075f1cd1d645af1a5",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:225",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "225",
+                    "plan_digest": "e63c97c69bc07875d5641ba0981ee233141e28cf9fdb042b310f99fff6a408fe",
+                    "run": "run:225",
+                    "source": "Original source concern. Fixture rejection: supplied counterexample. Observation recorded."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T00:00:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:47c4345401f33ea046f2517b1babaefb5da132c215cf4928da264b5c8d272ae5",
+                "integrity": "0f9e909df8147867825468e74bfc0404d0214cc01ae4a04c4949477eaf7c2ecf",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:270",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "270",
+                    "plan_digest": "e63c97c69bc07875d5641ba0981ee233141e28cf9fdb042b310f99fff6a408fe",
+                    "run": "run:270",
+                    "source": "Original source concern. Fixture rejection: supplied counterexample. Observation recorded."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T00:00:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:1bdc5c5f9d5832f9bd15206471713c4a90e85f890dcf4c1f026a29e47c1a30d2",
+                "integrity": "c047bd6e6e455b4a1e43f8304870a69a51056e369722ef92f8e2e919fefb56b6",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:315",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "315",
+                    "plan_digest": "e63c97c69bc07875d5641ba0981ee233141e28cf9fdb042b310f99fff6a408fe",
+                    "run": "run:315",
+                    "source": "Original source concern. Fixture rejection: supplied counterexample. Observation recorded."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T00:00:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:2b9eacafbdc5b9533ed2c09cb841413673955be42771850e9f640973099f0470",
+                "integrity": "4a2f9708b14caa51ae01b8eeaeb179fa4b361a7a0383085841553e377481eec8",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:dissent",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [
+                      {
+                        "clearance_conditions": [
+                          "observed-response"
+                        ],
+                        "confidence": 0.4,
+                        "coverage": [
+                          "correctness"
+                        ],
+                        "id": "concern",
+                        "kind": "inference",
+                        "normalized": "Retain exact concern",
+                        "source_quote": "Original source concern."
+                      }
+                    ],
+                    "identity": "unverified",
+                    "lane": "dissent",
+                    "plan_digest": "e63c97c69bc07875d5641ba0981ee233141e28cf9fdb042b310f99fff6a408fe",
+                    "run": "run:dissent",
+                    "source": "Original source concern. Fixture rejection: supplied counterexample. Observation recorded."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              }
+            ],
+            "procedures": [
+              {
+                "expected_outputs": [
+                  "report"
+                ],
+                "id": "technical_verification-fixture",
+                "kind": "technical_verification",
+                "version": "1"
+              },
+              {
+                "expected_outputs": [
+                  "report"
+                ],
+                "id": "independent_reproduction-fixture",
+                "kind": "independent_reproduction",
+                "version": "1"
+              },
+              {
+                "expected_outputs": [
+                  "report"
+                ],
+                "id": "institutional_audit-fixture",
+                "kind": "institutional_audit",
+                "version": "1"
+              }
+            ],
+            "relations": [
+              {
+                "from": "000/concern",
+                "to": "dissent/concern",
+                "type": "contradicts"
+              }
+            ],
+            "review_plan": {
+              "authority_refs": [],
+              "created_at": "2026-10-25T00:00:00Z",
+              "evidence_refs": [],
+              "extensions": {},
+              "id": "codex.review.v1:be272664373553ceaf889cd21e666d99cae2dd2033e7aa651126983a3d86eca1",
+              "integrity": "d9dc2e04e813b60647ea0ef89be5149c29229afca8efc4e55ec92e4e0300f782",
+              "lifecycle": "Draft",
+              "payload": {
+                "data": {
+                  "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                  "coordinator_role": "implementer",
+                  "critical": [
+                    "correctness"
+                  ],
+                  "independence": "unverified",
+                  "lanes": [
+                    {
+                      "actor": "fixture:000",
+                      "bearing": "Policy",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "000",
+                      "required": true,
+                      "run": "run:000",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:045",
+                      "bearing": "Security",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "045",
+                      "required": true,
+                      "run": "run:045",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:090",
+                      "bearing": "Architecture",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "090",
+                      "required": true,
+                      "run": "run:090",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:135",
+                      "bearing": "Adversarial",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "135",
+                      "required": true,
+                      "run": "run:135",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:180",
+                      "bearing": "Verification",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "180",
+                      "required": true,
+                      "run": "run:180",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:225",
+                      "bearing": "Operations",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "225",
+                      "required": true,
+                      "run": "run:225",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:270",
+                      "bearing": "Portability",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "270",
+                      "required": true,
+                      "run": "run:270",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:315",
+                      "bearing": "History",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "315",
+                      "required": true,
+                      "run": "run:315",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:dissent",
+                      "bearing": "cross-cutting",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": true,
+                      "id": "dissent",
+                      "required": true,
+                      "run": "run:dissent",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:rotated",
+                      "bearing": "Reasoning integrity",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "rotated",
+                      "required": false,
+                      "run": "run:rotated",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    }
+                  ],
+                  "mandatory": [
+                    "correctness"
+                  ],
+                  "manifest": {
+                    "authority_refs": [],
+                    "created_at": "2026-10-25T01:50:30Z",
+                    "evidence_refs": [],
+                    "extensions": {},
+                    "id": "codex.review.v1:131ad03b3af29100455e3ff2814b685c3ec40a76b7ec8e8b0096af146a540c3d",
+                    "integrity": "93cf7efa0cb35e9fb4ffe50dc5eff3350098fb31f88bc4db66ceb9a365fcee9a",
+                    "lifecycle": "Draft",
+                    "payload": {
+                      "data": {
+                        "classification": "Repository-Internal",
+                        "context_digest": "6b715ced177ac1fe825f817f0664c66defd1f427c0beed848f9d1d3a8303d349",
+                        "entries": [
+                          {
+                            "mode": 420,
+                            "path": "candidate.py",
+                            "sha256": "fba443106200940421067aa2e8165d14de1b7629a25e5be3940d7439c5e663e4",
+                            "size": 24
+                          }
+                        ],
+                        "rules": {
+                          "archives": "opaque-no-expansion",
+                          "hardlinks": "independent-bytes",
+                          "line_endings": "raw",
+                          "permissions": "explicit-posix-mode",
+                          "submodules": "reject",
+                          "symlinks": "reject"
+                        }
+                      },
+                      "kind": "manifest"
+                    },
+                    "producer": {
+                      "assurance": "unverified",
+                      "identity": "codex-institutional"
+                    },
+                    "schema": "codex.review.v1",
+                    "supersedes": null,
+                    "validation_state": "candidate"
+                  },
+                  "mode": "supplement"
+                },
+                "kind": "plan"
+              },
+              "producer": {
+                "assurance": "unverified",
+                "identity": "codex-institutional"
+              },
+              "schema": "codex.review.v1",
+              "supersedes": null,
+              "validation_state": "candidate"
+            }
+          },
+          "kind": "plan"
+        },
+        "producer": {
+          "assurance": "unverified",
+          "identity": "codex-institutional"
+        },
+        "schema": "codex.assurance.v1",
+        "supersedes": null,
+        "validation_state": "candidate"
+      }
+    },
+    "kind": "history"
+  },
+  "producer": {
+    "assurance": "unverified",
+    "identity": "codex-institutional"
+  },
+  "schema": "codex.assurance.v1",
+  "supersedes": null,
+  "validation_state": "candidate"
+}
