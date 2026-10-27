@@ -6,7 +6,7 @@ a dependency graph. Supports caching and incremental updates.
 
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Optional, overload
 
 from .parser import WorkflowParser
 from .types import (
@@ -69,11 +69,24 @@ class WorkflowInventory:
         """Get all workflow dependencies."""
         return self._dependencies
 
+    @overload
+    def scan(
+        self, workflows_dir: Path | str, force_refresh: bool = False
+    ) -> dict[str, WorkflowMetadata]: ...
+
+    @overload
+    def scan(self, workflows_dir: bool | None = None, force_refresh: bool = False) -> int: ...
+
+    @overload
+    def scan(
+        self, workflows_dir: Path | str | bool | None, force_refresh: bool = False
+    ) -> int | dict[str, WorkflowMetadata]: ...
+
     def scan(
         self,
         workflows_dir: Path | str | bool | None = None,
         force_refresh: bool = False,
-    ) -> int:
+    ) -> int | dict[str, WorkflowMetadata]:
         """Scan workflows directory and parse all workflow files.
 
         Args:
@@ -82,7 +95,8 @@ class WorkflowInventory:
             force_refresh: If True, clear cache and reparse everything.
 
         Returns:
-            Number of workflows successfully parsed.
+            A snapshot of parsed workflows when a directory is passed; otherwise
+            the number of workflows successfully parsed (legacy refresh API).
         """
         if isinstance(workflows_dir, (str, Path)):
             self.workflows_dir = Path(workflows_dir)

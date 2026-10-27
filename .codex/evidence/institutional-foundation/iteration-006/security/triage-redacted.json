@@ -1,0 +1,440 @@
+[
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "b98048cd23c735ad40df49f472d1050e22c55a32803829caa67d9927f8c12aa5",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "a03aec63e63e127faba43fe7a9088e3ead233ad02b606477d0f794668dcab35a",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "f04d66ecbdd65afbcfc28142e306677c66c269e1d5060de4496529c0552c22a6",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "ba33236bce98d52b0938dd9553d101079798b481b3f25b8ee1c30088afda618b",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "a05d6f43f22c1a1b9bc3d449d9886bcfcb2418279a534f309f43ded156dbfacf",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "3b75fb551c366b2ca4c7606c19360932b2811808474b38e7f5b6b859e87e487e",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "d00c540a7453c19a7c85ddb3c89a9b7417d2b1681454c931a663a318d2d941b8",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "ee3a6ab0b79749bb43bc30315bc4f29e529bcfe78d1367916198404344b413b4",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "d91707bfcf63686fd074f613c2d8de7f93daf6a58b91f879ed613f5931277785",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "c5a8e6f7bed5d040274da1ae3d1f071c9749d704b1acdd98f5238b0549d82f35",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "a0a0feb37e96bec99707c6d3610e0e456c95479ffebac86acfc50c486e7742ff",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "8e414ed65d765b48ddc73ac652cc74350be92fe1417d2ffb0edf61511668d19f",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "02fca1f6fcd3bfcaaa004f20630da8d8918362f9a69f77e2feb18e73f380ed0b",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "c44085ee9444444ac185c082d230e6cdd49cd352a72b92ae7b4360fa8fce5191",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "51215418e7ab1017dd268b9f47911ad937c672851e4801b982316599fddcc535",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "65125e44260113e42eadb5e6cc05db6a93d16e22c33e4b4c11f41e9f5d50b86c",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "e6ee1d119bd52b92e91d34dfda6d4992e2ec8bcb8ba0a8e9f53426f955d607ea",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "fa605b92194e598ad4efe1e09a85d08de4a2b827207daf68faae545e53adb390",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "ca7c3aab1ec1be5058a3052e8f7c2a45bec49aa1506e61b08c5c3a73d0f43af5",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "HASH_OR_SOURCE_IDENTIFIER_CONTEXT",
+    "finding_id": "91c04b48ac28c90e0b893da1a27253310284f69730050eacd8bede649ede0d99",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz!/continuation.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "UNRESOLVED_CREDENTIAL_LIKE_REQUIRES_OWNER_TRIAGE",
+    "finding_id": "bd60b9719ed46778f8ae936a2d5f0ffefd69c44465257d47f38ddcc478fcf9d3",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/aries_serpent_core/archive/dal.py",
+    "plugin": "Basic Auth Credentials"
+  },
+  {
+    "classification": "UNRESOLVED_CREDENTIAL_LIKE_REQUIRES_OWNER_TRIAGE",
+    "finding_id": "965bb88a29f3705732aeaa37c672e91b151d2c7d552dfd1709faa0b1e9f92726",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/aries_serpent_core/docs_agent/integration.py",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "UNRESOLVED_CREDENTIAL_LIKE_REQUIRES_OWNER_TRIAGE",
+    "finding_id": "164b8d4d15af588be485872f35193bab9d3bc564a6ee69e7e810511f269b0feb",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex/institutional/review-formulas.json",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "5243e84150bdc030859d554367193fe7892ee0b1a7bdbd03fa9d53ff34fa6524",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "dc5587004f090a3b88ee2db86cb13335d9033c864b5d7c928ebc4c95b1331a39",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "56a09c332939c0774f44690b19df6bb8bfa98dcdb09fe84e04ee7c4023ac36a1",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "343d9f82945936f18fcedbd08ebc35ee4128b07548f433c028a3d1eb77132287",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "73a776a5dbd95a796ba8048ccd3a52acd3e00b8533fb5a80bdccabab4e2f8a14",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "6ffb007502ffdc412e9716d4e60bb3d597b1ce07893c05d8faa41edb9402c915",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "7428e9b51f6e5612e73f2d468b7107fdffe76c16a99e09ef3d76039bab8ba71a",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "7a43e5af9e144e573ba6686fafee6f9d7d74222132de073daa70d9d0ff771451",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "f6bd1ab644e27a773203a5c8be9f937534a082336ba252a767852ee0ad99a1ab",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "6cbda2e4f2dc21409ce387158cfd8b8dccfc03b734bf1a9838b11ac3cb3f0678",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "a8ee9159c4fdd311fbc4ee2167e504405559f83f3c618df7f3419f1f875973b6",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "ab940597415b07ea2b7c7dfa676bc6f5ff4c012e4f75a6030385a0b4e2de2a11",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "089f7b347dd2e49d344841efdb9e7f5120c1f3136cbc60cf7cee0e97fd0e4c2b",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "4cc5dc635c3052733069b020eb17641a1152987df51ad1c62b71a16460b1cbd6",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "cfb8475e1fbccb6fbf7802682dc995b0f273dca259b192475afa3d57640c0d2c",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "f4e39950417689f4bccaf994544e28e470e3ff1c718ad08359ec7c67ab9abab9",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "a2aaade64bae51e72c45b60c5c19b535a209656ab95490782b7dceefd8325057",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "62b7e7236bc9b9f13d9428cef7cdd4321a1fd99a4bbf0d18ca31d41c6f083349",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "16057bae6aa88fbbb373ad96c99095bb54b6b5bf4680fa042a65bd746ed22c42",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "8f5e9856870b9ba17199e450b77aa182f91fb736b351c124597af6dca1691763",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "e7b7c144fa7dc5e834ec5a1e0f6de3d908bdf53c34bba0938afdaa8c20c6dbaf",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "36153e82749ee9767d55623c1010fb6b9cabe0c929c41e2779fc519d0b24f7d1",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "553573b068762f78ce3d2866952237eaa2491e8547c107f216b1cfad5499b66c",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "604b4257e2bf6903e6d5959730ab9f1cef4560b71f175c95708525a866eb5ea3",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "0c7eb09a9eae9b42238d176ac306e5bff99a84737bde156fe58dba2f51ef7cc3",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "73c00db64130e84673e6b9c3a7c4c51d5d0bb23d417229771961676f5cad2e2c",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "c7cbc8bd515dd9e351da2c0014d7002f8c50d635a9a144de184a24ed54e6e64d",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "829bf446827bbbc4b23478309e69b03163b8b0715e51b251c17f3aef5aff11fe",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "36d8cdfd3270310abc5709d34bd0212b74a6a124b313419e6b2fec90b43bd8b3",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "7e91ec5118a0a7d8f8b41ab11536c8236d9adfbc0c074593f9fb8b5db1def909",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "4fac7304a63baac763594b7a7616d305e119dda418ff156e1508d4dfb899ae12",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "23b0f8b7640c479e2dbc366738960bcec9f7f93c6f609abb74d041a02e1d8876",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "adb68530d2596c01f957ca74a3b73e5f25da2d797d359e2c92141b0042457ce3",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "af5593aea310a906e4c42a5f03491cc0379e8bea4314ad5b09f5983f238e7a91",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "f907b0262656550db2abfc6425df739167b44dc7850f631553d8183637ee3316",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "0f7383280d5115197856424db653da489111365c3eb7d0cfc205fe107c41893b",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "4f524cac5f206fcbd97ca2c0eca36122b38d5cf7b046a3fcc3619e519cc27e09",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "6675262128c361356f5f2b432105ec22afc7a4a3d18b88efd5ae171b236a1cfe",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "cd729a5bbf51295f9f12e3b0504bddef09643bc9a0c485cd5ca3acfb12697c05",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "LOCKFILE_CHECKSUM_NOT_CREDENTIAL",
+    "finding_id": "2cfb4a47854858f46674bcc75e7b3cb2fea24763efcd6b3832e406476460e3ca",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_core/Cargo.lock",
+    "plugin": "Hex High Entropy String"
+  },
+  {
+    "classification": "UNRESOLVED_CREDENTIAL_LIKE_REQUIRES_OWNER_TRIAGE",
+    "finding_id": "a3299d31c3a8f5f1688b6ea384329cf5c4d981b2ab8bde28be6d7cffcadcdfe9",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_ml/cli/env_check.py",
+    "plugin": "Secret Keyword"
+  },
+  {
+    "classification": "UNRESOLVED_CREDENTIAL_LIKE_REQUIRES_OWNER_TRIAGE",
+    "finding_id": "77a78652fb62ecfeeb79da991a0a4f912ba85278feed6c2ec5b2442fd02e8fc3",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_plans/batchsetpatchset_segments/batchsetpatchset_part09.txt",
+    "plugin": "Secret Keyword"
+  },
+  {
+    "classification": "UNRESOLVED_CREDENTIAL_LIKE_REQUIRES_OWNER_TRIAGE",
+    "finding_id": "c7a41cd0a3d444d4388683d3a6c288734651e63579f81b1db609158472f6cce4",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/codex_plans/batchsetpatchset_segments/batchsetpatchset_part10.txt",
+    "plugin": "Private Key"
+  },
+  {
+    "classification": "UNRESOLVED_CREDENTIAL_LIKE_REQUIRES_OWNER_TRIAGE",
+    "finding_id": "a05e57303369852619dd6c9d9052df6782c09b65758f45902dfedc204ffede16",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/security/crypto_review.py",
+    "plugin": "Private Key"
+  },
+  {
+    "classification": "UNRESOLVED_CREDENTIAL_LIKE_REQUIRES_OWNER_TRIAGE",
+    "finding_id": "0c0b21337cbda8a23aaa0f59864d8b0bcb7d180f2077124762d1649a63fb3eaa",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/security/providers/environment_provider.py",
+    "plugin": "Secret Keyword"
+  },
+  {
+    "classification": "UNRESOLVED_CREDENTIAL_LIKE_REQUIRES_OWNER_TRIAGE",
+    "finding_id": "b2bac6fa0a1ac8a7d640a3192a33aee123678670ce6f6f82443ebc8946bc3da9",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/services/msp_gateway/README.md",
+    "plugin": "Secret Keyword"
+  },
+  {
+    "classification": "UNRESOLVED_CREDENTIAL_LIKE_REQUIRES_OWNER_TRIAGE",
+    "finding_id": "6b1d3e21cf192c5a855d75ece26fdfd07b0e58ece3bdde08ef951475c4af54a7",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/services/msp_gateway/README.md",
+    "plugin": "Secret Keyword"
+  },
+  {
+    "classification": "UNRESOLVED_CREDENTIAL_LIKE_REQUIRES_OWNER_TRIAGE",
+    "finding_id": "e4d5c8ea13200dbed7fb9cf2933e029cb0b0024e7ba228e896f8bbe6640530fd",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/utils/sensitive_data.py",
+    "plugin": "Secret Keyword"
+  },
+  {
+    "classification": "UNRESOLVED_CREDENTIAL_LIKE_REQUIRES_OWNER_TRIAGE",
+    "finding_id": "9e606603e432eed3212bd4c83007d1a5d3389bef6099dcc6711eee6fc9762008",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/utils/sensitive_data.py",
+    "plugin": "Secret Keyword"
+  },
+  {
+    "classification": "UNRESOLVED_CREDENTIAL_LIKE_REQUIRES_OWNER_TRIAGE",
+    "finding_id": "4e53f171c614bef13895711595b1c5bc3c59965ab139c7b6d1a3483dfc19f0cc",
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl!/utils/sensitive_data.py",
+    "plugin": "Hex High Entropy String"
+  }
+]

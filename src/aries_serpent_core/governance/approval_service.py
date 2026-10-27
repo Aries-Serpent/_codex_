@@ -188,6 +188,7 @@ class ApprovalService:
         is_incident_related: bool = False,
         incident_id: Optional[str] = None,
     ) -> ApprovalRequest:
+        """Queue a policy request with its SLA and the standard three authority levels."""
         start_time = time.time()
 
         policy = self._sla_policies.get(policy_code)
@@ -206,7 +207,7 @@ class ApprovalService:
             requester_id=requester_id,
             required_approvers=required_approvers,
             sla_deadline=sla_deadline,
-            escalation_chain=self._build_escalation_chain(len(required_approvers)),
+            escalation_chain=self._build_escalation_chain(),
             is_incident_related=is_incident_related,
             incident_id=incident_id,
             context=context or {},
@@ -534,35 +535,9 @@ class ApprovalService:
             return req
 
     def cancel_request(self, request_id: str, reason: str = "") -> ApprovalRequest:
+        """Cancel an existing request and append the supplied reason to its audit log."""
         with self._lock:
             req = self._get_request_locked(request_id)
-
-            # --- Track 12.1.2: RBAC Implementation Extensions Integration ---
-            try:
-                engine = get_default_engine()
-                # Check if the approver has the APPROVE action on WORKFLOWS or CODE
-                # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS  # noqa: E501
-                if not engine.check_permission(approver_id, Action.APPROVE, ResourceType.WORKFLOWS):
-                    # For incident modes, check SECRETS or CODE
-                    if req.is_incident_related and not engine.check_permission(
-                        approver_id, Action.APPROVE, ResourceType.SECRETS
-                    ):
-                        raise PermissionError(
-                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"  # noqa: E501
-                        )
-                    elif not req.is_incident_related:
-                        raise PermissionError(
-                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"  # noqa: E501
-                        )
-            except NameError:
-                pass  # If import failed
-            except Exception as e:
-                # If there's PermissionError, we let it propagate
-                if isinstance(e, PermissionError):
-                    raise
-                # Other errors we ignore for resilience
-                pass
-            # ----------------------------------------------------------------
             req.status = ApprovalState.CANCELLED
             self._audit_event(req, AuditCode.WORKFLOW_CANCELLED, reason or "Cancelled")
             return req
@@ -665,35 +640,9 @@ class ApprovalService:
         self.logger.debug(f"[AUDIT] {audit_code.value}: {message}")
 
     def get_audit_log(self, request_id: str) -> List[Dict[str, Any]]:
+        """Return a shallow list copy of the request's recorded audit events."""
         with self._lock:
             req = self._get_request_locked(request_id)
-
-            # --- Track 12.1.2: RBAC Implementation Extensions Integration ---
-            try:
-                engine = get_default_engine()
-                # Check if the approver has the APPROVE action on WORKFLOWS or CODE
-                # Ideally, we map the policy_code to a resource, but for now we require APPROVE on WORKFLOWS  # noqa: E501
-                if not engine.check_permission(approver_id, Action.APPROVE, ResourceType.WORKFLOWS):
-                    # For incident modes, check SECRETS or CODE
-                    if req.is_incident_related and not engine.check_permission(
-                        approver_id, Action.APPROVE, ResourceType.SECRETS
-                    ):
-                        raise PermissionError(
-                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS or SECRETS)"  # noqa: E501
-                        )
-                    elif not req.is_incident_related:
-                        raise PermissionError(
-                            f"{approver_id} not authorized to approve {req.policy_code} (requires APPROVE on WORKFLOWS)"  # noqa: E501
-                        )
-            except NameError:
-                pass  # If import failed
-            except Exception as e:
-                # If there's PermissionError, we let it propagate
-                if isinstance(e, PermissionError):
-                    raise
-                # Other errors we ignore for resilience
-                pass
-            # ----------------------------------------------------------------
             return req.audit_log.copy()
 
     def _build_escalation_chain(self) -> List[int]:

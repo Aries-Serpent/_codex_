@@ -1,793 +1,411 @@
-"""Phase 7B Track B.1: Gap-Filling Test Suite - Batch 2 (Medium-Impact Modules)
+"""Contract regressions for the actual Phase 7B batch-2 module APIs.
 
-This module contains 50+ targeted tests for additional modules with 30-70% coverage.
-Focuses on: mlflow integration, quantum decision engine, interfaces, tracking.
-
-Gap-filling targets:
-  1. mlflow_guard.py (54.01% → 100%)
-  2. quantum/base.py (52.27% → 100%)
-  3. peft_hooks.py (46.43% → 100%)
-  4. _types.py security (45.45% → 100%)
-  5. dp_config.py (44.74% → 100%)
+Prior art: tests/tracking/test_mlflow_guard.py, tests/test_peft_hooks.py,
+tests/test_dp_config.py, tests/test_rng_checkpoint.py, and
+docs/safety/differential_privacy.md. These modules provide guard functions,
+quantum state primitives, PEFT helpers, shared security types, differential
+privacy configuration, and RNGState -- not the speculative classes formerly
+imported here. Optional integrations are tested at their dependency boundaries.
 """
 
 from __future__ import annotations
 
+import json
+import os
+import random
 import sys
+from dataclasses import FrozenInstanceError
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import Mock
 
 import pytest
 
-# Add src to path for imports
-REPO_ROOT = Path(__file__).resolve().parents[1]
-SRC_DIR = REPO_ROOT / "src"
-if str(SRC_DIR) not in sys.path:
-    sys.path.insert(0, str(SRC_DIR))
+from codex_ml.interfaces import peft_hooks
+from codex_ml.tracking import mlflow_guard
+from codex_ml.training import dp_config, rng_checkpoint
+from cognitive_brain.quantum.base import (
+    CoherenceDegradationError,
+    InvalidQuantumConfigurationError,
+    QuantumException,
+    QuantumFeature,
+    QuantumState,
+)
+from security._types import SecurityError, sanitize_text
 
-# ============================================================================
-# BATCH 1: mlflow_guard.py tests (Target: 54.01% → 100%)
-# ============================================================================
+
+@pytest.fixture
+def isolated_guard(monkeypatch, tmp_path):
+    """Guard calls may mutate the environment and last-decision singleton."""
+    for key in (
+        "MLFLOW_TRACKING_URI",
+        "CODEX_MLFLOW_URI",
+        "MLFLOW_ALLOW_REMOTE",
+        "CODEX_ALLOW_REMOTE_TRACKING",
+        "CODEX_MLFLOW_ALLOW_REMOTE",
+        "MLFLOW_ENABLE_SYSTEM_METRICS",
+    ):
+        monkeypatch.delenv(key, raising=False)
+    monkeypatch.setenv("CODEX_LOCAL_LOOPBACK", "true")
+    monkeypatch.setenv("CODEX_MLFLOW_LOCAL_DIR", str(tmp_path / "mlruns"))
+    monkeypatch.setattr(mlflow_guard, "_LAST_DECISION", None)
+    return tmp_path / "mlruns"
 
 
 class TestMLflowGuard:
-    """Comprehensive test suite for codex_ml.tracking.mlflow_guard."""
-
-    def test_mlflow_guard_import(self):
-        """Test that mlflow_guard can be imported."""
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-
-        assert MLflowGuard is not None, "MLflowGuard must be initialized"
-
-    def test_mlflow_guard_init(self):
-        """Test MLflowGuard initialization."""
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-
-        try:
-            guard = MLflowGuard()
-            assert guard is not None, "guard must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_mlflow_guard_context_manager(self):
-        """Test MLflowGuard as context manager."""
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-
-        try:
-            with MLflowGuard() as guard:
-                assert guard is not None, "guard must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_mlflow_guard_enable_tracking(self):
-        """Test enabling MLflow tracking."""
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-
-        try:
-            guard = MLflowGuard()
-            guard.enable()
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_mlflow_guard_disable_tracking(self):
-        """Test disabling MLflow tracking."""
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-
-        try:
-            guard = MLflowGuard()
-            guard.disable()
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_mlflow_guard_log_metric(self):
-        """Test logging metric through guard."""
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-
-        try:
-            guard = MLflowGuard()
-            guard.log_metric("test_metric", 42.0)
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_mlflow_guard_log_param(self):
-        """Test logging parameter through guard."""
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-
-        try:
-            guard = MLflowGuard()
-            guard.log_param("test_param", "value")
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_mlflow_guard_with_exception_handling(self):
-        """Test MLflowGuard exception handling."""
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-
-        try:
-            with MLflowGuard():
-                raise ValueError("Test error")
-        except ValueError:
-            pass  # Expected
-
-    def test_mlflow_guard_multiple_metrics(self):
-        """Test logging multiple metrics."""
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-
-        try:
-            guard = MLflowGuard()
-            for i in range(10):
-                guard.log_metric(f"metric_{i}", float(i))
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_mlflow_guard_batch_logging(self):
-        """Test batch logging of metrics."""
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-
-        try:
-            guard = MLflowGuard()
-            metrics = {"metric1": 1.0, "metric2": 2.0, "metric3": 3.0}
-            guard.log_metrics(metrics)
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-
-# ============================================================================
-# BATCH 2: quantum/base.py tests (Target: 52.27% → 100%)
-# ============================================================================
-
-
-class TestQuantumBase:
-    """Test suite for cognitive_brain.quantum.base."""
-
-    def test_quantum_base_import(self):
-        """Test importing quantum base module."""
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-
-        assert QuantumDecisionEngine is not None, "QuantumDecisionEngine must be initialized"
-
-    def test_quantum_engine_init(self):
-        """Test QuantumDecisionEngine initialization."""
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-
-        try:
-            engine = QuantumDecisionEngine()
-            assert engine is not None, "engine must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_quantum_engine_with_config(self):
-        """Test QuantumDecisionEngine with configuration."""
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-
-        try:
-            config = {"k1": 0.332, "k2": 0.5}
-            engine = QuantumDecisionEngine(config=config)
-            assert engine is not None, "engine must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_quantum_engine_measure_state(self):
-        """Test measuring quantum state."""
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-
-        try:
-            engine = QuantumDecisionEngine()
-            state = engine.measure()
-            assert state is not None, "state must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_quantum_engine_superposition(self):
-        """Test quantum superposition."""
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-
-        try:
-            engine = QuantumDecisionEngine()
-            # Test superposition of multiple states
-            states = ["state1", "state2", "state3"]
-            result = engine.superposition(states)
-            assert result is not None, "result must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_quantum_engine_entanglement(self):
-        """Test quantum entanglement."""
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-
-        try:
-            engine = QuantumDecisionEngine()
-            # Test entangling multiple values
-            result = engine.entangle(["val1", "val2"])
-            assert result is not None, "result must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_quantum_engine_collapse_probability(self):
-        """Test wave function collapse with probability."""
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-
-        try:
-            engine = QuantumDecisionEngine()
-            result = engine.collapse_to_probability(0.5)
-            assert 0 <= result <= 1, "Result must not be empty"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_quantum_engine_decision_with_bias(self):
-        """Test quantum decision with bias."""
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-
-        try:
-            engine = QuantumDecisionEngine()
-            decision = engine.decide_with_bias(bias=0.7)
-            assert decision is not None, "decision must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_quantum_engine_multiple_decisions(self):
-        """Test multiple quantum decisions."""
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-
-        try:
-            engine = QuantumDecisionEngine()
-            decisions = [engine.measure() for _ in range(10)]
-            assert len(decisions) == 10, "Decisions must not be empty"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_quantum_engine_reset_state(self):
-        """Test resetting quantum engine state."""
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-
-        try:
-            engine = QuantumDecisionEngine()
-            engine.reset()
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-
-# ============================================================================
-# BATCH 3: peft_hooks.py tests (Target: 46.43% → 100%)
-# ============================================================================
-
-
-class TestPEFTHooks:
-    """Test suite for codex_ml.interfaces.peft_hooks."""
-
-    def test_peft_hooks_import(self):
-        """Test importing peft_hooks module."""
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-
-        assert PEFTHooks is not None, "PEFTHooks must be initialized"
-
-    def test_peft_hooks_init(self):
-        """Test PEFTHooks initialization."""
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-
-        try:
-            hooks = PEFTHooks()
-            assert hooks is not None, "hooks must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_peft_hooks_register_hook(self):
-        """Test registering a PEFT hook."""
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-
-        try:
-            hooks = PEFTHooks()
-
-            def dummy_hook(*args, **kwargs):
-                pass
-
-            hooks.register("pre_forward", dummy_hook)
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_peft_hooks_trigger_hook(self):
-        """Test triggering a registered hook."""
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-
-        try:
-            hooks = PEFTHooks()
-
-            def dummy_hook(*args, **kwargs):
-                return "executed"
-
-            hooks.register("test_hook", dummy_hook)
-            result = hooks.trigger("test_hook")
-            assert result is not None, "result must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_peft_hooks_multiple_hooks(self):
-        """Test registering multiple hooks."""
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-
-        try:
-            hooks = PEFTHooks()
-            for i in range(5):
-                hooks.register(f"hook_{i}", lambda: f"hook_{i}")
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_peft_hooks_hook_with_args(self):
-        """Test hook execution with arguments."""
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-
-        try:
-            hooks = PEFTHooks()
-
-            def hook_with_args(x, y):
-                return x + y
-
-            hooks.register("math_hook", hook_with_args)
-            result = hooks.trigger("math_hook", args=(1, 2))
-            assert result is not None, "result must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_peft_hooks_hook_with_kwargs(self):
-        """Test hook execution with keyword arguments."""
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-
-        try:
-            hooks = PEFTHooks()
-
-            def hook_with_kwargs(a=1, b=2):
-                return a * b
-
-            hooks.register("kwarg_hook", hook_with_kwargs)
-            result = hooks.trigger("kwarg_hook", kwargs={"a": 3, "b": 4})
-            assert result is not None, "result must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_peft_hooks_remove_hook(self):
-        """Test removing a registered hook."""
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-
-        try:
-            hooks = PEFTHooks()
-            hooks.register("removable", lambda: "test")
-            hooks.remove("removable")
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_peft_hooks_list_hooks(self):
-        """Test listing all registered hooks."""
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-
-        try:
-            hooks = PEFTHooks()
-            for i in range(3):
-                hooks.register(f"hook_{i}", lambda: None)
-            hook_list = hooks.list()
-            assert hook_list is not None, "hook_list must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-
-# ============================================================================
-# BATCH 4: _types.py security tests (Target: 45.45% → 100%)
-# ============================================================================
-
-
-class TestSecurityTypes:
-    """Test suite for security._types."""
-
-    def test_security_types_import(self):
-        """Test importing security types module."""
-        from security._types import SecurityContext
-
-        assert SecurityContext is not None, "SecurityContext must be initialized"
-
-    def test_security_context_init(self):
-        """Test SecurityContext initialization."""
-        from security._types import SecurityContext
-
-        try:
-            ctx = SecurityContext()
-            assert ctx is not None, "ctx must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_security_context_with_user(self):
-        """Test SecurityContext with user."""
-        from security._types import SecurityContext
-
-        try:
-            ctx = SecurityContext(user="test_user")
-            assert ctx.user == "test_user", "user is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_security_context_with_permissions(self):
-        """Test SecurityContext with permissions."""
-        from security._types import SecurityContext
-
-        try:
-            perms = ["read", "write", "execute"]
-            ctx = SecurityContext(permissions=perms)
-            assert ctx.permissions == perms, "permissions is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_security_context_check_permission(self):
-        """Test checking permissions."""
-        from security._types import SecurityContext
-
-        try:
-            ctx = SecurityContext(permissions=["read", "write"])
-            result = ctx.has_permission("read")
-            assert result is True or result is False, "Result must not be empty"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_security_context_grant_permission(self):
-        """Test granting new permission."""
-        from security._types import SecurityContext
-
-        try:
-            ctx = SecurityContext(permissions=[])
-            ctx.grant_permission("read")
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_security_context_revoke_permission(self):
-        """Test revoking permission."""
-        from security._types import SecurityContext
-
-        try:
-            ctx = SecurityContext(permissions=["read", "write"])
-            ctx.revoke_permission("read")
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_security_context_set_role(self):
-        """Test setting security role."""
-        from security._types import SecurityContext
-
-        try:
-            ctx = SecurityContext()
-            ctx.set_role("admin")
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_security_context_clear(self):
-        """Test clearing security context."""
-        from security._types import SecurityContext
-
-        try:
-            ctx = SecurityContext(user="test", permissions=["read"])
-            ctx.clear()
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_security_context_is_authenticated(self):
-        """Test authentication check."""
-        from security._types import SecurityContext
-
-        try:
-            ctx = SecurityContext(user="test")
-            result = ctx.is_authenticated()
-            assert result is True or result is False, "Result must not be empty"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-
-# ============================================================================
-# BATCH 5: dp_config.py tests (Target: 44.74% → 100%)
-# ============================================================================
-
-
-class TestDPConfig:
-    """Test suite for codex_ml.training.dp_config."""
-
-    def test_dp_config_import(self):
-        """Test importing dp_config module."""
-        from codex_ml.training.dp_config import DPConfig
-
-        assert DPConfig is not None, "DPConfig must be initialized"
-
-    def test_dp_config_init(self):
-        """Test DPConfig initialization."""
-        from codex_ml.training.dp_config import DPConfig
-
-        try:
-            config = DPConfig()
-            assert config is not None, "config must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_dp_config_with_backend(self):
-        """Test DPConfig with specific backend."""
-        from codex_ml.training.dp_config import DPConfig
-
-        try:
-            config = DPConfig(backend="nccl")
-            assert config is not None, "config must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_dp_config_set_world_size(self):
-        """Test setting world size."""
-        from codex_ml.training.dp_config import DPConfig
-
-        try:
-            config = DPConfig()
-            config.set_world_size(4)
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_dp_config_set_rank(self):
-        """Test setting rank."""
-        from codex_ml.training.dp_config import DPConfig
-
-        try:
-            config = DPConfig()
-            config.set_rank(0)
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_dp_config_enable_fp16(self):
-        """Test enabling FP16."""
-        from codex_ml.training.dp_config import DPConfig
-
-        try:
-            config = DPConfig()
-            config.enable_fp16()
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_dp_config_get_device(self):
-        """Test getting device from config."""
-        from codex_ml.training.dp_config import DPConfig
-
-        try:
-            config = DPConfig()
-            device = config.get_device()
-            assert device is not None, "device must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_dp_config_validate(self):
-        """Test config validation."""
-        from codex_ml.training.dp_config import DPConfig
-
-        try:
-            config = DPConfig()
-            result = config.validate()
-            assert result is True or result is False, "Result must not be empty"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_dp_config_to_dict(self):
-        """Test converting config to dictionary."""
-        from codex_ml.training.dp_config import DPConfig
-
-        try:
-            config = DPConfig()
-            config_dict = config.to_dict()
-            assert isinstance(config_dict, dict)
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_dp_config_from_dict(self):
-        """Test creating config from dictionary."""
-        from codex_ml.training.dp_config import DPConfig
-
-        try:
-            config_dict = {"backend": "nccl", "world_size": 4}
-            config = DPConfig.from_dict(config_dict)
-            assert config is not None, "config must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-
-# ============================================================================
-# BATCH 6: rng_checkpoint.py tests
-# ============================================================================
-
-
-class TestRNGCheckpoint:
-    """Test suite for codex_ml.training.rng_checkpoint."""
-
-    def test_rng_checkpoint_import(self):
-        """Test importing rng_checkpoint module."""
-        from codex_ml.training.rng_checkpoint import RNGCheckpoint
-
-        assert RNGCheckpoint is not None, "RNGCheckpoint must be initialized"
-
-    def test_rng_checkpoint_save(self):
-        """Test saving RNG checkpoint."""
-        from codex_ml.training.rng_checkpoint import RNGCheckpoint
-
-        try:
-            checkpoint = RNGCheckpoint()
-            checkpoint.save()
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_rng_checkpoint_load(self):
-        """Test loading RNG checkpoint."""
-        from codex_ml.training.rng_checkpoint import RNGCheckpoint
-
-        try:
-            checkpoint = RNGCheckpoint()
-            checkpoint.load()
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_rng_checkpoint_restore_state(self):
-        """Test restoring RNG state."""
-        from codex_ml.training.rng_checkpoint import RNGCheckpoint
-
-        try:
-            checkpoint = RNGCheckpoint()
-            checkpoint.restore()
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-
-# ============================================================================
-# BATCH 7: Integration and error handling
-# ============================================================================
-
-
-class TestIntegrationAndErrors:
-    """Test suite for integration scenarios and error handling."""
-
-    def test_mlflow_guard_with_none_config(self):
-        """Test MLflowGuard with None configuration."""
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-
-        try:
-            MLflowGuard(config=None)
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_quantum_engine_with_invalid_states(self):
-        """Test quantum engine with invalid states."""
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-
-        try:
-            engine = QuantumDecisionEngine()
-            result = engine.measure()
-            assert result is not None or result is None, "result must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_peft_hooks_nonexistent_hook(self):
-        """Test triggering non-existent hook."""
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-
-        try:
-            hooks = PEFTHooks()
-            result = hooks.trigger("nonexistent")
-            assert result is None or isinstance(result, Exception)
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_security_context_multiple_role_changes(self):
-        """Test changing security role multiple times."""
-        from security._types import SecurityContext
-
-        try:
-            ctx = SecurityContext()
-            for role in ["admin", "user", "guest", "admin"]:
-                ctx.set_role(role)
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_dp_config_with_invalid_backend(self):
-        """Test DPConfig with invalid backend."""
-        from codex_ml.training.dp_config import DPConfig
-
-        try:
-            DPConfig(backend="invalid_backend_xyz")
-            assert True, "True is not valid"
-        except (ValueError, RuntimeError):
-            pass  # Also valid
-
-
-# ============================================================================
-# BATCH 8: Boundary and edge case tests
-# ============================================================================
-
-
-class TestBoundaryAndEdgeCases:
-    """Test boundary conditions and edge cases."""
-
-    def test_mlflow_guard_zero_metrics(self):
-        """Test logging zero value metric."""
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-
-        try:
-            guard = MLflowGuard()
-            guard.log_metric("zero", 0.0)
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_mlflow_guard_negative_metrics(self):
-        """Test logging negative value metric."""
-        from codex_ml.tracking.mlflow_guard import MLflowGuard
-
-        try:
-            guard = MLflowGuard()
-            guard.log_metric("negative", -1.5)
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_quantum_engine_boundary_probability(self):
-        """Test quantum engine with boundary probabilities."""
-        from cognitive_brain.quantum.base import QuantumDecisionEngine
-
-        try:
-            engine = QuantumDecisionEngine()
-            for prob in [0.0, 0.5, 1.0]:
-                result = engine.collapse_to_probability(prob)
-                assert result is not None, "result must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_peft_hooks_empty_hook_name(self):
-        """Test registering hook with empty name."""
-        from codex_ml.interfaces.peft_hooks import PEFTHooks
-
-        try:
-            hooks = PEFTHooks()
-            hooks.register("", lambda: "empty")
-            assert True, "True is not valid"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_security_context_empty_permissions(self):
-        """Test SecurityContext with empty permissions."""
-        from security._types import SecurityContext
-
-        try:
-            ctx = SecurityContext(permissions=[])
-            result = ctx.has_permission("read")
-            assert result is False, "Result must not be empty"
-        except (AttributeError, OSError, RuntimeError):
-            pass
-
-    def test_dp_config_zero_world_size(self):
-        """Test DPConfig with zero world size."""
-        from codex_ml.training.dp_config import DPConfig
-
-        try:
-            config = DPConfig()
-            config.set_world_size(0)
-            assert True, "True is not valid"
-        except (ValueError, RuntimeError):
-            pass  # Also valid
-
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+    def test_default_local_backend_and_decision(self, isolated_guard):
+        decision = mlflow_guard.ensure_file_backend_decision()
+        assert decision.effective_uri == isolated_guard.as_uri()
+        assert isolated_guard.is_dir()
+        assert decision.uri == decision.effective_uri
+        assert decision.requested_uri == str(isolated_guard)
+        assert decision.fallback_reason is None
+        assert decision.allow_remote is False
+        assert decision.allow_remote_env == "MLFLOW_ALLOW_REMOTE"
+        assert mlflow_guard.last_decision() is decision
+        for key in ("MLFLOW_TRACKING_URI", "CODEX_MLFLOW_URI"):
+            assert os.environ[key] == decision.uri
+        assert os.environ["MLFLOW_ENABLE_SYSTEM_METRICS"] == "false"
+        assert decision.system_metrics_enabled is False
+        with pytest.raises(FrozenInstanceError):
+            decision.effective_uri = "https://remote.invalid"
+
+    @pytest.mark.parametrize("uri", ["https://remote.invalid/runs", "sqlite:///runs.db"])
+    def test_remote_backend_rejected_by_default(self, isolated_guard, uri):
+        decision = mlflow_guard.ensure_file_backend_decision(requested_uri=uri)
+        assert decision.requested_uri == uri
+        assert decision.uri == isolated_guard.as_uri()
+        assert decision.fallback_reason == "non_file_scheme"
+
+    def test_explicit_remote_opt_in(self, isolated_guard):
+        uri = "https://remote.invalid/runs"
+        decision = mlflow_guard.ensure_file_backend_decision(
+            requested_uri=uri, allow_remote=True, allow_remote_flag="yes"
+        )
+        assert decision.uri == uri
+        assert decision.allow_remote is True
+        assert decision.allow_remote_flag == "yes"
+        assert decision.fallback_reason is None
+
+    @pytest.mark.parametrize("flag", ["1", "true", " YES ", "on"])
+    def test_bootstrap_remote_opt_in(self, isolated_guard, monkeypatch, flag):
+        monkeypatch.setenv("MLFLOW_ALLOW_REMOTE", flag)
+        uri = "https://remote.invalid/runs"
+        decision = mlflow_guard.bootstrap_offline_tracking_decision(requested_uri=uri)
+        assert decision.uri == uri
+        assert decision.allow_remote is True
+        assert decision.allow_remote_flag == flag.strip()
+
+    @pytest.mark.parametrize("flag", ["", "0", "false", "off"])
+    def test_bootstrap_false_flags_stay_offline(self, isolated_guard, monkeypatch, flag):
+        monkeypatch.setenv("MLFLOW_ALLOW_REMOTE", flag)
+        uri = mlflow_guard.bootstrap_offline_tracking(requested_uri="https://remote.invalid")
+        assert uri == isolated_guard.as_uri()
+        assert mlflow_guard.last_decision().allow_remote is False
+
+    @pytest.mark.parametrize("key", mlflow_guard.ADDITIONAL_ALLOW_REMOTE_ENVS)
+    def test_legacy_opt_in_flags(self, isolated_guard, monkeypatch, key):
+        monkeypatch.setenv(key, "yes")
+        uri = mlflow_guard.bootstrap_offline_tracking(requested_uri="https://remote.invalid")
+        assert uri == "https://remote.invalid"
+        assert os.environ["MLFLOW_ALLOW_REMOTE"] == "yes"
+
+    @pytest.mark.parametrize("explicit", [False, True])
+    def test_tracking_uri_precedence(self, isolated_guard, monkeypatch, explicit):
+        monkeypatch.setenv("MLFLOW_TRACKING_URI", "tracking")
+        monkeypatch.setenv("CODEX_MLFLOW_URI", "codex")
+        uri = mlflow_guard.ensure_file_backend(requested_uri="explicit" if explicit else None)
+        assert uri == ("explicit" if explicit else "tracking")
+
+    def test_codex_uri_precedes_local_default(self, isolated_guard, monkeypatch):
+        monkeypatch.setenv("CODEX_MLFLOW_URI", "codex")
+        assert mlflow_guard.ensure_file_backend() == "codex"
+
+    def test_absolute_directory_normalized(self, isolated_guard, tmp_path):
+        directory = tmp_path / "nested" / "runs"
+        assert mlflow_guard.ensure_file_backend(requested_uri=str(directory)) == directory.as_uri()
+        assert directory.is_dir()
+
+    def test_literal_file_uri_preserved(self, isolated_guard, tmp_path):
+        literal = f"file:{tmp_path / 'literal'}"
+        assert mlflow_guard.ensure_file_backend(requested_uri=literal) == literal
+        assert (tmp_path / "literal").is_dir()
+
+    @pytest.mark.parametrize("allow_remote", [False, True])
+    def test_nonlocal_file_host(self, isolated_guard, allow_remote):
+        uri = "file://remote.invalid/runs"
+        decision = mlflow_guard.ensure_file_backend_decision(
+            requested_uri=uri, allow_remote=allow_remote
+        )
+        assert decision.uri == (uri if allow_remote else isolated_guard.as_uri())
+        assert decision.fallback_reason == (None if allow_remote else "non_local_host")
+
+    @pytest.mark.parametrize("force", [False, True])
+    def test_force_controls_system_metrics_reset(self, isolated_guard, monkeypatch, force):
+        monkeypatch.setenv("MLFLOW_ENABLE_SYSTEM_METRICS", "true")
+        decision = mlflow_guard.ensure_file_backend_decision(force=force)
+        assert decision.system_metrics_enabled is (not force)
+        assert os.environ["MLFLOW_ENABLE_SYSTEM_METRICS"] == ("false" if force else "true")
+
+
+class TestQuantumState:
+    @pytest.mark.parametrize("feature", list(QuantumFeature))
+    def test_features_and_serialization(self, feature):
+        state = QuantumState(feature=feature)
+        assert str(feature) == feature.value
+        assert state.is_coherent()
+        assert state.to_dict() == {
+            "feature": feature.value,
+            "coherence": 1.0,
+            "metadata": {},
+        }
+        assert json.loads(json.dumps(state.to_dict())) == state.to_dict()
+        assert repr(state) == f"QuantumState(feature={feature.value}, coherence=1.000)"
+
+    def test_metadata_is_independent(self):
+        first = QuantumState(QuantumFeature.ENTANGLEMENT)
+        second = QuantumState(QuantumFeature.ENTANGLEMENT)
+        first.metadata["agent"] = "first"
+        assert second.metadata == {}
+
+    @pytest.mark.parametrize("coherence", [0.0, 0.3, 1.0])
+    def test_coherence_boundaries(self, coherence):
+        state = QuantumState(QuantumFeature.SUPERPOSITION, coherence=coherence)
+        assert state.is_coherent() is (coherence >= 0.3)
+        assert state.is_coherent(threshold=coherence)
+        state.update_coherence(1.0 - coherence)
+        assert state.coherence == 1.0 - coherence
+
+    @pytest.mark.parametrize("value", [-0.01, 1.01, float("nan")])
+    def test_invalid_initial_coherence(self, value):
+        with pytest.raises(ValueError, match="Coherence must be between"):
+            QuantumState(QuantumFeature.UNCERTAINTY, coherence=value)
+
+    @pytest.mark.parametrize("value", [-1.0, 2.0, float("nan")])
+    def test_invalid_update_preserves_state(self, value):
+        state = QuantumState(QuantumFeature.WAVE_COLLAPSE, coherence=0.5)
+        with pytest.raises(ValueError, match="Coherence must be between"):
+            state.update_coherence(value)
+        assert state.coherence == 0.5
+
+    def test_quantum_error_contract(self):
+        error = CoherenceDegradationError(0.1, 0.3, "superposition")
+        assert isinstance(error, QuantumException)
+        assert (error.current, error.threshold, error.feature) == (0.1, 0.3, "superposition")
+        assert str(error) == "Coherence degradation detected in superposition: 0.100 < 0.300"
+        assert issubclass(InvalidQuantumConfigurationError, QuantumException)
+
+
+@pytest.fixture
+def peft_backend(monkeypatch):
+    config = Mock(name="LoraConfig")
+    wrap = Mock(name="get_peft_model")
+    model_type = SimpleNamespace(from_pretrained=Mock())
+    monkeypatch.setattr(peft_hooks, "LoraConfig", config)
+    monkeypatch.setattr(peft_hooks, "get_peft_model", wrap)
+    monkeypatch.setattr(peft_hooks, "TaskType", SimpleNamespace(CAUSAL_LM="causal"))
+    monkeypatch.setattr(peft_hooks, "PeftModel", model_type)
+    return config, wrap, model_type
+
+
+class TestPEFTHelpers:
+    @pytest.mark.parametrize("missing", ["LoraConfig", "get_peft_model", "TaskType"])
+    def test_missing_dependency_is_actionable(self, peft_backend, monkeypatch, missing):
+        monkeypatch.setattr(peft_hooks, missing, None)
+        with pytest.raises(peft_hooks.PeftUnavailable, match="peft is not installed"):
+            peft_hooks.build_peft_config()
+
+    @pytest.mark.parametrize("custom", [False, True])
+    def test_lora_config_forwarding(self, peft_backend, custom):
+        constructor, _, _ = peft_backend
+        kwargs = {"r": 4, "alpha": 16, "dropout": 0.25} if custom else {}
+        result = peft_hooks.build_peft_config(**kwargs)
+        assert result is constructor.return_value
+        constructor.assert_called_once_with(
+            task_type="causal",
+            r=4 if custom else 8,
+            lora_alpha=16 if custom else 32,
+            lora_dropout=0.25 if custom else 0.1,
+            inference_mode=False,
+        )
+
+    def test_unknown_task_not_silently_accepted(self, peft_backend):
+        with pytest.raises(AttributeError, match="NOT_A_TASK"):
+            peft_hooks.build_peft_config(task="NOT_A_TASK")
+        peft_backend[0].assert_not_called()
+
+    def test_enable_wraps_and_reports_parameters(self, peft_backend):
+        _, wrap, _ = peft_backend
+        model, config = object(), object()
+        result = peft_hooks.enable_peft(model, config, adapter_name="domain")
+        wrap.assert_called_once_with(model, config, adapter_name="domain")
+        assert result is wrap.return_value
+        result.print_trainable_parameters.assert_called_once_with()
+
+    def test_optional_diagnostic_io_failure_does_not_lose_adapter(self, peft_backend):
+        wrap = peft_backend[1]
+        wrap.return_value.print_trainable_parameters.side_effect = OSError("diagnostic")
+        assert peft_hooks.enable_peft(object(), object()) is wrap.return_value
+
+    def test_adapter_creation_errors_propagate(self, peft_backend):
+        peft_backend[1].side_effect = ValueError("incompatible adapter")
+        with pytest.raises(ValueError, match="incompatible adapter"):
+            peft_hooks.enable_peft(object(), object())
+
+    def test_load_inference_adapter(self, peft_backend):
+        model = object()
+        loader = peft_backend[2].from_pretrained
+        assert peft_hooks.load_adapter_for_inference(model, "adapter") is loader.return_value
+        loader.assert_called_once_with(model, "adapter")
+
+    def test_missing_inference_loader(self, peft_backend, monkeypatch):
+        monkeypatch.setattr(peft_hooks, "PeftModel", None)
+        with pytest.raises(peft_hooks.PeftUnavailable, match="peft.PeftModel unavailable"):
+            peft_hooks.load_adapter_for_inference(object(), "adapter")
+
+
+class TestSharedSecurityTypes:
+    @pytest.mark.parametrize(
+        ("text", "expected"),
+        [
+            ("", ""),
+            ("ordinary text", "ordinary text"),
+            ("FOO and Barf", "[REDACTED] and [REDACTED]"),
+            ("bazinga dang", "[REDACTED] [REDACTED]"),
+            ("foofoo", "[REDACTED][REDACTED]"),
+            ("café foo 日本語", "café [REDACTED] 日本語"),
+        ],
+    )
+    def test_sanitization(self, text, expected):
+        assert sanitize_text(text) == expected
+        assert sanitize_text(expected) == expected
+
+    def test_shared_validation_exception(self):
+        error = SecurityError("invalid input")
+        assert isinstance(error, ValueError)
+        assert str(error) == "invalid input"
+
+
+class TestDifferentialPrivacyConfig:
+    def test_disabled_defaults_and_serialization(self):
+        config = dp_config.DifferentialPrivacyConfig()
+        assert config.as_dict() == {
+            "enabled": False,
+            "epsilon": 1.0,
+            "delta": 1e-5,
+            "max_grad_norm": 1.0,
+            "noise_multiplier": 1.0,
+            "secure_rng": False,
+        }
+        assert json.loads(json.dumps(config.as_dict())) == config.as_dict()
+
+    def test_disabled_model_is_identity_without_opacus(self, monkeypatch):
+        monkeypatch.setitem(sys.modules, "opacus", None)
+        parts = object(), object(), object()
+        result = dp_config.make_private_model(*parts, dp_config.DifferentialPrivacyConfig())
+        assert all(actual is expected for actual, expected in zip(result[:3], parts))
+        assert result[3] is None
+
+    def test_enabled_requires_opacus(self, monkeypatch):
+        monkeypatch.setitem(sys.modules, "opacus", None)
+        with pytest.raises(ImportError, match="Opacus is required for differential privacy"):
+            dp_config.DifferentialPrivacyConfig(enabled=True)
+
+    def test_enabled_wraps_exact_components_and_parameters(self, monkeypatch):
+        constructor = Mock(name="PrivacyEngine")
+        private_parts = object(), object(), object()
+        constructor.return_value.make_private.return_value = private_parts
+        monkeypatch.setitem(sys.modules, "opacus", SimpleNamespace(PrivacyEngine=constructor))
+        config = dp_config.DifferentialPrivacyConfig(
+            enabled=True,
+            epsilon=2,
+            delta=1e-6,
+            max_grad_norm=0.5,
+            noise_multiplier=1.2,
+            secure_rng=True,
+        )
+        parts = object(), object(), object()
+        result = dp_config.make_private_model(*parts, config)
+        assert result[:3] == private_parts
+        assert result[3] is constructor.return_value
+        constructor.assert_called_once_with(secure_rng=True)
+        constructor.return_value.make_private.assert_called_once_with(
+            module=parts[0],
+            optimizer=parts[1],
+            data_loader=parts[2],
+            noise_multiplier=1.2,
+            max_grad_norm=0.5,
+        )
+        assert config.as_dict()["epsilon"] == 2.0
+        assert config.as_dict()["delta"] == 1e-6
+
+    def test_privacy_engine_failure_propagates(self, monkeypatch):
+        engine = Mock()
+        engine.make_private.side_effect = ValueError("unsupported layer")
+        monkeypatch.setitem(
+            sys.modules, "opacus", SimpleNamespace(PrivacyEngine=Mock(return_value=engine))
+        )
+        config = dp_config.DifferentialPrivacyConfig(enabled=True)
+        with pytest.raises(ValueError, match="unsupported layer"):
+            dp_config.make_private_model(object(), object(), object(), config)
+
+
+@pytest.fixture
+def preserve_rng():
+    state = rng_checkpoint.RNGState()
+    state.capture()
+    yield
+    state.restore()
+
+
+class TestRNGState:
+    @pytest.mark.parametrize("seed", [0, 42, 2**31 - 1])
+    def test_capture_restore_and_seed_reproducibility(self, preserve_rng, seed):
+        rng_checkpoint.set_seed(seed)
+        state = rng_checkpoint.RNGState()
+        state.capture()
+        expected = [random.random() for _ in range(4)]
+        state.restore()
+        assert [random.random() for _ in range(4)] == expected
+        rng_checkpoint.set_seed(seed)
+        assert [random.random() for _ in range(4)] == expected
+
+    def test_save_load_restores_rng(self, preserve_rng, tmp_path):
+        state = rng_checkpoint.RNGState()
+        state.capture()
+        path = tmp_path / "nested" / "rng.json"
+        assert state.save_to_file(path) == path
+        assert isinstance(json.loads(path.read_text()), dict)
+        expected = random.random()
+        loaded = rng_checkpoint.RNGState.load_from_file(path)
+        loaded.restore()
+        assert random.random() == expected
+
+    @pytest.mark.parametrize("payload", ["[]", "null", "42"])
+    def test_load_rejects_non_object_json(self, tmp_path, payload):
+        path = tmp_path / "invalid.json"
+        path.write_text(payload)
+        with pytest.raises(ValueError, match="RNG state file must contain a JSON object"):
+            rng_checkpoint.RNGState.load_from_file(path)
+
+    def test_load_rejects_corrupt_json(self, tmp_path):
+        path = tmp_path / "corrupt.json"
+        path.write_text("{")
+        with pytest.raises(json.JSONDecodeError):
+            rng_checkpoint.RNGState.load_from_file(path)
+
+    def test_missing_file_is_not_ignored(self, tmp_path):
+        with pytest.raises(FileNotFoundError):
+            rng_checkpoint.RNGState.load_from_file(tmp_path / "missing")
+
+    def test_empty_state_restore_is_noop(self):
+        before = random.getstate()
+        rng_checkpoint.RNGState().restore()
+        assert random.getstate() == before
+
+    @pytest.mark.parametrize("name", ["checkpoint", "checkpoint.pt", "archive.tar.gz"])
+    def test_sidecar_path(self, name):
+        path = Path("checkpoints") / name
+        assert rng_checkpoint.RNGState.path_for_checkpoint(path) == path.with_name(
+            name + ".rng.json"
+        )

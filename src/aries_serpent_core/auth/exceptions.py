@@ -179,3 +179,11 @@ class SessionNotFoundError(SessionError):
 
     def __init__(self, message: str = "Session not found"):
         super().__init__(message, "session_not_found")
+
+
+if __name__ in {"codex.auth.exceptions", "src.codex.auth.exceptions"}:
+    import importlib as _importlib
+    import sys as _sys
+
+    # Domain errors must retain their identity across the legacy namespace.
+    _sys.modules[__name__] = _importlib.import_module("aries_serpent_core.auth.exceptions")

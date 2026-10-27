@@ -2,22 +2,33 @@
 
 Implements the classic three-state circuit-breaker pattern:
 
-* **CLOSED** — normal operation; failures are counted.
+* **CLOSED** — normal operation; counted failures accumulate until a success
+  resets them.
 * **OPEN**   — calls are rejected immediately with :exc:`CircuitOpenError`
   until the recovery timeout has elapsed.
-* **HALF_OPEN** — a limited number of trial calls are allowed; consecutive
-  successes close the circuit, any failure re-opens it.
+* **HALF_OPEN** — calls are allowed; ``success_threshold`` successful
+  completions close the circuit, while a counted failure re-opens it.
+
+Only ``OSError`` (including ``IOError``), ``ModuleNotFoundError``, and
+``ImportError`` count as failures. Other exceptions propagate without updating
+the counters. State is lock-protected, but calls run outside the lock and
+HALF_OPEN does not limit the number of concurrent probes.
 
 Usage::
 
-    from aries_serpent_core.resilience import CircuitBreaker, CircuitOpenError
+    from aries_serpent_core.resilience import CircuitBreaker, CircuitOpenError, CircuitState
 
-    cb = CircuitBreaker(failure_threshold=3, recovery_timeout=30)
+    cb = CircuitBreaker(failure_threshold=1, recovery_timeout=30)
+
+    def unavailable():
+        raise OSError("service unavailable")
 
     try:
-        result = cb.call(requests.get, "https://example.com/api")
-    except CircuitOpenError:
-        result = cached_fallback()
+        cb.call(unavailable)
+    except OSError:
+        assert cb.state is CircuitState.OPEN
+    cb.reset()
+    assert cb.call(lambda: "recovered") == "recovered"
 """
 
 from __future__ import annotations
@@ -57,8 +68,8 @@ class CircuitBreaker:
     """Thread-safe circuit breaker for protecting calls to external services.
 
     Args:
-        failure_threshold: Number of consecutive failures that trip the circuit
-            to OPEN state.  Defaults to ``5``.
+        failure_threshold: Number of counted failures since the last CLOSED
+            success that trip the circuit to OPEN. Defaults to ``5``.
         recovery_timeout: Seconds to wait in OPEN state before attempting a
             probe call (transition to HALF_OPEN).  Defaults to ``60``.
         success_threshold: Number of consecutive successes in HALF_OPEN state
@@ -67,6 +78,13 @@ class CircuitBreaker:
 
     Thread safety:
         All state mutations are protected by an internal :class:`threading.Lock`.
+        Protected callables execute outside that lock; concurrent calls are
+        not serialized and HALF_OPEN has no single-probe admission limit.
+        This is a synchronous API: returned coroutines are not awaited.
+
+    Raises:
+        ValueError: A failure/success threshold is less than 1, or the recovery
+            timeout is not positive.
 
     Example::
 
@@ -105,7 +123,11 @@ class CircuitBreaker:
 
     @property
     def state(self) -> CircuitState:
-        """Current state, recalculated on access to respect *recovery_timeout*."""
+        """Return the state, moving OPEN to HALF_OPEN once its timeout elapses.
+
+        This property access can change state and reset the probe success
+        count, but does not execute a probe or close the circuit by itself.
+        """
         with self._lock:
             return self._get_state_locked()
 
@@ -123,8 +145,15 @@ class CircuitBreaker:
         Raises:
             CircuitOpenError: When the circuit is OPEN and the recovery timeout
                 has not yet elapsed.
-            Exception: Any exception raised by *fn* is re-raised after the
-                circuit's failure counter is incremented.
+            OSError: Counted as a failure and re-raised, including ``IOError``.
+            ImportError: Counted as a failure and re-raised, including
+                ``ModuleNotFoundError``.
+
+        Other exceptions propagate without counting as failures. A successful
+        CLOSED call clears the failure count; HALF_OPEN successes accumulate
+        toward ``success_threshold``. An OPEN rejection never invokes *fn*,
+        does not increment the failure count, and supplies an approximate
+        ``retry_after`` on ``CircuitOpenError``.
         """
         with self._lock:
             state = self._get_state_locked()
@@ -152,7 +181,11 @@ class CircuitBreaker:
             return result
 
     def reset(self) -> None:
-        """Manually reset the circuit to CLOSED state."""
+        """Set CLOSED and clear failure/success counts and the opening time.
+
+        Does not cancel in-flight calls; a later completion can update state
+        again. Use for an explicit operator/application recovery decision.
+        """
         with self._lock:
             self._state = CircuitState.CLOSED
             self._failure_count = 0

@@ -115,7 +115,7 @@ class TestHNSWConfig:
     def test_hnsw_config_validate_valid_m(self):
         """Test HNSW config M validation with valid values."""
         for m in [4, 16, 32, 64, 128]:
-            config = HNSWConfig(M=m)
+            config = HNSWConfig(M=m, ef_construction=max(200, 2 * m))
             config.validate()  # Should not raise
 
     def test_hnsw_config_validate_m_too_low(self):
@@ -209,7 +209,7 @@ class TestIVFPQConfig:
     def test_ivfpq_config_validate_nlist_valid(self):
         """Test IVFPQ config nlist validation with valid values."""
         for nlist in [1, 100, 1000, 10000]:
-            config = IVFPQConfig(nlist=nlist)
+            config = IVFPQConfig(nlist=nlist, nprobe=min(10, nlist))
             config.validate()  # Should not raise
 
     def test_ivfpq_config_validate_nlist_invalid(self):

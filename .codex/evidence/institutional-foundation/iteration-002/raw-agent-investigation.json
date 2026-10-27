@@ -1,0 +1,270 @@
+{
+  "metadata": {
+    "investigation_scope": "Authority, Governance, and Trust System Ecology",
+    "investigation_depth": "source_declarations_only",
+    "cohort_size": 6,
+    "key_finding": "Four-layer fail-closed trust system: Authority(paths/diff/env) \u2192 RBAC(subject/role/resource) \u2192 Approval(time/escalation) \u2192 Evidence(audit_trail). Production activation BLOCKED by default; requires explicit human approval OR complex auto-approval conditions.",
+    "critical_gate": "AuthorityEnvelope.require_human_approval=True (default) denies ALL execution unless human_approved=True passed"
+  },
+  "component_1_authority_envelope": {
+    "path": "src/codex/cognitive_brain/authority.py",
+    "lines": "1-124 (full)",
+    "purpose": "Policy boundary ahead of execution and PR creation. Fails closed on any violation.",
+    "trust_sources": [
+      "Path allowlist/denylist (globs)",
+      "Diff size limits (max 400 lines, 25 files)",
+      "Environment secret pattern matching (TOKEN|SECRET|PASSWORD|API_KEY|PRIVATE_KEY)",
+      "Human approval boolean (require_human_approval=True blocks all)"
+    ],
+    "production_gating": "Line 117-118: if require_human_approval and not human_approved then deny",
+    "idempotency": "SHA256 hash of identity_parts (stable on same inputs)",
+    "tests": "8 tests in tests/self_improvement/test_authority.py",
+    "disposition": "RETAIN fail-closed; ENHANCE time-based expiry; COMPOSE with evidence_store"
+  },
+  "component_2_rbac_enforcer": {
+    "path": "src/aries_serpent_core/governance/rbac.py",
+    "lines": "1-593",
+    "purpose": "Role-based access control enforcement. Zero unauthorized actions: failed checks raise PermissionDeniedError.",
+    "architecture": {
+      "roles": "7 (system_admin > agent_operator > ci_operator > security_reviewer > doc_maintainer > agent_reader > guest)",
+      "resources": "8 (agents, workflows, secrets, docs, code, reports, roles, audit_logs)",
+      "actions": "8 (create, read, write/update, delete, execute, approve, assign)",
+      "matrix": "Lines 100-235, exhaustive role\u2192resource\u2192actions mapping"
+    },
+    "trust_sources": [
+      "RoleManager role assignments",
+      "PermissionValidator permission checks",
+      "Exhaustive permission matrix (single source of truth)"
+    ],
+    "production_gating": "Line 491-492: raise_on_deny=True (default) raises PermissionDeniedError on failure",
+    "audit": "In-memory audit_logger._data dict (timestamps on assign/revoke)",
+    "tests": "Multiple test classes in tests/test_governance_rbac.py",
+    "disposition": "RETAIN matrix as authoritative; ENHANCE persistence to evidence_store; COMPOSE with approval_service"
+  },
+  "component_3_approval_service": {
+    "path": "src/aries_serpent_core/governance/approval_service.py",
+    "lines": "1-663",
+    "purpose": "Time-gated escalation workflow with fallback auto-approval when stakeholders unavailable.",
+    "state_machine": "7 states (pending, escalated, escalated_auto_approved, approved, rejected, cancelled, archived)",
+    "phases": {
+      "phase_1": "submit_request (line 182-225): create ApprovalRequest with auto-computed SLA deadline",
+      "phase_2": "check_and_escalate (line 227-248): escalate from L1\u2192L2\u2192L3 when SLA expired",
+      "phase_3": "check_auto_approval_conditions (line 276-296): auto-approve if 5 guards + 1 of 4 conditions met"
+    },
+    "auto_approval_conditions": [
+      "Condition 1: Owner at L3, unavailable, request 24h+ old",
+      "Condition 2: Quorum lost (2+ unavailable) at Owner SLA expired",
+      "Condition 3: Incident mode 30min SLA expired",
+      "Condition 4: Owner pre-auth flag set"
+    ],
+    "auto_approval_guards": [
+      "Escalation chain not exhausted",
+      "SLA actually exceeded",
+      "One of 4 conditions met",
+      "Not already final state",
+      "No destructive ops without pre-auth"
+    ],
+    "production_gating": "Line 319: destructive ops DENIED unless has_owner_emergency_pre_auth=True; auto-approval requires all 5 guards + 1 condition",
+    "audit": "decisions list + audit_log dict + audit codes (17 event types)",
+    "tests": "20+ test methods in tests/test_governance_approval_service.py and governance/test_approval_engine.py",
+    "disposition": "RETAIN state machine and escalation; ENHANCE with idempotency deduplication; COMPOSE with evidence_store and RBAC gate on auto-approval"
+  },
+  "component_4_evidence_store": {
+    "path": "src/codex/cognitive_brain/evidence_store.py",
+    "lines": "1-265 (full)",
+    "purpose": "Durable JSONL audit trail with circuit-breaker pattern state. Defaults to .codex/improvement/evidence.jsonl (on-disk).",
+    "persistence": {
+      "load": "Line 102-117: read .jsonl line-by-line, deserialize, populate in-memory dicts",
+      "append": "Line 119-128: atomic append + in-memory update",
+      "format": "JSONL (one JSON object per line)",
+      "schema_version": "1.0.0"
+    },
+    "idempotency": "event_id in _event_ids set; record_event returns False if already seen",
+    "circuit_breaker": {
+      "class": "CircuitBreaker (lines 41-79)",
+      "fields": "max_consecutive_failures (default 3), stale_after_days (default 90)",
+      "logic": "increment on regression/rollback; disable at threshold; check_stale disables if age > 90 days"
+    },
+    "production_gating": "pattern_enabled() returns False if breaker.disabled=True (fail-closed)",
+    "audit": "JSONL records with kind (event|outcome|...), payload containing event_id for end-to-end linking",
+    "persistence_gap": "CircuitBreaker state only in-memory; lost on restart",
+    "tests": "Multiple tests in tests/checkpoint/test_*.py",
+    "disposition": "RETAIN JSONL persistence and circuit breaker; ENHANCE CircuitBreaker state persistence; COMPOSE all layers"
+  },
+  "component_5_checkpoint_provider": {
+    "path": "src/codex_ml/utils/checkpointing.py",
+    "lines": "examined 1-200 (large file)",
+    "purpose": "Framework-aware checkpointing utilities. Standard layout: output/checkpoints/epoch-{n}/ with state.pt, meta.json, config.yaml, rng.json.",
+    "pattern": "StateDictProvider protocol (lines 186-200); structural interface for state extraction",
+    "framework_binding": "PyTorch-first; seed_registry wraps random.seed and torch.manual_seed to capture state snapshots",
+    "narrow_reuse_observation": "Checkpoint provider does NOT import Authority, RBAC, Approval, or Evidence. Framework-agnostic design.",
+    "typed_unavailable_boundary": "Checkpoint has no knowledge of governance; caller responsible for invoking authority.evaluate() before checkpoint read",
+    "trust_model": "File permissions on .codex/improvement/; seed registry preservation; caller authority check (NOT built-in)",
+    "production_gating": "CALLER RESPONSIBILITY: checkpoint provider has NO built-in gate; authority.evaluate() must be called BEFORE checkpoint access",
+    "disposition": "RETAIN framework agnosticism; ENHANCE with optional authority_context guard; COMPOSE with evidence_store"
+  },
+  "component_6_institutional_core": {
+    "path": "src/codex/institutional/core.py",
+    "lines": "1-594 (full)",
+    "purpose": "Portable evidence records with deliberately non-activating candidate evaluation. Implements institutional contracts via JSON Schema.",
+    "architecture": {
+      "record_function": "lines 54-78: create record with schema, payload, created_at, producer, evidence_refs, authority_refs, validation_state (candidate), lifecycle (Draft)",
+      "canonical_encoding": "lines 36-39: deterministic JSON for hashing",
+      "digest": "lines 42-43: SHA256 of canonical JSON",
+      "validate": "lines 81+: Draft 2020-12 JSON Schema validation against contracts"
+    },
+    "validation_state": "candidate (deliberately non-activating; no runtime execution without explicit approval)",
+    "lifecycle": "Draft (not Production)",
+    "trust_model": "Schema validation, integrity digest, evidence_refs and authority_refs linking",
+    "production_gating": "validation_state='candidate' means non-activating; must be explicitly promoted to Production",
+    "disposition": "INSTITUTIONAL RESPONSIBILITY MAPPING: defines contracts and evidence schema for end-to-end auditing"
+  },
+  "cross_component_analysis": {
+    "narrow_reuse_pattern": {
+      "observation": "Checkpoint provider (component 5) demonstrates NARROW REUSE: does not depend on governance layers",
+      "benefit": "Framework-agnostic; reusable outside Codex",
+      "risk": "Typed unavailable-provider boundary: checkpoint can be accessed without authority check if caller forgets",
+      "mitigation": "Add optional authority_context parameter to checkpoint methods; fail-closed if not provided"
+    },
+    "production_activation_gates": {
+      "gate_1_authority": "require_human_approval=True (default) blocks ALL; human_approved=False (default) \u2192 authorized=False",
+      "gate_2_approval": "destructive ops require has_owner_emergency_pre_auth=True; auto-approval requires 5 guards + 1 of 4 conditions",
+      "gate_3_evidence": "pattern_enabled() returns False if breaker.disabled=True (circuit breaker trips)",
+      "combined_effect": "All three gates DENY by default unless explicitly permitted by caller + stakeholder + system conditions"
+    },
+    "idempotency_across_layers": {
+      "authority_level": "make_idempotency_key(identity_parts) \u2192 SHA256 hash; stable on same inputs",
+      "evidence_level": "event_id in _event_ids set; record_event returns False if duplicate",
+      "approval_level": "request_id UUID auto-generated; NO deduplication on resubmit (GAP: each submit creates new request)",
+      "institutional_level": "record() returns id=schema:digest(payload); deterministic on same payload"
+    },
+    "persistence_and_audit": {
+      "durable_artifacts": "evidence_store .jsonl on disk; institutional core JSON records",
+      "in_memory_only": "RBAC audit_logger._data dict; ApprovalService _requests dict; CircuitBreaker _disabled state",
+      "persistence_gaps": [
+        "RBAC decisions not recorded to evidence_store",
+        "ApprovalService decisions not recorded to evidence_store",
+        "CircuitBreaker state lost on process restart"
+      ]
+    }
+  },
+  "test_coverage_assessment": {
+    "authority": {
+      "file": "tests/self_improvement/test_authority.py",
+      "count": 8,
+      "areas": [
+        "paths",
+        "diff_size",
+        "environment_secrets",
+        "human_approval",
+        "idempotency_key"
+      ],
+      "type": "mechanics_proof (no production scenarios)"
+    },
+    "rbac": {
+      "files": [
+        "tests/test_governance_rbac.py"
+      ],
+      "count": "10+ test classes",
+      "areas": [
+        "role_enums",
+        "resource_types",
+        "permission_matrix",
+        "enforcer",
+        "audit_logging"
+      ],
+      "type": "mechanics_proof (isolated from evidence_store)"
+    },
+    "approval": {
+      "files": [
+        "tests/test_governance_approval_service.py",
+        "tests/governance/test_approval_engine.py"
+      ],
+      "count": "20+ test methods",
+      "areas": [
+        "state_machine",
+        "sla_escalation",
+        "auto_approval_conditions",
+        "audit_codes"
+      ],
+      "type": "mechanics_proof (isolated from rbac)"
+    },
+    "evidence": {
+      "files": [
+        "tests/checkpoint/test_*.py"
+      ],
+      "count": "10+ tests",
+      "areas": [
+        "circuit_breaker",
+        "idempotency",
+        "audit_trail"
+      ],
+      "type": "mechanics_proof (checkpoint integration only)"
+    },
+    "integration": {
+      "observation": "NO cross-layer integration test found (authority \u2192 approval \u2192 evidence)"
+    }
+  },
+  "unknowns_and_contradictions": {
+    "unknown_1": "RoleManager and PermissionValidator implementations in src/aries_serpent_core/authz/ not fully examined",
+    "unknown_2": "CircuitBreaker state not persisted; lost on restart",
+    "unknown_3": "ApprovalService auto-approval NOT gated by RBAC; bypasses check_permission",
+    "contradiction_1": "authority.idempotency_key optional in constructor but used in decision; when is it set by caller?",
+    "contradiction_2": "approval_service line 301: 'if escalations_remaining >= 0: return False' guards pass when escalations REMAINING; auto-approve only if EXHAUSTED (logic correct but confusing)",
+    "gap_1": "human_approved decision has no expiry; once approved, permission is eternal",
+    "gap_2": "approval_service auto-approval creates governance review ticket as stub (line 417-423); not actually created"
+  },
+  "design_recommendations": [
+    {
+      "priority": 1,
+      "id": "R1_mandatory_evidence_recording",
+      "title": "Evidence Recording for All Authorization Decisions",
+      "description": "Every authority, rbac, and approval decision must be recorded to evidence_store.record(kind='...'). Implement via decorator or context manager.",
+      "rationale": "Current audit_logger and decisions lists are in-memory only; no durable trail for compliance"
+    },
+    {
+      "priority": 2,
+      "id": "R2_idempotency_across_layers",
+      "title": "Idempotency Deduplication at Approval Layer",
+      "description": "Extend AuthorityEnvelope.evaluate() to return idempotency_key. Use this in ApprovalRequest to deduplicate on (policy_code, requester_id, idempotency_key) triple.",
+      "rationale": "Current approval_service creates new request on every submit; no deduplication at submission"
+    },
+    {
+      "priority": 3,
+      "id": "R3_checkpoint_authority_guard",
+      "title": "Checkpoint Provider Authority Context Guard",
+      "description": "Add optional authority_context parameter to checkpoint save/load methods. Verify authority.evaluate() returned authorized=True before proceeding.",
+      "rationale": "Narrow reuse pattern creates boundary; checkpoint can be accessed without governance check if caller forgets"
+    },
+    {
+      "priority": 4,
+      "id": "R4_circuit_breaker_persistence",
+      "title": "Persist CircuitBreaker State to Evidence Store",
+      "description": "Record CircuitBreaker state changes to evidence_store as auxiliary records (kind='circuit_breaker_state'). Load on EvidenceStore.__post_init__().",
+      "rationale": "Current state lost on restart; no recovery"
+    },
+    {
+      "priority": 5,
+      "id": "R5_integration_tests",
+      "title": "End-to-End Integration Test",
+      "description": "Test chain: authority.evaluate() \u2192 rbac_enforcer.check_permission() \u2192 approval_service.submit_request() \u2192 evidence_store.record_event()",
+      "rationale": "No integration test exists; each layer tested in isolation"
+    },
+    {
+      "priority": 6,
+      "id": "R6_auto_approval_rbac_gate",
+      "title": "Auto-Approval RBAC Enforcement",
+      "description": "In ApprovalService._apply_auto_approval, add check that SYSTEM_AUTO_APPROVAL has required RBAC permissions. Fail-closed if check fails.",
+      "rationale": "Auto-approval currently bypasses RBAC; security risk"
+    }
+  ],
+  "institutional_invariant": "No autonomous action shall execute without: (1) authorized=True from authority.evaluate(), (2) permission granted from rbac_enforcer.check_permission(), (3) approval state = APPROVED or ESCALATED_AUTO_APPROVED with 5 guards + 1 condition met, (4) evidence recorded in durable store. Default behavior DENIES at all gates.",
+  "disposition_matrix": {
+    "authority_envelope": "RETAIN fail-closed design, explicit reason tuples, idempotency via hash; ENHANCE with time-based expiry on idempotency_key; COMPOSE with evidence_store.record(kind='authority_decision')",
+    "rbac_enforcer": "RETAIN permission matrix as single source of truth; ENHANCE with durable audit logging via evidence_store; COMPOSE with approval_service for APPROVE action gating",
+    "approval_service": "RETAIN 7-state machine and escalation logic; ENHANCE with idempotency deduplication and RBAC gating on auto-approval; COMPOSE with evidence_store.record_outcome()",
+    "evidence_store": "RETAIN JSONL persistence and circuit breaker pattern; ENHANCE with CircuitBreaker state persistence to .jsonl; COMPOSE integration with institutional_core for schema validation",
+    "checkpoint_provider": "RETAIN framework agnosticism and protocol design; ENHANCE with optional authority_context guard; COMPOSE with evidence_store for checkpoint load audit trail",
+    "institutional_core": "RETAIN schema validation and candidate state; ENHANCE integration points with authority \u2192 rbac \u2192 approval \u2192 evidence chain; ADD responsibility mapping for institutional roles"
+  }
+}

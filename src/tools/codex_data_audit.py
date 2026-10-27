@@ -15,14 +15,28 @@ from __future__ import annotations
 
 import argparse
 import json
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from pathlib import Path
+from typing import TypedDict
 
 
 @dataclass
 class RootSummary:
     root: str
     num_files: int
+    total_bytes: int
+
+
+class RootSummaryPayload(TypedDict):
+    root: str
+    num_files: int
+    total_bytes: int
+
+
+class DataAuditReport(TypedDict):
+    roots: list[RootSummaryPayload]
+    total_roots: int
+    total_files: int
     total_bytes: int
 
 
@@ -40,23 +54,26 @@ def _walk_root(root: Path) -> RootSummary:
     return RootSummary(root=str(root), num_files=num_files, total_bytes=total_bytes)
 
 
-def build_report(roots: list[Path]) -> dict[str, object]:
+def build_report(roots: list[Path]) -> DataAuditReport:
     summaries: list[RootSummary] = []
     for r in roots:
         summaries.append(_walk_root(r))
     return {
-        "roots": [asdict(s) for s in summaries],
+        "roots": [
+            {"root": s.root, "num_files": s.num_files, "total_bytes": s.total_bytes}
+            for s in summaries
+        ],
         "total_roots": len(summaries),
         "total_files": sum(s.num_files for s in summaries),
         "total_bytes": sum(s.total_bytes for s in summaries),
     }
 
 
-def _write_json(path: Path, report: dict[str, object]) -> None:
+def _write_json(path: Path, report: DataAuditReport) -> None:
     path.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(path: Path, report: dict[str, object]) -> None:
+def _write_markdown(path: Path, report: DataAuditReport) -> None:
     roots = report.get("roots", []) or []
     total_files = report.get("total_files", 0)
     total_bytes = report.get("total_bytes", 0)

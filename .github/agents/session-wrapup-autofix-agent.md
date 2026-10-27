@@ -25,34 +25,33 @@ tools:
 ## 🎯 Purpose
 
 The **Session Wrap-Up Auto-Fix Agent** is a specialized GitHub Copilot custom agent
-that automatically resolves the most frequent Cognitive Pre-flight gate failures:
+that can resolve relevant Cognitive Pre-flight bookkeeping failures when
+invoked with authorization:
 
 - **REQ-4**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit
 - **REQ-5**: `CHANGELOG.md` not updated in last commit
 
-It is triggered when **Agent Token Delegation** is enabled (`COPILOT_AGENT_AUTH_ENABLED`)
-and the `cognitive-preflight` job detects that either file was not touched.
+The workflow may invoke the helper when `cognitive-preflight` detects either
+file needs an update. Local flags, checkboxes and this profile do not grant
+GitHub writes. Direct/no-PR tasks do not require shared bookkeeping.
 
 ---
 
 ## 🚀 Activation
 
-### Automatic Activation (primary)
-The agent is invoked automatically by `agent-auth-delegation.yml` when:
-1. `COPILOT_AGENT_AUTH_ENABLED` checkbox is checked in the PR description
-2. The `cognitive-preflight` job's REQ-4 or REQ-5 check fails
+### Workflow integration
+`agent-auth-delegation.yml` contains helper invocations for relevant PR
+bookkeeping. A script invocation is not proof this custom agent was dispatched;
+record only actual utilization and preserve real review/execution controls.
 
 ### Manual Activation
 ```bash
 @copilot Use the session-wrapup-autofix-agent to fix accountability report and CHANGELOG
 ```
 
-Or directly:
+For authorized local diagnosis without a PR:
 ```bash
-python scripts/ci/session_wrapup_autofix.py \
-    --pr-number <PR_NUMBER> \
-    --fix-all \
-    --sha $(git rev-parse --short HEAD)
+python scripts/ci/session_wrapup_autofix.py --check --no-pr --direct-execution
 ```
 
 ---
@@ -86,7 +85,7 @@ python scripts/ci/session_wrapup_autofix.py \
 │  │  REQ-6: Timebox acknowledgment ✅                             │ │
 │  │  REQ-7: Commit count warning ✅                               │ │
 │  │  REQ-8: Memory system soft gate ✅                            │ │
-│  │  REQ-9: 5-pass self-review ✅                                 │ │
+│  │  Relevant syntax/metadata diagnostics (not model-review proof) │ │
 │  └─────────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -101,7 +100,7 @@ python scripts/ci/session_wrapup_autofix.py \
 | Feature | Description |
 |---------|-------------|
 | Idempotent | Never creates duplicate entries |
-| Offline | No network calls; reads local files only |
+| Local/no-PR checks | No GitHub calls; PR/approval modes may use GitHub APIs or CLI |
 | Audit trail | All auto-entries tagged `[auto-generated]` |
 | Dry-run | `--dry-run` shows changes without writing |
 | Detection | `--check` mode returns exit code for CI use |
@@ -128,7 +127,7 @@ python scripts/ci/session_wrapup_autofix.py \
 | **REQ-5 auto-fix** | Ensures `CHANGELOG.md` has `## [Unreleased]` with current session entry |
 | **Duplicate detection** | Checks for existing auto-entry for the same PR number before writing |
 | **Branch resolution** | Resolves PR branch name via `gh pr view` when event context is insufficient |
-| **Self-healing commit** | Commits and pushes without triggering infinite CI loop (`[skip ci]`) |
+| **Workflow publication** | Separate authorization and actual platform controls apply; local preparation does not imply a push |
 | **Dry-run mode** | Previews changes without modifying files |
 | **Check mode** | Reports compliance status for external callers |
 
@@ -141,12 +140,12 @@ python scripts/ci/session_wrapup_autofix.py \
 | Script exists | `scripts/ci/session_wrapup_autofix.py` | ✅ |
 | Workflow step exists | `agent-auth-delegation.yml:autofix_docs` | ✅ |
 | Python 3.12 compatible | All f-strings, type hints use >=3.12 syntax | ✅ |
-| No network calls | Only `subprocess.run(["git", ...])` and file I/O | ✅ |
+| Network behavior | PR/approval modes use GitHub APIs/CLI; local/no-PR check does not require them | Mode-dependent |
 | CODEX_MASTER_KEY used | `env: GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || ... }}` | ✅ |
 | `.gitignore` safe | Only writes tracked files (`.md`) | ✅ |
 | Idempotent | `_report_already_has_auto_entry()` + `_changelog_has_unreleased()` checks | ✅ |
 | `[skip ci]` commit | Prevents infinite workflow loop | ✅ |
-| Policy compliant | No deferral language in auto-generated entries | ✅ |
+| Honest utilization | No invented fallback agents; accept actual IDs or explicit direct execution | Required |
 
 ---
 
@@ -154,7 +153,7 @@ python scripts/ci/session_wrapup_autofix.py \
 
 | Document | Relevance |
 |----------|-----------|
-| `.codex/CODEBASE_AGENCY_POLICY.md` | Master policy (§8 Self-Review, §10 Documentation) |
+| `.codex/CODEBASE_AGENCY_POLICY.md` | Current scope, validation and completion contract |
 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Target file for REQ-4 |
 | `.codex/patterns/ci_failure_patterns.yaml` | Pattern #20: `accountability_report_not_updated` |
 | `.github/workflows/agent-auth-delegation.yml` | Host workflow |

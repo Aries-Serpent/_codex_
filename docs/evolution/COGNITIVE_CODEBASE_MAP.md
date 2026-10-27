@@ -48,7 +48,7 @@ graph TD
  subgraph L6["L6: Task Prosecution (Execution)"]
  T1["src/codex/ (core library)"]
  T2["cognitive_app/ (dashboard)"]
- T3["tests/ (40500+)"]
+ T3["tests/ (41000+ estimated inventory)"]
  end
 
  L1 -->|"Ethics flow down"| L2
@@ -138,7 +138,7 @@ graph TD
 | **GitHub Workflows** | `.github/workflows/` | 92/100 | L5 | 49 workflows, auto-fix PR check | Parallel decomposition |
 | **Cognitive Brain Data** | `.codex/cognitive_brain/` | 95/100 | L3 | 100+ files, 31 status snapshots | Query interface |
 | **Plans** | `.codex/plans/` | 94/100 | L2 | 95 plan files, phase tracking | Completion automation |
-| **Tests** | `tests/` | 93/100 | L5 | 21,500+ tests, 10.7% coverage | Property-based tests |
+| **Tests** | `tests/` | 93/100 | L5 | 41000+ estimated test inventory, 75% threshold | Property-based tests |
 | **Configuration** | `conf/`, `configs/` | 90/100 | L5 | Hydra, dual-path fallback | Schema validation |
 | **MkDocs** | `mkdocs.yml` | 91/100 | L6 | Mermaid, search, dark mode | Nav auto-generation |
 

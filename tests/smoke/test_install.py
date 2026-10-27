@@ -12,8 +12,13 @@ Usage:
 import importlib
 import subprocess
 import sys
+import tomllib
+from importlib.metadata import PackageNotFoundError, metadata, version
+from pathlib import Path
 
 import pytest
+from packaging.requirements import Requirement
+from packaging.utils import canonicalize_name
 
 
 class TestInstallation:
@@ -66,20 +71,29 @@ class TestInstallation:
     @pytest.mark.smoke
     def test_dependency_versions(self):
         """Verify critical dependencies are installed with correct versions."""
-        import pkg_resources
-
-        critical_deps = {
-            "click": ">=8.1",
-            "hydra-core": "==1.3.2",
-            "pydantic": ">=2.4",
-            "omegaconf": ">=2.3",
+        pyproject = Path(__file__).resolve().parents[2] / "pyproject.toml"
+        with pyproject.open("rb") as manifest:
+            metadata = tomllib.load(manifest)
+        requirements = {
+            canonicalize_name(requirement.name): requirement
+            for dependency in metadata["project"]["dependencies"]
+            for requirement in (Requirement(dependency),)
         }
 
-        for package, version_spec in critical_deps.items():
+        for package in ("click", "hydra-core", "pydantic", "omegaconf"):
+            assert package in requirements, f"Missing critical dependency: {package}"
+            requirement = requirements[package]
+            if requirement.marker and not requirement.marker.evaluate():
+                continue
             try:
-                pkg_resources.require(f"{package}{version_spec}")
-            except Exception as e:
-                pytest.fail(f"Dependency check failed for {package}{version_spec}: {e}")
+                installed_version = version(requirement.name)
+            except PackageNotFoundError as e:
+                pytest.fail(f"Dependency check failed for {requirement}: {e}")
+            assert installed_version in requirement.specifier, (
+                f"Dependency check failed for {requirement}: "
+                f"installed version {installed_version} does not satisfy "
+                f"{requirement.specifier}"
+            )
 
     @pytest.mark.smoke
     def test_no_import_errors(self):
@@ -97,9 +111,7 @@ class TestInstallation:
             import_warnings = [
                 warning for warning in w if issubclass(warning.category, ImportWarning)
             ]
-            assert (
-                len(import_warnings) == 0
-            ), f"Import warnings detected: {import_warnings}"
+            assert len(import_warnings) == 0, f"Import warnings detected: {import_warnings}"
 
     @pytest.mark.smoke
     def test_pip_check_passes(self):
@@ -132,17 +144,15 @@ class TestInstallation:
 
         # Verify import_ndjson submodule can be imported
         try:
-            import_ndjson_mod = importlib.import_module(
-                "aries_serpent_core.logging.import_ndjson"
-            )
-            assert hasattr(import_ndjson_mod, "main"), (
-                "aries_serpent_core.logging.import_ndjson missing main function (entry point requirement)"
-            )
+            import_ndjson_mod = importlib.import_module("aries_serpent_core.logging.import_ndjson")
+            assert hasattr(
+                import_ndjson_mod, "main"
+            ), "aries_serpent_core.logging.import_ndjson missing main function (entry point requirement)"
 
             # Verify main is callable (entry point must be callable)
-            assert callable(import_ndjson_mod.main), (
-                "aries_serpent_core.logging.import_ndjson.main is not callable"
-            )
+            assert callable(
+                import_ndjson_mod.main
+            ), "aries_serpent_core.logging.import_ndjson.main is not callable"
         except ImportError as e:
             pytest.fail(f"Failed to import import_ndjson submodule: {e}")
 
@@ -185,9 +195,11 @@ class TestEntryPointsAvailability:
                 text=True,
             )
             # Entry point may not have --version, but should be callable
-            assert result.returncode in [0, 1, 2], (
-                f"codex-smoke unexpected return code: {result.returncode}"
-            )
+            assert result.returncode in [
+                0,
+                1,
+                2,
+            ], f"codex-smoke unexpected return code: {result.returncode}"
         except FileNotFoundError:
             pytest.skip("codex-smoke entry point not installed")
 
@@ -213,7 +225,7 @@ class TestProfileSpecificFeatures:
     @pytest.mark.smoke
     def test_core_dependencies_available(self):
         """Verify core-only and extended core dependencies are installed.
-        
+
         NOTE: These dependencies are present in the base + [core] profiles.
         Some (like libcst, parso) are already in base, listed here for completeness.
         This test validates they're all available without runtime/ML dependencies.
@@ -266,28 +278,19 @@ class TestPackageMetadata:
     @pytest.mark.smoke
     def test_package_version(self):
         """Verify package version is properly set."""
-        try:
-            import pkg_resources
-
-            version = pkg_resources.get_distribution("codex-ml").version
-            assert version, "Package version is empty"
-            # Version format: major.minor.patch
-            parts = version.split(".")
-            assert len(parts) >= 3, f"Invalid version format: {version}"
-        except Exception as e:
-            pytest.fail(f"Failed to get package version: {e}")
+        installed_version = version("codex-ml")
+        assert installed_version, "Package version is empty"
+        parts = installed_version.split(".")
+        assert len(parts) >= 3, f"Invalid version format: {installed_version}"
 
     @pytest.mark.smoke
     def test_package_has_license(self):
         """Verify package metadata includes license."""
-        try:
-            import pkg_resources
-
-            dist = pkg_resources.get_distribution("codex-ml")
-            # Check if license file exists or is in metadata
-            assert dist.project_name == "codex-ml", f"Unexpected project name: {dist.project_name}"
-        except Exception as e:
-            pytest.fail(f"Failed to verify package metadata: {e}")
+        package_metadata = metadata("codex-ml")
+        assert package_metadata["Name"] == "codex-ml"
+        assert (
+            package_metadata.get("License-Expression") or package_metadata.get("License")
+        ) == "MIT"
 
 
 if __name__ == "__main__":

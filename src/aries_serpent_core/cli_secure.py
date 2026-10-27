@@ -9,11 +9,12 @@ import html
 import re
 from urllib.parse import quote
 
-
-_EVENT_HANDLER_RE = re.compile(r'''(?is)\s+on[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)''')
-_DANGEROUS_URL_RE = re.compile(r'''(?is)\s+(?:src|href|action)\s*=\s*(?:"\s*(?:javascript|data|vbscript)\s*:[^"]*"|'\s*(?:javascript|data|vbscript)\s*:[^']*'|\s*(?:javascript|data|vbscript)\s*:[^\s>]+)''')
-_DANGEROUS_SCHEME_RE = re.compile(r'''(?is)\b(?:javascript|data|vbscript)\s*:''')
-_ALERT_CALL_RE = re.compile(r'''(?is)\balert\s*\([^)]*\)''')
+_EVENT_HANDLER_RE = re.compile(r"""(?is)\s+on[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)""")
+_DANGEROUS_URL_RE = re.compile(
+    r"""(?is)\s+(?:src|href|action)\s*=\s*(?:"\s*(?:javascript|data|vbscript)\s*:[^"]*"|'\s*(?:javascript|data|vbscript)\s*:[^']*'|\s*(?:javascript|data|vbscript)\s*:[^\s>]+)"""
+)
+_DANGEROUS_SCHEME_RE = re.compile(r"""(?is)\b(?:javascript|data|vbscript)\s*:""")
+_ALERT_CALL_RE = re.compile(r"""(?is)\balert\s*\([^)]*\)""")
 
 
 def _strip_active_payloads(value: str) -> str:

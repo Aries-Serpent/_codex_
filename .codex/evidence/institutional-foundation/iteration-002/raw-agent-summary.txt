@@ -1,0 +1,247 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║           INSTITUTIONAL AUTHORITY ECOLOGY - INVESTIGATION SUMMARY            ║
+║                       Codex Trust System Architecture                        ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+INVESTIGATION SCOPE
+═══════════════════════════════════════════════════════════════════════════════
+• Working Directory: /home/runner/work/_codex_/_codex_
+• Methodology: Source declarations only (no runtime observation)
+• Bounded Cohort: 6 components (~2400 LOC examined)
+• Approach: Read-only source inspection; no test execution or file edits
+
+COMPONENTS EXAMINED
+═══════════════════════════════════════════════════════════════════════════════
+1. AuthorityEnvelope
+   └─ src/codex/cognitive_brain/authority.py (124 lines)
+   └─ Fail-closed execution boundary gate
+   └─ Primary Gate: require_human_approval=True denies ALL by default
+
+2. RBACEnforcer
+   └─ src/aries_serpent_core/governance/rbac.py (593 lines)
+   └─ Role-based access control with exhaustive permission matrix
+   └─ Primary Gate: PermissionDeniedError raised on failed check_permission
+
+3. ApprovalService
+   └─ src/aries_serpent_core/governance/approval_service.py (663 lines)
+   └─ Time-gated escalation workflow with 7-state machine
+   └─ Primary Gates: destructive ops require pre-auth; auto-approval requires 5 guards + 1 of 4 conditions
+
+4. EvidenceStore
+   └─ src/codex/cognitive_brain/evidence_store.py (265 lines)
+   └─ Durable JSONL audit trail with circuit-breaker pattern state
+   └─ Primary Gate: pattern_enabled() returns False if breaker.disabled (fail-closed)
+
+5. CheckpointProvider
+   └─ src/codex_ml/utils/checkpointing.py (excerpt, 200+ lines)
+   └─ Framework-agnostic state serialization (narrow reuse pattern)
+   └─ RISK: No governance knowledge; typed unavailable-provider boundary
+
+6. InstitutionalCore
+   └─ src/codex/institutional/core.py (594 lines)
+   └─ Schema validation and evidence record composition
+   └─ Responsibility mapping for institutional audit contracts
+
+═══════════════════════════════════════════════════════════════════════════════
+
+FOUR-LAYER FAIL-CLOSED ARCHITECTURE
+═════════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │ Layer 1: AUTHORITY ENVELOPE (Policy Boundary)                        │
+  │  • Enforces: path allowlists/denylists, diff size, environment       │
+  │  • Default: require_human_approval=True BLOCKS ALL execution         │
+  │  • Gate: human_approved must be explicitly True                      │
+  ├──────────────────────────────────────────────────────────────────────┤
+  │ Layer 2: RBAC ENFORCER (Subject-Level Access Control)                │
+  │  • Enforces: 7 roles × 8 resources × 8 actions exhaustive matrix    │
+  │  • Default: PermissionDeniedError raised on denied check             │
+  │  • Gate: role must have explicit permission for action+resource      │
+  ├──────────────────────────────────────────────────────────────────────┤
+  │ Layer 3: APPROVAL SERVICE (Time-Gated Workflow)                      │
+  │  • Enforces: SLA escalation, auto-approval fallback with 5 guards    │
+  │  • Default: destructive ops require has_owner_emergency_pre_auth     │
+  │  • Gate: status must be APPROVED or ESCALATED_AUTO_APPROVED          │
+  ├──────────────────────────────────────────────────────────────────────┤
+  │ Layer 4: EVIDENCE STORE (Persistent Audit Trail)                     │
+  │  • Enforces: circuit-breaker pattern disabling via .jsonl persistence│
+  │  • Default: pattern_enabled() returns False if breaker.disabled      │
+  │  • Gate: pattern not disabled; records persisted to durable store    │
+  └──────────────────────────────────────────────────────────────────────┘
+
+PRODUCTION ACTIVATION STATUS
+═════════════════════════════════════════════════════════════════════════════
+
+  ALL GATES DENY BY DEFAULT
+  ✗ Authorization: BLOCKED (require_human_approval=True)
+  ✗ RBAC: BLOCKED (no role assigned)
+  ✗ Approval: BLOCKED (no APPROVED state)
+  ✗ Evidence: BLOCKED (circuit breaker may disable)
+
+  TO ALLOW EXECUTION, ALL THREE MUST PASS:
+    1. (human_approved=True) OR (5 guards + 1 auto-approval condition met)
+    2. RBAC permission check passes
+    3. Pattern not disabled by circuit breaker
+
+IDEMPOTENCY BINDING ACROSS LAYERS
+═════════════════════════════════════════════════════════════════════════════
+
+  • Authority Level:       SHA256(identity_parts) → stable idempotency_key
+  • Evidence Level:        event_id in _event_ids set → deduplication
+  • Approval Level:        request_id UUID (NO deduplication - GAP FOUND)
+  • Institutional Level:   schema:digest(payload) → deterministic record id
+
+NARROW REUSE / TYPED UNAVAILABLE-PROVIDER BOUNDARY
+═════════════════════════════════════════════════════════════════════════════
+
+  PATTERN OBSERVED:
+    Checkpoint provider (src/codex_ml/utils/checkpointing.py) exhibits
+    NARROW REUSE: does NOT import Authority, RBAC, Approval, or Evidence.
+
+  RATIONALE:
+    Framework agnosticism; reusable outside Codex ecosystem.
+
+  RISK:
+    Typed unavailable-provider boundary at checkpoint → governance interface.
+    Checkpoint can be accessed without authority check if caller forgets.
+
+  MITIGATION:
+    Add optional authority_context parameter to checkpoint save/load.
+
+PERSISTENCE AND AUDIT
+═════════════════════════════════════════════════════════════════════════════
+
+  DURABLE (Persisted to Disk):
+    • evidence_store .jsonl file (.codex/improvement/evidence.jsonl)
+    • institutional records (schema-validated JSON)
+
+  IN-MEMORY ONLY (Lost on Restart):
+    • RBAC audit_logger._data dict
+    • ApprovalService _requests dict
+    • CircuitBreaker _disabled state
+
+  PERSISTENCE GAPS:
+    • RBAC decisions NOT recorded to evidence_store
+    • Approval decisions NOT recorded to evidence_store
+    • CircuitBreaker state NOT persisted (recovery mechanism missing)
+
+TEST COVERAGE ASSESSMENT
+═════════════════════════════════════════════════════════════════════════════
+
+  Authority:     8 tests (mechanics proof only)
+  RBAC:          10+ test classes (isolated from evidence)
+  Approval:      20+ test methods (isolated from RBAC)
+  Evidence:      10+ tests (checkpoint integration)
+  ────────────────────────────────
+  Integration:   ZERO cross-layer tests found
+                 (authority → rbac → approval → evidence chain untested)
+
+UNKNOWNS AND CONTRADICTIONS
+═════════════════════════════════════════════════════════════════════════════
+
+  UNKNOWN:
+    • RoleManager and PermissionValidator internals not examined
+    • CircuitBreaker state not persisted; recovery undefined
+    • Auto-approval NOT gated by RBAC (security risk)
+
+  CONTRADICTION:
+    • authority.idempotency_key optional in constructor but used in decision
+    • approval_service line 301 logic guard confusing (correct but unclear)
+
+  GAPS:
+    • human_approved decision has no expiry (eternal permission)
+    • approval_service governance review ticket created as stub only
+    • no cascade on revoke_role (other roles not cleaned up)
+
+═════════════════════════════════════════════════════════════════════════════
+
+DESIGN RECOMMENDATIONS (Priority Order)
+═════════════════════════════════════════════════════════════════════════════
+
+  R1 (PRIORITY 1): MANDATORY EVIDENCE RECORDING
+     Every authorization decision must record to evidence_store.record(kind=...).
+     Current audit is in-memory only; no durable trail for compliance.
+
+  R2 (PRIORITY 2): IDEMPOTENCY DEDUPLICATION AT APPROVAL LAYER
+     Extend AuthorityEnvelope.evaluate() to return idempotency_key.
+     Use in ApprovalService to deduplicate on (policy_code, requester_id, key).
+
+  R3 (PRIORITY 3): CHECKPOINT AUTHORITY GUARD
+     Add optional authority_context parameter to checkpoint save/load methods.
+     Fail-closed if authority.evaluate() not called first.
+
+  R4 (PRIORITY 4): CIRCUIT BREAKER PERSISTENCE
+     Persist CircuitBreaker state to evidence_store as kind='circuit_breaker_state'.
+     Load on EvidenceStore.__post_init__() to recover on restart.
+
+  R5 (PRIORITY 5): END-TO-END INTEGRATION TEST
+     Test chain: authority → rbac → approval → evidence with consistency checks.
+
+  R6 (PRIORITY 6): AUTO-APPROVAL RBAC ENFORCEMENT
+     In ApprovalService._apply_auto_approval, verify SYSTEM_AUTO_APPROVAL has
+     required RBAC permissions. Fail-closed if check fails.
+
+═════════════════════════════════════════════════════════════════════════════
+
+INSTITUTIONAL INVARIANT (Security Contract)
+═════════════════════════════════════════════════════════════════════════════
+
+  NO autonomous action shall execute without:
+
+    1. authorized=True from AuthorityEnvelope.evaluate()
+    2. permission granted from RBACEnforcer.check_permission()
+    3. approval state = APPROVED or ESCALATED_AUTO_APPROVED
+       (with 5 guards + 1 condition for auto-approval)
+    4. evidence recorded in durable store (evidence_store .jsonl)
+
+  DEFAULT BEHAVIOR: DENY at all gates unless explicitly permitted.
+
+COMPONENT DISPOSITION MATRIX
+═════════════════════════════════════════════════════════════════════════════
+
+  AuthorityEnvelope:
+    RETAIN:  fail-closed design, explicit reason tuples, idempotency via hash
+    ENHANCE: time-based expiry on idempotency_key
+    COMPOSE: link with evidence_store.record(kind='authority_decision')
+
+  RBACEnforcer:
+    RETAIN:  permission matrix as single source of truth, role hierarchy
+    ENHANCE: persist audit_logger to evidence_store
+    COMPOSE: integrate with approval_service for APPROVE action gating
+
+  ApprovalService:
+    RETAIN:  7-state machine, escalation logic, 4 auto-approval conditions
+    ENHANCE: idempotency deduplication, RBAC gating on auto-approval
+    COMPOSE: bind to evidence_store.record_outcome()
+
+  EvidenceStore:
+    RETAIN:  JSONL persistence, circuit breaker pattern disabling
+    ENHANCE: persist CircuitBreaker state to .jsonl
+    COMPOSE: integrate with institutional_core for schema validation
+
+  CheckpointProvider:
+    RETAIN:  framework agnosticism, seed preservation
+    ENHANCE: optional authority_context guard parameter
+    COMPOSE: bind checkpoint load audit to evidence_store
+
+  InstitutionalCore:
+    RETAIN:  schema validation, candidate state (non-activating)
+    ENHANCE: integrate with authority → rbac → approval → evidence chain
+    COMPOSE: expose institutional responsibility mapping
+
+═══════════════════════════════════════════════════════════════════════════════
+
+OUTPUT ARTIFACT
+═════════════════════════════════════════════════════════════════════════════
+
+  Primary:      /tmp/institutional-resume/authority-ecology.json
+                • Detailed JSON semantic cohort with per-component analysis
+                • Trust models, inputs/outputs, dependencies, tests
+                • Unknowns, contradictions, recommendations
+
+  Supporting:   /tmp/institutional-resume/INVESTIGATION-SUMMARY.txt
+                • This file; high-level findings and contract
+
+STATUS: Investigation complete. No repository files edited or tests executed.
+
+═══════════════════════════════════════════════════════════════════════════════

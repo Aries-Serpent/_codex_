@@ -144,7 +144,26 @@ def import_session(
 ) -> int:
     """Import a single session's NDJSON log into SQLite.
 
-    Returns the number of new rows inserted.
+    Args:
+        session_id: Filename stem of the source ``<session_id>.ndjson`` and
+            the session ID to store on imported rows.
+        log_dir: Source directory as a ``Path``. Defaults to
+            ``CODEX_SESSION_LOG_DIR`` or ``.codex/sessions``.
+        db_path: SQLite path; otherwise use ``CODEX_LOG_DB_PATH``,
+            ``CODEX_DB_PATH``, then ``DEFAULT_LOG_DB``. Its parent directory
+            must already exist.
+
+    Returns:
+        Number of valid records processed beyond the stored watermark,
+        including updates to legacy rows, not only newly inserted rows.
+        Blank lines and malformed JSON are skipped. Sequence numbers refer
+        to physical source lines; the watermark advances to the last
+        processed record. Reimporting an unchanged file normally returns 0.
+
+    The database schema and indexes are initialized, changes committed, and
+    the connection closed. ``FileNotFoundError`` is raised for a missing
+    source. Other file/SQLite errors and invalid record values can propagate;
+    records are expected to be JSON objects with compatible timestamp values.
     """
 
     log_dir = (log_dir or _default_log_dir()).expanduser().resolve()
@@ -239,7 +258,14 @@ def import_session(
 
 
 def import_all(log_dir: Path | None = None, db_path: Path | str | None = None) -> dict[str, int]:
-    """Import all ``*.ndjson`` files found under ``log_dir``."""
+    """Import ``*.ndjson`` files in sorted filename order, without recursion.
+
+    Arguments follow :func:`import_session`; ``log_dir`` must be a ``Path``
+    when supplied. Return a mapping of filename stems to processed-record
+    counts. A missing/empty directory yields an empty mapping. Each session
+    commits independently: an error stops iteration but does not undo earlier
+    sessions' imports.
+    """
 
     log_dir = (log_dir or _default_log_dir()).expanduser().resolve()
     results: dict[str, int] = {}
@@ -250,6 +276,18 @@ def import_all(log_dir: Path | None = None, db_path: Path | str | None = None) -
 
 
 def main(argv: Iterable[str] | None = None) -> int:
+    """Dispatch a single-session or all-session import and return ``0``.
+
+    ``argv`` omits the executable name; ``None`` uses process arguments.
+    Exactly one of ``--session`` or ``--all`` is required. Errors propagate
+    (argument errors use argparse's ``SystemExit``); counts are not printed.
+
+    The current parser forwards ``--log-dir`` as a string while the import
+    helpers require a ``Path``. For a custom directory, call
+    ``import_session("S123", log_dir=Path("sessions"), db_path="logs.db")``
+    or :func:`import_all` directly; the CLI override currently raises
+    ``AttributeError``. Omitting it uses the normal directory default.
+    """
     parser = argparse.ArgumentParser(
         description="Import session NDJSON logs into session_events",
     )

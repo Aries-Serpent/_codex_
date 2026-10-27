@@ -137,7 +137,9 @@ class GitHubHTTPClient:
                 method=method,
             )
 
-            with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310 - URL is validated to api.github.com with a https-only allowlist
+            with urllib.request.urlopen(
+                req, timeout=timeout
+            ) as resp:  # nosec B310 - URL is validated to api.github.com with a https-only allowlist
                 response_body = resp.read().decode("utf-8")
                 if response_body:
                     return json.loads(response_body)

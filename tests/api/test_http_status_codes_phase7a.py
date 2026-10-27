@@ -59,20 +59,33 @@ def test_client(auth_components):
 def registered_user(auth_components, test_client):
     """Create a registered user."""
     _, _, auth = auth_components
+    # pragma: allowlist nextline secret - synthetic API fixture
     auth.register("testuser", "test@example.com", "SecurePass123!")
-    return {"username": "testuser", "password": "SecurePass123!", "email": "test@example.com"}
+    return {
+        "username": "testuser",
+        "password": "SecurePass123!",  # pragma: allowlist secret - synthetic fixture
+        "email": "test@example.com",
+    }  # pragma: allowlist secret - synthetic registered user
 
 
 @pytest.fixture
-def auth_token(test_client, registered_user):
-    """Get valid auth token."""
+def auth_tokens(test_client, registered_user):
+    """Require successful login and expose each token for its documented purpose."""
     response = test_client.post(
         "/auth/login",
-        json={"username": registered_user["username"], "password": registered_user["password"]},
+        json={
+            "username_or_email": registered_user["username"],
+            "password": registered_user["password"],
+        },
     )
-    if response.status_code == 200:
-        return response.json().get("access_token")
-    return None
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
+@pytest.fixture
+def auth_token(auth_tokens):
+    """Return the access token without hiding failed login as an empty fixture."""
+    return auth_tokens["access_token"]
 
 
 # ---------------------------------------------------------------------------
@@ -93,7 +106,10 @@ class TestStatus200OK:
         """Successful login should return 200."""
         response = test_client.post(
             "/auth/login",
-            json={"username": registered_user["username"], "password": registered_user["password"]},
+            json={
+                "username_or_email": registered_user["username"],
+                "password": registered_user["password"],
+            },
         )
         assert response.status_code == 200, "Response must not be empty"
 
@@ -102,12 +118,13 @@ class TestStatus200OK:
         response = test_client.get("/auth/csrf-token")
         assert response.status_code == 200, "Response must not be empty"
 
-    def test_refresh_token_returns_200(self, test_client, auth_token):
+    def test_refresh_token_returns_200(self, test_client, auth_tokens):
         """Token refresh should return 200."""
-        if auth_token:
-            response = test_client.post("/auth/refresh", json={"refresh_token": auth_token})
-            # May return 200 or 422 depending on token validity
-            assert response.status_code in [200, 422]
+        response = test_client.post(
+            "/auth/refresh", json={"refresh_token": auth_tokens["refresh_token"]}
+        )
+        assert response.status_code == 200
+        assert response.json()["access_token"]
 
     def test_get_request_valid_resource_returns_200(self, test_client):
         """Valid GET request should return 200."""
@@ -137,7 +154,7 @@ class TestStatus201Created:
             json={
                 "username": "newuser",
                 "email": "newuser@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic fixture
             },
         )
         assert response.status_code == 201, "Response must not be empty"
@@ -166,7 +183,11 @@ class TestStatus201Created:
         """Multiple registrations should each return 201."""
         response = test_client.post(
             "/auth/register",
-            json={"username": username, "email": email, "password": "SecurePass123!"},
+            json={
+                "username": username,
+                "email": email,
+                "password": "SecurePass123!",  # pragma: allowlist secret
+            },
         )
         assert response.status_code == 201, "Response must not be empty"
 
@@ -184,11 +205,13 @@ class TestStatus204NoContent:
         # Placeholder for actual delete endpoint
         assert True, "True is not valid"
 
-    def test_logout_returns_204(self, test_client, auth_token):
-        """Logout operation should return 204 or 200."""
-        response = test_client.post("/auth/logout", json={})
-        # May be 200 or 204
-        assert response.status_code in [200, 204]
+    def test_logout_returns_200(self, test_client, auth_tokens):
+        """Revoking a real session returns the documented response body."""
+        response = test_client.post(
+            "/auth/logout", json={"session_token": auth_tokens["session_token"]}
+        )
+        assert response.status_code == 200
+        assert response.json() == {"revoked": True}
 
     def test_successful_delete_no_body(self, test_client):
         """Delete response should have no body."""
@@ -207,28 +230,39 @@ class TestStatus204NoContent:
 class TestStatus400BadRequest:
     """Tests for 400 Bad Request responses."""
 
-    def test_login_invalid_credentials_returns_400(self, test_client):
-        """Invalid login credentials should return 400."""
+    def test_login_invalid_credentials_returns_401(self, test_client):
+        """Well-shaped but invalid login credentials return an authentication error."""
         response = test_client.post(
-            "/auth/login", json={"username": "nonexistent", "password": "wrongpass"}
+            "/auth/login",
+            json={
+                "username_or_email": "nonexistent",
+                "password": "wrongpass",  # pragma: allowlist secret - synthetic invalid credential
+            },  # pragma: allowlist secret - deliberately invalid credential
         )
-        assert response.status_code == 400, "Response must not be empty"
+        assert response.status_code == 401
 
-    def test_register_weak_password_returns_400(self, test_client):
-        """Weak password should return 400."""
+    def test_register_short_password_returns_422(self, test_client):
+        """Password length is checked by the request schema before registration."""
         response = test_client.post(
             "/auth/register",
-            json={"username": "weakpass", "email": "weak@example.com", "password": "weak"},
+            json={
+                "username": "weakpass",
+                "email": "weak@example.com",
+                "password": "weak",  # pragma: allowlist secret - synthetic invalid credential
+            },  # pragma: allowlist secret - deliberately invalid credential
         )
-        assert response.status_code == 400, "Response must not be empty"
+        assert response.status_code == 422
+        assert response.json()["detail"][0]["loc"][-1] == "password"
 
-    def test_register_invalid_email_returns_400(self, test_client):
-        """Invalid email should return 400."""
+    def test_register_invalid_email_returns_422(self, test_client):
+        """Invalid email is rejected by the request schema."""
         response = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": "bademail", "email": "not-an-email", "password": "SecurePass123!"},
         )
-        assert response.status_code == 400, "Response must not be empty"
+        assert response.status_code == 422
+        assert response.json()["detail"][0]["loc"][-1] == "email"
 
     def test_malformed_json_returns_400(self, test_client):
         """Malformed JSON should return 400."""
@@ -240,6 +274,7 @@ class TestStatus400BadRequest:
     @pytest.mark.parametrize("missing_field", ["username", "password", "email"])
     def test_missing_required_field_returns_400(self, test_client, missing_field):
         """Missing required field should return 400."""
+        # pragma: allowlist nextline secret - synthetic API fixture
         payload = {"username": "test", "password": "SecurePass123!", "email": "test@example.com"}
         del payload[missing_field]
         response = test_client.post("/auth/register", json=payload)
@@ -257,7 +292,7 @@ class TestStatus400BadRequest:
             json={
                 "username": 12345,  # Should be string
                 "email": "test@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         # FastAPI coerces or validates, may return 422 or 400
@@ -275,7 +310,7 @@ class TestStatus400BadRequest:
             json={
                 "username": "a" * 10000,
                 "email": "test@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         assert response.status_code in [400, 422]
@@ -394,6 +429,7 @@ class TestStatus409Conflict:
         # First registration succeeds
         first = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": "dupuser", "email": "dup@example.com", "password": "SecurePass123!"},
         )
         assert first.status_code == 201, "status_code is not valid"
@@ -401,6 +437,7 @@ class TestStatus409Conflict:
         # Duplicate registration should fail
         duplicate = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": "dupuser", "email": "dup2@example.com", "password": "SecurePass123!"},
         )
         assert duplicate.status_code == 400, "status_code is not valid"
@@ -409,12 +446,14 @@ class TestStatus409Conflict:
         """Duplicate email should return 409/400."""
         first = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": "user1", "email": "shared@example.com", "password": "SecurePass123!"},
         )
         assert first.status_code == 201, "status_code is not valid"
 
         duplicate = test_client.post(
             "/auth/register",
+            # pragma: allowlist nextline secret - synthetic API fixture
             json={"username": "user2", "email": "shared@example.com", "password": "SecurePass123!"},
         )
         assert duplicate.status_code == 400, "status_code is not valid"
@@ -450,24 +489,24 @@ class TestStatus422UnprocessableEntity:
             json={
                 "username": 123,  # Should be string
                 "email": "test@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
             },
         )
         assert response.status_code in [422, 400]
 
-    def test_invalid_enum_value_returns_422(self, test_client):
-        """Invalid enum value should return 422."""
+    def test_unknown_singular_role_preserves_default_roles(self, test_client):
+        """An unknown singular field cannot replace the documented roles list."""
         response = test_client.post(
             "/auth/register",
             json={
                 "username": "test",
                 "email": "test@example.com",
-                "password": "SecurePass123!",
-                "role": "invalid_role",  # If role is enum
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
+                "role": "invalid_role",
             },
         )
-        # May return 422 if validation fails
-        assert response.status_code in [422, 400]
+        assert response.status_code == 201
+        assert response.json()["roles"] == ["user"]
 
     def test_extra_unknown_field_returns_422(self, test_client):
         """Extra unknown field handling."""
@@ -476,7 +515,7 @@ class TestStatus422UnprocessableEntity:
             json={
                 "username": "test",
                 "email": "test@example.com",
-                "password": "SecurePass123!",
+                "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
                 "unknown_field": "value",
             },
         )
@@ -492,16 +531,20 @@ class TestStatus422UnprocessableEntity:
 class TestStatus500InternalServerError:
     """Tests for 500 Internal Server Error responses."""
 
-    def test_unhandled_exception_returns_500(self, test_client):
+    def test_unhandled_exception_returns_500(self, test_client, auth_components):
         """Unhandled exception should return 500."""
-        with patch("codex.api.auth_routes.Authenticator.register") as mock_register:
-            mock_register.side_effect = Exception("Unexpected error")
-            response = test_client.post(
+        with (
+            patch.object(
+                auth_components[2], "register", side_effect=RuntimeError("Unexpected error")
+            ),
+            TestClient(test_client.app, raise_server_exceptions=False) as error_client,
+        ):
+            response = error_client.post(
                 "/auth/register",
                 json={
                     "username": "test",
                     "email": "test@example.com",
-                    "password": "SecurePass123!",
+                    "password": "SecurePass123!",  # pragma: allowlist secret - synthetic API fixture
                 },
             )
             assert response.status_code == 500, "Response must not be empty"
@@ -552,7 +595,11 @@ class TestStatusCodeEdgeCases:
     def test_error_status_codes_include_error_details(self, test_client):
         """Error status codes include error details."""
         response = test_client.post(
-            "/auth/login", json={"username": "nonexistent", "password": "wrong"}
+            "/auth/login",
+            json={
+                "username_or_email": "nonexistent",
+                "password": "wrong",  # pragma: allowlist secret - synthetic invalid credential
+            },  # pragma: allowlist secret - deliberately invalid credential
         )
         if response.status_code >= 400:
             data = response.json()

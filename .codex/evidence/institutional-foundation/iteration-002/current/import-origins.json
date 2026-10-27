@@ -1,0 +1,12 @@
+{
+  "module_origin": "/tmp/institutional-resume/current/venv/lib/python3.12/site-packages/codex/institutional/core.py",
+  "sys_path": [
+    "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python312.zip",
+    "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12",
+    "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/lib-dynload",
+    "/tmp/institutional-resume/current/venv/lib/python3.12/site-packages"
+  ],
+  "resource_sha256": "95f7bac68873bb9af576515462fa31db5ba80bb51654e6f2f2c923037df3add7",
+  "resource_version": "1",
+  "source_assistance": false
+}

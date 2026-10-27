@@ -74,7 +74,7 @@ def prune_checkpoints(
     keep_every: int | None = None,
     max_epochs: int | None = None,
     dry_run: bool = False,
-) -> dict:
+) -> dict[str, object]:
     """
     Prune old epoch-* directories according to policy.
 

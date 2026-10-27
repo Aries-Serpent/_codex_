@@ -1,0 +1,15 @@
+Collecting hatchling==1.32.0
+  Using cached hatchling-1.32.0-py3-none-any.whl.metadata (3.9 kB)
+Requirement already satisfied: packaging>=24.2 in ./.venv_ci/lib/python3.12/site-packages (from hatchling==1.32.0) (26.3)
+Requirement already satisfied: pathspec>=0.10.1 in ./.venv_ci/lib/python3.12/site-packages (from hatchling==1.32.0) (1.1.1)
+Requirement already satisfied: pluggy>=1.0.0 in ./.venv_ci/lib/python3.12/site-packages (from hatchling==1.32.0) (1.7.0)
+Collecting tomlkit>=0.11.1 (from hatchling==1.32.0)
+  Using cached tomlkit-0.15.2-py3-none-any.whl.metadata (3.4 kB)
+Collecting trove-classifiers (from hatchling==1.32.0)
+  Using cached trove_classifiers-2026.9.21.13-py3-none-any.whl.metadata (2.4 kB)
+Using cached hatchling-1.32.0-py3-none-any.whl (78 kB)
+Using cached tomlkit-0.15.2-py3-none-any.whl (52 kB)
+Using cached trove_classifiers-2026.9.21.13-py3-none-any.whl (14 kB)
+Installing collected packages: trove-classifiers, tomlkit, hatchling
+
+Successfully installed hatchling-1.32.0 tomlkit-0.15.2 trove-classifiers-2026.9.21.13

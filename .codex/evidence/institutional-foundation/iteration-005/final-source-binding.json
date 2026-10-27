@@ -1,0 +1,62 @@
+{
+  "schema": "codex.institutional.source-binding-observation.v1",
+  "implementation_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+  "final_source_candidate": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+  "delta": [
+    "docs/assurance-review.rst"
+  ],
+  "delta_scope": "Documentation prose only; corrects initial SDK-only limitation after observed successful full base dependency installation. Python examples/runtime/tests/contract/fixture unchanged.",
+  "source_files": [
+    {
+      "path": "src/codex/institutional/assurance.py",
+      "sha256": "ba67ea4d6201dd3c3243ec86715c54f21f1b620ac8dc8bc48732b818e020402c",
+      "git_blob": "071ddd078372de5c25b71556d47e331d2a4db635",
+      "identical_to_implementation_commit": true
+    },
+    {
+      "path": "src/codex/institutional/contracts.json",
+      "sha256": "21026df523f2445bd0ade774603f7facd823aadabed96f59b983ad8f56b52e30",
+      "git_blob": "5bbfe410bcb7d55e27a2b211f6d054c872954ca6",
+      "identical_to_implementation_commit": true
+    },
+    {
+      "path": "tests/institutional/test_assurance.py",
+      "sha256": "716e7ae1919429cfd42b878ab83aad8dc35f6f123a3360d041a41ddc5b558a88",
+      "git_blob": "9ebadf1dae8daf4ef41a2bf0a904dfafb6d18789",
+      "identical_to_implementation_commit": true
+    },
+    {
+      "path": "docs/adr/assurance-review-005.json",
+      "sha256": "6de457f34bbbf6ec5ac5796f311503cffffa6f760186d67ec7243e94275bfbbf",
+      "git_blob": "9c9eddba89407f14af368a61f7a4d3a701472bb3",
+      "identical_to_implementation_commit": true
+    },
+    {
+      "path": ".codex/evidence/institutional-foundation/iteration-005/assurance-fixture-check.py",
+      "sha256": "0cb4cd7022ed9ab8f61246e7f26e46ca0996a09d2a474fd191d3b619c960335d",
+      "git_blob": "0419774b4cbde27115c3761198582c6907ea1d21",
+      "identical_to_implementation_commit": true
+    },
+    {
+      "path": "docs/assurance-review.rst",
+      "sha256": "8ec28a65be37d9443d64ccab62e411e260b850706dd3f84f5cba8a743ee5cdce",
+      "git_blob": "ddbce67af2ac2a7d4feb92351dc7d7fe55749580",
+      "identical_to_implementation_commit": false
+    }
+  ],
+  "source_unit_observation": {
+    "source_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+    "distinct_cases": 285,
+    "assurance_cases": 107,
+    "receipt": "assurance-aggregate-verified-cohort.json",
+    "applicability": "Runtime and test bytes are exactly identical in final candidate; not a rerun or a claim of new coverage."
+  },
+  "scoped_security_observation": {
+    "source_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+    "receipt": "security-and-review.json",
+    "applicability": "Exact assurance.py bytes unchanged; CodeQL remains NOT_RUN and Bandit/security Ruff results remain limited to their declared scope."
+  },
+  "wheel_observations": "Each package namespace retains its own exact commit, wheel and environment bindings; final candidate must use package-final receipts.",
+  "independent_verification": "NOT_RUN",
+  "authority": "none"
+}

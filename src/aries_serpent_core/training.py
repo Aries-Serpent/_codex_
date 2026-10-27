@@ -14,7 +14,7 @@ import hashlib  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
 import time  # noqa: E402
-from collections.abc import Sequence  # noqa: E402
+from collections.abc import Mapping, Sequence  # noqa: E402
 from datetime import UTC, datetime  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
@@ -996,6 +996,27 @@ def load_training_cfg(**kwargs: Any) -> Any:
         return {"training": kwargs}
 
 
+def _training_config_section(config: Any) -> dict[str, Any]:
+    """Resolve a training mapping without silently accepting lists or scalars."""
+    try:
+        from omegaconf import OmegaConf
+    except ImportError:
+        pass
+    else:
+        if OmegaConf.is_config(config):
+            config = OmegaConf.to_container(config, resolve=True)
+
+    if not isinstance(config, Mapping):
+        raise ValueError("Training configuration must be a mapping")
+    section = config.get("training", config)
+    if not isinstance(section, Mapping):
+        raise ValueError("The training section must be a mapping")
+    for name in ("lora", "reproducibility"):
+        if name in section and not isinstance(section[name], Mapping):
+            raise ValueError(f"The training.{name} section must be a mapping")
+    return dict(section)
+
+
 def run_hf_trainer(texts: Any, output_dir: Any, **kwargs: Any) -> dict[str, Any]:
     """Run HuggingFace-style trainer on the provided texts.
 
@@ -1052,12 +1073,7 @@ def main(argv: Optional[list[Any]] = None) -> None:  # pragma: no cover - conven
             seed=args.seed,
             grad_accum=args.grad_accum,
         )
-        try:
-            from omegaconf import OmegaConf
-
-            training_section = OmegaConf.to_container(cfg.get("training", cfg), resolve=True)
-        except (ImportError, AttributeError):
-            training_section = dict(cfg.get("training", cfg)) if hasattr(cfg, "get") else {}
+        training_section = _training_config_section(cfg)
         texts = training_section.get("texts", ["hello world"])
         output_dir_val = getattr(args, "output_dir", None)
         lora_section = (
@@ -1089,15 +1105,7 @@ def main(argv: Optional[list[Any]] = None) -> None:  # pragma: no cover - conven
             seed=args.seed,
             grad_accum=args.grad_accum,
         )
-        try:
-            from omegaconf import OmegaConf
-
-            ts = OmegaConf.to_container(
-                cfg.get("training", cfg),
-                resolve=True,
-            )
-        except (ImportError, AttributeError):
-            ts = dict(cfg.get("training", cfg)) if hasattr(cfg, "get") else {}
+        ts = _training_config_section(cfg)
         import importlib
 
         tf_mod = importlib.import_module("transformers")

@@ -69,7 +69,12 @@ except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover
 # Resolve helper scripts relative to this file so the CLI works from any CWD.
 TOOLS_DIR = Path(__file__).resolve().parent.parent.parent / "tools"
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-CAMPAIGN_METRICS_LOG = REPO_ROOT / ".codex" / "campaign_metrics.jsonl"
+CAMPAIGN_METRICS_LOG = Path(
+    os.getenv(
+        "CODEX_CAMPAIGN_METRICS_LOG",
+        str(REPO_ROOT / ".codex" / "campaign_metrics.jsonl"),
+    )
+)
 
 
 def _utc_timestamp() -> str:
@@ -151,7 +156,10 @@ def _canonicalize_chronicle_scope(database: str | None) -> str:
         try:
             return str(path.relative_to(REPO_ROOT))
         except ValueError:
-            return path.name or "local Chronicle session store"
+            pass
+        if ".codex" in path.parts:
+            return str(Path(*path.parts[path.parts.index(".codex") :]))
+        return path.name or "local Chronicle session store"
     return str(path)
 
 

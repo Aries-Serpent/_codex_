@@ -425,7 +425,8 @@ class TestWriteJsonlWithCrc:
         result_path = write_jsonl_with_crc(output_path, sample_records)
 
         assert output_path.exists(), "Condition must be true"
-        assert result_path == output_path, "Result must not be empty"
+        assert result_path == output_path.with_suffix(".jsonl.crc32")
+        assert result_path.exists()
 
     def test_written_file_contains_records(self, sample_records, temp_dir):
         """Test written file contains all records."""

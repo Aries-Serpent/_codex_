@@ -1,0 +1,170 @@
+{
+  "schema": "codex.development-validation.v1",
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001",
+  "source_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+  "candidate_commit": "1cf76ff9ccab1c6ce5294df0131092fc10055d1c",
+  "collected_at": "2026-10-24T20:23:46Z",
+  "producer": {
+    "identity": "implementer coordinator",
+    "assurance": "unverified"
+  },
+  "gates": {
+    "G0": "PASS",
+    "G1": "PASS",
+    "G2": "PASS",
+    "G3": "PASS",
+    "G4": "PASS",
+    "G5": "NOT_RUN",
+    "G6": "PASS",
+    "G7": "PASS",
+    "G8": "NOT_RUN"
+  },
+  "source_tests": {
+    "command": "python -m pytest --confcutdir=tests/institutional tests/institutional -q --cov=codex.institutional --cov-report=term-missing --cov-report=json:/tmp/institutional-source-coverage.json --cov-fail-under=80 --junitxml=/tmp/institutional-source-junit.xml",
+    "exit": 0,
+    "tests": 38,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "coverage": {
+      "covered_lines": 460,
+      "num_statements": 509,
+      "percent_covered": 88.7381275440977,
+      "percent_covered_display": "88.74",
+      "missing_lines": 49,
+      "excluded_lines": 0,
+      "percent_statements_covered": 90.37328094302553,
+      "percent_statements_covered_display": "90.37",
+      "num_branches": 228,
+      "num_partial_branches": 32,
+      "covered_branches": 194,
+      "missing_branches": 34,
+      "percent_branches_covered": 85.08771929824562,
+      "percent_branches_covered_display": "85.09"
+    },
+    "harness_sha256": "e1b335200044ef724a6c92d74dd39da3fa06e80c8b6ea20ca86823020392d616"
+  },
+  "packaging_regressions": {
+    "command": "python -m pytest --noconftest tests/test_packaging_metadata.py tests/test_packaging_entrypoints.py tests/test_package_dependency_contract.py -q",
+    "exit": 0,
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "checks": {
+    "ruff": "PASS: python -m ruff check src/codex/institutional tests/institutional",
+    "black": "PASS: python -m black src/codex/institutional tests/institutional",
+    "isort": "PASS: python -m isort src/codex/institutional tests/institutional",
+    "mypy": "PASS: python -m mypy --follow-imports=skip src/codex/institutional (4 modules; imported modules skipped)",
+    "compile": "PASS: python -m compileall -q src/codex/institutional tests/institutional",
+    "diff_check": "PASS before candidate commit",
+    "secrets": "No secrets detected before candidate commit",
+    "dependency_advisories": "jsonschema 4.25.1 and declared hatchling 1.32.0 returned no advisories"
+  },
+  "wheel": {
+    "path": "/tmp/codex-institutional-wheel/wheels/codex_ml-0.3.0-py3-none-any.whl",
+    "sha256": "75c12676d034ac22062a9ef23c098361aea87111d1e417291a8fec8a0b342ca5",
+    "bytes": 4210206,
+    "contents_artifact": "wheel-contents.json",
+    "production_resources_match_candidate": true,
+    "build_command": "git archive CANDIDATE | tar -x -C /tmp/codex-institutional-wheel/source; python -m pip wheel --no-deps --no-build-isolation --wheel-dir /tmp/codex-institutional-wheel/wheels .",
+    "provisioning": "Build isolation disabled; existing setuptools 81.0.0 and wheel 0.48.0 used. Declared hatchling 1.32.0 provisioned separately for codex-contracts. Exact committed contracts README restored after git archive export-ignore omitted it.",
+    "declared_dependency_install": "PASS: isolated venv pip install --find-links /tmp/codex-institutional-wheel/wheels codex_ml-0.3.0-py3-none-any.whl, dependencies enabled; pip check reports no broken requirements",
+    "test_provisioning": "pytest 9.1.1 installed separately; not in production wheel",
+    "external_command": "env -u PYTHONPATH -u PYTHONHOME PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 /tmp/codex-institutional-wheel/venv/bin/python -I -m pytest -c /dev/null --noconftest /tmp/codex-institutional-wheel/harness/test_foundation.py -q --junitxml=/tmp/codex-institutional-wheel/external-junit.xml",
+    "external_exit": 0,
+    "external_tests": {
+      "tests": 38,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "origins": {
+      "module_origin": "/tmp/codex-institutional-wheel/venv/lib/python3.12/site-packages/codex/institutional/core.py",
+      "sys_path": [
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python312.zip",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/lib-dynload",
+        "/tmp/codex-institutional-wheel/venv/lib/python3.12/site-packages"
+      ],
+      "resource_sha256": "d0b7b3d32b78e64cca9ad6906ef6214532df02958b79cb716f0ad9a012c462be",
+      "resource_schema": "1",
+      "source_assistance": false
+    },
+    "offline_runtime": "Autouse fixture rejects socket creation/connect in exercised source and installed-wheel test paths; no network is used by production runtime code. Development pip provisioning is a separate network-enabled phase.",
+    "console": "Installed codex-institutional candidate --write and verify both exit 0 in a separate no-Git fixture. No source-path assistance.",
+    "warning": "One pytest cache warning: -c /dev/null selected /dev cache root; no test failed.",
+    "independence": "Same implementer-owned harness; no withheld tests, independent identity, independent reproduction, final approval or activation claimed."
+  },
+  "failures_retained": [
+    {
+      "observation": "Source suite after directory-descriptor refactor: 36 passed, 2 failed",
+      "causes": [
+        "Injected os.replace failure mock did not accept new dir_fd keyword arguments.",
+        "Compressed resource-limit Rejected was caught as generic ValueError and mislabeled malformed JSON."
+      ],
+      "resolution": "Updated mock signature without changing assertion; preserve structured Rejected reasons before generic JSON errors. Final source and wheel suites both pass."
+    },
+    {
+      "observation": "First contracts build failed: hatchling.build unavailable; main codex-ml wheel already built",
+      "resolution": "Provisioned the contracts package declared build backend hatchling==1.32.0 and restored its exact committed README omitted by archive attributes; retried once successfully."
+    }
+  ],
+  "review": {
+    "actor": "candidate-safety-review",
+    "assurance": "implementation feedback, not independent approval",
+    "findings": [
+      "Namespace component symlink-swap writes: fixed using no-follow directory-descriptor writes; regression test passes.",
+      "Multiple evidence records bypassed binding check: fixed with exact cardinality requirement; regression test passes.",
+      "Duplicate source verification removed."
+    ],
+    "remaining_limits": [
+      "Git census subprocess output is captured before path-limit enforcement; 20-second timeout is not a hard peak-memory bound.",
+      "Symlinked export ancestor paths intentionally rejected rather than transparently followed."
+    ]
+  },
+  "security": {
+    "codeql": "NOT_RUN: tool reported analysis skipped because database size is too large; zero alerts is not a completed analysis.",
+    "bandit_exit": 1,
+    "bandit_findings": [
+      {
+        "id": "B101",
+        "severity": "LOW",
+        "disposition": "False positive: assert only narrows an already-loaded predecessor; it is not an authorization or safety gate."
+      },
+      {
+        "id": "B404",
+        "severity": "LOW",
+        "disposition": "Expected local Git subprocess import; no shell."
+      },
+      {
+        "id": "B607",
+        "severity": "LOW",
+        "disposition": "Git executable resolved through caller PATH; trusted local toolchain required, not imported data."
+      },
+      {
+        "id": "B603",
+        "severity": "LOW",
+        "disposition": "Arguments are a list, no shell; revision option termination and validated hex identity; external diff/textconv disabled."
+      }
+    ],
+    "open_owner": "Maintainers/security tooling: rerun complete CodeQL against a tractable database before any dependent acceptance."
+  },
+  "limits": [
+    "Full repository suite not run; focused scope only.",
+    "Independent reproduction, final approval and activation remain NOT_RUN.",
+    "Temporary wheels, environments and complete provisioning logs are session-local; retain through an authorized channel before runner cleanup.",
+    "Counters are descriptive samples, not efficacy metrics; source/wheel test counts overlap and must not be summed."
+  ],
+  "artifact_digests": {
+    "institutional-source-junit.xml": "88bd6c57cdd77dc4be315f1a3d84c023e4694a8363f9f02959342a20952ccf76",
+    "external-junit.xml": "b96ab8f32bd284450bf79b1c9b882d4c244c4f20af38e66c605eda329857435b",
+    "institutional-packaging-junit.xml": "591ba4438f933256e05d018e87770c357b81e068cdc89c87fed0486b0d4881a9",
+    "build.log": "cccb96be9ea3c7f495fab32706dd9cfb39b1450ab8de25776901b6f2282c9595",
+    "install-declared.log": "9c8585990e8d6081d4d93292821ac88bc32b39aa011e9e79d8514fbbd511b34d",
+    "freeze.txt": "a68181b8394e0666f747f08ec31a4d37f2d4e1c01e5102120e61823e880409c8",
+    "external-tests.log": "da78b5760b02127a210dfb2e4a74eb9ef89d4c7a3d541828dd31b0bb4a5069f9",
+    "institutional-bandit.json": "a3a0250b17719f4dcbbebc4c5c6ab14a1c0d8fee20e5b0bb18ddfa7da0b70920"
+  }
+}

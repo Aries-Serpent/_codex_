@@ -1776,11 +1776,7 @@ class TaskDecomposer:
                     * (
                         0.1
                         if phase == "analyze"
-                        else 0.2
-                        if phase == "plan"
-                        else 0.5
-                        if phase == "execute"
-                        else 0.2
+                        else 0.2 if phase == "plan" else 0.5 if phase == "execute" else 0.2
                     ),
                     priority=task.urgency if phase in ["analyze", "plan"] else task.impact,
                 )
@@ -3137,7 +3133,9 @@ class PathIntegralCalculator:
         self.path_history: list[dict[str, Any]] = []
 
     def calculate_action(
-        self, path: list[dict[str, float]], lagrangian: Optional[Callable[..., Any]] = None
+        self,
+        path: list[dict[str, float]],
+        lagrangian: Optional[Callable[[dict[str, float]], float]] = None,
     ) -> float:
         """
         Calculate action along a path.
@@ -3145,10 +3143,16 @@ class PathIntegralCalculator:
         S = ∫L dt = Σ L_i * Δt
 
         Default Lagrangian: L = T - V (kinetic - potential)
+
+        States are uniformly spaced over a unit time interval. Missing kinetic
+        or potential values default to zero; an empty path has zero action.
+        A custom Lagrangian receives each state unchanged and returns a scalar.
+        For example, ``calculate_action([{"kinetic": 3.0, "potential": 1.0}])``
+        returns ``2.0``.
         """
         if lagrangian is None:
 
-            def lagrangian(state) -> None:
+            def lagrangian(state: dict[str, float]) -> float:
                 return state.get("kinetic", 0) - state.get("potential", 0)
 
         action = 0.0

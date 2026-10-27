@@ -5,7 +5,8 @@ from pathlib import Path
 import pytest
 
 pytest.importorskip("mlflow")
-from tests.conftest import REPO_ROOT
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 #         assert result.returncode != 0 or not nonexistent.exists(, "Result must not be empty"
 #         ), "Result must not be empty"
@@ -235,7 +236,9 @@ class TestCLIEnvironment:
     ) -> None:
         """Test that CLI respects configuration environment variable."""
         monkeypatch.setenv("CODEX_CONFIG", str(temp_config_file))
-        assert __import__("os").environ.get("CODEX_CONFIG") == str(temp_config_file), "__imp is not valid"
+        assert __import__("os").environ.get("CODEX_CONFIG") == str(
+            temp_config_file
+        ), "__imp is not valid"
 
     def test_respects_verbose_env_var(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test that CLI respects verbose environment variable."""

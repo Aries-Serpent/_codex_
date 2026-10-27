@@ -1,0 +1,688 @@
+{
+  "artifact_type": "retention_manifest",
+  "exclusions": {
+    "paths": [
+      "retention-manifest.json",
+      "continuation.json.gz",
+      "checkpoint-verification.json",
+      "retention-binding.json",
+      "final-secret-scan.json"
+    ],
+    "reason": "Avoid self/circular digests. Final binding covers this manifest, checkpoint and verification; final scan covers decoded checkpoint; Git commit binds all exclusions. No exclusion supplies missing historical bytes."
+  },
+  "file_count": 132,
+  "files": [
+    {
+      "bytes": 22702,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/architecture-bearing.json",
+      "sha256": "0b96ee22fa5560627697f3719e06f92bc3a3e8371a6e50feb137c2009ccd0a89"
+    },
+    {
+      "bytes": 1626,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/ci-observation.json",
+      "sha256": "bb51ac11be01135003c1414ae695cac07d10962d37156b426d59109e9c3cbe9a"
+    },
+    {
+      "bytes": 838,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/codeql-result.json",
+      "sha256": "2cb283a9eea45af3510cff4b97ea3fd938a7ea6be15bd40b6f08f34d92e79592"
+    },
+    {
+      "bytes": 3136,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/design-rendering-observation.json",
+      "sha256": "8c676906ee6d3791b1591ea1b16e7d7ecafa65750942feefb9c26e63ce4b82eb"
+    },
+    {
+      "bytes": 15777,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/dissent-bearing.json",
+      "sha256": "583b8aacea613bf00e5cc3ce40037e7bafb898bd5f612e3a9046f9e214b769c5"
+    },
+    {
+      "bytes": 4237,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/execution-context.json",
+      "sha256": "f37962952c54da09dbb6e7723c12a4f78c0e9c83202081b19c12409052019b7d"
+    },
+    {
+      "bytes": 5591,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/experience-final.json",
+      "sha256": "54afbbdfc61a6a78d6185bc2976dfeb0bea7af5cab68257d315bc5af32dbff68"
+    },
+    {
+      "bytes": 7629,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/gate-adjudication.json",
+      "sha256": "7e0bfc45ac01ef1716fd655acb146ceaddbe2ef7129ced75d63eaac8bdb0e13e"
+    },
+    {
+      "bytes": 13063,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/handoff.json",
+      "sha256": "fde4dfd997535d9c1cae48e06ff686c0a130ee42b178c9fb906a7e81d8a7d4b0"
+    },
+    {
+      "bytes": 10894,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/next-session-prompt.rst",
+      "sha256": "5979a008e3d9fe67b01813611f4dfac902837715d7077d9c9fd2fa279494dc34"
+    },
+    {
+      "bytes": 12860,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/pr-boundary.json",
+      "sha256": "66aae6e6ce2d0cd40a3518a3a9dc065554d7678666fc643e175cf0fabd391e22"
+    },
+    {
+      "bytes": 27627,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/program-roadmap.json",
+      "sha256": "0452d50d78953a6ab7833555b23d9c9cd2c94844bff4c330add64a9f35be58c2"
+    },
+    {
+      "bytes": 7175,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/readiness-matrix.json",
+      "sha256": "f5f41a310374ed93bd4ec1d374e1c8742dced9a1bfd677dc554cccd7048c8b52"
+    },
+    {
+      "bytes": 29,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/.gitignore",
+      "sha256": "ae663bb1ab8e78593f177a1fc4648baec887b1883f2b12b307ac012f2a0eebe4"
+    },
+    {
+      "bytes": 443,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/admission-execution.log",
+      "sha256": "22c110c8aa7df6d4f870ba109e9b24af8a5b9a3b725863e77a262fbd222005e3"
+    },
+    {
+      "bytes": 1639,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/admission-observation.json",
+      "sha256": "624d5685ea20d7740169fe7f5d9e3ddba864b023245a83e7e649aa539cf27615"
+    },
+    {
+      "bytes": 822,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/advisory.json",
+      "sha256": "b51153773d22e72d29dec67037039cbee12a74ac25a00731e976c372a0ed57df"
+    },
+    {
+      "bytes": 2653,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/after-cache.json",
+      "sha256": "cf950379879a01cb5b50b8c20fdee8a55a7460380ca3a33559c9f9097aea35f0"
+    },
+    {
+      "bytes": 22001,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/after-history.json",
+      "sha256": "b87f2086f95a0f26bfaf0af5381d8505ccae4c123605c09993c7e009c601f3d7"
+    },
+    {
+      "bytes": 2676,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/after-readiness.json",
+      "sha256": "610c0a7114c9f2f861b0ccc767a944e62eddd00cf5aaaa68560fd1f50c868c6b"
+    },
+    {
+      "bytes": 15516,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/artifact-manifest.json",
+      "sha256": "3cf2e693a8a944f53b6be30d60dc4b03f3dcda0b659959b2795d7f8adb95a4cf"
+    },
+    {
+      "bytes": 1802,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/cleanup.json",
+      "sha256": "89a42c596849bf294279173490173900e23c7eec18d1fb9ccdfdff10d49ebb38"
+    },
+    {
+      "bytes": 1054,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/closure-correction.log",
+      "sha256": "9acecaabf591eb13f44089e8d43b6b977a5c59c5fc353be02efeaf86ea1bb5c4"
+    },
+    {
+      "bytes": 400,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/current-source-parity.json",
+      "sha256": "75eda7d8b3962a6aca22412a4d92b462ed396bcb7a96fdd7b36f76b0e4022a67"
+    },
+    {
+      "bytes": 178,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/dispatch.json",
+      "sha256": "64832ae8c141bf506ec38eca8482b81bd77f23278893d4c20597f7dba7a492c9"
+    },
+    {
+      "bytes": 2145,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/environment.json",
+      "sha256": "f405ff6978ac7758fc4c1f95833258b85c0ddc6fd00291f1acfe40351e750059"
+    },
+    {
+      "bytes": 43332,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/final-recommendation.json",
+      "sha256": "1996797a1b4539a0d56a5a76c4e7c39d10149080676f591173513f569acb010c"
+    },
+    {
+      "bytes": 1219,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/final-validation.log",
+      "sha256": "0c10639685f6d3bfaab09ee505043562a414fdc119e115679a060d9aeefd9425"
+    },
+    {
+      "bytes": 33522,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/immutable-source/src/codex/institutional/assurance.py",
+      "sha256": "ba67ea4d6201dd3c3243ec86715c54f21f1b620ac8dc8bc48732b818e020402c"
+    },
+    {
+      "bytes": 6154,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/immutable-source/src/codex/institutional/contracts.json",
+      "sha256": "21026df523f2445bd0ade774603f7facd823aadabed96f59b983ad8f56b52e30"
+    },
+    {
+      "bytes": 22677,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/immutable-source/src/codex/institutional/core.py",
+      "sha256": "636c45dc7eed70d0bed4bc80602f6831fd76ef5a688119f082ae7f8fe4743cef"
+    },
+    {
+      "bytes": 11707,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/immutable-source/src/codex/institutional/storage.py",
+      "sha256": "35e7122d388e44eb1badf025a2e69f2dffee0cf473822ca001e4f9f52b2a947f"
+    },
+    {
+      "bytes": 1031,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/immutable-source.json",
+      "sha256": "68cd5afea84a33c6e27a887f74a223cbe109e893673e9b3a49150f60a088df0a"
+    },
+    {
+      "bytes": 2207,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/input-cache.json",
+      "sha256": "30c91bbf3343cfe7238fd1e49c6268c6d6d6ea3393d3b3d11a8e67c2888e9dd8"
+    },
+    {
+      "bytes": 3654,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/input-dispositions.json",
+      "sha256": "3e56a0ee1d5f523e034e024f285ee693e7dc3c2e0519e2ad6d212345fb1a2a20"
+    },
+    {
+      "bytes": 20425,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/input-history.json",
+      "sha256": "4cb6d42e2f2cf1a8911338c20668c1b513afde98d680c58bc8f2c62bab616656"
+    },
+    {
+      "bytes": 895,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/input-manifest.json",
+      "sha256": "82fa761e15661b41bfec7ede4fdca6a0b9c8af4037edc6936f4a551bace291b3"
+    },
+    {
+      "bytes": 4870,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/install-closure-correction.json",
+      "sha256": "51cf64f2554ae293c10d537b19aca129b2f6c99640f02efec5d8882242dcbe85"
+    },
+    {
+      "bytes": 126105,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/install-report.json",
+      "sha256": "4bb968accda219aabbb6e3a826d4dec093424ac0c41e5476084aa248385844cd"
+    },
+    {
+      "bytes": 25567,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/installed-distribution-metadata.json",
+      "sha256": "ff850bfb96da814e74b052a37e8f7f3c5ec071c62d7fd43ba64604bc4e568adc"
+    },
+    {
+      "bytes": 43454,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/invalid-recommendation-probe.json",
+      "sha256": "0eb31b5adf9848190bf26ae461cd137650a2382944091be190f6494732a07d62"
+    },
+    {
+      "bytes": 150,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-adequacy.json",
+      "sha256": "4827975595d70f46be9b06c48817cb87a123b57ee148b700bcc45454e7ad554f"
+    },
+    {
+      "bytes": 947,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-assurance-cache.json",
+      "sha256": "ac963223a399f06be0e395101c8800ef82dab4f6e946e3ed9718b2accfdf9809"
+    },
+    {
+      "bytes": 84,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-assurance-dispatch.json",
+      "sha256": "59c421ca76e7fd72fd260cd993666b2a445c2796348656b14d1689977fd68eda"
+    },
+    {
+      "bytes": 108416,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-assurance-final.json",
+      "sha256": "31e77159cf7f38902ee49143d6fde86016b8ff9b9a616f352361f22c2599548e"
+    },
+    {
+      "bytes": 28262,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-assurance-history.json",
+      "sha256": "60f1fb9fc0c93b23cdd68d9d15fff40aa86aafe2e632bfacc5196a0c35e99501"
+    },
+    {
+      "bytes": 25488,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-assurance-plan.json",
+      "sha256": "96361a88d3a44a6907374bff7f6dbee90149e290601361a8016d20883b4d3cb2"
+    },
+    {
+      "bytes": 970,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-assurance-readiness.json",
+      "sha256": "c289e837b157757b0f69dd2a193bb28e356e992a64bf9b7aa37d37633c911224"
+    },
+    {
+      "bytes": 2070,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-assurance-result.json",
+      "sha256": "335475b107432f729103ce55775d93fab066f41651a7ed236103fb316968ab30"
+    },
+    {
+      "bytes": 150,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-adequacy.json",
+      "sha256": "4827975595d70f46be9b06c48817cb87a123b57ee148b700bcc45454e7ad554f"
+    },
+    {
+      "bytes": 947,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-assurance-cache.json",
+      "sha256": "5d6798ad46f70124ea89312397d768300d60bf6611c52328974790c3c1283096"
+    },
+    {
+      "bytes": 84,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-assurance-dispatch.json",
+      "sha256": "59c421ca76e7fd72fd260cd993666b2a445c2796348656b14d1689977fd68eda"
+    },
+    {
+      "bytes": 108416,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-assurance-final.json",
+      "sha256": "89a23f495e9cb0f44ef2b149669c862027fb730dee6bcbd867f4905c9c1acf76"
+    },
+    {
+      "bytes": 28262,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-assurance-history.json",
+      "sha256": "d583b9a129af4c5ac3786a8ae495a7dbab27d6193f2c76803da9bf8248f18a42"
+    },
+    {
+      "bytes": 25488,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-assurance-plan.json",
+      "sha256": "826ad69c928c8b4bf5155c17b16edd263d32e069cbd8b0b6cc1940a86bfc3240"
+    },
+    {
+      "bytes": 970,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-assurance-readiness.json",
+      "sha256": "7fb18593c78f76f9eea3bf9498d16985939f8e0bc8a64ccfe78608c3c69ea675"
+    },
+    {
+      "bytes": 2070,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-assurance-result.json",
+      "sha256": "708a9cb1e9c7e2a4496f434a11ce90275ce16588a1d6ccda14b41a02ea636d7b"
+    },
+    {
+      "bytes": 1885,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-completion.json",
+      "sha256": "bfe7d34abced0c9c3cffdd937b45f25e7f557203316490aa72157d66e4bd757c"
+    },
+    {
+      "bytes": 1424,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-environment.json",
+      "sha256": "73a820bd4dfcd787b78229f35f6ed7662e2fe8f1383d7fe434820058698aee70"
+    },
+    {
+      "bytes": 68461,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-initial.json",
+      "sha256": "faac243173c23160e305400196ed25e452bf7a1c20ed446c4a79e0f4e7962559"
+    },
+    {
+      "bytes": 130455,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-install-report.json",
+      "sha256": "d078f5fc5e2742ece8eae2dc2468c755806c70142f22e1e3cd0fc0a18a5e8436"
+    },
+    {
+      "bytes": 1361,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-manifest.json",
+      "sha256": "fc766ca7008a1b74347b6f534a622a9431d95cf9ed25eb0cce9f1c8698c0790e"
+    },
+    {
+      "bytes": 3705,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-reasoning-map.json",
+      "sha256": "9e4cc97f7967b8f62adff004bba6c0902246d00e20c002edbb61975cb22ce8c2"
+    },
+    {
+      "bytes": 426,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-remediation-proposal.json",
+      "sha256": "e66eeec53b332cf4ffcbd51bd11319c9bd664a124ecaadeb81c3704e16ea3733"
+    },
+    {
+      "bytes": 2944,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-review-plan.json",
+      "sha256": "ddf4d09f7edb5a99ae467068ba57b25c374173e66bcb06478bba5d01c89aa0c7"
+    },
+    {
+      "bytes": 72438,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-review.json",
+      "sha256": "da0600b0add1b46d9fbf351cd1c9a6a43e49d12c7c05b3fc7b1da004fcc22b85"
+    },
+    {
+      "bytes": 2306,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-before-confidence-normalization/meta-rotated-followup.json",
+      "sha256": "adbeff107e6d8130935f152318891b786139559e145aca104b56ac0a94a98634"
+    },
+    {
+      "bytes": 696,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-cleanup.json",
+      "sha256": "b031fc5959be7ef504ce74af3c60faa476a0388ca6ec7b5eceb9f7640e2b542e"
+    },
+    {
+      "bytes": 1885,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-completion.json",
+      "sha256": "e72b73f59701758be12ee36f99fd33d9fc3ef1e6b463389245ec40d3e754af31"
+    },
+    {
+      "bytes": 446,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-confidence-correction.log",
+      "sha256": "4611a1e3c9339b4453140e397a14ca4c21fe58a207b9244502ee4023b8f8f5ce"
+    },
+    {
+      "bytes": 1424,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-environment.json",
+      "sha256": "73a820bd4dfcd787b78229f35f6ed7662e2fe8f1383d7fe434820058698aee70"
+    },
+    {
+      "bytes": 3031,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-execution.log",
+      "sha256": "58726fe51a51ebbe2e735d52162b7cc04fcc77ee6ce7b819c9cf12a629f5f0b3"
+    },
+    {
+      "bytes": 68461,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-initial.json",
+      "sha256": "1420e19a0e859a905e8dc6485de2a0cb1e79401773808b438a200be150b7ff02"
+    },
+    {
+      "bytes": 130455,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-install-report.json",
+      "sha256": "d078f5fc5e2742ece8eae2dc2468c755806c70142f22e1e3cd0fc0a18a5e8436"
+    },
+    {
+      "bytes": 1361,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-manifest.json",
+      "sha256": "2fc02a287be65182e589fcb07ffb0f44f82d6cb51b2f6b9254ed90bc96af5db8"
+    },
+    {
+      "bytes": 3873,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-reasoning-map.json",
+      "sha256": "0da748e07d432684ab75754285ff001b11494f94501deb71930e3a28dbfb2603"
+    },
+    {
+      "bytes": 426,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-remediation-proposal.json",
+      "sha256": "e66eeec53b332cf4ffcbd51bd11319c9bd664a124ecaadeb81c3704e16ea3733"
+    },
+    {
+      "bytes": 2944,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-review-plan.json",
+      "sha256": "6e9bdb9c0fc31c59297c9541f7a83c0996f590fb92957c82c8c89d87c5de525b"
+    },
+    {
+      "bytes": 72438,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-review.json",
+      "sha256": "774af00f8e938379688846d18ad9e37b82a8286fd1b254cc9065e9b61b73d84e"
+    },
+    {
+      "bytes": 2306,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-rotated-followup.json",
+      "sha256": "3ce522172cc2b127ad2907c16fc641825b607d07091e85449be1c308155cdd50"
+    },
+    {
+      "bytes": 571,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-secret-scan.json",
+      "sha256": "48ab7632fe34afcfa557e4fbc73394d7385a0da05f376d7122a67657f19dc320"
+    },
+    {
+      "bytes": 1677,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-validation.log",
+      "sha256": "83b255d571038ac5cb56601ca4c5509a5151a8242a924c781b34911340b05534"
+    },
+    {
+      "bytes": 18250,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/meta_workflow.py",
+      "sha256": "a7b7848a2456e84591e7b24e4ce093614a82d83e9e9a010e95641eeea7c3a81a"
+    },
+    {
+      "bytes": 4470,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/owned-secret-scan.json",
+      "sha256": "0047765394e4bf43d11a489ce5612d8c254ea39afaf0c49e4bcd338a2b2f1264"
+    },
+    {
+      "bytes": 1449,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/prepare-source.sh",
+      "sha256": "8dad97bcfb22bb9669e17c664de705e89e5740d55ef23727d6ee435c613c760b"
+    },
+    {
+      "bytes": 953,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/provision-meta.sh",
+      "sha256": "d5d09ac33c767ebc0f4535fb0da8df8cb635f65e572a046fabcaf08246c71aac"
+    },
+    {
+      "bytes": 2498,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-adapter-contract.json",
+      "sha256": "d81ddd4c81ab75d44275c36f862b20bbf2e32ab9f936758ef3a468ddb69da2e9"
+    },
+    {
+      "bytes": 961,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-assurance-cache.json",
+      "sha256": "fcb1811bf20b31db7571a537babfafcab1f41ac811c07d6c835b79eccdd2bc32"
+    },
+    {
+      "bytes": 95430,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-assurance-final.json",
+      "sha256": "876e2b29c682d3c18b58ef1778d62ba3854ea63deb9c92d0bb29f5c60e2b2ee8"
+    },
+    {
+      "bytes": 28910,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-assurance-history.json",
+      "sha256": "9d283908a84f7a4c92fd5dcbc193fa5ae2a71bb636bb42bce3a8c1883ba3e410"
+    },
+    {
+      "bytes": 25240,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-assurance-plan.json",
+      "sha256": "822eccf8d712b63dc2180bd1507df2e22bd27f32edc767648d3868a7284b30c0"
+    },
+    {
+      "bytes": 984,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-assurance-readiness.json",
+      "sha256": "79f7e77e1d181d02aa691f9b9c947d83be5c9c3a94071a10bbf8c73a4b7014f2"
+    },
+    {
+      "bytes": 2966,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-assurance-result.json",
+      "sha256": "3ec5258bbada70cf72b552ee154b07372609ad397603d689b7b7e0eb1dcab17a"
+    },
+    {
+      "bytes": 2475,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-attachment-preview.json",
+      "sha256": "453af89ee00245d76dfe912530d0fc6e6445ca1c8a820251432d845194929c40"
+    },
+    {
+      "bytes": 2003,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-checks.json",
+      "sha256": "784e11001e637605d72736e911477c5c9766af807b958e3bc62200142ea0da27"
+    },
+    {
+      "bytes": 431,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-execution.log",
+      "sha256": "d89e54f7496e45ae9d5e83dba7ac6775a74c1fd837e34bced04a1f26a8051cfd"
+    },
+    {
+      "bytes": 61473,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-initial.json",
+      "sha256": "dc656035105fb364d1f2e9279021c83ed5e7ff92e1c883886c751835acb12b78"
+    },
+    {
+      "bytes": 20433,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-input.json",
+      "sha256": "2d4325260a404898ee8d4d422cf42d9e4c96b4ba0a225d450e416a6348ab61d0"
+    },
+    {
+      "bytes": 19355,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-lane-outputs.json",
+      "sha256": "4249aaa86884b335d83363df10c75167c6c955169ea20f08cfd09eb66d827dfb"
+    },
+    {
+      "bytes": 1361,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-manifest.json",
+      "sha256": "0d85b2638be01085cdcce1851dcbdadc7ff6484708e58fb0ab41a961fa669f5b"
+    },
+    {
+      "bytes": 61470,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-meta.json",
+      "sha256": "176befb0caf66a42a711401808bf6c08998c6afa0f188c1974ffacce4810d169"
+    },
+    {
+      "bytes": 2706,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-plan.json",
+      "sha256": "1a7310c6d90f429f1775ba3489eeb61bb96a18f12b0ab878997115d59159979e"
+    },
+    {
+      "bytes": 61471,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-recommendation.json",
+      "sha256": "b1790d5e4c5eabf5f395616cff847157addd21b6933c95c410a1bec725f78d0a"
+    },
+    {
+      "bytes": 3046,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/resumption.json",
+      "sha256": "477ff61ccd47eb7687a286a85f7390e5e67ac67ac8b294e14ed13554ddc3aad1"
+    },
+    {
+      "bytes": 918,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/retention-limit.json",
+      "sha256": "aaf852cadc60ec6b4b89b793470049bb6fe38f3822645e5ef1f2c885efc952b5"
+    },
+    {
+      "bytes": 1237,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/retry-result.json",
+      "sha256": "7446ea49d5ed397619acdee684ef9877bc5da61399f84d6cba0c1db18a7c26ea"
+    },
+    {
+      "bytes": 1944,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/runtime-checks.json",
+      "sha256": "aa6d8111bf5e7feaa87269e031aaf0fd7f7d2217eddca7babb4666ba94c9c980"
+    },
+    {
+      "bytes": 5893,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/setup.log",
+      "sha256": "fa78b39c4ad91c0512058f4dc98d047aa806dd851f5342c47278e6ece666cf83"
+    },
+    {
+      "bytes": 1021,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/setup.sh",
+      "sha256": "11143fd2aa0ef59cdc9e11251a4e342555e0e4e4413a95a45b1e6b7e14297cdd"
+    },
+    {
+      "bytes": 3830,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/source-preparation.log",
+      "sha256": "4bca1d30b4c72063b554cb1ccf0a2b061e80ad4303eeb250b900f919230ea47a"
+    },
+    {
+      "bytes": 8056,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/summary.json",
+      "sha256": "538b4be41b9a11959862567276cfc0c498da0c229005c6305ac25f8da1a36d6d"
+    },
+    {
+      "bytes": 1405,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/validation.log",
+      "sha256": "0360427b46ec17bea41fd38540a9abf8d80ce5881af2bdb28ebc01b1c5ec2358"
+    },
+    {
+      "bytes": 30744,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/workflow.py",
+      "sha256": "ffe3c032bafe6135bac401e6440d8d55a58d98696e099ad21c130b5c2988408a"
+    },
+    {
+      "bytes": 1194,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/runtime/workspace-scope.json",
+      "sha256": "d6e5c01df27a1e787a6af8fbfa9b36c942e6bb1b9ade1fe9bfcaad6d6743498e"
+    },
+    {
+      "bytes": 4665911,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/archive-member-manifest.json",
+      "sha256": "56b30872e5eba6cf008e8989f87971cc5e272f7e0c2360fc46de9d7233909024"
+    },
+    {
+      "bytes": 3324,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/candidate-binding-review.json",
+      "sha256": "e2171299a52ad4f30bb2eddd77a74bc69c0b19df726473ea633029de783eb1b9"
+    },
+    {
+      "bytes": 9844,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/code-hygiene.json",
+      "sha256": "6f7dce2a2d219f3cbea25a46f0d1f117a244f3a7e0b3c7f5d30bb1b06bf26b00"
+    },
+    {
+      "bytes": 94599,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/current-scope.json",
+      "sha256": "c3e84cc70ca6a36bc1ad121c40ba98a56feafb214f83a8cafd07baf2a180111a"
+    },
+    {
+      "bytes": 19745,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/findings-redacted.json",
+      "sha256": "4d79f1819ec7112be657e1fabf9584d72660b0a34be97b7e1304a7356934b731"
+    },
+    {
+      "bytes": 10521,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py",
+      "sha256": "98e4ccea27b1991a22cf688fbcf1c1e1c8e30648bae12996e06bd6663eb7b773"
+    },
+    {
+      "bytes": 4877,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/owned-artifact-secret-scan.json",
+      "sha256": "33532f320eddc862e967a97d194b57977d6b80cfe81bd8bec94cbbe25576c1d5"
+    },
+    {
+      "bytes": 1333,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/raw-output-secret-safe.json",
+      "sha256": "58f1c26d79ea1c689298fef1e15ba93ad71ac36cf14f4b03eec214adab5fa04a"
+    },
+    {
+      "bytes": 3411,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/retained-manifest.json",
+      "sha256": "f0a23a52080c1bfb3519a3f244f33ba8ddadb7c4c319de3c57454f04160f9336"
+    },
+    {
+      "bytes": 184481,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/retention-aggregate.json",
+      "sha256": "9cd827b5c485a484dd507f925a8b8fd2d46fbebe6db8588655509b19b08ae6c9"
+    },
+    {
+      "bytes": 1286,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/runtime-root-scan.json",
+      "sha256": "bf5c03c948a09fc8acc66b1efb1e0ee457fc6ee4f7574070f12db6f3d8d7233a"
+    },
+    {
+      "bytes": 7876,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/scan-result.json",
+      "sha256": "db668c88c88c223aee2af2f30838571ebe918940632254b2c2cc885b135c116b"
+    },
+    {
+      "bytes": 10767,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/three-source-static-triage.json",
+      "sha256": "fe156d67b143942d64160f7edb79a668b813451b5f39dd4c042e6c176a2abe1f"
+    },
+    {
+      "bytes": 27112,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/triage-redacted.json",
+      "sha256": "5a91884728e06451a93bf9556bbc9426b321dee8fb0f0c5a3f0a11d1ff03fcfe"
+    },
+    {
+      "bytes": 998,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/triage-summary.json",
+      "sha256": "80c5d6be09a92ec7391e464ac562041cd7a3669737b019067f2025e307628da9"
+    },
+    {
+      "bytes": 6042,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/security/triage_findings.py",
+      "sha256": "21181d75d276c352b504344e8002905e0feb26cbfceaa849bf4a5d87c53b7884"
+    },
+    {
+      "bytes": 8108,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/snapshot-reconciliation.json",
+      "sha256": "52c75e32743b1defcd64c6fe69c0195a56719ec77506fe867f9e4d9836f068b2"
+    },
+    {
+      "bytes": 10846,
+      "path": ".codex/evidence/institutional-foundation/iteration-006/verification-bearing.json",
+      "sha256": "bd225962d36ff7dfeb03f5d199de55b8bb9df3ab4bc3973e678bb568d529538f"
+    }
+  ],
+  "historical_inventory": {
+    "expected_missing_count": 151,
+    "path": ".codex/evidence/institutional-foundation/iteration-006/security/retention-aggregate.json",
+    "present_count": 266,
+    "sha256": "9cd827b5c485a484dd507f925a8b8fd2d46fbebe6db8588655509b19b08ae6c9",
+    "status": "INCOMPLETE_ORIGINAL_BYTES_NOT_RECREATED"
+  },
+  "retained_bytes": 6987163,
+  "root": ".codex/evidence/institutional-foundation/iteration-006",
+  "source_candidate": "234a846f45e78ae4f3729f00808ced752f8ba405",
+  "trust": "Hashes are content-integrity observations, not authenticated provenance or security clearance.",
+  "version": 1
+}

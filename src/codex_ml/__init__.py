@@ -74,110 +74,6 @@ except (
     TrainingWeights = _MissingConfig("TrainingWeights")  # type: ignore[misc,assignment]
     ValidationThresholds = _MissingConfig("ValidationThresholds")  # type: ignore[misc,assignment]
 
-try:  # pragma: no cover - optional dependency tree
-    from .pipeline import run_codex_pipeline
-except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when configs missing
-
-    def run_codex_pipeline(*_args, **_kwargs) -> None:  # type: ignore[misc]
-        raise RuntimeError("Optional dependencies for run_codex_pipeline are missing")
-
-
-try:  # pragma: no cover - optional metrics dependency
-    from .metrics.api import (
-        get_metric,
-        list_metrics,
-        register_metric,
-        summarize_ndjson_logs,
-    )
-    from .metrics.metric_implementations import (
-        BLEUScore,
-        F1Score,
-        MetricRegistry,
-        RecallScore,
-        TokenAccuracy,
-    )
-except (
-    ImportError,
-    AttributeError,
-):  # pragma: no cover - degrade gracefully when metrics extras missing
-
-    class _MissingMetric:
-        def __init__(self, name: str):
-            self._name = name
-
-        def __call__(self, *_args, **_kwargs) -> None:  # pragma: no cover - defensive
-            raise RuntimeError(f"Metrics module unavailable; {self._name} requires optional extras")
-
-        def __getattr__(self, _item: str) -> None:  # pragma: no cover - defensive
-            msg = f"Metrics module unavailable; {self._name} requires optional extras"
-            raise AttributeError(msg)
-
-    MetricRegistry = _MissingMetric("MetricRegistry")  # type: ignore[misc,assignment]
-    F1Score = _MissingMetric("F1Score")  # type: ignore[misc,assignment]
-    RecallScore = _MissingMetric("RecallScore")  # type: ignore[misc,assignment]
-    BLEUScore = _MissingMetric("BLEUScore")  # type: ignore[misc,assignment]
-    TokenAccuracy = _MissingMetric("TokenAccuracy")  # type: ignore[misc,assignment]
-    get_metric = _MissingMetric("get_metric")  # type: ignore[assignment]
-    register_metric = _MissingMetric("register_metric")  # type: ignore[assignment]
-    list_metrics = _MissingMetric("list_metrics")  # type: ignore[assignment]
-    summarize_ndjson_logs = _MissingMetric("summarize_ndjson_logs")  # type: ignore[assignment]
-
-if MetricRegistry.__class__.__name__ != "_MissingMetric":
-    __all__ += [
-        "BLEUScore",
-        "F1Score",
-        "MetricRegistry",
-        "RecallScore",
-        "TokenAccuracy",
-        "get_metric",
-        "list_metrics",
-        "register_metric",
-        "summarize_ndjson_logs",
-    ]
-
-
-# Optional imports: symbolic pipeline requires tokenizer/transformers; guard for environments
-# without heavy ML deps.
-try:  # pragma: no cover - optional path
-    from .symbolic_pipeline import (
-        ModelHandle,
-        PretrainCfg,
-        RewardModelCfg,
-        RewardModelHandle,
-        RLHFCfg,
-        SFTCfg,
-        Weights,
-        run_codex_symbolic_pipeline,
-    )
-except (
-    ImportError,
-    AttributeError,
-):  # pragma: no cover - degrade gracefully when symbolic deps missing
-
-    class _MissingSymbolic:
-        def __init__(self, name: str):
-            self._name = name
-
-        def __getattr__(self, item: str) -> None:  # pragma: no cover - defensive
-            raise AttributeError(
-                f"Optional dependency for '{self._name}' is missing; install codex-ml[symbolic]"
-            )
-
-        def __call__(self, *_args, **_kwargs) -> None:  # pragma: no cover - defensive
-            raise RuntimeError(
-                f"Optional dependency for '{self._name}' is missing; install codex-ml[symbolic]"
-            )
-
-    run_codex_symbolic_pipeline = _MissingSymbolic("run_codex_symbolic_pipeline")  # type: ignore[assignment]
-    Weights = _MissingSymbolic("Weights")  # type: ignore[misc,assignment]
-    PretrainCfg = _MissingSymbolic("PretrainCfg")  # type: ignore[misc,assignment]
-    SFTCfg = _MissingSymbolic("SFTCfg")  # type: ignore[misc,assignment]
-    RewardModelCfg = _MissingSymbolic("RewardModelCfg")  # type: ignore[misc,assignment]
-    RLHFCfg = _MissingSymbolic("RLHFCfg")  # type: ignore[misc,assignment]
-    ModelHandle = _MissingSymbolic("ModelHandle")  # type: ignore[misc,assignment]
-    RewardModelHandle = _MissingSymbolic("RewardModelHandle")  # type: ignore[misc,assignment]
-
-
 _EXPORT_MAP = {
     # Existing exports
     "run_codex_pipeline": ("codex_ml.pipeline", "run_codex_pipeline"),
@@ -197,6 +93,15 @@ _EXPORT_MAP = {
     "RLHFCfg": ("codex_ml.symbolic_pipeline", "RLHFCfg"),
     "ModelHandle": ("codex_ml.symbolic_pipeline", "ModelHandle"),
     "RewardModelHandle": ("codex_ml.symbolic_pipeline", "RewardModelHandle"),
+    "get_metric": ("codex_ml.metrics.api", "get_metric"),
+    "list_metrics": ("codex_ml.metrics.api", "list_metrics"),
+    "register_metric": ("codex_ml.metrics.api", "register_metric"),
+    "summarize_ndjson_logs": ("codex_ml.metrics.api", "summarize_ndjson_logs"),
+    "BLEUScore": ("codex_ml.metrics.metric_implementations", "BLEUScore"),
+    "F1Score": ("codex_ml.metrics.metric_implementations", "F1Score"),
+    "MetricRegistry": ("codex_ml.metrics.metric_implementations", "MetricRegistry"),
+    "RecallScore": ("codex_ml.metrics.metric_implementations", "RecallScore"),
+    "TokenAccuracy": ("codex_ml.metrics.metric_implementations", "TokenAccuracy"),
     # P1 - CLI-Critical Exports (BLOCKING) - Successfully implemented
     "set_reproducible": ("codex_ml.utils.repro", "set_reproducible"),
     "load_tokenizer": ("codex_ml.tokenization", "load_tokenizer"),

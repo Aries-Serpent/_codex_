@@ -1,0 +1,45 @@
+{
+  "authority": "User requests preparation, implementation, testing and review of scoped guidance revisions; no operational governance adoption, release, merge, protected settings or self-triggered session authority.",
+  "base_available": {
+    "origin/0D_base_": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667"
+  },
+  "branch": "copilot/codex-institutional-foundation-001",
+  "candidate": "174a7771160725bb6edf54f85d38ed5484753789",
+  "classification": "Repository-Internal",
+  "dirty_state": {
+    "path": ".codex/session_startup_packet.json",
+    "sha256": "e049cfd2e09e4c570f1395abc6b15e7a415e232903c1a2b63946bbd976624786",
+    "treatment": "Untouched user bytes; never reset/stashed/replaced/hidden/staged/committed. Exact hash checked at finish."
+  },
+  "entry_head": "a30d759e2a15d6c566e9e825d3efa8b3040e77e0",
+  "historical_revalidation": {
+    "checkpoint_structure": "PASS",
+    "entry_drift": [
+      "STALE_CHECKPOINT",
+      "WORKTREE_DRIFT"
+    ],
+    "historical_implementation_git_object": "Optional 22a75dda object missing in shallow clone; first git diff failed bad object; no fetch needed for guidance batch. Package bytes compared to retained wheel instead.",
+    "original_historical_wheel": "NOT_RUN; no new reproduction claim",
+    "predecessor_canonical_sha256": "ca90cb8cf6cf955b0ea3acfed0aeaed14ab0239b92345674c62cb13ab4626de3",
+    "retained_wheel_sha256": "de5d8791451bd3ac713f944bf3c0543db20e662f17ca976d413b4c2b071a5930"
+  },
+  "publication": {
+    "reason": "No safe path-selective mode exposed by automatic progress publisher; historical tool auto-committed dirty packet. User forbids temporary replacement and index hiding. Selective local commits used; no push, PR mutation or creation.",
+    "status": "BLOCKED_AUTHORITY"
+  },
+  "repository": "/home/runner/work/_codex_/_codex_",
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001/POLICY-06-07/iteration-003",
+  "template_adaptation": {
+    "acceptance": "P1-P8 scoped results; global gaps remain",
+    "budget": "Two read-only exploration lanes, one pre-edit review and one fresh-context review; 2MiB inventory decode limit per file; metadata-only restricted entries.",
+    "plan": [
+      "inventory and confirm",
+      "review and revise scoped batch",
+      "replay and regress",
+      "retain evidence and continuation"
+    ],
+    "rollback": "Reviewed path-selective revert of task commit only; preserve user work and historical evidence.",
+    "source": ".github/prompts/sprint_execution_plan/TEMPLATE.md",
+    "troubleshooting": "Initial JSON-array fixture corrected to actual workflow JSONL; no production workaround. Formatting and whitespace failures corrected."
+  }
+}

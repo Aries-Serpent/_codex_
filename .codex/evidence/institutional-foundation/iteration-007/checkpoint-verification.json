@@ -1,0 +1,119 @@
+{
+  "status": "PASS",
+  "scope": "Compatible retained successor and source applicability before evidence publication; not operational root storage application",
+  "source_candidate": "a183f97e4f534cd6712588d12d22f821931f5c9c",
+  "sequence": 7,
+  "predecessor": "385b07cd28b557df1fc48b2ddf6f070c01c5f8095dfb609730fbe2162407bd20",
+  "predecessor_sequence": 6,
+  "session_id": "CODEX-INSTITUTIONAL-FOUNDATION-001/iteration-004",
+  "canonical_digest": "6248576676842c041e720b0c76f4d25567bf96bf956992249fc87391a9c68954",
+  "gzip_sha256": "276de71e5fcc637f524c96e19a2ea3fad442cdca90daaaabf3dcff80a48725a6",
+  "canonical_bytes": 12591990,
+  "gzip_bytes": 2740661,
+  "records": 44,
+  "extensions_preserved": true,
+  "required_history_preserved": true,
+  "predecessor_only_generic_experience": [
+    "codex.experience.v1:98e66acc783fb13faab65c713f97170eeb6f213bb6a1cf58c0af004350066d30"
+  ],
+  "predecessor_only_reason": "Original regenerated inventory/trust/audit/role/experience cohort is preserved in immutable predecessor; single current inventory/evidence constraints forbid duplicating it. All review/assurance and custom experiences retained.",
+  "inspect_findings": [],
+  "verify_before_publication": [],
+  "associations": [
+    {
+      "artifact_digest": "b01c4035e4d21a82458df07918729c43b6ca0f5d3e2e88057f22996a0323904c",
+      "association": "unbound-diagnostic",
+      "authority": "none"
+    },
+    {
+      "artifact_digest": "81e2ef417198f5708e5ca6767a4fbd34213ac10fc288224129bb347b35826a27",
+      "association": "unbound-diagnostic",
+      "authority": "none"
+    },
+    {
+      "artifact_digest": "42ff7e891372967daa88a848e76c8e772ba5234ec920b41b63677becd88b0e69",
+      "association": "unbound-diagnostic",
+      "authority": "none"
+    },
+    {
+      "artifact_digest": "0965ead6ab858c55adb5bc7859735ae464a3f960358a6844151a88abdb0a20e4",
+      "association": "unbound-diagnostic",
+      "authority": "none"
+    },
+    {
+      "artifact_digest": "30ee057a8413675d3ee4157842a3107e5cdee414e03ff60d314f4136a2a15067",
+      "association": "unbound-diagnostic",
+      "authority": "none"
+    },
+    {
+      "artifact_digest": "529ed8e88af6fec9099a7766031f4d5e8b8f569bbe83b7234970e4b32fe840cd",
+      "association": "unbound-diagnostic",
+      "authority": "none"
+    },
+    {
+      "artifact_digest": "ecd5b58b51e02dec3735ead20a5491cde77067d5a007a4ce5812f959b32a1127",
+      "association": "unbound-diagnostic",
+      "authority": "none"
+    },
+    {
+      "artifact_digest": "6f61353b22d372d57a6fbdb0b532288b9218536696769a97558384d0de4d7ecf",
+      "association": "unbound-diagnostic",
+      "authority": "none"
+    },
+    {
+      "artifact_digest": "464f6580dd530b394ae58ce6057cbf9a4fc0ba8f06d1d1ed781d40785540c517",
+      "association": "unbound-diagnostic",
+      "authority": "none"
+    },
+    {
+      "artifact_digest": "cd3f3e3ea3067f0d79862317dbc4c45c3c5436fc65013deed636f1a2567b27ae",
+      "association": "unbound-diagnostic",
+      "authority": "none"
+    },
+    {
+      "artifact_digest": "db033963aafa89d307956f2f009263a006ba5b5bf2396ecc28494973ccdc8aef",
+      "association": "unbound-diagnostic",
+      "authority": "none"
+    },
+    {
+      "artifact_digest": "bd320ffde62e59d609429c05405076256a421a8fbc29a789fb57e769448ebd11",
+      "association": "current-bound",
+      "authority": "none"
+    },
+    {
+      "artifact_digest": "f2153793ac853d4b9c33ae4f6308f1792c837a90fad3777e9231a9f31316abfd",
+      "association": "current-bound",
+      "authority": "none"
+    },
+    {
+      "artifact_digest": "b4d26b3bbd6f1beb588ac7284f6e71f5b730bcec85949e454b4bbce648402b0f",
+      "association": "current-bound",
+      "authority": "none"
+    }
+  ],
+  "historical_pending": {
+    "node": "retention_security",
+    "ready": false,
+    "reason": "declared-blocked"
+  },
+  "current_scoped_pending": {
+    "pending_node": "independent_reproduction",
+    "ready": false,
+    "resume_error": "ASSURANCE_PREREQUISITES"
+  },
+  "operations": [
+    "core.load/validate/inspect_candidate/verify",
+    "assurance semantic replay/readiness/resume",
+    "admission.bind/transition",
+    "deterministic gzip and default-load roundtrip"
+  ],
+  "storage_plan_apply_for_repository_namespace": "NOT_RUN; shared root operational state unchanged; exercised externally installed fixtures instead",
+  "assembly_failures": [
+    "Blocked resume raises ASSURANCE_PREREQUISITES, not a returned ready=false state; corrected procedure asserts rejection.",
+    "Including old generic experience without its superseded generic evidence caused UNRESOLVED_EVIDENCE_REFERENCE; retained that cohort through immutable predecessor, not silent rewriting."
+  ],
+  "G5": "NOT_RUN",
+  "approval": false,
+  "activation": false,
+  "post_publication": "Expected STALE_CHECKPOINT after evidence commit advances source; preserve candidate and rebind later without rewriting digests."
+}

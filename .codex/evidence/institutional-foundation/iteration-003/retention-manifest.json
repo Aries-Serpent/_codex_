@@ -1,0 +1,188 @@
+{
+  "schema": "codex.artifact-retention.evidence.v1",
+  "classification": "Repository-Internal",
+  "source_candidate": "174a7771160725bb6edf54f85d38ed5484753789",
+  "artifacts": [
+    {
+      "path": "before-replay-junit.xml",
+      "sha256": "005d22ffedaa9cfefc1276e4fa37bb17b146bc87df847750aac8fb96b3d8d75b",
+      "bytes": 8019,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "before-replay.txt",
+      "sha256": "16c5b72bba18e8eb3c200a5495430ce2bfaead7b2987f8f2a6ab9ed778a01c2b",
+      "bytes": 8285,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "checkpoint-validation.json",
+      "sha256": "b370cefade3d322924d6cea4d2d6c528c3173898802c80525dd808a5f5c597cc",
+      "bytes": 583,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "checks.txt",
+      "sha256": "404110e97f243f36e26550053b2f8c4c7e961e84ece6ed0bce6875875eb0bc9e",
+      "bytes": 182,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "closure-report.json",
+      "sha256": "4ef6ea9b65da012fa586818a44cd4570ec41adab67ca54543febd2631a1fa5b0",
+      "bytes": 4562,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "conflict-register.json",
+      "sha256": "f765c334969a8224feaa04124ae2895acd8a448d3a5d3c9e833dc680c3970109",
+      "bytes": 36734,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "continuation.json.gz",
+      "sha256": "c3a0c0441f10b9f70b57f37d22e7298ceae5a32dacd7cdebfe8bacecd6768132",
+      "bytes": 2627937,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "execution-scenarios.json",
+      "sha256": "8be57197bc2c8ccef21065d9e53fea79f3aef3b1c48a6549e573ad0b6e8764d4",
+      "bytes": 3855,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "experience.json",
+      "sha256": "ce28c8544027164243ccc771d8b90ba8f901b66d6a0c65a6754cada6b7e0510b",
+      "bytes": 2703,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "guidance-inventory.json.gz",
+      "sha256": "300e0214c65369077daf34eaa550b857f254ab6ef613d2830d65324e19d8528f",
+      "bytes": 4286486,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "package-comparison.json",
+      "sha256": "8475b23d3e37769a2ac12b232eb16c510f5aa197fcdd69c71a199f88edadd0db",
+      "bytes": 1924,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "policy-initial-junit.xml.gz",
+      "sha256": "586a98de36c4db727104d7f6fa7424c5f45f3d9ffcdbeb23d3c4713792e93dcb",
+      "bytes": 3805,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval.",
+      "compression": "gzip; original failed-run bytes preserved exactly",
+      "uncompressed_sha256": "42759f7aa28556665a49fcbe7e0203df7729c225981151a7d534ced7b5bf8fac"
+    },
+    {
+      "path": "policy-junit.xml",
+      "sha256": "72074899b4aa60a5cd42038f19bcddc26805707ee761b1f830bf7f435236247b",
+      "bytes": 3932,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "policy-tests-initial-fixture-failure.txt.gz",
+      "sha256": "505393accbd257efb303db95c2afee34b2a04dafe12818f43a9a426dd01cbd2c",
+      "bytes": 3550,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval.",
+      "compression": "gzip; original failed-run bytes preserved exactly",
+      "uncompressed_sha256": "158fc42730e65abd3e7490596cd83155491cd87a24b03e29087c6041b5a4544f"
+    },
+    {
+      "path": "policy-tests.txt",
+      "sha256": "5a30d1f959f3b71eb131095ace480b3d8eaf7edfcdcb91fc2d9a01be43943a99",
+      "bytes": 113,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "preflight.json",
+      "sha256": "5446ec94ed3849f0427febad500975d23fefaaa8b1587539491a9367c7fa4c53",
+      "bytes": 2656,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "reference-checks.json",
+      "sha256": "ea037510552063cf2ff7f84215079eae2d255d248f69b2ba5b2482159fdfec90",
+      "bytes": 2411,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "remaining-leads.json",
+      "sha256": "f47e74c50974864b27d7a69927c1697236b8c170ee64d802a37cb3d0c3beee41",
+      "bytes": 82832,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "review.json",
+      "sha256": "eb87280c224c0edfdf6566e61d84a56fe1183c27fdcd4c88fcf7e23308473777",
+      "bytes": 1570,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "revision-map.json",
+      "sha256": "e786a95c1bce3fa3e2dd40bd6650788ccaa6dcea99b8bd3b82c041ec5c79b32c",
+      "bytes": 4121,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "runtime-packaging-junit.xml",
+      "sha256": "cefe6b1f24747c0e223094a4c2ad39d93304b1f8b4ad94627f1b37cb69a7e3b2",
+      "bytes": 9987,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "runtime-packaging-tests.txt",
+      "sha256": "a36895098b5e374d06e6e6a444103432f94f210204b123abfca038659016abf2",
+      "bytes": 179,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "validation.json",
+      "sha256": "8edcb3e4cceb2bd1962989940c63a440b962333897c92d3ed859d3a9e2921923",
+      "bytes": 2528,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "wrapup-junit.xml",
+      "sha256": "4806b527062e4ee6af7b20e433aea97ec21e885f15b6bdcaab6927d5192a16de",
+      "bytes": 1569,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    },
+    {
+      "path": "wrapup-tests.txt",
+      "sha256": "aa3b08c10d6f5981ebf0d46e1ee770eeab66e44245d950bc97237a8e5c384f79",
+      "bytes": 99,
+      "classification": "Repository-Internal",
+      "basis": "Task source evidence, test results and bounded continuation; not authenticated approval."
+    }
+  ],
+  "self_hash": "excluded to avoid recursion; Git commit identifies this manifest",
+  "temporary_storage": "Only disposable replay fixtures used temporary directories; no unique useful evidence retained solely in tmp. User bytes never moved or replaced."
+}

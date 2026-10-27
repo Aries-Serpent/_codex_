@@ -1,0 +1,6 @@
+{
+  "actor": "same-platform:implementer",
+  "model": "unverified",
+  "policy": "Repository-Internal fixture, no approval",
+  "source_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf"
+}

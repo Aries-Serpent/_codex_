@@ -65,12 +65,12 @@ def preview_diff(target: Path, new_content: str) -> str:
     diff = difflib.unified_diff(
         old_content.splitlines(keepends=True),
         new_content.splitlines(keepends=True),
-        fromfile=str(target.relative_to(REPO_ROOT))
-        if target.is_relative_to(REPO_ROOT)
-        else str(target),
-        tofile=str(target.relative_to(REPO_ROOT))
-        if target.is_relative_to(REPO_ROOT)
-        else str(target),
+        fromfile=(
+            str(target.relative_to(REPO_ROOT)) if target.is_relative_to(REPO_ROOT) else str(target)
+        ),
+        tofile=(
+            str(target.relative_to(REPO_ROOT)) if target.is_relative_to(REPO_ROOT) else str(target)
+        ),
         lineterm="",
     )
     lines = list(diff)

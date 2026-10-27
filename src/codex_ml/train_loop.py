@@ -41,7 +41,7 @@ import os
 import random
 import sys
 import time
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import asdict, dataclass, is_dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -89,7 +89,9 @@ try:
     from codex_ml.utils.repro import record_dataset_checksums
 except (ImportError, AttributeError):
 
-    def record_dataset_checksums(*_, **__) -> dict[str, Any]:
+    def record_dataset_checksums(
+        files: Iterable[Path], out_path: Path, *, dataset_name: str | None = None
+    ) -> dict[str, str]:
         return {}
 
 
@@ -97,7 +99,7 @@ try:
     from codex_ml.utils.seeding import set_reproducible
 except (ImportError, AttributeError):
 
-    def set_reproducible(*_, **__) -> None:
+    def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> None:
         return None
 
 
@@ -105,7 +107,7 @@ try:
     from codex_ml.telemetry import start_metrics_server
 except (ImportError, AttributeError):
 
-    def start_metrics_server(*_, **__) -> None:
+    def start_metrics_server(port: int = 8000, addr: str = "127.0.0.1") -> bool | None:
         return None
 
 
@@ -200,7 +202,13 @@ try:
     from codex_ml.utils.retention import prune_checkpoints
 except (ImportError, AttributeError):
 
-    def prune_checkpoints(*args, **kwargs) -> dict[str, Any]:
+    def prune_checkpoints(
+        checkpoint_dir: str | Path,
+        keep_last: int | None = None,
+        keep_every: int | None = None,
+        max_epochs: int | None = None,
+        dry_run: bool = False,
+    ) -> dict[str, object]:
         return {"dry_run": True}
 
 
@@ -656,7 +664,7 @@ def _assert_bf16_capability(
     want_bf16 = False
     try:
         import torch as _torch
-    except (ConnectionError, TimeoutError) as exc:  # pragma: no cover - environment dependent
+    except ImportError as exc:  # pragma: no cover - environment dependent
         if requested_dtype and str(requested_dtype).lower() in {"bf16", "bfloat16"}:
             raise RuntimeError("bf16 required but PyTorch is not installed") from exc
         return
@@ -675,22 +683,21 @@ def _assert_bf16_capability(
         a = _torch.ones((2, 2), dtype=bf16)
         b = _torch.ones((2, 2), dtype=bf16)
         if device is not None:
-            try:
-                a = a.to(device)
-                b = b.to(device)
-            except (ValueError, TypeError, RuntimeError):
-                # If placement fails, let the matmul attempt occur on default device.
-                logger.debug(
-                    "Suppressed exception in handler", exc_info=True
-                )  # codeql[py/clear-text-logging-sensitive-data]
+            a = a.to(device)
+            b = b.to(device)
         _ = a @ b
     except (
         IOError,
         OSError,
         ModuleNotFoundError,
         ImportError,
+        ValueError,
+        TypeError,
+        RuntimeError,
     ) as exc:  # pragma: no cover - runtime check
-        raise RuntimeError("bf16 required but runtime cannot construct bfloat16 tensors") from exc
+        raise RuntimeError(
+            "bf16 required but runtime cannot execute bfloat16 matmul on the requested device"
+        ) from exc
 
 
 def _attempt_resume(model, optimizer, scheduler, checkpoint_dir: str | Path):
@@ -1264,7 +1271,10 @@ def run_training(
         checksum_target = (
             (art_dir_path / "dataset_checksums.json") if art_dir_path is not None else None
         )
-        recorded = record_dataset_checksums(paths, checksum_target)
+        if checksum_target is not None:
+            recorded = record_dataset_checksums(paths, checksum_target)
+        else:
+            recorded = {path.name: sha256sum(path) for path in paths if path.exists()}
         if isinstance(recorded, dict):
             dataset_checksum_map = recorded
             dataset_checksums = list(recorded.values())
@@ -1403,7 +1413,7 @@ def run_training(
     # Extract optimizer and DP setup to helper (reduces ~20 branches)
     from codex_ml._train_init_helpers import setup_optimizer_with_dp
 
-    optimizer, privacy_engine = setup_optimizer_with_dp(
+    model, optimizer, train_loader, privacy_engine = setup_optimizer_with_dp(
         model, learning_rate, dtype_obj, dp_settings, train_loader
     )
 
@@ -1470,7 +1480,15 @@ def run_training(
     for cb in cb_list:
         try:
             cb.on_train_start(state)
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+            ValueError,
+            TypeError,
+            RuntimeError,
+        ) as e:
             cb.record_error("on_train_start", e, state)
             logger.warning(
                 "Callback on_train_start error: %s", e
@@ -1802,11 +1820,11 @@ def run_training(
     # ------------------------------------------------------------------
     # Model drift detector (Gap 18) — imported lazily; never crashes training.
     # ------------------------------------------------------------------
-    _drift_detector = None
+    _model_drift_detector = None
     try:
         from codex_ml.monitoring.model_drift import ModelDriftDetector as _DriftDet
 
-        _drift_detector = _DriftDet()
+        _model_drift_detector = _DriftDet()
     except (ImportError, AttributeError):  # pragma: no cover — optional dependency
         logger.debug(
             "ModelDriftDetector unavailable; drift monitoring disabled."
@@ -1816,7 +1834,7 @@ def run_training(
     # Data drift detector — initialised once per run; called after the
     # performance monitor block inside the epoch loop.
     # ------------------------------------------------------------------
-    _drift_detector = _DataDriftDetector()
+    _data_drift_detector = _DataDriftDetector()
     _drift_reference: list[float] | None = None  # set on first epoch
 
     # ------------------------------------------------------------------
@@ -2110,7 +2128,7 @@ def run_training(
                         "Data drift: reference distribution seeded at epoch %d", epoch
                     )  # codeql[py/clear-text-logging-sensitive-data]
                 else:
-                    _drift_results = _drift_detector.check_epoch(
+                    _drift_results = _data_drift_detector.check_epoch(
                         _drift_reference,
                         _loss_dist,
                         epoch=epoch,
@@ -2138,7 +2156,7 @@ def run_training(
                 )  # codeql[py/clear-text-logging-sensitive-data]
 
             # Model drift detection (Gap 18) — must never crash training.
-            if _drift_detector is not None:
+            if _model_drift_detector is not None:
                 try:
                     # Derive per-step confidence proxies from the synthetic loss values
                     # collected during this epoch: confidence ≈ exp(-loss), clipped to [0,1].
@@ -2151,11 +2169,13 @@ def run_training(
                     )
 
                     if _epoch_conf_scores:
-                        if not _drift_detector.has_baseline():
+                        if not _model_drift_detector.has_baseline():
                             # First epoch always becomes the baseline reference.
-                            _drift_detector.update_baseline(_epoch_conf_scores)
+                            _model_drift_detector.update_baseline(_epoch_conf_scores)
                         else:
-                            _drift_result = _drift_detector.check(_epoch_conf_scores, epoch=epoch)
+                            _drift_result = _model_drift_detector.check(
+                                _epoch_conf_scores, epoch=epoch
+                            )
                             if _drift_result.drift_detected:
                                 logger.warning(
                                     "Model drift detected at epoch %d: %s",
@@ -2313,6 +2333,12 @@ def main(argv: Sequence[str] | None = None) -> None:
     parser.add_argument("--grad-accum", type=int, default=1, help="Gradient accumulation steps")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument(
+        "--model-name",
+        type=str,
+        default=None,
+        help="Registered model name to instantiate",
+    )
+    parser.add_argument(
         "--art-dir",
         type=str,
         default=None,
@@ -2325,6 +2351,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         grad_accum=args.grad_accum,
         seed=args.seed,
         art_dir=args.art_dir,
+        model_name=args.model_name,
     )
 
 
