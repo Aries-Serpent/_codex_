@@ -159,6 +159,27 @@ class TestAuthHeader:
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.parametrize("name", ["AGENT_GITHUB_TOKEN", "GITHUB_TOKEN"])
+def test_installation_token_fallback(name: str) -> None:
+    env_copy = {k: v for k, v in os.environ.items() if k not in _AUTH_ENV_VARS}
+    env_copy[name] = "  installation-test-key  "
+    with patch.dict(os.environ, env_copy, clear=True):
+        assert BrainClient(base_url="http://x")._auth_header() == {
+            "Authorization": "Bearer installation-test-key"
+        }
+
+
+def test_header_is_sent_without_logging_credentials(caplog) -> None:
+    with (
+        patch.dict(os.environ, {"CODEX_MASTER_KEY": "wire-test-key"}, clear=True),
+        patch("urllib.request.urlopen", return_value=_make_response({"status": "ok"})) as send,
+    ):
+        BrainClient(base_url="http://x").health()
+    request = send.call_args.args[0]
+    assert request.get_header("Authorization") == "Bearer wire-test-key"
+    assert "wire-test-key" not in caplog.text
+
+
 class TestIsAvailable:
     def test_true_when_server_healthy(self) -> None:
         b = BrainClient(base_url="http://x")
@@ -374,7 +395,9 @@ class TestMemorySearch:
             b.memory_search("D_CAPABLE test", limit=10)
 
         assert len(captured_urls) == 1, "Captured_urls must not be empty"
-        assert "D_CAPABLE+test" in captured_urls[0] or "D_CAPABLE%20test" in captured_urls[0], "Condition must be true"
+        assert (
+            "D_CAPABLE+test" in captured_urls[0] or "D_CAPABLE%20test" in captured_urls[0]
+        ), "Condition must be true"
         assert "limit=10" in captured_urls[0], "Condition must be true"
 
     def test_returns_items(self) -> None:

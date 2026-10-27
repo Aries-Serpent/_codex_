@@ -1,6 +1,6 @@
 # CTEP Quick Reference Card
 
-> **Version:** 1.0.0  
+> **Version:** 2.0.0
 > **Full Documentation:** [Copilot_Task_Execution_Protocol.md](./Copilot_Task_Execution_Protocol.md)
 
 ---
@@ -23,12 +23,12 @@
 ┌─────────────────────────────────────────────────────────────┐
 │  🎯 CTEP ACTIVE - COMPREHENSIVE TASK COMPLETION MODE        │
 ├─────────────────────────────────────────────────────────────┤
-│  ✅ Complete ALL tasks - no exceptions                      │
+│  ✅ Account for all tasks; respect task authority             │
 │  📊 Live progress tracker required                          │
 │  🔍 Codebase audit before new code                          │
 │  🧰 Document all new utilities                              │
 │  🔄 Update after each task                                  │
-│  ✅ Verify: Completed = Total, Skipped = 0                  │
+│  ✅ Total = Completed + Blocked + Deferred + Pending          │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -73,10 +73,10 @@
 ## ✅ Completion Summary
 
 **Total Tasks**: X
-**Completed**: X ✅
-**Skipped**: 0 ❌
+**Completed**: C | **Blocked**: B | **Deferred**: D | **Pending**: P
+**Accounting**: X = C + B + D + P
 
-**CTEP Compliance**: ✅ PASS
+**Acceptance**: [actual evidence-supported status, not tracking compliance]
 ```
 
 ---
@@ -97,13 +97,13 @@
 
 Before completing response:
 
-- [ ] All tasks from request completed
-- [ ] Zero tasks skipped
+- [ ] Every task accounted for, including incomplete work
+- [ ] Blocked/deferred/pending tasks have evidence, proposed owner and next action
 - [ ] Codebase audit performed
 - [ ] Existing utilities reused where applicable
 - [ ] Progress tracker maintained
-- [ ] No TODO statements left
-- [ ] Verification: `Completed = Total`
+- [ ] Required security owner/reason classification and approvals preserved
+- [ ] Verification: `Total = Completed + Blocked + Deferred + Pending`
 
 ---
 
@@ -129,11 +129,17 @@ User: Disable CTEP
 
 ## Prohibited Actions
 
-❌ Skipping tasks  
-❌ Leaving TODOs  
+❌ Silently omitting or falsely completing tasks
+❌ Bypassing task authority or required controls
 ❌ Duplicate utilities  
 ❌ Missing progress updates  
-❌ Incomplete verification  
+❌ Claiming unperformed verification
+
+Read-only means inspection/reporting only, no edits or session dispatch.
+Incomplete tasks remain incomplete; continue unaffected authorized work.
+Optional memory/specialists are not gates to direct execution. Resource ceilings
+stop affected actions safely. Publication, merges, settings and activation require
+applicable authorization. Follow the [current agency policy](../../.codex/CODEBASE_AGENCY_POLICY.md).
 
 ---
 
@@ -142,6 +148,6 @@ User: Disable CTEP
 | Situation | Command |
 |-----------|---------|
 | Reset progress | "Reset CTEP progress" |
-| Force complete | "Complete all CTEP tasks now" |
+| Review remaining work | "Show incomplete tasks, blockers and next actions" |
 | Status check | "Show CTEP session status" |
 | Exit immediately | "Disable CTEP" |

@@ -1,0 +1,22 @@
+{
+  "artifact_type": "retention_binding",
+  "source_candidate": "a183f97e4f534cd6712588d12d22f821931f5c9c",
+  "manifest": {
+    "path": "retention-manifest.json",
+    "sha256": "79e9c81d1c51bc88c6952b8eb24926cc2dc23fd9055d5abce32767be208ffa36",
+    "canonical_digest": "f8a4b5da9c9e1f2ffd92a69b2102c57661b69990c916658cbfb51d72317d8e49"
+  },
+  "checkpoint": {
+    "path": "continuation.json.gz",
+    "sequence": 7,
+    "predecessor": "385b07cd28b557df1fc48b2ddf6f070c01c5f8095dfb609730fbe2162407bd20",
+    "canonical_digest": "6248576676842c041e720b0c76f4d25567bf96bf956992249fc87391a9c68954",
+    "sha256": "276de71e5fcc637f524c96e19a2ea3fad442cdca90daaaabf3dcff80a48725a6"
+  },
+  "verification": {
+    "path": "checkpoint-verification.json",
+    "sha256": "4b79b4babd412302f95a3ea9dc64da0dd773712d13de753471784c4ccb32173a"
+  },
+  "scope": "Integrity, not independently trusted custody or approval",
+  "self_binding": "Actual final Git commit externally binds this file; no self-referential commit hash."
+}

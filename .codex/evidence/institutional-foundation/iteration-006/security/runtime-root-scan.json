@@ -1,0 +1,18 @@
+{
+  "tool": "runtime-tools-secret_scanning",
+  "tool_version": "Not supplied by tool",
+  "paths": [
+    ".codex/evidence/institutional-foundation/iteration-005/assurance-resume-cache.json",
+    ".codex/evidence/institutional-foundation/iteration-005/checkpoint-verification.json",
+    ".codex/evidence/institutional-foundation/iteration-005/experience-final.json",
+    ".codex/evidence/institutional-foundation/iteration-005/final-secret-scan.json",
+    ".codex/evidence/institutional-foundation/iteration-005/gate-adjudication.json"
+  ],
+  "submitted_file_count": 5,
+  "actual_tool_response": "No secrets detected in the scanned files. Safe to proceed with commit.",
+  "interpretation": "No secrets reported for five explicit root text files. The tool response is not authorization to commit and does not establish archive traversal.",
+  "digest_binding": "current-scope.json#/root_text_requires_runtime_scan; pre-scan hashes separately rechecked after the tool response.",
+  "current_gzip_checkpoint": "continuation.json.gz was decoded and scanned separately using detect-secrets; see archive-member-manifest.json.",
+  "scan_receipt_self_coverage": "This iteration-006 receipt and other generated security outputs were not included in this five-file scan.",
+  "approval": "NOT_RUN"
+}

@@ -1,0 +1,3 @@
++ cd /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/work
++ env -u PYTHONPATH /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/bin/python -I -B /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/workflow.py repository
+{"status": "PASS", "new_checks": 18, "mode": "repository"}

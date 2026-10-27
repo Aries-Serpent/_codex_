@@ -155,7 +155,11 @@ def _is_local_or_reserved_hostname(hostname: str | None) -> bool:
     host = hostname.lower().rstrip(".")
     if host in {"localhost", "localhost.localdomain", "ip6-localhost", "ip6-loopback"}:
         return True
-    if host.endswith(".localhost") or host.endswith(".localhost.localdomain") or host.endswith(".local"):
+    if (
+        host.endswith(".localhost")
+        or host.endswith(".localhost.localdomain")
+        or host.endswith(".local")
+    ):
         return True
     if any(ch in host for ch in ("\x00", "\n", "\r", "\t", " ")):
         return True

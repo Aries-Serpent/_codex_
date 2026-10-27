@@ -2,13 +2,10 @@ from __future__ import annotations
 
 import math
 import sys
-from pathlib import Path
 
 import pytest
 
-# Import semantic assertions
-sys.path.insert(0, str(Path(__file__).parent))
-from conftest_semantic_assertions import (
+from tests.conftest_semantic_assertions import (
     assert_instance_of,
     assert_zero_boundary,
 )
@@ -881,7 +878,7 @@ class TestTypeCoercion:
 
     def test_none_vs_false_distinction(self):
         """Test distinction between None and False."""
-        assert None, "None is not valid"
+        assert bool(None) is False
         assert None is not False, "None is not valid"
         assert False == 0, "False is not valid"
         assert None != 0, "None is not valid"

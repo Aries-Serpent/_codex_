@@ -327,17 +327,17 @@ class AgentTestHarness(ABC):
         durations = []
         errors = []
 
-        start = time.time()
+        start = time.perf_counter()
         for i in range(iterations):
             try:
-                iter_start = time.time()
+                iter_start = time.perf_counter()
                 self.execute_agent(inputs)
-                iter_duration = (time.time() - iter_start) * 1000
+                iter_duration = (time.perf_counter() - iter_start) * 1000
                 durations.append(iter_duration)
             except Exception as e:
                 errors.append(str(e))
 
-        total_time = (time.time() - start) * 1000
+        total_time = (time.perf_counter() - start) * 1000
 
         benchmark = {
             "iterations": iterations,
@@ -403,16 +403,10 @@ class AgentTestHarness(ABC):
             "total_tests": total,
             "passed": self.success_count,
             "failed": self.failure_count,
-            "pass_rate": (
-                self.success_count / total * 100 if total > 0 else 0
-            ),
-            "total_time_ms": sum(
-                r.duration_ms for r in self.test_results
-            ),
+            "pass_rate": (self.success_count / total * 100 if total > 0 else 0),
+            "total_time_ms": sum(r.duration_ms for r in self.test_results),
             "avg_time_ms": (
-                sum(r.duration_ms for r in self.test_results) / total
-                if total > 0
-                else 0
+                sum(r.duration_ms for r in self.test_results) / total if total > 0 else 0
             ),
             "metrics": self.metrics.to_dict(),
         }
@@ -447,9 +441,7 @@ class AgentTestHarness(ABC):
 
         for result in self.test_results:
             status_str = f"[{result.status.value.upper()}]"
-            lines.append(
-                f"  {status_str} {result.test_name} ({result.duration_ms:.2f}ms)"
-            )
+            lines.append(f"  {status_str} {result.test_name} ({result.duration_ms:.2f}ms)")
             if result.failures:
                 for failure in result.failures:
                     lines.append(f"      → {failure}")
@@ -476,32 +468,24 @@ class AgentTestPattern:
             assert key in result, f"Missing key: {key}"
 
     @staticmethod
-    def error_recovery_test(
-        harness: AgentTestHarness, invalid_inputs: Dict[str, Any]
-    ) -> None:
+    def error_recovery_test(harness: AgentTestHarness, invalid_inputs: Dict[str, Any]) -> None:
         """Test error recovery and handling."""
         try:
             result = harness.execute_agent(invalid_inputs)
             # Should have error status
-            assert (
-                "status" in result and result["status"] == "error"
-            ) or "error" in result
+            assert ("status" in result and result["status"] == "error") or "error" in result
         except Exception as e:
             # Error handling is acceptable
             pass
 
     @staticmethod
-    def idempotency_test(
-        harness: AgentTestHarness, inputs: Dict[str, Any]
-    ) -> None:
+    def idempotency_test(harness: AgentTestHarness, inputs: Dict[str, Any]) -> None:
         """Test that repeated executions produce same results."""
         result1 = harness.execute_agent(inputs)
         result2 = harness.execute_agent(inputs)
 
         # Results should be equivalent
-        assert json.dumps(result1, sort_keys=True) == json.dumps(
-            result2, sort_keys=True
-        )
+        assert json.dumps(result1, sort_keys=True) == json.dumps(result2, sort_keys=True)
 
     @staticmethod
     def performance_test(
@@ -513,6 +497,4 @@ class AgentTestPattern:
         """Test performance meets requirements."""
         benchmark = harness.benchmark_execution(inputs, iterations)
         avg_time = benchmark["avg_duration_ms"]
-        assert (
-            avg_time <= max_ms
-        ), f"Average execution time {avg_time}ms exceeds {max_ms}ms"
+        assert avg_time <= max_ms, f"Average execution time {avg_time}ms exceeds {max_ms}ms"

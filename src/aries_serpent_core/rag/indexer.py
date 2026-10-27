@@ -38,7 +38,9 @@ def _safe_log_value(value: object) -> str:
     """Normalize dynamic values for safe logging."""
     if value is None:
         return "[NONE]"
-    return sanitize_log_message(str(value)).replace("\r", " ").replace("\n", " ").strip() or "[EMPTY]"
+    return (
+        sanitize_log_message(str(value)).replace("\r", " ").replace("\n", " ").strip() or "[EMPTY]"
+    )
 
 
 try:

@@ -1,0 +1,177 @@
+{
+  "authority_refs": [],
+  "created_at": "2026-10-25T00:00:00Z",
+  "evidence_refs": [],
+  "extensions": {},
+  "id": "codex.review.v1:23492873fa488acbb3689f13606486a610639cc8296c0b7232caece23ed51089",
+  "integrity": "8c524b239079494dea550381bca556782754e545c04db829b6cdffe1581a24cb",
+  "lifecycle": "Draft",
+  "payload": {
+    "data": {
+      "events": [
+        {
+          "action": "block",
+          "binding": "adbd6f4a11ce04d188f5629d784f50bf3de98b0c3c5900b9262e0360fe2e70d9",
+          "content_id": "4f75896b8e68852a31ef92d73e4252e699a366066e159b24a90a46fcf099df60",
+          "data": {
+            "blocked_from_state": "initial",
+            "cause": "missing-required-lane",
+            "clearance_conditions": [
+              "supply-bound-output"
+            ],
+            "pending_requirement": "lane:risk",
+            "scope": "risk"
+          },
+          "event_id": "a91d118d-addf-4c65-bfbc-d6fd66d6bc74",
+          "plan_digest": "c4b9e70f8dba2ebda87886f969ea4aeaf20e9c694dc9c04c79e0393103572f9e",
+          "sequence": 1
+        }
+      ],
+      "plan": {
+        "authority_refs": [],
+        "created_at": "2026-10-25T00:00:00Z",
+        "evidence_refs": [],
+        "extensions": {},
+        "id": "codex.review.v1:3d4fbda853544f679851db7af152d85f43fcba9ee4fd77713f5991f5d7283a95",
+        "integrity": "f050efa2b6e2de26c15e05dd8295049911733007a0a59bf8063c5c3a6dff8685",
+        "lifecycle": "Draft",
+        "payload": {
+          "data": {
+            "binding": "adbd6f4a11ce04d188f5629d784f50bf3de98b0c3c5900b9262e0360fe2e70d9",
+            "coordinator_role": "implementer",
+            "critical": [
+              "security"
+            ],
+            "independence": "unverified",
+            "lanes": [
+              {
+                "actor": "same-platform:logic",
+                "bearing": "correctness",
+                "coverage": [
+                  "correctness",
+                  "security"
+                ],
+                "dissent": false,
+                "id": "logic",
+                "required": true,
+                "run": "wheel-fixture:logic",
+                "tools": [
+                  "read",
+                  "search"
+                ]
+              },
+              {
+                "actor": "same-platform:risk",
+                "bearing": "security",
+                "coverage": [
+                  "correctness",
+                  "security"
+                ],
+                "dissent": false,
+                "id": "risk",
+                "required": true,
+                "run": "wheel-fixture:risk",
+                "tools": [
+                  "read",
+                  "search"
+                ]
+              },
+              {
+                "actor": "same-platform:dissent",
+                "bearing": "cross-cutting",
+                "coverage": [
+                  "correctness",
+                  "security"
+                ],
+                "dissent": true,
+                "id": "dissent",
+                "required": true,
+                "run": "wheel-fixture:dissent",
+                "tools": [
+                  "read",
+                  "search"
+                ]
+              },
+              {
+                "actor": "same-platform:rotated",
+                "bearing": "followup",
+                "coverage": [
+                  "correctness",
+                  "security"
+                ],
+                "dissent": false,
+                "id": "rotated",
+                "required": false,
+                "run": "wheel-fixture:rotated",
+                "tools": [
+                  "read",
+                  "search"
+                ]
+              }
+            ],
+            "mandatory": [
+              "correctness",
+              "security"
+            ],
+            "manifest": {
+              "authority_refs": [],
+              "created_at": "2026-10-25T00:00:00Z",
+              "evidence_refs": [],
+              "extensions": {},
+              "id": "codex.review.v1:5e14cdbf6e9b76593527416b15fbce2ea827794b428781635eafe5cbea6ab81a",
+              "integrity": "102c670c01817311c6d79623014c45c5e5b0b57b5bb5972ecf4a6fcfdc8dbb46",
+              "lifecycle": "Draft",
+              "payload": {
+                "data": {
+                  "classification": "Repository-Internal",
+                  "context_digest": "aa2c2c62a196c5be8c85cd57c93aeb8b92a5233b79f671533e66c501deb5a641",
+                  "entries": [
+                    {
+                      "mode": 420,
+                      "path": "src/example.py",
+                      "sha256": "8c4c92212a384a14b0cda01dbbb5cc76580513550339da6d13affbf939c60f54",
+                      "size": 25
+                    }
+                  ],
+                  "rules": {
+                    "archives": "opaque-no-expansion",
+                    "hardlinks": "independent-bytes",
+                    "line_endings": "raw",
+                    "permissions": "explicit-posix-mode",
+                    "submodules": "reject",
+                    "symlinks": "reject"
+                  }
+                },
+                "kind": "manifest"
+              },
+              "producer": {
+                "assurance": "unverified",
+                "identity": "codex-institutional"
+              },
+              "schema": "codex.review.v1",
+              "supersedes": null,
+              "validation_state": "candidate"
+            },
+            "mode": "supplement"
+          },
+          "kind": "plan"
+        },
+        "producer": {
+          "assurance": "unverified",
+          "identity": "codex-institutional"
+        },
+        "schema": "codex.review.v1",
+        "supersedes": null,
+        "validation_state": "candidate"
+      }
+    },
+    "kind": "history"
+  },
+  "producer": {
+    "assurance": "unverified",
+    "identity": "codex-institutional"
+  },
+  "schema": "codex.review.v1",
+  "supersedes": null,
+  "validation_state": "candidate"
+}

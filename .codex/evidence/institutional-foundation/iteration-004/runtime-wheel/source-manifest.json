@@ -1,0 +1,256 @@
+{
+  "manifest_scope": "27 focused committed source-file hashes/git blobs plus committed source-tree identity and harness digest; not a full exported-source manifest.",
+  "source_export": "NOT_RUN; planned_export_paths are the unexecuted proposed export scope.",
+  "exclusions": [
+    ".github/agents",
+    "working-tree dirty files",
+    "untracked files"
+  ],
+  "focused_source_files": {
+    ".copilot-space/workflow.yaml": {
+      "bytes": 7113,
+      "git_blob": "1f3bb9e542fb79a1551469e264c7acc19a6a7ee0",
+      "mode": "100644",
+      "sha256": "760d07308a51efb202a70f71cb8909100eb9f26fb2e67eb0a171e11c82840fdf"
+    },
+    "LICENSE": {
+      "bytes": 2200,
+      "git_blob": "d57ccb6efe98bfab99c3b9bbdd4805570f85585f",
+      "mode": "100644",
+      "sha256": "a3957f5993937f14ca56474ea28abdee9a37a999ac3773fbb65315108ba905ad"
+    },
+    "LICENSES/LICENSE": {
+      "bytes": 2200,
+      "git_blob": "d57ccb6efe98bfab99c3b9bbdd4805570f85585f",
+      "mode": "100644",
+      "sha256": "a3957f5993937f14ca56474ea28abdee9a37a999ac3773fbb65315108ba905ad"
+    },
+    "LICENSES/codex-universal-image-sbom.md": {
+      "bytes": 7878,
+      "git_blob": "a333020e997c6f5aebb7780a3a95761495764d92",
+      "mode": "100644",
+      "sha256": "7be24430523a1dc905f597200b9c08944051cddfeca034d8b8fb8c9e36fb3dd8"
+    },
+    "LICENSES/codex-universal-image-sbom.spdx.json": {
+      "bytes": 36165,
+      "git_blob": "57ec0344ac0d8b5ccc0b0a9d8f7e6add5605bbc9",
+      "mode": "100644",
+      "sha256": "f01f881af43a69cb75ce2fc90546e5dd493123e1a3a6efd1f38aea8d3f262c1f"
+    },
+    "MANIFEST.in": {
+      "bytes": 1178,
+      "git_blob": "a29570aae4c5daef69305324f5d230d4e7873ae2",
+      "mode": "100644",
+      "sha256": "a012e677a5a0dca5ce163df5ee1e4a1e24062eaf5c28c575d9aeb5c39a1d77f5"
+    },
+    "README.md": {
+      "bytes": 65217,
+      "git_blob": "c1bbbbef96f83e62b2372e06a8c10c44837b8af4",
+      "mode": "100644",
+      "sha256": "9df9459105e729f7ed365ca7e74f7c75bdade28e246a17c36aeeb6aec6ccd0c0"
+    },
+    "packages/contracts/LICENSE.txt": {
+      "bytes": 1132,
+      "git_blob": "5206315343e8934af743c634a7203dc32adabf42",
+      "mode": "100644",
+      "sha256": "7cd9afc49a981265664047d5183b3f5643207a08f95011ead601a24ca6961240"
+    },
+    "packages/contracts/README.md": {
+      "bytes": 709,
+      "git_blob": "de88add8979cb6ec6f71c30fc4ea7e3d7e46d65f",
+      "mode": "100644",
+      "sha256": "900743759a4c66896a6d771f419608f5229478b6c7c930a507898f63f5edef49"
+    },
+    "packages/contracts/pyproject.toml": {
+      "bytes": 1413,
+      "git_blob": "59607e58c950925870070d2e0afb4f5092c6ee5b",
+      "mode": "100644",
+      "sha256": "d6eb243da7856890a144852369c3df87022e280d4d0adb6871defcf161a3b007"
+    },
+    "packages/contracts/src/codex_contracts/__about__.py": {
+      "bytes": 48,
+      "git_blob": "65037d948b8dfde7d573120ec0da04dda27e9b86",
+      "mode": "100644",
+      "sha256": "3428fbd74f6e3a91732bd2f4f004686a6ca1a5f9564330883a04b23c720a8e1e"
+    },
+    "packages/contracts/src/codex_contracts/__init__.py": {
+      "bytes": 424,
+      "git_blob": "bad3bbf5168806596f0c047c8647a8e16535a72a",
+      "mode": "100644",
+      "sha256": "75a01f61f9f4780f69fdc76a32b881f750a6a10f6e53a7d4315adaac335863ef"
+    },
+    "packages/contracts/src/codex_contracts/_validation.py": {
+      "bytes": 3260,
+      "git_blob": "968c547ced06e79b507a62d364c944b3bbdd9cb4",
+      "mode": "100644",
+      "sha256": "aab87c69bc842262029febc46db791eea5970c32a4e195417bbad83745325fbe"
+    },
+    "packages/contracts/src/codex_contracts/artifacts.py": {
+      "bytes": 4359,
+      "git_blob": "276c5f9585562a7f4e3e47d4e4fe25703bfaf181",
+      "mode": "100644",
+      "sha256": "b3e1330fdb504226cc1ccfb942f2adf4bd58e434fb9dff511b4a5eaaef7477df"
+    },
+    "packages/contracts/src/codex_contracts/errors.py": {
+      "bytes": 1297,
+      "git_blob": "99389cb6d4da4708dc9dcce8ad1a2568f5f45477",
+      "mode": "100644",
+      "sha256": "8a995490ad3a7050491cf40005236bb647337cf196732645c66f099e7e104f19"
+    },
+    "packages/contracts/src/codex_contracts/events.py": {
+      "bytes": 7630,
+      "git_blob": "a9ab24f36d2e0715a0dcd60c55494a59c24178d8",
+      "mode": "100644",
+      "sha256": "d865bdbee1cff6311bae465c21afbc3700b11b6800c2220e2f18fb857ee2043f"
+    },
+    "packages/contracts/src/codex_contracts/plugins.py": {
+      "bytes": 442,
+      "git_blob": "c0f90f9ae6b511818a7b834efaa7ce86aa0b08dd",
+      "mode": "100644",
+      "sha256": "37a118da40b6ddae8801f7b0d0c2959e3842ce670f538fd070c802136cae95dc"
+    },
+    "pyproject.toml": {
+      "bytes": 33684,
+      "git_blob": "19856d03cc7059010d5bd325d8be76a2eacc4141",
+      "mode": "100644",
+      "sha256": "4ea38b8ac5ae3058a15297f8c500e8f00c8efe5d0ddbd064bcc705c0276ff02e"
+    },
+    "src/codex/institutional/__init__.py": {
+      "bytes": 176,
+      "git_blob": "5949bfe5306acffaf571970bbaa292a2cc8c30d3",
+      "mode": "100644",
+      "sha256": "9156844c6bf4c6095162cac331546fb5a4477027bce53838c16946a1570b47aa"
+    },
+    "src/codex/institutional/__main__.py": {
+      "bytes": 5977,
+      "git_blob": "3981c9385681d338e5545ecb62c840983d137abd",
+      "mode": "100644",
+      "sha256": "dd1898fcc835a005dfa6a866e07c29703faf7efbe5c5ef73c1a1dbc9cb299d9c"
+    },
+    "src/codex/institutional/authority.py": {
+      "bytes": 6076,
+      "git_blob": "8e01de3d4b1cad5e4904d53c0becbee6c84384e5",
+      "mode": "100644",
+      "sha256": "95946e4a65191dcb8525f59f641abb31e874f3bfeacfc7aae641cf8349320d95"
+    },
+    "src/codex/institutional/contracts.json": {
+      "bytes": 5892,
+      "git_blob": "27ba4bff7b2dc58049dd55a0148a457bcc8675d9",
+      "mode": "100644",
+      "sha256": "56fb5433b85d404e677d4f78c59b7690d4df390b41bd07e1bdeea52ae438f7ec"
+    },
+    "src/codex/institutional/core.py": {
+      "bytes": 22677,
+      "git_blob": "4cfadd86670759a1f97a6612d51cc63024a58d13",
+      "mode": "100644",
+      "sha256": "636c45dc7eed70d0bed4bc80602f6831fd76ef5a688119f082ae7f8fe4743cef"
+    },
+    "src/codex/institutional/git_capture.py": {
+      "bytes": 2433,
+      "git_blob": "1b6e98e4ebb95e8ae5ba0df2995a85a10ef26f77",
+      "mode": "100644",
+      "sha256": "8bfb2b10066c2f475ef36fa151e6ace9d00e463b92bccfc1a58b7a46f822476e"
+    },
+    "src/codex/institutional/review-formulas.json": {
+      "bytes": 54986,
+      "git_blob": "3b125ed23e8db7e8d9402875c7586e9ecca84177",
+      "mode": "100644",
+      "sha256": "bb334de789fc66e6704b752268c84f32860a218bbc4858b6888822c4f5e23537"
+    },
+    "src/codex/institutional/review.py": {
+      "bytes": 28021,
+      "git_blob": "3339415558cfce7719ec22b5f8d82edf80f79aa3",
+      "mode": "100644",
+      "sha256": "12ef9992b0b1a7412076cc26abc49cf42028bcb1b8fa94f65ecff9d41fc2d959"
+    },
+    "src/codex/institutional/storage.py": {
+      "bytes": 11707,
+      "git_blob": "a18cf253b803807646a058a0f9316c794ad0b224",
+      "mode": "100644",
+      "sha256": "35e7122d388e44eb1badf025a2e69f2dffee0cf473822ca001e4f9f52b2a947f"
+    }
+  },
+  "formula_count": 58,
+  "formula_ids": [
+    "RD4-F001",
+    "RD4-F002",
+    "RD4-F003",
+    "RD4-F004",
+    "RD4-F005",
+    "RD4-F006",
+    "RD4-F007",
+    "RD4-F008",
+    "RD4-F009",
+    "RD4-F010",
+    "RD4-F011",
+    "RD4-F012",
+    "RD4-F013",
+    "RD4-F014",
+    "RD4-F015",
+    "RD4-F016",
+    "RD4-F017",
+    "RD4-F018",
+    "RD4-F019",
+    "RD4-F020",
+    "RD4-F021",
+    "RD4-F022",
+    "RD4-F023",
+    "RD4-F024",
+    "RD4-F025",
+    "RD4-F026",
+    "RD4-F027",
+    "RD4-F028",
+    "RD4-F029",
+    "RD4-F030",
+    "RD4-F031",
+    "RD4-F032",
+    "RD4-F033",
+    "RD4-F034",
+    "RD4-F035",
+    "RD4-F036",
+    "RD4-F037",
+    "RD4-F038",
+    "RD4-F039",
+    "RD4-F040",
+    "RD4-F041",
+    "RD4-F042",
+    "RD4-F043",
+    "RD4-F044",
+    "RD4-F045",
+    "RD4-F046",
+    "RD4-F047",
+    "RD4-F048",
+    "RD4-F049",
+    "RD4-F050",
+    "RD4-F051",
+    "RD4-F052",
+    "RD4-F053",
+    "RD4-F054",
+    "RD4-F055",
+    "RD4-F056",
+    "RD4-F057",
+    "RD4-F058"
+  ],
+  "formula_schema": "codex.institutional.review-formulas.v1",
+  "harness_committed_path": ".codex/evidence/institutional-foundation/iteration-004/runtime-wheel/external-harness.py",
+  "harness_sha256": "7f03b6379b0872afbdaf5ab6ddffec094a08f0c0d3cf69c4bea6b51549992c44",
+  "package_data_expected": [
+    "contracts.json",
+    "review-formulas.json"
+  ],
+  "planned_export_paths": [
+    ".copilot-space",
+    "LICENSE",
+    "LICENSES",
+    "MANIFEST.in",
+    "README.md",
+    "packages/contracts",
+    "pyproject.toml",
+    "src"
+  ],
+  "runtime": "NOT_RUN",
+  "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+  "source_tree": "8372735da60360c51e995c9af567c90c87293212",
+  "wheel": null,
+  "wheel_sha256": null
+}

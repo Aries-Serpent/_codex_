@@ -121,13 +121,33 @@ class TestGatherMetrics:
         assert m["coverage_threshold"] == "85", "Condition must be true"
 
     def test_test_count_floors_to_500(self, fake_repo: Path) -> None:
-        """3 test functions → floor(3 / 500) * 500 = 0, but min is 500."""
+        """A small source inventory must not be inflated to a 500-test minimum."""
         m = gather_metrics(fake_repo)
-        assert m["test_count_display"] == "500+", "Count must be greater than zero"
+        assert m["test_inventory_count"] == "3"
+        assert m["test_inventory_display"] == "0+"
+        assert m["test_count_display"] == m["test_inventory_display"]
 
     def test_test_count_url_encoded(self, fake_repo: Path) -> None:
         m = gather_metrics(fake_repo)
-        assert m["test_count_url"] == "500%2B", "Count must be greater than zero"
+        assert m["test_count_url"] == "0%2B"
+
+    def test_inventory_is_independent_of_execution_results(self, fake_repo: Path) -> None:
+        """Failing test bodies/reports cannot turn inventory into a pass count."""
+        test_file = fake_repo / "tests" / "test_alpha.py"
+        report = fake_repo / "validation-junit.xml"
+        inventories = []
+        for body, failures in (("pass", 0), ("raise AssertionError('not green')", 1001)):
+            test_file.write_text(
+                "".join(f"def test_case_{i}():\n    {body}\n\n" for i in range(1001))
+            )
+            report.write_text(f'<testsuite tests="1001" failures="{failures}"/>\n')
+            metrics = gather_metrics(fake_repo)
+            inventories.append(metrics["test_inventory_count"])
+            assert metrics["test_inventory_display"] == "1000+"
+            assert metrics["test_count_display"] == "1000+"
+            assert metrics["test_count_url"] == "1000%2B"
+            assert not any("pass" in key or "fail" in key for key in metrics)
+        assert inventories == ["1001", "1001"]
 
     def test_workflow_count(self, fake_repo: Path) -> None:
         m = gather_metrics(fake_repo)
@@ -156,7 +176,8 @@ class TestGatherMetrics:
         m = gather_metrics(tmp_path)
         assert m["agent_count"] == "153", "Count must be greater than zero"
         assert m["coverage_threshold"] == "75", "Condition must be true"
-        assert m["test_count_display"] == "500+", "Count must be greater than zero"
+        assert m["test_inventory_count"] == "0"
+        assert m["test_count_display"] == "0+"
 
 
 # ── _apply_rule ───────────────────────────────────────────────────────────
@@ -387,6 +408,76 @@ class TestMain:
 
 
 # ── Production RULES smoke-test ───────────────────────────────────────────
+
+
+@pytest.mark.parametrize(
+    ("rule_id", "legacy", "canonical"),
+    [
+        (
+            "sar_layer1_test_count",
+            "Test Suite 40500+",
+            "Test Inventory (estimated) 41000+",
+        ),
+        (
+            "codebase_map_test_count",
+            "tests/ (40500+)",
+            "tests/ (41000+ estimated inventory)",
+        ),
+        (
+            "codebase_map_test_table",
+            "40500+ tests, 75% threshold",
+            "41000+ estimated test inventory, 75% threshold",
+        ),
+        (
+            "evolution_index_tests",
+            "| Tests Passing | 40500+ |",
+            "| Test Inventory (estimated) | 41000+ |",
+        ),
+        (
+            "runbook_test_count",
+            "All tests pass (40500+ tests)",
+            "Verify all release-required tests pass before deployment "
+            "(estimated test inventory: 41000+; not a pass count)",
+        ),
+    ],
+)
+@pytest.mark.parametrize("legacy_count", ["40500+", "41000+"])
+def test_inventory_rules_migrate_and_keep_synchronizing(
+    tmp_path: Path, rule_id: str, legacy: str, canonical: str, legacy_count: str
+) -> None:
+    """Semantic lies fail even at the current count; corrected labels stay tracked."""
+    rule = next(rule for rule in doc_metrics_sync.RULES if rule.id == rule_id)
+    doc = tmp_path / rule.files[0]
+    doc.parent.mkdir(parents=True)
+    prefix = "- [ ] " if rule_id == "runbook_test_count" else ""
+    original = prefix + legacy.replace("40500+", legacy_count) + "\n"
+    doc.write_text(original)
+    metrics = {"test_inventory_display": "41000+", "coverage_threshold": "75"}
+    with (
+        patch.object(doc_metrics_sync, "REPO_ROOT", tmp_path),
+        patch.object(doc_metrics_sync, "RULES", [rule]),
+        patch.object(doc_metrics_sync, "gather_metrics", return_value=metrics),
+    ):
+        assert main(["--check"]) == 1
+        assert doc.read_text() == original  # check mode never writes
+        assert main(["--fix"]) == 0
+        assert doc.read_text() == prefix + canonical + "\n"
+        assert main(["--check"]) == 0
+        # Future inventory growth must still fail instead of silently skipping
+        # the renamed label, and fix must not restore a passing-test claim.
+        metrics["test_inventory_display"] = "41500+"
+        assert main(["--check"]) == 1
+        assert main(["--fix"]) == 0
+        assert doc.read_text() == prefix + canonical.replace("41000+", "41500+") + "\n"
+        assert main(["--check"]) == 0
+
+
+def test_runbook_release_gate_is_unchecked_and_not_all_green() -> None:
+    doc = (doc_metrics_sync.REPO_ROOT / "docs/deployment/DEPLOYMENT_RUNBOOK.md").read_text()
+    assert "- [ ] Verify all release-required tests pass before deployment" in doc
+    assert "not a pass count" in doc
+    assert "not a completed all-green run" in doc
+    assert "- [x] Verify all release-required tests pass" not in doc
 
 
 class TestProductionRules:

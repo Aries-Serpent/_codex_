@@ -1,8 +1,9 @@
 # _codex_ Documentation
-**Last Updated:** 2026-07-11
-**Version:** v0.2.0
+**Historical snapshot:** 2026-07-11
+**Version at snapshot:** v0.2.0
 
-**Last Updated: 2026-07-08
+> This legacy index is retained for reference. Use the [canonical documentation hub](index.md) for current navigation.
+
 **Audience:** Developers, DevOps, Admins
 **Related:** [Master Index](MASTER_INDEX.md), [Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md)
 

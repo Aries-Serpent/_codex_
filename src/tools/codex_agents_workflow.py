@@ -159,8 +159,7 @@ def ensure_agents_md() -> bool:
     if precommit_txt:
         tools = sorted(set(tools) | {"pre-commit"})
 
-    required_sections = (
-        textwrap.dedent(f"""
+    required_sections = textwrap.dedent(f"""
 # .codex/archive/deprecated/AGENTS.md — Maintainers & Automation Guide
 
 ## Scope & Non-Goals
@@ -193,9 +192,7 @@ def ensure_agents_md() -> bool:
 ## CI Reference (read-only)
 - Continuous Integration runs `pre-commit run --all-files` and `pytest` on PRs/commits.
 - See the workflow definition under `.github/workflows/ci.yml` (do **not** modify or activate).
-""").strip()
-        + "\n"
-    )
+""").strip() + "\n"
 
     if not AGENTS.exists():
         return write_if_changed(
@@ -224,8 +221,7 @@ def ensure_agents_md() -> bool:
 def ensure_readme_refs() -> bool:
     txt = read(README)
     if not txt:
-        base = (
-            textwrap.dedent("""
+        base = textwrap.dedent("""
 # codex-universal
 
 See [docs/guides/.codex/archive/deprecated/AGENTS.md](docs/guides/.codex/archive/deprecated/AGENTS.md) for environment variables, logging roles, testing expectations, and tool usage.
@@ -242,9 +238,7 @@ See the read-only workflow reference at `.github/workflows/ci.yml` (not activate
 ## Logging Locations
 - SQLite DB: `.codex/session_logs.db`
 - NDJSON sessions: `.codex/sessions/<SESSION_ID>.ndjson`
-""").strip()
-            + "\n"
-        )
+""").strip() + "\n"
         return write_if_changed(
             README, base, "Create minimal README emphasizing AGENTS, CI, and logging."
         )

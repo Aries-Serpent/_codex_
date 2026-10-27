@@ -1,0 +1,58 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001",
+  "iteration": "006",
+  "entry_head": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+  "tested_source": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+  "entry_branch": "copilot/codex-institutional-foundation-001",
+  "root": "/home/runner/work/_codex_/_codex_",
+  "entry_index": "empty",
+  "entry_dirty_paths": [".codex/session_startup_packet.json"],
+  "entry_user_bytes_sha256": "9f2c12134305ceb4306222fe7b9ee1dde56f774755678ac8080e2708b41e7ba5",
+  "entry_user_change": "generated_at only; exact working bytes must remain preserved.",
+  "publisher_incident": {
+    "commit": "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+    "observation": "Initial progress publication committed the pre-existing timestamp despite an explicit exclusion note.",
+    "affected_path": ".codex/session_startup_packet.json",
+    "response": "Preserve bytes and history. Do not revert user-owned content or rewrite history. Retain separate historical attribution and a correction proposal requiring owner review.",
+    "live_remote_confirmation": "git ls-remote origin refs/heads/copilot/codex-institutional-foundation-001 returned this commit.",
+    "subsequent_handoff": "Only after explicit task-path staging, secret inspection and rechecking that no unrelated dirty files are present."
+  },
+  "unread_verifier": {
+    "prior_agent_id": "rd5-package-verifier",
+    "live_agent_access": "No agent found; no live result fabricated.",
+    "retained_output": "../iteration-005/final-secret-scan.json",
+    "reported_scope": "411 submitted files, five successful batches; archive-member traversal unspecified, five concurrent root outputs excluded.",
+    "interpretation": "Inspect retained hashes and close specific coverage gaps rather than repeat completed wheel validation."
+  },
+  "plan": [
+    "Reconcile immutable source, handoff, current remote and user-change attribution.",
+    "Verify retained manifests, close bounded secret inspection and bind aggregate retention externally.",
+    "Rebind institutional continuation; resume historical synthetic node without relabeling repository observations as fixture evidence.",
+    "Run a separate fixed repository-source review through the retained installed SDK using actual attributed analysis and dissent.",
+    "Retain experience, readiness, blockers and exact successor; publish only reviewed task paths."
+  ],
+  "validation": "Evidence-only changes require integrity and workflow checks, not a rebuilt unchanged wheel. New source-backed scenarios are separate observations, not historical test reruns.",
+  "rollback": "Stop the affected operation, retain immutable predecessors/failures and propose a forward correction; no reset, stash, forced push or automatic packet reversal.",
+  "budgets": {
+    "parallelism": "At most four active analytical/execution lanes with disjoint writes; shared manifests/checkpoints owned by coordinator.",
+    "scope": "Evidence repair plus one source-backed institutional review; no full architecture or new runtime unless an executed path demonstrates a blocking defect.",
+    "archive_expansion_per_archive_bytes": 67108864,
+    "archive_member_limit": 10000,
+    "archive_member_bytes": 16777216,
+    "aggregate_archive_expansion_bytes": 268435456,
+    "retry": "At most three attempts with new causal evidence; no unchanged repeated builds.",
+    "retention": "Existing wheels/harnesses remain immutable; new receipts and scenarios use this non-colliding namespace."
+  },
+  "roles": {
+    "rd6-snapshot": "Snapshot attribution and Verification bearing; unverified same-platform analytical context.",
+    "rd6-evidence": "Retention/security inspection; not independent G5.",
+    "rd6-runtime": "Installed SDK scenario executor; not Reconciler or approver.",
+    "rd6-architecture": "Architecture bearing analytical input; no execution or approval.",
+    "rd6-dissent": "Cross-cutting analytical dissent; not a fixed bearing or approver.",
+    "coordinator": "Integrates records, invokes pure reconciliation and persists continuation under task authority."
+  },
+  "authority": "ordinary assigned-workspace development only",
+  "approval": "NOT_RUN",
+  "activation": "unsupported",
+  "independent_verification": "NOT_RUN"
+}

@@ -1,0 +1,9 @@
++ /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m pip --python /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/bin/python install --no-deps --report /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/install-closure-correction.json typing-extensions==4.16.0
+Collecting typing-extensions==4.16.0
+  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Installing collected packages: typing-extensions
+Successfully installed typing-extensions-4.16.0
++ cd /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/work
++ /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv/bin/python -I -B /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/workflow.py synthetic
+{"status": "PASS", "new_checks": 25, "mode": "synthetic"}

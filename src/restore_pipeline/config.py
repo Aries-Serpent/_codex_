@@ -49,4 +49,6 @@ class PipelineConfig:
 
     colorize_model_path: str | None = None
 
-    colorize_model_url: str = "https://github.com/richzhang/colorization/raw/caffe/demo/colorization_release_v2.caffemodel"
+    colorize_model_url: str = (
+        "https://github.com/richzhang/colorization/raw/caffe/demo/colorization_release_v2.caffemodel"
+    )

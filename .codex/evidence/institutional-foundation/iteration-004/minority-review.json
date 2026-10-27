@@ -1,0 +1,29 @@
+{
+  "schema": "codex.institutional.review-observation.v1",
+  "status": "Draft",
+  "classification": "Repository-Internal",
+  "lane": "rd4-minority-review",
+  "actor_kind": "rubber-duck subagent",
+  "model": "claude-sonnet-5",
+  "binding": "Pre-source-commit coordinator consumer/design worktree; not the later packaged SDK candidate.",
+  "scope": ["scripts/generate_pr_followup.py", ".github/copilot-prompts/templates", ".github/copilot-prompts/README.md", "docs/design/azimuthal-reasoning-integrity.rst"],
+  "independence": {
+    "context": "separate",
+    "organization": "same platform",
+    "critical_dimensions": [],
+    "assessment": "not_assessed",
+    "G5": "NOT_RUN",
+    "approval": false
+  },
+  "findings": [
+    {"id": "RD4-C6", "source_wording": "continuation_context precedence can be silently overridden by **kwargs spread order", "observation": "Output replacement mapping applied general kwargs after its protected continuation value.", "alternative": "CLI currently has no continuation-context option and save's all-block guard prevents persistence loss; API output could still be wrong.", "resolution": "Moved general kwargs before protected continuation; 17th consumer test exercises conflicting explicit context."},
+    {"id": "RD4-C7", "source_wording": "Documentation/architecture inconsistency on dispatch", "observation": "Sibling README claimed auto-created prompts and automatic linking; current generator YAML absent.", "alternative": "A historical backup may once have implemented the behavior; existence is not current hosted proof.", "resolution": "README and workflow reference now distinguish explicit generation, historical YAML and unknown hosted status."}
+  ],
+  "retained_positive_evidence": [
+    "All-preserved-block guard and no cross-PR seeding are appropriate.",
+    "Risk-appropriate review dimensions retain actual security owner/reason and execution/review gates.",
+    "Architecture explicitly labels proposed design, not adopted governance, and preserves text alternatives."
+  ],
+  "procedural_deviation": "Reviewer reported running the in-scope pytest file before noticing the requested no-execution boundary. Do not count this repeated same-platform run as independent verification, added coverage or approval.",
+  "unreviewed": ["runtime SDK", "formula registry", "installed wheel", "hosted profile enforcement"]
+}

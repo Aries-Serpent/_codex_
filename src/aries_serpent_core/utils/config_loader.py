@@ -26,7 +26,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 logger = logging.getLogger(__name__)
 
@@ -41,11 +41,34 @@ except ImportError:
     OmegaConf = None  # type: ignore[misc,assignment]
     _OMEGACONF_AVAILABLE = False
 
+
+class _Compose(Protocol):
+    """Callable interface used by the optional Hydra composition API."""
+
+    def __call__(
+        self,
+        config_name: str | None = None,
+        overrides: list[str] | None = None,
+        return_hydra_config: bool = False,
+        strict: bool | None = None,
+    ) -> DictConfig:
+        """Compose a named configuration with optional key/value overrides."""
+        ...
+
+
+compose: _Compose | None
+initialize_config_dir: type[_HydraInitializeConfigDir] | None
+HydraMissingConfigException: type[Exception]
+
 # Hydra imports with robust fallbacks
 try:
-    from hydra import compose, initialize_config_dir
-    from hydra.errors import MissingConfigException as HydraMissingConfigException
+    from hydra import compose as _hydra_compose
+    from hydra import initialize_config_dir as _HydraInitializeConfigDir
+    from hydra.errors import MissingConfigException as _HydraMissingConfigException
 
+    compose = _hydra_compose
+    initialize_config_dir = _HydraInitializeConfigDir
+    HydraMissingConfigException = _HydraMissingConfigException
     _HYDRA_AVAILABLE = True
 except ImportError:
     logger.debug("Hydra not available, using fallback")
@@ -81,7 +104,7 @@ if not _HYDRA_AVAILABLE:
                 self.message = resolved
 
 else:
-    MissingConfigException = HydraMissingConfigException
+    MissingConfigException = _HydraMissingConfigException
 
 
 @dataclass
@@ -106,6 +129,10 @@ class ConfigLoader:
 
         Args:
             repo_root: Root directory of the repository. If None, auto-detected.
+
+        Raises:
+            ValueError: If the error catalog contains malformed YAML or is not
+                a mapping with string keys.
         """
         self.repo_root = repo_root or self._find_repo_root()
         self.error_config: dict[str, Any] = {}
@@ -122,7 +149,7 @@ class ConfigLoader:
         return current.parents[3]
 
     def _load_error_config(self) -> None:
-        """Load error configuration from conf/errors/defaults.yaml."""
+        """Load the error catalog, rejecting malformed YAML and non-mapping roots."""
         error_config_path = self.repo_root / "conf" / "errors" / "defaults.yaml"
         if not error_config_path.exists():
             logger.warning(f"Error config not found at {error_config_path}")
@@ -133,7 +160,20 @@ class ConfigLoader:
             import yaml
 
             with error_config_path.open("r") as f:
-                self.error_config = yaml.safe_load(f) or {}
+                try:
+                    data: object = yaml.safe_load(f)
+                except yaml.YAMLError as exc:
+                    raise ValueError(
+                        f"Invalid error configuration YAML: {error_config_path}"
+                    ) from exc
+            if data is None:
+                self.error_config = {}
+            elif isinstance(data, dict) and all(isinstance(key, str) for key in data):
+                self.error_config = data
+            else:
+                raise ValueError(
+                    f"Error configuration must be a mapping with string keys: {error_config_path}"
+                )
         except ImportError:
             logger.warning("PyYAML not available, using default error config")
             self.error_config = self._get_default_error_config()
@@ -268,7 +308,13 @@ class ConfigLoader:
                 config_dir = config_file.parent
 
         # Try Hydra Compose API first
-        if _HYDRA_AVAILABLE and config_dir.is_dir() and config_file.exists():
+        if (
+            _HYDRA_AVAILABLE
+            and compose is not None
+            and initialize_config_dir is not None
+            and config_dir.is_dir()
+            and config_file.exists()
+        ):
             try:
                 with initialize_config_dir(version_base=None, config_dir=str(config_dir)):
                     cfg = compose(config_name=config_name, overrides=overrides)

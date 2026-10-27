@@ -11,9 +11,12 @@ Tests cover:
 """
 
 import logging
+import sys
 import time
+from unittest.mock import Mock, create_autospec
 
 import pytest
+
 from codex.governance.approval_service import (
     ApprovalDecision,
     ApprovalRequest,
@@ -22,6 +25,18 @@ from codex.governance.approval_service import (
     AuditCode,
     SLAPolicy,
 )
+from scripts.governance.rbac_engine import Action, RBACEngine, ResourceType
+
+
+@pytest.fixture
+def approval_engine(monkeypatch: pytest.MonkeyPatch) -> Mock:
+    """Mock the existing permission boundary, leaving approval guards active."""
+    engine = create_autospec(RBACEngine, instance=True)
+    engine.check_permission.return_value = True
+    monkeypatch.setattr(
+        sys.modules[ApprovalService.__module__], "get_default_engine", lambda: engine
+    )
+    return engine
 
 
 class TestApprovalRequestDataClass:
@@ -209,25 +224,38 @@ class TestApprovalService:
         with pytest.raises((ValueError, KeyError)):
             service.get_request("nonexistent-id")
 
-    def test_approve_request(self):
-        """Test approving an approval request."""
+    def test_approve_request(self, approval_engine: Mock):
+        """Authorize approval and derive decision authority from request state."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="TEST", l1_sla_hours=4.0)
         service.register_sla_policy(policy)
 
         req = service.submit_request(
-            policy_code="TEST",
-            requester_id="user-1",
-            required_approvers=["approver-1"]
+            policy_code="TEST", requester_id="user-1", required_approvers=["approver-1"]
         )
 
+        approval_engine.check_permission.return_value = False
+        with pytest.raises(PermissionError, match="not authorized to approve TEST"):
+            service.approve_request(req.request_id, "approver-1")
+        assert req.status == ApprovalState.PENDING
+        assert req.decisions == []
+        approval_engine.check_permission.assert_called_once_with(
+            "approver-1", Action.APPROVE, ResourceType.WORKFLOWS
+        )
+        approval_engine.check_permission.reset_mock()
+        approval_engine.check_permission.return_value = True
         service.approve_request(
             request_id=req.request_id,
             approver_id="approver-1",
-            authority_level=1
+            reason="Reviewed",
         )
         retrieved = service.get_request(req.request_id)
         assert retrieved.status == ApprovalState.APPROVED, "status is not valid"
+        assert retrieved.decisions[-1].authority_level == retrieved.current_authority_level
+        assert retrieved.decisions[-1].reason == "Reviewed"
+        approval_engine.check_permission.assert_called_once_with(
+            "approver-1", Action.APPROVE, ResourceType.WORKFLOWS
+        )
 
     def test_reject_request(self):
         """Test rejecting an approval request."""
@@ -308,7 +336,7 @@ class TestApprovalService:
         # Policy should be stored
         assert service._sla_policies.get("CUSTOM") is not None, "Value must be initialized"
 
-    def test_multiple_approvers_on_request(self):
+    def test_multiple_approvers_on_request(self, approval_engine: Mock):
         """Test multiple approvers on single request."""
         service = ApprovalService()
         policy = SLAPolicy(policy_code="MULTI_APPROVER", l1_sla_hours=4.0)
@@ -317,18 +345,24 @@ class TestApprovalService:
         req = service.submit_request(
             policy_code="MULTI_APPROVER",
             requester_id="user-1",
-            required_approvers=["approver-1", "approver-2"]
+            required_approvers=["approver-1", "approver-2"],
         )
 
         # First approver decision
         service.approve_request(
             request_id=req.request_id,
             approver_id="approver-1",
-            authority_level=1
+            reason="First review",
         )
 
         req = service.get_request(req.request_id)
         assert len(req.required_approvers) == 2, "Collection must not be empty"
+        assert req.required_approvers == ["approver-1", "approver-2"]
+        assert req.decisions[-1].approver_id == "approver-1"
+        assert req.decisions[-1].authority_level == req.current_authority_level
+        approval_engine.check_permission.assert_called_once_with(
+            "approver-1", Action.APPROVE, ResourceType.WORKFLOWS
+        )
 
 
 class TestApprovalEscalation:

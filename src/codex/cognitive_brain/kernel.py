@@ -55,7 +55,7 @@ logger = logging.getLogger(__name__)
 __kernel_version__ = "1.0.0"
 
 # ---------------------------------------------------------------------------
-# CCA stability flags (mandatory per AGENTS.md)
+# Repository-local compatibility flags; not GitHub runtime/version settings.
 # Read at call-time (inside _assert_cca_stability) so tests can monkeypatch.
 # ---------------------------------------------------------------------------
 
@@ -376,18 +376,18 @@ class CognitiveBrainKernel:
         if cca_lock != "stable":
             logger.warning(
                 "COPILOT_AGENT_CCA_VERSION_LOCK is '%s'; expected 'stable'. "
-                "Risk of CCA version upgrade causing duplicate function-call errors.",
+                "This is a repository compatibility convention, not a GitHub runtime pin.",
                 cca_lock,
             )
         if not dedup:
             logger.warning(
                 "COPILOT_AGENT_DEDUPLICATION_ENABLED is not 'true'. "
-                "Payload deduplication disabled — risk of duplicate fc_call IDs."
+                "Local compatibility flag only; inspect the application's payload consumer."
             )
         if not turn_iso:
             logger.warning(
                 "COPILOT_AGENT_TURN_ISOLATION_ENABLED is not 'true'. "
-                "Turn-state isolation disabled — risk of state leakage across turns."
+                "Local compatibility flag only; inspect the application's turn lifecycle."
             )
 
     # ------------------------------------------------------------------

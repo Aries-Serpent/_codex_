@@ -1,0 +1,35 @@
+{
+  "agents": [
+    {
+      "disposition": "CTEP lead confirmed; production activation and profile-reference-as-defect claims rejected",
+      "id": "policy-conflict-investigation",
+      "scope": "read-only guidance leads",
+      "type": "explore"
+    },
+    {
+      "disposition": "Generator/loaders useful; host restriction is not universal repo policy; mere references/writing a prompt are not denied operations; proposed safe test command reading restricted profiles rejected",
+      "id": "policy-consumer-investigation",
+      "scope": "read-only consumer leads",
+      "type": "explore"
+    },
+    {
+      "disposition": "Preserved CHPP reference marker as required by actual loader. Claimed workflow wording failures rejected after main() return0 inspection; no workflow controls weakened.",
+      "id": "policy-preparation-review",
+      "scope": "pre-edit six-source review",
+      "type": "rubber-duck"
+    },
+    {
+      "id": "policy-closure-review",
+      "result": "No significant issues found in the reviewed changes.",
+      "scope": "fresh-context current source/test diff",
+      "type": "code-review"
+    }
+  ],
+  "independence": "Same-platform implementation/research/review. G5 NOT_RUN; no owner approval or adoption claimed.",
+  "unverified_claims_rejected": [
+    "Guaranteed hosted prompt injection from a step log",
+    "Production-active/selectable profiles inferred from filenames",
+    "Absent --warn-only proves blocking despite unconditional zero match return",
+    "Host-specific access restriction is universal repository policy"
+  ]
+}

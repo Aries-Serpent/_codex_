@@ -333,45 +333,88 @@ jobs:
         INJECT_TIME_ENV: ${{ env.CONTEXT_INJECTION_TIME_MS }}
         PATTERNS_COUNT_ENV: ${{ env.CONTEXT_PATTERNS_COUNT }}
         PATTERNS_SCORE_ENV: ${{ env.CONTEXT_PATTERNS_AVG_SCORE }}
-      run: "echo \"::group::Performance Instrumentation\"\n\nSCORER_TIME=\"$SCORER_TIME_ENV\"\
-        \nINJECT_TIME=\"$INJECT_TIME_ENV\"\nPATTERNS_COUNT=\"$PATTERNS_COUNT_ENV\"\
-        \nPATTERNS_SCORE=\"$PATTERNS_SCORE_ENV\"\n\n# Calculate total injection overhead\n\
-        TOTAL_OVERHEAD_MS=0\nif [ -n \"$SCORER_TIME\" ] && [ -n \"$INJECT_TIME\" ];\
-        \ then\n  TOTAL_OVERHEAD_MS=$(( ${SCORER_TIME:-0} + ${INJECT_TIME:-0} ))\n\
-        fi\n\n# Create performance report\nPERF_REPORT=\".codex/phase_10_3_performance_metrics.json\"\
-        \npython3 << 'PYTHON_PERF'\nimport json\nimport os\nfrom datetime import datetime\n\
-        \nmetrics = {\n    'timestamp': datetime.now().isoformat(),\n    'context_scorer_time_ms':\
-        \ int(os.environ.get('CONTEXT_SCORER_TIME_MS', '0') or '0'),\n    'pattern_injection_time_ms':\
-        \ int(os.environ.get('CONTEXT_INJECTION_TIME_MS', '0') or '0'),\n    'patterns_count':\
-        \ int(os.environ.get('CONTEXT_PATTERNS_COUNT', '0') or '0'),\n    'avg_relevance_score':\
-        \ float(os.environ.get('CONTEXT_PATTERNS_AVG_SCORE', '0') or '0'),\n    'total_overhead_ms':\
-        \ 0,\n    'ooda_baseline_ms': 2500,\n    'ooda_improvement_percent': 0,\n\
-        }\n\n# Calculate totals\nmetrics['total_overhead_ms'] = metrics['context_scorer_time_ms']\
-        \ + metrics['pattern_injection_time_ms']\n\n# Estimate OODA improvement (10%+\
-        \ baseline with patterns)\nif metrics['patterns_count'] > 0 and metrics['avg_relevance_score']\
-        \ > 0.65:\n    metrics['ooda_improvement_percent'] = 10.0 + (metrics['avg_relevance_score']\
-        \ - 0.65) * 20.0\n\nmetrics['ooda_with_context_ms'] = int(\n    metrics['ooda_baseline_ms']\
-        \ * (1.0 - metrics['ooda_improvement_percent'] / 100.0)\n)\n\n# Write metrics\n\
-        with open(os.environ.get('PERF_REPORT', '.codex/phase_10_3_performance_metrics.json'),\
-        \ 'w', encoding='utf-8') as f:\n    json.dump(metrics, f, indent=2)\n\n# Print\
-        \ summary\nprint(\"\U0001F4CA PERFORMANCE METRICS\")\nprint(f\"  Scoring time:\\\n        \ {metrics['context_scorer_time_ms']}ms\")\nprint(f\"  Injection time: {metrics['pattern_injection_time_ms']}ms\"\
-        )\nprint(f\"  Total overhead: {metrics['total_overhead_ms']}ms\")\nprint(f\"\
-        \  Patterns injected: {metrics['patterns_count']}\")\nprint(f\"  Avg relevance:\\\n        \ {metrics['avg_relevance_score']:.2f}\")\nprint(f\"  OODA baseline: {metrics['ooda_baseline_ms']}ms\"\
-        )\nprint(f\"  OODA with context: {metrics['ooda_with_context_ms']}ms\")\n\
-        print(f\"  Improvement: {metrics['ooda_improvement_percent']:.1f}%\")\n\n\
-        # Validate constraints\nif metrics['total_overhead_ms'] > 100:\n    print(f\"\
-        \  \u26A0\uFE0F OVERHEAD ALERT: {metrics['total_overhead_ms']}ms > 100ms threshold\"\
-        )\nelse:\n    print(f\"  \u2705 OVERHEAD OK: {metrics['total_overhead_ms']}ms\
-        \ < 100ms\")\n\nif metrics['patterns_count'] < 10 or metrics['patterns_count']\
-        \ > 20:\n    print(f\"  \u26A0\uFE0F PATTERN COUNT ALERT: {metrics['patterns_count']}\
-        \ (target: 10-20)\")\nelse:\n    print(f\"  \u2705 PATTERN COUNT OK: {metrics['patterns_count']}\"\
-        )\n\nif metrics['avg_relevance_score'] < 0.65:\n    print(f\"  \u26A0\uFE0F\
-        \ RELEVANCE ALERT: {metrics['avg_relevance_score']:.2f} (target: >0.80)\"\
-        )\nelif metrics['avg_relevance_score'] >= 0.80:\n    print(f\"  \u2705 RELEVANCE\
-        \ OK: {metrics['avg_relevance_score']:.2f}\")\nelse:\n    print(f\"  \u26A0\
-        \uFE0F RELEVANCE LOW: {metrics['avg_relevance_score']:.2f} (target: >0.80)\"\
-        )\nPYTHON_PERF\n\necho \"\U0001F4C8 Metrics written to $PERF_REPORT\"\necho\
-        \ \"::endgroup::\"\n"
+      run: |
+        echo "::group::Performance Instrumentation"
+
+        SCORER_TIME="$SCORER_TIME_ENV"
+        INJECT_TIME="$INJECT_TIME_ENV"
+        PATTERNS_COUNT="$PATTERNS_COUNT_ENV"
+        PATTERNS_SCORE="$PATTERNS_SCORE_ENV"
+
+        # Calculate total injection overhead
+        TOTAL_OVERHEAD_MS=0
+        if [ -n "$SCORER_TIME" ] && [ -n "$INJECT_TIME" ]; then
+          TOTAL_OVERHEAD_MS=$(( ${SCORER_TIME:-0} + ${INJECT_TIME:-0} ))
+        fi
+
+        # Create performance report
+        PERF_REPORT=".codex/phase_10_3_performance_metrics.json"
+        python3 << 'PYTHON_PERF'
+        import json
+        import os
+        from datetime import datetime
+
+        metrics = {
+            'timestamp': datetime.now().isoformat(),
+            'context_scorer_time_ms': int(os.environ.get('CONTEXT_SCORER_TIME_MS', '0') or '0'),
+            'pattern_injection_time_ms': int(os.environ.get('CONTEXT_INJECTION_TIME_MS', '0') or '0'),
+            'patterns_count': int(os.environ.get('CONTEXT_PATTERNS_COUNT', '0') or '0'),
+            'avg_relevance_score': float(os.environ.get('CONTEXT_PATTERNS_AVG_SCORE', '0') or '0'),
+            'total_overhead_ms': 0,
+            'ooda_baseline_ms': 2500,
+            'ooda_improvement_percent': 0,
+        }
+
+        # Calculate totals
+        metrics['total_overhead_ms'] = metrics['context_scorer_time_ms'] + metrics['pattern_injection_time_ms']
+
+        # Estimate OODA improvement (10%+ baseline with patterns)
+        if metrics['patterns_count'] > 0 and metrics['avg_relevance_score'] > 0.65:
+            metrics['ooda_improvement_percent'] = 10.0 + (metrics['avg_relevance_score'] - 0.65) * 20.0
+
+        metrics['ooda_with_context_ms'] = int(
+            metrics['ooda_baseline_ms'] * (1.0 - metrics['ooda_improvement_percent'] / 100.0)
+        )
+
+        # Write metrics
+        with open(os.environ.get('PERF_REPORT', '.codex/phase_10_3_performance_metrics.json'), 'w', encoding='utf-8') as f:
+            json.dump(metrics, f, indent=2)
+
+        # Print summary
+        print("📊 PERFORMANCE METRICS")
+        print(f"  Scoring time:\
+                 {metrics['context_scorer_time_ms']}ms")
+        print(f"  Injection time: {metrics['pattern_injection_time_ms']}ms")
+        print(f"  Total overhead: {metrics['total_overhead_ms']}ms")
+        print(f"  Patterns injected: {metrics['patterns_count']}")
+        print(f"  Avg relevance:\
+                 {metrics['avg_relevance_score']:.2f}")
+        print(f"  OODA baseline: {metrics['ooda_baseline_ms']}ms")
+        print(f"  OODA with context: {metrics['ooda_with_context_ms']}ms")
+        print(f"  Improvement: {metrics['ooda_improvement_percent']:.1f}%")
+
+        # Validate constraints
+        if metrics['total_overhead_ms'] > 100:
+            print(f"  ⚠️ OVERHEAD ALERT: {metrics['total_overhead_ms']}ms > 100ms threshold")
+        else:
+            print(f"  ✅ OVERHEAD OK: {metrics['total_overhead_ms']}ms < 100ms")
+
+        if metrics['patterns_count'] < 10 or metrics['patterns_count'] > 20:
+            print(f"  ⚠️ PATTERN COUNT ALERT: {metrics['patterns_count']} (target: 10-20)")
+        else:
+            print(f"  ✅ PATTERN COUNT OK: {metrics['patterns_count']}")
+
+        if metrics['avg_relevance_score'] < 0.65:
+            print(f"  ⚠️ RELEVANCE ALERT: {metrics['avg_relevance_score']:.2f} (target: >0.80)")
+        elif metrics['avg_relevance_score'] >= 0.80:
+            print(f"  ✅ RELEVANCE OK: {metrics['avg_relevance_score']:.2f}")
+        else:
+            print(f"  ⚠️ RELEVANCE LOW: {metrics['avg_relevance_score']:.2f} (target: >0.80)")
+        PYTHON_PERF
+
+        echo "📈 Metrics written to $PERF_REPORT"
+        echo "::endgroup::"
+      # yamllint enable rule:line-length
     - name: "🔀 Phase 10.3: A/B Test Tracking (record injection impact)"
       id: ab_test_tracking
       continue-on-error: true
@@ -529,13 +572,13 @@ jobs:
       if: ${{ env.LFS_DIAGNOSTICS_ENABLED == 'true' }}
       continue-on-error: true
       run: 'echo "Git version: $(git --version)"
- 
+
         echo "LFS version: $(git lfs version 2>/dev/null || echo ''git-lfs not installed'')"
- 
+
         git status || true
- 
+
         git lfs ls-files || true
- 
+
         '
     - name: "📥 Install git-lfs (if needed)"
       if: ${{ env.LFS_FETCH_ENABLED == 'true' }}
@@ -730,7 +773,7 @@ jobs:
         \ || true\necho \"REPORT_PATH=$REPORT\" >> \"$GITHUB_OUTPUT\"\n"
     - name: "📤 Upload Environment Report"
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         path: ${{ steps.gen_report.outputs.REPORT_PATH }}
         retention-days: 14
@@ -741,11 +784,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: copilot-setup-steps
     if: 'failure() &&
- 
+
       github.event_name == ''pull_request'' &&
- 
+
       github.event.pull_request.head.repo.full_name == github.repository
- 
+
       '
     permissions:
       pull-requests: write

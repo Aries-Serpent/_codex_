@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.539" timestamp="2026-10-25T01:33:22.941976+00:00" hostname="runnervm1s3jh"><testcase classname="tests.institutional.test_assurance" name="test_aggregate_continuation_larger_than_artifact_budget_remains_compatible" time="0.072"><failure message="codex.institutional.core.Rejected: ASSURANCE_RESOURCE_LIMIT">tmp_path = PosixPath('/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/assurance-scratch/prefix-aggregate/test_aggregate_continuation_la0')
+
+    def test_aggregate_continuation_larger_than_artifact_budget_remains_compatible(tmp_path):
+        original = core.candidate(tmp_path, "large-stable-session", clock)
+        original["payload"]["configuration"]["retained_profile"] = "x" * (assurance.MAX_BYTES + 1)
+        original["extensions"] = {"user": {"preserve": True}}
+        original = reseal(original)
+        assert assurance.MAX_BYTES &lt; len(core.canonical(original)) &lt; core.MAX_BYTES
+        core.validate(original)
+        assert core.inspect_candidate(original) == []
+        planned = fixture_plan()
+&gt;       successor = assurance.attach_continuation(original, [planned], clock=clock)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/institutional/test_assurance.py:886: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/codex/institutional/assurance.py:817: in attach_continuation
+    _bounded(continuation)
+src/codex/institutional/assurance.py:106: in _bounded
+    visit(value, 0)
+src/codex/institutional/assurance.py:99: in visit
+    visit(child, depth + 1)
+src/codex/institutional/assurance.py:99: in visit
+    visit(child, depth + 1)
+src/codex/institutional/assurance.py:99: in visit
+    visit(child, depth + 1)
+src/codex/institutional/assurance.py:92: in visit
+    _require(remaining &gt;= 0, "RESOURCE_LIMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False, reason = 'RESOURCE_LIMIT'
+
+    def _require(condition: bool, reason: str) -&gt; None:
+        if not condition:
+&gt;           raise Rejected("ASSURANCE_" + reason)
+E           codex.institutional.core.Rejected: ASSURANCE_RESOURCE_LIMIT
+
+src/codex/institutional/assurance.py:41: Rejected</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,60 @@
+{
+  "G5": "NOT_RUN",
+  "activation": false,
+  "approval": "NOT_RUN",
+  "artifact_type": "checkpoint_verification",
+  "canonical_bytes": 12543857,
+  "canonical_digest": "385b07cd28b557df1fc48b2ddf6f070c01c5f8095dfb609730fbe2162407bd20",
+  "core_inspect_findings": [],
+  "core_verify_findings_before_final_publication": [],
+  "extensions": "PRESERVED_EXACTLY",
+  "gzip_bytes": 2737402,
+  "gzip_sha256": "12fe1d40be420bbbbdc0844e926752f03fbce5cc93b80a133891920e93014f91",
+  "historical_record_retention": "Prior generic inventory/trust/audit records are retained through immutable predecessor bytes, not duplicated into the single-inventory successor. Prior review/assurance/custom experience records retained in successor.",
+  "historical_synthetic_events": "Original four retained byte-for-byte; one explicit fixture retry appended.",
+  "operations": "core.validate; core.inspect_candidate; core.candidate(previous_evidence); core.record; assurance.validate_artifact; core.verify. No storage.plan/apply or shared operational state mutation.",
+  "pending": {
+    "node": "retention_security",
+    "ready": false,
+    "reason": "declared-blocked",
+    "state": "BLOCKED"
+  },
+  "post_publication_expectation": "Final evidence commit and eventual merge change inventory/source SHA. A later verify is expected to report STALE_CHECKPOINT; preserve this immutable tested candidate, then create a compatible rebound successor. No claim that eventual merge SHA equals head.",
+  "predecessor": "e2ed9e24c5c7ea3f9e17745830059c39cb492fd2c8c478caeba5e1b2b145f12b",
+  "predecessor_sequence": 5,
+  "record_count": 41,
+  "semantic_assurance_digests": [
+    "b01c4035e4d21a82458df07918729c43b6ca0f5d3e2e88057f22996a0323904c",
+    "81e2ef417198f5708e5ca6767a4fbd34213ac10fc288224129bb347b35826a27",
+    "42ff7e891372967daa88a848e76c8e772ba5234ec920b41b63677becd88b0e69",
+    "0965ead6ab858c55adb5bc7859735ae464a3f960358a6844151a88abdb0a20e4",
+    "30ee057a8413675d3ee4157842a3107e5cdee414e03ff60d314f4136a2a15067",
+    "529ed8e88af6fec9099a7766031f4d5e8b8f569bbe83b7234970e4b32fe840cd",
+    "ecd5b58b51e02dec3735ead20a5491cde77067d5a007a4ce5812f959b32a1127",
+    "6f61353b22d372d57a6fbdb0b532288b9218536696769a97558384d0de4d7ecf",
+    "464f6580dd530b394ae58ce6057cbf9a4fc0ba8f06d1d1ed781d40785540c517",
+    "cd3f3e3ea3067f0d79862317dbc4c45c3c5436fc65013deed636f1a2567b27ae",
+    "db033963aafa89d307956f2f009263a006ba5b5bf2396ecc28494973ccdc8aef"
+  ],
+  "semantic_assurance_validation_count": 11,
+  "sequence": 6,
+  "sequence_and_session": "PASS",
+  "session_id": "CODEX-INSTITUTIONAL-FOUNDATION-001/iteration-004",
+  "source_candidate": "234a846f45e78ae4f3729f00808ced752f8ba405",
+  "source_package_parity": {
+    "changed_paths": [],
+    "compared_paths": [
+      "src",
+      "tests/institutional",
+      "pyproject.toml",
+      "setup.py",
+      "setup.cfg",
+      "MANIFEST.in"
+    ],
+    "historical_tests_rerun": false,
+    "new_wheel_built": false,
+    "tested_source": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+    "wheel_sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00"
+  },
+  "status": "PASS_STRUCTURAL_AND_CURRENT_CANDIDATE_ONLY"
+}

@@ -140,7 +140,11 @@ jobs:
             if [ "$RESULT_COUNT" -gt 0 ]; then
               ERROR_COUNT=$(jq '[.runs[0].results[] | select(.level == "error")] | length' semgrep.sarif 2>/dev/null || echo "0")
               WARNING_COUNT=$(jq '[.runs[0].results[] | select(.level == "warning")] | length' semgrep.sarif 2>/dev/null || echo "0")
-              NOTE_COUNT=$(jq '[.runs[0].results[] | select(.level == "note" or .level == "none")] | length' semgrep.sarif 2>/dev/null || echo "0")
+              NOTE_COUNT=$(jq '
+                [.runs[0].results[]
+                 | select(.level == "note" or .level == "none")]
+                | length
+              ' semgrep.sarif 2>/dev/null || echo "0")
               echo "  - Errors (CRITICAL): ${ERROR_COUNT}" >> "$GITHUB_STEP_SUMMARY"
               echo "  - Warnings (HIGH): ${WARNING_COUNT}" >> "$GITHUB_STEP_SUMMARY"
               echo "  - Notes (INFO): ${NOTE_COUNT}" >> "$GITHUB_STEP_SUMMARY"
@@ -244,7 +248,7 @@ jobs:
 
     - name: Upload Semgrep SARIF artifact
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: semgrep-sarif-${{ github.run_id }}
         path: |
@@ -274,7 +278,11 @@ jobs:
               echo "ℹ️ SARIF file is valid, extracting results..."
               CRITICAL_COUNT=$(jq '[.runs[0].results[] | select(.level == "error")] | length' semgrep.sarif 2>/dev/null || echo "0")
               HIGH_COUNT=$(jq '[.runs[0].results[] | select(.level == "warning")] | length' semgrep.sarif 2>/dev/null || echo "0")
-              INFO_COUNT=$(jq '[.runs[0].results[] | select(.level == "note" or .level == "none")] | length' semgrep.sarif 2>/dev/null || echo "0")
+              INFO_COUNT=$(jq '
+                [.runs[0].results[]
+                 | select(.level == "note" or .level == "none")]
+                | length
+              ' semgrep.sarif 2>/dev/null || echo "0")
             else
               echo "⚠️ Warning: SARIF structure is incomplete, using defaults"
               PARSE_STATUS="incomplete_structure"

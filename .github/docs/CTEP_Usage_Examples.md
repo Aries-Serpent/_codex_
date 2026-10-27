@@ -3,6 +3,13 @@
 > **Version:** 1.0.0  
 > **Related:** [Copilot Task Execution Protocol](./Copilot_Task_Execution_Protocol.md)
 
+Examples illustrate formatting, not actual invocations or proof of task acceptance.
+The dated successful transcripts below are historical examples, not a required
+all-or-nothing outcome. Current tracking follows the
+[agency policy](../../.codex/CODEBASE_AGENCY_POLICY.md): incomplete tasks remain
+incomplete, with evidence, proposed owner and next action. CTEP cannot override
+read-only boundaries, required security owner/reason classification or approvals.
+
 ---
 
 ## Example 1: Activating CTEP
@@ -24,12 +31,12 @@ Activated: 2025-12-16T17:00:00Z
 ACTIVE DIRECTIVES:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-✅ Complete ALL tasks - zero omissions
+✅ Account for all tasks; complete authorized work
 📊 Maintain live progress tracker
 🔍 Codebase-first approach - search before creating
 🧰 Document all new utilities with integration plans
 🔄 Update progress after each task completion
-✅ Final verification: Completed = Total, Skipped = 0
+✅ Final verification: Total = Completed + Blocked + Deferred + Pending
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -283,6 +290,20 @@ Phase 3:
 **Symptoms:** Some tasks marked as skipped or incomplete
 
 **Solutions:**
-1. This violates CTEP protocol - report as bug
-2. Request completion: "Complete all remaining tasks per CTEP"
-3. Re-submit task list for full execution
+1. Distinguish silent omission from explicitly blocked/deferred/pending work.
+2. Record evidence, impact, proposed owner and next action for incomplete tasks.
+3. Continue unaffected authorized work; do not bypass authority to force completion.
+
+### Mixed-state accounting example
+
+| Task | State | Evidence / next action |
+| --- | --- | --- |
+| Authorized local inspection without PR | Completed | Scoped source reviewed |
+| Operational activation without approval | Blocked | Obtain applicable approval; no activation |
+| Unrelated finding | Deferred | Preserve evidence and propose owner follow-up |
+| Remaining scoped test | Pending | Run the existing focused check |
+
+Total = Completed + Blocked + Deferred + Pending: 4 = 1 + 1 + 1 + 1.
+This is complete accounting, not completed implementation or independent approval.
+Optional memory or unavailable specialists do not prevent authorized direct work;
+at a resource ceiling stop the affected action safely and preserve state.
