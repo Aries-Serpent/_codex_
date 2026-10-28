@@ -1,0 +1,11 @@
+{
+  "status": "ERROR",
+  "analysis_completed": false,
+  "requested_after_commit": "ad4c89d8f903ed9c4b87d0b6caa4568d02dd6ec1",
+  "trivial_change": false,
+  "scope": "Accumulated branch comparison requested through the supplied checker; production SDK unchanged in iteration006, but functional archive-audit harness code was not classified trivial.",
+  "tool_error": "GitError: timeout git error: Command killed by signal SIGPIPE: git -c core.quotePath=false diff --no-renames --irreversible-delete -U0 159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+  "prior_python_analysis": "SKIPPED: database size",
+  "conclusion": "No completed CodeQL result or clean-scan claim. G4 remains NOT_RUN; applicable security requirements and hosted checks require human review.",
+  "authority": "No exception, approval, activation, merge or release granted."
+}

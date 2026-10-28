@@ -1,0 +1,95 @@
+{
+  "candidate": "174a7771160725bb6edf54f85d38ed5484753789",
+  "entries": [
+    {
+      "adoption": "pending branch review; not operational activation",
+      "after_line_count": 138,
+      "after_sha256": "8736a00986e8b30f3ecf36b17ca73d57057d6214f70dcf283fbde7ca8988c5b5",
+      "before_sha256": "efbb97e2ffe1d48c73345bc6ed8776fbb77fae0ceed2bda95219240bdae8627e",
+      "candidate": "174a7771160725bb6edf54f85d38ed5484753789",
+      "findings": [
+        "POLICY-003-F01"
+      ],
+      "path": ".codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md",
+      "source_commit": "a30d759e2a15d6c566e9e825d3efa8b3040e77e0"
+    },
+    {
+      "adoption": "pending branch review; not operational activation",
+      "after_line_count": 564,
+      "after_sha256": "74341b3dc670804d716a2723342326cb786481612545c2c137b86c54dc998b83",
+      "before_sha256": "e306abc6ccc6f5b6774806d864cc6debba319973b36fd5a1df025fbdbd6b59bb",
+      "candidate": "174a7771160725bb6edf54f85d38ed5484753789",
+      "findings": [
+        "POLICY-003-F02"
+      ],
+      "path": ".github/AGENTS.md",
+      "source_commit": "a30d759e2a15d6c566e9e825d3efa8b3040e77e0"
+    },
+    {
+      "adoption": "pending branch review; not operational activation",
+      "after_line_count": 153,
+      "after_sha256": "10c3269bfd5b6556648451a1952e74c9d5b26021ec89d0a0597e1c278bd57463",
+      "before_sha256": "4129d104131650033de9c76b07517d08e0665773d80dc39bd90320c3195b3207",
+      "candidate": "174a7771160725bb6edf54f85d38ed5484753789",
+      "findings": [
+        "POLICY-003-F02"
+      ],
+      "path": ".github/docs/CTEP_Quick_Reference.md",
+      "source_commit": "a30d759e2a15d6c566e9e825d3efa8b3040e77e0"
+    },
+    {
+      "adoption": "pending branch review; not operational activation",
+      "after_line_count": 309,
+      "after_sha256": "30bb995fb3d5229d53f6c18db5e03934ed27c57b9ca1338b422bc891201c94aa",
+      "before_sha256": "fb7161785255555356552a91c3e462186af7188eaf123033912efe1820bb4ebb",
+      "candidate": "174a7771160725bb6edf54f85d38ed5484753789",
+      "findings": [
+        "POLICY-003-F02"
+      ],
+      "path": ".github/docs/CTEP_Usage_Examples.md",
+      "source_commit": "a30d759e2a15d6c566e9e825d3efa8b3040e77e0"
+    },
+    {
+      "adoption": "pending branch review; not operational activation",
+      "after_line_count": 244,
+      "after_sha256": "736682bb6df3a63ff444313809804f24c7b0c2830c2e9d0e1a5e0cfdbf86701c",
+      "before_sha256": "405eea3ba5f7749a613d5367a9903ee00216aa7dcf57154ef180d93df928761f",
+      "candidate": "174a7771160725bb6edf54f85d38ed5484753789",
+      "findings": [
+        "POLICY-003-F02"
+      ],
+      "path": ".github/docs/Copilot_Task_Execution_Protocol.md",
+      "source_commit": "a30d759e2a15d6c566e9e825d3efa8b3040e77e0"
+    },
+    {
+      "adoption": "pending branch review; not operational activation",
+      "after_line_count": 108,
+      "after_sha256": "4c1c3f4235872ed735b3596e320c99de88c8a483c6abe1977aa19943c5d147c3",
+      "before_sha256": "2593dfad568e85a9d9113a9fd341b776639ff2f9afd5f420fde497572a4a2f9c",
+      "candidate": "174a7771160725bb6edf54f85d38ed5484753789",
+      "findings": [],
+      "path": "docs/adr/institutional-authority-002.json",
+      "source_commit": "a30d759e2a15d6c566e9e825d3efa8b3040e77e0"
+    },
+    {
+      "adoption": "pending branch review; not operational activation",
+      "after_line_count": 281,
+      "after_sha256": "d75fbaf998b4ed890aa4aaac70bd211a52de3560287caa92a363a3ace5b88c85",
+      "before_sha256": "fdf458e6271653fdc6c6136e29faa8618e8d84cc40e58efebd0359f2d2808dbb",
+      "candidate": "174a7771160725bb6edf54f85d38ed5484753789",
+      "findings": [
+        "POLICY-003-F03"
+      ],
+      "path": "tests/ci/test_agent_instruction_contract.py",
+      "source_commit": "a30d759e2a15d6c566e9e825d3efa8b3040e77e0"
+    }
+  ],
+  "historical_evidence": "iteration-001/002 not modified; original dated example success transcripts retained",
+  "unchanged_controls": [
+    "src/codex/institutional/",
+    "scripts/ci/check_no_deferral_security.py",
+    "src/orchestration/healing/policy_tier_engine.py",
+    ".github/workflows/",
+    "pyproject.toml"
+  ]
+}

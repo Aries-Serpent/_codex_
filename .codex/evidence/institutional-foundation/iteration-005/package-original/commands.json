@@ -1,0 +1,242 @@
+[
+  {
+    "argv": [
+      "python",
+      "-m",
+      "venv",
+      "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/build-venv"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025",
+    "start": "2026-10-25T01:11:01.369814+00:00",
+    "exit": 0,
+    "log": "build-venv.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/scratch"
+  },
+  {
+    "argv": [
+      "python",
+      "-m",
+      "venv",
+      "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025",
+    "start": "2026-10-25T01:11:03.897194+00:00",
+    "exit": 0,
+    "log": "runtime-venv.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/build-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "setuptools==81.0.0",
+      "wheel==0.48.0",
+      "hatchling==1.32.0",
+      "packaging==26.3",
+      "pathspec==1.1.1",
+      "pluggy==1.7.0",
+      "tomlkit==0.15.2",
+      "trove-classifiers==2026.9.21.13"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025",
+    "start": "2026-10-25T01:11:14.712999+00:00",
+    "exit": 0,
+    "log": "provision-build.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "jsonschema==4.25.1",
+      "attrs==26.1.0",
+      "jsonschema-specifications==2025.9.1",
+      "referencing==0.37.0",
+      "rpds-py==2026.9.1",
+      "typing-extensions==4.16.0"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025",
+    "start": "2026-10-25T01:11:17.339748+00:00",
+    "exit": 0,
+    "log": "provision-runtime.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/build-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "list",
+      "--format=json"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025",
+    "start": "2026-10-25T01:11:18.781335+00:00",
+    "exit": 0,
+    "log": "build-distributions.json",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "list",
+      "--format=json"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025",
+    "start": "2026-10-25T01:11:19.001842+00:00",
+    "exit": 0,
+    "log": "runtime-before-install.json",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/build-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "wheel",
+      "--no-index",
+      "--no-build-isolation",
+      "--no-deps",
+      "--no-cache-dir",
+      "--wheel-dir",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts",
+      "packages/contracts"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/source-export",
+    "start": "2026-10-25T01:11:19.235828+00:00",
+    "exit": 1,
+    "log": "contracts-build.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/build-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "wheel",
+      "--no-index",
+      "--no-build-isolation",
+      "--no-deps",
+      "--no-cache-dir",
+      "--wheel-dir",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts",
+      "packages/contracts"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/source-export",
+    "start": "2026-10-25T01:11:50.353758+00:00",
+    "exit": 0,
+    "log": "contracts-build-complete-export.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/build-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "wheel",
+      "--no-index",
+      "--no-build-isolation",
+      "--no-deps",
+      "--no-cache-dir",
+      "--wheel-dir",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts",
+      "."
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/source-export",
+    "start": "2026-10-25T01:11:53.583301+00:00",
+    "exit": 0,
+    "log": "wheel-build.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "install",
+      "--no-index",
+      "--no-deps",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/codex_ml-0.3.0-py3-none-any.whl"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025",
+    "start": "2026-10-25T01:11:57.180366+00:00",
+    "exit": 0,
+    "log": "wheel-install.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/bin/python",
+      "-I",
+      "-m",
+      "pip",
+      "list",
+      "--format=json"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025",
+    "start": "2026-10-25T01:11:57.409239+00:00",
+    "exit": 0,
+    "log": "installed-distributions.json",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/bin/python",
+      "-I",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/external-harness.py",
+      "--release",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/release.json",
+      "--output",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/external-runtime",
+    "start": "2026-10-25T01:12:07.170193+00:00",
+    "exit": 0,
+    "log": "external-runtime.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/scratch"
+  },
+  {
+    "argv": [
+      "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv/bin/python",
+      "-I",
+      "-c",
+      "\nimport sys,os,json,hashlib,copy,socket\nfrom pathlib import Path\nfrom importlib import metadata,resources\nfrom datetime import datetime,timezone\nE=Path(sys.argv[1]); W=Path(sys.argv[2]); checks=[]\ndef guard(event,args):\n if event.startswith('socket.') or event=='subprocess.Popen': raise OSError('OFFLINE_NETWORK_AND_SUBPROCESS_DISABLED')\nsys.addaudithook(guard)\nfrom codex.institutional import core,storage,review\nimport codex_contracts\nassert 'PYTHONPATH' not in os.environ and sys.flags.isolated and Path.cwd()==W/'external-runtime'\nsource=json.loads((E/'source-manifest.json').read_text()); packaged=resources.files('codex.institutional'); installed={}\nfor name,item in source['files'].items():\n if name.startswith('src/codex/institutional/'):\n  relative=name.removeprefix('src/codex/institutional/'); p=packaged.joinpath(relative); data=p.read_bytes(); assert hashlib.sha256(data).hexdigest()==item['sha256']; installed[relative]={'path':str(p),'sha256':item['sha256'],'bytes':len(data)}\nchecks.append('all institutional source files match installed bytes')\nformulas=json.loads(packaged.joinpath('review-formulas.json').read_bytes()); assert [x['id'] for x in formulas['formulas']]==[f'RD4-F{i:03d}' for i in range(1,59)]\n(E/'formula-identities.json').write_text(json.dumps({'source_commit':source['source_commit'],'installed_resource':str(packaged.joinpath('review-formulas.json')),'sha256':installed['review-formulas.json']['sha256'],'schema':formulas['schema'],'status':formulas['status'],'authority':formulas['authority'],'source_preservation':formulas['source_preservation'],'formulas':formulas['formulas'],'metadata':formulas['metadata'],'note':'Exact historical source notation, not numerical evaluation. Historical package_status prose preserved unchanged; observed wheel evidence is separate.'},indent=2)+'\\n')\nroot=W/'external-runtime'/'storage-fixture'; root.mkdir(); now=lambda:datetime(2026,10,25,tzinfo=timezone.utc)\nvalue=core.candidate(root,'external-wheel-storage-fixture',clock=now); assert core.inspect_candidate(value)==[] and core.verify(value,root)==[]\npreview=storage.plan(root,value); assert not (root/core.NAMESPACE).exists(); checks.append('preview is non-mutating')\nstorage.apply(root,value,preview); checkpoint=root/core.NAMESPACE/'checkpoint.json'; assert core.load(checkpoint)==value; assert checkpoint.stat().st_mode & 0o777 == 0o600; checks.append('atomic candidate write roundtrip and mode 0600')\ndef reseal(v):\n v=copy.deepcopy(v); v['id']=f\"{v['schema']}:{core.digest(v['payload'])}\"; v['integrity']=core.digest({k:x for k,x in v.items() if k!='integrity'}); return v\ndef rejected(call,name):\n try: call()\n except core.Rejected as err: checks.append(name+':'+err.reason)\n else: raise AssertionError(name)\nwrong=copy.deepcopy(value); wrong['payload']['candidate_ref']='0'*64; wrong=reseal(wrong); assert 'CANDIDATE_BINDING_MISMATCH' in core.inspect_candidate(wrong); rejected(lambda:storage.plan(root,wrong),'candidate binding rejected')\nsecond=copy.deepcopy(value); second['payload']['sequence']=2; second['payload']['predecessor']=core.digest(value); second=reseal(second); p2=storage.plan(root,second,core.digest(value)); storage.apply(root,second,p2); assert core.load(checkpoint)==second; previous=root/core.NAMESPACE/f'previous-{core.digest(value)}.json'; assert core.load(previous)==value; checks.append('continuation sequence 2 persisted and predecessor retained')\nrejected(lambda:storage.apply(root,second,p2),'stale preview rejects repeat write')\nunsafe=W/'external-runtime'/'unsafe-fixture'; unsafe.mkdir(); (unsafe/'.codex').symlink_to(root/'.codex',target_is_directory=True); rejected(lambda:storage.plan(unsafe,value),'symlink namespace rejected')\nassert value['lifecycle']=='Draft' and value['authority_refs']==[]; assert all(v=='NOT_RUN' for v in value['payload']['gates'].values()); assert value['payload']['actors']['activation']=='unsupported'; checks.append('continuation remains Draft with no activation or gate acceptance')\nassert any(r['payload'].get('dissent') for r in value['payload']['records'] if r['schema']=='codex.experience.v1'); checks.append('source dissent preserved in continuation')\nfor name,v in [('storage-candidate.json',value),('storage-continuation.json',second),('storage-preview.json',preview)]: (E/'artifacts'/name).write_text(json.dumps(v,indent=2)+'\\n')\ncontracts_dist=metadata.distribution('codex-contracts'); codex_dist=metadata.distribution('codex-ml'); origins={'core':core.__file__,'review':review.__file__,'storage':storage.__file__,'codex_contracts':codex_contracts.__file__}; assert all(Path(p).is_relative_to(sys.prefix) for p in origins.values())\nresult={'status':'PASS','checks':checks,'checks_passed':len(checks),'source_commit':source['source_commit'],'installed_resources':installed,'import_origins':origins,'codex_contracts':{'version':contracts_dist.version,'direct_url':json.loads(contracts_dist.read_text('direct_url.json')),'origin':'locally built historical contracts wheel, not registry'},'codex_ml':{'version':codex_dist.version,'direct_url':json.loads(codex_dist.read_text('direct_url.json'))},'network':'Python audit hook denies socket events and subprocess creation with OSError; core falls back to filesystem inventory in non-git external fixture','authority':'none','independence':'unverified same-platform fixtures','G5':'NOT_RUN','limitations':['No numerical formula evaluation','Full declared dependency environment not installed','Python audit hook is process-local, not kernel network isolation','Continuation is an isolated test fixture, not parent institutional checkpoint']}\n(E/'supplemental-runtime-results.json').write_text(json.dumps(result,indent=2)+'\\n'); print(json.dumps({'status':'PASS','checks_passed':len(checks)}))\n",
+      "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original",
+      "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025"
+    ],
+    "cwd": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/external-runtime",
+    "start": "2026-10-25T01:12:45.165787+00:00",
+    "exit": 0,
+    "log": "supplemental-runtime.log",
+    "PYTHONPATH": "absent",
+    "TMPDIR": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/scratch"
+  }
+]

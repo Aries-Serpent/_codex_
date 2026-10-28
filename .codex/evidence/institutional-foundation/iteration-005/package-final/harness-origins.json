@@ -1,0 +1,14 @@
+{
+  "installed_assurance": {
+    "origin": ".codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/full-base-installed-assurance-harness.py",
+    "sha256": "e3ec72e8c237688434c6258ae22e3a41771316b3d1d4b2d7ca78291b25fe5301",
+    "modified": false,
+    "scope": "Separately authored process-local offline installed harness, not authenticated independent verifier"
+  },
+  "baseline_review": {
+    "origin": ".codex/evidence/institutional-foundation/iteration-005/package-changed/baseline-review-harness.py",
+    "sha256": "7f03b6379b0872afbdaf5ab6ddffec094a08f0c0d3cf69c4bea6b51549992c44",
+    "modified": false
+  },
+  "parent_source_only_fixture": "inputs/assurance-fixture-check.py retained unchanged, not relabeled or executed"
+}

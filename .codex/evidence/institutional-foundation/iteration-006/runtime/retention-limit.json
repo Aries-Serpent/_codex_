@@ -1,0 +1,17 @@
+{
+  "status": "RESIDUAL_RETENTION_BLOCKER",
+  "source": "Coordinator message 2026-10-25T03:13:27.523+00:00; reported baseline finding, not independently recounted by runtime lane",
+  "missing_historical_log_streams": 151,
+  "reported_breakdown": {
+    "package-original-nested": 10,
+    "package-changed": 40,
+    "package-final": 14,
+    "root": 87
+  },
+  "reported_retained": "Readable JUnit, results, commands, wheels and source verified by coordinator; no runtime/resource parity change",
+  "mitigation": "Retain exact existing receipts and explicitly disclose unavailable historical raw logs; no reconstruction or historical validation reruns",
+  "review_condition": "Current bytes verified, security gap scoped, genuine analytical outputs supplied; final assurance remains BLOCKED",
+  "owner": "Existing institutional coordinator validation and candidate association",
+  "authority": "none",
+  "G5": "NOT_RUN"
+}

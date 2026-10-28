@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "blocks": 2,
+  "final_documentation_sha256": "8ec28a65be37d9443d64ccab62e411e260b850706dd3f84f5cba8a743ee5cdce",
+  "unchanged_python_blocks_relative_to_reviewed_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+  "prior_exact_blocks": ".codex/evidence/institutional-foundation/iteration-005/package-changed/installed-assurance-artifacts-formatted/documentation-blocks.json",
+  "executed_final_blocks": "installed-sdk-artifacts/documentation-blocks.json"
+}

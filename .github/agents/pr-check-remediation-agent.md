@@ -28,7 +28,7 @@ Autonomous agent specialized in diagnosing and fixing PR check failures across m
 - **Security Fixes**: Detect and fix insecure patterns (tempfile, hardcoded secrets, etc.)
 - **Code Quality**: Auto-fix unused imports, variables, bare except blocks
 - **Platform Issue Recognition**: Identify and document unfixable platform issues
-- **AI Agency Policy**: Fix ALL issues found, not just PR-related
+- **AI Agency Policy**: Fix relevant issues within authorization; disclose other findings with evidence and mitigation/owner.
 
 ### Authority Level
 - **Scope:** Repository-wide code quality and CI configuration

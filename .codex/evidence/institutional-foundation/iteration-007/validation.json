@@ -1,0 +1,100 @@
+{
+  "classification": "FACT: coordinator-owned technical observations, not independent assurance",
+  "source_candidate": "a183f97e4f534cd6712588d12d22f821931f5c9c",
+  "source_tests": {
+    "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=src python -m pytest --import-mode=importlib -q -o addopts='' -o filterwarnings='' tests/institutional",
+    "passed": 289,
+    "warnings": ["asyncio_mode unknown because plugin autoload disabled", "asyncio_default_fixture_loop_scope unknown because plugin autoload disabled"],
+    "new_tests": 27,
+    "existing_tests": 262,
+    "failures_during_development": [
+      "Initial new-test collection without importlib mode failed relative import; used configured importlib mode.",
+      "First semantic recovery test changed filesystem inventory before applying genesis; reordered its fixture setup, without weakening its assertion."
+    ]
+  },
+  "style_and_typing": {
+    "ruff": "PASS; three changed production modules and new tests",
+    "black": "PASS; four changed Python files",
+    "isort": "PASS; four changed Python files",
+    "mypy": "PASS; --follow-imports=silent on admission.py/core.py/storage.py; unrelated unused-section notes",
+    "compileall": "PASS; institutional package and new tests",
+    "git_diff_check": "PASS for source/docs. Final aggregate check reports trailing whitespace in original pytest failure output and JUnit; preserve those exact raw evidence bytes rather than silently normalizing them."
+  },
+  "review": {
+    "actor": "composition-review",
+    "read_only": true,
+    "independent": false,
+    "findings_fixed": [
+      "Reserve checkpoint depth before writing successor, so an admitted store remains recoverable.",
+      "Descriptor-anchored O_NOFOLLOW/O_NONBLOCK manifest reads and fstat validation prevent symlink/special-file races."
+    ],
+    "followup": "No significant issues found in reviewed fixes."
+  },
+  "package": {
+    "status": "PASS scoped installed runtime; four repository-document tests not portable",
+    "source_commit": "a183f97e4f534cd6712588d12d22f821931f5c9c",
+    "immutable_snapshot_files": 2206,
+    "export_ignored_exact_blobs_restored": 69,
+    "source_manifest": "package/source-manifest.json",
+    "wheel": "package/wheels/codex_ml-0.3.0-py3-none-any.whl",
+    "wheel_sha256": "6795b031ff100e2de965d84dde7bdcc437984deaeffb36791d0032d0c17b5eda",
+    "contracts_wheel": "package/wheels/codex_contracts-0.1.0a1-py3-none-any.whl",
+    "contracts_wheel_sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+    "build": "pip wheel --no-deps --no-build-isolation from exact source snapshot; contracts wheel built with its declared build isolation.",
+    "install": "Fresh /tmp/institutional-007/venv; pip install wheel with --find-links local wheels, full declared dependencies, no --no-deps and no optional extras.",
+    "test_provision": "pytest==9.1.1 installed separately after runtime dependency check",
+    "pip_check_before_and_after_test_tools": "PASS",
+    "runtime_resources_verified": 11,
+    "origins_and_resources": "package/installed-resources.json",
+    "source_path_assistance": false,
+    "isolation": "Outside checkout; Python -I, PYTHONPATH/PYTHONHOME unset, standalone /dev/null pytest config, --noconftest and plugin autoload off.",
+    "harness": "package/harness/ contains byte-identical test copies plus one empty package __init__.py for relative fixture imports.",
+    "initial_installed_run": {
+      "passed": 285,
+      "failed": 4,
+      "receipt": "package/installed-initial-junit.xml",
+      "cause": "test_review_formulas.py has four repository-relative source/document inspection tests. Their ROOT resolves to /tmp after copying; those documents are not installed runtime resources.",
+      "no_assertions_weakened": true
+    },
+    "portable_installed_run": {
+      "passed": 285,
+      "deselected": 4,
+      "receipt": "package/installed-final-junit.xml",
+      "excluded_exact_names": [
+        "test_exact_document_mapping",
+        "test_source_expression_preservation_is_distinct_from_normalization",
+        "test_lineage_and_package_claims_are_bounded",
+        "test_structural_sdk_mappings_resolve_without_claiming_formula_execution"
+      ],
+      "limit": "All four passed in the source run. No installed-source-tree equivalence claim for those tests."
+    },
+    "explicit_offline_run": {
+      "passed": 285,
+      "deselected": 4,
+      "receipt": "package/installed-offline-junit.xml",
+      "guard": "Process-local Python audit hook rejects socket creation/connect/getaddrinfo; existing Git capture disables network protocols. Not kernel isolation.",
+      "counting": "Same portable cohort rerun for offline validation, not additional unique tests."
+    }
+  },
+  "coverage_scope": [
+    "Resealed semantic authority violation rejects inspection, verify, plan, default import and recovery",
+    "Explicit wrong candidate/context/artifact/source and stale history rejection",
+    "Valid legacy observations retained only as unbound diagnostics",
+    "Missing/substituted predecessor, sequence and protected-extension loss",
+    "Required review/assurance history loss, incompatible forks and replayed acceptance",
+    "Source-event and cache recomputation mismatch",
+    "Unanchored wholesale replacement accepted; trusted expected digest detects mismatch",
+    "Ordinary candidates, gzip bytes, depth budget, FIFO/symlink races and installed resources",
+    "Existing prerequisite restoration, exemptions, aggregate limits, dissent and reopening assertions preserved"
+  ],
+  "security": {
+    "CodeQL": "NOT_RUN",
+    "CodeQL_observation": "Tool reported 0 alerts but explicitly skipped Python analysis because database size is too large; no completed scan inferred.",
+    "scoped_bandit": "One pre-existing LOW/HIGH B404 subprocess-import advisory in core.py; no medium/high severity findings. Not whole-repository security acceptance.",
+    "secret_tool_before_source_commit": "PASS; eight explicitly named changed files, not historical archive clearance"
+  },
+  "G5": "NOT_RUN",
+  "approved": false,
+  "activated": false,
+  "published": false
+}

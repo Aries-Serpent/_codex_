@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools>=78.1.1,<82",  # Security: PYSEC-2025-49, PYSEC-2026-1918 fixes
+    "setuptools>=84.1.0,<85",  # Security: PYSEC-2025-49, PYSEC-2026-1918 fixes
     "wheel>=0.48.0",  # Security: CVE-2026-24049 - arbitrary code execution fix
 ]
 build-backend = "setuptools.build_meta"
@@ -37,6 +37,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
+    "jsonschema>=4.25.1,<5",
     # Federated interoperability contracts (dependency-free)
     "codex-contracts",
     # Essential configuration & validation (offline-first)
@@ -406,7 +407,7 @@ dev = [
     "bandit>=1.9.4",
     "pip-audit>=2.10.1",
     "semgrep>=1.175.0",
-    # semgrep (<=1.178) ships opentelemetry exporter/sdk 1.37.x, which imports
+    # semgrep ships opentelemetry exporter/sdk 1.37.x, which imports
     # ``_ExtendedAttributes`` — removed in opentelemetry-api 1.38+. Pin the API
     # below the break so a fresh resolve cannot crash the semgrep CLI.
     "opentelemetry-api>=1.37.0,<1.38.0",
@@ -583,6 +584,7 @@ rag = [
 ]
 
 [project.scripts]
+codex-institutional = "codex.institutional.__main__:main"
 # Core entry points (bundled in all profiles)
 codex = "codex_ml.cli.main:cli"
 codex-ml = "codex_ml.cli.main:cli"
@@ -651,6 +653,8 @@ where = [
 ]
 # Bundled packages (production code and AI subsystems)
 include = [
+    "agent",               # Canonical implementation behind aries_serpent_core.agent
+    "agent.*",
     "agents*",              # AI agents subsystem
     "aries_serpent_core*",  # Core Aries Serpent logging and utilities (required by CLI)
     "codex_ml*",            # ML training, evaluation, and utilities
@@ -660,6 +664,8 @@ include = [
     "services*",            # Service integrations
     "tokenization*",        # Tokenization infrastructure
     "training*",            # Training pipeline
+    "utils",                # Shared utilities used by packaged service adapters
+    "utils.*",
     "codex_utils*",         # Codex utilities
     "interfaces*",          # Public interfaces
     "hhg_logistics*",       # HHG logistics subsystem
@@ -679,6 +685,8 @@ include = [
 ]
 # Excluded packages (development-only, test, or temporary code)
 exclude = [
+    "agents.prompts.self-healing",   # Markdown resources, not an importable package
+    "services.workflow.backup",      # Duplicate snapshot; workflow_backup is canonical
     "tests*",                       # Test suites (development only)
     "torch*",                       # Local PyTorch stub (not part of runtime package)
     "torch.*",                      # Local PyTorch stub modules
@@ -711,6 +719,10 @@ exclude = [
 namespaces = true
 
 [tool.setuptools.package-data]
+"codex.institutional" = ["contracts.json", "review-formulas.json"]
+agents = [
+    "prompts/**/*.md",
+]
 codex_ml = [
     "**/*.md",
     "**/*.jinja2",
@@ -738,6 +750,15 @@ common = []
 "*" = [
     "**/__pycache__/*",
     "**/*.py[cod]",
+]
+agents = [
+    "prompts/self-healing/*.py",
+]
+"agents.prompts" = [
+    "self-healing/*.py",
+]
+services = [
+    "workflow.backup/*.py",
 ]
 codex_ml = [
     "**/tests/*",
@@ -966,11 +987,27 @@ conflicts = [
         { extra = "ge" },
         { extra = "marshmallow-v4" },
     ],
+    # Semgrep's telemetry stack cannot share an environment with wandb >=0.29.
+    [
+        { extra = "dev" },
+        { extra = "full" },
+    ],
+    [
+        { extra = "dev" },
+        { extra = "all" },
+    ],
+    [
+        { extra = "dev" },
+        { extra = "train" },
+    ],
 ]
 constraint-dependencies = [
     "dulwich>=1.2.5",
     "aiohttp>=3.14.0",
 ]
+
+[tool.uv.sources]
+codex-contracts = { path = "packages/contracts", editable = true }
 
 [tool.mutmut]
 also_copy = [

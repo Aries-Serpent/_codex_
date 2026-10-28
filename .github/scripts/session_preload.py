@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Mandatory session pre-load script — runs at copilot-setup-steps boot.
+Optional bounded historical context — runs at copilot-setup-steps boot.
 Prints agentic repo state, PDA aftermath, and repo variable snapshot
-into the GitHub Actions step log so every Copilot session starts
-with full context loaded.
+into the GitHub Actions step log. Logs are not proof of platform prompt attachment,
+live authorization, or exhaustive memory retrieval.
 
 Phase 1.4 Update (2026-06-23):
 - Replaced file-scan logic with session index API (SessionQuery)
@@ -29,11 +29,17 @@ except Exception:  # pragma: no cover - standalone fallback
 
 
 MAX_SECTION_CHARS = 8_000
+MAX_TOTAL_CHARS = 18_000
+_printed_chars = 0
 
 
 def section(title: str, body: str) -> None:
+    global _printed_chars
+    budget = min(MAX_SECTION_CHARS, max(0, MAX_TOTAL_CHARS - _printed_chars))
+    rendered = truncate_text(body.rstrip(), budget)[:budget] if budget else "(global context budget reached)"
     print(f"::group::{title}")
-    print(truncate_text(body.rstrip(), MAX_SECTION_CHARS))
+    print(rendered)
+    _printed_chars += len(rendered)
     print("::endgroup::")
 
 
@@ -159,16 +165,17 @@ def pda_summary() -> str:
 
 
 def ctx_summary() -> str:
-    """Return key governance variable values from agent_context.json.
-
-    Also validates that mandatory governance keys are present and have the
-    expected values.  Prints a warning for any missing or incorrect entry.
-    """
+    """Describe historical local flags without promoting them to live authority."""
     path = ".codex/agent_context.json"
     if not os.path.exists(path):
         return "  agent_context.json not found"
-    with open(path) as f:
-        d = json.load(f)
+    try:
+        with open(path) as f:
+            d = json.load(f)
+        if not isinstance(d, dict):
+            return "Historical snapshot unavailable: expected an object"
+    except (OSError, ValueError):
+        return "Historical snapshot unavailable: unreadable or malformed"
     keys = [
         "COPILOT_AGENT_AUTH_ENABLED",
         "COPILOT_AGENT_MAX_AUTONOMY_LEVEL",
@@ -178,32 +185,14 @@ def ctx_summary() -> str:
         "COPILOT_AGENT_DEDUPLICATION_ENABLED",
         "COPILOT_AGENT_TURN_ISOLATION_ENABLED",
     ]
-    # Mandatory governance variable requirements.
-    # NOTE: These values are intentionally duplicated from promotion_readiness_gate.py
-    # because session_preload.py is a standalone script that runs without importing
-    # from scripts/ci/ (it runs from the repo root during copilot-setup-steps boot).
-    # Keep both definitions in sync when updating governance requirements.
-    _REQUIRED_GOVERNANCE_VARS: dict[str, str] = {
-        "COPILOT_AGENT_CCA_VERSION_LOCK": "stable",
-        "COPILOT_AGENT_DEDUPLICATION_ENABLED": "true",
-        "COPILOT_AGENT_TURN_ISOLATION_ENABLED": "true",
-    }
-    lines_out = []
+    lines_out = [
+        "Historical snapshot; not current GitHub settings or granted permissions.",
+        f"Generated: {d.get('_meta', {}).get('generated_at', 'unknown')}",
+        "Evolution flags are repository application data, not a GitHub runtime pin.",
+    ]
     for k in keys:
         val = d.get(k, "(not set)")
         lines_out.append(f"  {k} = {val}")
-    # Governance validation pass
-    gov_issues = []
-    for k, expected in _REQUIRED_GOVERNANCE_VARS.items():
-        actual = d.get(k)
-        if actual is None:
-            gov_issues.append(f"  ⚠️  GOVERNANCE: {k} is missing from agent_context.json")
-        elif str(actual).lower() != expected.lower():
-            gov_issues.append(f"  ❌ GOVERNANCE: {k} = '{actual}' (expected '{expected}')")
-    if gov_issues:
-        lines_out.append("")
-        lines_out.extend(gov_issues)
-        lines_out.append("  ❗ Fix: run repo-var-sync-agent to synchronize repository variables.")
     return "\n".join(lines_out)
 
 
@@ -242,13 +231,15 @@ def chpp_drift_check() -> str:
     )
 
 
+section("🔑 HISTORICAL REPO VARIABLE SNAPSHOT (agent_context.json)", ctx_summary())
+
 section(
-    "✅ AGENTIC REPO STATE — Auth is PERMANENTLY ACTIVE",
+    "✅ AGENTIC REPO STATE — repository context, not live authorization",
     read(".codex/AGENTIC_REPO_STATE.md", lines=120),
 )
 
 section(
-    "📋 CODEBASE AGENCY POLICY (mandatory rules for this session)",
+    "📋 CODEBASE AGENCY POLICY (scoped repository reference)",
     read(".codex/CODEBASE_AGENCY_POLICY.md", lines=120),
 )
 
@@ -259,8 +250,6 @@ section(
 
 section("🔄 PDA AFTERMATH — last 5 iterations", pda_summary())
 
-section("🔑 REPO VARIABLE SNAPSHOT (agent_context.json)", ctx_summary())
-
 section(
     "🛡️ COPILOT HARDENED PLANNING PROTOCOL (CHPP)",
     read(".codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md"),
@@ -270,9 +259,7 @@ section("🔍 CHPP DRIFT DETECTION", chpp_drift_check())
 
 print("")
 print("━" * 60)
-print("  🤖 THIS IS AN AGENTIC MANAGED REPO — Copilot self-manages")
-print("  ✅ COPILOT_AGENT_AUTH_ENABLED = true (repo variable, permanent)")
-print("  ✅ No human approval gate required — ever")
-print("  ✅ WEC always-required items are pre-checked automatically")
-print("  ✅ auto-approve uses gh run rerun for same-repo PRs")
+print("  Historical context is optional and may be stale or incomplete.")
+print("  Actual GitHub permissions, approvals, and platform settings remain external.")
+print("  Generated context files require explicit reading; logs are not prompt injection.")
 print("━" * 60)

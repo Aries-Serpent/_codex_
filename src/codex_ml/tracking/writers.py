@@ -348,6 +348,11 @@ class BaseWriter(ABC):
         """Persist a single metrics row."""
 
     def close(self) -> None:  # pragma: no cover - interface
+        """Do nothing by default and return None.
+
+        Concrete writers override this hook to flush/close owned resources.
+        The base method does not mark a writer closed or prevent future log calls.
+        """
         pass
 
 
@@ -401,6 +406,17 @@ class NdjsonWriter(BaseWriter):
             )
 
     def log(self, row: dict[str, Any]) -> None:
+        """Append a schema-ordered copy of metric ``row`` to the NDJSON log.
+
+        Require step, split, metric, value, dataset, and tags (ValueError if
+        missing). Outside legacy mode, supply timestamp/run_id when available
+        and require both. Normalize tags/dataset, supply schema defaults, and
+        convert numeric values to scalars. Non-scalar non-None values outside
+        legacy mode produce a linked manifest record and a null metric value.
+        Return None; rotating file writes and serialization errors propagate,
+        and a metric append may succeed before its manifest append fails.
+        The caller's top-level mapping is not modified.
+        """
         record = dict(row)
         if not self._legacy:
             iso = datetime.now(timezone.utc).isoformat()
@@ -514,6 +530,12 @@ class NdjsonWriter(BaseWriter):
         return descriptor
 
     def close(self) -> None:
+        """Close the manifest logger, when present, then the metric logger.
+
+        Return None. Suppress/log ValueError, TypeError, and RuntimeError from
+        manifest close; suppress/log I/O/import errors from metric close.
+        Other exceptions propagate and may interrupt cleanup.
+        """
         if getattr(self, "_manifest_logger", None) is not None:
             try:
                 self._manifest_logger.close()  # type: ignore[union-attr]
@@ -526,6 +548,15 @@ class NdjsonWriter(BaseWriter):
 
 
 class TensorBoardWriter(BaseWriter):
+    """Optional scalar writer backed by torch.utils.tensorboard.SummaryWriter.
+
+    ``logdir`` receives event files; optional ``summary_path`` receives enabled
+    or disabled component records. Construction opens the writer immediately.
+    Missing torch/TensorBoard or caught I/O/import initialization failures disable
+    logging and are exposed by status(); other failures propagate. No run
+    start call is required, and close flushes the writer.
+    """
+
     def __init__(self, logdir: str | Path, *, summary_path: str | Path | None = None) -> None:
         self._disabled_reason: str | None = None
         self._summary_path = Path(summary_path) if summary_path is not None else None
@@ -563,6 +594,12 @@ class TensorBoardWriter(BaseWriter):
             )
 
     def log(self, row: dict[str, Any]) -> None:
+        """Write numeric ``row['value']`` under the tag split/metric.
+
+        Use optional step as global step. Nonnumeric values and disabled writers
+        are ignored; missing split/metric render as None in the tag. Return
+        None and propagate SummaryWriter errors. Booleans count as numeric.
+        """
         if self._writer is None:
             return
         val = row.get("value")
@@ -571,6 +608,11 @@ class TensorBoardWriter(BaseWriter):
             self._writer.add_scalar(tag, val, row.get("step"))
 
     def close(self) -> None:
+        """Flush and close the enabled SummaryWriter; otherwise do nothing.
+
+        Return None. Log/suppress I/O/import errors from either operation; if
+        flush fails, close is not attempted. Other errors propagate.
+        """
         if self._writer is not None:
             try:
                 self._writer.flush()
@@ -579,10 +621,26 @@ class TensorBoardWriter(BaseWriter):
                 get_default_logger().debug("Suppressed exception in handler", exc_info=True)
 
     def status(self) -> Optional[str]:
+        """Return the initialization disable reason, or None when enabled.
+
+        This is not a live health check: later logging/close failures do not
+        update the reason or probe TensorBoard dependencies.
+        """
         return self._disabled_reason
 
 
 class MLflowWriter(BaseWriter):
+    """Optional scalar MLflow run with an offline-aware tracking URI guard.
+
+    ``uri`` requests a tracking destination; the bootstrap guard supplies a
+    local fallback unless remote tracking is explicitly allowed. ``exp_name``
+    selects the experiment, ``run_name`` names the newly started run, and
+    ``tags`` are applied when nonempty. Optional ``summary_path`` records the
+    effective URI, fallback decision, and component status. Construction sets
+    global MLflow URI/experiment and starts a run. Missing mlflow or caught
+    I/O/import errors disable logging; other SDK errors propagate.
+    """
+
     def __init__(
         self,
         uri: str | None,
@@ -664,6 +722,13 @@ class MLflowWriter(BaseWriter):
             )
 
     def log(self, row: dict[str, Any]) -> None:
+        """Log numeric value from ``row`` as an MLflow metric at int(step).
+
+        Require metric and step only for numeric values; missing keys raise
+        KeyError and invalid step conversion raises ValueError/TypeError.
+        Disabled writers or nonnumeric values are ignored. Return None and
+        propagate SDK errors; split is not incorporated into the metric name.
+        """
         if self._mlflow is None:
             return
         val = row.get("value")
@@ -671,6 +736,12 @@ class MLflowWriter(BaseWriter):
             self._mlflow.log_metric(row["metric"], val, step=int(row["step"]))
 
     def close(self) -> None:
+        """End MLflow's active run if this writer initialized successfully.
+
+        Return None and log/suppress I/O/import errors; other SDK errors
+        propagate. This calls module-level end_run, not a stored run's method,
+        so callers must coordinate changes to MLflow's active run.
+        """
         if self._mlflow is not None:
             try:
                 self._mlflow.end_run()
@@ -678,10 +749,24 @@ class MLflowWriter(BaseWriter):
                 get_default_logger().debug("Suppressed exception in handler", exc_info=True)
 
     def status(self) -> Optional[str]:
+        """Return the initialization disable reason, or None on successful setup.
+
+        URI fallback alone does not mark the writer disabled. This method does
+        not contact MLflow or reassess later run/logging failures.
+        """
         return self._disabled_reason
 
 
 class WandbWriter(BaseWriter):
+    """Optional W&B scalar writer that starts a run during construction.
+
+    ``project`` and ``run_name`` identify the run; ``tags`` contributes its values
+    as a tag list, not a configuration mapping. ``mode`` defaults to offline but
+    is forwarded unchanged to wandb.init with reinit=True. ``summary_path`` may
+    record component status. Missing wandb or caught I/O/import setup errors
+    disable logging; other SDK errors propagate. Online mode can contact W&B.
+    """
+
     def __init__(
         self,
         project: str,
@@ -739,6 +824,13 @@ class WandbWriter(BaseWriter):
             )
 
     def log(self, row: dict[str, Any]) -> None:
+        """Log numeric value from ``row`` to W&B under split/metric.
+
+        Include int(row['step']) as a payload field, not the SDK step argument.
+        Disabled/nonnumeric rows are ignored. Return None; missing step,
+        conversion errors, and SDK failures propagate. Missing split/metric
+        render as None in the tag.
+        """
         if self._run is None:
             return
         val = row.get("value")
@@ -747,6 +839,12 @@ class WandbWriter(BaseWriter):
             self._run.log({tag: val, "step": int(row["step"])})
 
     def close(self) -> None:
+        """Finish the stored W&B run if present and return None.
+
+        The SDK may flush local files or upload according to mode.
+        I/O/import failures are logged/suppressed; other errors propagate.
+        The run handle is retained rather than reset.
+        """
         if self._run is not None:
             try:
                 self._run.finish()
@@ -754,6 +852,11 @@ class WandbWriter(BaseWriter):
                 get_default_logger().debug("Suppressed exception in handler", exc_info=True)
 
     def status(self) -> Optional[str]:
+        """Return the initialization disable reason, or None if setup succeeded.
+
+        Do not probe the run, perform network access, or update status after
+        subsequent logging/finish errors.
+        """
         return self._disabled_reason
 
 
@@ -789,6 +892,12 @@ class CompositeWriter(BaseWriter):
             get_default_logger().error(f"[tracking] degraded writers: {summary}")
 
     def log(self, row: dict[str, Any]) -> None:
+        """Dispatch the same ``row`` to writers in construction order.
+
+        Return None. Log/suppress I/O/import failures per writer and continue;
+        ValueError, TypeError, RuntimeError, and other exceptions propagate and
+        stop dispatch. No copy or rollback protects against earlier side effects.
+        """
         for w in self._writers:
             try:
                 w.log(row)
@@ -801,6 +910,12 @@ class CompositeWriter(BaseWriter):
                 get_default_logger().debug("Writer log error", exc_info=exc)
 
     def close(self) -> None:
+        """Close child writers in construction order and return None.
+
+        Log/suppress I/O/import failures per child so later children are closed.
+        Other exceptions interrupt cleanup. The child list and disabled-component
+        snapshot are retained.
+        """
         for w in self._writers:
             try:
                 w.close()
@@ -814,6 +929,11 @@ class CompositeWriter(BaseWriter):
 
     @property
     def disabled_components(self) -> tuple[tuple[str, str], ...]:
+        """Return immutable (component, detail) pairs captured during construction.
+
+        Reasons are split at their first colon. This snapshot does not track
+        later failures, remove children from dispatch, or recheck SDK availability.
+        """
         return self._disabled_components
 
 

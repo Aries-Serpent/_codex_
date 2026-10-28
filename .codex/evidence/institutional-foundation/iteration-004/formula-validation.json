@@ -1,0 +1,96 @@
+{
+  "lane": "C",
+  "scope": "local preparation only",
+  "files": [
+    "docs/design/azimuthal-formal-model.rst",
+    "src/codex/institutional/review-formulas.json",
+    "tests/institutional/test_review_formulas.py"
+  ],
+  "registry": {
+    "schema": "codex.institutional.review-formulas.v1",
+    "count": 58,
+    "ids": "RD4-F001 through RD4-F058 inclusive",
+    "composite": "RD4-F058",
+    "conceptual_noncomputable": "RD4-F054",
+    "executable_equation_implementations_claimed": 0,
+    "reference_records": 8,
+    "existing_toolkit_table_local_ids": 10,
+    "source_inspected_structural_sdk_api_mappings": 10,
+    "preserved_parent_transcription_source_expression_mappings": 58,
+    "parent_transcription_preserved": true,
+    "prose_source_ids": ["RD4-F038", "RD4-F046", "RD4-F047"],
+    "composite_extracted_ids": ["RD4-F056", "RD4-F057"],
+    "upstream_exact_latex_verified": false,
+    "compatible_existing_registry_found": false,
+    "discovery_details": "src/codex/institutional/review-formulas.json#/discovery",
+    "per_equation_metadata": "Resolve formulas[].metadata_ref in metadata; combine with entry-local conditions, symbols and global semantics."
+  },
+  "validation": {
+    "runtime": "Python 3.12.10",
+    "pytest": {
+      "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=src python -m pytest --confcutdir=tests/institutional -p asyncio -p no:cacheprovider -o addopts='' --junitxml=.codex/evidence/institutional-foundation/iteration-004/formula-junit.xml tests/institutional/test_review_formulas.py -q",
+      "result": "8 passed after binding parent-provided user transcription; exact timing retained in final log/JUnit",
+      "scope": "Resource presence, identity, exact 58-entry normalized document mapping, separate exact 58-entry parent-transcribed source/document mapping, prose/extracted classification, separate displays, disclosed source-vs-normalized differences, RST headings, all 13 dimensions, edge metadata, routes/authority/composite completeness and AST-resolved structural SDK API names; not mathematical proof, upstream bytehash verification, SDK runtime execution or calibrated scoring.",
+      "junit": ".codex/evidence/institutional-foundation/iteration-004/formula-junit.xml"
+    },
+    "black": {
+      "command": "black --check tests/institutional/test_review_formulas.py",
+      "result": "pass; one file unchanged"
+    },
+    "ruff": {
+      "command": "ruff check tests/institutional/test_review_formulas.py",
+      "result": "All checks passed"
+    },
+    "isort": {
+      "command": "isort --check-only tests/institutional/test_review_formulas.py",
+      "result": "pass"
+    },
+    "compile": {
+      "command": "python -m py_compile tests/institutional/test_review_formulas.py",
+      "result": "pass"
+    },
+    "mypy": {
+      "command": "mypy --cache-dir=.codex/evidence/institutional-foundation/iteration-004/formula-mypy-cache --follow-imports=skip tests/institutional/test_review_formulas.py",
+      "result": "Success: no issues found in 1 source file",
+      "note": "Existing mypy.ini unused-section notices for torch and omegaconf; generated lane-owned cache removed."
+    },
+    "json": {
+      "command": "python -m json.tool src/codex/institutional/review-formulas.json",
+      "result": "pass"
+    },
+    "secrets": {
+      "tool": "runtime-tools-secret_scanning",
+      "result": "No secrets detected in all three source assets"
+    },
+    "whitespace": {
+      "command": "git diff --no-index --check /dev/null <each of the three new lane files>",
+      "result": "No whitespace diagnostics; exit 1 denotes the expected new-file differences.",
+      "global_result": "git diff --check reported unrelated concurrent trailing whitespace at .github/workflows/pr-followup-generator.md:57; this lane preserved it unchanged."
+    },
+    "log": ".codex/evidence/institutional-foundation/iteration-004/formula-validation.log",
+    "cleanup": "Removed lane-owned formula-mypy-cache and tests/institutional/__pycache__/test_review_formulas*.pyc after final checks; retained source, log, JUnit and useful metadata. No lane pytest scratch directory was created."
+  },
+  "limits": [
+    "No commits, staging, pushes, progress publication or PR mutations; no CodeQL run because its required post-commit prerequisite conflicts with the explicit no-commit boundary.",
+    "No .github/agents contents read; no user packet edits; no edits to parent architecture or sibling review/contracts.",
+    "Parent's explicit review-formulas.json package-data declaration observed at pyproject.toml:722; this lane does not edit that manifest. External wheel verification remains pending; declaration is not installed-wheel proof.",
+    "Architecture reference is docs/design/azimuthal-reasoning-integrity.rst. Read-only runtime source inspection identified ten bounded structural API mappings; these are not complete equations, numerical scoring, assurance execution or authority.",
+    "No dependency additions. docutils is absent; no RST build claimed. Exact 58-entry source and 58-entry normalized RST-to-JSON mappings are tested separately; three source entries are prose, not displayed equations.",
+    "No mathematical proof, measured calibration, live CI, hosted activation, background monitoring or score-derived authority claimed.",
+    "Parent supplied the user equation transcription at 2026-10-25T00:31:12.400+00:00. All 58 source entries are now bound to that transcription, not the earlier lane shorthand. Exact calligraphic families, D_n^{req}, operator names and boxed aligned composite are retained separately from unchanged normalized LaTeX. Source F038/F046/F047 are prose; F056/F057 are extracted from the composite. No set difference is invented. No independent upstream bytehash or equivalence claim.",
+    "Corrected the invented health interpretation: H_n^known denotes known uncertainty under the source heading Uncertainty and Adequacy. RD4-F024 is known_uncertainty; known_health and symbols.health remain explicitly legacy compatibility aliases only. No unprovided uncertainty domain or calibration is asserted.",
+    "Actual asset content hashes are parent-owned evidence; supplied lineage assertion remains unverified and is not an asset digest."
+  ],
+  "handoff": [
+    {
+      "finding": "Parent explicit review-formulas.json package-data declaration observed; external wheel verification remains pending.",
+      "owner": "parent packaging/integration scope",
+      "next": "Parent verifies inclusion through external wheel checks; do not mark verified from the declaration alone."
+    },
+    {
+      "finding": "Unrelated concurrent whitespace diagnostic at .github/workflows/pr-followup-generator.md:57.",
+      "owner": "parent or owning lane",
+      "next": "Inspect and fix within its authorized scope; rerun global diff check after integration."
+    }
+  ]
+}

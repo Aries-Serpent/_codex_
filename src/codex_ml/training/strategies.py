@@ -32,43 +32,126 @@ logger = logging.getLogger(__name__)
 
 @runtime_checkable
 class TrainingCallback(Protocol):
+    """Structural callback contract shared by training strategy adapters.
+
+    Hooks receive backend-defined epoch/step indices, metric mappings, and
+    mutable state dictionaries. Implementations return None. Available hooks
+    do not imply every backend emits them: the functional/legacy adapters here
+    emit synthetic epoch-zero notifications, not step or checkpoint events.
+    """
+
     def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None:
+        """Receive notification that an epoch or adapter invocation is starting.
+
+        Args:
+            epoch: Backend-defined epoch index; adapters here pass zero.
+            state: Mutable backend metadata, potentially including resume_from.
+
+        Returns:
+            None. Callback exception handling is determined by the invoking backend.
+        """
         pass
 
     def on_epoch_end(self, epoch: int, metrics: dict[str, float], state: dict[str, Any]) -> None:
+        """Receive end-of-epoch metrics or a backend failure notification.
+
+        Args:
+            epoch: Backend-defined epoch index.
+            metrics: Numeric summaries such as status or error sentinel values.
+            state: Mutable metadata that may include results or exception text.
+
+        Returns:
+            None. Implementations should not assume metrics contains a loss value.
+        """
         pass
 
     def on_step(
         self, batch_index: int, global_step: int, loss: float, state: dict[str, Any]
     ) -> None:
+        """Receive an optional per-step progress notification from a backend.
+
+        Args:
+            batch_index: Backend-local batch position.
+            global_step: Backend's accumulated step count.
+            loss: Scalar loss reported by the backend.
+            state: Mutable backend metadata.
+
+        Returns:
+            None. FunctionalStrategy and LegacyStrategy do not emit this hook.
+        """
         pass
 
     def on_checkpoint(
         self, epoch: int, path: str, metrics: dict[str, float], state: dict[str, Any]
     ) -> None:
+        """Receive an optional checkpoint notification from a backend.
+
+        Args:
+            epoch: Backend-defined epoch index.
+            path: Checkpoint location supplied by the backend.
+            metrics: Numeric summaries associated with that checkpoint.
+            state: Mutable backend metadata.
+
+        Returns:
+            None. The adapters here do not emit this hook or guarantee path exists.
+        """
         pass
 
 
 class NoOpCallback:
+    """Default callback whose four hooks ignore all inputs and return None.
+
+    It allocates no training resources and does not mutate supplied dictionaries.
+    """
+
     def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None:
+        """Ignore the epoch index and state mapping without modifying either.
+
+        Returns:
+            None.
+        """
         pass
 
     def on_epoch_end(self, epoch: int, metrics: dict[str, float], state: dict[str, Any]) -> None:
+        """Ignore epoch, metrics, and state without changing the supplied mappings.
+
+        Returns:
+            None.
+        """
         pass
 
     def on_step(
         self, batch_index: int, global_step: int, loss: float, state: dict[str, Any]
     ) -> None:
+        """Ignore batch_index, global_step, loss, and state; return None.
+
+        No progress is recorded and the state dictionary is left unchanged.
+        """
         pass
 
     def on_checkpoint(
         self, epoch: int, path: str, metrics: dict[str, float], state: dict[str, Any]
     ) -> None:
+        """Ignore epoch, path, metrics, and state; return None.
+
+        The path is neither opened nor checked and no checkpoint is written.
+        """
         pass
 
 
 @dataclass
 class TrainingResult:
+    """Backend outcome record returned to the unified orchestrator.
+
+    Args:
+        status: Backend outcome label, normally ok or error.
+        backend: Strategy identifier.
+        final_epoch: Backend-reported epoch value; adapters here use requested
+            epochs, so this is not proof that training completed that many epochs.
+        output_dir: Reported output location, not necessarily created.
+        extra: Backend-specific details, such as resume metadata or phase results.
+    """
+
     status: str
     backend: str
     final_epoch: int
@@ -78,6 +161,12 @@ class TrainingResult:
 
 @runtime_checkable
 class BackendStrategy(Protocol):
+    """Runtime-checkable structural interface for training backend adapters.
+
+    Implementations expose backend_name and run. The protocol does not enforce
+    configuration validation, callback frequency, checkpointing, or resumption.
+    """
+
     backend_name: str
 
     def run(
@@ -86,6 +175,20 @@ class BackendStrategy(Protocol):
         callbacks: Iterable[TrainingCallback],
         resume_from: Optional[str] = None,
     ) -> TrainingResult:
+        """Execute a backend-specific training request.
+
+        Args:
+            config: Configuration object understood by the implementing strategy.
+            callbacks: Progress observers; use a reusable collection if the backend
+                iterates it more than once.
+            resume_from: Optional resume location interpreted by the implementation.
+
+        Returns:
+            TrainingResult describing outcome and backend-specific extra metadata.
+
+        Dependency failures and training exceptions follow the concrete strategy's
+        policy; this protocol supplies no error conversion or resource management.
+        """
         pass
 
 
@@ -105,6 +208,32 @@ class FunctionalStrategy:
         callbacks: Iterable[TrainingCallback],
         resume_from: Optional[str] = None,
     ) -> TrainingResult:
+        """Adapt unified config to functional training and summarize its outcome.
+
+        Args:
+            config: Object supplying model_name, epochs, batch_size, grad_accum, seed,
+                output_dir, and mlflow_enable; optional learning_rate and extra
+                customize TrainConfig. extra.functional and extra.functional_training
+                override top-level extras. train_texts/texts, val_texts/eval_texts,
+                and model are consumed separately from TrainConfig fields.
+            callbacks: Reusable iterable receiving synthetic epoch-zero start/end
+                hooks only. ValueError, TypeError, and RuntimeError in hooks are logged.
+            resume_from: Reported in state/result only; not forwarded to train.
+
+        Returns:
+            TrainingResult with requested epochs and trained flag. Empty training
+            texts skip train but still report ok. Unconsumed extras are reported as
+            unused_overrides. ValueError, TypeError, and RuntimeError inside the
+            training block become error status with exception text.
+
+        Raises:
+            ImportError: If the lazily imported functional backend dependencies fail.
+            AttributeError: If required configuration/backend attributes are absent.
+            TypeError: If TrainConfig construction fails before the training block.
+
+        The underlying backend controls model downloads, output files, and cleanup.
+        This adapter does not provide per-step/checkpoint callbacks.
+        """
         ft_module = import_module("codex_ml.training.functional_training")
         TrainConfig = ft_module.TrainConfig
         train_fn = ft_module.train
@@ -232,6 +361,27 @@ class LegacyStrategy:
         callbacks: Iterable[TrainingCallback],
         resume_from: Optional[str] = None,
     ) -> TrainingResult:
+        """Invoke the deprecated legacy loop with a subset of unified options.
+
+        Args:
+            config: Object supplying epochs, grad_accum, seed, model_name, output_dir.
+                output_dir is reported but not passed to the loop; art_dir is None.
+            callbacks: Reusable iterable receiving epoch-zero start notifications
+                and end notifications only on caught training failures.
+            resume_from: Metadata only; no checkpoint is restored by this adapter.
+
+        Returns:
+            TrainingResult reporting requested epochs and ok/error status. Training
+            ValueError, TypeError, and RuntimeError become error status; callback
+            exceptions of those types are logged and suppressed.
+
+        Raises:
+            ImportError: If the lazy legacy import or its dependencies fail.
+            AttributeError: If required config fields are absent.
+
+        Emits DeprecationWarning. The underlying loop owns training side effects;
+        no success-end, per-step, or checkpoint hooks are emitted here.
+        """
         from codex_ml.train_loop import run_training as _legacy
 
         warnings.warn(

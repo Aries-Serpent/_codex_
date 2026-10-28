@@ -89,11 +89,10 @@ class ShimInventoryReader:
         Returns:
             Set of (module, path) tuples
         """
-        if self._entries is None:
-            self.load()
+        entries = self.load() if self._entries is None else self._entries
 
         whitelisted = set()
-        for entry in self._entries:
+        for entry in entries:
             for path in entry.whitelist_duplicates:
                 whitelisted.add((entry.module, path))
             # Also add legacy and canonical paths
@@ -110,10 +109,9 @@ class ShimInventoryReader:
         Returns:
             Dict mapping module name to ShimEntry
         """
-        if self._entries is None:
-            self.load()
+        entries = self.load() if self._entries is None else self._entries
 
-        return {entry.module: entry for entry in self._entries}
+        return {entry.module: entry for entry in entries}
 
 
 class CrossReference:

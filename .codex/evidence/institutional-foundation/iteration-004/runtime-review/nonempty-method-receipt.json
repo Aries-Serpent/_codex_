@@ -1,0 +1,130 @@
+{
+  "G5": "NOT_RUN",
+  "G6": "NOT_RUN",
+  "G7": "NOT_RUN",
+  "activation": "unsupported",
+  "approval": "NOT_RUN",
+  "artifacts": {
+    "nonempty-attribution.json": {
+      "bytes": 3019,
+      "sha256": "e08327a5dc7b757255fd7555ddbf73b17221c207fb4a145efb6c3b82942318de"
+    },
+    "nonempty-blocked-initial.json": {
+      "bytes": 5901,
+      "sha256": "e1268864e12b9933e2d575320eb60e61c5d92dbc986ce465b51a28e4d6535133"
+    },
+    "nonempty-blocked-meta.json": {
+      "bytes": 9392,
+      "sha256": "7b1ea39e389c49e3e3f223b5c7ef1548bc5ecd50c90d95977ffc15e89242bc77"
+    },
+    "nonempty-cache.json": {
+      "bytes": 195,
+      "sha256": "eddf7cbe12ded18fb124f02dd19b449d6ae7fefe731c7948ea4e28ec9788a912"
+    },
+    "nonempty-context.json": {
+      "bytes": 57,
+      "sha256": "cafd5bc2b210bb3e43a159119c432c053aa087b32d75da23060fcbd66c177d12"
+    },
+    "nonempty-final-cache.json": {
+      "bytes": 474,
+      "sha256": "0e90a036563ddf4a4b87327d870d7901238a20f869a223f77acf2216d7c2c274"
+    },
+    "nonempty-final-history.json": {
+      "bytes": 12934,
+      "sha256": "ec05184ee3a472869b42eaed0b48799e732eda8d27e639e590a4a600b2e9af5e"
+    },
+    "nonempty-history.json": {
+      "bytes": 11697,
+      "sha256": "38ce8c81629f0a81da069eef8d5497764770cae106408902657427d7ffd0d9bc"
+    },
+    "nonempty-recommendations.json": {
+      "bytes": 20940,
+      "sha256": "c035b6c7b4525a09e4a981c17376fd6c43f529a06c343f6cda5746ffd8492ef3"
+    },
+    "nonempty-rejections.json": {
+      "bytes": 2807,
+      "sha256": "fd8aff83d229b40f6132d9b24df1c5b75bdb25bf65a03a485f84e571ead1970b"
+    },
+    "nonempty-resumed-initial.json": {
+      "bytes": 8157,
+      "sha256": "f93f5787ed25cd1c8ce6b56cdb2ef991b9f3579056b316d7a9618a1f729cf4ab"
+    }
+  },
+  "attribution_semantics": "Event actor/run context is an explicitly separate unverified fixture receipt, not an unsupported SDK event field or authenticated identity claim. Lanes preserve original actor/run/source wording.",
+  "authority": "none",
+  "checks": {
+    "all_rejections_leave_history_unchanged": true,
+    "event_attribution_matches_event_ids": true,
+    "exact_resume_cache_with_pending_conflict": true,
+    "final_conflict_still_visible": true,
+    "final_stage_history_event_count": 7,
+    "historical_resume_and_rejections_preserved": true,
+    "initial_meta_final_recommendations": true,
+    "initial_typed_lane_risk_block": true,
+    "latest_final_state_explicitly_blocked": true,
+    "latest_pending_requirement": "resolve-conflict",
+    "meta_typed_conflict_block": true,
+    "precise_pending_requirement_after_resume": true,
+    "rejected_operations": 6
+  },
+  "clearance_semantics": "Exact clearance strings are coordinator assertions only. Prior meta resume is historical. Latest final event-folded state has an explicit unresolved-conflict blocker and pending resolve-conflict. No conflict closure, acceptance, approval, activation or full assurance is implemented or claimed.",
+  "current_resumable_state": {
+    "blocked": true,
+    "cache": "nonempty-final-cache.json",
+    "cause": "unresolved-conflict",
+    "clearance_conditions": [
+      "finding-bound-evidence",
+      "explicit-dissent-disposition"
+    ],
+    "event_count": 7,
+    "history": "nonempty-final-history.json",
+    "pending_requirement": "resolve-conflict",
+    "scope": "logic/f1|dissent/f1",
+    "stage": "final"
+  },
+  "historical_resume_demonstration": {
+    "cache": "nonempty-cache.json",
+    "history": "nonempty-history.json",
+    "is_current": false,
+    "preserved_artifact_sha256": {
+      "nonempty-blocked-initial.json": "e1268864e12b9933e2d575320eb60e61c5d92dbc986ce465b51a28e4d6535133",
+      "nonempty-blocked-meta.json": "7b1ea39e389c49e3e3f223b5c7ef1548bc5ecd50c90d95977ffc15e89242bc77",
+      "nonempty-cache.json": "eddf7cbe12ded18fb124f02dd19b449d6ae7fefe731c7948ea4e28ec9788a912",
+      "nonempty-history.json": "38ce8c81629f0a81da069eef8d5497764770cae106408902657427d7ffd0d9bc",
+      "nonempty-rejections.json": "fd8aff83d229b40f6132d9b24df1c5b75bdb25bf65a03a485f84e571ead1970b",
+      "nonempty-resumed-initial.json": "f93f5787ed25cd1c8ce6b56cdb2ef991b9f3579056b316d7a9618a1f729cf4ab"
+    },
+    "semantics": "Historical exact meta resume, with pending resolve-conflict retained; not current after final advance and final block.",
+    "superseded_by_later_final_events": true
+  },
+  "import_origins": {
+    "core": "/home/runner/work/_codex_/_codex_/src/codex/institutional/core.py",
+    "review": "/home/runner/work/_codex_/_codex_/src/codex/institutional/review.py"
+  },
+  "independence": "unverified same-platform fixture",
+  "input_artifacts": {
+    "fixture-lane-output-2.json": "4fe568eeb7316f554546a14391ada399b3b6a7c2339d880a419fa3ce085830ef",
+    "fixture-lane-output-3.json": "13bd58d9224d51ca620bfeafadf88e4c146b1743e97d1372c5e258ce6ba8a31f",
+    "fixture-lane-output-4.json": "b89acf2cd0b89c66497a0e94367cbd83d7aa2a7b2403a1a6510d4180043b21d7",
+    "fixture-lane-output-5.json": "514f8eb485b0ba45ffa9a436ac7cc664bcb55c3e689b8442aaed1fda5b72e01c",
+    "fixture-manifest-0.json": "a2d80b97825bdf3f913cf6d972f47a991942fa8be43ac3dd6ed0e1c56fadecff",
+    "fixture-plan-1.json": "2d35a7a5647ad43398ea8f281c7f2638b54b0014d0559a485c5322ec4b7262b0"
+  },
+  "method": "One inline in-memory source SDK fixture; no helper script persisted, no temporary files, no package builds, no source test-suite rerun. Existing retained plan/manifest/outputs loaded; review.reconcile/new_history/append_event/resume/fold_events executed directly with fixed UTC clock. Follow-up requested source-only fixture appended supported final typed block; no SDK modification, suite/build/helper file or external operations.",
+  "network_and_subprocess": "Denied by Python audit hook during fixture execution",
+  "schema": "codex.source-functional-fixture-receipt.v1",
+  "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+  "source_files_sha256": {
+    "src/codex/institutional/contracts.json": "56fb5433b85d404e677d4f78c59b7690d4df390b41bd07e1bdeea52ae438f7ec",
+    "src/codex/institutional/core.py": "636c45dc7eed70d0bed4bc80602f6831fd76ef5a688119f082ae7f8fe4743cef",
+    "src/codex/institutional/review.py": "12ef9992b0b1a7412076cc26abc49cf42028bcb1b8fa94f65ecff9d41fc2d959"
+  },
+  "unsupported": [
+    "Full assurance DAG",
+    "Evidence eligibility",
+    "Authenticated independence",
+    "Semantic remediation proof",
+    "Authorized conflict closure or acceptance"
+  ],
+  "wheel_validation": "NOT_RUN"
+}

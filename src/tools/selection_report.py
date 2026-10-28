@@ -17,9 +17,18 @@ import subprocess
 import sys
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Any
+from typing import TypedDict
 
 VERSION = "0.1.0"
+
+
+class CandidateScore(TypedDict):
+    variant: int
+    turn_key: str
+    score: int
+    signals: dict[str, bool]
+    penalties: list[str]
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
@@ -38,6 +47,13 @@ def _bullets(items: Iterable[str]) -> str:
 
 def _read_json(path: Path) -> dict[str, object]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _string_mapping(value: object) -> dict[str, object]:
+    """Read string-keyed fields only when a payload is a mapping."""
+    if not isinstance(value, dict):
+        return {}
+    return {key: item for key, item in value.items() if isinstance(key, str)}
 
 
 def _ensure_parent(path: Path) -> None:
@@ -60,27 +76,27 @@ def _run_config_mode(args: argparse.Namespace) -> int:
         sys.stderr.write(f"[selection] config not found: {config_path}\n")
         return 1
 
-    payload: dict[str, Any] | None = None
+    payload: dict[str, object] | None = None
     parse_errors: list[Exception] = []
 
     try:
-        from omegaconf import OmegaConf  # type: ignore
+        from omegaconf import OmegaConf
 
         conf = OmegaConf.load(config_path)
         data = OmegaConf.to_container(conf, resolve=True)
         if isinstance(data, dict):
-            payload = data
+            payload = _string_mapping(data)
     except Exception as exc:  # noqa: BLE001
         parse_errors.append(exc)
 
     if payload is None:
         try:
-            import yaml  # type: ignore
+            import yaml
 
             with config_path.open("r", encoding="utf-8") as handle:
                 data = yaml.safe_load(handle)
             if isinstance(data, dict):
-                payload = data
+                payload = _string_mapping(data)
         except Exception as exc:  # noqa: BLE001
             parse_errors.append(exc)
 
@@ -92,18 +108,16 @@ def _run_config_mode(args: argparse.Namespace) -> int:
     kind = str(payload.get("kind") or "unknown")
     name = str(payload.get("name") or "unnamed")
     version = payload.get("version")
-    image = payload.get("image") if isinstance(payload.get("image"), dict) else {}
-    image_repo = image.get("repository") if isinstance(image, dict) else None
-    image_tag = image.get("tag") if isinstance(image, dict) else None
-    resources = payload.get("resources") if isinstance(payload.get("resources"), dict) else {}
-    reasoning = payload.get("reasoning") if isinstance(payload.get("reasoning"), dict) else {}
-    trace_capture = (
-        reasoning.get("trace_capture") if isinstance(reasoning.get("trace_capture"), dict) else {}
-    )
-    trace_mode = trace_capture.get("mode") if isinstance(trace_capture, dict) else None
+    image = _string_mapping(payload.get("image"))
+    image_repo = image.get("repository")
+    image_tag = image.get("tag")
+    resources = _string_mapping(payload.get("resources"))
+    reasoning = _string_mapping(payload.get("reasoning"))
+    trace_capture = _string_mapping(reasoning.get("trace_capture"))
+    trace_mode = trace_capture.get("mode")
     evaluation_preset = reasoning.get("evaluation_preset")
     curriculum_template = reasoning.get("curriculum_template")
-    artifacts = payload.get("artifacts") if isinstance(payload.get("artifacts"), dict) else {}
+    artifacts = _string_mapping(payload.get("artifacts"))
     notes = payload.get("notes")
     if isinstance(notes, list):
         note_items = [str(item) for item in notes]
@@ -154,7 +168,7 @@ def _run_config_mode(args: argparse.Namespace) -> int:
         _ensure_parent(target)
         target.write_text(report_text, encoding="utf-8")
 
-    json_payload: dict[str, Any] = {
+    json_payload = {
         "mode": "dry-run",
         "generated": _timestamp(),
         "config_path": str(config_path),
@@ -241,7 +255,7 @@ def _score_blob(text_blob: str) -> tuple[int, dict[str, bool], list[str]]:
 
 def _collect_text(turn: dict[str, object]) -> str:
     texts: list[str] = []
-    worklog = turn.get("worklog") or {}
+    worklog = _string_mapping(turn.get("worklog"))
     messages = worklog.get("messages") or []
     if isinstance(messages, list):
         for message in messages:
@@ -250,7 +264,10 @@ def _collect_text(turn: dict[str, object]) -> str:
                     value = message.get(key)
                     if isinstance(value, str):
                         texts.append(value)
-    for item in turn.get("output_items") or []:
+    output_items = turn.get("output_items")
+    if not isinstance(output_items, list):
+        output_items = []
+    for item in output_items:
         if isinstance(item, dict):
             for key in ("title", "pr_message", "message", "text", "body"):
                 value = item.get(key)
@@ -297,11 +314,12 @@ def main(argv: list[str] | None = None) -> int:
         sys.stderr.write("[selection] invalid summary: missing 'turn_mapping'\n")
         return 1
 
-    turn_mapping = data["turn_mapping"]  # type: ignore[assignment]
+    turn_mapping = data["turn_mapping"]
     if not isinstance(turn_mapping, dict):
         sys.stderr.write("[selection] invalid summary: 'turn_mapping' not a dict\n")
         return 1
 
+    turn_mapping = _string_mapping(turn_mapping)
     assistant_keys = _extract_assistant_keys(turn_mapping)
     if not assistant_keys:
         sys.stderr.write("[selection] no assistant variants found in summary\n")
@@ -321,10 +339,10 @@ def main(argv: list[str] | None = None) -> int:
     # Note: non-zero here may just be optional deps missing; keep going to the heuristic layer.
 
     # 2) Heuristic scoring & selection-guard preference
-    rows = []
+    rows: list[CandidateScore] = []
     for idx, key in enumerate(assistant_keys, start=1):
-        candidate = turn_mapping[key]["turn"] if isinstance(turn_mapping.get(key), dict) else {}
-        blob = _collect_text(candidate if isinstance(candidate, dict) else {})
+        candidate = _string_mapping(turn_mapping[key]).get("turn")
+        blob = _collect_text(_string_mapping(candidate))
         score, found, penalties = _score_blob(blob)
         rows.append(
             {

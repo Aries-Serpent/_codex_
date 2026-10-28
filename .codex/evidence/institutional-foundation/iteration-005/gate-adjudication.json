@@ -1,0 +1,92 @@
+{
+  "source_commit": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+  "gates": {
+    "G0": "PASS",
+    "G1": "NOT_RUN",
+    "G2": "PASS",
+    "G3": "PASS",
+    "G4": "NOT_RUN",
+    "G5": "NOT_RUN",
+    "G6": "PASS",
+    "G7": "PASS",
+    "G8": "PASS"
+  },
+  "gate_limits": {
+    "G1": "Broader semantic census not complete.",
+    "G4": "Scoped safety passed; full Python CodeQL skipped.",
+    "G5": "Same-platform contexts/fixtures are not authenticated independence.",
+    "G6": "Exact wheels/resources/full declared base closure; no optional-feature/release claim.",
+    "G7": "Installed offline institutional SDK,not hosted enforcement."
+  },
+  "RD4-10": {
+    "status": "PASS",
+    "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+    "wheel_sha256": "e88afdbc52d79f2155fdadacddac9d2e16cab15e7307822aecdccfe13c9a9c33",
+    "receipts": [
+      "package-original/gate-status.json",
+      "package-changed/full-base-closure/summary.json"
+    ]
+  },
+  "acceptance": {
+    "RD5-01": {
+      "status": "PASS",
+      "scope": "Recovered122 artifacts/19 source blobs and preserved user bytes."
+    },
+    "RD5-02": {
+      "status": "PASS",
+      "scope": "Exact original wheel and full base closure observed."
+    },
+    "RD5-03": {
+      "status": "PASS",
+      "scope": "Installed SDK/schema/58 formula resources verified."
+    },
+    "RD5-04": {
+      "status": "PASS",
+      "scope": "Existing core/review/storage/contracts reused."
+    },
+    "RD5-05": {
+      "status": "PASS",
+      "scope": "Bound inert assurance DAG/readiness/result implemented."
+    },
+    "RD5-06": {
+      "status": "PASS",
+      "scope": "Fixture eligibility/reconciliation exercised within unverified trust limits."
+    },
+    "RD5-07": {
+      "status": "PASS",
+      "scope": "Dissent,rotated retest,blocked resume and reopening retained."
+    },
+    "RD5-08": {
+      "status": "PASS",
+      "scope": "285 source cases; exact final wheel107 cases independently observed as separate technical run,not independent assurance."
+    },
+    "RD5-09": {
+      "status": "PASS",
+      "scope": "Installed offline SDK with29 base requirements and clean pipcheck; no hosted activation."
+    },
+    "RD5-10": {
+      "status": "PASS",
+      "scope": "Actual compatible experiences and validated sequence-five continuation retained."
+    },
+    "RD5-11": {
+      "status": "PASS",
+      "scope": "Readiness and unsupported architecture gaps disclosed."
+    }
+  },
+  "readiness": {
+    "SDK_package_foundation": "Verified selected runtime/resources/persistence/recovery/full base installation.",
+    "reasoning_integrity_workflow": "Bounded structural fixtures verified; full semantic/convergence architecture unsupported.",
+    "selected_mode": "Installed offline supplied-data SDK; pure Reconciler and coordinator persistence.",
+    "independent_assurance": "NOT_RUN",
+    "full_architecture": "NOT_RUN"
+  },
+  "remaining": [
+    "Trusted evidence administration/authenticated independent actors.",
+    "Other formal dispositions,authorized execution,numerical calibration.",
+    "Hosted enforcement,Mermaid/MathJax rendering,broad institutional effectiveness."
+  ],
+  "approval": "NOT_RUN",
+  "activation": "unsupported",
+  "publication": "NOT_RUN",
+  "remote": "New commits local-only; no remote retention asserted."
+}

@@ -1,0 +1,101 @@
+{
+  "before_after_replay": {
+    "after": "Same six plus remaining safe policy tests pass.",
+    "artifacts": [
+      "before-replay.txt",
+      "before-replay-junit.xml",
+      "policy-tests.txt",
+      "policy-junit.xml"
+    ],
+    "before": "Six new checks reject immutable entry guidance; expected 6 failures."
+  },
+  "candidate": "174a7771160725bb6edf54f85d38ed5484753789",
+  "limitations": "Some rows are semantic content review, not executable authorization enforcement. Actual consumer/helper/runtime checks are explicitly identified. No guarantee of hosted agent compliance.",
+  "scenarios": [
+    {
+      "evidence_scope": "guidance semantics + existing direct/no-PR remote-denial tests",
+      "expected": "inspection/reporting only; no edits/dispatch",
+      "scenario": "read-only task",
+      "status": "PASS"
+    },
+    {
+      "evidence_scope": "actual loader output and existing local/no-PR helper tests",
+      "expected": "direct preparation permitted",
+      "scenario": "ordinary scoped code change without PR",
+      "status": "PASS"
+    },
+    {
+      "evidence_scope": "actual loader output; helper rejects fabricated IDs",
+      "expected": "direct execution permitted; no invented agents",
+      "scenario": "specialist unavailable",
+      "status": "PASS"
+    },
+    {
+      "evidence_scope": "real preload consumer with missing context/session index fixture",
+      "expected": "missing context reported; ordinary work continues",
+      "scenario": "optional memory unavailable",
+      "status": "PASS"
+    },
+    {
+      "evidence_scope": "preflight explicitly NOT_RUN; retained changed-wheel comparison separate",
+      "expected": "no false original reproduction claim",
+      "scenario": "original historical wheel unavailable",
+      "status": "PASS"
+    },
+    {
+      "evidence_scope": "loader output + institutional source tests",
+      "expected": "G5 remains NOT_RUN; unrelated work proceeds",
+      "scenario": "independent verifier unavailable",
+      "status": "PASS"
+    },
+    {
+      "evidence_scope": "77 institutional cases including authority CLI denial",
+      "expected": "fixtures permitted; activation denied",
+      "scenario": "missing production credentials",
+      "status": "PASS"
+    },
+    {
+      "evidence_scope": "mixed-state example + actual advisory scanner replay",
+      "expected": "evidence/owner/next action; bounded handoff",
+      "scenario": "unrelated failure",
+      "status": "PASS"
+    },
+    {
+      "evidence_scope": "existing security fixture tests",
+      "expected": "nonzero required",
+      "scenario": "security owner/reason missing",
+      "status": "PASS"
+    },
+    {
+      "evidence_scope": "removed parallel_validation mandate; real loader replay",
+      "expected": "actual supported interfaces or explicit gap",
+      "scenario": "unsupported tool",
+      "status": "PASS"
+    },
+    {
+      "evidence_scope": "preflight/final SHA256 and path-selective commit inspection",
+      "expected": "untouched and excluded from commits",
+      "scenario": "dirty user bytes",
+      "status": "PASS"
+    },
+    {
+      "evidence_scope": "historical examples scoped; restricted profiles unreviewed",
+      "expected": "reference is not an authority grant",
+      "scenario": "historical/archive link",
+      "status": "PASS"
+    },
+    {
+      "evidence_scope": "institutional capture/locking tests; scoped guidance",
+      "expected": "affected action stops with explicit denial",
+      "scenario": "resource ceiling",
+      "status": "PASS"
+    },
+    {
+      "evidence_scope": "guidance semantics and institutional activation denial; no protected-action probe",
+      "expected": "no operation without applicable authority",
+      "scenario": "publication/merge/settings/activation",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS for bounded representative scope"
+}

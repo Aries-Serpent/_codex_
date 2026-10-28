@@ -1,8 +1,11 @@
+"""Discover documentation candidates and write migration-planning JSON reports."""
+
 from __future__ import annotations
 
 import argparse
 from collections import Counter
 from pathlib import Path
+from typing import TypedDict
 
 from .utils import (
     classify_path,
@@ -17,7 +20,35 @@ from .utils import (
 )
 
 
-def run_inventory(repo_root: Path) -> dict:
+class _InventoryEntry(TypedDict):
+    path: str
+    classification: str
+    confidence: float
+    extension: str
+    requires_ingestion: bool
+    exception: bool
+    size_bytes: int
+
+
+class _InventoryResult(TypedDict):
+    ok: bool
+    generated: list[str]
+    total_candidates: int
+
+
+def run_inventory(repo_root: Path) -> _InventoryResult:
+    """Classify policy-selected files and write five reports to docs-data/generated.
+
+    The reports include candidate and text inventories, codebase discovery,
+    existing automation, and migration readiness. Paths in records are relative
+    to ``repo_root``; exception files remain visible but are not queued for
+    ingestion. This plans migration without converting or deleting source files.
+
+    Example::
+
+        result = run_inventory(Path("/checkout"))
+        print(result["total_candidates"])
+    """
     policy = load_policy(repo_root)
     exceptions = load_exceptions(repo_root, policy)
     generated_dir = repo_root / "docs-data" / "generated"
@@ -25,10 +56,10 @@ def run_inventory(repo_root: Path) -> dict:
 
     candidates = scan_candidate_files(repo_root, policy)
 
-    by_class = Counter()
-    by_folder = Counter()
-    inventory = []
-    markdown_inventory = []
+    by_class: Counter[str] = Counter()
+    by_folder: Counter[str] = Counter()
+    inventory: list[_InventoryEntry] = []
+    markdown_inventory: list[_InventoryEntry] = []
 
     exempted_paths = policy.get("exempted_paths", [])
 
@@ -38,7 +69,7 @@ def run_inventory(repo_root: Path) -> dict:
         by_class[cls] += 1
         by_folder[rp.split("/")[0]] += 1
 
-        entry = {
+        entry: _InventoryEntry = {
             "path": rp,
             "classification": cls,
             "confidence": confidence,
@@ -165,6 +196,7 @@ def run_inventory(repo_root: Path) -> dict:
 
 
 def main() -> int:
+    """Run inventory for --repo-root and print JSON or a concise candidate count."""
     parser = parse_common_args(
         argparse.ArgumentParser(description="Inventory candidate documentation files")
     )

@@ -138,7 +138,7 @@ Enhanced GitHub Copilot agent for comprehensive GitHub Actions data collection w
 ### Key Improvements
 1. **Failed-Workflows-First Collection**: Search for failures instead of commits (10x+ faster)
 2. **CODEX_MASTER_KEY Support**: Use repository-specific auth keys for API access
-3. **Enhanced Non-Deferral Compliance**: Never suggest manual data collection (policy: `.github/docs/NonDeferPolicy_Copilot.md`)
+3. **Capability-aware collection**: Use available authorized APIs/tools; disclose missing access and request targeted evidence when needed.
 4. **Batch Processing**: Process 44+ workflow runs with automatic progress tracking
 5. **Root Cleanup Integration**: Auto-archive work files to `.codex/pr{number}_work_archive/`
 
@@ -152,7 +152,7 @@ Enhanced GitHub Copilot agent for comprehensive GitHub Actions data collection w
 5. **Failure Summarization**: Extract failing steps, stack traces, exit codes, and error patterns
 6. **Artifact Management**: Collect artifact IDs, download URLs, sizes, and expiration status
 7. **Pattern Analysis**: Identify recurring failure patterns for cognitive brain integration
-8. **Fallback Mechanisms**: Use Playwright browser automation when API access is restricted (NEVER defer to humans)
+8. **Fallback Mechanisms**: Use authorized browser access if available; otherwise report the denied source and request owner assistance, without claiming access was obtained.
 9. **Workspace Hygiene**: Auto-archive work files, clean root directory after completion
 
 ### Data Collection Scope
@@ -281,7 +281,7 @@ Enhanced GitHub Copilot agent for comprehensive GitHub Actions data collection w
    ```markdown
    | Commit SHA | Failing Check Workflows | Artifacts |
    |---|---|---|
-   | [abc1234](url) | [Check 1](url)<br>[Check 2](url) | [artifact](url) (ID: 789, 1.2 MB) 🔒 |
+   | abc1234 (commit URL) | Check 1 (run URL); Check 2 (run URL) | artifact (download URL; ID: 789, 1.2 MB) 🔒 |
    ```
 
 3. **Failure Summary Report**: `reports/pr{number}_failure_analysis.md`
@@ -385,7 +385,9 @@ When API access is blocked or limited:
 4. **Extract Check Status**: Parse status badges and conclusion messages
 5. **Return Scraped Data**: Mark source as `browser_automation`
 
-**IMPORTANT**: Never suggest manual UI collection - use Playwright automation per Non-Deferral Mandate (`.github/docs/NonDeferPolicy_Copilot.md`)
+**IMPORTANT**: Browser automation is an optional authorized fallback, not a way
+to bypass access controls. If API/browser access is unavailable, identify the
+missing evidence and ask for targeted assistance.
 
 ### Playwright Usage
 ```python
@@ -508,7 +510,8 @@ brain.submit_learning(
 ### Related Documentation
 
 - [Agent Brain Protocol](../../.codex/docs/AGENT_BRAIN_PROTOCOL.md)
-- [Brain Interface API](../../src/codex/cognitive/brain_interface.py)
+- Historical API path: `src/codex/cognitive/brain_interface.py` is unavailable;
+  consult the protocol and verify current implementation before claiming API access.
 
 **Last Updated**: 2026-02-05T15:46:00Z
 

@@ -355,9 +355,9 @@ class ValidationLoop:
             "failures": failure_count,
             "loop_breaker_hits": loop_breaker_count,
             "success_rate": success_count / len(all_reports) if all_reports else 0,
-            "cascade_prevention_rate": 1.0 - (cascade_count / len(all_reports))
-            if all_reports
-            else 1.0,
+            "cascade_prevention_rate": (
+                1.0 - (cascade_count / len(all_reports)) if all_reports else 1.0
+            ),
             "average_attempts_per_incident": (
                 len(all_reports) / len(cls._validation_history) if cls._validation_history else 0
             ),

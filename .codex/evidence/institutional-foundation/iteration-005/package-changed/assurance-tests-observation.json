@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "exit": 0,
+  "tests": 107,
+  "failures": 0,
+  "errors": 0,
+  "source_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+  "copied_test_sha256": "716e7ae1919429cfd42b878ab83aad8dc35f6f123a3360d041a41ddc5b558a88",
+  "source_path": "tests/institutional/test_assurance.py",
+  "copied_without_modification": true,
+  "pytest_config": "-c /dev/null --noconftest --import-mode=importlib --rootdir external-tests -p no:cacheprovider",
+  "plugin_autoload": "disabled via PYTEST_DISABLE_PLUGIN_AUTOLOAD=1",
+  "Python_isolation": "-I, PYTHONPATH removed",
+  "origins": "test-import-origins.json",
+  "limits": "Implementer test suite against installed wheel, not authenticated independent verification."
+}

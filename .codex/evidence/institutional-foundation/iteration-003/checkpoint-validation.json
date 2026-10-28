@@ -1,0 +1,11 @@
+{
+  "G5": "NOT_RUN",
+  "canonical_sha256": "3437c62ddfd6951c98f1219604dad5bb6e1e037ae8ce0657e10a6244010e24e7",
+  "expected_later_evidence_commit": "STALE_CHECKPOINT; preserve historical binding, regenerate a successor on next authorized cycle",
+  "file_sha256": "c3a0c0441f10b9f70b57f37d22e7298ceae5a32dacd7cdebfe8bacecd6768132",
+  "predecessor_sha256": "ca90cb8cf6cf955b0ea3acfed0aeaed14ab0239b92345674c62cb13ab4626de3",
+  "schema_integrity_references": "PASS",
+  "sequence": 3,
+  "source_candidate": "174a7771160725bb6edf54f85d38ed5484753789",
+  "source_drift_at_collection": []
+}

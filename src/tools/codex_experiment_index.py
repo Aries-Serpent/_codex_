@@ -7,6 +7,7 @@ import argparse
 import json
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TypedDict
 
 import yaml
 
@@ -19,6 +20,11 @@ class RunRecord:
     mode: str = ""
 
 
+class ExperimentIndex(TypedDict):
+    runs_root: str
+    runs: list[RunRecord]
+
+
 def _load_meta(path: Path) -> dict[str, object]:
     text = path.read_text(encoding="utf-8")
     if path.suffix in (".yaml", ".yml"):
@@ -26,7 +32,7 @@ def _load_meta(path: Path) -> dict[str, object]:
     return json.loads(text)
 
 
-def build_index(runs_root: Path) -> dict[str, object]:
+def build_index(runs_root: Path) -> ExperimentIndex:
     runs: list[RunRecord] = []
     for meta_file in sorted(
         list(runs_root.rglob("meta.json"))
@@ -34,10 +40,9 @@ def build_index(runs_root: Path) -> dict[str, object]:
         + list(runs_root.rglob("run_manifest.yaml"))
     ):
         meta = _load_meta(meta_file)
+        context = meta.get("context")
         run_id = (
-            meta.get("context", {}).get("run_id")  # type: ignore[union-attr]
-            if isinstance(meta.get("context"), dict)
-            else None
+            context.get("run_id") if isinstance(context, dict) else None
         ) or meta_file.parent.name
         # Infer mode from directory structure: runs_root / <mode> / <run_id> / manifest
         try:
@@ -56,7 +61,7 @@ def build_index(runs_root: Path) -> dict[str, object]:
     return {"runs_root": str(runs_root), "runs": runs}
 
 
-def _write_json(index: dict[str, object], path: Path) -> None:
+def _write_json(index: ExperimentIndex, path: Path) -> None:
     records = [record.__dict__ for record in index["runs"]]
     payload = {
         "runs_root": index["runs_root"],
@@ -66,7 +71,7 @@ def _write_json(index: dict[str, object], path: Path) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(index: dict[str, object], path: Path) -> None:
+def _write_markdown(index: ExperimentIndex, path: Path) -> None:
     lines = [
         "# Experiment Index",
         "",

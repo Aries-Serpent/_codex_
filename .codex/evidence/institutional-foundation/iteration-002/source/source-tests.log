@@ -1,0 +1,16 @@
+........................................................................ [ 93%]
+.....                                                                    [100%]
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.12.10-final-0 _______________
+
+Name                                     Stmts   Miss Branch BrPart   Cover   Missing
+-------------------------------------------------------------------------------------
+src/codex/institutional/__main__.py         87     16     30      5  82.05%   35-41, 43->45, 52, 93-94, 137-145, 151
+src/codex/institutional/authority.py        94      1     36      1  98.46%   104
+src/codex/institutional/core.py            243     11    116     12  93.59%   155, 252, 281, 318->324, 322, 359, 376, 391, 402, 432, 568, 570
+src/codex/institutional/git_capture.py      48      4     20      2  91.18%   25, 50, 53-54
+src/codex/institutional/storage.py         192     21     86     16  85.97%   30-31, 46, 69, 71, 86, 107, 112-114, 122, 167, 187, 195, 197, 202, 205-206, 210, 218, 258, 276->302
+-------------------------------------------------------------------------------------
+TOTAL                                      664     53    288     36  90.44%
+Coverage JSON written to file /tmp/institutional-resume/coverage.json
+Required test coverage of 80% reached. Total coverage: 90.44%

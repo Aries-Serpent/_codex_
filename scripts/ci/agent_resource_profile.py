@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Choose bounded Copilot runtime concurrency from the runner's available resources."""
+"""Bound repository workers on the current runner; runner labels are recommendations."""
 
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ class ResourceCapacity:
 
 @dataclass(frozen=True)
 class ResourceDecision:
-    """Runtime limits and optional runner escalation selected from capacity."""
+    """Runtime limits and a recommendation for a future authorized runner selection."""
 
     mode: str
     runner_profile: str
@@ -168,7 +168,7 @@ def choose_resource_profile(
     current_runner_profile: str,
     high_headroom_runner_profile: str | None = None,
 ) -> ResourceDecision:
-    """Bound work and optionally select a configured larger runner on critical limits."""
+    """Bound local work and optionally recommend a future runner on critical limits."""
     constrained = (
         capacity.memory_available_mib is None
         or capacity.cpu_count is None
@@ -226,6 +226,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--github-output", type=Path, required=True)
     parser.add_argument("--summary", type=Path, required=True)
+    parser.add_argument("--github-env", type=Path, help="Export limits to subsequent setup steps")
     parser.add_argument("--current-runner-profile", required=True)
     parser.add_argument("--high-headroom-runner-profile", default="")
     args = parser.parse_args()
@@ -247,35 +248,49 @@ def main() -> int:
         "resource_mode": decision.mode,
         "larger_runner_required": str(decision.larger_runner_required).lower(),
         "agent_workers": str(decision.agent_workers),
-        "dependency_graph_workers": str(decision.dependency_graph_workers),
-        "dependency_graph_serialized": str(decision.dependency_graph_serialized).lower(),
         "npm_jobs": str(decision.npm_jobs),
         "gomaxprocs": str(decision.gomaxprocs),
         "node_heap_mib": str(decision.node_heap_mib),
         "resource_capacity": json.dumps(asdict(capacity), sort_keys=True),
     }
     _append_output(args.github_output, outputs)
+    if args.github_env:
+        _append_output(args.github_env, {
+            "COPILOT_AGENT_WORKERS": str(decision.agent_workers),
+            "npm_config_jobs": str(decision.npm_jobs),
+            "GOMAXPROCS": str(decision.gomaxprocs),
+            # NODE_OPTIONS cannot use GITHUB_ENV; the workflow consumes the
+            # node_heap_mib output explicitly as step-local NODE_OPTIONS.
+            "CARGO_BUILD_JOBS": str(decision.agent_workers),
+            "MAKEFLAGS": f"-j{decision.agent_workers}",
+            "UV_CONCURRENT_BUILDS": str(decision.agent_workers),
+            "UV_CONCURRENT_DOWNLOADS": "2",
+            "UV_THREADPOOL_SIZE": str(decision.agent_workers),
+            "RAYON_NUM_THREADS": str(decision.agent_workers),
+        })
 
     with args.summary.open("a", encoding="utf-8") as summary:
         summary.write("## Copilot runtime resource profile\n\n")
         summary.write(
             f"- Available capacity: `{asdict(capacity)}`\n"
             f"- Mode: **{decision.mode}**; agent workers: "
-            f"`{decision.agent_workers}`; dependency graph workers: `1` "
-            "(serialized).\n"
-            f"- Runner profile: `{decision.runner_profile}`.\n"
+            f"`{decision.agent_workers}`. These limits configure repository/tool "
+            "processes, not GitHub's agent scheduler. Dependency-graph runtime "
+            "concurrency is not configured by this helper.\n"
+            f"- Already selected runner label: `{current_profile}`.\n"
         )
         if decision.larger_runner_required and decision.runner_profile == current_profile:
             summary.write(
                 "- Critical headroom detected; configure "
-                "`COPILOT_HIGH_HEADROOM_RUNNER_PROFILE` to enable runner "
-                "escalation. This run will use serialized work.\n"
+                "an authorized runner label in the setup job's `runs-on` for a "
+                "future run. This run uses serialized work; no rescheduling occurs.\n"
             )
         elif decision.larger_runner_required:
             summary.write(
-                "- Critical headroom detected; selected the configured " "high-headroom runner.\n"
+                f"- Future-run recommendation only: `{decision.runner_profile}`. "
+                "No entitlement is verified and this running job is not migrated.\n"
             )
-    print(f"Selected {decision.mode} mode on {decision.runner_profile}")
+    print(f"Runtime limits: {decision.mode}; already selected runner: {current_profile}")
     return 0
 
 

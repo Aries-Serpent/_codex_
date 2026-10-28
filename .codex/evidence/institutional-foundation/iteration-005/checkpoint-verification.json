@@ -1,0 +1,15 @@
+{
+  "sequence": 5,
+  "session_id": "CODEX-INSTITUTIONAL-FOUNDATION-001/iteration-004",
+  "canonical_digest": "e2ed9e24c5c7ea3f9e17745830059c39cb492fd2c8c478caeba5e1b2b145f12b",
+  "predecessor_digest": "037c590db60882b429a833eec3775cd4b99a36ed0164063f76d124dc327d94fe",
+  "source_commit": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+  "structural_findings": [],
+  "current_source_findings_before_evidence_commit": [],
+  "extensions_unchanged": true,
+  "pending_node": "technical_verification",
+  "history_digest": "81e2ef417198f5708e5ca6767a4fbd34213ac10fc288224129bb347b35826a27",
+  "after_commit": "Expected STALE_CHECKPOINT from evidence-only HEAD/inventory change; rebind before mutation.",
+  "coordinator_assembly_note": "An earlier assembly assertion failed before any checkpoint was retained; clean reconstruction reports explicit findings above.",
+  "independent_verification": "NOT_RUN"
+}

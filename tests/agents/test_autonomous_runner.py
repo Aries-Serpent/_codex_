@@ -40,7 +40,7 @@ class TestAutonomousAgentInit:
         try:
             from agents.autonomous_runner import AutonomousAgent
 
-            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+            with patch("agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client.return_value = MagicMock()
                 agent = AutonomousAgent(reports_dir=tmp_path)
 
@@ -56,7 +56,7 @@ class TestAutonomousAgentInit:
 
             custom_path = tmp_path / "custom_reports"
 
-            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+            with patch("agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client.return_value = MagicMock()
                 agent = AutonomousAgent(reports_dir=custom_path)
 
@@ -84,7 +84,7 @@ class TestAutonomousAgentExecute:
         try:
             from agents.autonomous_runner import AutonomousAgent
 
-            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+            with patch("agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client.return_value = mock_client_instance
 
@@ -111,7 +111,7 @@ class TestAutonomousAgentExecute:
         try:
             from agents.autonomous_runner import AutonomousAgent
 
-            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+            with patch("agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client.return_value = mock_client_instance
 
@@ -137,7 +137,7 @@ class TestAutonomousAgentExecute:
         try:
             from agents.autonomous_runner import MAX_TASK_LENGTH, AutonomousAgent
 
-            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+            with patch("agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client_instance.select_model.return_value = "gpt-4"
                 mock_client_instance._dry_run = True
@@ -171,7 +171,7 @@ class TestAutonomousAgentExecute:
         try:
             from agents.autonomous_runner import AutonomousAgent
 
-            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+            with patch("agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client_instance.select_model.return_value = "gpt-4o-mini"
                 mock_client_instance._dry_run = True
@@ -203,7 +203,7 @@ class TestAutonomousAgentExecute:
         try:
             from agents.autonomous_runner import AutonomousAgent
 
-            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+            with patch("agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client_instance.select_model.return_value = "gpt-4"
                 mock_client_instance._dry_run = True
@@ -238,7 +238,7 @@ class TestSaveReport:
             from agents.autonomous_runner import AutonomousAgent
             from config.openai_client import ExecutionResult
 
-            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+            with patch("agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client.return_value = mock_client_instance
 
@@ -277,7 +277,7 @@ class TestSaveReport:
             from agents.autonomous_runner import AutonomousAgent
             from config.openai_client import ExecutionResult
 
-            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+            with patch("agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client.return_value = mock_client_instance
 
@@ -313,7 +313,7 @@ class TestCleanupOldReports:
         try:
             from agents.autonomous_runner import MAX_REPORTS_COUNT, AutonomousAgent
 
-            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+            with patch("agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client.return_value = mock_client_instance
 
@@ -336,7 +336,7 @@ class TestCleanupOldReports:
         try:
             from agents.autonomous_runner import AutonomousAgent
 
-            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+            with patch("agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client.return_value = mock_client_instance
 
@@ -404,7 +404,7 @@ class TestMainFunction:
                         "MODEL_PREFERENCE": "gpt-4",
                     },
                 ),
-                patch("src.agents.autonomous_runner.AutonomousAgent") as mock_agent,
+                patch("agents.autonomous_runner.AutonomousAgent") as mock_agent,
             ):
                 mock_instance = MagicMock()
                 mock_instance.execute = AsyncMock(
@@ -442,7 +442,7 @@ class TestEdgeCases:
         try:
             from agents.autonomous_runner import AutonomousAgent
 
-            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+            with patch("agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client_instance.select_model.return_value = "gpt-4"
                 mock_client_instance._dry_run = True
@@ -473,7 +473,7 @@ class TestEdgeCases:
         try:
             from agents.autonomous_runner import AutonomousAgent
 
-            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+            with patch("agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client_instance.select_model.return_value = "gpt-4-turbo"
                 mock_client_instance._dry_run = True
@@ -503,7 +503,7 @@ class TestEdgeCases:
         try:
             from agents.autonomous_runner import AutonomousAgent
 
-            with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
+            with patch("agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client_instance.select_model.return_value = "gpt-4"
                 mock_client_instance._dry_run = True

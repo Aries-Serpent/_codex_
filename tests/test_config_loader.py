@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+
 from codex.utils.config_loader import (
     ConfigLoader,
     ErrorConfig,
@@ -285,15 +286,24 @@ class TestEdgeCases:
         assert "defaults" in loader.error_config, "Error should be raised or set"
 
     def test_corrupted_error_config(self, temp_config_dir: Path) -> None:
-        """Test handling of corrupted error config file."""
+        """Reject invalid catalogs explicitly instead of returning default success."""
+        import yaml
+
         # Corrupt the error config
         errors_config = temp_config_dir / "conf" / "errors" / "defaults.yaml"
         errors_config.write_text("invalid: yaml: content: [[[")
 
-        # Should fall back to default config
-        loader = ConfigLoader(repo_root=temp_config_dir)
-        assert loader.error_config is not None, "error_config must be initialized"
-        assert "defaults" in loader.error_config, "Error should be raised or set"
+        with pytest.raises(ValueError, match="Invalid error configuration YAML") as error:
+            ConfigLoader(repo_root=temp_config_dir)
+        assert isinstance(error.value.__cause__, yaml.YAMLError)
+        assert str(errors_config) in str(error.value)
+
+        # Valid YAML still has to match the catalog's top-level schema.
+        for invalid_root in ("- not\n- a mapping\n", "false", "0", "1: invalid key"):
+            errors_config.write_text(invalid_root)
+            with pytest.raises(ValueError, match="mapping with string keys") as error:
+                ConfigLoader(repo_root=temp_config_dir)
+            assert str(errors_config) in str(error.value)
 
     def test_config_dir_not_exists(self, temp_config_dir: Path) -> None:
         """Test loading from non-existent directory."""
@@ -415,7 +425,14 @@ class TestConfigLoaderAdvanced:
         assert error is None, "Error should be raised or set"
 
     def test_load_config_yaml_override_parsing(self, temp_config_dir: Path) -> None:
-        """Test override value parsing for different types."""
+        """Hydra overrides parse existing typed keys without disabling struct guards."""
+        from hydra.errors import ConfigCompositionException
+
+        config_file = temp_config_dir / "conf" / "test.yaml"
+        with config_file.open("a") as config:
+            config.write(
+                "\nint_val: 0\nfloat_val: 0.0\nbool_val: false\nlist_val: []\nstring_val: initial\n"
+            )
         loader = ConfigLoader(repo_root=temp_config_dir)
         cfg = loader.load_config(
             "test",
@@ -435,6 +452,16 @@ class TestConfigLoaderAdvanced:
             assert cfg.int_val == 123, "int_val is not valid"
         else:
             assert cfg["int_val"] == 123, "Condition must be true"
+        assert isinstance(cfg["int_val"], int) and not isinstance(cfg["int_val"], bool)
+        assert cfg["float_val"] == 45.67
+        assert isinstance(cfg["float_val"], float)
+        assert cfg["bool_val"] is True
+        assert list(cfg["list_val"]) == [1, 2, 3]
+        assert cfg["string_val"] == "hello"
+        with pytest.raises(ConfigCompositionException, match="Could not override 'undeclared'"):
+            loader.load_config(
+                "test", config_dir="conf", overrides=["undeclared=123"], allow_fallback=False
+            )
 
 
 if __name__ == "__main__":

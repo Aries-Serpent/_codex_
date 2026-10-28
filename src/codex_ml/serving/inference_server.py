@@ -204,6 +204,19 @@ class AuthManager:
 
 @dataclass
 class ModelConfig:
+    """Configuration metadata for the lightweight inference stub.
+
+    Args:
+        model_name: Response model label, default codex-default.
+        model_type: Backend label, default stub; validation accepts stub,
+            huggingface, or onnx, while load_model also accepts local.
+        model_path: Optional filesystem path checked for huggingface/onnx.
+        device: cpu or cuda metadata; no device allocation is performed.
+
+    Construction does not validate. Selecting a backend label does not load an
+    actual ML runtime; ModelServer stores metadata and produces stub responses.
+    """
+
     model_name: Optional[str] = "codex-default"
     model_type: str = "stub"
     model_path: Optional[str] = None
@@ -211,6 +224,16 @@ class ModelConfig:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> ModelConfig:
+        """Return configuration from recognized mapping keys without validation.
+
+        Args:
+            data: Mapping of model_name, model_type, model_path, and device. Unknown
+                keys are ignored. Missing model_name becomes None, unlike cls().
+
+        Returns:
+            ModelConfig with stub/cpu defaults for omitted type/device fields.
+            Explicit None values are retained, not replaced by defaults.
+        """
         return cls(
             model_name=data.get("model_name"),
             model_type=data.get("model_type", "stub"),
@@ -220,6 +243,13 @@ class ModelConfig:
 
     @classmethod
     def from_env(cls) -> ModelConfig:
+        """Read CODEX_MODEL_NAME, TYPE, PATH, and DEVICE into a new configuration.
+
+        The full variable names are CODEX_MODEL_NAME, CODEX_MODEL_TYPE,
+        CODEX_MODEL_PATH, and CODEX_MODEL_DEVICE. Defaults are codex-default, stub,
+        None, and cpu respectively. Empty environment values are kept. No validation,
+        path access, or model loading is performed.
+        """
         return cls(
             model_name=os.getenv("CODEX_MODEL_NAME", "codex-default"),
             model_type=os.getenv("CODEX_MODEL_TYPE", "stub"),
@@ -228,6 +258,15 @@ class ModelConfig:
         )
 
     def validate(self) -> None:
+        """Check nonempty model_name, supported backend label, and device.
+
+        Returns:
+            None. Neither filesystem paths nor device availability are checked.
+
+        Raises:
+            ValueError: If the name is falsey, model_type is not stub/huggingface/onnx,
+                or device is not cpu/cuda. The loader-only local label fails here.
+        """
         if not self.model_name:
             raise ValueError("model_name cannot be empty")
         if self.model_type not in {"stub", "huggingface", "onnx"}:
@@ -236,6 +275,10 @@ class ModelConfig:
             raise ValueError("Unsupported device")
 
     def to_dict(self) -> dict[str, Any]:
+        """Return a fresh mapping of model_name, model_type, model_path, and device.
+
+        Values are returned as stored, without validation or filesystem access.
+        """
         return {
             "model_name": self.model_name,
             "model_type": self.model_type,
@@ -264,6 +307,7 @@ class ServerConfig:
         )
 
     def to_dict(self) -> dict[str, Any]:
+        """Return a new host/port mapping without checking binding availability."""
         return {
             "host": self.host,
             "port": self.port,
@@ -271,12 +315,33 @@ class ServerConfig:
 
 
 class RateLimiter:
+    """In-process sliding-window request limiter using wall-clock timestamps.
+
+    Args:
+        max_requests: Maximum admitted requests per key per window, default 1000.
+        window_seconds: Inclusive lookback interval in seconds, default 60.
+
+    State is not shared across workers or synchronized across threads. Stale
+    timestamps are pruned only when their key is queried; keys remain allocated.
+    Parameters are not validated and this is not a distributed quota service.
+    """
+
     def __init__(self, max_requests: int = REQUEST_RATE_LIMIT, window_seconds: int = 60):
         self.max_requests = max_requests
         self.window_seconds = window_seconds
         self.state: dict[str, list[float]] = defaultdict(list)
 
     def is_allowed(self, key: str) -> bool:
+        """Prune key's old timestamps and record this request if under quota.
+
+        Args:
+            key: Caller identity, typically an HTTP client's host string.
+
+        Returns:
+            True after appending the current timestamp if quota remains; False
+            otherwise. Rejected requests do not append timestamps. Entries exactly
+            at the window boundary are retained, and checking mutates limiter state.
+        """
         now = time.time()
         window_start = now - self.window_seconds
         self.state[key] = [t for t in self.state[key] if t >= window_start]
@@ -287,6 +352,18 @@ class RateLimiter:
 
 
 class ModelServer:
+    """Stateful stub prediction/embedding service, usable without FastAPI.
+
+    Args:
+        config: Optional ModelConfig. A missing/falsey name is changed in-place
+            to codex-default. Construction does not load or validate the model.
+
+    Call load_model before predict or embed. No actual model backend is loaded.
+    Circuit-breaker support is imported opportunistically; missing resilience
+    support disables it. HTTP authentication/rate limiting belong to create_app,
+    not direct predict/embed calls. There is no unload or stream lifecycle here.
+    """
+
     def __init__(self, config: Optional[ModelConfig] = None) -> None:
         self.config = config or ModelConfig(model_name="codex-default", model_type="stub")
         if not self.config.model_name:
@@ -314,6 +391,20 @@ class ModelServer:
             logger.warning("Circuit breaker not available (resilience module not found)")
 
     def load_model(self) -> dict[str, Any]:
+        """Initialize and return cached model metadata, not model weights.
+
+        Returns:
+            Shared dictionary with type, name, and path; repeated calls reuse it
+            after rechecking the configured backend/path.
+
+        Raises:
+            ModelLoadError: For an unsupported backend or a missing huggingface/onnx
+                path. local is accepted without a path check despite validate rejecting it.
+            OSError: For filesystem failures; caught I/O/import failures are appended
+                to load_errors and re-raised. ModelLoadError is not added to that list.
+
+        No transformers, ONNX, CUDA, or network dependency is required for this stub.
+        """
         try:
             if self.config.model_type not in {"stub", "huggingface", "onnx", "local"}:
                 raise ModelLoadError("Unsupported model type")
@@ -336,6 +427,26 @@ class ModelServer:
             raise
 
     def predict(self, inputs: list[str]) -> list[dict[str, Any]]:
+        """Return uppercase stub predictions for each text in inputs.
+
+        Args:
+            inputs: Text strings; direct calls impose no HTTP payload/rate limits.
+
+        Returns:
+            List of dictionaries containing prediction, index-based label, score
+            1.0, original text, and model name.
+
+        Raises:
+            RuntimeError: If no model is loaded or a text equals the sentinel
+                raise-error. For loaded calls, request and input counters increment
+                before processing, even if a later text fails.
+
+        Example:
+            >>> server = ModelServer()
+            >>> _ = server.load_model()
+            >>> server.predict(["hello"])[0]["prediction"]
+            'HELLO'
+        """
         if self.model is None:
             raise RuntimeError("Model not loaded")
         self.total_requests += 1
@@ -372,6 +483,23 @@ class ModelServer:
         return self.predict(inputs)
 
     def embed(self, texts: list[str]):
+        """Generate normalized, pseudo-random 16-dimensional stub vectors.
+
+        Args:
+            texts: Strings used to seed a generator via Python's hash(text).
+
+        Returns:
+            With NumPy installed, a float32 array shaped (len(texts), 16), including
+            (0, 16) for empty input. Without NumPy, a list of lists (or [] when empty)
+            from stdlib random. The two paths do not yield identical vectors.
+
+        Raises:
+            RuntimeError: If load_model has not initialized metadata.
+
+        Seeds are stable only within the process's hash configuration; these are
+        not semantic embeddings or cross-process reproducibility guarantees.
+        This method does not increment prediction/request counters.
+        """
         if self.model is None:
             raise RuntimeError("Model not loaded")
         try:
@@ -406,6 +534,13 @@ class ModelServer:
             return embeddings
 
     def health_check(self) -> dict[str, Any]:
+        """Return current metadata, uptime, load errors, and optional breaker state.
+
+        Status is healthy when model metadata exists, otherwise unhealthy; an open
+        circuit breaker overrides it to degraded. uptime and uptime_seconds are
+        aliases. load_errors is copied, not exposed directly. No inference, loading,
+        hardware probe, or external dependency health check is performed.
+        """
         loaded = self.model is not None
         uptime = time.time() - self.start_time
         health = {

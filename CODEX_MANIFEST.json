@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-10-19T05:28:41Z",
+  "generated_at": "2026-10-27T04:33:06Z",
   "agents": [
     {
       "name": "deep-research-analysis-agent",
@@ -1013,6 +1013,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/AGENT_INSTRUCTION_INVENTORY.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/AST_FRAMEWORK_ARCHITECTURE.md",
       "type": "enforcement"
     },
@@ -1366,5 +1370,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "6e4a155b11e4b0623985b7ff50267521505ec4cf6463a138d00e9419d1ffa4ab"
+  "integrity_sha256": "bda85604d44ca74e97885be057295749e44a92ff44fc5cfff5ef551209ffaa45"
 }

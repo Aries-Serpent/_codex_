@@ -24,14 +24,17 @@ runner_compatibility:
 
 ## Purpose
 
-Closes the context-injection loop for the Cognitive Brain system. This agent:
+Supports the context-injection loop in an authorized, configured Cognitive Brain
+application. These integration capabilities are not mandatory hosted-agent
+startup steps:
 
 1. **Injects** `AgentBrainAPI.get_session_context()` into the Copilot system prompt at session start (like `store_memory` facts, but richer)
 2. **Validates** actor via `StructuralPolicyManager.evaluate_permission()`
 3. **Ranks** patterns by recency (P-038 → P-046 outrank P-001 → P-037)
 4. **Reconstructs** context via quantum wave-collapse if the API is unavailable
 5. **Reports** CI outcomes back to the brain via `report_completion()`
-6. **Posts** `@copilot` follow-up prompts autonomously using `GitHubMCPPoster`
+6. **Can post** an authorized `@copilot` follow-up using `GitHubMCPPoster`;
+   local/read-only completion does not require a public comment or retrigger
 
 ## Architecture
 
@@ -76,8 +79,10 @@ flowchart TD
     subgraph AFTERMATH["🔄 AfterMath / PDA Loop"]
         I --> J[Task completes]
         J --> K[report_completion\npattern_id + outcome]
-        K --> L[GitHubMCPPoster.post_pr_comment\n@copilot follow-up]
-        L --> M[Next session auto-triggered]
+        K --> PA{Public continuation\nexplicitly authorized?}
+        PA -->|yes| L[GitHubMCPPoster.post_pr_comment\n@copilot follow-up]
+        PA -->|no| LC[Return local completion evidence]
+        L --> M[Configured continuation may trigger]
     end
 
     subgraph CONCURRENT["⚡ Concurrent Monitor (S146 — NEW)"]
@@ -104,7 +109,10 @@ flowchart TD
     end
 ```
 
-## RBAC Permission Lattice
+## Application RBAC Permission Lattice
+
+These are local application roles, not proof of a token's current GitHub
+permissions or authorization to merge, deploy or write to a branch.
 
 ```mermaid
 graph TD
@@ -132,8 +140,8 @@ graph TD
 | `scripts/ci/session_wrapup_autofix.py` | **REQ-4/5 autofix** — accountability report + CHANGELOG self-healing; `fix_changelog()` now creates PR-scoped subsection (S152 FIX) |
 | `docs/ci/CI_TRIAGE_REPRO_S145.md` | Root-cause + repro + fix reference for all 7 checks (S145 NEW) |
 | `docs/ci/CONCURRENT_MONITOR_CHERRY_PICK_REPRO.md` | 9-step reproducible process + decision tree + Mermaid flow (S146 NEW) |
-| `.github/copilot-prompts/active/SESSION-DIAGNOSTIC-PROTOCOL.md` | D-00…D-08 mandatory session start protocol (S145 NEW, updated S146) |
-| `.github/workflows/deferral-language-gate.yml` | Deferral language policy gate — now has `Pre-create pip cache dir` step (S152 FIX) |
+| `.github/copilot-prompts/active/SESSION-DIAGNOSTIC-PROTOCOL.md` | Optional task-relevant diagnostics; respect available memory APIs and read-only/no-PR boundaries |
+| `.github/workflows/deferral-language-gate.yml` | Advisory handoff wording diagnostics; real security/execution controls are separate |
 | `.github/workflows/branch-rebase-gate.yml` | Branch rebase REQ-10 gate — now has `Pre-create pip cache dir` step (S152 FIX) |
 | `tests/ci/test_session_bootstrap.py` | 21 unit tests for session_bootstrap.py (S146 NEW) |
 | `tests/ci/test_monitor_run.py` | 26 unit tests for monitor_run.py — snapshot, state-file, exit-code, cherry-pick filtering, session timing, cli_override priority (S146 NEW) |
@@ -148,9 +156,10 @@ graph TD
 
 ## Activation
 
-This agent activates automatically on every Copilot session via the MCP
-Server hook registered in `mcp_session_bridge.py`. No manual activation
-needed for authorised actors.
+The local application can invoke this agent through its registered MCP session
+hook when configured. This is not proof of activation in every hosted Copilot
+session. Check actual capabilities; use supplied/retrievable context when
+relevant, without mandatory writes or exhaustive memory recall.
 
 **Manual invocation:**
 ```python
@@ -167,7 +176,8 @@ enriched = register_mcp_session_hook({
 
 **CLI — post follow-up comment:**
 ```bash
-# Requires CODEX_MASTER_KEY env var (see ADMIN_MANUAL_SETUP_GUIDE.md § 3)
+# Only for an explicitly authorized PR comment with valid API credentials.
+# A named environment variable alone does not prove permission.
 python -m codex.github.mcp_poster post-comment \
   --repo Aries-Serpent/_codex_ \
   --pr 3401 \
@@ -183,7 +193,7 @@ python -m codex.github.mcp_poster post-comment \
 - ✅ Never-crash guarantee (fail-open for unauthorised; fail-safe for API errors)
 - ✅ RBAC via StructuralPolicyManager (5 permission tiers, TTL cache, audit log)
 - ✅ CI feedback loop via `cognitive_brain_ci_feedback.yml`
-- ✅ Autonomous @copilot comment posting via `GitHubMCPPoster`
+- ✅ Authorized PR comment posting via `GitHubMCPPoster` when available
 - ✅ GitHub Discussions creation for pattern library entries
 - ✅ PDA/AfterMath loop integration on every module
 

@@ -92,8 +92,9 @@ class HybridPhysicsOrchestrator:
         Returns:
             Comprehensive orchestration results
         """
-        results = {
-            "paradigms_used": [],
+        paradigms_used: list[str] = []
+        results: dict[str, object] = {
+            "paradigms_used": paradigms_used,
             "classical_physics": None,
             "advanced_physics": None,
             "recommendations": [],
@@ -101,7 +102,7 @@ class HybridPhysicsOrchestrator:
 
         # Classical physics analysis
         if self.classical_orchestrator and action_paths:
-            results["paradigms_used"].append("classical_mechanics")
+            paradigms_used.append("classical_mechanics")
 
             # Create decision state
             state = DecisionState(
@@ -118,7 +119,7 @@ class HybridPhysicsOrchestrator:
 
         # Advanced physics analysis
         if self.advanced_orchestrator:
-            results["paradigms_used"].extend(
+            paradigms_used.extend(
                 [
                     "chaos_theory",
                     "fractal_geometry",

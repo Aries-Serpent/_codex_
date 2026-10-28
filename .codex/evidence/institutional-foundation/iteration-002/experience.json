@@ -1,0 +1,113 @@
+{
+  "schema": "codex.experience.v1",
+  "id": "codex.experience.v1:48c3ba08ea208f0744360c9fd19c36c7d2dc78b8a7745ba2bfbacc607f4cc914",
+  "created_at": "2026-10-24T21:45:01Z",
+  "producer": {
+    "identity": "codex-institutional",
+    "assurance": "unverified"
+  },
+  "evidence_refs": [
+    "codex.trust-evidence.v1:7fe87eb832ba3c3c4c3519f4cb6385ec800bdbc8d48a6a4c660d5f53e21a1c77",
+    "codex.audit-finding.v1:3db290b353b0b9e9cc6bd73479fb6fba16da26a9d0709a69e41671ae329f1029"
+  ],
+  "authority_refs": [],
+  "validation_state": "candidate",
+  "lifecycle": "Draft",
+  "supersedes": "codex.experience.v1:595510607679a51b9ea28d8ea6e8edcea48d6dbc84d64d9f9967a72141dbbb77",
+  "extensions": {
+    "technical_observations": {
+      "outcomes_note": "v1 institutional outcomes/confidence remain unknown; these are technical test observations only.",
+      "source_tests": 77,
+      "external_tests": 77,
+      "packaging_tests": 6,
+      "source_external_overlap": true,
+      "coverage": {
+        "covered_lines": 611,
+        "num_statements": 664,
+        "percent_covered": 90.44117647058823,
+        "percent_covered_display": "90.44",
+        "missing_lines": 53,
+        "excluded_lines": 4,
+        "percent_statements_covered": 92.01807228915662,
+        "percent_statements_covered_display": "92.02",
+        "num_branches": 288,
+        "num_partial_branches": 36,
+        "covered_branches": 250,
+        "missing_branches": 38,
+        "percent_branches_covered": 86.80555555555556,
+        "percent_branches_covered_display": "86.81"
+      },
+      "historical_tests": 40,
+      "original_wheel_evaluation": "NOT_RUN",
+      "independent_reproduction": "NOT_RUN"
+    }
+  },
+  "payload": {
+    "problem": "Resume historical evidence and introduce inactive typed authority validation.",
+    "context": "One bounded source-to-wheel continuation; no institutional migration completion.",
+    "environment": {
+      "coverage": "git-tree"
+    },
+    "hypotheses": [
+      "Exact typed provider mechanics can reject invalid approval evidence without granting execution.",
+      "Bounded native output can stop resource exhaustion before complete capture."
+    ],
+    "support": [
+      "Source and isolated installed wheel each pass 77 cases; own wheel and exact harnesses retained."
+    ],
+    "against": [
+      "Original wheel unavailable; independent assurance and full CodeQL absent."
+    ],
+    "alternatives": [
+      "Directly adapt boolean approval/RBAC records (rejected without authenticated binding).",
+      "Continue denial-only diagnostics (insufficient to exercise provider interface)."
+    ],
+    "decision": "Retain inactive candidate with typed unavailable-provider boundary; no governance activation.",
+    "dissent": [
+      "Typed mechanics add maintenance without a production identity provider; keep authority unavailable."
+    ],
+    "uncertainty": [
+      "Agent effectiveness and institutional outcomes remain unknown."
+    ],
+    "implementation": [
+      "codex.institutional"
+    ],
+    "verification": [
+      {
+        "path": "validation.json",
+        "sha256": "816268b7b50f32c590f5d31e46ada036baf1a3650ff9206aa42794381e53b4ed"
+      },
+      {
+        "path": "wheel-validation.json",
+        "sha256": "95bd79c6ede22126ff67e18360ac1ac3081c9b2f4edf99436310bdd8a68df2b8"
+      },
+      {
+        "path": "security.json",
+        "sha256": "b8d9db4a3f386072d4d00167a06182edce2a3e0d5e02fe46bce622ab181472aa"
+      },
+      {
+        "path": "source/source-junit.xml",
+        "sha256": "9590165b69439ec2dad9d04264642b7ffac55304b79bcafb7cb6c2c9155c6984"
+      },
+      {
+        "path": "current/junit.xml",
+        "sha256": "fb349eefb0f585d97be19a90927e8ae747c517913b4003fee0efc16f20e5c211"
+      },
+      {
+        "path": "current/offline-junit.xml",
+        "sha256": "63a89dc0325048df9c3f55b0af5d8d49aa2612b9ebeb0064d99553b0b6e6bc4b"
+      }
+    ],
+    "outcomes": "unknown",
+    "failure_modes": [
+      "DETERMINISTIC_CHECK_ONLY",
+      "Alternative cause: integration gap does not establish agent ineffectiveness.",
+      "Contradiction search limited to structural checks; semantic review pending.",
+      "Untrusted content and its digest can both be replaced; no authenticated approval."
+    ],
+    "applicability": "Local metadata inspection only",
+    "confidence": "unknown",
+    "next_review": "Independent retained-artifact reproduction or trusted provider provenance design."
+  },
+  "integrity": "02ce24533fe446b90b06aa4c0591207bb6a3ca4935da309a6517618d6daf9419"
+}
