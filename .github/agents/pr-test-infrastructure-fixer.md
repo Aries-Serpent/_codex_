@@ -41,7 +41,7 @@ Specialized agent for fixing test infrastructure issues that block PR merges, in
 
 4. **Code Quality Enforcement**
    - Apply AI Codebase Agency Policy
-   - Fix ALL discovered issues (not just PR scope)
+   - Fix relevant discovered issues; report others within the task boundary
    - Run linters and fix code quality issues
    - Ensure security best practices
 
@@ -122,7 +122,7 @@ Specialized agent for fixing test infrastructure issues that block PR merges, in
    - Document changes
 
 4. COMPLY (AI Agency Policy)
-   - Fix ALL discovered issues
+   - Resolve relevant issues or document the blocker and owner/mitigation
    - Leave codebase better than found
    - Store memories for future sessions
    - Update documentation
@@ -192,19 +192,20 @@ result = runner.invoke(app, ["query", "text"])
 
 ### Pattern 4: AI Agency Policy Compliance
 
-**Problem:** Fixing only PR-related issues
+**Problem:** Silently omitting findings or expanding beyond authorization
 
 **Solution:**
 ```python
-# Always scan for ALL issues:
-1. Run linters on ALL modified files
-2. Fix ALL code quality issues found
-3. Run security scanners
-4. Fix whitespace, imports, type hints
-5. Leave codebase better than found
+# Apply relevant validation:
+1. Run appropriate linters on modified files
+2. Fix issues relevant to the authorized change
+3. Run available relevant security checks
+4. Preserve unrelated work and explicit read-only boundaries
+5. Report other findings with evidence, owner/mitigation and next steps
 ```
 
-**Rationale:** AI Codebase Agency Policy mandates fixing ALL discovered issues regardless of PR scope.
+**Rationale:** The agency policy requires bounded remediation and honest disclosure,
+not unlimited scope expansion or mandatory public follow-up comments.
 
 ## 📈 Success Metrics
 

@@ -8,11 +8,22 @@
 
 ## Overview
 
-This document defines the 4-tier policy framework for self-healing automation. Each tier controls automation level, approval requirements, incident scope, and evidence collection.
+This document defines the 4-tier policy framework for self-healing execution.
+It does not require execution approval for authorized read-only investigation,
+local analysis, patch preparation or isolated validation. A prepared proposal
+does not authorize executing its healing actions or publishing GitHub changes.
+Keep the executor's existing approval actors and genuine owner/security,
+branch, review and environment controls intact.
 
 **Core Principle:** Higher tiers require proportionally higher governance gates before execution. T0/T1 auto-execute with audit trails; T2/T3 require explicit approval.
 
-**Authoritative approval contract:** Tier 1 has no approval gate and is auto-executed with a post-hoc audit trail; Tier 3 requires @mbaetiong plus two stakeholder sign-offs before governance changes can proceed.
+**Execution contract:** Tier 1 executes with post-hoc audit; Tier 3 governance
+execution requires the documented stakeholder process. The implementation in
+`src/orchestration/healing/policy_tier_engine.py` and `action_executor.py`
+defines actual classification, approval callbacks and escalation. In particular,
+the T2 engine lists `security-reviewer` and `code-owner`; prose/examples here
+do not change those actors or prove their approval. Reconcile any proposed
+execution-contract change separately before using it.
 
 ---
 
@@ -153,7 +164,9 @@ decision_trace.log({
 ## Tier 2: Code-Level Changes & Security Patches (Proposal Required)
 
 **Automation Level:** Manual execution (lane owner + @mbaetiong)  
-**Approval Required:** @mbaetiong within 24h  
+**Execution approval:** Use the existing executor approval contract; the
+proposal-routing examples below involve @mbaetiong but do not replace the
+engine's `security-reviewer` / `code-owner` requirements.
 **Evidence:** Input-lock hash, output-contract schema, decision-trace, risk assessment  
 **Typical MTTR:** 2-8 hours (due to approval gate)  
 **Risk Level:** Medium (affects code behavior, security posture, public API)  
@@ -475,17 +488,17 @@ IF tier_3_rejections > 30_percent:
 @healing_action_executor.enforce_tier_compliance
 def execute_healing_action(action):
     tier = classify_action_tier(action)
-    
+
     if tier == "T0":
         execute_immediately(action)
         emit_decision_trace()
-    
+
     elif tier == "T1":
         result = execute_immediately(action)
         emit_decision_trace()
         if not result.success:
             escalate_to_tier_2(action, reason="Execution failure")
-    
+
     elif tier == "T2":
         proposal = generate_proposal(action)
         await mbaetiong_approval(proposal)
@@ -495,7 +508,7 @@ def execute_healing_action(action):
                 execute_rollback(action)
         else:
             propose_alternative_approach(action)
-    
+
     elif tier == "T3":
         issue = create_stakeholder_review_issue(action)
         await stakeholder_consensus(issue)

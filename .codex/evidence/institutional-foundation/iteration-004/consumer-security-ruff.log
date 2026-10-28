@@ -1,0 +1,142 @@
+S607 Starting a process with a partial executable path
+  --> scripts/generate_pr_followup.py:55:17
+   |
+53 |         try:
+54 |             return subprocess.check_output(
+55 |                 ["git", "rev-parse", "--abbrev-ref", "HEAD"], text=True, stderr=subprocess.PIPE
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+56 |             ).strip()
+57 |         except subprocess.CalledProcessError as e:
+   |
+
+S607 Starting a process with a partial executable path
+  --> scripts/generate_pr_followup.py:65:17
+   |
+63 |         try:
+64 |             return subprocess.check_output(
+65 |                 ["git", "rev-parse", "HEAD"], text=True, stderr=subprocess.PIPE
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+66 |             ).strip()
+67 |         except subprocess.CalledProcessError as e:
+   |
+
+S603 `subprocess` call: check for execution of untrusted input
+  --> scripts/generate_pr_followup.py:75:22
+   |
+73 |         try:
+74 |             log_format = "%H|%s|%an|%ad"
+75 |             output = subprocess.check_output(
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^
+76 |                 ["git", "log", f"-{count}", f"--format={log_format}", "--date=short"],
+77 |                 text=True,
+   |
+
+S607 Starting a process with a partial executable path
+  --> scripts/generate_pr_followup.py:76:17
+   |
+74 |             log_format = "%H|%s|%an|%ad"
+75 |             output = subprocess.check_output(
+76 |                 ["git", "log", f"-{count}", f"--format={log_format}", "--date=short"],
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+77 |                 text=True,
+78 |                 stderr=subprocess.PIPE,
+   |
+
+S607 Starting a process with a partial executable path
+   --> scripts/generate_pr_followup.py:106:21
+    |
+104 |             try:
+105 |                 upstream = subprocess.check_output(
+106 |                     ["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+107 |                     text=True,
+108 |                     stderr=subprocess.PIPE,
+    |
+
+S607 Starting a process with a partial executable path
+   --> scripts/generate_pr_followup.py:116:29
+    |
+114 |                     remote = (
+115 |                         subprocess.check_output(
+116 |                             ["git", "remote"], text=True, stderr=subprocess.PIPE
+    |                             ^^^^^^^^^^^^^^^^^
+117 |                         )
+118 |                         .strip()
+    |
+
+S603 `subprocess` call: check for execution of untrusted input
+   --> scripts/generate_pr_followup.py:126:22
+    |
+124 |                 upstream = f"{remote}/{base_ref}"
+125 |
+126 |             output = subprocess.check_output(
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^
+127 |                 ["git", "diff", "--name-only", f"{upstream}...HEAD"],
+128 |                 text=True,
+    |
+
+S607 Starting a process with a partial executable path
+   --> scripts/generate_pr_followup.py:127:17
+    |
+126 |             output = subprocess.check_output(
+127 |                 ["git", "diff", "--name-only", f"{upstream}...HEAD"],
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+128 |                 text=True,
+129 |                 stderr=subprocess.PIPE,
+    |
+
+S607 Starting a process with a partial executable path
+   --> scripts/generate_pr_followup.py:135:21
+    |
+133 |             if not files:
+134 |                 output = subprocess.check_output(
+135 |                     ["git", "diff", "--name-only", "HEAD"], text=True, stderr=subprocess.PIPE
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+136 |                 ).strip()
+137 |                 files = [f for f in output.split("\n") if f]
+    |
+
+S607 Starting a process with a partial executable path
+   --> scripts/generate_pr_followup.py:150:21
+    |
+148 |             try:
+149 |                 upstream = subprocess.check_output(
+150 |                     ["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+151 |                     text=True,
+152 |                     stderr=subprocess.PIPE,
+    |
+
+S607 Starting a process with a partial executable path
+   --> scripts/generate_pr_followup.py:160:29
+    |
+158 |                     remote = (
+159 |                         subprocess.check_output(
+160 |                             ["git", "remote"], text=True, stderr=subprocess.PIPE
+    |                             ^^^^^^^^^^^^^^^^^
+161 |                         )
+162 |                         .strip()
+    |
+
+S603 `subprocess` call: check for execution of untrusted input
+   --> scripts/generate_pr_followup.py:170:22
+    |
+168 |                 upstream = f"{remote}/{base_ref}"
+169 |
+170 |             output = subprocess.check_output(
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^
+171 |                 ["git", "rev-list", "--count", f"{upstream}..HEAD"],
+172 |                 text=True,
+    |
+
+S607 Starting a process with a partial executable path
+   --> scripts/generate_pr_followup.py:171:17
+    |
+170 |             output = subprocess.check_output(
+171 |                 ["git", "rev-list", "--count", f"{upstream}..HEAD"],
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+172 |                 text=True,
+173 |                 stderr=subprocess.PIPE,
+    |
+
+Found 13 errors.

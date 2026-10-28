@@ -93,8 +93,8 @@ def _safe_load_yaml(policy_yaml: str) -> dict[str, Any]:
         return {}
     try:
         data = yaml.safe_load(policy_yaml)
-    except (ValueError, TypeError, RuntimeError):
-        logger.warning("Exception occurred", exc_info=True)
+    except (yaml.YAMLError, ValueError, TypeError, RuntimeError):
+        logger.warning("Invalid sanitizer policy YAML; using default safety patterns")
         return {}
     return data if isinstance(data, dict) else {}
 

@@ -1,0 +1,104 @@
+{
+  "G6": "NOT_RUN",
+  "G7": "NOT_RUN",
+  "excluded_disposables": "All task-owned environments/wheelhouse/work dirs removed; no project wheel/runtime result exists",
+  "files": {
+    "bandit-availability.log": {
+      "bytes": 88,
+      "sha256": "1245a4b6d33b08114c2bfae8e4490c60432272ca5cae904542ecf3a5bb546118"
+    },
+    "build-environment.json": {
+      "bytes": 392,
+      "sha256": "b91d7de4301ca328563e4c78e8a373740f0215651d1e0489fde543782ee650b1"
+    },
+    "dependency-download.log": {
+      "bytes": 4494,
+      "sha256": "0a19189d2e84caaa583fc99eb22da4103ba90b6b313b72c45b16e1f69af5bca6"
+    },
+    "dependency-wheels.sha256": {
+      "bytes": 2588,
+      "sha256": "8921e0a6039694d77c2ef8cf40191c38e995c54f8e119f57093f348be575621c"
+    },
+    "external-harness.py": {
+      "bytes": 12305,
+      "sha256": "7f03b6379b0872afbdaf5ab6ddffec094a08f0c0d3cf69c4bea6b51549992c44"
+    },
+    "harness-black.log": {
+      "bytes": 55,
+      "sha256": "1a56c7cd8457fd05d978cfbd139d7bfd86e86acaa9b57668e718ef8bccc0cf48"
+    },
+    "harness-format.log": {
+      "bytes": 145,
+      "sha256": "c3920cf57255ffbb06055d3b3f72b877be04f92a9ca1ccaede480e129093ad55"
+    },
+    "harness-ruff.log": {
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "harness.sha256": {
+      "bytes": 155,
+      "sha256": "7b29fdf8dad8324ffba0523dce68fba3e5b7dcf936f3c9fdd2e181dcea4733b4"
+    },
+    "package-blocker.json": {
+      "bytes": 3176,
+      "sha256": "8198e121739e34f862658f2c43a769cc0c650689f35b21b377f6a0be70abee80"
+    },
+    "pending-commands.txt": {
+      "bytes": 5104,
+      "sha256": "2d47b0b97e224524c1f619f60509c4787c495e15d11b5d2788e0ad70fdb84843"
+    },
+    "preparation.json": {
+      "bytes": 2865,
+      "sha256": "810d327b51c6a7351965eda6022f9d2632356a0e1d87ae6531420b4f718faa59"
+    },
+    "provision-build.log": {
+      "bytes": 1513,
+      "sha256": "1086c4f7117aad70d67975998d1fca5fedb367321b38c686cb5604976cf5426c"
+    },
+    "provision-runtime-dependencies.log": {
+      "bytes": 1345,
+      "sha256": "5497d1adb8f8be206c2ed192a0598a0de4b24ef63e3fabaad9e78424793d2b8c"
+    },
+    "runtime-before-install.json": {
+      "bytes": 328,
+      "sha256": "b36329b9580973e3c4d7982e77e958225d3d7f2f340d51dc3f41b256c7e4eb89"
+    },
+    "security-bandit.json": {
+      "bytes": 1146,
+      "sha256": "2a2f74f16a0c6c234854572a860924191ae1d0a7aacd95091155ddefe07534d5"
+    },
+    "security-bandit.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "security-ruff-version.log": {
+      "bytes": 12,
+      "sha256": "222b29c8ad4a1a5327dd4abd2feeef1047ae040d1a7839671f8056a757cb0eef"
+    },
+    "security-ruff.log": {
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "security-source-identity.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "security-summary.json": {
+      "bytes": 1938,
+      "sha256": "dfb68966e7224bb8f18bec5d2ed78a78ef5ecf67736fb3a4d50036adc534c862"
+    },
+    "source-manifest.json": {
+      "bytes": 8613,
+      "sha256": "141aaf6a2cbe0df74e5d8919879adbd56b4df9ec61db5f6f0488a418d60b7b6c"
+    },
+    "venv-build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "venv-runtime.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0"
+}

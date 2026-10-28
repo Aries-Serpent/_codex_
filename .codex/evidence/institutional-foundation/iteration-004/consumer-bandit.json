@@ -1,0 +1,514 @@
+{
+  "errors": [],
+  "generated_at": "2026-10-25T00:36:21Z",
+  "metrics": {
+    "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py": {
+      "CONFIDENCE.HIGH": 21,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 21,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 439,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "_totals": {
+      "CONFIDENCE.HIGH": 21,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 21,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 439,
+      "nosec": 0,
+      "skipped_tests": 0
+    }
+  },
+  "results": [
+    {
+      "code": "37 import re\n38 import subprocess\n39 import sys\n",
+      "col_offset": 0,
+      "end_col_offset": 17,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "line_number": 38,
+      "line_range": [
+        38
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "test_id": "B404",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "53         try:\n54             return subprocess.check_output(\n55                 [\"git\", \"rev-parse\", \"--abbrev-ref\", \"HEAD\"], text=True, stderr=subprocess.PIPE\n56             ).strip()\n57         except subprocess.CalledProcessError as e:\n",
+      "col_offset": 19,
+      "end_col_offset": 13,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 54,
+      "line_range": [
+        54,
+        55,
+        56
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "53         try:\n54             return subprocess.check_output(\n55                 [\"git\", \"rev-parse\", \"--abbrev-ref\", \"HEAD\"], text=True, stderr=subprocess.PIPE\n56             ).strip()\n57         except subprocess.CalledProcessError as e:\n",
+      "col_offset": 19,
+      "end_col_offset": 13,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 54,
+      "line_range": [
+        54,
+        55,
+        56
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "63         try:\n64             return subprocess.check_output(\n65                 [\"git\", \"rev-parse\", \"HEAD\"], text=True, stderr=subprocess.PIPE\n66             ).strip()\n67         except subprocess.CalledProcessError as e:\n",
+      "col_offset": 19,
+      "end_col_offset": 13,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 64,
+      "line_range": [
+        64,
+        65,
+        66
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "63         try:\n64             return subprocess.check_output(\n65                 [\"git\", \"rev-parse\", \"HEAD\"], text=True, stderr=subprocess.PIPE\n66             ).strip()\n67         except subprocess.CalledProcessError as e:\n",
+      "col_offset": 19,
+      "end_col_offset": 13,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 64,
+      "line_range": [
+        64,
+        65,
+        66
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "74             log_format = \"%H|%s|%an|%ad\"\n75             output = subprocess.check_output(\n76                 [\"git\", \"log\", f\"-{count}\", f\"--format={log_format}\", \"--date=short\"],\n77                 text=True,\n78                 stderr=subprocess.PIPE,\n79             ).strip()\n80 \n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 75,
+      "line_range": [
+        75,
+        76,
+        77,
+        78,
+        79
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "74             log_format = \"%H|%s|%an|%ad\"\n75             output = subprocess.check_output(\n76                 [\"git\", \"log\", f\"-{count}\", f\"--format={log_format}\", \"--date=short\"],\n77                 text=True,\n78                 stderr=subprocess.PIPE,\n79             ).strip()\n80 \n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 75,
+      "line_range": [
+        75,
+        76,
+        77,
+        78,
+        79
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "104             try:\n105                 upstream = subprocess.check_output(\n106                     [\"git\", \"rev-parse\", \"--abbrev-ref\", \"--symbolic-full-name\", \"@{u}\"],\n107                     text=True,\n108                     stderr=subprocess.PIPE,\n109                 ).strip()\n110             except subprocess.CalledProcessError:\n",
+      "col_offset": 27,
+      "end_col_offset": 17,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 105,
+      "line_range": [
+        105,
+        106,
+        107,
+        108,
+        109
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "104             try:\n105                 upstream = subprocess.check_output(\n106                     [\"git\", \"rev-parse\", \"--abbrev-ref\", \"--symbolic-full-name\", \"@{u}\"],\n107                     text=True,\n108                     stderr=subprocess.PIPE,\n109                 ).strip()\n110             except subprocess.CalledProcessError:\n",
+      "col_offset": 27,
+      "end_col_offset": 17,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 105,
+      "line_range": [
+        105,
+        106,
+        107,
+        108,
+        109
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "114                     remote = (\n115                         subprocess.check_output(\n116                             [\"git\", \"remote\"], text=True, stderr=subprocess.PIPE\n117                         )\n118                         .strip()\n",
+      "col_offset": 24,
+      "end_col_offset": 25,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 115,
+      "line_range": [
+        115,
+        116,
+        117
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "114                     remote = (\n115                         subprocess.check_output(\n116                             [\"git\", \"remote\"], text=True, stderr=subprocess.PIPE\n117                         )\n118                         .strip()\n",
+      "col_offset": 24,
+      "end_col_offset": 25,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 115,
+      "line_range": [
+        115,
+        116,
+        117
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "125 \n126             output = subprocess.check_output(\n127                 [\"git\", \"diff\", \"--name-only\", f\"{upstream}...HEAD\"],\n128                 text=True,\n129                 stderr=subprocess.PIPE,\n130             ).strip()\n131             files = [f for f in output.split(\"\\n\") if f]\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 126,
+      "line_range": [
+        126,
+        127,
+        128,
+        129,
+        130
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "125 \n126             output = subprocess.check_output(\n127                 [\"git\", \"diff\", \"--name-only\", f\"{upstream}...HEAD\"],\n128                 text=True,\n129                 stderr=subprocess.PIPE,\n130             ).strip()\n131             files = [f for f in output.split(\"\\n\") if f]\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 126,
+      "line_range": [
+        126,
+        127,
+        128,
+        129,
+        130
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "133             if not files:\n134                 output = subprocess.check_output(\n135                     [\"git\", \"diff\", \"--name-only\", \"HEAD\"], text=True, stderr=subprocess.PIPE\n136                 ).strip()\n137                 files = [f for f in output.split(\"\\n\") if f]\n",
+      "col_offset": 25,
+      "end_col_offset": 17,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 134,
+      "line_range": [
+        134,
+        135,
+        136
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "133             if not files:\n134                 output = subprocess.check_output(\n135                     [\"git\", \"diff\", \"--name-only\", \"HEAD\"], text=True, stderr=subprocess.PIPE\n136                 ).strip()\n137                 files = [f for f in output.split(\"\\n\") if f]\n",
+      "col_offset": 25,
+      "end_col_offset": 17,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 134,
+      "line_range": [
+        134,
+        135,
+        136
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "148             try:\n149                 upstream = subprocess.check_output(\n150                     [\"git\", \"rev-parse\", \"--abbrev-ref\", \"--symbolic-full-name\", \"@{u}\"],\n151                     text=True,\n152                     stderr=subprocess.PIPE,\n153                 ).strip()\n154             except subprocess.CalledProcessError:\n",
+      "col_offset": 27,
+      "end_col_offset": 17,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 149,
+      "line_range": [
+        149,
+        150,
+        151,
+        152,
+        153
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "148             try:\n149                 upstream = subprocess.check_output(\n150                     [\"git\", \"rev-parse\", \"--abbrev-ref\", \"--symbolic-full-name\", \"@{u}\"],\n151                     text=True,\n152                     stderr=subprocess.PIPE,\n153                 ).strip()\n154             except subprocess.CalledProcessError:\n",
+      "col_offset": 27,
+      "end_col_offset": 17,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 149,
+      "line_range": [
+        149,
+        150,
+        151,
+        152,
+        153
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "158                     remote = (\n159                         subprocess.check_output(\n160                             [\"git\", \"remote\"], text=True, stderr=subprocess.PIPE\n161                         )\n162                         .strip()\n",
+      "col_offset": 24,
+      "end_col_offset": 25,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 159,
+      "line_range": [
+        159,
+        160,
+        161
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "158                     remote = (\n159                         subprocess.check_output(\n160                             [\"git\", \"remote\"], text=True, stderr=subprocess.PIPE\n161                         )\n162                         .strip()\n",
+      "col_offset": 24,
+      "end_col_offset": 25,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 159,
+      "line_range": [
+        159,
+        160,
+        161
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "169 \n170             output = subprocess.check_output(\n171                 [\"git\", \"rev-list\", \"--count\", f\"{upstream}..HEAD\"],\n172                 text=True,\n173                 stderr=subprocess.PIPE,\n174             ).strip()\n175             return int(output) if output else 0\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 170,
+      "line_range": [
+        170,
+        171,
+        172,
+        173,
+        174
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "169 \n170             output = subprocess.check_output(\n171                 [\"git\", \"rev-list\", \"--count\", f\"{upstream}..HEAD\"],\n172                 text=True,\n173                 stderr=subprocess.PIPE,\n174             ).strip()\n175             return int(output) if output else 0\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "/home/runner/work/_codex_/_codex_/scripts/generate_pr_followup.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 170,
+      "line_range": [
+        170,
+        171,
+        172,
+        173,
+        174
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    }
+  ]
+}

@@ -13,7 +13,11 @@ Target: 100+ tests across all schemas
 Authority: Lane 3 Unified Documentation Agent
 """
 
+import json
+from pathlib import Path
+
 import pytest
+from jsonschema import Draft202012Validator, ValidationError
 
 
 # Fixtures for common test data
@@ -178,7 +182,7 @@ def valid_relationship():
 
 class TestDocument:
     """Test Document schema validation"""
-    
+
     def test_document_valid(self, valid_document):
         """Test valid document record"""
         assert valid_document["type"] == "document"
@@ -187,7 +191,7 @@ class TestDocument:
         assert "source_file" in valid_document
         assert "created_at" in valid_document
         assert "metadata" in valid_document
-    
+
     def test_document_required_fields(self):
         """Test required fields are present"""
         doc = {
@@ -199,61 +203,61 @@ class TestDocument:
             "metadata": {}
         }
         assert all(k in doc for k in ["id", "type", "title", "source_file", "created_at", "metadata"])
-    
+
     def test_document_missing_id(self):
         """Test missing id field raises error"""
         with pytest.raises(KeyError):
             doc = {"type": "document"}
             _ = doc["id"]
-    
+
     def test_document_type_enum(self, valid_document):
         """Test type field must be 'document'"""
         assert valid_document["type"] == "document"
-    
+
     def test_document_title_required(self):
         """Test title is required and non-empty"""
         with pytest.raises((KeyError, AssertionError)):
             doc = {"id": "doc-003", "type": "document", "title": ""}
             assert len(doc["title"]) > 0
-    
+
     def test_document_source_file_path(self, valid_document):
         """Test source_file is valid path"""
         assert "/" in valid_document["source_file"]
         assert ".md" in valid_document["source_file"]
-    
+
     def test_document_metadata_is_object(self, valid_document):
         """Test metadata is JSON object"""
         assert isinstance(valid_document["metadata"], dict)
-    
+
     def test_document_authors_array(self, valid_document):
         """Test authors is array of strings"""
         assert isinstance(valid_document.get("authors", []), list)
         for author in valid_document.get("authors", []):
             assert isinstance(author, str)
-    
+
     def test_document_tags_array(self, valid_document):
         """Test tags is array of strings"""
         assert isinstance(valid_document.get("tags", []), list)
         for tag in valid_document.get("tags", []):
             assert isinstance(tag, str)
-    
+
     def test_document_version_semantic(self, valid_document):
         """Test version follows semantic versioning"""
         version = valid_document.get("version", "1.0.0")
         parts = version.split(".")
         assert len(parts) >= 2  # At least major.minor
-    
+
     def test_document_is_draft_boolean(self, valid_document):
         """Test is_draft is boolean"""
         is_draft = valid_document.get("is_draft", False)
         assert isinstance(is_draft, bool)
-    
+
     def test_document_created_at_iso8601(self, valid_document):
         """Test created_at is ISO 8601 timestamp"""
         created_at = valid_document["created_at"]
         # Basic ISO 8601 format check
         assert "T" in created_at or "Z" in created_at
-    
+
     def test_document_multiple_authors(self):
         """Test document with multiple authors"""
         doc = {
@@ -266,12 +270,12 @@ class TestDocument:
             "authors": ["alice@example.com", "bob@example.com", "charlie@example.com"]
         }
         assert len(doc["authors"]) == 3
-    
+
     def test_document_no_parent_for_root(self, valid_document):
         """Test root documents have no parent_id"""
         parent_id = valid_document.get("parent_id")
         assert parent_id is None or isinstance(parent_id, str)
-    
+
     def test_document_language_code(self):
         """Test language is valid ISO 639-1 code"""
         doc = {
@@ -292,12 +296,12 @@ class TestDocument:
 
 class TestSection:
     """Test Section schema validation"""
-    
+
     def test_section_valid(self, valid_section):
         """Test valid section record"""
         assert valid_section["type"] == "section"
         assert valid_section["level"] in range(1, 7)
-    
+
     def test_section_level_range(self):
         """Test level is between 1 and 6"""
         for level in range(1, 7):
@@ -311,7 +315,7 @@ class TestSection:
                 "parent_id": None
             }
             assert 1 <= section["level"] <= 6
-    
+
     def test_section_level_invalid_high(self):
         """Test level > 6 is invalid"""
         section = {
@@ -324,7 +328,7 @@ class TestSection:
             "parent_id": None
         }
         assert section["level"] > 6
-    
+
     def test_section_level_invalid_low(self):
         """Test level < 1 is invalid"""
         section = {
@@ -337,16 +341,16 @@ class TestSection:
             "parent_id": None
         }
         assert section["level"] < 1
-    
+
     def test_section_doc_id_reference(self, valid_section):
         """Test doc_id references parent document"""
         assert isinstance(valid_section["doc_id"], str)
         assert len(valid_section["doc_id"]) > 0
-    
+
     def test_section_parent_id_optional(self, valid_section):
         """Test parent_id is optional"""
         assert valid_section.get("parent_id") is None
-    
+
     def test_section_content_required(self):
         """Test content field is required and non-empty"""
         section = {
@@ -359,13 +363,13 @@ class TestSection:
             "parent_id": None
         }
         assert len(section["content"]) == 0
-    
+
     def test_section_word_count_computed(self, valid_section):
         """Test word_count is computed correctly"""
         content = "Hello world test content here."
         word_count = len(content.split())
         assert word_count == 5
-    
+
     def test_section_nested_hierarchy(self):
         """Test section can reference parent section"""
         parent = {
@@ -387,24 +391,24 @@ class TestSection:
             "parent_id": "sec-parent"
         }
         assert child["level"] > parent["level"]
-    
+
     def test_section_code_blocks_count(self, valid_section):
         """Test code_blocks field"""
         assert isinstance(valid_section.get("code_blocks", 0), int)
         assert valid_section.get("code_blocks", 0) >= 0
-    
+
     def test_section_order_field(self, valid_section):
         """Test order field for sorting"""
         assert isinstance(valid_section.get("order", 0), int)
         assert valid_section.get("order", 0) >= 0
-    
+
     def test_section_tags_array(self, valid_section):
         """Test tags are array of strings"""
         tags = valid_section.get("tags", [])
         assert isinstance(tags, list)
         for tag in tags:
             assert isinstance(tag, str)
-    
+
     def test_section_last_updated_timestamp(self):
         """Test last_updated is ISO 8601 timestamp"""
         section = {
@@ -418,7 +422,7 @@ class TestSection:
             "last_updated": "2026-07-02T15:30:00Z"
         }
         assert "T" in section["last_updated"]
-    
+
     def test_section_multiple_levels(self):
         """Test sections at different levels"""
         levels = [1, 2, 3, 4, 5, 6]
@@ -433,7 +437,7 @@ class TestSection:
                 "parent_id": None
             }
             assert section["level"] == level
-    
+
     def test_section_title_max_length(self):
         """Test title respects max length"""
         title = "a" * 255
@@ -455,12 +459,23 @@ class TestSection:
 
 class TestBlock:
     """Test Block schema validation"""
-    
+
+    def test_block_canonical_type_schema(self):
+        """The checked-in canonical schema accepts known types and rejects invented ones."""
+        path = Path(__file__).resolve().parents[2] / "docs-data/schemas/block.schema.json"
+        schema = json.loads(path.read_text())
+        Draft202012Validator.check_schema(schema)
+        validator = Draft202012Validator(schema["properties"]["block_type"])
+        for block_type in ("paragraph", "code", "reference", "unknown"):
+            validator.validate(block_type)
+        with pytest.raises(ValidationError):
+            validator.validate("unsupported")
+
     def test_block_valid(self, valid_block):
         """Test valid block record"""
         assert valid_block["type"] == "block"
         assert valid_block["content_type"] in ["paragraph", "code", "table", "list", "quote", "admonition", "image"]
-    
+
     def test_block_content_types(self):
         """Test all content_type enum values"""
         types = ["paragraph", "code", "table", "list", "quote", "admonition", "image"]
@@ -474,7 +489,7 @@ class TestBlock:
                 "line_range": {"start": 1, "end": 2, "file": "docs/test.md"}
             }
             assert block["content_type"] == content_type
-    
+
     def test_block_line_range_required(self):
         """Test line_range with start, end, file"""
         block = {
@@ -490,7 +505,7 @@ class TestBlock:
             }
         }
         assert block["line_range"]["start"] <= block["line_range"]["end"]
-    
+
     def test_block_line_range_invalid(self):
         """Test line_range with start > end is invalid"""
         block = {
@@ -502,14 +517,14 @@ class TestBlock:
             "line_range": {"start": 10, "end": 5, "file": "docs/test.md"}
         }
         assert block["line_range"]["start"] > block["line_range"]["end"]
-    
+
     def test_block_references_array(self, valid_block):
         """Test references is array of entity IDs"""
         refs = valid_block.get("references", [])
         assert isinstance(refs, list)
         for ref in refs:
             assert isinstance(ref, str)
-    
+
     def test_block_language_for_code(self):
         """Test language field for code blocks"""
         block = {
@@ -522,7 +537,7 @@ class TestBlock:
             "language": "python"
         }
         assert block["language"] == "python"
-    
+
     def test_block_weight_range(self):
         """Test weight is between 0 and 1"""
         for weight in [0.0, 0.25, 0.5, 0.75, 1.0]:
@@ -536,7 +551,7 @@ class TestBlock:
                 "weight": weight
             }
             assert 0.0 <= block["weight"] <= 1.0
-    
+
     def test_block_weight_invalid_high(self):
         """Test weight > 1 is invalid"""
         block = {
@@ -549,7 +564,7 @@ class TestBlock:
             "weight": 1.5
         }
         assert block["weight"] > 1.0
-    
+
     def test_block_content_required(self):
         """Test content field is required"""
         with pytest.raises(AssertionError):
@@ -562,16 +577,16 @@ class TestBlock:
                 "line_range": {"start": 1, "end": 1, "file": "test.md"}
             }
             assert len(block["content"]) > 0
-    
+
     def test_block_metadata_object(self, valid_block):
         """Test metadata is JSON object"""
         metadata = valid_block.get("metadata", {})
         assert isinstance(metadata, dict)
-    
+
     def test_block_section_id_reference(self, valid_block):
         """Test section_id references parent section"""
         assert isinstance(valid_block["section_id"], str)
-    
+
     def test_block_multiple_references(self):
         """Test block can reference multiple entities"""
         block = {
@@ -584,7 +599,7 @@ class TestBlock:
             "references": ["req-001", "req-002", "req-003"]
         }
         assert len(block["references"]) == 3
-    
+
     def test_block_code_language_examples(self):
         """Test various programming languages"""
         languages = ["python", "javascript", "bash", "go", "rust"]
@@ -599,7 +614,7 @@ class TestBlock:
                 "language": lang
             }
             assert block["language"] == lang
-    
+
     def test_block_all_content_types(self):
         """Test block creation with all content types"""
         types = ["paragraph", "code", "table", "list", "quote", "admonition", "image"]
@@ -621,12 +636,12 @@ class TestBlock:
 
 class TestAction:
     """Test Action schema validation"""
-    
+
     def test_action_valid(self, valid_action):
         """Test valid action record"""
         assert valid_action["type"] == "action"
         assert valid_action["action_type"] in ["todo", "bug", "feature", "improvement", "documentation", "refactor"]
-    
+
     def test_action_types(self):
         """Test all action_type enum values"""
         types = ["todo", "bug", "feature", "improvement", "documentation", "refactor"]
@@ -640,7 +655,7 @@ class TestAction:
                 "priority": "medium"
             }
             assert action["action_type"] == action_type
-    
+
     def test_action_priority_levels(self):
         """Test all priority enum values"""
         priorities = ["low", "medium", "high", "critical"]
@@ -654,7 +669,7 @@ class TestAction:
                 "priority": priority
             }
             assert action["priority"] == priority
-    
+
     def test_action_status_values(self, valid_action):
         """Test status enum values"""
         statuses = ["open", "in_progress", "done", "cancelled"]
@@ -669,19 +684,19 @@ class TestAction:
                 "status": status
             }
             assert action["status"] in statuses
-    
+
     def test_action_deadline_date_format(self, valid_action):
         """Test deadline is YYYY-MM-DD format"""
         deadline = valid_action.get("deadline", "2026-07-10")
         parts = deadline.split("-")
         assert len(parts) == 3
-    
+
     def test_action_effort_format(self, valid_action):
         """Test estimated_effort format (e.g., '2h', '1d')"""
         effort = valid_action.get("estimated_effort", "1h")
         assert effort[-1] in ["h", "d"]
         assert effort[:-1].isdigit()
-    
+
     def test_action_effort_examples(self):
         """Test various effort estimates"""
         efforts = ["1h", "2h", "4h", "1d", "2d", "5d"]
@@ -696,19 +711,19 @@ class TestAction:
                 "estimated_effort": effort
             }
             assert action["estimated_effort"] == effort
-    
+
     def test_action_assignee_email(self, valid_action):
         """Test assignee is email format"""
         assignee = valid_action.get("assignee", "user@example.com")
         assert "@" in assignee
-    
+
     def test_action_tags_array(self, valid_action):
         """Test tags is array of strings"""
         tags = valid_action.get("tags", [])
         assert isinstance(tags, list)
         for tag in tags:
             assert isinstance(tag, str)
-    
+
     def test_action_linked_issue_reference(self):
         """Test linked_issue references external issue"""
         action = {
@@ -721,7 +736,7 @@ class TestAction:
             "linked_issue": "#123"
         }
         assert "#" in action["linked_issue"]
-    
+
     def test_action_created_date_timestamp(self):
         """Test created_date is ISO 8601 timestamp"""
         action = {
@@ -734,7 +749,7 @@ class TestAction:
             "created_date": "2026-07-02T14:30:00Z"
         }
         assert "T" in action["created_date"]
-    
+
     def test_action_description_max_length(self):
         """Test description respects max length"""
         desc = "a" * 512

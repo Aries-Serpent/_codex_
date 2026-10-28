@@ -1,0 +1,62 @@
+[
+  {
+    "actor": "same-platform:source-fixture-implementer",
+    "case": "premature-advance-while-blocked",
+    "history_digest_after": "eaa23e5d5766cd412e31499609626b3cd2736bad336dd980506ec4ee3bace0f1",
+    "history_digest_before": "eaa23e5d5766cd412e31499609626b3cd2736bad336dd980506ec4ee3bace0f1",
+    "history_unchanged": true,
+    "reason": "REVIEW_BLOCKED",
+    "result": "Rejected",
+    "run": "source-functional-fixture:00238006-33d6-4027-b868-cf95f1854e78"
+  },
+  {
+    "actor": "same-platform:source-fixture-implementer",
+    "case": "premature-resume-without-clearance",
+    "history_digest_after": "eaa23e5d5766cd412e31499609626b3cd2736bad336dd980506ec4ee3bace0f1",
+    "history_digest_before": "eaa23e5d5766cd412e31499609626b3cd2736bad336dd980506ec4ee3bace0f1",
+    "history_unchanged": true,
+    "reason": "REVIEW_LIST",
+    "result": "Rejected",
+    "run": "source-functional-fixture:00238006-33d6-4027-b868-cf95f1854e78"
+  },
+  {
+    "actor": "same-platform:source-fixture-implementer",
+    "case": "stale-candidate-resume",
+    "history_digest_after": "eaa23e5d5766cd412e31499609626b3cd2736bad336dd980506ec4ee3bace0f1",
+    "history_digest_before": "eaa23e5d5766cd412e31499609626b3cd2736bad336dd980506ec4ee3bace0f1",
+    "history_unchanged": true,
+    "reason": "REVIEW_STALE_BINDING",
+    "result": "Rejected",
+    "run": "source-functional-fixture:00238006-33d6-4027-b868-cf95f1854e78"
+  },
+  {
+    "actor": "same-platform:source-fixture-implementer",
+    "case": "stale-context-resume",
+    "history_digest_after": "eaa23e5d5766cd412e31499609626b3cd2736bad336dd980506ec4ee3bace0f1",
+    "history_digest_before": "eaa23e5d5766cd412e31499609626b3cd2736bad336dd980506ec4ee3bace0f1",
+    "history_unchanged": true,
+    "reason": "REVIEW_STALE_BINDING",
+    "result": "Rejected",
+    "run": "source-functional-fixture:00238006-33d6-4027-b868-cf95f1854e78"
+  },
+  {
+    "actor": "same-platform:source-fixture-implementer",
+    "case": "inexact-meta-clearance",
+    "history_digest_after": "9c7a78688b97ae02b8a891cf3bd57ef20a6e500e27e9acf62f6a861a4580f674",
+    "history_digest_before": "9c7a78688b97ae02b8a891cf3bd57ef20a6e500e27e9acf62f6a861a4580f674",
+    "history_unchanged": true,
+    "reason": "REVIEW_CLEARANCE",
+    "result": "Rejected",
+    "run": "source-functional-fixture:00238006-33d6-4027-b868-cf95f1854e78"
+  },
+  {
+    "actor": "same-platform:source-fixture-implementer",
+    "case": "stale-empty-cache",
+    "history_digest_after": "d4e0d085ba8ee7e57c0508728f54d1495fb12f750378b4f27b6fcc6f19386a12",
+    "history_digest_before": "d4e0d085ba8ee7e57c0508728f54d1495fb12f750378b4f27b6fcc6f19386a12",
+    "history_unchanged": true,
+    "reason": "REVIEW_CACHE_MISMATCH",
+    "result": "Rejected",
+    "run": "source-functional-fixture:00238006-33d6-4027-b868-cf95f1854e78"
+  }
+]

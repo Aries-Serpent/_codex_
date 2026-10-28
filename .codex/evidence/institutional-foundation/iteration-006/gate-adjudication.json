@@ -1,0 +1,64 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001",
+  "scope": "Iteration006 evidence recovery, exact synthetic resumption, separate source-backed institutional review and inactive consolidation handoff",
+  "source_candidate": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+  "source_backed_review_candidate": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+  "evidence_candidate": "ad4c89d8f903ed9c4b87d0b6caa4568d02dd6ec1",
+  "wheel_sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00",
+  "history": [
+    "../iteration-004/gate-adjudication.json",
+    "../iteration-005/gate-adjudication.json"
+  ],
+  "G0_G8": {
+    "G0": {"status": "FAIL", "meaning": "Preflight and preservation", "scope": "Snapshots and bytes reconciled, but both historical and current user-owned startup timestamps were unintentionally committed. No clean commit-exclusion claim or silent reversal; owner-reviewed forward correction remains pending."},
+    "G1": {"status": "NOT_RUN", "meaning": "Semantic component, ecology and effectiveness investigation", "scope": "Bounded two-bearing source investigation completed; program-wide investigation remains open."},
+    "G2": {"status": "PASS", "meaning": "Proposed design, reuse decision and implementation boundary", "scope": "Enhance existing semantic validator and continuation coordinator; do not create a new agent or activate governance. Complete architecture is not claimed."},
+    "G3": {"status": "PASS", "meaning": "Implemented SDK and relevant source validation", "scope": "Historical 285 distinct source cases apply through verified unchanged production bytes. Current retained SDK workflows and audit harness checks are separately scoped; no broader regressions claimed."},
+    "G4": {"status": "NOT_RUN", "meaning": "Applicable security analysis", "scope": "Prior Python CodeQL skipped; current checker errored before analysis. Eleven archive-detector findings need owner review. Bounded offline scans are not complete security acceptance."},
+    "G5": {"status": "NOT_RUN", "meaning": "Independently established verifier, exact-artifact custody and approval", "scope": "No authenticated separation or independent reproduction. Same-platform analytical roles and synthetic results do not supply it."},
+    "G6": {"status": "PASS", "meaning": "Built wheel, resources and dependency validation", "scope": "Historical exact final wheel and complete declared base closure retained. No production SDK or package-resource change in iteration006; no rebuild or new distribution acceptance claimed. Missing raw logs narrow retention claims."},
+    "G7": {"status": "PASS", "meaning": "Installed wheel behavior outside checkout", "scope": "Historical exact-wheel external validation only. Current isolated SDK scenarios ran inside checkout with installed origins and SDK-only dependencies; they are not a new external/full-base run."},
+    "G8": {"status": "PASS", "meaning": "Compatible checkpoint, predecessor and source/context binding", "scope": "Acceptance conditional on checkpoint-verification.json reporting successful sequence-six assembly. Publication and eventual merge change inventory; preserve immutable candidate and rebind in a compatible successor. Remote log completeness remains FAIL, not hidden inside this structural gate."}
+  },
+  "iteration_acceptance": {
+    "RD6-01": {"status": "PASS", "result": "Exact historical tested, committed and observed pushed snapshots reconciled; final head is established externally by PR/ref, not a self-referential checkpoint."},
+    "RD6-02": {"status": "FAIL", "result": "User timestamp bytes preserved, but commit exclusion was false in a6442c9e and 64cd6ebe. Attribution and owner-only forward correction proposals retained."},
+    "RD6-03": {"status": "PASS", "result": "Previously unread verifier recovered from retained output; live historical agent unavailable. Surviving submitted hashes verified, not archive traversal inferred."},
+    "RD6-04": {"status": "FAIL", "result": "Historical aggregate reconciled: 266 present, 151 expected log paths absent from inspected commits. No replacement bytes fabricated."},
+    "RD6-05": {"status": "FAIL", "result": "Bounded member inspection completed over 11 archives and 2227 distinct contents. Eleven redacted findings remain owner-review-required; no credential probes and no clean-scan claim."},
+    "RD6-06": {"status": "PASS", "result": "Exact historical synthetic technical_verification explicitly retried. Original revoked event retained; synthetic independent_reproduction remains pending. Real-source assurance is a different binding."},
+    "RD6-07": {"status": "PASS", "result": "Separate source-backed initial, remediation, rotated meta, assurance and final reconciliation executed. Narrow 090/H1-attach-only rejection only; eight broad findings preserved; final BLOCKED at retention_security."},
+    "RD6-08": {"status": "PASS", "result": "Actual generic-versus-semantic admission observation supports concrete existing-coordinator composition recommendation. No invalid record was applied to storage."},
+    "RD6-09": {"status": "PASS", "result": "Fourteen-row capability/readiness matrix and 32-item maintained program roadmap distinguish partial, fixture, design, unsupported and blocked behavior."},
+    "RD6-10": {"status": "PASS", "result": "Exact production parity preserves scoped historical source/wheel evidence; owning lanes report current harness checks. Fifty-eight formulas, 27 design contracts and seven literal diagrams preserved. Rendering NOT_RUN; no calibration or hosted deployment claim."},
+    "RD6-11": {"status": "PASS", "result": "Conditional on checkpoint-verification.json: preserve sequence-five predecessor/session/extensions, append validated evidence, bind source and retention, and target blocked retention_security without inventing eligibility."}
+  },
+  "counting": {
+    "historical": "285 source cases; 107 installed assurance tests; 55 SDK checks; 49 baseline checks; two documentation examples. Overlapping scopes are not summed.",
+    "current": "25 synthetic assertions within overlapping 34/54 stages; 20 scoped-meta assertions also overlap environment/source checks. Not a total unique-test count."
+  },
+  "merge_readiness": "NOT_ESTABLISHED",
+  "review_state": "DRAFT_REQUIRED",
+  "merge_blockers": [
+    "151 unavailable historical raw logs or an actual authorized retention disposition",
+    "11 owner-review-required secret-detector findings; affected-content disclosure not cleared",
+    "Unintended user timestamp inclusion requires explicit owner disposition",
+    "Applicable security/required checks and reviews on actual PR head not established; CodeQL incomplete"
+  ],
+  "not_automatically_inactive_merge_blockers": [
+    "Broader maintained institutional roadmap is continuation work",
+    "G5 stays NOT_RUN; its merge effect must follow existing applicable policy, not an agent exception",
+    "Missing operational authority blocks dependent activation",
+    "Hosted profile/rendering unverified blocks only dependent claims or operations"
+  ],
+  "next_requirement": {
+    "node": "retention_security",
+    "ready": false,
+    "blocker": "declared-blocked",
+    "action": "Obtain legitimate owner triage and recover original retention bytes or an existing-policy disposition. Revalidate merged source/context; produce a versioned plan only after predicates and authority are satisfied. Do not append a PASS to the declared-blocked node or transfer synthetic evidence to the real candidate."
+  },
+  "independent_approval": "NOT_RUN",
+  "activation": false,
+  "release": false,
+  "next_session_started": false
+}

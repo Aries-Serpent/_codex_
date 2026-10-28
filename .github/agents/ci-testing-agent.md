@@ -223,15 +223,16 @@ flowchart TD
 
 ---
 
-## Self-Review Protocol (5-Pass)
+## Risk-based review
 
-Before committing any fix, run this checklist in order:
+Assess relevant checks for the authorized fix; these are review dimensions,
+not a minimum number of passes or retries.
 
-- [ ] **Pass 1 — Import smoke**: `python -c "from <fixed_module> import <symbol>"` exits 0
-- [ ] **Pass 2 — Ruff clean**: `ruff check --select F401,B904,I001 <changed_files>` → 0 errors
-- [ ] **Pass 3 — Targeted test**: `pytest <regression_test_path> -v --timeout=60 --tb=short` → green
-- [ ] **Pass 4 — No regression**: diff of changed files reviewed; no unintended side-effects
-- [ ] **Pass 5 — Policy compliance**: fix aligns with `.codex/CODEBASE_AGENCY_POLICY.md §0`
+- [ ] **Import smoke**: relevant fixed modules import successfully
+- [ ] **Ruff clean**: run configured relevant lint rules on changed files
+- [ ] **Targeted test**: regression passes with available supported pytest options
+- [ ] **No regression**: diff reviewed; no unintended side effects
+- [ ] **Policy compliance**: scoped work, honest results and actual approval gates
 
 
 
@@ -436,7 +437,7 @@ For detailed examples and extended troubleshooting:
 ### v4.2.0-s228 (2026-05-09) - S228 Continuation
 - ✅ P19 shadow import diagnosis protocol (detection + fix + root cause table)
 - ✅ CI failure → self-healing → escalation mermaid diagram
-- ✅ 5-pass self-review checklist
+- ✅ Risk-based review checklist
 - ✅ `@pytest.mark.flaky(reruns=2)` detection guidance (see autonomous-test-healer-agent)
 - ✅ Policy ref: `.codex/CODEBASE_AGENCY_POLICY.md §0`
 

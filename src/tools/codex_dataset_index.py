@@ -12,6 +12,7 @@ import argparse
 import json
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TypedDict
 
 
 @dataclass
@@ -19,6 +20,11 @@ class DatasetFile:
     path: str
     kind: str
     size_bytes: int
+
+
+class DatasetIndex(TypedDict):
+    root: str
+    files: list[DatasetFile]
 
 
 def _classify(path: Path) -> str:
@@ -34,7 +40,7 @@ def _classify(path: Path) -> str:
     return "unknown"
 
 
-def build_index(data_root: Path) -> dict[str, list[DatasetFile]]:
+def build_index(data_root: Path) -> DatasetIndex:
     files: list[DatasetFile] = []
     for path in sorted(data_root.rglob("*")):
         if not path.is_file():
@@ -49,7 +55,7 @@ def build_index(data_root: Path) -> dict[str, list[DatasetFile]]:
     return {"root": str(data_root), "files": files}
 
 
-def _write_json(index: dict[str, list[DatasetFile]], path: Path) -> None:
+def _write_json(index: DatasetIndex, path: Path) -> None:
     payload = {
         "root": index["root"],
         "files": [file.__dict__ for file in index["files"]],
@@ -57,7 +63,7 @@ def _write_json(index: dict[str, list[DatasetFile]], path: Path) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(index: dict[str, list[DatasetFile]], path: Path) -> None:
+def _write_markdown(index: DatasetIndex, path: Path) -> None:
     lines = [
         "# Dataset Index",
         "",

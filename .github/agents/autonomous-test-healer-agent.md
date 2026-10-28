@@ -45,7 +45,7 @@ Capabilities include:
    - Validate fixes
 
 2. **Self-Review & Validation**
-   - 5-pass comprehensive review
+   - Risk-based review of relevant correctness, tests and security evidence
    - Automated testing
    - Rollback on failure
    - Zero regression guarantee
@@ -159,7 +159,10 @@ def fix_mock_type(test_code: str, expected_type: str) -> str:
 **Auto-apply**: Yes (with approval)
 
 
-## 🔍 Self-Review Process (5 Passes)
+## 🔍 Review dimensions
+
+Use relevant checks once sufficient evidence is available; the examples below
+are not a fixed pass/iteration count. Respect actual execution approvals.
 
 ### Pass 1: Fix Correctness
 ```python
@@ -280,7 +283,7 @@ graph LR
     B --> C{Known Pattern?}
     C -->|Yes| D[Generate Fix]
     C -->|No| E[Learn Pattern]
-    D --> F[5-Pass Review]
+    D --> F[Relevant review checks]
     F --> G{All Pass?}
     G -->|Yes| H[Apply]
     G -->|No| I[Heal Iteration +1]
@@ -407,7 +410,7 @@ or mock resource]
     VERIFY[Verify: run targeted tests
 pytest path/to/test -v --tb=short] --> GATE{Tests
 passing?}
-    GATE -->|Yes| SELF_REVIEW[5-Pass Self-Review]
+    GATE -->|Yes| SELF_REVIEW[Risk-based review]
     GATE -->|No, iter < 5| C
     GATE -->|No, iter = 5| ESC[Escalate to
 self-healing-orchestrator-agent]
@@ -418,15 +421,15 @@ post PR summary]
 
 ---
 
-## Self-Review Protocol (5-Pass)
+## Risk-based review checklist
 
-Before committing any fix:
+For an authorized fix, assess relevant checks without requiring five iterations:
 
-- [ ] **Pass 1 — Import smoke**: `python -c "from <fixed_module> import <symbol>"` exits 0
-- [ ] **Pass 2 — Ruff clean**: `ruff check --select F401,B904,I001 <changed_files>` → 0 errors
-- [ ] **Pass 3 — Targeted test**: `pytest <test_path> -v --timeout=60 --tb=short` → green
-- [ ] **Pass 4 — No regressions**: diff reviewed, no test removals or coverage drop
-- [ ] **Pass 5 — Policy**: changes align with `.codex/CODEBASE_AGENCY_POLICY.md §0`
+- [ ] **Import smoke**: relevant fixed modules import
+- [ ] **Lint**: configured checks pass on changed files
+- [ ] **Targeted test**: relevant regression passes
+- [ ] **No regressions**: diff reviewed without masking failures
+- [ ] **Policy**: scope, user boundaries and actual execution approvals preserved
 
 ---
 

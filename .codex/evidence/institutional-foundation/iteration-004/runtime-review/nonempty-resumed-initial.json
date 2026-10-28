@@ -1,0 +1,230 @@
+{
+  "authority_refs": [],
+  "created_at": "2026-10-25T00:00:00Z",
+  "evidence_refs": [],
+  "extensions": {},
+  "id": "codex.review.v1:b2a9eb26bf695efee3607e1bc2d98c2bce843c7e31868402c24cb769eb199438",
+  "integrity": "d7dc15df900c7dc5810b6abed0e8855d85f1c6a14c06b0f625492386466f9080",
+  "lifecycle": "Draft",
+  "payload": {
+    "data": {
+      "events": [
+        {
+          "action": "block",
+          "binding": "2b00ec0ce3fc3b9981c4727a776194a681353bbbc938438946f63ccc992babd2",
+          "content_id": "4f75896b8e68852a31ef92d73e4252e699a366066e159b24a90a46fcf099df60",
+          "data": {
+            "blocked_from_state": "initial",
+            "cause": "missing-required-lane",
+            "clearance_conditions": [
+              "supply-bound-output"
+            ],
+            "pending_requirement": "lane:risk",
+            "scope": "risk"
+          },
+          "event_id": "f8e5a4c0-03b3-4fc9-88da-bbedeeaead17",
+          "plan_digest": "4c068e58f3ed29c6bb3073332b684d3e243fc2afe9d4828ceb09b29bcbbd7688",
+          "sequence": 1
+        },
+        {
+          "action": "resume",
+          "binding": "2b00ec0ce3fc3b9981c4727a776194a681353bbbc938438946f63ccc992babd2",
+          "content_id": "63db6359f1aa8610ec193a9a00c2be212cf286a831632466efb107538efed85c",
+          "data": {
+            "blocker_digest": "5fb797504d4be4f1c348f7a55dff021479b3bb984952eb9621975554ab5ea9a9",
+            "clearances": [
+              "supply-bound-output"
+            ],
+            "current_manifest": {
+              "authority_refs": [],
+              "created_at": "2026-10-25T00:00:00Z",
+              "evidence_refs": [],
+              "extensions": {},
+              "id": "codex.review.v1:f7c485be41218e641275abae98a92c2d73b5f516643311b648c6dcdd99037973",
+              "integrity": "0fc16dff828ddac9e2a2ee07602a0451404eec15f7f18bfd64cbfe830f513655",
+              "lifecycle": "Draft",
+              "payload": {
+                "data": {
+                  "classification": "Repository-Internal",
+                  "context_digest": "b8d833e60f629a295de5d2f73db114746a820c6e838a32b476ebf5a021182634",
+                  "entries": [
+                    {
+                      "mode": 420,
+                      "path": "src/a.py",
+                      "sha256": "5fef8d5fc44dbb7be9fc5a16502135ef24b36fa6d7e55bbf11d1309b0cb53e05",
+                      "size": 5
+                    }
+                  ],
+                  "rules": {
+                    "archives": "opaque-no-expansion",
+                    "hardlinks": "independent-bytes",
+                    "line_endings": "raw",
+                    "permissions": "explicit-posix-mode",
+                    "submodules": "reject",
+                    "symlinks": "reject"
+                  }
+                },
+                "kind": "manifest"
+              },
+              "producer": {
+                "assurance": "unverified",
+                "identity": "codex-institutional"
+              },
+              "schema": "codex.review.v1",
+              "supersedes": null,
+              "validation_state": "candidate"
+            }
+          },
+          "event_id": "c324e2ec-019b-4069-87aa-0c2fabe6c36a",
+          "plan_digest": "4c068e58f3ed29c6bb3073332b684d3e243fc2afe9d4828ceb09b29bcbbd7688",
+          "sequence": 2
+        }
+      ],
+      "plan": {
+        "authority_refs": [],
+        "created_at": "2026-10-25T00:00:00Z",
+        "evidence_refs": [],
+        "extensions": {},
+        "id": "codex.review.v1:0432c05cb8da58ef1d861a5f149d5a8fb48a9fe0a2d732555d69ee2c5fb174f4",
+        "integrity": "bf8335802faa75875904f80a24a474116619f9f4643b281bddd1e1f40816ff3d",
+        "lifecycle": "Draft",
+        "payload": {
+          "data": {
+            "binding": "2b00ec0ce3fc3b9981c4727a776194a681353bbbc938438946f63ccc992babd2",
+            "coordinator_role": "implementer",
+            "critical": [
+              "security"
+            ],
+            "independence": "unverified",
+            "lanes": [
+              {
+                "actor": "same-platform:logic",
+                "bearing": "correctness",
+                "coverage": [
+                  "correctness",
+                  "security"
+                ],
+                "dissent": false,
+                "id": "logic",
+                "required": true,
+                "run": "fixture-run:logic",
+                "tools": [
+                  "read",
+                  "search"
+                ]
+              },
+              {
+                "actor": "same-platform:risk",
+                "bearing": "security",
+                "coverage": [
+                  "correctness",
+                  "security"
+                ],
+                "dissent": false,
+                "id": "risk",
+                "required": true,
+                "run": "fixture-run:risk",
+                "tools": [
+                  "read",
+                  "search"
+                ]
+              },
+              {
+                "actor": "same-platform:dissent",
+                "bearing": "cross-cutting",
+                "coverage": [
+                  "correctness",
+                  "security"
+                ],
+                "dissent": true,
+                "id": "dissent",
+                "required": true,
+                "run": "fixture-run:dissent",
+                "tools": [
+                  "read",
+                  "search"
+                ]
+              },
+              {
+                "actor": "same-platform:rotated",
+                "bearing": "followup",
+                "coverage": [
+                  "correctness",
+                  "security"
+                ],
+                "dissent": false,
+                "id": "rotated",
+                "required": false,
+                "run": "fixture-run:rotated",
+                "tools": [
+                  "read",
+                  "search"
+                ]
+              }
+            ],
+            "mandatory": [
+              "correctness",
+              "security"
+            ],
+            "manifest": {
+              "authority_refs": [],
+              "created_at": "2026-10-25T00:00:00Z",
+              "evidence_refs": [],
+              "extensions": {},
+              "id": "codex.review.v1:f7c485be41218e641275abae98a92c2d73b5f516643311b648c6dcdd99037973",
+              "integrity": "0fc16dff828ddac9e2a2ee07602a0451404eec15f7f18bfd64cbfe830f513655",
+              "lifecycle": "Draft",
+              "payload": {
+                "data": {
+                  "classification": "Repository-Internal",
+                  "context_digest": "b8d833e60f629a295de5d2f73db114746a820c6e838a32b476ebf5a021182634",
+                  "entries": [
+                    {
+                      "mode": 420,
+                      "path": "src/a.py",
+                      "sha256": "5fef8d5fc44dbb7be9fc5a16502135ef24b36fa6d7e55bbf11d1309b0cb53e05",
+                      "size": 5
+                    }
+                  ],
+                  "rules": {
+                    "archives": "opaque-no-expansion",
+                    "hardlinks": "independent-bytes",
+                    "line_endings": "raw",
+                    "permissions": "explicit-posix-mode",
+                    "submodules": "reject",
+                    "symlinks": "reject"
+                  }
+                },
+                "kind": "manifest"
+              },
+              "producer": {
+                "assurance": "unverified",
+                "identity": "codex-institutional"
+              },
+              "schema": "codex.review.v1",
+              "supersedes": null,
+              "validation_state": "candidate"
+            },
+            "mode": "supplement"
+          },
+          "kind": "plan"
+        },
+        "producer": {
+          "assurance": "unverified",
+          "identity": "codex-institutional"
+        },
+        "schema": "codex.review.v1",
+        "supersedes": null,
+        "validation_state": "candidate"
+      }
+    },
+    "kind": "history"
+  },
+  "producer": {
+    "assurance": "unverified",
+    "identity": "codex-institutional"
+  },
+  "schema": "codex.review.v1",
+  "supersedes": null,
+  "validation_state": "candidate"
+}

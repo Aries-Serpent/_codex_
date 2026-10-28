@@ -1,0 +1,75 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001/iteration-002",
+  "collected_at": "2026-10-24T21:39:00Z",
+  "producer": {
+    "identity": "coordinator",
+    "assurance": "unverified implementer"
+  },
+  "original_wheel": {
+    "status": "NOT_RUN",
+    "availability": "unavailable in bounded inspected runner locations",
+    "expected_sha256": "1f52c08f1deb5f5487692509cd63253d67f78571bd73c14e647ba5fe080e65a6"
+  },
+  "candidate_source": {
+    "commit": "592e882f516744937957a2287fd93ad9d0c870ee",
+    "source_retrieval": "git fetch --depth=1 origin immutable candidate; git archive immutable commit",
+    "harness_sha256": "314d92439efe368cb430e47525fe5c49b3e383316d5e2bac821f636ecc009870",
+    "expected_harness_sha256": "314d92439efe368cb430e47525fe5c49b3e383316d5e2bac821f636ecc009870",
+    "exact_harness_match": true
+  },
+  "rebuild": {
+    "wheel_sha256": "085fc8312e53379d8b0bad002963748bdd8f2d51dff8c942b8ff78aa5b01d054",
+    "matches_historical_wheel": false,
+    "label": "candidate-source rebuild validation",
+    "build": "python -m pip wheel --no-deps --no-build-isolation --wheel-dir /tmp/institutional-resume/reproduction/wheels .",
+    "provisioning": "Existing setuptools/wheel; declared contracts build backend hatchling==1.32.0 provisioned after advisory check. Contracts README restored from exact immutable commit because archive export-ignore omitted it.",
+    "installation": "Fresh venv, pip install with declared dependencies and --find-links own contracts wheel; not registry-only or offline installation.",
+    "test_provisioning": "pytest==9.1.1 separately installed",
+    "external_command": "env -u PYTHONPATH -u PYTHONHOME PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -I -m pytest -c /dev/null -p no:cacheprovider --noconftest absolute-harness -q",
+    "tests": 40,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "exit": 0,
+    "pip_check": "No broken requirements found.",
+    "origins": {
+      "module_origin": "/tmp/institutional-resume/reproduction/venv/lib/python3.12/site-packages/codex/institutional/core.py",
+      "sys_path": [
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python312.zip",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12",
+        "/opt/hostedtoolcache/Python/3.12.10/x64/lib/python3.12/lib-dynload",
+        "/tmp/institutional-resume/reproduction/venv/lib/python3.12/site-packages"
+      ],
+      "resource_sha256": "d0b7b3d32b78e64cca9ad6906ef6214532df02958b79cb716f0ad9a012c462be",
+      "resource_version": "1",
+      "source_assistance": false
+    }
+  },
+  "failures": [
+    {
+      "operation": "First isolated declared dependency installation",
+      "exit": 1,
+      "result": "No matching distribution found for codex-contracts",
+      "correction": "Built declared local codex-contracts from same immutable candidate and supplied its wheel; second install succeeded."
+    }
+  ],
+  "independently_authored_tests": "NOT_RUN in historical reproduction; new iteration tests evaluate changed candidate separately.",
+  "independent_reproduction": "NOT_RUN",
+  "final_approval": "NOT_RUN",
+  "independence_basis": "Same implementation coordinator, original implementer-owned harness; delegating lane did not run reproduction. Different lane names do not establish independence.",
+  "retention": "Rebuilt wheels, exact historical harness, logs, origins and dependency freeze retained in iteration-002/reproduction; original wheel bytes remain unavailable.",
+  "artifact_digests": {
+    "build-provision.log": "dd928a22c3d60260585f43624f13240036ba503a6de6d9a02acb9c0b3aeb3753",
+    "build.log": "5cd6f8c30a6017a58c5c4107806f23c77ce69bc9e06b875f8134ec702467444d",
+    "harness/test_foundation.py": "314d92439efe368cb430e47525fe5c49b3e383316d5e2bac821f636ecc009870",
+    "import-origins.json": "971fe283de217b7c586b44409e921460b49edc10c35bfacbaf25744ba6178142",
+    "install-local-contracts.log": "2f547ed6bb859a636eac3c94fdff61a0e74613d1b408bd0689e1c35e7433e823",
+    "install.log": "0c45f359a4a62944f1d4a88cca0ce5091aef35499b74a3f52b567ac4e4e864ce",
+    "installed-requirements.txt": "3754b9f28b0bf6c17acdbff1916249616e206fbff8aafc1322f51e9b0426a641",
+    "junit.xml": "19561ac1e3edf975f688d184af1f1656d8f104e322fd903e2ee743723a86c00a",
+    "test-provision.log": "8fc617e6b479d43d0cc00adfc04a8d7b4f7b1d50aa7f0a5c78e25f57fb8e44f4",
+    "tests.log": "a3b9f5490b7c72b34f5e39fc877bcd4c0e781b88f49e3746996ce79a3734057b",
+    "wheels/codex_contracts-0.1.0a1-py3-none-any.whl": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+    "wheels/codex_ml-0.3.0-py3-none-any.whl": "085fc8312e53379d8b0bad002963748bdd8f2d51dff8c942b8ff78aa5b01d054"
+  }
+}

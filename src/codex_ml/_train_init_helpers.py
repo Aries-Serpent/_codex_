@@ -10,9 +10,20 @@ import logging
 import os
 import time
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Literal, Optional, TypedDict
 
 logger = logging.getLogger(__name__)
+
+_PrivacyFloatField = Literal["epsilon", "delta", "noise_multiplier", "max_grad_norm"]
+
+
+class _PrivacyKwargs(TypedDict, total=False):
+    enabled: bool
+    epsilon: float
+    delta: float
+    noise_multiplier: float
+    max_grad_norm: float
+    secure_rng: bool
 
 
 def setup_differential_privacy_config(dp_config: Any, env_prefix: str = "CODEX_DP_") -> Any:
@@ -52,13 +63,14 @@ def setup_differential_privacy_config(dp_config: Any, env_prefix: str = "CODEX_D
         return None
 
     # Build DP kwargs from environment
-    dp_kwargs: dict[str, bool | float] = {"enabled": True}
-    for field_name, env_name in (
+    dp_kwargs: _PrivacyKwargs = {"enabled": True}
+    env_fields: tuple[tuple[_PrivacyFloatField, str], ...] = (
         ("epsilon", f"{env_prefix}EPSILON"),
         ("delta", f"{env_prefix}DELTA"),
         ("noise_multiplier", f"{env_prefix}NOISE_MULTIPLIER"),
         ("max_grad_norm", f"{env_prefix}MAX_GRAD_NORM"),
-    ):
+    )
+    for field_name, env_name in env_fields:
         raw = os.getenv(env_name)
         if raw is None:
             continue
@@ -423,8 +435,7 @@ def setup_dataset_and_loader(
     Reduces complexity by extracting dataset initialization logic (15+ branches).
     """
     try:
-        from codex_ml.training.collate import _make_casting_collate
-        from codex_ml.training.toy_dataset import ToyDataset
+        from codex_ml.train_loop import ToyDataset, _make_casting_collate
         from torch.utils.data import DataLoader
     except ImportError:
         logger.debug("PyTorch or dataset utilities not available")
@@ -471,6 +482,7 @@ def _first_param_dtype(model: Any) -> Optional[str]:
             return str(param.dtype)
     except Exception:
         return None
+    return None
 
 
 def _select_parameters_for_optimization(model: Any) -> Any:
@@ -491,7 +503,7 @@ def setup_optimizer_with_dp(
     dtype_obj: Any,
     dp_settings: Any,
     train_loader: Any,
-) -> tuple[Any, Any]:
+) -> tuple[Any, Any, Any, Any]:
     """Setup optimizer and differential privacy engine.
 
     Args:
@@ -502,16 +514,16 @@ def setup_optimizer_with_dp(
         train_loader: DataLoader for training
 
     Returns:
-        (optimizer, privacy_engine) tuple
+        (model, optimizer, train_loader, privacy_engine) tuple
 
     Reduces complexity by extracting DP and optimizer setup (20+ branches).
     """
     try:
         import torch.optim as optim
-        from codex_ml.training.dp import make_private_model
+        from codex_ml.training.dp_config import make_private_model
     except ImportError:
         logger.debug("PyTorch optim or DP not available")
-        return None, None
+        return model, None, train_loader, None
 
     # Setup base optimizer
     optimizer = None
@@ -537,7 +549,7 @@ def setup_optimizer_with_dp(
                 logger.debug("Failed to check optimizer dtype compatibility: %s", e)
     except Exception as e:
         logger.warning("Failed to setup optimizer: %s", e)
-        return None, None
+        return model, None, train_loader, None
 
     # Setup differential privacy if requested
     privacy_engine = None
@@ -553,4 +565,4 @@ def setup_optimizer_with_dp(
             logger.warning("Failed to enable differential privacy: %s", exc)
             dp_settings = None
 
-    return optimizer, privacy_engine
+    return model, optimizer, train_loader, privacy_engine

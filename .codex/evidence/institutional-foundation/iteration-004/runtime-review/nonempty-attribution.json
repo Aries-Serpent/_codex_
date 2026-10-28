@@ -1,0 +1,72 @@
+[
+  {
+    "action": "block",
+    "actor": "same-platform:source-fixture-implementer",
+    "event_id": "f8e5a4c0-03b3-4fc9-88da-bbedeeaead17",
+    "identity": "unverified",
+    "plan_digest": "4c068e58f3ed29c6bb3073332b684d3e243fc2afe9d4828ceb09b29bcbbd7688",
+    "role": "implementer",
+    "run": "source-functional-fixture:00238006-33d6-4027-b868-cf95f1854e78",
+    "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0"
+  },
+  {
+    "action": "resume",
+    "actor": "same-platform:source-fixture-implementer",
+    "event_id": "c324e2ec-019b-4069-87aa-0c2fabe6c36a",
+    "identity": "unverified",
+    "plan_digest": "4c068e58f3ed29c6bb3073332b684d3e243fc2afe9d4828ceb09b29bcbbd7688",
+    "role": "implementer",
+    "run": "source-functional-fixture:00238006-33d6-4027-b868-cf95f1854e78",
+    "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0"
+  },
+  {
+    "action": "advance",
+    "actor": "same-platform:source-fixture-implementer",
+    "event_id": "40b60adc-9486-4066-b5ff-53e3ba3b130c",
+    "identity": "unverified",
+    "plan_digest": "4c068e58f3ed29c6bb3073332b684d3e243fc2afe9d4828ceb09b29bcbbd7688",
+    "role": "implementer",
+    "run": "source-functional-fixture:00238006-33d6-4027-b868-cf95f1854e78",
+    "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0"
+  },
+  {
+    "action": "block",
+    "actor": "same-platform:source-fixture-implementer",
+    "event_id": "0f95e7e1-2c5e-4546-b632-5ea96d483a1a",
+    "identity": "unverified",
+    "plan_digest": "4c068e58f3ed29c6bb3073332b684d3e243fc2afe9d4828ceb09b29bcbbd7688",
+    "role": "implementer",
+    "run": "source-functional-fixture:00238006-33d6-4027-b868-cf95f1854e78",
+    "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0"
+  },
+  {
+    "action": "resume",
+    "actor": "same-platform:source-fixture-implementer",
+    "event_id": "1bfa247d-0936-457d-bdb3-a0eaa8c9423e",
+    "identity": "unverified",
+    "plan_digest": "4c068e58f3ed29c6bb3073332b684d3e243fc2afe9d4828ceb09b29bcbbd7688",
+    "role": "implementer",
+    "run": "source-functional-fixture:00238006-33d6-4027-b868-cf95f1854e78",
+    "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0"
+  },
+  {
+    "action": "advance",
+    "actor": "same-platform:source-fixture-implementer",
+    "event_id": "f6de7c81-7906-4866-9f51-e365c95a1ffd",
+    "identity": "unverified",
+    "plan_digest": "4c068e58f3ed29c6bb3073332b684d3e243fc2afe9d4828ceb09b29bcbbd7688",
+    "role": "implementer",
+    "run": "source-functional-fixture:00238006-33d6-4027-b868-cf95f1854e78",
+    "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0"
+  },
+  {
+    "action": "block",
+    "actor": "same-platform:source-fixture-implementer",
+    "event_id": "a2fa8e99-1f10-4a48-9e44-937e63404f45",
+    "identity": "unverified",
+    "plan_digest": "4c068e58f3ed29c6bb3073332b684d3e243fc2afe9d4828ceb09b29bcbbd7688",
+    "role": "implementer",
+    "run": "source-functional-fixture:00238006-33d6-4027-b868-cf95f1854e78",
+    "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0"
+  }
+]

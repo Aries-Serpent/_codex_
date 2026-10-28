@@ -1,0 +1,83 @@
+{
+  "authority": "none",
+  "code_hygiene": "code-hygiene.json: final Black/isort/Ruff/mypy/compile PASS; pre-hygiene executed hashes preserved",
+  "created_at": "2026-10-25T03:12:37Z",
+  "files": {
+    "archive-member-manifest.json": {
+      "bytes": 4665911,
+      "sha256": "56b30872e5eba6cf008e8989f87971cc5e272f7e0c2360fc46de9d7233909024"
+    },
+    "candidate-binding-review.json": {
+      "bytes": 3324,
+      "sha256": "e2171299a52ad4f30bb2eddd77a74bc69c0b19df726473ea633029de783eb1b9"
+    },
+    "code-hygiene.json": {
+      "bytes": 9844,
+      "sha256": "6f7dce2a2d219f3cbea25a46f0d1f117a244f3a7e0b3c7f5d30bb1b06bf26b00"
+    },
+    "current-scope.json": {
+      "bytes": 94599,
+      "sha256": "c3e84cc70ca6a36bc1ad121c40ba98a56feafb214f83a8cafd07baf2a180111a"
+    },
+    "findings-redacted.json": {
+      "bytes": 19745,
+      "sha256": "4d79f1819ec7112be657e1fabf9584d72660b0a34be97b7e1304a7356934b731"
+    },
+    "inspect_archives.py": {
+      "bytes": 10521,
+      "sha256": "98e4ccea27b1991a22cf688fbcf1c1e1c8e30648bae12996e06bd6663eb7b773"
+    },
+    "owned-artifact-secret-scan.json": {
+      "bytes": 4877,
+      "sha256": "33532f320eddc862e967a97d194b57977d6b80cfe81bd8bec94cbbe25576c1d5"
+    },
+    "raw-output-secret-safe.json": {
+      "bytes": 1333,
+      "sha256": "58f1c26d79ea1c689298fef1e15ba93ad71ac36cf14f4b03eec214adab5fa04a"
+    },
+    "retention-aggregate.json": {
+      "bytes": 184481,
+      "sha256": "9cd827b5c485a484dd507f925a8b8fd2d46fbebe6db8588655509b19b08ae6c9"
+    },
+    "runtime-root-scan.json": {
+      "bytes": 1286,
+      "sha256": "bf5c03c948a09fc8acc66b1efb1e0ee457fc6ee4f7574070f12db6f3d8d7233a"
+    },
+    "scan-result.json": {
+      "bytes": 7876,
+      "sha256": "db668c88c88c223aee2af2f30838571ebe918940632254b2c2cc885b135c116b"
+    },
+    "three-source-static-triage.json": {
+      "bytes": 10767,
+      "sha256": "fe156d67b143942d64160f7edb79a668b813451b5f39dd4c042e6c176a2abe1f"
+    },
+    "triage-redacted.json": {
+      "bytes": 27112,
+      "sha256": "5a91884728e06451a93bf9556bbc9426b321dee8fb0f0c5a3f0a11d1ff03fcfe"
+    },
+    "triage-summary.json": {
+      "bytes": 998,
+      "sha256": "80c5d6be09a92ec7391e464ac562041cd7a3669737b019067f2025e307628da9"
+    },
+    "triage_findings.py": {
+      "bytes": 6042,
+      "sha256": "21181d75d276c352b504344e8002905e0feb26cbfceaa849bf4a5d87c53b7884"
+    }
+  },
+  "historical_missing_count": 151,
+  "historical_reused_count": 260,
+  "latest_three_source_triage": "three-source-static-triage.json",
+  "owned_artifact_scan": "owned-artifact-secret-scan.json: 15 exact current owned files; final receipt and refreshed manifest separately submitted",
+  "post_scan_source_bindings_rechecked": 276,
+  "retention_aggregate": "retention-aggregate.json",
+  "retention_status": "RD6-04 PARTIAL_FAIL_MISSING_DURABLE_RETENTION",
+  "runtime_root_text_count": 5,
+  "schema": "codex.security.retained-manifest.v1",
+  "scope": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/security",
+  "self_excluded": true,
+  "status": "SUSPECTED_FINDINGS_REQUIRE_SECURITY_OWNER_TRIAGE",
+  "suspected_finding_count": 73,
+  "suspected_unique_contents": 12,
+  "triage_status": "Two targeted findings explained structurally; one synthetic-looking targeted hex constant still owner-review. Ten additional prior unresolved findings remain outside targeted pass.",
+  "unsupported_member_count": 0
+}

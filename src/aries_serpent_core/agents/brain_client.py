@@ -81,16 +81,19 @@ CODEX_BACKUP_KEY       Fallback bearer token (used if CODEX_MASTER_KEY is absent
 from __future__ import annotations
 
 import json
+import logging
 import os
 import urllib.error
 import urllib.parse
 import urllib.request
+from http.client import HTTPResponse
 from typing import Any, Optional
 
-from scripts.ci._token_resolver import get_token
+from scripts.ci._token_resolver import TokenResolutionError, get_token
 
 # ── Default server URL ────────────────────────────────────────────────────────
 _DEFAULT_URL = "http://localhost:8765"
+logger = logging.getLogger(__name__)
 
 
 class BrainClientError(RuntimeError):
@@ -167,7 +170,7 @@ class BrainClient:
     # ── Internal helpers ──────────────────────────────────────────────────────
 
     @staticmethod
-    def _safe_urlopen(req: urllib.request.Request, timeout: int) -> None:
+    def _safe_urlopen(req: urllib.request.Request, timeout: int) -> HTTPResponse:
         """Validate the request URL scheme is http/https then call urlopen.
 
         Bandit B310: urllib.request.urlopen is flagged when the URL scheme is
@@ -197,14 +200,23 @@ class BrainClient:
         All four are exported to ``GITHUB_ENV`` by the
         "🔑 Export Auth Tokens" step in ``copilot-setup-steps.yml``.
         See ``docs/agent/COPILOT_TOKEN_GUIDE.md`` for the full reference.
+
+        The local server enforces endpoint authorization. Requests without
+        credentials can still check health and receive its HTTP auth errors.
         """
-        token = (
-            get_token(required_elevated=True)[0]
-            or get_token(required_elevated=True)[0]
-            or os.environ.get("AGENT_GITHUB_TOKEN")
-            or os.environ.get("GITHUB_TOKEN")
-            or ""
-        ).strip()
+        try:
+            token = (get_token(required_elevated=True)[0] or "").strip()
+        except TokenResolutionError:
+            token = next(
+                (
+                    value
+                    for name in ("AGENT_GITHUB_TOKEN", "GITHUB_TOKEN")
+                    if (value := os.environ.get(name, "").strip())
+                ),
+                "",
+            )
+        if not token:
+            logger.debug("No configured BrainClient credentials; server authorization applies")
         return {"Authorization": f"Bearer {token}"} if token else {}
 
     def _get(self, path: str, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
@@ -215,7 +227,7 @@ class BrainClient:
         headers.update(self._auth_header())
         req = urllib.request.Request(url, headers=headers)
         try:
-            with self._safe_urlopen(req, timeout=self.timeout) as resp:  # type: ignore[attr-defined]
+            with self._safe_urlopen(req, timeout=self.timeout) as resp:
                 return json.loads(resp.read().decode())
         except urllib.error.HTTPError as exc:
             raise BrainClientError(f"GET {path} failed: HTTP {exc.code}") from exc
@@ -233,7 +245,7 @@ class BrainClient:
             headers.update(extra_headers)
         req = urllib.request.Request(url, data=data, headers=headers, method="POST")
         try:
-            with self._safe_urlopen(req, timeout=self.timeout) as resp:  # type: ignore[attr-defined]
+            with self._safe_urlopen(req, timeout=self.timeout) as resp:
                 return json.loads(resp.read().decode())
         except urllib.error.HTTPError as exc:
             body_text = exc.read().decode(errors="replace")
@@ -247,7 +259,7 @@ class BrainClient:
         headers.update(self._auth_header())
         req = urllib.request.Request(url, headers=headers, method="DELETE")
         try:
-            with self._safe_urlopen(req, timeout=self.timeout) as resp:  # type: ignore[attr-defined]
+            with self._safe_urlopen(req, timeout=self.timeout) as resp:
                 return json.loads(resp.read().decode())
         except urllib.error.HTTPError as exc:
             raise BrainClientError(f"DELETE {path} failed: HTTP {exc.code}") from exc

@@ -1,0 +1,406 @@
+{
+  "namespace": "codex.institutional.evidence/iteration-002",
+  "source_candidate": "22a75dda20c14ccf0753bfde6d7d72e9b1268397",
+  "collected_at": "2026-10-24T21:45:37Z",
+  "artifact_count": 49,
+  "artifacts": [
+    {
+      "path": "checkpoint-validation.json",
+      "sha256": "c468d466d63dd592e547f5aef7f02adb9357387958701514110d48f06218b700",
+      "bytes": 1891,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "continuation.json.gz",
+      "sha256": "a06f9ae29244c092f85e6f4e411cf2f0a8068efdd908b0eeec51403e0eaf4677",
+      "bytes": 2626369,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/build.log",
+      "sha256": "a21bf00be19334c151f7c83ef9c434b11716e667f915e20ac6add072a9369b5a",
+      "bytes": 620,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/codex_ml-0.3.0-py3-none-any.whl",
+      "sha256": "de5d8791451bd3ac713f944bf3c0543db20e662f17ca976d413b4c2b071a5930",
+      "bytes": 4213929,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/console-authority.json",
+      "sha256": "2ebb96c03df296f68c784c6d93edbd1030bca8cb788c1cb1ede4a11e16d933a4",
+      "bytes": 873,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/console-candidate.json",
+      "sha256": "0339c5a3b0f2be389366c7a33053c6d440ff1e7d1936903918535c0d63589429",
+      "bytes": 10139,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/import-origins.json",
+      "sha256": "97bd9eb0c1d4ef280b4476ffe19fdc6ae9f81358ce6e938765ee74d9e7a64313",
+      "bytes": 563,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/install.log",
+      "sha256": "7925e1125ed2b548eb44ef98aaa7dc05a86fc195c3ccebdbd22868dac2deca61",
+      "bytes": 12430,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/installed-requirements.txt",
+      "sha256": "187b0f530f503586c9731a203a1ab194b35e9b2393d117113748bf1798b5707d",
+      "bytes": 1153,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/junit.xml",
+      "sha256": "fb349eefb0f585d97be19a90927e8ae747c517913b4003fee0efc16f20e5c211",
+      "bytes": 9444,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/offline-junit.xml",
+      "sha256": "63a89dc0325048df9c3f55b0af5d8d49aa2612b9ebeb0064d99553b0b6e6bc4b",
+      "bytes": 9444,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/offline-tests.log",
+      "sha256": "2c55d7c182f3582fd61fe02fa546eb3d70592752ebcbc66240212e6523526d9b",
+      "bytes": 179,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/test-provision.log",
+      "sha256": "81be7df5d058880448ffc35e55c00d3ac4c18e1745c57e654ffccb08f935b17c",
+      "bytes": 1008,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/test_authority.py.txt",
+      "sha256": "f841b4bf131dc9d250c1d5fd444de7c838f33e6d5a388e39fa73a34326a5544d",
+      "bytes": 8067,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/test_foundation.py.txt",
+      "sha256": "f6d5bd11cc4049ba92e47f0fc900d98f2ca97f3d433b3364228785b053f2984b",
+      "bytes": 20404,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/test_git_capture.py.txt",
+      "sha256": "030a7150c88ab50eb3db29acc5f47bd6f1ccf47fbd88150dd60715cd9c2425e4",
+      "bytes": 3446,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/tests.log",
+      "sha256": "f62898ae73297ddca3fd75bcb91993026830ee6a9305c3502f68fdf17ae9a1e2",
+      "bytes": 179,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "current/wheel-contents.json",
+      "sha256": "44df465e25fdd2fa04decf29546608031f3ae7dc04126d13549f780f6abb12e4",
+      "bytes": 322861,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "experience.json",
+      "sha256": "1d3b657fdad55c08a72460f8b992015ebdbd57102cfb14d119497cb96bf103fe",
+      "bytes": 4513,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "preflight.json",
+      "sha256": "4c3c1011d2242688bbcface0857ff9b278371c72141127d036996d0cdf74585b",
+      "bytes": 5390,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "raw-agent-investigation.json",
+      "sha256": "e4ed797bddf431fc5b2386f2cb501e418960d493b7078719217056486c4c38d8",
+      "bytes": 16564,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "raw-agent-summary.txt",
+      "sha256": "338c9c00e744303f3c9d674f29dd617d5ec07ca967bcddeddcdf05540b895750",
+      "bytes": 15364,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "reproduction/build-provision.log",
+      "sha256": "dd928a22c3d60260585f43624f13240036ba503a6de6d9a02acb9c0b3aeb3753",
+      "bytes": 1048,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "reproduction/build.log",
+      "sha256": "5cd6f8c30a6017a58c5c4107806f23c77ce69bc9e06b875f8134ec702467444d",
+      "bytes": 1298,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "reproduction/codex_contracts-0.1.0a1-py3-none-any.whl",
+      "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+      "bytes": 9381,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "reproduction/codex_ml-0.3.0-py3-none-any.whl",
+      "sha256": "085fc8312e53379d8b0bad002963748bdd8f2d51dff8c942b8ff78aa5b01d054",
+      "bytes": 4210349,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "reproduction/historical-harness.py.txt",
+      "sha256": "314d92439efe368cb430e47525fe5c49b3e383316d5e2bac821f636ecc009870",
+      "bytes": 20454,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "reproduction/import-origins.json",
+      "sha256": "971fe283de217b7c586b44409e921460b49edc10c35bfacbaf25744ba6178142",
+      "bytes": 573,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "reproduction/install-local-contracts.log",
+      "sha256": "2f547ed6bb859a636eac3c94fdff61a0e74613d1b408bd0689e1c35e7433e823",
+      "bytes": 12445,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "reproduction/install.log",
+      "sha256": "0c45f359a4a62944f1d4a88cca0ce5091aef35499b74a3f52b567ac4e4e864ce",
+      "bytes": 656,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "reproduction/installed-requirements.txt",
+      "sha256": "3754b9f28b0bf6c17acdbff1916249616e206fbff8aafc1322f51e9b0426a641",
+      "bytes": 1158,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "reproduction/junit.xml",
+      "sha256": "19561ac1e3edf975f688d184af1f1656d8f104e322fd903e2ee743723a86c00a",
+      "bytes": 4350,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "reproduction/test-provision.log",
+      "sha256": "8fc617e6b479d43d0cc00adfc04a8d7b4f7b1d50aa7f0a5c78e25f57fb8e44f4",
+      "bytes": 1018,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "reproduction/tests.log",
+      "sha256": "a3b9f5490b7c72b34f5e39fc877bcd4c0e781b88f49e3746996ce79a3734057b",
+      "bytes": 99,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "reproduction/wheel-contents.json",
+      "sha256": "94e23922acf3963fa9165bfe510cb0aab409c2ba3c20f2794384c25c024fc11c",
+      "bytes": 322530,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "reproduction.json",
+      "sha256": "afa313144385d0285505233576046e3f2ee12b692bfb5cf5f95d4ae24f61c99a",
+      "bytes": 4645,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "security.json",
+      "sha256": "b8d9db4a3f386072d4d00167a06182edce2a3e0d5e02fe46bce622ab181472aa",
+      "bytes": 4418,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "semantic-cohort.json",
+      "sha256": "5d3c14aa8c387ef45b717f263ae610c7bece3bc05b28864f8e2d5d458f2592e0",
+      "bytes": 25912,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "source/bandit.json",
+      "sha256": "ac24df0570f47deb786b7be2b314fa761eeaf2be76ef4e7325a4d3c675039d30",
+      "bytes": 5663,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "source/bandit.log",
+      "sha256": "5f40d89b89532df441a23d6f504c0dc22ecae9d6662fa349f542bfc74ae84b05",
+      "bytes": 231,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "source/coverage.json",
+      "sha256": "9076ab6dc13f34e0c19981eca9be1cc66d793e6718af2b408da327ad64037120",
+      "bytes": 53472,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "source/final-checks.log",
+      "sha256": "837583c1bf1ac9ddefcc4c5fdd8d96883530d789c1845e31223d10127278d7dd",
+      "bytes": 280,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "source/packaging-junit.xml",
+      "sha256": "3af942dcc85410857236749de49704dcd5eff568f01eca7f8ff3d51f56a4de5f",
+      "bytes": 996,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "source/source-junit-before-utc-fix.xml",
+      "sha256": "29ea424c3d8afc77dba0dc890aa128cd65792abfbd0710bab483f54e0b05f0df",
+      "bytes": 10708,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "source/source-junit.xml",
+      "sha256": "9590165b69439ec2dad9d04264642b7ffac55304b79bcafb7cb6c2c9155c6984",
+      "bytes": 10984,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "source/source-tests-before-utc-fix.log",
+      "sha256": "44438f634b3266413404fad55fa1adddaed0893545db789b40c282d898e66dbc",
+      "bytes": 1409,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "source/source-tests.log",
+      "sha256": "bc123226c02b1a7930d92bf1e79816f4733e0ff0811f2b54265639f0a70dd338",
+      "bytes": 1400,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "validation.json",
+      "sha256": "816268b7b50f32c590f5d31e46ada036baf1a3650ff9206aa42794381e53b4ed",
+      "bytes": 5603,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    },
+    {
+      "path": "wheel-validation.json",
+      "sha256": "95bd79c6ede22126ff67e18360ac1ac3081c9b2f4edf99436310bdd8a68df2b8",
+      "bytes": 3759,
+      "classification": "Repository-Internal",
+      "classification_basis": "Repository source/build diagnostics, own candidate distributions or disposable test-fixture records retained for assigned implementation; no public disclosure authorization inferred.",
+      "assessor": "coordinator (unverified identity)"
+    }
+  ],
+  "exclusions": [
+    "This manifest excludes itself to avoid a self-referential checksum.",
+    "Disposable build trees, virtualenvs, caches and fixture namespace internals are not unique evidence; exact candidate commits, harnesses, own wheels, logs and freeze are retained."
+  ],
+  "trust_limits": "Checksums detect divergence, not authenticated origin, approval or immutable retention. Git commit storage is the authorized task retention channel; no external package publication.",
+  "temporary_cleanup": "Only /tmp/institutional-resume task-owned disposable work is removed after verified retention and final checks; unrelated /tmp files are not touched."
+}

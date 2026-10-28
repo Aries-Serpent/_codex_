@@ -23,6 +23,7 @@ from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
 from enum import Enum  # noqa: E402
+from types import ModuleType  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
 try:
@@ -35,15 +36,18 @@ except ImportError:
 
     # Minimal stub so code guarded by NUMPY_AVAILABLE can still
     # work when the guard is patched to True in tests.
-    class _NpStubDev:  # type: ignore[no-redef]
+    class _NpStubDev(ModuleType):
         """Lightweight numpy stand-in for developer_orchestrator."""
+
+        def __init__(self) -> None:
+            super().__init__("numpy")
 
         @staticmethod
         def array(obj: Any, *a: Any, **kw: Any) -> Any:
             _ = (a, kw)
             return obj
 
-    np = _NpStubDev()  # type: ignore[assignment]
+    np = _NpStubDev()
 
 try:
     from agents.advanced_physics_calculators import (
@@ -176,6 +180,13 @@ class PhysicsGuidedDeveloperOrchestrator:
     """
 
     def __init__(self, session_id: Optional[str] = None, app_type: Optional["AppType"] = None):
+        """Start a development session with no requirements or components.
+
+        ``session_id`` labels log messages and defaults to ``dev_orchestrator``.
+        ``app_type`` is the initial application category; requirement analysis
+        subsequently chooses it from the supplied request. Advanced physics
+        engines are instantiated only when their optional import succeeded.
+        """
         self.app_type: Optional[AppType] = app_type
         # requirements is a mutable list; required_variables is a derived dict view kept in sync
         self._requirements: list[RequirementVariable] = []
@@ -266,19 +277,22 @@ class PhysicsGuidedDeveloperOrchestrator:
                 suggestions = var_obj.suggest_from_chaos(self.physics_orchestrator.chaos)
                 self.suggestions_cache[var_name] = suggestions
 
-        analysis = {
+        missing_variables: list[dict[str, object]] = []
+        variable_suggestions: dict[str, list[object]] = {}
+        completeness = (
+            len(provided_vars) / len(self.required_variables) if self.required_variables else 0
+        )
+        analysis: dict[str, object] = {
             "app_type": self.app_type.value,
             "provided_variables": list(provided_vars),
-            "missing_variables": [],
-            "suggestions": {},
-            "completeness": (
-                len(provided_vars) / len(self.required_variables) if self.required_variables else 0
-            ),
+            "missing_variables": missing_variables,
+            "suggestions": variable_suggestions,
+            "completeness": completeness,
         }
 
         # Format missing variables with suggestions
         for var_name, var_obj in missing_vars.items():
-            var_info = {
+            var_info: dict[str, object] = {
                 "name": var_name,
                 "description": var_obj.description,
                 "type": var_obj.variable_type,
@@ -291,10 +305,10 @@ class PhysicsGuidedDeveloperOrchestrator:
             if suggestions:
                 var_info["suggested_options"] = suggestions[:5]  # Top 5
 
-            analysis["missing_variables"].append(var_info)
-            analysis["suggestions"][var_name] = suggestions[:5] if suggestions else []
+            missing_variables.append(var_info)
+            variable_suggestions[var_name] = suggestions[:5] if suggestions else []
 
-        self._log("system", f"Completeness: {analysis['completeness'] * 100:.1f}%")
+        self._log("system", f"Completeness: {completeness * 100:.1f}%")
         self._log("system", f"Provided: {len(provided_vars)} variables")
         self._log("system", f"Missing: {len(missing_vars)} variables")
 
@@ -553,7 +567,7 @@ class PhysicsGuidedDeveloperOrchestrator:
                 'utils.py': {}
             }
         """
-        tree = {}
+        tree: dict[str, dict[str, dict[str, object]]] = {}
 
         for comp in components:
             tree[comp.name] = {dep: {} for dep in comp.dependencies}
@@ -618,7 +632,11 @@ class PhysicsGuidedDeveloperOrchestrator:
             else:
                 return self._generate_generic_code(specifications or {})
 
-        if isinstance(component_id, str) and "app_name" in (specifications or {}):
+        if (
+            isinstance(component_id, str)
+            and specifications is not None
+            and "app_name" in specifications
+        ):
             return self._generate_app_from_specs(specifications)
 
         # Find component in list by component_id or name
@@ -928,7 +946,14 @@ def test_main_imports():
         """
         import ast
 
-        result = {"valid": True, "errors": [], "warnings": [], "component_id": component_id}
+        errors: list[str] = []
+        warnings: list[str] = []
+        result: dict[str, object] = {
+            "valid": True,
+            "errors": errors,
+            "warnings": warnings,
+            "component_id": component_id,
+        }
 
         # Syntax validation
         try:
@@ -937,18 +962,18 @@ def test_main_imports():
         except SyntaxError as e:
             logger.debug(f"SyntaxError: {e}")
             result["valid"] = False
-            result["errors"].append(f"Syntax error at line {e.lineno}: {e.msg}")
+            errors.append(f"Syntax error at line {e.lineno}: {e.msg}")
             self._log("system", f"Syntax error in {component_id or 'component'}: {e}")
 
         # Basic quality checks
         if len(code.strip()) < 10:
-            result["warnings"].append("Code is very short, may be incomplete")
+            warnings.append("Code is very short, may be incomplete")
 
         if "TODO" in code or "FIXME" in code:
-            result["warnings"].append("Code contains TODO/FIXME markers")
+            warnings.append("Code contains TODO/FIXME markers")
 
         if "\t" in code:
-            result["warnings"].append("Code uses tabs instead of spaces")
+            warnings.append("Code uses tabs instead of spaces")
 
         return result
 
@@ -1006,16 +1031,27 @@ def test_main_imports():
                             If None, executes standard workflow.
 
         Returns:
-            Workflow execution results
+            Workflow execution results. ``outputs["implementation"]`` reports
+            generated component and newline counts; TESTING validates the code
+            stored on each component. Unknown steps are recorded in
+            ``steps_failed`` without preventing subsequent steps from running.
+
+        Example:
+            After populating ``components``, call
+            ``execute_workflow(["IMPLEMENTATION", "TESTING"])`` to generate and
+            syntax-check them using their component IDs (or names if unset).
         """
         if workflow_steps is None:
             workflow_steps = ["REQUIREMENTS", "ARCHITECTURE", "IMPLEMENTATION", "TESTING"]
 
-        results = {
-            "steps_completed": [],
-            "steps_failed": [],
+        steps_completed: list[str] = []
+        steps_failed: list[str] = []
+        outputs: dict[str, object] = {}
+        results: dict[str, object] = {
+            "steps_completed": steps_completed,
+            "steps_failed": steps_failed,
             "current_phase": self.current_phase.value,
-            "outputs": {},
+            "outputs": outputs,
         }
 
         for step in workflow_steps:
@@ -1025,7 +1061,7 @@ def test_main_imports():
                 if step_upper == "REQUIREMENTS":
                     self.current_phase = DevelopmentPhase.REQUIREMENTS
                     # Requirements already analyzed if variables are set
-                    results["outputs"]["requirements"] = {
+                    outputs["requirements"] = {
                         "completeness": (
                             sum(1 for v in self.required_variables.values() if v.is_satisfied())
                             / len(self.required_variables)
@@ -1033,7 +1069,7 @@ def test_main_imports():
                             else 0
                         )
                     }
-                    results["steps_completed"].append(step)
+                    steps_completed.append(step)
 
                 elif step_upper == "ARCHITECTURE":
                     self.current_phase = DevelopmentPhase.ARCHITECTURE
@@ -1044,23 +1080,24 @@ def test_main_imports():
                         if var.current_value is not None
                     }
                     arch = self.suggest_architecture(requirements)
-                    results["outputs"]["architecture"] = arch
-                    results["steps_completed"].append(step)
+                    outputs["architecture"] = arch
+                    steps_completed.append(step)
 
                 elif step_upper == "IMPLEMENTATION":
                     self.current_phase = DevelopmentPhase.IMPLEMENTATION
                     # Generate code for all components
-                    generated = {}
-                    for comp_id in self.components:
-                        code = self.generate_code(comp_id)
-                        generated[comp_id] = len(code)
-                    results["outputs"]["implementation"] = {
+                    generated: dict[str, str] = {}
+                    for component in self.components:
+                        component_key = component.component_id or component.name
+                        code = self.generate_code(component_key)
+                        generated[component_key] = code
+                    outputs["implementation"] = {
                         "components_generated": len(generated),
                         "total_lines": (
                             sum(c.count("\n") for c in generated.values()) if generated else 0
                         ),
                     }
-                    results["steps_completed"].append(step)
+                    steps_completed.append(step)
 
                 elif step_upper == "TESTING":
                     self.current_phase = DevelopmentPhase.TESTING
@@ -1071,24 +1108,24 @@ def test_main_imports():
                         if comp.code:
                             validation = self.validate_code(comp.code, comp_id)
                             validations[comp_id] = validation["valid"]
-                    results["outputs"]["testing"] = {
+                    outputs["testing"] = {
                         "components_validated": len(validations),
                         "all_valid": all(validations.values()) if validations else False,
                     }
-                    results["steps_completed"].append(step)
+                    steps_completed.append(step)
 
                 else:
-                    results["steps_failed"].append(f"Unknown step: {step}")
+                    steps_failed.append(f"Unknown step: {step}")
 
             except Exception as e:
                 logger.debug(f"Exception: {e}")
-                results["steps_failed"].append(f"{step}: {e!s}")
+                steps_failed.append(f"{step}: {e!s}")
                 self._log("system", f"Workflow step {step} failed: {e}")
 
-        results["success"] = len(results["steps_failed"]) == 0
+        results["success"] = len(steps_failed) == 0
         results["final_phase"] = self.current_phase.value
 
-        self._log("system", f"Workflow complete: {len(results['steps_completed'])} steps")
+        self._log("system", f"Workflow complete: {len(steps_completed)} steps")
         return results
 
 

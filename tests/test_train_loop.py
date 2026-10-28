@@ -155,43 +155,66 @@ def test_ts_format():
 
 
 def test_cli_parsing_smoke(monkeypatch, tmp_path, capsys):
-    """
-    Smoke test for CLI argument parsing and main execution flow.
-    """
+    """A registered CLI model is instantiated and training artifacts are written."""
     from codex_ml import train_loop
+    from codex_ml.logging.session_logger import SessionLogger
+    from codex_ml.models import registry as models
+    from codex_ml.registry.base import Registry
 
-    # Change to tmp directory to avoid polluting the real workspace
     monkeypatch.chdir(tmp_path)
+    artifacts = tmp_path / "metrics"
+    session_logger = SessionLogger("cli-model-smoke", tmp_path / "sessions")
+    monkeypatch.setattr(train_loop, "get_session_logger", lambda: session_logger)
+    built_configs = []
+    outcomes = []
 
-    # Backup original sys.argv
-    argv_backup = sys.argv[:]
-    try:
-        # Set up test CLI arguments
-        sys.argv = ["prog", "--model-name", "test-tiny-model", "--epochs", "1", "--grad-accum", "2"]
+    class TinyModel:
+        def to(self, *args, **kwargs):
+            return self
 
-        # Execute main function
-        train_loop.main()
+        def train(self):
+            return None
 
-        # Verify metrics were recorded
-        metrics_file = tmp_path / "metrics.json"
-        if metrics_file.exists():
-            data = json.loads(metrics_file.read_text(encoding="utf-8"))
-            # Look for gradient accumulation setting in the recorded metrics
-            found_grad_accum = False
-            for entry in data:
-                if "grad_accum" in entry.get("metrics", {}):
-                    assert entry["metrics"]["grad_accum"] == 2, "Condition must be true"
-                    found_grad_accum = True
-                    break
+        def parameters(self):
+            return []
 
-            if found_grad_accum:
-                # Verify NDJSON was also created
-                ndjson_file = tmp_path / "metrics.ndjson"
-                assert ndjson_file.exists(), "NDJSON metrics file should be created"
+    def build_model(config):
+        built_configs.append(config)
+        return TinyModel()
 
-    finally:
-        # Always restore original argv
-        sys.argv = argv_backup
+    local_models = Registry("cli-test-model")
+    local_models.register("test-tiny-model", build_model)
+    monkeypatch.setattr(models, "model_registry", local_models)
+    monkeypatch.setattr(train_loop, "instantiate_model", models.get_model)
+    original_training = train_loop.run_training
+
+    def record_training(**kwargs):
+        result = original_training(**kwargs)
+        outcomes.append(result)
+        return result
+
+    monkeypatch.setattr(train_loop, "run_training", record_training)
+    train_loop.main(
+        [
+            "--model-name",
+            "test-tiny-model",
+            "--epochs",
+            "1",
+            "--grad-accum",
+            "2",
+            "--art-dir",
+            str(artifacts),
+        ]
+    )
+
+    assert len(built_configs) == 1
+    assert len(outcomes) == 1
+    assert outcomes[0]["grad_accum"] == 2
+    assert outcomes[0]["internal_model_created"] is True
+    data = json.loads((artifacts / "metrics.json").read_text(encoding="utf-8"))
+    assert {"epoch_end", "best_checkpoint"} <= {entry["phase"] for entry in data}
+    assert (artifacts / "metrics.ndjson").exists()
+    assert session_logger.session_file.exists()
 
 
 def test_empty_dataset_path(monkeypatch):

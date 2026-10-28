@@ -16,7 +16,7 @@ from pathlib import Path as _ImportHookPath
 class _CanonicalPackageFinder(importlib.abc.MetaPathFinder):
     """Prefer repo src packages even when test files inject scripts/tests onto sys.path."""
 
-    _CANONICAL_NAMES = {"agents", "deploy", "services", "tools", "training", "utils"}
+    _CANONICAL_NAMES = {"agents", "codex_ml", "deploy", "services", "tools", "training", "utils"}
 
     def find_spec(self, fullname, path=None, target=None):
         if fullname not in self._CANONICAL_NAMES:
@@ -152,9 +152,11 @@ except (ImportError, ModuleNotFoundError):
 # Import determinism bootstrap early to ensure deterministic test execution
 try:
     import importlib as _importlib
-    _importlib.import_module('tests._bootstrap_determinism')
+
+    _importlib.import_module("tests._bootstrap_determinism")
 except (ImportError, ModuleNotFoundError, AttributeError):
     pass  # Bootstrap may not be available in all test environments
+
 
 # Respect existing user setting; default to disabling plugin autoload for determinism.
 # Keep autoload enabled when the caller explicitly requests xdist so worker processes
@@ -237,7 +239,11 @@ for _legacy_name in ("agents", "deploy", "services", "tools", "training", "utils
     if _mod is None:
         continue
     _origin = getattr(_mod, "__file__", "") or ""
-    if _origin and not _origin.startswith(str(_SRC_DIR)) and not _origin.startswith(str(_PROJECT_ROOT)):
+    if (
+        _origin
+        and not _origin.startswith(str(_SRC_DIR))
+        and not _origin.startswith(str(_PROJECT_ROOT))
+    ):
         for _key in list(_sys.modules):
             if _key == _legacy_name or _key.startswith(f"{_legacy_name}."):
                 _sys.modules.pop(_key, None)
@@ -264,14 +270,11 @@ _os.environ.setdefault("TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD", "1")
 def _ensure_project_cwd():
     """Guarantee each test executes from the repository root."""
 
-    prev = _Path.cwd()
-    if prev != _PROJECT_ROOT:
-        _os.chdir(_PROJECT_ROOT)
+    _os.chdir(_PROJECT_ROOT)
     try:
         yield
     finally:
-        if _Path.cwd() != _PROJECT_ROOT:
-            _os.chdir(_PROJECT_ROOT)
+        _os.chdir(_PROJECT_ROOT)
 
 
 @pytest.fixture(autouse=True)
@@ -409,6 +412,7 @@ def _fix_torch_stubs_for_cli_tests():
     # Try to replace stub with real torch
     try:
         from pathlib import Path
+
         site_packages = (
             Path(sys.executable).resolve().parent.parent
             / f"lib/python{sys.version_info.major}.{sys.version_info.minor}/site-packages"
@@ -538,6 +542,7 @@ def pytest_collect_file(file_path: pathlib.Path, parent):  # type: ignore[overri
 
     return None
 
+
 def pytest_ignore_collect(collection_path: pathlib.Path, config):  # type: ignore[override]
     # Skip P19 shadow import affected files
     _P19_SHADOW_IMPORT_AFFECTED = [
@@ -573,8 +578,13 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     # Auto-mark tests as slow based on patterns
     slow_marker = pytest.mark.slow
     slow_patterns = [
-        "docker", "deployment", "comprehensive", "e2e",
-        "phase", "batch", "dataset",
+        "docker",
+        "deployment",
+        "comprehensive",
+        "e2e",
+        "phase",
+        "batch",
+        "dataset",
     ]
 
     for item in items:
@@ -672,7 +682,9 @@ def pytest_runtest_logreport(report: pytest.TestReport) -> None:  # type: ignore
             pass  # best-effort
 
 
-def pytest_terminal_summary(terminalreporter: object, exitstatus: int, config: pytest.Config) -> None:
+def pytest_terminal_summary(
+    terminalreporter: object, exitstatus: int, config: pytest.Config
+) -> None:
     """Print HF skip summary so the coverage gap is always visible."""
     if _hf_skip_count:
         terminalreporter.write_sep(  # type: ignore[attr-defined]
@@ -697,7 +709,10 @@ _src = _Path(__file__).parent / "src"
 # This handles top-level modules in src/
 # Note: We only register modules that don't have complex dependencies
 _safe_modules = [
-    "utils", "common", "config", "aries_serpent_core",
+    "utils",
+    "common",
+    "config",
+    "aries_serpent_core",
 ]
 
 for _mod in _safe_modules:

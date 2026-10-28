@@ -15,9 +15,13 @@ _target = importlib.import_module("aries_serpent_core.rag")
 # Ensure legacy imports resolve to the same module object as the active
 # implementation so monkeypatching `codex.rag.*` affects the live runtime.
 sys.modules[__name__] = _target
-__doc__ = _target.__doc__
-__package__ = getattr(_target, "__package__", __name__.split(".")[0])
-__spec__ = getattr(_target, "__spec__", None)
+# Module metadata may legitimately be None (for example during reload). Copy it
+# as metadata rather than treating these interpreter globals as non-null locals.
+globals().update(
+    __doc__=_target.__doc__,
+    __package__=getattr(_target, "__package__", __name__.split(".")[0]),
+    __spec__=getattr(_target, "__spec__", None),
+)
 __all__ = list(getattr(_target, "__all__", []))
 __path__ = list(getattr(_target, "__path__", []))
 

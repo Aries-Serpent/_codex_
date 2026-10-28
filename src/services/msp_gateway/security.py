@@ -11,13 +11,13 @@ from typing import Optional
 
 import yaml
 
-from src.utils.log_sanitizer import sanitize_log_input
+from utils.log_sanitizer import sanitize_log_input
 
 from .config import settings
 
 logger = logging.getLogger(__name__)
 
-_API_KEY_HASH_PREFIX = "pbkdf2_sha256$"
+_API_KEY_HASH_PREFIX = "pbkdf2_sha256$"  # pragma: allowlist secret -- public hash-format marker
 _API_KEY_HASH_ITERATIONS = 200_000
 
 

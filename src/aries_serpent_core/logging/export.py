@@ -2,21 +2,22 @@
 Export all events for a given session as JSON or plain text.
 
 Usage:
-    python -m codex.logging.export SESSION_ID --format {json,text}
+    python -m aries_serpent_core.logging.export SESSION_ID --format {json,text}
     # custom DB:
-    python -m codex.logging.export SESSION_ID --db /path/to/db.sqlite
+    python -m aries_serpent_core.logging.export SESSION_ID --db /path/to/db.sqlite
 
 Environment:
-    CODEX_LOG_DB_PATH   Default DB path if --db not provided.
-    CODEX_SQLITE_POOL   If "1", enable pooled connection behavior.
+    CODEX_LOG_DB_PATH   Default DB path if --db not provided (CODEX_DB_PATH fallback).
 
 Examples:
-    export CODEX_LOG_DB_PATH=".codex/session_logs.db"
-    python -m codex.logging.export S123 --format json > out.json
-    python -m codex.logging.export S123 --format text > out.txt
+    from aries_serpent_core.logging.export import export_session
+    payload = export_session("S123", fmt="json", db=".codex/session_logs.db")
+    # payload is the serialized export; the caller chooses where to write it.
 
 Behavior:
-    Reads from default DB (e.g., .codex/session_logs.db) unless overridden.
+    The CLI emits the serialized result through the configured logger, not a
+    dedicated stdout stream. Use export_session() when a raw string is needed.
+    Each export opens and closes its own connection.
 """
 
 from __future__ import annotations
@@ -93,7 +94,20 @@ def _fetch_events(db_path: str, session_id: str) -> list[dict[str, Any]]:
 
 
 def export_session(session_id: str, fmt: str = "json", db: str | None = None) -> str:
-    """Return session events formatted as JSON or plain text."""
+    """Return a session's events in timestamp order as a serialized string.
+
+    ``session_id`` is checked against ``^[A-Za-z0-9_-]+$``; empty or
+    nonmatching identifiers raise ``ValueError``. ``db`` overrides the
+    environment/default resolution described by :func:`_db_path`. The
+    database must have a compatible event table with session, timestamp,
+    message, and role columns.
+
+    ``fmt="json"`` returns an indented JSON list with normalized field names.
+    Every other value selects newline-joined ``timestamp (role): message``
+    text (the CLI restricts this to ``json``/``text``). No matching rows
+    produces ``"[]"`` for JSON or an empty string for text. Schema and SQLite
+    failures propagate; the reader closes its connection on either path.
+    """
     if not re.match(r"^[A-Za-z0-9_-]+$", str(session_id or "")):
         raise ValueError("Invalid session_id: must match ^[A-Za-z0-9_-]+$")
     db_path = _db_path(db)
@@ -110,6 +124,13 @@ def export_session(session_id: str, fmt: str = "json", db: str | None = None) ->
 
 
 def main(argv: Iterable[str] | None = None) -> int:
+    """Parse export options, log the serialized session, and return ``0``.
+
+    ``argv`` omits the executable name; ``None`` reads process arguments.
+    Argument errors raise argparse's ``SystemExit``; validation, schema, and
+    database errors from :func:`export_session` are not converted to status
+    codes. Output routing and log prefixes depend on the configured logger.
+    """
     parser = argparse.ArgumentParser(description="Export session events from SQLite")
     parser.add_argument("session_id", help="Session identifier to export")
     parser.add_argument("--format", choices=["json", "text"], default="json", help="Output format")

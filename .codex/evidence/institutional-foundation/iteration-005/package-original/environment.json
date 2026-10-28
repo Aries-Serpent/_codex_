@@ -1,0 +1,31 @@
+{
+  "python": "Python 3.12.10",
+  "workspace": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025",
+  "TMPDIR": "/home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/scratch",
+  "PYTHONPATH": "absent",
+  "fresh_venvs": [
+    "build-venv",
+    "runtime-venv"
+  ],
+  "advisory_check": {
+    "versions": "14 pinned build/runtime dependencies, matching provision commands",
+    "result": "No vulnerabilities found",
+    "tool": "runtime-tools-gh-advisory-database",
+    "bootstrap_pip": {
+      "version": "25.0.1",
+      "result": "No vulnerabilities found",
+      "note": "venv ensurepip bootstrap, checked additionally"
+    }
+  },
+  "scope": "SDK-only environment; full declared codex-ml dependency conformance not asserted",
+  "venvs": {
+    "build-venv": {
+      "pyvenv_cfg": "home = /opt/hostedtoolcache/Python/3.12.10/x64/bin\ninclude-system-site-packages = false\nversion = 3.12.10\nexecutable = /opt/hostedtoolcache/Python/3.12.10/x64/bin/python3.12\ncommand = /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m venv /home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/build-venv\n",
+      "python_version": "Python 3.12.10"
+    },
+    "runtime-venv": {
+      "pyvenv_cfg": "home = /opt/hostedtoolcache/Python/3.12.10/x64/bin\ninclude-system-site-packages = false\nversion = 3.12.10\nexecutable = /opt/hostedtoolcache/Python/3.12.10/x64/bin/python3.12\ncommand = /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m venv /home/runner/work/_codex_/lane-a-package-original-3d7babe-20261025/runtime-venv\n",
+      "python_version": "Python 3.12.10"
+    }
+  }
+}

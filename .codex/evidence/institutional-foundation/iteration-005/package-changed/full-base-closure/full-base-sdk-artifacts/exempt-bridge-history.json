@@ -1,0 +1,642 @@
+{
+  "authority_refs": [],
+  "created_at": "2026-10-25T00:00:00Z",
+  "evidence_refs": [],
+  "extensions": {},
+  "id": "codex.assurance.v1:ca7870bdbc66aa3e17e3aa3734367f3589859580726cb3a947c3b334cb2d457d",
+  "integrity": "3308d6faa09b770f7eed42434c981222055fdd7fbdeaee3461e3f15417110bf7",
+  "lifecycle": "Draft",
+  "payload": {
+    "data": {
+      "events": [],
+      "plan": {
+        "authority_refs": [],
+        "created_at": "2026-10-25T01:45:00Z",
+        "evidence_refs": [],
+        "extensions": {},
+        "id": "codex.assurance.v1:86dce8e6723552c0e9b8412f63d541f472d8421a27b1b8d441bc4b27dad874fc",
+        "integrity": "4c8e3adeea62a3ad857d05634790487c4d2d6abe8d3741ec7cd1e552db9efca2",
+        "lifecycle": "Draft",
+        "payload": {
+          "data": {
+            "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+            "limits": {
+              "activation": false,
+              "approval": false,
+              "authority": "none",
+              "fixture_only": true,
+              "full_convergence_model": "unsupported",
+              "identity_assurance": "unverified"
+            },
+            "nodes": [
+              {
+                "actor": "fixture:technical_verification",
+                "depends_on": [],
+                "environment_digest": "6af15717a4b57726d23aaa9a7650203e8f9aa1edf4b91a2cd4a16788831fd35b",
+                "evidence_requirements": [
+                  "procedure-observation"
+                ],
+                "expected_outputs": [
+                  "report"
+                ],
+                "finding_requirements": [],
+                "id": "technical_verification",
+                "identity_assurance": "unverified",
+                "independence": "fixture-only",
+                "kind": "technical_verification",
+                "pending": "Supply a bound external result.",
+                "procedure": {
+                  "id": "technical_verification-fixture",
+                  "version": "1"
+                },
+                "rationale": "Synthetic demonstration only.",
+                "recovery": "Recheck dependencies and append an explicit retry.",
+                "requirement": "required",
+                "resource_caps": {
+                  "max_attempts": 4,
+                  "max_bytes": 65536
+                },
+                "role": "technical_verification"
+              },
+              {
+                "actor": "fixture:independent_reproduction",
+                "depends_on": [
+                  "technical_verification"
+                ],
+                "environment_digest": "6af15717a4b57726d23aaa9a7650203e8f9aa1edf4b91a2cd4a16788831fd35b",
+                "evidence_requirements": [
+                  "procedure-observation"
+                ],
+                "expected_outputs": [
+                  "report"
+                ],
+                "finding_requirements": [],
+                "id": "independent_reproduction",
+                "identity_assurance": "unverified",
+                "independence": "fixture-only",
+                "kind": "independent_reproduction",
+                "pending": "Supply a bound external result.",
+                "procedure": {
+                  "id": "independent_reproduction-fixture",
+                  "version": "1"
+                },
+                "rationale": "Synthetic demonstration only.",
+                "recovery": "Recheck dependencies and append an explicit retry.",
+                "requirement": "not_required_with_rationale",
+                "resource_caps": {
+                  "max_attempts": 4,
+                  "max_bytes": 65536
+                },
+                "role": "independent_reproduction"
+              },
+              {
+                "actor": "fixture:institutional_audit",
+                "depends_on": [
+                  "independent_reproduction"
+                ],
+                "environment_digest": "6af15717a4b57726d23aaa9a7650203e8f9aa1edf4b91a2cd4a16788831fd35b",
+                "evidence_requirements": [
+                  "procedure-observation"
+                ],
+                "expected_outputs": [
+                  "report"
+                ],
+                "finding_requirements": [],
+                "id": "institutional_audit",
+                "identity_assurance": "unverified",
+                "independence": "fixture-only",
+                "kind": "institutional_audit",
+                "pending": "Supply a bound external result.",
+                "procedure": {
+                  "id": "institutional_audit-fixture",
+                  "version": "1"
+                },
+                "rationale": "Synthetic demonstration only.",
+                "recovery": "Recheck dependencies and append an explicit retry.",
+                "requirement": "required",
+                "resource_caps": {
+                  "max_attempts": 4,
+                  "max_bytes": 65536
+                },
+                "role": "institutional_audit"
+              }
+            ],
+            "original_outputs": [
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T01:45:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:6e64e69e65d7ac44edce4ed38cbeb41c335d794b7de5b19f0e76a4871322ea47",
+                "integrity": "428ba275780e183058e429d817fcf98521590da1b8b7c90eca7c4bdc4e31bf13",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:000",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "000",
+                    "plan_digest": "dea06d0d8592464ec6aa95ce66f6db130440d3ff853cbe96f8c1bfed75daf7df",
+                    "run": "run:000",
+                    "source": "No concern in synthetic fixture."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T01:45:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:49b7e1eb328a66dde27cc025d03b2c62973d675ee28705a57fe836061de29036",
+                "integrity": "439bfd42e381e9d74fd69b50105eeb9da6662e099cf40d86070f8dc553df6d2a",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:045",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "045",
+                    "plan_digest": "dea06d0d8592464ec6aa95ce66f6db130440d3ff853cbe96f8c1bfed75daf7df",
+                    "run": "run:045",
+                    "source": "No concern in synthetic fixture."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T01:45:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:53cd03620eba85d1f95bec8c0079075a1e042ceeaeaa8ef98bb432f8fbe9de3b",
+                "integrity": "160d00c2a6b01d1811bffd2769ec70316b274fc8668d41ebf59dd90d0f22af9c",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:090",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "090",
+                    "plan_digest": "dea06d0d8592464ec6aa95ce66f6db130440d3ff853cbe96f8c1bfed75daf7df",
+                    "run": "run:090",
+                    "source": "No concern in synthetic fixture."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T01:45:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:a078130115a35f7e0c69c61cdb566fa4d0ad68215384027977483f62c8528207",
+                "integrity": "62f4ddaecc0000d6b16a425ae15710d050403519695f004a33e63497fa9c375e",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:135",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "135",
+                    "plan_digest": "dea06d0d8592464ec6aa95ce66f6db130440d3ff853cbe96f8c1bfed75daf7df",
+                    "run": "run:135",
+                    "source": "No concern in synthetic fixture."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T01:45:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:d0014bddaa6d3330feb098d595ffe5ce5d94bcb073122ec2715f273f1a899343",
+                "integrity": "b90c31d3e435eea4a33cae80a02430824e4be9d4437ec63c13df0b1cbd03e940",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:180",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "180",
+                    "plan_digest": "dea06d0d8592464ec6aa95ce66f6db130440d3ff853cbe96f8c1bfed75daf7df",
+                    "run": "run:180",
+                    "source": "No concern in synthetic fixture."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T01:45:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:bdd3053d69f652d1d9670f5275c2f2fe3d45916fb2034377f92ac2f4f4fb6aa3",
+                "integrity": "beba7f5919fc27ae9080e6bfb708230a50d10db285344fda578d186e063d8cef",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:225",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "225",
+                    "plan_digest": "dea06d0d8592464ec6aa95ce66f6db130440d3ff853cbe96f8c1bfed75daf7df",
+                    "run": "run:225",
+                    "source": "No concern in synthetic fixture."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T01:45:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:06d4d1f9b0bd78670c201e7162435015018ddcfebced2fc92eae6a6510ffd5d0",
+                "integrity": "36cad285f497b97d35dde7177b1ac409b6d6e74000f176e0f5f94332708b73cd",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:270",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "270",
+                    "plan_digest": "dea06d0d8592464ec6aa95ce66f6db130440d3ff853cbe96f8c1bfed75daf7df",
+                    "run": "run:270",
+                    "source": "No concern in synthetic fixture."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T01:45:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:970caa4d2d26f00d28001e23b090bc17e4d57278a9fbbfd00eb1f68d547bdec0",
+                "integrity": "4c9ac228174158c2b1b884d4c7af0f9a316e79459a683104b03cf6c65a3ad58d",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:315",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "315",
+                    "plan_digest": "dea06d0d8592464ec6aa95ce66f6db130440d3ff853cbe96f8c1bfed75daf7df",
+                    "run": "run:315",
+                    "source": "No concern in synthetic fixture."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              },
+              {
+                "authority_refs": [],
+                "created_at": "2026-10-25T01:45:00Z",
+                "evidence_refs": [],
+                "extensions": {},
+                "id": "codex.review.v1:ed14252b7996c8357ce0d60a44a2df24de6fd2f101ecc4d308c81e405119e1ed",
+                "integrity": "2685c935c45fa7b042c404c1c0db7e9fedd89261072bb4d11597c797cd778a36",
+                "lifecycle": "Draft",
+                "payload": {
+                  "data": {
+                    "actor": "fixture:dissent",
+                    "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                    "findings": [],
+                    "identity": "unverified",
+                    "lane": "dissent",
+                    "plan_digest": "dea06d0d8592464ec6aa95ce66f6db130440d3ff853cbe96f8c1bfed75daf7df",
+                    "run": "run:dissent",
+                    "source": "No concern in synthetic fixture."
+                  },
+                  "kind": "lane-output"
+                },
+                "producer": {
+                  "assurance": "unverified",
+                  "identity": "codex-institutional"
+                },
+                "schema": "codex.review.v1",
+                "supersedes": null,
+                "validation_state": "candidate"
+              }
+            ],
+            "procedures": [
+              {
+                "expected_outputs": [
+                  "report"
+                ],
+                "id": "technical_verification-fixture",
+                "kind": "technical_verification",
+                "version": "1"
+              },
+              {
+                "expected_outputs": [
+                  "report"
+                ],
+                "id": "independent_reproduction-fixture",
+                "kind": "independent_reproduction",
+                "version": "1"
+              },
+              {
+                "expected_outputs": [
+                  "report"
+                ],
+                "id": "institutional_audit-fixture",
+                "kind": "institutional_audit",
+                "version": "1"
+              }
+            ],
+            "relations": [],
+            "review_plan": {
+              "authority_refs": [],
+              "created_at": "2026-10-25T01:45:00Z",
+              "evidence_refs": [],
+              "extensions": {},
+              "id": "codex.review.v1:3e2d8696ba216a18852551af3fa52d4ae98c45259e284de1637dddd88e46d2e7",
+              "integrity": "2f8019fa718e02b8a43337ba1e96165d058c404054c9d2785a8c8b6e4b4de01e",
+              "lifecycle": "Draft",
+              "payload": {
+                "data": {
+                  "binding": "8cb62c435be6ad6b0aa411b68830ef9e2a9ed70451b635933e8c04018c5121c8",
+                  "coordinator_role": "implementer",
+                  "critical": [
+                    "correctness"
+                  ],
+                  "independence": "unverified",
+                  "lanes": [
+                    {
+                      "actor": "fixture:000",
+                      "bearing": "Policy",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "000",
+                      "required": true,
+                      "run": "run:000",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:045",
+                      "bearing": "Security",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "045",
+                      "required": true,
+                      "run": "run:045",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:090",
+                      "bearing": "Architecture",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "090",
+                      "required": true,
+                      "run": "run:090",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:135",
+                      "bearing": "Adversarial",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "135",
+                      "required": true,
+                      "run": "run:135",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:180",
+                      "bearing": "Verification",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "180",
+                      "required": true,
+                      "run": "run:180",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:225",
+                      "bearing": "Operations",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "225",
+                      "required": true,
+                      "run": "run:225",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:270",
+                      "bearing": "Portability",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "270",
+                      "required": true,
+                      "run": "run:270",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:315",
+                      "bearing": "History",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": false,
+                      "id": "315",
+                      "required": true,
+                      "run": "run:315",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    },
+                    {
+                      "actor": "fixture:dissent",
+                      "bearing": "cross-cutting",
+                      "coverage": [
+                        "correctness"
+                      ],
+                      "dissent": true,
+                      "id": "dissent",
+                      "required": true,
+                      "run": "run:dissent",
+                      "tools": [
+                        "read",
+                        "search"
+                      ]
+                    }
+                  ],
+                  "mandatory": [
+                    "correctness"
+                  ],
+                  "manifest": {
+                    "authority_refs": [],
+                    "created_at": "2026-10-25T01:45:00Z",
+                    "evidence_refs": [],
+                    "extensions": {},
+                    "id": "codex.review.v1:131ad03b3af29100455e3ff2814b685c3ec40a76b7ec8e8b0096af146a540c3d",
+                    "integrity": "68ca85a864d64663de28fa89edaf1f2b7e2628dd0f332d06fbab27e25167f8c5",
+                    "lifecycle": "Draft",
+                    "payload": {
+                      "data": {
+                        "classification": "Repository-Internal",
+                        "context_digest": "6b715ced177ac1fe825f817f0664c66defd1f427c0beed848f9d1d3a8303d349",
+                        "entries": [
+                          {
+                            "mode": 420,
+                            "path": "candidate.py",
+                            "sha256": "fba443106200940421067aa2e8165d14de1b7629a25e5be3940d7439c5e663e4",
+                            "size": 24
+                          }
+                        ],
+                        "rules": {
+                          "archives": "opaque-no-expansion",
+                          "hardlinks": "independent-bytes",
+                          "line_endings": "raw",
+                          "permissions": "explicit-posix-mode",
+                          "submodules": "reject",
+                          "symlinks": "reject"
+                        }
+                      },
+                      "kind": "manifest"
+                    },
+                    "producer": {
+                      "assurance": "unverified",
+                      "identity": "codex-institutional"
+                    },
+                    "schema": "codex.review.v1",
+                    "supersedes": null,
+                    "validation_state": "candidate"
+                  },
+                  "mode": "supplement"
+                },
+                "kind": "plan"
+              },
+              "producer": {
+                "assurance": "unverified",
+                "identity": "codex-institutional"
+              },
+              "schema": "codex.review.v1",
+              "supersedes": null,
+              "validation_state": "candidate"
+            }
+          },
+          "kind": "plan"
+        },
+        "producer": {
+          "assurance": "unverified",
+          "identity": "codex-institutional"
+        },
+        "schema": "codex.assurance.v1",
+        "supersedes": null,
+        "validation_state": "candidate"
+      }
+    },
+    "kind": "history"
+  },
+  "producer": {
+    "assurance": "unverified",
+    "identity": "codex-institutional"
+  },
+  "schema": "codex.assurance.v1",
+  "supersedes": null,
+  "validation_state": "candidate"
+}

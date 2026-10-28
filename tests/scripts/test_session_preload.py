@@ -25,3 +25,6 @@ def test_session_preload_output_is_bounded() -> None:
     assert "::group::✅ AGENTIC REPO STATE" in result.stdout, "Result must not be empty"
     assert "::endgroup::" in result.stdout, "Result must not be empty"
     assert len(result.stdout) < 30_000, "Collection must not be empty"
+    assert "Historical snapshot; not current GitHub settings" in result.stdout
+    assert "::group::✅ AGENTIC REPO STATE — Auth is PERMANENTLY ACTIVE" not in result.stdout
+    assert "Actual GitHub permissions, approvals, and platform settings remain external." in result.stdout

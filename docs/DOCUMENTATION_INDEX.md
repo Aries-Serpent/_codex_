@@ -1,10 +1,11 @@
 # Documentation Index
-**Last Updated:** 2026-07-11
-**Version:** v0.2.0
+**Historical snapshot:** 2026-07-11
+**Version at snapshot:** v0.2.0
 
-**Last Updated**: 2026-06-22
-**Total Files**: 693+ markdown files
-**Purpose**: Comprehensive index of all documentation in the repository
+> This legacy inventory is retained for reference. Use the [canonical documentation hub](index.md) for current navigation.
+
+**Total Files at snapshot**: 693+ markdown files
+**Purpose**: Historical inventory of repository documentation
 
 ---
 

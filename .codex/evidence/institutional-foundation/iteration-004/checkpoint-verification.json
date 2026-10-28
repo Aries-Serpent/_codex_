@@ -1,0 +1,16 @@
+{
+  "schema": "codex.institutional.checkpoint-verification.v1",
+  "sequence": 4,
+  "schema_reused": "codex.continuation-state.v1",
+  "canonical_sha256": "037c590db60882b429a833eec3775cd4b99a36ed0164063f76d124dc327d94fe",
+  "compressed_sha256": "03b2b857a5543a3300538ad98614ad1392cbfd6cd5a30403e11d02304f32980d",
+  "source_candidate": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+  "predecessor_canonical_sha256": "3437c62ddfd6951c98f1219604dad5bb6e1e037ae8ce0657e10a6244010e24e7",
+  "core_validate": "PASS",
+  "core_inspect_candidate": [],
+  "core_verify_before_bookkeeping_commit": [],
+  "later_bookkeeping_drift": "Expected STALE_CHECKPOINT after evidence-only commit; do not silently skip rebind.",
+  "source_candidate_review_fixture": "Synthetic, unverified actor/run identities; 7 events and exact final resolve-conflict blocker/cache retained.",
+  "package_security_independence": "G4/G5/G6/G7 NOT_RUN; no wheel digest, approval or activation.",
+  "publication": "Local only; staged/blob retention checked separately before/after explicit evidence commit."
+}

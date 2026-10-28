@@ -1,0 +1,670 @@
+{
+  "schema_version": 1,
+  "scope": "Aries-Serpent/_codex_ agent-restrictions read-only audit",
+  "authority_boundary": "Outcomes describe the session credential, not user permissions. HTTP 403/404 means inaccessible or unverified, not absent. No writes or permission probes were performed.",
+  "http_status_counts": {
+    "200": 19,
+    "403": 35,
+    "404": 4
+  },
+  "github_observations": [
+    {
+      "observed_at_utc": "2026-10-22T05:27:43.196287+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:43.715711+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/branches/0D_base_/protection",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:43.716097+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/rules/branches/0D_base_?per_page=100",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:43.715082+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/branches/0D_base_",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:43.719207+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/branches/main",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:44.092755+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/rules/branches/main?per_page=100",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:44.092636+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/branches/main/protection",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:44.164020+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/actions/permissions",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:44.160188+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/rulesets?includes_parents=true&per_page=100",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:44.382728+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/actions/permissions/workflow",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:44.384769+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/actions/permissions/fork-pr-contributor-approval",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:44.415499+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/actions/permissions/fork-pr-workflows-private-repos",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:44.461012+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/actions/permissions/selected-actions",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:44.665048+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/code-security-configuration",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:44.658953+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/actions/variables?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:44.658191+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/environments?per_page=100",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:44.728577+00:00",
+      "method": "GET",
+      "endpoint": "/orgs/Aries-Serpent",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:44.913480+00:00",
+      "method": "GET",
+      "endpoint": "/orgs/Aries-Serpent/actions/permissions",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:44.919636+00:00",
+      "method": "GET",
+      "endpoint": "/orgs/Aries-Serpent/actions/permissions/workflow",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:45.012466+00:00",
+      "method": "GET",
+      "endpoint": "/orgs/Aries-Serpent/actions/permissions/selected-actions",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:45.037219+00:00",
+      "method": "GET",
+      "endpoint": "/orgs/Aries-Serpent/actions/permissions/fork-pr-contributor-approval",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:45.146093+00:00",
+      "method": "GET",
+      "endpoint": "/orgs/Aries-Serpent/actions/permissions/fork-pr-workflows-private-repos",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:45.175640+00:00",
+      "method": "GET",
+      "endpoint": "/orgs/Aries-Serpent/rulesets?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:45.240609+00:00",
+      "method": "GET",
+      "endpoint": "/orgs/Aries-Serpent/copilot/billing",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:45.535786+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/environments/Aries_Serpent_codex_",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:45.532696+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/rulesets/19401257",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:45.532949+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/rulesets/11369401",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:45.533447+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/rulesets/13905053",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:45.868862+00:00",
+      "method": "GET",
+      "endpoint": "/repositories/1040037790/environments/Aries_Serpent_codex_/variables?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:45.890630+00:00",
+      "method": "GET",
+      "endpoint": "/repositories/1040037790/environments/Aries_Serpent_codex_/secrets?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:45.862986+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/environments/Aries_Serpent_codex_/deployment-branch-policies?per_page=100",
+      "http_status": 404,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:45.902769+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/environments/agent-auth-delegation",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:46.157776+00:00",
+      "method": "GET",
+      "endpoint": "/repositories/1040037790/environments/agent-auth-delegation/variables?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:46.173552+00:00",
+      "method": "GET",
+      "endpoint": "/repositories/1040037790/environments/agent-auth-delegation/secrets?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:46.157178+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/environments/agent-auth-delegation/deployment-branch-policies?per_page=100",
+      "http_status": 404,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:46.321309+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/environments/codex-production",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:46.425235+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/environments/codex-production/deployment-branch-policies?per_page=100",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:46.473191+00:00",
+      "method": "GET",
+      "endpoint": "/repositories/1040037790/environments/codex-production/variables?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:46.602708+00:00",
+      "method": "GET",
+      "endpoint": "/repositories/1040037790/environments/codex-production/secrets?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:46.641105+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/environments/copilot",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:47.053526+00:00",
+      "method": "GET",
+      "endpoint": "/repositories/1040037790/environments/copilot/secrets?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:47.027962+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/environments/copilot/deployment-branch-policies?per_page=100",
+      "http_status": 404,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:47.050551+00:00",
+      "method": "GET",
+      "endpoint": "/repositories/1040037790/environments/copilot/variables?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:47.134554+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/environments/github-pages",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:47.519480+00:00",
+      "method": "GET",
+      "endpoint": "/repositories/1040037790/environments/github-pages/secrets?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:47.510224+00:00",
+      "method": "GET",
+      "endpoint": "/repositories/1040037790/environments/github-pages/variables?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:47.488397+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/environments/github-pages/deployment-branch-policies?per_page=100",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:47.618520+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/environments/pypi",
+      "http_status": 200,
+      "cli_exit_code": 0
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:47.832183+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/environments/pypi/deployment-branch-policies?per_page=100",
+      "http_status": 404,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:48.032679+00:00",
+      "method": "GET",
+      "endpoint": "/repositories/1040037790/environments/pypi/secrets?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:27:47.920674+00:00",
+      "method": "GET",
+      "endpoint": "/repositories/1040037790/environments/pypi/variables?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:27.199074+00:00",
+      "method": "GET",
+      "endpoint": "/orgs/Aries-Serpent/agents/variables?per_page=30",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:27.210363+00:00",
+      "method": "GET",
+      "endpoint": "/orgs/Aries-Serpent/agents/secrets?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:27.197046+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/agents/secrets?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:27.191388+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/agents/variables?per_page=30",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:27.650906+00:00",
+      "method": "GET",
+      "endpoint": "/orgs/Aries-Serpent/code-security/configurations?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:43.925180+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/agents/organization-secrets?per_page=100",
+      "http_status": 403,
+      "cli_exit_code": 1
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:43.924491+00:00",
+      "method": "GET",
+      "endpoint": "/repos/Aries-Serpent/_codex_/agents/organization-variables?per_page=30",
+      "http_status": 403,
+      "cli_exit_code": 1
+    }
+  ],
+  "official_documentation": [
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.026961+00:00",
+      "source_url": "https://docs.github.com/en/copilot/concepts/prompting-and-context/custom-instructions",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.030986+00:00",
+      "source_url": "https://docs.github.com/en/copilot/reference/custom-instructions-support",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.031628+00:00",
+      "source_url": "https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.034852+00:00",
+      "source_url": "https://docs.github.com/en/copilot/reference/custom-agents-configuration",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.143561+00:00",
+      "source_url": "https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/customize-the-agent-environment",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.202432+00:00",
+      "source_url": "https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/configure-secrets-and-variables",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.204512+00:00",
+      "source_url": "https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-the-firewall",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.208760+00:00",
+      "source_url": "https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/risks-and-mitigations",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.293352+00:00",
+      "source_url": "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/configuring-agent-settings",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.305433+00:00",
+      "source_url": "https://docs.github.com/en/copilot/how-tos/copilot-on-github/use-copilot-agents/review-copilot-output",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.308287+00:00",
+      "source_url": "https://docs.github.com/en/copilot/concepts/copilot-surfaces/copilot-on-github",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.315591+00:00",
+      "source_url": "https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/keeping-your-pull-request-in-sync-with-the-base-branch",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.319270+00:00",
+      "source_url": "https://docs.github.com/en/rest/pulls/pulls",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.338675+00:00",
+      "source_url": "https://docs.github.com/en/rest/agents/variables",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.355874+00:00",
+      "source_url": "https://docs.github.com/en/rest/agents/secrets",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.363173+00:00",
+      "source_url": "https://docs.github.com/en/rest/code-security/configurations",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:29:15.387835+00:00",
+      "source_url": "https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:30:19.256672+00:00",
+      "source_url": "https://docs.github.com/en/rest/repos/contents",
+      "http_status": 200
+    },
+    {
+      "observed_at_utc": "2026-10-22T05:30:19.391580+00:00",
+      "source_url": "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets",
+      "http_status": 200
+    }
+  ],
+  "dependency_transport": {
+    "observed_at_utc": "2026-10-22T05:48:03.947720+00:00",
+    "scope": "Current session transport only; not hosted-firewall settings or future setup.",
+    "requests": [
+      {
+        "host": "pypi.org",
+        "operation": "Public uv package metadata GET",
+        "http_status": 200
+      },
+      {
+        "host": "files.pythonhosted.org",
+        "operation": "Public artifact HEAD; no distribution downloaded",
+        "http_status": 200,
+        "content_length": "7513309"
+      }
+    ]
+  },
+  "omitted": "Credential values, raw API responses, response headers, source hashes and unsupplied memory records. Detailed sanitized extraction is retained in the session audit artifacts.",
+  "local_acceptance": {
+    "pytest": {
+      "tests": 219,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "mypy": {
+      "sources": [
+        ".github/scripts/session_preload.py",
+        "scripts/ci/agent_resource_profile.py",
+        "scripts/ci/agent_setup_readiness.py",
+        "scripts/ci/check_deferral_language.py",
+        "scripts/ci/check_no_deferral_security.py",
+        "scripts/ci/environment_preflight.py",
+        "scripts/ci/fetch_lfs_assets.py",
+        "scripts/ci/phase_10_3_context_scorer.py",
+        "scripts/ci/prepare_agent_context.py",
+        "scripts/ci/promotion_readiness_gate.py",
+        "scripts/ci/session_wrapup_autofix.py",
+        "scripts/ci/validate_copilot_bootstrap.py",
+        "scripts/ci/validate_copilot_dependencies.py",
+        "scripts/ci/validate_copilot_setup_steps.py",
+        "scripts/ci/validate_repo_variables.py",
+        "src/codex/cognitive_brain/kernel.py"
+      ],
+      "arguments": [
+        "--follow-imports=skip",
+        "--ignore-missing-imports",
+        "--explicit-package-bases"
+      ],
+      "exit_code": 0
+    },
+    "pre_commit": {
+      "command": [
+        "pre-commit",
+        "run",
+        "--files",
+        ".codex/AGENTIC_REPO_STATE.md",
+        ".codex/CODEBASE_AGENCY_POLICY.md",
+        ".codex/SELF_HEALING_POLICY_TIERS.md",
+        ".codex/aftermath/pda_iterations.jsonl",
+        ".codex/docs/AGENT_INSTRUCTION_INVENTORY.md",
+        ".codex/docs/COPILOT_AGENT_PROMPT_GUIDE.md",
+        ".codex/docs/COPILOT_MCP_TOOL_REFERENCE.md",
+        ".codex/docs/GITHUB_API_AND_MCP_REFERENCE.md",
+        ".codex/reports/AGENT_RESTRICTIONS_AUDIT_2026_10_22.md",
+        ".codex/reports/agent-restrictions-evidence-2026-10-22.json",
+        ".github/AGENTS.md",
+        ".github/WORKFLOW_GOVERNANCE.md",
+        ".github/agents/COPILOT_HARDENED_PLANNING_PROTOCOL.md",
+        ".github/agents/autonomous-test-healer-agent.md",
+        ".github/agents/ci-importerror-agent.md",
+        ".github/agents/ci-log-retrieval-agent.md",
+        ".github/agents/ci-testing-agent.md",
+        ".github/agents/cognitive-brain-session-injector.md",
+        ".github/agents/docs/AGENTS.md",
+        ".github/agents/policy-coach-agent.md",
+        ".github/agents/pr-check-remediation-agent.md",
+        ".github/agents/pr-test-infrastructure-fixer.md",
+        ".github/agents/qa-walkthrough-agent.md",
+        ".github/agents/self-healing-orchestrator-agent.md",
+        ".github/agents/session-wrapup-autofix-agent.md",
+        ".github/agents/skills-master-agent.md",
+        ".github/agents/unified-governance-gate.md",
+        ".github/agents/workflow-compliance-guardian.agent.md",
+        ".github/copilot-instructions.md",
+        ".github/copilot-prompts/active/SESSION-DIAGNOSTIC-PROTOCOL.md",
+        ".github/scripts/session_preload.py",
+        ".github/workflows/copilot-setup-steps.yml",
+        ".github/workflows/deferral-language-gate.yml",
+        ".github/workflows/strict-no-deferral-security.yml",
+        ".pre-commit-config.yaml",
+        "CHANGELOG.md",
+        "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+        "docs/agent/COPILOT_SETUP_STEPS_GUARD.md",
+        "docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md",
+        "docs/guides/AGENTS.md",
+        "docs/guides/lfs_policy.md",
+        "docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md",
+        "prompts/AGENTS.md",
+        "scripts/AGENTS.md",
+        "scripts/ci/agent_resource_profile.py",
+        "scripts/ci/agent_setup_readiness.py",
+        "scripts/ci/check_deferral_language.py",
+        "scripts/ci/check_no_deferral_security.py",
+        "scripts/ci/environment_preflight.py",
+        "scripts/ci/fetch_lfs_assets.py",
+        "scripts/ci/phase_10_3_context_scorer.py",
+        "scripts/ci/prepare_agent_context.py",
+        "scripts/ci/promotion_readiness_gate.py",
+        "scripts/ci/session_wrapup_autofix.py",
+        "scripts/ci/validate_copilot_bootstrap.py",
+        "scripts/ci/validate_copilot_dependencies.py",
+        "scripts/ci/validate_copilot_setup_steps.py",
+        "scripts/ci/validate_repo_variables.py",
+        "scripts/ci/validate_setup_steps_yaml.sh",
+        "src/codex/cognitive_brain/kernel.py",
+        "src/mcp/AGENTS.md",
+        "tests/ci/test_agent_bootstrap_runtime.py",
+        "tests/ci/test_agent_instruction_contract.py",
+        "tests/ci/test_fetch_lfs_assets.py",
+        "tests/ci/test_session_wrapup_autofix.py",
+        "tests/scripts/test_ci_top5.py",
+        "tests/scripts/test_session_preload.py"
+      ],
+      "exit_code": 0
+    },
+    "actionlint": {
+      "version": "v1.7.7",
+      "workflows": [
+        ".github/workflows/copilot-setup-steps.yml",
+        ".github/workflows/deferral-language-gate.yml",
+        ".github/workflows/strict-no-deferral-security.yml"
+      ],
+      "exit_code": 0
+    },
+    "setup_contract": {
+      "passed": 13,
+      "total": 13
+    },
+    "dependency_contract": {
+      "passed": 4,
+      "total": 4
+    },
+    "bash_syntax": {
+      "workflow_blocks": 7,
+      "wrapper_scripts": 1,
+      "exit_code": 0
+    },
+    "catalog_contract": {
+      "passing_records": 224,
+      "failing_records": 15,
+      "hosted_loading_verified": false
+    },
+    "limits": "Local acceptance only. Informational hooks are not global type/docstring proof. Hosted setup, administrative controls and GitHub LFS authentication/quota remain unverified."
+  }
+}
