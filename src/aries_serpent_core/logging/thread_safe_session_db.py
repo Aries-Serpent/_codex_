@@ -76,7 +76,9 @@ class ThreadSafeSessionDB:
             timeout=timeout,
             wal_mode=True,
         )
-        self._finalizer = weakref.finalize(self, _cleanup_connection_pool, self._connection_pool)
+        self._finalizer: weakref.finalize | None = weakref.finalize(
+            self, _cleanup_connection_pool, self._connection_pool
+        )
         self._write_lock = threading.RLock()
         self._metrics = LockMetrics()
 

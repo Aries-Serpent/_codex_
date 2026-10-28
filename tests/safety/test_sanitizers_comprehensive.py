@@ -56,7 +56,7 @@ class TestAdvancedSecretDetection:
         api_keys = [
             "api_key: sk-1234567890abcdefghijklmnopqrstuvwxyz",
             "API_KEY=AIzaSyD1234567890abcdefghijklmnopqrs",
-            "apikey: xoxb-1234-5678-abcd",
+            "apikey: xoxb-1234-5678-abcd",  # pragma: allowlist secret - fake token to exercise redaction
         ]
 
         for key in api_keys:
@@ -123,7 +123,9 @@ class TestAdvancedSecretDetection:
 
         assert "Your API key is" in result["text"], "Result must not be empty"
         assert "for authentication" in result["text"], "Result must not be empty"
-        assert "sk-1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL" not in result["text"], "Result must not be empty"
+        assert (
+            "sk-1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL" not in result["text"]
+        ), "Result must not be empty"
 
 
 # =============================================================================
@@ -337,7 +339,9 @@ class TestCombinedPatterns:
         result = sanitize_prompt(text)
 
         # Both should be redacted
-        assert "sk-1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL" not in result["text"], "Result must not be empty"
+        assert (
+            "sk-1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL" not in result["text"]
+        ), "Result must not be empty"
         assert "user@test.com" not in result["text"], "Result must not be empty"
         assert "«REDACTED:SECRET»" in result["text"], "Result must not be empty"
         assert "«REDACTED:PII»" in result["text"], "Result must not be empty"
@@ -488,15 +492,19 @@ secrets:
 
         assert result["flags"]["secrets"] is True, "Result must not be empty"
 
-    def test_yaml_invalid_format(self):
-        """Test handling of invalid YAML."""
-        invalid_yaml = "not: valid: yaml: ["
-        text = "test text"
+    @pytest.mark.parametrize("invalid_yaml", ["not: valid: yaml: [", "{ invalid: [}"])
+    def test_yaml_invalid_format(self, invalid_yaml, caplog):
+        """Malformed optional overrides keep default protection and report the error."""
+        text = "Contact test@example.com"
         result = sanitize_prompt(text, policy_yaml=invalid_yaml)
 
         # Should not crash, falls back to defaults
         assert "text" in result, "Result must not be empty"
         assert "flags" in result, "Result must not be empty"
+        assert result["flags"]["pii"] is True
+        assert "test@example.com" not in result["text"]
+        assert "Invalid sanitizer policy YAML" in caplog.text
+        assert invalid_yaml not in caplog.text
 
     def test_yaml_empty_string(self):
         """Test with empty YAML string."""

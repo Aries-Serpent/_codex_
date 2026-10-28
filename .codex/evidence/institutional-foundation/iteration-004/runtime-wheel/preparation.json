@@ -1,0 +1,19 @@
+{
+  "status": "prepared; required external operations not performed; disposable environments cleaned",
+  "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+  "source_build": "NOT_RUN",
+  "project_installation": "NOT_RUN",
+  "runtime_harness": "NOT_RUN",
+  "harness": "external-harness.py; standalone standard-library assertions against installed codex.institutional",
+  "environment": "Fresh isolated build/runtime venvs were prepared, then relocated to ignored .codex/runtime-work/rd4-wheel. That location did not satisfy the outside-checkout runtime requirement. Environments were never used for project build/install/runtime and are now removed; metadata retained.",
+  "dependency_provisioning": "Existing project build backends setuptools==81.0.0/wheel==0.48.0/hatchling==1.32.0 and SDK dependency jsonschema==4.25.1 downloaded and installed, including their resolver-selected dependencies. No project dependencies changed.",
+  "advisory_check": "GitHub advisory tool checked all 14 downloaded direct/transitive dependency versions and reported no vulnerabilities.",
+  "build_tool_choice": "python -m build was unavailable; standard existing pip wheel will invoke the declared backends after exact source commit is supplied. No build package was added.",
+  "planned_export": "Scoped git archive of parent-identified commit: pyproject.toml, MANIFEST.in, README.md, LICENSE, LICENSES, src and packages/contracts, plus any explicitly required existing runtime asset paths. Do not archive or read .github/agents.",
+  "planned_source_identity": "Record actual commit, each exported relevant file sha256, all packaged formula resource filenames, wheel sha256 and ZIP manifest, installed distribution metadata/import origins and harness sha256.",
+  "runtime_network": "Harness installs a Python audit hook before SDK imports denying socket events and subprocess creation, and probes denial. Preparation dependency download is separate and network-enabled.",
+  "runtime_scope": "Non-editable codex-ml wheel plus locally built declared codex-contracts wheel and minimal SDK dependencies only, not full-distribution dependency-conformance validation.",
+  "assurance": "Same-platform fixture with unverified attribution. No authority, publication, operational independence or G5 claim.",
+  "disposables": "Owned .codex/runtime-work/rd4-wheel and initial ignored evidence-subtree disposable directories removed. No source export, new project wheel or external runtime result exists. Named artifacts/logs/manifests/harness retained.",
+  "external_operations": "Delegated executors did not perform required external disposable operations; no filesystem denial was observed or attempted. Not a missing user authorization or an independence prerequisite. package-blocker.json and pending-commands.txt document the pending requirement and literal future procedure."
+}

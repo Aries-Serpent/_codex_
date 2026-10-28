@@ -1,0 +1,15 @@
+{
+  "actual_workspace": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime",
+  "actual_runtime_cwd": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/work",
+  "actual_venv": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache/venv",
+  "execution_location": "Inside repository checkout, not outside-checkout execution",
+  "import_controls": "Python -I -B; PYTHONPATH absent; noneditable exact retained wheel; fresh venv with system site packages disabled",
+  "scope": "SDK-only; source-bound real analytical observations remain unverified fixture_only; synthetic resumption remains synthetic",
+  "retained": "Install reports, versions/import origins, dependency metadata, reproducible fixed harness, actual commands/failure/correction logs, inputs/results",
+  "cleanup_targets": [
+    "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/cache",
+    "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/work"
+  ],
+  "G5": "NOT_RUN",
+  "authority": "none"
+}

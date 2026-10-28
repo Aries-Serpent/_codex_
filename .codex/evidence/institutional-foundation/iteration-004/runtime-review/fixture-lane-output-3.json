@@ -1,0 +1,43 @@
+{
+  "authority_refs": [],
+  "created_at": "2026-10-25T00:00:00Z",
+  "evidence_refs": [],
+  "extensions": {},
+  "id": "codex.review.v1:496f427dc28b6f0966ede31779cda8652ea2c4dfd869e34d1e80b70888468254",
+  "integrity": "65e7b9aa3bdca264ab42be5643dcffc000a8466ff9ebe6e8e640052f530b5a0e",
+  "lifecycle": "Draft",
+  "payload": {
+    "data": {
+      "actor": "same-platform:risk",
+      "binding": "2b00ec0ce3fc3b9981c4727a776194a681353bbbc938438946f63ccc992babd2",
+      "findings": [
+        {
+          "clearance_conditions": [
+            "reproduce"
+          ],
+          "confidence": 0.4,
+          "coverage": [
+            "security"
+          ],
+          "id": "f1",
+          "kind": "inference",
+          "normalized": "Retained risk",
+          "source_quote": "original wording"
+        }
+      ],
+      "identity": "unverified",
+      "lane": "risk",
+      "plan_digest": "4c068e58f3ed29c6bb3073332b684d3e243fc2afe9d4828ceb09b29bcbbd7688",
+      "run": "fixture-run:risk",
+      "source": "risk: original wording; reproduced fixture observation"
+    },
+    "kind": "lane-output"
+  },
+  "producer": {
+    "assurance": "unverified",
+    "identity": "codex-institutional"
+  },
+  "schema": "codex.review.v1",
+  "supersedes": null,
+  "validation_state": "candidate"
+}

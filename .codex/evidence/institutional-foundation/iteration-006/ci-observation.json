@@ -1,0 +1,28 @@
+{
+  "scope": "Live GitHub observation before consolidation evidence commit; not final-head CI acceptance.",
+  "repository": "Aries-Serpent/_codex_",
+  "branch": "copilot/codex-institutional-foundation-001",
+  "observed_head": "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+  "observation_method": "GitHub Actions list_workflow_runs for the branch; get_job_logs for the current action-required run.",
+  "current_head_run": {
+    "id": 40157121490,
+    "name": "Auto-Approve Pending Workflow Runs",
+    "conclusion": "action_required",
+    "status": "completed",
+    "url": "https://github.com/Aries-Serpent/_codex_/actions/runs/40157121490",
+    "job_log_result": {
+      "failed_jobs": 0,
+      "total_jobs": 0,
+      "message": "No failed jobs found in this workflow run"
+    },
+    "interpretation": "No executed test job or green CI established; actual platform approval remains pending."
+  },
+  "older_heads": {
+    "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c": "Auto-Approve run 40152669416 action_required; cloud-agent run 40156802566 in_progress, not an independent check.",
+    "a6442c9e3865611917424100f05e889a7c470975": "Listed Semgrep, Rust swarm and Auto-Approve runs action_required; not successful analyses."
+  },
+  "actions_taken": "Read-only inspection only; no approval, dispatch, retry, workflow edit or exception.",
+  "final_head": "Must be resolved through PR/check APIs after handoff; no circular commit reference.",
+  "merge_readiness": "Not established",
+  "required_check_and_review_policy": "Do not infer unknown required checks or review approvals from local tests, template checkboxes or this report."
+}

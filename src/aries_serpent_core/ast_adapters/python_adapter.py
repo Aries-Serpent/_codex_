@@ -19,8 +19,6 @@ try:
 
     _LIBCST_AVAILABLE = True
 except ImportError:  # pragma: no cover
-    cst = None
-
     _LIBCST_AVAILABLE = False
 
 from .base_adapter import BaseASTAdapter, StandardizedASTNode
@@ -110,8 +108,8 @@ class PythonASTAdapter(BaseASTAdapter):
         # Recursively process children for other compound statements
         if hasattr(cst_node, "body"):
             if isinstance(cst_node.body, cst.IndentedBlock):
-                for stmt in cst_node.body.body:
-                    self._process_node(stmt, parent)
+                for child_stmt in cst_node.body.body:
+                    self._process_node(child_stmt, parent)
             elif isinstance(cst_node.body, (list, tuple)):
                 for stmt in cst_node.body:
                     self._process_node(stmt, parent)
@@ -197,13 +195,31 @@ class PythonASTAdapter(BaseASTAdapter):
                         name=import_name,
                         file_path=self.file_path,
                         parent=parent,
-                        metadata={"alias": name.asname.name.value if name.asname else None},
+                        metadata={
+                            "alias": (
+                                name.asname.name.value
+                                if name.asname and isinstance(name.asname.name, cst.Name)
+                                else None
+                            )
+                        },
                     )
                     parent.children.append(import_node)
 
         elif isinstance(imp, cst.ImportFrom):
             # Handle dotted module names in from imports
             module = self._get_full_name(imp.module) if imp.module else ""
+            if isinstance(imp.names, cst.ImportStar):
+                parent.children.append(
+                    StandardizedASTNode(
+                        node_id=self._generate_node_id(),
+                        node_type="import_from",
+                        name=f"{module}.*" if module else "*",
+                        file_path=self.file_path,
+                        parent=parent,
+                        metadata={"module": module, "name": "*", "alias": None},
+                    )
+                )
+                return
             for name in imp.names:
                 if isinstance(name, cst.ImportAlias):
                     imported_name = (
@@ -220,7 +236,11 @@ class PythonASTAdapter(BaseASTAdapter):
                         metadata={
                             "module": module,
                             "name": imported_name,
-                            "alias": name.asname.name.value if name.asname else None,
+                            "alias": (
+                                name.asname.name.value
+                                if name.asname and isinstance(name.asname.name, cst.Name)
+                                else None
+                            ),
                         },
                     )
                     parent.children.append(import_node)
@@ -242,9 +262,9 @@ class PythonASTAdapter(BaseASTAdapter):
                 )
                 parent.children.append(assign_node)
 
-    def _extract_function_metadata(self, func: cst.FunctionDef) -> dict[str, Any]:
+    def _extract_function_metadata(self, func: cst.FunctionDef) -> dict[str, object]:
         """Extract metadata from function definition."""
-        metadata = {}
+        metadata: dict[str, object] = {}
 
         # Extract decorators
         if func.decorators:
@@ -272,17 +292,17 @@ class PythonASTAdapter(BaseASTAdapter):
             if param.default:
                 param_info["default"] = str(param.default)
             params.append(param_info)
-        metadata["parameters"] = params  # type: ignore[assignment]
+        metadata["parameters"] = params
 
         # Extract return type
         if func.returns:
-            metadata["return_type"] = str(func.returns.annotation)  # type: ignore[assignment]
+            metadata["return_type"] = str(func.returns.annotation)
 
         return metadata
 
-    def _extract_class_metadata(self, cls: cst.ClassDef) -> dict[str, Any]:
+    def _extract_class_metadata(self, cls: cst.ClassDef) -> dict[str, object]:
         """Extract metadata from class definition."""
-        metadata = {}
+        metadata: dict[str, object] = {}
 
         # Extract decorators
         if cls.decorators:

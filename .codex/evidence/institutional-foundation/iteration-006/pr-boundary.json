@@ -1,0 +1,230 @@
+{
+  "schema": "codex.pr-boundary.observation.v1",
+  "bearing": 180,
+  "G5": "NOT_RUN",
+  "authority": "none",
+  "repository": "/home/runner/work/_codex_/_codex_",
+  "authorization_boundary": "This lane writes only this artifact. Coordinator may create one draft consolidation PR after gathering progress. No PR mutation, staging, commit, push, actual merge, source edit, build or test by this lane.",
+  "target": {
+    "base_ref": "refs/heads/0D_base_",
+    "base_sha": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+    "head_ref": "refs/heads/copilot/codex-institutional-foundation-001",
+    "head_sha": "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+    "remote_verification": "Both exact refs observed using git ls-remote origin.",
+    "existing_open_pr": "Coordinator reports MCP found no existing open PR with this head; not independently queried by this lane.",
+    "draft_required": true
+  },
+  "ancestry_retrieval": {
+    "commands": [
+      "git fetch --no-tags --no-write-fetch-head origin 159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+      "git fetch --deepen=64 --no-tags --no-write-fetch-head origin 64cd6ebed63d14a16e21079e4c67a318ccc92373 159830ca8b9e689cae443fb7c1cc0f36cfb7d667"
+    ],
+    "reason": "Exact-base retrieval alone left merge-base unavailable at shallow boundaries. Bounded deepening recovered ancestry.",
+    "fetches_succeeded": true,
+    "switch_merge_or_rebase": false,
+    "merge_base": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667",
+    "base_only_commits": 0,
+    "head_only_commits": 21,
+    "conclusion": "Exact base is an ancestor of exact head. Base does not already contain the accumulated task changes; institutional source namespace is absent at base.",
+    "outbound_commits_newest_first": [
+      "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+      "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+      "a6442c9e3865611917424100f05e889a7c470975",
+      "00306262216ef95d7cf1b927fe15e2ef073572ac",
+      "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+      "8b15df2da9a0cd8cddf5266a53c3da53dca0621d",
+      "40e5e363160896b035a36ce69b4f3473521c6f76",
+      "3d7babe7233401e0dfd7b792f87a376898db61d0",
+      "fe1401832bdb97ea5597745a5c9ab56ac3ec5d9f",
+      "eb21a0dfb1ab3055c313133f98fc193dd11720e7",
+      "174a7771160725bb6edf54f85d38ed5484753789",
+      "a30d759e2a15d6c566e9e825d3efa8b3040e77e0",
+      "f2703e841a1ffe5cde834a7b6912df3a8721d15f",
+      "5a882da19212222091ee805da0f02cd497adb1cd",
+      "a00f6441ee518795c612e49f94cd08687ade72a9",
+      "9305cd6917be08a6c585fbbeb063acc0d611b568",
+      "22a75dda20c14ccf0753bfde6d7d72e9b1268397",
+      "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+      "085c54231e1ff6ac4486a1d6a26233be7e214f49",
+      "592e882f516744937957a2287fd93ad9d0c870ee",
+      "1cf76ff9ccab1c6ce5294df0131092fc10055d1c"
+    ]
+  },
+  "complete_comparison": {
+    "expression": "159830ca8b9e689cae443fb7c1cc0f36cfb7d667...64cd6ebed63d14a16e21079e4c67a318ccc92373",
+    "method": "Complete git diff --name-status metadata plus bounded diff statistics and per-commit path attribution; not a complete content/security review of 522 files.",
+    "changed_paths": 522,
+    "insertions": 302926,
+    "deletions": 349,
+    "name_status_output_sha256": "71e6976a5ae00f4ceaed2394ef03a2b4b2a828b8642b6c5c5a7b578a003beab7",
+    "retained_evidence_paths": 478,
+    "evidence_counts": {
+      "institutional_foundation_root": 14,
+      "iteration_002": 50,
+      "iteration_003": 26,
+      "iteration_004": 122,
+      "iteration_005": 266
+    },
+    "non_evidence_paths": [
+      ".codex/AI_AGENT_UTILITIES_REGISTRY.md",
+      ".codex/aftermath/pda_iterations.jsonl",
+      ".codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md",
+      ".codex/session_startup_packet.json",
+      ".github/AGENTS.md",
+      ".github/copilot-prompts/README.md",
+      ".github/copilot-prompts/templates/5-pass-self-review.md",
+      ".github/copilot-prompts/templates/ci-fix-continuation.md",
+      ".github/copilot-prompts/templates/consolidation.md",
+      ".github/copilot-prompts/templates/multi-phase-implementation.md",
+      ".github/copilot-prompts/templates/pr-continuation.md",
+      ".github/docs/CTEP_Quick_Reference.md",
+      ".github/docs/CTEP_Usage_Examples.md",
+      ".github/docs/Copilot_Task_Execution_Protocol.md",
+      ".github/workflows/pr-followup-generator.md",
+      "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+      "docs/adr/assurance-review-005.json",
+      "docs/adr/azimuthal-review-004.json",
+      "docs/adr/institutional-authority-002.json",
+      "docs/adr/institutional-foundation-001.json",
+      "docs/assurance-review.rst",
+      "docs/design/azimuthal-formal-model.rst",
+      "docs/design/azimuthal-reasoning-integrity.rst",
+      "docs/institutional-foundation.rst",
+      "pyproject.toml",
+      "scripts/generate_pr_followup.py",
+      "src/codex/institutional/__init__.py",
+      "src/codex/institutional/__main__.py",
+      "src/codex/institutional/assurance.py",
+      "src/codex/institutional/authority.py",
+      "src/codex/institutional/contracts.json",
+      "src/codex/institutional/core.py",
+      "src/codex/institutional/git_capture.py",
+      "src/codex/institutional/review-formulas.json",
+      "src/codex/institutional/review.py",
+      "src/codex/institutional/storage.py",
+      "tests/ci/test_agent_instruction_contract.py",
+      "tests/ci/test_followup_consumer.py",
+      "tests/institutional/test_assurance.py",
+      "tests/institutional/test_authority.py",
+      "tests/institutional/test_foundation.py",
+      "tests/institutional/test_git_capture.py",
+      "tests/institutional/test_review.py",
+      "tests/institutional/test_review_formulas.py"
+    ],
+    "profile_directory_changes": 0,
+    "iteration_006_exclusion": "Current untracked iteration-006 artifacts are not part of the exact remote-head comparison; coordinator must recheck final head and outbound manifest after any authorized publication."
+  },
+  "scope_attribution": {
+    "lane_ownership": "This lane authored no outbound source/history changes; only its separately authorized iteration-006 JSON artifacts.",
+    "intended_accumulated_institutional_scope": [
+      "Inactive foundation/core/storage/contracts/CLI and package metadata from 1cf76ff9ccab1c6ce5294df0131092fc10055d1c.",
+      "Typed denial-only authority and bounded offline Git capture from 22a75dda20c14ccf0753bfde6d7d72e9b1268397.",
+      "Review/formula SDK, design documents and safe followup consumer from 3d7babe7233401e0dfd7b792f87a376898db61d0.",
+      "Fixture-only assurance DAG from 47daeb752582a8f03cd59341d95eb87141a9c7bf and documentation correction 00306262216ef95d7cf1b927fe15e2ef073572ac.",
+      "478 retained evidence paths across preceding iterations."
+    ],
+    "inherited_not_new_assurance_or_lane_changes": {
+      "policy_reconciliation_commit": "174a7771160725bb6edf54f85d38ed5484753789",
+      "policy_paths": [
+        ".codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md",
+        ".github/AGENTS.md",
+        ".github/docs/CTEP_Quick_Reference.md",
+        ".github/docs/CTEP_Usage_Examples.md",
+        ".github/docs/Copilot_Task_Execution_Protocol.md",
+        "tests/ci/test_agent_instruction_contract.py"
+      ],
+      "prior_review_consumer_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+      "prior_review_policy_design_consumer_paths": [
+        ".github/copilot-prompts/README.md",
+        ".github/copilot-prompts/templates/5-pass-self-review.md",
+        ".github/copilot-prompts/templates/ci-fix-continuation.md",
+        ".github/copilot-prompts/templates/consolidation.md",
+        ".github/copilot-prompts/templates/multi-phase-implementation.md",
+        ".github/copilot-prompts/templates/pr-continuation.md",
+        ".github/workflows/pr-followup-generator.md",
+        "docs/design/azimuthal-formal-model.rst",
+        "docs/design/azimuthal-reasoning-integrity.rst",
+        "scripts/generate_pr_followup.py",
+        "tests/ci/test_followup_consumer.py"
+      ],
+      "other_accumulated_bookkeeping": [
+        ".codex/AI_AGENT_UTILITIES_REGISTRY.md",
+        ".codex/aftermath/pda_iterations.jsonl",
+        "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+      ],
+      "interpretation": "These broaden the PR beyond iteration-005 assurance. They are inherited accumulated task-branch work, not edits performed in this continuation. Coordinator should describe them explicitly rather than call the PR assurance-only. Metadata attribution does not establish original user authorization for every inherited change."
+    },
+    "unintended_user_state_capture": {
+      "path": ".codex/session_startup_packet.json",
+      "historical_capture": "a6442c9e3865611917424100f05e889a7c470975",
+      "new_tool_incident": "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+      "details": "snapshot-reconciliation.json retains exact safe hashes/timestamps/blob IDs and separate owner-review-only correction proposals.",
+      "action": "Disclose, do not revert or silently include as intended runtime work. No packet correction or history rewriting performed."
+    }
+  },
+  "merge_conflict_observation": {
+    "command": "git merge-tree --write-tree --name-only --no-messages 159830ca8b9e689cae443fb7c1cc0f36cfb7d667 64cd6ebed63d14a16e21079e4c67a318ccc92373",
+    "exit_code": 0,
+    "result_tree": "29c5293ae7ea8a66628be1d4d0d7ac3f3f25340e",
+    "conflict_paths": [],
+    "actual_merge": false,
+    "limit": "Non-applying Git object computation only; no working-tree/index merge or conflict resolution. This is not hosted mergeability, passing CI or merge authorization."
+  },
+  "templates": {
+    "paths_read": [
+      ".github/PULL_REQUEST_TEMPLATE.md",
+      ".github/pull_request_template.md"
+    ],
+    "identical_sha256": "3342d6ef9b0d1efddca9789ab4c7b7a9950c8008d67024b1ce1ff091e9d8de30",
+    "headings": [
+      "Description",
+      "Workflow Execution Checklist",
+      "Type of Change",
+      "Related Issues",
+      "Testing",
+      "Checklist",
+      "Documentation",
+      "Performance Impact",
+      "Screenshots / Demo",
+      "Additional Context",
+      "Reviewers"
+    ],
+    "WEC_sections": [
+      "Always Required",
+      "Active Workflows",
+      "Never auto-checked / legacy-disabled workflow entries"
+    ],
+    "existing_template_checked_entries": [
+      "deferral-language-gate.yml",
+      "agent-auth-delegation.yml",
+      "workflow-execution-gate.yml",
+      "cost-gate.yml",
+      "auto-approve-workflows"
+    ],
+    "handling": "Preserve existing template selections as inherited template values, not fabricated execution results. Leave optional/legacy entries unchecked unless an authorized maintainer selects them. Do not tick test, approval, coverage or independent-review claims based merely on retained receipts.",
+    "warning": "The auto-approve-workflows text and template assertions do not themselves authorize workflow execution/approval or bypass genuine GitHub controls.",
+    "mutated": false
+  },
+  "policy_and_gate_impact": {
+    "policy": ".codex/CODEBASE_AGENCY_POLICY.md:14-25,98-113,148-157",
+    "policy_observation": "Draft PR permission is distinct from merge, deployment, workflow execution or approval. Actual required reviews/checks, owner/security gates and applicable environments remain enforced; cached flags/template selections are not authorization.",
+    "G5_source": "docs/adr/institutional-foundation-001.json:27",
+    "G5_exact_quote": "\"G5\": \"NOT_RUN until independently established reproduction; review agents do not establish final approval.\",",
+    "retained_gate_receipt": ".codex/evidence/institutional-foundation/iteration-005/gate-adjudication.json:4-19",
+    "retained_gates": {
+      "G1": "NOT_RUN",
+      "G4": "NOT_RUN",
+      "G5": "NOT_RUN"
+    },
+    "CodeQL": "Retained gate receipt says full Python CodeQL skipped. No CodeQL run performed in this source-reading lane; no passed security-gate claim.",
+    "merge_requirement_limit": "Inspected repository policy requires actual applicable gates to remain intact, but this lane did not inspect hosted rulesets/branch protection and cannot establish an exhaustive list of required merge checks. Draft creation is not merge-readiness or a waiver of G4/G5.",
+    "recommendation": "Open only a clearly limited draft consolidation PR; disclose unrun CodeQL/G5, broad inherited paths and packet incidents. Do not mark merge-ready or merge without actual applicable approvals/checks."
+  },
+  "limitations": [
+    "Bounded metadata/source inspection; no full review of all evidence or inherited runtime changes.",
+    "No .github/agents file contents read.",
+    "No builds, tests, credentials/token operations or PR mutations.",
+    "Point-in-time exact-head report; later publication changes require a fresh comparison.",
+    "Historical gate-adjudication remote/publication fields are stale receipt context, not current remote evidence."
+  ]
+}

@@ -1,6 +1,6 @@
 # Copilot Task Execution Protocol (CTEP)
 
-> **Version:** 1.0.0  
+> **Version:** 2.0.0
 > **Created:** 2025-12-16  
 > **Purpose:** Comprehensive task completion protocol for GitHub Copilot
 
@@ -8,9 +8,11 @@
 
 ## Overview
 
-The Copilot Task Execution Protocol (CTEP) is a structured approach to ensure comprehensive task completion. When activated, Copilot operates in a mode that guarantees:
+CTEP is optional task accounting when requested, not a guarantee that every task
+can be completed. It follows the [current agency policy](../../.codex/CODEBASE_AGENCY_POLICY.md).
+Enabling tracking does not grant authorization or independent approval.
 
-- **Zero task omissions** - All tasks are completed, no exceptions
+- **No silent omissions** - Account for completed, blocked, deferred and pending tasks
 - **Live progress tracking** - Real-time status updates
 - **Codebase-first approach** - Search existing utilities before creating new ones
 - **Full documentation** - All new utilities are documented with integration plans
@@ -42,12 +44,12 @@ Activated: [timestamp]
 ACTIVE DIRECTIVES:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-✅ Complete ALL tasks - zero omissions
+✅ Account for all tasks; complete authorized work
 📊 Maintain live progress tracker
 🔍 Codebase-first approach - search before creating
 🧰 Document all new utilities with integration plans
 🔄 Update progress after each task completion
-✅ Final verification: Completed = Total, Skipped = 0
+✅ Final verification: Total = Completed + Blocked + Deferred + Pending
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -146,20 +148,23 @@ Final response must include:
 ## ✅ Completion Summary
 
 **Total Tasks**: X
-**Completed**: X ✅
-**Skipped**: 0 ❌
-**All tasks completed**: ✅ YES
+**Completed**: C
+**Blocked**: B
+**Deferred**: D
+**Pending**: P
+**Accounting**: X = C + B + D + P
+**Acceptance**: [actual evidence-supported status]
 
 ## ✅ CTEP Compliance Verification
 
-- [x] All tasks from request completed (X = X)
-- [x] Zero tasks skipped (0)
+- [ ] Every task has exactly one current state and supporting evidence
+- [ ] Incomplete tasks retain proposed owner, reason and next action
 - [x] Codebase audit performed
 - [x] Existing utilities reused where applicable
 - [x] Progress tracker maintained
-- [x] No TODO statements left
+- [ ] Required controls and unresolved acceptance gaps reported
 
-**CTEP Compliance**: ✅ PASS
+**CTEP tracking**: [actual accounting status; not task acceptance or approval]
 ```
 
 ---
@@ -175,7 +180,9 @@ ctep_session = {
     "activated_at": "2025-12-16T17:00:00Z",
     "total_tasks": 0,
     "completed_tasks": 0,
-    "skipped_tasks": 0,  # Must remain 0
+    "blocked_tasks": 0,
+    "deferred_tasks": 0,
+    "pending_tasks": 0,
     "new_utilities": [],
     "codebase_audits": [],
     "phases": []
@@ -186,11 +193,20 @@ ctep_session = {
 
 ## Prohibited Actions During CTEP
 
-1. ❌ Skipping tasks without explicit user approval
-2. ❌ Leaving TODO comments for future implementation
+1. ❌ Silently omitting tasks or marking blocked/deferred/pending work complete
+2. ❌ Bypassing read-only boundaries, required security owner/reason classification
+   or actual review/execution approvals to force completion
 3. ❌ Creating duplicate utilities when existing ones suffice
 4. ❌ Omitting progress updates
-5. ❌ Incomplete verification checklists
+5. ❌ Claiming unperformed verification or approval
+
+Blocked/deferred/pending tasks are incomplete, not failed accounting. Record the
+evidence, impact, proposed owner and next action; continue unaffected authorized
+work. Read-only tasks permit inspection/reporting only, not edits or session
+dispatch. Missing optional memory or specialists is not a startup gate: use
+direct execution where authorized. At a resource ceiling, stop the affected
+action safely and preserve state. Publication, merges, protected settings and
+governance activation still require applicable authorization.
 
 ---
 
@@ -200,12 +216,12 @@ ctep_session = {
 ┌─────────────────────────────────────────────────────────────┐
 │  CTEP ACTIVE - COMPREHENSIVE TASK COMPLETION MODE           │
 ├─────────────────────────────────────────────────────────────┤
-│  ✅ Complete ALL tasks - no exceptions                      │
+│  ✅ Account for all tasks; respect task authority             │
 │  📊 Live progress tracker required                          │
 │  🔍 Codebase audit before new code                          │
 │  🧰 Document all new utilities                              │
 │  🔄 Update after each task                                  │
-│  ✅ Verify: Completed = Total, Skipped = 0                  │
+│  ✅ Total = Completed + Blocked + Deferred + Pending          │
 └─────────────────────────────────────────────────────────────┘
 ```
 

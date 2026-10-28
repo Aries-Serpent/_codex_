@@ -359,10 +359,12 @@ class RuleMatch:
 
     @property
     def is_block(self) -> bool:
+        """Return whether this match's action is exactly the string block."""
         return self.action == "block"
 
     @property
     def is_allow(self) -> bool:
+        """Return whether this match's action is exactly the string allow."""
         return self.action == "allow"
 
 
@@ -402,6 +404,13 @@ class PolicyRule:
     _literal_regex: Optional[re.Pattern[str]] = field(default=None, init=False, repr=False)
 
     def applies_to_stage(self, stage: str) -> bool:
+        """Return whether stage is listed or is the wildcard unspecified.
+
+        Args:
+            stage: Exact stage string; this method does not normalize case.
+
+        The unspecified stage includes every rule regardless of its applies_to tuple.
+        """
         return stage in self.applies_to or stage == "unspecified"
 
     def _get_pattern(self) -> Optional[re.Pattern[str]]:
@@ -420,6 +429,19 @@ class PolicyRule:
         return None
 
     def iter_matches(self, text: str) -> Iterator[RuleMatch]:
+        """Yield nonoverlapping pattern matches with rule metadata and text spans.
+
+        Args:
+            text: Text scanned using a lazily compiled, cached pattern. Literal rules
+                always ignore case; regex rules use the configured flags.
+
+        Yields:
+            RuleMatch objects with original fragments, spans, and sorted metadata
+            items. Invalid regex patterns are logged and yield nothing, as do
+            unsupported kinds. Stage applicability is not checked by this method.
+
+        Changing pattern fields after compilation does not invalidate cached regexes.
+        """
         regex = self._get_pattern()
         if regex is None:
             return
@@ -437,6 +459,20 @@ class PolicyRule:
             )
 
     def redact(self, text: str, default_token: str) -> tuple[str, int]:
+        """Substitute this block/redact rule's pattern throughout text.
+
+        Args:
+            text: Source string; stage applicability is not checked here.
+            default_token: Replacement used when this rule's replacement is falsey.
+
+        Returns:
+            Pair of transformed text and substitution count. Non-block/redact rules,
+            invalid patterns, or caught regex substitution errors return (text, 0).
+            Replacement strings use re.subn syntax, including backreferences.
+
+        Invalid replacement group references can raise IndexError, which is not
+        handled by the re.error fallback.
+        """
         if self.action not in {"redact", "block"}:
             return text, 0
         regex = self._get_pattern()
@@ -451,6 +487,21 @@ class PolicyRule:
 
 @dataclass
 class SafetyPolicy:
+    """Rule collection and controls consumed by SafetyFilters.
+
+    Args:
+        enabled: False bypasses scanning, classifier checks, and event logging.
+        bypass: Allows blocked decisions while retaining blocking-match evidence.
+        redaction_token: Default substitution for block/redact rules.
+        rules: Ordered PolicyRule tuple; substitutions follow this order.
+        log_path: Optional event destination; filters use DEFAULT_LOG_PATH if None.
+        version: Optional policy schema version metadata.
+        source_path: Loaded policy location for diagnostics, excluded from equality.
+
+    Construction does not load files or validate rules. Policy dictionaries and
+    optional YAML/JSON files are supported by separate factory methods.
+    """
+
     enabled: bool = True
     bypass: bool = False
     redaction_token: str = REDACT_TOKEN
@@ -461,6 +512,20 @@ class SafetyPolicy:
 
     @classmethod
     def load(cls, path: Optional[Path | str] = None) -> SafetyPolicy:
+        """Load the first usable policy candidate, otherwise use embedded defaults.
+
+        Args:
+            path: Optional explicit candidate, tried before CODEX_SAFETY_POLICY_PATH
+                and DEFAULT_POLICY_PATH. Missing/unreadable candidates are skipped.
+
+        Returns:
+            New policy with source_path set to the chosen candidate, or None for the
+            embedded fallback. An explicit path is not a strict must-exist setting.
+
+        PyYAML is optional: parsing also attempts JSON and a minimal YAML subset.
+        Only selected I/O/import failures are handled; malformed PyYAML input and
+        unexpected schema/type errors may propagate rather than trigger fallback.
+        """
         candidates: list[Path] = []
         if path:
             candidates.append(Path(path))
@@ -494,6 +559,22 @@ class SafetyPolicy:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> SafetyPolicy:
+        """Build a policy from mapping fields and expand rule match specifications.
+
+        Args:
+            data: enabled/bypass booleans, redaction_token, optional string log_path,
+                integer version, allow shortcut, and rules list. Each rule accepts
+                block/allow/redact/flag actions with literal or regex match specs,
+                prompt/output applicability, optional replacement and reason metadata.
+
+        Returns:
+            New SafetyPolicy with no source_path. Unsupported actions and non-dict
+            rule entries are skipped. One rule entry can expand to several patterns.
+            enabled/bypass use Python truthiness, not string-to-boolean parsing.
+
+        Regex compilation is deferred until matching. Input is not schema-validated;
+        incompatible field objects can raise TypeError or AttributeError.
+        """
         enabled = bool(data.get("enabled", True))
         bypass = bool(data.get("bypass", False))
         redaction_token = str(data.get("redaction_token", REDACT_TOKEN))
@@ -551,6 +632,20 @@ class SafetyPolicy:
 
 @dataclass(frozen=True)
 class SafetyResult:
+    """Immutable decision envelope returned by rule evaluation.
+
+    Args:
+        stage: Evaluated stage label.
+        allowed: Final decision after policy/environment/explicit bypass.
+        sanitized_text: Rule-substituted text, not proof of permission.
+        matches: Visible matches with overridden blocks removed.
+        raw_matches: All matches, including overridden blocks and external vetoes.
+        blocking_matches: Active block evidence retained even when bypass allows.
+        bypassed: True only when an effective block was permitted by bypass.
+
+    The envelope is frozen; metadata values inside matches need not be immutable.
+    """
+
     stage: str
     allowed: bool
     sanitized_text: str
@@ -561,6 +656,10 @@ class SafetyResult:
 
     @property
     def blocked_rules(self) -> tuple[str, ...]:
+        """Return nonempty IDs from blocking_matches in order, retaining duplicates.
+
+        IDs can be present even when allowed is True due to an effective bypass.
+        """
         return tuple(m.rule_id for m in self.blocking_matches if m.rule_id)
 
 
@@ -657,6 +756,17 @@ def _parse_applies_to(value: Any) -> tuple[str, ...]:
 
 
 class SafetyFilters:
+    """Evaluate stage-aware rules, sanitize text, and optionally enforce decisions.
+
+    Args:
+        policy: Explicit SafetyPolicy, or None to load candidate policy files.
+
+    Construction selects a log destination but does not open it. Evaluation may
+    invoke CODEX_SAFETY_CLASSIFIER and append match events; use log=False on
+    evaluate to suppress event-file output. sanitize/apply are not enforcement
+    gates: inspect allowed or use enforce when blocked text must be rejected.
+    """
+
     def __init__(self, policy: Optional[SafetyPolicy] = None):
         self.policy = policy or SafetyPolicy.load()
         self.policy_path = getattr(self.policy, "source_path", None)
@@ -668,10 +778,23 @@ class SafetyFilters:
 
     @classmethod
     def from_defaults(cls) -> SafetyFilters:
+        """Return filters built from embedded DEFAULT_POLICY_DATA only.
+
+        Unlike the default constructor, no policy file is loaded and source_path is
+        None. Runtime bypass/classifier environment variables still affect evaluation.
+        """
         return cls(SafetyPolicy.from_dict(dict(DEFAULT_POLICY_DATA)))
 
     @classmethod
     def from_policy_file(cls, path: Optional[Path | str]) -> SafetyFilters:
+        """Return filters using SafetyPolicy.load with path as its first candidate.
+
+        Args:
+            path: Explicit path or None; a missing file still permits environment,
+                default-file, and embedded fallback policies.
+
+        Parsing limitations and uncaught schema errors are those of SafetyPolicy.load.
+        """
         return cls(SafetyPolicy.load(path))
 
     # --- Public API --------------------------------------------------------
@@ -684,6 +807,39 @@ class SafetyFilters:
         bypass: bool = False,
         log: bool = True,
     ) -> SafetyResult:
+        """Scan text, resolve allow/block overlap, and return a non-enforcing decision.
+
+        Args:
+            text: Original content used for all rule matching and external classification.
+            stage: Exact prompt/output selector, or unspecified to include every rule.
+                A falsey stage also becomes unspecified.
+            bypass: Explicitly permit effective blocks; policy.bypass and truthy
+                CODEX_SAFETY_BYPASS values can also permit them.
+            log: Append per-match events when True. Events include fragments and
+                sanitized text as well as a digest; do not assume digest-only logging.
+
+        Returns:
+            SafetyResult with active/raw matches and sanitized text. Overlapping allow
+            matches neutralize blocks. If any block is overridden, sanitization uses
+            the redact-only variant even if other active blocks remain. Disabled
+            policies return original text as allowed without scanning or logging.
+            Bypass changes permission, not the underlying block evidence.
+
+        CODEX_SAFETY_CLASSIFIER may veto; import/attribute and callable exceptions
+        attempt error logging then fail open, unless that error logging raises.
+        A malformed hook lacking ':' raises ValueError. No SafetyViolation is
+        raised here, but unexpected schema/metadata errors can propagate.
+        Event-file I/O errors are best-effort and suppressed.
+
+        Example:
+            >>> policy = SafetyPolicy.from_dict({"rules": [
+            ...     {"id": "sample", "action": "redact", "match": {"literal": "sample"}}
+            ... ]})
+            >>> filters = SafetyFilters(policy)
+            >>> result = filters.evaluate("a sample", stage="prompt", log=False)
+            >>> (result.allowed, result.sanitized_text)
+            (True, 'a {REDACTED}')
+        """
         stage = stage or "unspecified"
 
         if not self.policy.enabled:
@@ -764,6 +920,21 @@ class SafetyFilters:
         return decision
 
     def enforce(self, text: str, *, stage: str, bypass: bool = False) -> str:
+        """Return sanitized text only when evaluation permits the requested stage.
+
+        Args:
+            text: Content to evaluate; returned unchanged when policy is disabled.
+            stage: Exact stage selector forwarded to evaluate.
+            bypass: Explicit permission override, in addition to policy/env overrides.
+
+        Returns:
+            Sanitized text for an allowed decision, including permitted bypass cases.
+            Match logging is enabled.
+
+        Raises:
+            SafetyViolation: If evaluation is blocked after all bypass controls.
+            ValueError: If the external classifier hook has no ':' separator.
+        """
         if not self.policy.enabled:
             return text
         decision = self.evaluate(text, stage=stage, bypass=bypass, log=True)
@@ -772,13 +943,43 @@ class SafetyFilters:
         raise SafetyViolation(stage, decision, self.policy_path)
 
     def sanitize(self, text: str, *, stage: str) -> SafetyResult:
+        """Return evaluate(text, stage=stage) without enforcing its allow decision.
+
+        Args:
+            text: Content to scan and substitute.
+            stage: Required stage selector.
+
+        Returns:
+            SafetyResult, potentially blocked. Match logging and runtime environment
+            controls remain enabled; inspect allowed before using sanitized_text.
+        """
         return self.evaluate(text, stage=stage)
 
     def is_allowed(self, text: str, *, stage: str = "unspecified") -> tuple[bool, list[str]]:
+        """Return permission and sorted active blocking-rule IDs for text.
+
+        Args:
+            text: Content evaluated with match logging enabled.
+            stage: Exact stage selector, default unspecified (all rules).
+
+        Returns:
+            Pair (allowed, IDs). Duplicate IDs are retained, and bypass may make
+            allowed True while IDs remain nonempty. Evaluation errors propagate.
+        """
         result = self.evaluate(text, stage=stage)
         return result.allowed, sorted(result.blocked_rules)
 
     def apply(self, text: str, *, stage: str = "unspecified") -> str:
+        """Return sanitized text without checking whether the decision is blocked.
+
+        Args:
+            text: Content evaluated with match logging enabled.
+            stage: Exact stage selector, default unspecified (all rules).
+
+        Returns:
+            Sanitized string from evaluate. This is not an enforcement gate;
+            use enforce to reject denied content. Evaluation errors propagate.
+        """
         result = self.evaluate(text, stage=stage)
         return result.sanitized_text
 
@@ -890,7 +1091,12 @@ class SafetyFilters:
         path = self.log_path
         try:
             path.parent.mkdir(parents=True, exist_ok=True)
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # nosec B110 - best-effort cache dir creation
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+        ) as exc:  # nosec B110 - best-effort cache dir creation
             logger.debug(
                 "safety.filters: failed to ensure log directory %s: %s",
                 path.parent,
@@ -941,11 +1147,31 @@ class SafetyFilters:
 
 
 def sanitize_prompt(prompt: str, *, filters: Optional[SafetyFilters] = None) -> SafetyResult:
+    """Evaluate prompt-stage text using supplied filters or embedded-default filters.
+
+    Args:
+        prompt: Content to scan.
+        filters: Optional SafetyFilters; omission does not load a policy file.
+
+    Returns:
+        SafetyResult with logging enabled. A blocked decision is returned, not
+        raised; inspect allowed. Runtime classifier/bypass controls still apply.
+    """
     active_filters = filters or SafetyFilters.from_defaults()
     return active_filters.sanitize(prompt, stage="prompt")
 
 
 def sanitize_output(output: str, *, filters: Optional[SafetyFilters] = None) -> SafetyResult:
+    """Evaluate output-stage text using supplied filters or embedded defaults.
+
+    Args:
+        output: Generated content to scan and substitute.
+        filters: Optional SafetyFilters; omission does not load a policy file.
+
+    Returns:
+        SafetyResult, possibly blocked, with match logging enabled. This helper
+        does not enforce permission; classifier/bypass environment controls apply.
+    """
     active_filters = filters or SafetyFilters.from_defaults()
     return active_filters.sanitize(output, stage="output")
 

@@ -28,6 +28,7 @@ def _make_db(tmp: Path) -> Path:
         ("S-1", "2025-08-18 01:01:00", "WARN", "minor warning"),
         ("S-2", "2025-08-18 01:02:00", "INFO", "other session"),
         ("S-1", "2025-08-18 01:03:00", "ERROR", "boom"),
+        ("S-unicode", "2025-08-18 01:04:00", "ERROR", "καλημέρα 世界"),
     ]
     conn.executemany("INSERT INTO logs VALUES (?,?,?,?)", rows)
     conn.commit()
@@ -35,12 +36,13 @@ def _make_db(tmp: Path) -> Path:
     return db
 
 
-def test_cli_text_output(tmp_path: Path):
+@pytest.mark.parametrize("module", ["codex.logging.viewer", "aries_serpent_core.logging.viewer"])
+def test_cli_text_output(tmp_path: Path, module: str):
     db = _make_db(tmp_path)
     cmd = [
         sys.executable,
         "-m",
-        "codex.logging.viewer",
+        module,
         "--session-id",
         "S-1",
         "--db",
@@ -57,14 +59,19 @@ def test_cli_text_output(tmp_path: Path):
     assert len(out) == 3, "Out must not be empty"
 
 
-def test_cli_json_output(tmp_path: Path):
+@pytest.mark.parametrize("module", ["codex.logging.viewer", "aries_serpent_core.logging.viewer"])
+@pytest.mark.parametrize(
+    ("session_id", "messages"),
+    [("S-1", ["boom"]), ("missing", []), ("S-unicode", ["καλημέρα 世界"])],
+)
+def test_cli_json_output(tmp_path: Path, module: str, session_id: str, messages: list[str]):
     db = _make_db(tmp_path)
     cmd = [
         sys.executable,
         "-m",
-        "codex.logging.viewer",
+        module,
         "--session-id",
-        "S-1",
+        session_id,
         "--db",
         str(db),
         "--format",
@@ -76,8 +83,29 @@ def test_cli_json_output(tmp_path: Path):
     proc = subprocess.run(cmd, capture_output=True, text=True, env=env)
     assert proc.returncode == 0, proc.stderr
     data = json.loads(proc.stdout)
-    assert len(data) == 1, "Data must not be empty"
-    assert data[0]["message"] == "boom", "Data must not be empty"
+    assert [row["message"] for row in data] == messages
+    assert proc.stdout.endswith("\n")
+
+
+def test_main_json_output_bypasses_logger(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """JSON remains consumable regardless of logger formatting or filtering."""
+    db = _make_db(tmp_path)
+
+    def reject_log(*args: object, **kwargs: object) -> None:
+        pytest.fail("JSON output must not pass through the diagnostic logger")
+
+    monkeypatch.setattr(viewer.logger, "info", reject_log)
+    assert (
+        viewer.main(
+            ["--session-id", "S-1", "--db", str(db), "--format", "json", "--level", "ERROR"]
+        )
+        == 0
+    )
+    captured = capsys.readouterr()
+    assert [row["message"] for row in json.loads(captured.out)] == ["boom"]
+    assert captured.err == ""
 
 
 def test_table_name_validation():

@@ -1,0 +1,99 @@
+{
+  "scope": "Evidence-linked capability assessment, not an overall completion percentage.",
+  "runtime_source": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+  "repository_review_candidate": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+  "wheel_sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00",
+  "source_applicability": "Current institutional runtime, contracts, resources and test bytes match the tested candidate. Iteration-006 adds evidence/scenario/handoff artifacts, not production runtime changes.",
+  "capabilities": [
+    {
+      "name": "Candidate/context binding",
+      "status": "IMPLEMENTED_AND_TESTED",
+      "evidence": ["runtime/immutable-source.json", "runtime/repository-manifest.json", "runtime/current-source-parity.json", "runtime/resumption.json"],
+      "limits": "Drift-sensitive supplied-data equality, not authenticated provenance or automatic association with the continuation inventory."
+    },
+    {
+      "name": "Attributed bearings and cross-cutting dissent",
+      "status": "IMPLEMENTED_AND_TESTED",
+      "evidence": ["architecture-bearing.json", "verification-bearing.json", "dissent-bearing.json", "runtime/repository-lane-outputs.json"],
+      "limits": "Two actual analytical bearings and dissent on fixed source; all same-platform and unverified. Eight canonical bearing identities remain unchanged; this run uses a bounded subset."
+    },
+    {
+      "name": "Initial/meta/final reconciliation",
+      "status": "IMPLEMENTED_AND_TESTED",
+      "evidence": ["runtime/repository-initial.json", "runtime/meta-remediation-proposal.json", "runtime/meta-review.json", "runtime/meta-adequacy.json", "runtime/meta-assurance-final.json"],
+      "limits": "Executed source-backed structural workflow. Only the validator-specific hypothesis receives a rejection recommendation; broad findings and dissent remain. API classification remains fixture_only."
+    },
+    {
+      "name": "Assurance DAG planning/readiness/result ingestion",
+      "status": "IMPLEMENTED_AND_TESTED",
+      "evidence": ["runtime/repository-assurance-plan.json", "runtime/meta-assurance-readiness.json", "runtime/meta-assurance-result.json", "runtime/meta-assurance-history.json"],
+      "limits": "Inert procedures and externally supplied assertions only; no arbitrary execution, independently authenticated result or approval."
+    },
+    {
+      "name": "Evidence eligibility and lifecycle/cache",
+      "status": "FIXTURE_ONLY",
+      "evidence": ["runtime/input-history.json", "runtime/after-history.json", "runtime/after-cache.json", "runtime/resumption.json"],
+      "limits": "Explicit status events, revision-sensitive dependency proofs and replay checks work; trusted administration, truth and custody are unsupported."
+    },
+    {
+      "name": "Controlled stop and exact resume",
+      "status": "IMPLEMENTED_AND_TESTED",
+      "evidence": ["runtime/dispatch.json", "runtime/retry-result.json", "runtime/resumption.json", "runtime/meta-assurance-final.json"],
+      "limits": "Historical synthetic technical node retried without relabeling real verifier evidence. Downstream synthetic work remains stale. Source-backed pending node is retention_security, not a universal assurance restart."
+    },
+    {
+      "name": "Rotation and reopening",
+      "status": "IMPLEMENTED_AND_TESTED",
+      "evidence": ["runtime/meta-rotated-followup.json", "runtime/meta-adequacy.json", "runtime/resumption.json"],
+      "limits": "Bounded attributed response coverage and drift/status reopening; not semantic truth, exhaustive sensitivity or recurrence analysis."
+    },
+    {
+      "name": "Generic persistence assurance admission",
+      "status": "IMPLEMENTED_NOT_FULLY_VALIDATED",
+      "evidence": ["runtime/admission-observation.json", "architecture-bearing.json", "dissent-bearing.json"],
+      "limits": "Executed observation: assurance semantic validator and attachment helper reject an invalid recommendation; generic envelope validation/inspection admit it structurally. Existing coordinator must compose semantic checks; no storage.apply of the invalid record occurred."
+    },
+    {
+      "name": "Formula/resilience references",
+      "status": "DESIGN_ONLY",
+      "evidence": ["design-rendering-observation.json", "../iteration-005/formula-design-preservation.json"],
+      "limits": "58 references, 27 design contracts and seven literal diagrams preserved. Some existing structural predicates are executable; no full calibrated numerical model, invented weights or empirical effectiveness."
+    },
+    {
+      "name": "Selected deployment",
+      "status": "IMPLEMENTED_AND_TESTED",
+      "evidence": ["runtime/environment.json", "runtime/workspace-scope.json", "runtime/setup.sh", "runtime/workflow.py", "../iteration-005/package-final/gate-status.json"],
+      "limits": "Usable installed offline supplied-data SDK with isolated noneditable origins. New scenario ran inside the checkout with SDK-only dependencies; historical external full-base validation remains separate. Hosted profile/tool enforcement is unverified."
+    },
+    {
+      "name": "Independent reproduction/audit",
+      "status": "BLOCKED_WITH_REASON",
+      "evidence": ["runtime/summary.json", "pr-boundary.json"],
+      "limits": "G5 NOT_RUN; actor/model/lane separation does not establish authenticated independent verification."
+    },
+    {
+      "name": "Operational authority and approval",
+      "status": "UNSUPPORTED",
+      "evidence": ["verification-bearing.json", "../iteration-005/security-and-review.json"],
+      "limits": "Draft recommendations only. No adopted governance, disposition authorization, approval, activation, release or retirement."
+    },
+    {
+      "name": "Evidence acceptance",
+      "status": "BLOCKED_WITH_REASON",
+      "evidence": ["security/retention-aggregate.json", "security/three-source-static-triage.json", "snapshot-reconciliation.json"],
+      "limits": "151 missing historical logs; 11 residual owner-review scan findings; unintended timestamp captures require owner-reviewed disposition. Scanning is scoped, not repository/history-wide clean certification."
+    },
+    {
+      "name": "Rendering and hosted profiles",
+      "status": "BLOCKED_WITH_REASON",
+      "evidence": ["design-rendering-observation.json"],
+      "limits": "Renderer modules/CLI unavailable: NOT_RUN. Text alternatives preserved. No hosted profile activated or enforcement observed."
+    }
+  ],
+  "institutional_result": {
+    "recommendation": "Enhance the existing continuation coordinator with assurance semantic admission/recovery checks, explicit candidate association or unbound classification, and required history-extension checks; do not create another agent or memory store.",
+    "evidence": ["runtime/admission-observation.json", "architecture-bearing.json", "verification-bearing.json", "dissent-bearing.json"],
+    "status": "Source-backed recommendation with one executed admission-consistency observation; not implemented remediation or authorized adjudication."
+  },
+  "overall": "Useful inactive SDK and bounded source-backed workflow; neither full Rubber-Duck operation nor institutional migration completion."
+}

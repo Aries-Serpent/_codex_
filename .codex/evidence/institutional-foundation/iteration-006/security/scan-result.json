@@ -1,0 +1,235 @@
+{
+  "archive_results": [
+    {
+      "bytes": 2662347,
+      "expanded_bytes": 12217478,
+      "member_count": 1,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/continuation.json.gz",
+      "sha256": "7c5041eba8ab8b120bb6a1d9e1c1790a111e5c7a49acd73142f9b5be29ad8c3a",
+      "status": "INSPECTED"
+    },
+    {
+      "bytes": 9381,
+      "expanded_bytes": 21138,
+      "member_count": 11,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl",
+      "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+      "status": "INSPECTED"
+    },
+    {
+      "bytes": 4412691,
+      "expanded_bytes": 14503263,
+      "member_count": 1964,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+      "sha256": "0a684e9e09a787b15004cad1582ad2470b5e2bf8c4584d8bfcb9b568e75895f0",
+      "status": "INSPECTED"
+    },
+    {
+      "bytes": 144590,
+      "expanded_bytes": 479087,
+      "member_count": 61,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/full-base-closure/build-artifacts/antlr4_python3_runtime-4.9.3-py3-none-any.whl",
+      "sha256": "b289b4c2547032bdc7b4fddc7de8cf237dd98625a17bcd112e1c2adf3885e72b",
+      "status": "INSPECTED"
+    },
+    {
+      "bytes": 17059840,
+      "expanded_bytes": 15206144,
+      "member_count": 2514,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/scoped-source.tar",
+      "sha256": "35db278d2089632a9ba20aacbcadaefae37379a1347e5aed744d8170d850c2e9",
+      "status": "INSPECTED"
+    },
+    {
+      "bytes": 9381,
+      "expanded_bytes": 21138,
+      "member_count": 11,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl",
+      "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+      "status": "INSPECTED"
+    },
+    {
+      "bytes": 4412691,
+      "expanded_bytes": 14503263,
+      "member_count": 1964,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+      "sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00",
+      "status": "INSPECTED"
+    },
+    {
+      "bytes": 17059840,
+      "expanded_bytes": 15206144,
+      "member_count": 2514,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-final/scoped-source.tar",
+      "sha256": "ac5c628ae9c7951c985a8e04a299016291c98ca3b7a22be5d8611c1a491c4243",
+      "status": "INSPECTED"
+    },
+    {
+      "bytes": 9381,
+      "expanded_bytes": 21138,
+      "member_count": 11,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl",
+      "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+      "status": "INSPECTED"
+    },
+    {
+      "bytes": 4403766,
+      "expanded_bytes": 14469389,
+      "member_count": 1963,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+      "sha256": "e88afdbc52d79f2155fdadacddac9d2e16cab15e7307822aecdccfe13c9a9c33",
+      "status": "INSPECTED"
+    },
+    {
+      "bytes": 17029120,
+      "expanded_bytes": 15172360,
+      "member_count": 2513,
+      "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-original/scoped-source.tar",
+      "sha256": "b1af84634b8cce4618cab859bd09cdfae0e2d144bfee3db6780aa189078c737c",
+      "status": "INSPECTED"
+    }
+  ],
+  "command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -B .codex/evidence/institutional-foundation/iteration-006/security/inspect_archives.py",
+  "detect_secrets_version": "1.5.0",
+  "elapsed_seconds": 72.481,
+  "expanded_bytes_total": 101820542,
+  "finding_count": 73,
+  "findings_policy": "Only hashed finding IDs and paths retained; affected content disclosure halted. Findings are untriaged, not confirmed credentials.",
+  "limits": {
+    "aggregate_expanded_bytes": 268435456,
+    "per_archive_expanded_bytes": 67108864,
+    "per_archive_member_count": 10000,
+    "per_file_bytes": 16777216
+  },
+  "member_occurrences": 12393,
+  "offline": "Audit guard rejects sockets and child execution; default local detectors/filters.",
+  "python": "3.12.10",
+  "runtime_root_text_scan": "Separate approved runtime tool receipt required.",
+  "scope_limit": "Current retained iteration-005 contents only; missing historical logs unavailable; no authenticated independence or acceptance.",
+  "settings": {
+    "filters_used": [
+      {
+        "path": "detect_secrets.filters.allowlist.is_line_allowlisted"
+      },
+      {
+        "path": "detect_secrets.filters.heuristic.is_indirect_reference"
+      },
+      {
+        "path": "detect_secrets.filters.heuristic.is_likely_id_string"
+      },
+      {
+        "path": "detect_secrets.filters.heuristic.is_lock_file"
+      },
+      {
+        "path": "detect_secrets.filters.heuristic.is_not_alphanumeric_string"
+      },
+      {
+        "path": "detect_secrets.filters.heuristic.is_potential_uuid"
+      },
+      {
+        "path": "detect_secrets.filters.heuristic.is_prefixed_with_dollar_sign"
+      },
+      {
+        "path": "detect_secrets.filters.heuristic.is_sequential_string"
+      },
+      {
+        "path": "detect_secrets.filters.heuristic.is_swagger_file"
+      },
+      {
+        "path": "detect_secrets.filters.heuristic.is_templated_secret"
+      }
+    ],
+    "plugins_used": [
+      {
+        "name": "ArtifactoryDetector"
+      },
+      {
+        "name": "AWSKeyDetector"
+      },
+      {
+        "name": "AzureStorageKeyDetector"
+      },
+      {
+        "limit": 4.5,
+        "name": "Base64HighEntropyString"
+      },
+      {
+        "name": "BasicAuthDetector"
+      },
+      {
+        "name": "CloudantDetector"
+      },
+      {
+        "name": "DiscordBotTokenDetector"
+      },
+      {
+        "name": "GitHubTokenDetector"
+      },
+      {
+        "name": "GitLabTokenDetector"
+      },
+      {
+        "limit": 3.0,
+        "name": "HexHighEntropyString"
+      },
+      {
+        "name": "IbmCloudIamDetector"
+      },
+      {
+        "name": "IbmCosHmacDetector"
+      },
+      {
+        "name": "IPPublicDetector"
+      },
+      {
+        "name": "JwtTokenDetector"
+      },
+      {
+        "keyword_exclude": "",
+        "name": "KeywordDetector"
+      },
+      {
+        "name": "MailchimpDetector"
+      },
+      {
+        "name": "NpmDetector"
+      },
+      {
+        "name": "OpenAIDetector"
+      },
+      {
+        "name": "PrivateKeyDetector"
+      },
+      {
+        "name": "PypiTokenDetector"
+      },
+      {
+        "name": "SendGridDetector"
+      },
+      {
+        "name": "SlackDetector"
+      },
+      {
+        "name": "SoftlayerDetector"
+      },
+      {
+        "name": "SquareOAuthDetector"
+      },
+      {
+        "name": "StripeDetector"
+      },
+      {
+        "name": "TelegramBotTokenDetector"
+      },
+      {
+        "name": "TwilioKeyDetector"
+      }
+    ]
+  },
+  "unique_content_count": 2227,
+  "unique_content_status_counts": {
+    "SCANNED_UTF8": 2215,
+    "SUSPECTED_FINDINGS_DISCLOSURE_HALTED": 12
+  },
+  "unsupported_formats": "Binary NUL-containing or non-UTF8 member contents are not declared clean. Nested archives are not recursively decompressed. No arbitrary format handlers."
+}

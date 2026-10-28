@@ -19,12 +19,24 @@ from __future__ import annotations
 
 import os  # noqa: E402
 import time  # noqa: E402
-from collections.abc import Iterable  # noqa: E402
+from collections.abc import Iterator  # noqa: E402
 from contextlib import contextmanager  # noqa: E402
 
-try:  # Optional dependency: prometheus-client
-    from prometheus_client import CollectorRegistry, Counter, Gauge, Histogram
+CollectorRegistry: type[_CollectorRegistry] | None
+Counter: type[_Counter] | None
+Gauge: type[_Gauge] | None
+Histogram: type[_Histogram] | None
 
+try:  # Optional dependency: prometheus-client
+    from prometheus_client import CollectorRegistry as _CollectorRegistry
+    from prometheus_client import Counter as _Counter
+    from prometheus_client import Gauge as _Gauge
+    from prometheus_client import Histogram as _Histogram
+
+    CollectorRegistry = _CollectorRegistry
+    Counter = _Counter
+    Gauge = _Gauge
+    Histogram = _Histogram
     _HAS_PROMETHEUS = True
 except ImportError:  # pragma: no cover - optional dependency path
     CollectorRegistry = None
@@ -52,8 +64,8 @@ class _NoopMetric:
     def labels(self, **_: str) -> _NoopMetric:  # pragma: no cover - trivial
         return self
 
-    @contextmanager  # type: ignore[arg-type]
-    def time(self) -> Iterable[None]:  # pragma: no cover - trivial
+    @contextmanager
+    def time(self) -> Iterator[None]:  # pragma: no cover - trivial
         yield
 
 
@@ -64,12 +76,22 @@ class CodexMetricsRegistry:
         self,
         *,
         namespace: str = "codex_ml",
-        registry: CollectorRegistry | None = None,
+        registry: _CollectorRegistry | None = None,
     ) -> None:
         self.namespace = namespace
-        self.registry = registry or (CollectorRegistry() if _HAS_PROMETHEUS else None)
+        self.registry = registry or (
+            CollectorRegistry() if _HAS_PROMETHEUS and CollectorRegistry is not None else None
+        )
 
-        if not _HAS_PROMETHEUS:
+        self.training_steps: _Counter | _NoopMetric
+        self.training_loss: _Gauge | _NoopMetric
+        self.training_duration_seconds: _Histogram | _NoopMetric
+        self.inference_requests: _Counter | _NoopMetric
+        self.inference_latency_seconds: _Histogram | _NoopMetric
+        self.data_loading_duration_seconds: _Histogram | _NoopMetric
+        self.active_sessions: _Gauge | _NoopMetric
+
+        if not _HAS_PROMETHEUS or Counter is None or Gauge is None or Histogram is None:
             self.training_steps = _NoopMetric()
             self.training_loss = _NoopMetric()
             self.training_duration_seconds = _NoopMetric()
@@ -145,8 +167,8 @@ class CodexMetricsRegistry:
 
         self.data_loading_duration_seconds.observe(max(0.0, float(seconds)))
 
-    @contextmanager  # type: ignore[arg-type]
-    def track_duration(self) -> Iterable[None]:
+    @contextmanager
+    def track_duration(self) -> Iterator[None]:
         """Context manager that records execution duration in ``training_duration``."""
 
         start = time.perf_counter()

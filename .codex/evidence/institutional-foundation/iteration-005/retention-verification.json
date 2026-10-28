@@ -1,0 +1,67 @@
+{
+  "schema": "codex.institutional.retention-observation.v1",
+  "scope": "Coordinator byte-integrity inspection only, not a rerun or independent verification.",
+  "observations": [
+    {
+      "namespace": "package-original",
+      "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+      "manifest_files": 43,
+      "total_files": 44,
+      "wheel": "package-original/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+      "wheel_sha256": "e88afdbc52d79f2155fdadacddac9d2e16cab15e7307822aecdccfe13c9a9c33",
+      "institutional_module_resource_bytes_verified": [
+        "src/codex/institutional/__init__.py",
+        "src/codex/institutional/__main__.py",
+        "src/codex/institutional/authority.py",
+        "src/codex/institutional/contracts.json",
+        "src/codex/institutional/core.py",
+        "src/codex/institutional/git_capture.py",
+        "src/codex/institutional/review-formulas.json",
+        "src/codex/institutional/review.py",
+        "src/codex/institutional/storage.py"
+      ]
+    },
+    {
+      "namespace": "package-changed",
+      "source_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+      "manifest_files": 179,
+      "total_files": 180,
+      "wheel": "package-changed/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+      "wheel_sha256": "0a684e9e09a787b15004cad1582ad2470b5e2bf8c4584d8bfcb9b568e75895f0",
+      "institutional_module_resource_bytes_verified": [
+        "src/codex/institutional/__init__.py",
+        "src/codex/institutional/__main__.py",
+        "src/codex/institutional/assurance.py",
+        "src/codex/institutional/authority.py",
+        "src/codex/institutional/contracts.json",
+        "src/codex/institutional/core.py",
+        "src/codex/institutional/git_capture.py",
+        "src/codex/institutional/review-formulas.json",
+        "src/codex/institutional/review.py",
+        "src/codex/institutional/storage.py"
+      ]
+    },
+    {
+      "namespace": "package-final",
+      "source_commit": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+      "manifest_files": 65,
+      "total_files": 66,
+      "wheel": "package-final/artifacts/codex_ml-0.3.0-py3-none-any.whl",
+      "wheel_sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00",
+      "institutional_module_resource_bytes_verified": [
+        "src/codex/institutional/__init__.py",
+        "src/codex/institutional/__main__.py",
+        "src/codex/institutional/assurance.py",
+        "src/codex/institutional/authority.py",
+        "src/codex/institutional/contracts.json",
+        "src/codex/institutional/core.py",
+        "src/codex/institutional/git_capture.py",
+        "src/codex/institutional/review-formulas.json",
+        "src/codex/institutional/review.py",
+        "src/codex/institutional/storage.py"
+      ]
+    }
+  ],
+  "receipt_prose_hygiene": "Package lane removed internal-rule explanatory prose from six receipt fields after validation and refreshed affected manifests; source/wheel/command/runtime result bytes unchanged.",
+  "independent_verification": "NOT_RUN"
+}

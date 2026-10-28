@@ -1,0 +1,9 @@
+{
+  "status": "FAIL_HARNESS_PROVENANCE_ASSUMPTION",
+  "exit": 1,
+  "log": "sdk-harness.log",
+  "exact_harness": "installed-harness-attempt-001.py",
+  "sha256": "72b495d259051f37d10cb421bb86683c37f400897b77cd3c282ca9a3e1b45146",
+  "cause": "pip records main direct wheel URL, but codex-contracts selected via --find-links has no direct_url.json. Harness wrongly required direct_url for both. Full installer report retains actual file wheel origin/digest. SDK checks preceding this provenance read ran without error; no SDK defect inferred.",
+  "resolution": "Separate full-base harness accepts absent direct_url only when installer report binds dependency to retained local wheel file and exact SHA256. Original bounded harness and source candidate untouched."
+}

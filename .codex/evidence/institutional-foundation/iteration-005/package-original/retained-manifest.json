@@ -1,0 +1,178 @@
+{
+  "files": {
+    "archive-manifest.json": {
+      "bytes": 338716,
+      "sha256": "8ec158c78feda1ba8a6fdd7abae3fa456f0a4788a98765d72bf7aaa326f15a91"
+    },
+    "artifacts/blocked-history.json": {
+      "bytes": 5916,
+      "sha256": "25bcaa7eba7443b638d47c3710172455c1450fae95c01da1c07594136f0d62de"
+    },
+    "artifacts/candidate-manifest.json": {
+      "bytes": 1154,
+      "sha256": "630bd6fff5b88f2934ed956f1f6ef299d8b473c55cc288440ad7d08fe66bdbb7"
+    },
+    "artifacts/codex_contracts-0.1.0a1-py3-none-any.whl": {
+      "bytes": 9381,
+      "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96"
+    },
+    "artifacts/codex_ml-0.3.0-py3-none-any.whl": {
+      "bytes": 4403766,
+      "sha256": "e88afdbc52d79f2155fdadacddac9d2e16cab15e7307822aecdccfe13c9a9c33"
+    },
+    "artifacts/event-cache.json": {
+      "bytes": 182,
+      "sha256": "2140a1b68ffc1680597cdd32579df04a0aee7ffc6d3d81cc0fc901ad0d8bb0a5"
+    },
+    "artifacts/history.json": {
+      "bytes": 9120,
+      "sha256": "5e8d70fe5513bd5c075d37b23015a37d99d81b851a221e99589289f1ddb3b66b"
+    },
+    "artifacts/lane-outputs.json": {
+      "bytes": 5679,
+      "sha256": "639298f3e068b0e7964c6708b321bc99268c9d46f9af9d4e2cdabc275aea3e6f"
+    },
+    "artifacts/recommendations.json": {
+      "bytes": 26307,
+      "sha256": "7911fb73fab46c66dd4d7e140e01434364d279370199a3e29b159ba21a9cd148"
+    },
+    "artifacts/results.json": {
+      "bytes": 4947,
+      "sha256": "24be8c7ab85482b0503463c4eafd85053c58e75120386637a4d98f5e2c92b53f"
+    },
+    "artifacts/review-context.json": {
+      "bytes": 187,
+      "sha256": "31c16de68838b18bfb1548c1ec872dbe393001663736f26ff995ff6448f343b7"
+    },
+    "artifacts/review-plan.json": {
+      "bytes": 3811,
+      "sha256": "28e28ce95c0937f4332fd90f11f99a08b72946ee531a12cbb7d3f6d37213bce2"
+    },
+    "artifacts/rotated-adequacy.json": {
+      "bytes": 184,
+      "sha256": "edf0f76036d20017530da862d515f9bdeb68fe1795dff456e7960052db5f8a21"
+    },
+    "artifacts/rotated-evidence.json": {
+      "bytes": 370,
+      "sha256": "61f44a2e03a08f594cf11ccf02359834bed84152836c8291d3679988994c8285"
+    },
+    "artifacts/storage-candidate.json": {
+      "bytes": 12531,
+      "sha256": "5ef6e89fe77c250e5fde616b93e504d9fbd8fd624cb1f928d03010aec986c765"
+    },
+    "artifacts/storage-continuation.json": {
+      "bytes": 12593,
+      "sha256": "6d66502152a28a5e2c0f5dbc1953d07d440d31f280610c5efa2fcefbcaa6f89b"
+    },
+    "artifacts/storage-preview.json": {
+      "bytes": 805,
+      "sha256": "9057daf56f5ec999bca640b000d18a8be5f3d16ae3aa93bb74239bf8491c2e1b"
+    },
+    "build-distributions.json": {
+      "bytes": 392,
+      "sha256": "b91d7de4301ca328563e4c78e8a373740f0215651d1e0489fde543782ee650b1"
+    },
+    "build-venv.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "commands.json": {
+      "bytes": 14303,
+      "sha256": "09aa67d88579251411254206ff518668a498ab0f8cc7d497962b1b71f9e819ce"
+    },
+    "contracts-build-complete-export.log": {
+      "bytes": 748,
+      "sha256": "a3591b36bead4f0367b479c9d6f4b728001fbc20de1e821a921ce57ff779bd3e"
+    },
+    "contracts-build.log": {
+      "bytes": 2889,
+      "sha256": "2bc110109b11f8748988379792b667ab6d03bfcfb2457a0195d96668646680a4"
+    },
+    "environment.json": {
+      "bytes": 1620,
+      "sha256": "acbf7791b08bc8f06dac3ab350cf4abf596003f4e1adfdff0c8029cb58ba6ca1"
+    },
+    "external-harness.py": {
+      "bytes": 12305,
+      "sha256": "7f03b6379b0872afbdaf5ab6ddffec094a08f0c0d3cf69c4bea6b51549992c44"
+    },
+    "external-runtime.log": {
+      "bytes": 185,
+      "sha256": "8d2776128ac7134ab983725412349d27c218c30cf3762c062a40781037a5dfff"
+    },
+    "formula-identities.json": {
+      "bytes": 43676,
+      "sha256": "989679b397fa31b9e2edb8d8033d5816f637ee0bda1f09e5f5a22269df1820e8"
+    },
+    "gate-status.json": {
+      "bytes": 3409,
+      "sha256": "508d5ed12fe5dc762b83c36d94f5f1907526d9fb5c3f642002c5e9fd88aa7345"
+    },
+    "harness-identity.json": {
+      "bytes": 208,
+      "sha256": "3d024e147e2a97e47265ca360a478d7d9defe88bb677fb9fe127c1fc0630cb97"
+    },
+    "installed-distributions.json": {
+      "bytes": 421,
+      "sha256": "bd485f146df1660906660faffda83b9f5724560918bbcf5ddc71768a6d8acc82"
+    },
+    "original-build-observation.json": {
+      "bytes": 526,
+      "sha256": "809777c450bdc87e5531e1de714973e6f0752cb58e4bcd5ad83d6a9d7b8c6d88"
+    },
+    "original-harness-execution.json": {
+      "bytes": 335,
+      "sha256": "096ca98394c6fccd06562084a965d7985e934a56ad449461fdd79fec4d0ffc69"
+    },
+    "provision-build.log": {
+      "bytes": 1753,
+      "sha256": "e4d2d15fe35b2401e69268d8df05fb8296b7f9186f96be364f433373c1ad0ba7"
+    },
+    "provision-runtime.log": {
+      "bytes": 1444,
+      "sha256": "b62dc5aa15dab1a0fd148ce642ddbd09504f5cf074c206c4e8aa5c40148a2fb3"
+    },
+    "release.json": {
+      "bytes": 250301,
+      "sha256": "956c982f706c9b4f5a8db4d4521afcea015a72cc13f6b275d3b578fd010cb800"
+    },
+    "runtime-before-install.json": {
+      "bytes": 328,
+      "sha256": "b36329b9580973e3c4d7982e77e958225d3d7f2f340d51dc3f41b256c7e4eb89"
+    },
+    "runtime-venv.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "scoped-source.tar": {
+      "bytes": 17029120,
+      "sha256": "b1af84634b8cce4618cab859bd09cdfae0e2d144bfee3db6780aa189078c737c"
+    },
+    "source-manifest.json": {
+      "bytes": 542134,
+      "sha256": "bfd4a63d8c1a3f017f30dca10a4728fe67b3e516441003f0e9260f50ac882357"
+    },
+    "supplemental-runtime-results.json": {
+      "bytes": 5559,
+      "sha256": "389aee18c140f3da89a2d35e5cdd042047cb7712c8ca918eec593ab8adb90de4"
+    },
+    "supplemental-runtime.log": {
+      "bytes": 39,
+      "sha256": "455320d8eae12bc293899ee73dd31257d8340aac7f0a8eeb4da4e143e2009f3e"
+    },
+    "wheel-build.log": {
+      "bytes": 767,
+      "sha256": "b6b7c77f9252d70504e19f221e234bde8b7d18248149d5a8029d6e86bc10ca50"
+    },
+    "wheel-install.log": {
+      "bytes": 446,
+      "sha256": "a2c24e6d394f7fcb73906133b0aaa190b1d87833663389cdd594a9f7c876b5e2"
+    },
+    "wheel-manifest.json": {
+      "bytes": 375861,
+      "sha256": "3622b691d7fa8d086ede9ab27698e96e50606414a6e7047c79a7f13a6de59f87"
+    }
+  },
+  "scope": "All retained package-original files except this self-referential manifest",
+  "source_commit": "3d7babe7233401e0dfd7b792f87a376898db61d0"
+}

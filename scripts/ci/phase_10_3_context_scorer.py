@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Phase 10.3: Context Injection & OODA Loop Enhancement
+Phase 10.3: Optional Context Artifact Scoring (not host prompt injection)
 Context Relevance Scoring Engine
 
 Scores LTM patterns by relevance to current session metadata:
@@ -31,7 +31,7 @@ import sys
 import time
 from collections import Counter
 from dataclasses import asdict, dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -40,7 +40,6 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler(".codex/phase_10_3_context_scorer.log"),
     ],
 )
 logger = logging.getLogger(__name__)
@@ -338,7 +337,7 @@ class ContextScorer:
         if patterns is None:
             patterns = list(self.patterns.values())
 
-        scored_patterns = []
+        scored_patterns: List[ScoredPattern] = []
 
         for pattern in patterns:
             score = self.score_pattern(pattern, session_metadata)
@@ -389,7 +388,7 @@ class ContextScorer:
 def extract_session_metadata() -> Dict[str, Any]:
     """Extract session metadata from GitHub Actions context and environment."""
     metadata = {
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "github_ref": os.environ.get("GITHUB_REF", "unknown"),
         "github_event_name": os.environ.get("GITHUB_EVENT_NAME", "unknown"),
         "task_description": os.environ.get("COPILOT_TASK_DESCRIPTION", ""),
@@ -517,7 +516,7 @@ def main():
 
     # Print summary
     print("\n" + "=" * 80)
-    print("PHASE 10.3: CONTEXT INJECTION SCORING SUMMARY")
+    print("PHASE 10.3: OPTIONAL CONTEXT SCORING SUMMARY (NOT PROMPT ATTACHMENT)")
     print("=" * 80)
     print(f"Session: {session_metadata.get('github_ref', 'unknown')}")
     print(f"Domain: {session_metadata.get('domain', 'unknown')}")

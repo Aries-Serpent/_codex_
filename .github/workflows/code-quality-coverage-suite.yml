@@ -171,7 +171,7 @@ jobs:
         else\n  echo '{}' > coverage_modules.json\nfi\n"
     - name: Upload coverage artifacts
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         path: '.coverage.json
 
@@ -228,7 +228,7 @@ jobs:
         '
     - name: Upload ruff report
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         path: ruff-output.txt
         if-no-files-found: ignore
@@ -289,7 +289,7 @@ jobs:
         '
     - name: Upload mypy report
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         path: mypy-output.txt
         if-no-files-found: ignore
@@ -353,7 +353,7 @@ jobs:
         \ issues \u2014 review required\"\nfi\n"
     - name: Upload bandit reports
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         path: 'bandit-report.json
 
@@ -415,7 +415,7 @@ jobs:
         '
     - name: Upload radon report
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         path: radon-output.txt
         if-no-files-found: ignore

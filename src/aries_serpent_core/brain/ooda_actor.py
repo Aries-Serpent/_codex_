@@ -63,14 +63,20 @@ class ExecutionReport:
 
 
 class AgentDispatcher:
-    """Dispatches tasks to agents."""
+    """Dispatches tasks to agents.
 
-    def __init__(self) -> None:
+    Execution requires an injected ``transport`` callable; without one the
+    dispatcher fails closed with an ``"unavailable"`` result instead of
+    simulating a successful RPC.
+    """
+
+    def __init__(self, transport: Optional[Any] = None) -> None:
         self.available_agents = {
             "ci_auto_healer": {"latency": 127, "success_rate": 0.94},
             "semantic_router": {"latency": 23, "success_rate": 0.98},
             "test_pattern_guardian": {"latency": 45, "success_rate": 0.91},
         }
+        self.transport = transport
 
     def select_agents(
         self,
@@ -100,35 +106,49 @@ class AgentDispatcher:
             return list(self.available_agents.keys())[:count]
 
     async def dispatch_async(self, agent_id: str, task: dict[str, Any]) -> AgentResult:
-        """Dispatch task to agent asynchronously."""
+        """Dispatch task to agent asynchronously.
+
+        Fails closed when no real transport is configured: the result is
+        marked ``"unavailable"`` so callers cannot mistake a stub for a
+        completed execution.
+        """
+        task_id = str(uuid.uuid4())[:8]
+        start_time = time.time()
         try:
-            task_id = str(uuid.uuid4())[:8]
-            start_time = time.time()
+            if self.transport is None:
+                return AgentResult(
+                    agent_id=agent_id,
+                    agent_name=agent_id.replace("_", " ").title(),
+                    task_id=task_id,
+                    status="unavailable",
+                    output={},
+                    duration_ms=0.0,
+                    error_message="no agent transport configured; dispatch not executed",
+                    side_effects=[],
+                )
 
-            # In production, make actual RPC call to agent
-            # For now, simulate agent execution
-            await asyncio.sleep(0.05)  # Simulate latency
-
+            result = await self.transport(agent_id, task)
             duration_ms = (time.time() - start_time) * 1000
 
             return AgentResult(
                 agent_id=agent_id,
                 agent_name=agent_id.replace("_", " ").title(),
                 task_id=task_id,
-                status="success",
-                output={"result": "Task completed successfully", "processed": True},
+                status=str(result.get("status", "error")),
+                output=dict(result.get("output", {})),
                 duration_ms=duration_ms,
-                side_effects=[],
+                error_message=result.get("error_message"),
+                side_effects=list(result.get("side_effects", [])),
             )
         except Exception as e:
             logger.error(f"Agent dispatch failed for {agent_id}: {e}")
             return AgentResult(
                 agent_id=agent_id,
                 agent_name=agent_id.replace("_", " ").title(),
-                task_id="",
+                task_id=task_id,
                 status="error",
                 output={},
-                duration_ms=0,
+                duration_ms=(time.time() - start_time) * 1000,
                 error_message=str(e),
                 side_effects=[],
             )

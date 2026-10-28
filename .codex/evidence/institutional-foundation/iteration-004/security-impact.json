@@ -1,0 +1,31 @@
+{
+  "source_candidate": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+  "CodeQL": {
+    "status": "NOT_RUN",
+    "reported_alerts": 0,
+    "actual_result": "Python analysis skipped because database size too large. Zero alerts is NOT a clean analysis.",
+    "remaining_requirement": "Execute applicable runtime analysis on a capable bounded service before dependent security acceptance.",
+    "owner": "Repository security maintainer or authorized analysis executor (proposed, not assigned)",
+    "blocks": [
+      "full G4 security acceptance"
+    ],
+    "does_not_block": [
+      "unrelated development",
+      "local technical wheel validation"
+    ],
+    "retries": "No unchanged repeated invocation after explicit size skip."
+  },
+  "consumer_targeted_checks": {
+    "bandit": "21 LOW warnings; B404=1, B607=10, B603=10",
+    "baseline": "Identical rule/severity/message multiset on entry source; all subprocess call ASTs identical before/after formatting. Not proof of absence of vulnerabilities.",
+    "ruff_security": "13 warnings in pre-existing subprocess paths; exit 1 retained, not claimed passing.",
+    "triage": "Subprocess import/PATH and argv warnings retained. No shell=True or added subprocess call. Explicit generator uses current trusted development environment; it is not installed target-review runtime. Do not use against untrusted execution environment without suitable command sandbox.",
+    "fix_scope": "No high-confidence new exploitable issue established; do not expose exception details or silently weaken security checks.",
+    "bandit_version": "__main__.py 1.9.4\n  python version = 3.12.10 (main, Apr  8 2025, 22:38:13) [GCC 13.3.0]"
+  },
+  "secrets": {
+    "source_scan": "PASS; 19 explicitly selected source/harness paths",
+    "evidence_scan": "Explicit artifact paths scanned with no detections; see secret-scan.json and final metadata scan receipts. Gzip decompression coverage is not asserted."
+  },
+  "independence": "Same-platform analysis/self-testing, not G5, authenticated approval, activation or publication."
+}

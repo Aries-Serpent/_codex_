@@ -10,10 +10,15 @@ This module tests automated token rotation including:
 
 from __future__ import annotations
 
+import hashlib
+import json
 from datetime import UTC, datetime, timedelta
+from itertools import count
+from unittest.mock import Mock
 
 import pytest
 
+from security import token_rotation
 from security.token_rotation import (
     RotationPolicy,
     RotationTrigger,
@@ -21,6 +26,47 @@ from security.token_rotation import (
     TokenRotationManager,
     TokenState,
 )
+
+NOW = datetime(2026, 1, 15, 12, tzinfo=UTC)
+OLD_TOKEN = "synthetic-old-token"
+NEW_TOKEN = "synthetic-new-token"
+
+
+@pytest.fixture(autouse=True)
+def clock(monkeypatch):
+    """Freeze both test and rotation clocks; advance explicitly without sleeping."""
+
+    class Clock(datetime):
+        current = NOW
+
+        @classmethod
+        def now(cls, tz=None):
+            if tz is None:
+                return cls.current.replace(tzinfo=None)
+            return cls.current.astimezone(tz)
+
+        @classmethod
+        def advance(cls, delta):
+            cls.current += delta
+
+    monkeypatch.setattr(token_rotation, "datetime", Clock)
+    monkeypatch.setitem(globals(), "datetime", Clock)
+    event_ids = count(1)
+    monkeypatch.setattr(
+        token_rotation.secrets, "token_hex", lambda size: f"{next(event_ids):0{2 * size}x}"
+    )
+    return Clock
+
+
+def token_hash(value):
+    """Compute the documented truncated audit hash independently of the manager."""
+    return hashlib.sha256(value.encode()).hexdigest()[:16]
+
+
+def audit_records(manager):
+    """Read the public JSONL audit artifact, not a nonexistent query API."""
+    return [json.loads(line) for line in manager.audit_log_path.read_text().splitlines()]
+
 
 # ============================================================================
 # FIXTURES
@@ -31,10 +77,10 @@ from security.token_rotation import (
 def rotation_policy():
     """Create a rotation policy."""
     return RotationPolicy(
-        max_token_age_days=90,
+        max_age_days=90,
         rotate_before_expiry_days=7,
         grace_period_hours=24,
-        max_rotation_count=12,
+        min_rotation_interval_hours=1,
     )
 
 
@@ -50,9 +96,31 @@ def token_metadata():
 
 
 @pytest.fixture
-def token_manager(rotation_policy):
-    """Create a token manager."""
-    return TokenRotationManager(policy=rotation_policy)
+def token_generator():
+    """A deterministic, non-exhausting local generator; never a live provider."""
+    return Mock(return_value=NEW_TOKEN)
+
+
+@pytest.fixture
+def token_manager(rotation_policy, token_generator, tmp_path):
+    """Keep every audit write in a fresh temporary directory."""
+    return TokenRotationManager(
+        policy=rotation_policy,
+        audit_log_path=tmp_path / "audit" / "rotation.jsonl",
+        token_generator=token_generator,
+    )
+
+
+@pytest.fixture
+def registered_token(token_manager, token_metadata):
+    """Register through the supported value/expiry API, not a metadata argument."""
+    return token_manager.register_token(
+        token_id=token_metadata.token_id,
+        token_value=OLD_TOKEN,
+        expires_at=token_metadata.expires_at,
+        scopes=token_metadata.scopes,
+        provider=token_metadata.provider,
+    )
 
 
 # ============================================================================
@@ -164,8 +232,7 @@ class TestTokenMetadata:
 
     def test_token_metadata_days_until_expiry(self, token_metadata):
         """Test days_until_expiry calculation."""
-        days = token_metadata.days_until_expiry()
-        assert days >= 89 and days <= 91, "days must be greater than zero"
+        assert token_metadata.days_until_expiry() == 90
 
     def test_token_metadata_days_until_expiry_expired(self):
         """Test days_until_expiry for expired token."""
@@ -189,19 +256,18 @@ class TestTokenMetadata:
 
     def test_token_metadata_should_rotate_age_trigger(self, rotation_policy):
         """Test should_rotate detects max age."""
-        old_time = datetime.now(UTC) - timedelta(days=85)
+        old_time = datetime.now(UTC) - timedelta(days=90)
         metadata = TokenMetadata(
             token_id="token_123",
             created_at=old_time,
             expires_at=datetime.now(UTC) + timedelta(days=90),
         )
         should_rotate, trigger = metadata.should_rotate(rotation_policy)
-        assert should_rotate is True, "should_rotate is not valid"
+        assert (should_rotate, trigger) == (True, RotationTrigger.SCHEDULED)
 
     def test_token_metadata_should_rotate_no_trigger(self, token_metadata, rotation_policy):
         """Test should_rotate returns False when no trigger."""
-        should_rotate, trigger = token_metadata.should_rotate(rotation_policy)
-        assert isinstance(should_rotate, bool)
+        assert token_metadata.should_rotate(rotation_policy) == (False, None)
 
     def test_token_metadata_with_scopes(self):
         """Test token metadata with scopes."""
@@ -259,42 +325,61 @@ class TestRotationPolicy:
     def test_rotation_policy_default_values(self):
         """Test default policy values."""
         policy = RotationPolicy()
-        assert policy.max_token_age_days == 90, "max_token_age_days is not valid"
-        assert policy.rotate_before_expiry_days == 7, "rotate_before_expiry_days is not valid"
-        assert policy.grace_period_hours == 24, "grace_period_hours is not valid"
+        assert policy.to_dict() == {
+            "max_age_days": 90,
+            "rotate_before_expiry_days": 14,
+            "grace_period_hours": 24,
+            "auto_rotate_on_exposure": True,
+            "auto_rotate_on_security_event": True,
+            "min_rotation_interval_hours": 1,
+        }
 
     def test_rotation_policy_custom_values(self):
         """Test custom policy values."""
         policy = RotationPolicy(
-            max_token_age_days=60,
+            max_age_days=60,
             rotate_before_expiry_days=14,
             grace_period_hours=48,
+            auto_rotate_on_exposure=False,
+            auto_rotate_on_security_event=False,
+            min_rotation_interval_hours=2,
         )
-        assert policy.max_token_age_days == 60, "max_token_age_days is not valid"
-        assert policy.rotate_before_expiry_days == 14, "rotate_before_expiry_days is not valid"
-        assert policy.grace_period_hours == 48, "grace_period_hours is not valid"
+        assert policy.to_dict() == {
+            "max_age_days": 60,
+            "rotate_before_expiry_days": 14,
+            "grace_period_hours": 48,
+            "auto_rotate_on_exposure": False,
+            "auto_rotate_on_security_event": False,
+            "min_rotation_interval_hours": 2,
+        }
 
-    def test_rotation_policy_with_max_rotation_count(self):
-        """Test max_rotation_count setting."""
-        policy = RotationPolicy(max_rotation_count=24)
-        assert policy.max_rotation_count == 24, "Count must be greater than zero"
+    def test_rotation_policy_with_min_rotation_interval(self):
+        """The supported storm guard is a minimum interval, not a count cap."""
+        policy = RotationPolicy(min_rotation_interval_hours=24)
+        assert policy.min_rotation_interval_hours == 24
+        assert policy.to_dict()["min_rotation_interval_hours"] == 24
 
     def test_rotation_policy_zero_values(self):
         """Test with zero values."""
         policy = RotationPolicy(
-            max_token_age_days=0,
+            max_age_days=0,
             rotate_before_expiry_days=0,
         )
-        assert policy.max_token_age_days == 0, "max_token_age_days is not valid"
+        metadata = TokenMetadata("new", NOW, NOW + timedelta(days=90))
+        assert policy.max_age_days == 0
+        assert metadata.should_rotate(policy) == (True, RotationTrigger.SCHEDULED)
 
     def test_rotation_policy_large_values(self):
         """Test with large values."""
         policy = RotationPolicy(
-            max_token_age_days=365,
+            max_age_days=365,
             rotate_before_expiry_days=60,
             grace_period_hours=720,
         )
-        assert policy.max_token_age_days == 365, "max_token_age_days is not valid"
+        metadata = TokenMetadata("young", NOW - timedelta(days=364), NOW + timedelta(days=90))
+        assert policy.max_age_days == 365
+        assert policy.grace_period_hours == 720
+        assert metadata.should_rotate(policy) == (False, None)
 
 
 # ============================================================================
@@ -305,84 +390,165 @@ class TestRotationPolicy:
 class TestTokenRotationManager:
     """Test TokenRotationManager class."""
 
-    def test_token_manager_creation(self, token_manager):
+    def test_token_manager_creation(
+        self, token_manager, rotation_policy, token_generator, tmp_path
+    ):
         """Test creating a token manager."""
-        assert token_manager is not None, "token_manager must be initialized"
-        assert token_manager.policy is not None, "policy must be initialized"
+        assert token_manager.policy is rotation_policy
+        assert token_manager.token_generator is token_generator
+        assert token_manager.tokens == {}
+        assert token_manager.audit_log_path == tmp_path / "audit" / "rotation.jsonl"
+        assert not token_manager.audit_log_path.exists()
 
-    def test_token_manager_register_token(self, token_manager, token_metadata):
+    def test_token_manager_register_token(self, token_manager, token_metadata, registered_token):
         """Test registering a token."""
-        result = token_manager.register_token(token_metadata)
-        assert result is not None, "result must be initialized"
+        assert registered_token == token_metadata
+        assert token_manager.tokens == {"token_123": registered_token}
+        assert registered_token.created_at == NOW
+        assert not token_manager.audit_log_path.exists()
 
-    def test_token_manager_get_token(self, token_manager, token_metadata):
-        """Test getting a token."""
-        token_manager.register_token(token_metadata)
-        result = token_manager.get_token("token_123")
-        assert result is not None, "result must be initialized"
+    def test_token_manager_get_token(self, token_manager, registered_token):
+        """Registered metadata is exposed by the public tokens mapping."""
+        assert token_manager.tokens["token_123"] is registered_token
 
     def test_token_manager_get_nonexistent_token(self, token_manager):
-        """Test getting nonexistent token."""
-        result = token_manager.get_token("nonexistent")
-        assert result is None, "Result must not be empty"
+        """An unknown ID has neither metadata nor a pending rotation."""
+        assert token_manager.tokens.get("nonexistent") is None
+        assert token_manager.check_rotation_needed("nonexistent") == (False, None)
 
-    def test_token_manager_list_tokens(self, token_manager, token_metadata):
-        """Test listing tokens."""
-        token_manager.register_token(token_metadata)
-        tokens = token_manager.list_tokens()
-        assert len(tokens) >= 1, "Tokens must not be empty"
+    def test_token_manager_list_tokens(self, token_manager, registered_token):
+        """The schedule reports exact state and policy decisions."""
+        assert token_manager.get_rotation_schedule() == [
+            {
+                "token_id": registered_token.token_id,
+                "days_until_expiry": 90,
+                "rotation_needed": False,
+                "trigger": None,
+                "state": "active",
+                "rotation_count": 0,
+            }
+        ]
 
     def test_token_manager_list_tokens_empty(self, token_manager):
         """Test listing tokens when empty."""
-        tokens = token_manager.list_tokens()
-        assert isinstance(tokens, list)
+        assert token_manager.get_rotation_schedule() == []
 
-    def test_token_manager_list_tokens_needing_rotation(self, token_manager, rotation_policy):
-        """Test listing tokens needing rotation."""
-        metadata = TokenMetadata(
-            token_id="token_123",
-            created_at=datetime.now(UTC),
-            expires_at=datetime.now(UTC) + timedelta(days=6),  # Less than 7 days
+    def test_token_manager_list_tokens_needing_rotation(self, token_manager, registered_token):
+        """Only the expiring token is due; the schedule is sorted by expiry."""
+        expiring = token_manager.register_token(
+            "expiring", "synthetic-expiring-token", NOW + timedelta(days=6)
         )
-        token_manager.register_token(metadata)
-        tokens = token_manager.list_tokens_needing_rotation()
-        assert isinstance(tokens, list)
+        assert token_manager.check_rotation_needed(expiring.token_id) == (
+            True,
+            RotationTrigger.EXPIRY,
+        )
+        assert token_manager.check_rotation_needed(registered_token.token_id) == (False, None)
+        schedule = token_manager.get_rotation_schedule()
+        assert [row["token_id"] for row in schedule] == ["expiring", "token_123"]
+        assert [row["rotation_needed"] for row in schedule] == [True, False]
+        assert [row["trigger"] for row in schedule] == ["expiry", None]
 
-    def test_token_manager_mark_for_rotation(self, token_manager, token_metadata):
-        """Test marking token for rotation."""
-        token_manager.register_token(token_metadata)
-        result = token_manager.mark_for_rotation("token_123", RotationTrigger.MANUAL)
-        assert result is not None, "result must be initialized"
+    def test_token_manager_manual_rotation(self, token_manager, registered_token, token_generator):
+        """Explicit replacement values bypass generation and emit a success event."""
+        event = token_manager.rotate_token(
+            registered_token.token_id,
+            RotationTrigger.MANUAL,
+            OLD_TOKEN,
+            new_token="synthetic-explicit-token",
+            metadata={"reason": "planned replacement"},
+        )
+        assert event.success is True
+        assert event.error_message is None
+        assert event.trigger is RotationTrigger.MANUAL
+        assert event.timestamp == NOW
+        assert event.old_token_hash == token_hash(OLD_TOKEN)
+        assert event.new_token_hash == token_hash("synthetic-explicit-token")
+        assert event.metadata == {"reason": "planned replacement"}
+        token_generator.assert_not_called()
 
-    def test_token_manager_rotate_token(self, token_manager, token_metadata):
-        """Test rotating a token."""
-        token_manager.register_token(token_metadata)
-        new_token = token_manager.rotate_token("token_123")
-        assert new_token is not None, "new_token must be initialized"
+    def test_token_manager_rotate_token(self, token_manager, registered_token, token_generator):
+        """Generated replacement returns an event, not a raw token."""
+        event = token_manager.rotate_token(
+            registered_token.token_id, RotationTrigger.MANUAL, OLD_TOKEN
+        )
+        assert event.success is True
+        assert event.token_id == registered_token.token_id
+        assert event.old_token_hash == token_hash(OLD_TOKEN)
+        assert event.new_token_hash == token_hash(NEW_TOKEN)
+        assert event.old_token_hash != event.new_token_hash
+        assert registered_token.rotation_count == 1
+        assert registered_token.state is TokenState.ROTATING
+        token_generator.assert_called_once_with()
 
-    def test_token_manager_revoke_token(self, token_manager, token_metadata):
-        """Test revoking a token."""
-        token_manager.register_token(token_metadata)
-        result = token_manager.revoke_token("token_123")
-        assert result is not None, "result must be initialized"
+    def test_token_manager_rotation_throttled(
+        self, token_manager, registered_token, token_generator
+    ):
+        """An immediate repeat is rejected without generation or state/audit mutation."""
+        first = token_manager.rotate_token(
+            registered_token.token_id, RotationTrigger.MANUAL, OLD_TOKEN
+        )
+        audit_before = token_manager.audit_log_path.read_bytes()
+        rejected = token_manager.rotate_token(
+            registered_token.token_id, RotationTrigger.MANUAL, NEW_TOKEN
+        )
+        assert first.success is True
+        assert rejected.success is False
+        assert rejected.error_message == "Rotation throttled - minimum interval not met"
+        assert rejected.old_token_hash == token_hash(NEW_TOKEN)
+        assert rejected.new_token_hash == ""
+        assert registered_token.rotation_count == 1
+        assert registered_token.state is TokenState.ROTATING
+        assert token_manager.audit_log_path.read_bytes() == audit_before
+        token_generator.assert_called_once_with()
 
-    def test_token_manager_get_rotation_stats(self, token_manager, token_metadata):
-        """Test getting rotation statistics."""
-        token_manager.register_token(token_metadata)
-        stats = token_manager.get_rotation_stats()
-        assert isinstance(stats, dict)
+    def test_token_manager_schedule_after_rotation(self, token_manager, registered_token):
+        """The public schedule reflects successful rotation state and count."""
+        token_manager.rotate_token(registered_token.token_id, RotationTrigger.MANUAL, OLD_TOKEN)
+        assert token_manager.get_rotation_schedule() == [
+            {
+                "token_id": registered_token.token_id,
+                "days_until_expiry": 90,
+                "rotation_needed": False,
+                "trigger": None,
+                "state": "rotating",
+                "rotation_count": 1,
+            }
+        ]
 
-    def test_token_manager_audit_trail(self, token_manager, token_metadata):
-        """Test audit trail tracking."""
-        token_manager.register_token(token_metadata)
-        trail = token_manager.get_audit_trail("token_123")
-        assert isinstance(trail, list)
+    def test_token_manager_audit_trail(self, token_manager, registered_token):
+        """The JSONL record contains event context and hashes, never raw values."""
+        event = token_manager.rotate_token(
+            registered_token.token_id,
+            RotationTrigger.POLICY_CHANGE,
+            OLD_TOKEN,
+            metadata={"policy_version": 2},
+        )
+        assert audit_records(token_manager) == [
+            {
+                "event_id": event.event_id,
+                "token_id": registered_token.token_id,
+                "timestamp": NOW.isoformat(),
+                "trigger": "policy_change",
+                "old_token_hash": token_hash(OLD_TOKEN),
+                "new_token_hash": token_hash(NEW_TOKEN),
+                "success": True,
+                "error_message": None,
+                "metadata": {"policy_version": 2},
+            }
+        ]
+        audit_text = token_manager.audit_log_path.read_text()
+        assert OLD_TOKEN not in audit_text
+        assert NEW_TOKEN not in audit_text
 
-    def test_token_manager_update_token_last_used(self, token_manager, token_metadata):
-        """Test updating last_used timestamp."""
-        token_manager.register_token(token_metadata)
-        result = token_manager.update_last_used("token_123")
-        assert result is not None, "result must be initialized"
+    def test_token_manager_rotation_preserves_metadata(self, token_manager, registered_token):
+        """Rotation tracks lifecycle but does not invent vault/usage operations."""
+        registered_token.last_used = NOW - timedelta(hours=2)
+        token_manager.rotate_token(registered_token.token_id, RotationTrigger.MANUAL, OLD_TOKEN)
+        assert registered_token.last_used == NOW - timedelta(hours=2)
+        assert registered_token.scopes == ["read:repo", "write:repo"]
+        assert registered_token.provider == "github"
+        assert registered_token.created_at == NOW
+        assert registered_token.expires_at == NOW + timedelta(days=90)
 
 
 # ============================================================================
@@ -393,65 +559,135 @@ class TestTokenRotationManager:
 class TestRotationScenarios:
     """Test rotation scenarios."""
 
-    def test_scenario_scheduled_rotation(self, token_manager, token_metadata):
-        """Test scheduled rotation scenario."""
-        token_manager.register_token(token_metadata)
-        tokens_to_rotate = token_manager.list_tokens_needing_rotation()
-        assert isinstance(tokens_to_rotate, list)
+    def test_scenario_scheduled_rotation(self, token_manager, registered_token, clock):
+        """Age-based scheduling produces the trigger consumed by rotation."""
+        # Keep expiry well outside the window while crossing the age boundary.
+        registered_token.expires_at = NOW + timedelta(days=180)
+        clock.advance(timedelta(days=90))
+        needed, trigger = token_manager.check_rotation_needed(registered_token.token_id)
+        assert needed is True
+        assert trigger is RotationTrigger.SCHEDULED
+        event = token_manager.rotate_token(registered_token.token_id, trigger, OLD_TOKEN)
+        assert event.success is True
+        assert registered_token.rotation_count == 1
+        assert registered_token.state is TokenState.ROTATING
+        assert token_manager.check_rotation_needed(registered_token.token_id) == (False, None)
 
-    def test_scenario_emergency_rotation(self, token_manager, token_metadata):
-        """Test emergency rotation on security event."""
-        token_manager.register_token(token_metadata)
-        result = token_manager.mark_for_rotation("token_123", RotationTrigger.SECURITY_EVENT)
-        assert result is not None, "result must be initialized"
+    @pytest.mark.parametrize("event_type", ["exposure", "breach", "compromise"])
+    def test_scenario_emergency_rotation(self, token_manager, registered_token, event_type):
+        """A targeted incident rotates only affected registered IDs."""
+        unaffected = token_manager.register_token(
+            "unaffected", "synthetic-unaffected-token", NOW + timedelta(days=90)
+        )
+        events = token_manager.handle_security_event(
+            event_type,
+            affected_token_ids=[registered_token.token_id, "unknown"],
+            metadata={"incident_id": "local-test"},
+        )
+        assert len(events) == 1
+        assert events[0].success is True
+        assert events[0].trigger is RotationTrigger.SECURITY_EVENT
+        assert events[0].token_id == registered_token.token_id
+        assert events[0].metadata == {
+            "security_event_type": event_type,
+            "incident_id": "local-test",
+        }
+        assert registered_token.state is TokenState.ROTATING
+        assert registered_token.rotation_count == 1
+        assert unaffected.state is TokenState.ACTIVE
+        assert unaffected.rotation_count == 0
 
     def test_scenario_grace_period_during_rotation(
-        self, token_manager, token_metadata, rotation_policy
+        self, token_manager, registered_token, rotation_policy
     ):
-        """Test grace period during rotation."""
-        token_manager.register_token(token_metadata)
-        old_metadata = token_manager.get_token("token_123")
-        assert old_metadata.state == TokenState.ACTIVE, "Data must not be empty"
+        """Successful rotation enters ROTATING, the documented grace-period state.
 
-        token_manager.rotate_token("token_123")
+        This metadata manager has no vault activation/revocation API. Do not
+        equate a rotation event with provider-side revocation or secret storage.
+        """
+        assert rotation_policy.grace_period_hours == 24
+        assert registered_token.state is TokenState.ACTIVE
+        event = token_manager.rotate_token(
+            registered_token.token_id, RotationTrigger.MANUAL, OLD_TOKEN
+        )
+        assert event.success is True
+        assert token_manager.tokens[registered_token.token_id] is registered_token
+        assert registered_token.state is TokenState.ROTATING
 
-        # Old token should be in grace period or revoked
-        updated = token_manager.get_token("token_123")
-        assert updated.state in [TokenState.ROTATING, TokenState.REVOKED]
-
-    def test_scenario_multiple_token_rotation(self, token_manager, rotation_policy):
-        """Test rotating multiple tokens."""
-        tokens = [
-            TokenMetadata(
-                token_id=f"token_{i}",
-                created_at=datetime.now(UTC),
-                expires_at=datetime.now(UTC) + timedelta(days=90),
+    def test_scenario_multiple_token_rotation(self, token_manager, token_generator):
+        """A global incident rotates every token and appends one record per token."""
+        for i in range(5):
+            token_manager.register_token(
+                f"token_{i}", f"synthetic-token-{i}", NOW + timedelta(days=90)
             )
-            for i in range(5)
+        events = token_manager.handle_security_event("breach")
+        assert [event.token_id for event in events] == [f"token_{i}" for i in range(5)]
+        assert all(event.success is True for event in events)
+        assert len({event.event_id for event in events}) == 5
+        assert all(meta.state is TokenState.ROTATING for meta in token_manager.tokens.values())
+        assert all(meta.rotation_count == 1 for meta in token_manager.tokens.values())
+        assert [row["token_id"] for row in audit_records(token_manager)] == [
+            f"token_{i}" for i in range(5)
+        ]
+        assert token_generator.call_count == 5
+
+    def test_scenario_min_rotation_interval(self, token_manager, registered_token, clock):
+        """Reject just before the minimum interval; accept exactly at the boundary."""
+        first = token_manager.rotate_token(
+            registered_token.token_id, RotationTrigger.MANUAL, OLD_TOKEN
+        )
+        clock.advance(timedelta(hours=1) - timedelta(microseconds=1))
+        rejected = token_manager.rotate_token(
+            registered_token.token_id, RotationTrigger.MANUAL, NEW_TOKEN
+        )
+        assert first.success is True
+        assert rejected.success is False
+        assert rejected.error_message == "Rotation throttled - minimum interval not met"
+        assert registered_token.rotation_count == 1
+        clock.advance(timedelta(microseconds=1))
+        accepted = token_manager.rotate_token(
+            registered_token.token_id,
+            RotationTrigger.MANUAL,
+            NEW_TOKEN,
+            new_token="synthetic-next-token",
+        )
+        assert accepted.success is True
+        assert accepted.error_message is None
+        assert accepted.new_token_hash == token_hash("synthetic-next-token")
+        assert registered_token.rotation_count == 2
+        assert [row["timestamp"] for row in audit_records(token_manager)] == [
+            NOW.isoformat(),
+            (NOW + timedelta(hours=1)).isoformat(),
         ]
 
-        for token in tokens:
-            token_manager.register_token(token)
+    @pytest.mark.parametrize(
+        "event_type,policy_field",
+        [
+            ("exposure", "auto_rotate_on_exposure"),
+            ("breach", "auto_rotate_on_security_event"),
+            ("compromise", "auto_rotate_on_security_event"),
+        ],
+    )
+    def test_scenario_auto_rotation_disabled(
+        self, token_manager, registered_token, token_generator, event_type, policy_field
+    ):
+        """Policy opt-outs cause no rotation, generation, or audit write."""
+        setattr(token_manager.policy, policy_field, False)
+        assert token_manager.handle_security_event(event_type) == []
+        assert registered_token.state is TokenState.ACTIVE
+        assert registered_token.rotation_count == 0
+        assert not token_manager.audit_log_path.exists()
+        token_generator.assert_not_called()
 
-        all_tokens = token_manager.list_tokens()
-        assert len(all_tokens) == 5, "All_tokens must not be empty"
-
-    def test_scenario_max_rotation_limit(self, token_manager, rotation_policy):
-        """Test max rotation count enforcement."""
-        policy = RotationPolicy(max_rotation_count=3)
-        manager = TokenRotationManager(policy=policy)
-
-        metadata = TokenMetadata(
-            token_id="token_123",
-            created_at=datetime.now(UTC),
-            expires_at=datetime.now(UTC) + timedelta(days=90),
-            rotation_count=3,  # At max
-        )
-        manager.register_token(metadata)
-
-        # Further rotation should be blocked or handled
-        result = manager.rotate_token("token_123")
-        assert result is None or hasattr(result, "success")  # Blocked (None) or RotationEvent
+    def test_scenario_unknown_affected_token(
+        self, token_manager, registered_token, token_generator
+    ):
+        """An incident affecting only an unknown ID leaves registered tokens alone."""
+        assert token_manager.handle_security_event("breach", ["unknown"]) == []
+        assert registered_token.state is TokenState.ACTIVE
+        assert registered_token.rotation_count == 0
+        assert not token_manager.audit_log_path.exists()
+        token_generator.assert_not_called()
 
 
 # ============================================================================
@@ -476,11 +712,8 @@ def test_token_expiry_rotation_parametrized(rotation_policy, days_remaining, sho
         created_at=datetime.now(UTC),
         expires_at=datetime.now(UTC) + timedelta(days=days_remaining),
     )
-    should_rotate_result, trigger = metadata.should_rotate(rotation_policy)
-    if should_rotate:
-        assert should_rotate_result is True or should_rotate_result is False, "Result must not be empty"
-    else:
-        assert isinstance(should_rotate_result, bool)
+    expected_trigger = RotationTrigger.EXPIRY if should_rotate else None
+    assert metadata.should_rotate(rotation_policy) == (should_rotate, expected_trigger)
 
 
 @pytest.mark.parametrize(
@@ -544,11 +777,11 @@ class TestEdgeCases:
         assert metadata.is_expired() is False, "Data must not be empty"
 
     def test_token_with_immediate_expiry(self):
-        """Test token expiring immediately."""
+        """Test the first instant after expiry without relying on wall-clock drift."""
         metadata = TokenMetadata(
             token_id="token_123",
             created_at=datetime.now(UTC),
-            expires_at=datetime.now(UTC),
+            expires_at=datetime.now(UTC) - timedelta(microseconds=1),
         )
         assert metadata.is_expired() is True, "Data must not be empty"
 

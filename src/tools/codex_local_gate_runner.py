@@ -16,6 +16,7 @@ import subprocess
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TypedDict
 
 import yaml
 
@@ -33,6 +34,19 @@ class GateResult:
     returncode: int
     stdout: str
     stderr: str
+
+
+class GateResultPayload(TypedDict):
+    name: str
+    cmd: Sequence[str]
+    returncode: int
+    stdout: str
+    stderr: str
+
+
+class GateSummary(TypedDict):
+    overall_returncode: int
+    results: list[GateResultPayload]
 
 
 def _load_gate_config(path: Path) -> list[GateCommand]:
@@ -72,10 +86,10 @@ def _run_command(command: Sequence[str], repo_root: Path) -> subprocess.Complete
             command, cwd=str(repo_root), check=False, capture_output=True, text=True, env=env
         )
     except TypeError:
-        return subprocess.run(command, check=False)  # type: ignore[arg-type]
+        return subprocess.run(command, check=False)
 
 
-def run_gates(repo_root: Path, commands: list[GateCommand]) -> dict[str, object]:
+def run_gates(repo_root: Path, commands: list[GateCommand]) -> GateSummary:
     results: list[GateResult] = []
     overall_rc = 0
     for command in commands:
@@ -94,10 +108,22 @@ def run_gates(repo_root: Path, commands: list[GateCommand]) -> dict[str, object]
                 stderr=stderr,
             )
         )
-    return {"overall_returncode": overall_rc, "results": [r.__dict__ for r in results]}
+    return {
+        "overall_returncode": overall_rc,
+        "results": [
+            {
+                "name": r.name,
+                "cmd": r.cmd,
+                "returncode": r.returncode,
+                "stdout": r.stdout,
+                "stderr": r.stderr,
+            }
+            for r in results
+        ],
+    }
 
 
-def _write_markdown(summary: dict[str, object], path: Path) -> None:
+def _write_markdown(summary: GateSummary, path: Path) -> None:
     lines = ["# Local Gate Report", "", "| Gate | Return Code |", "| --- | --- |"]
     for result in summary.get("results", []):
         name = result.get("name", "")

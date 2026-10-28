@@ -1,0 +1,204 @@
+{
+  "schema": "codex.verification-bearing.source-observation.v1",
+  "bearing": 180,
+  "role": "Verification",
+  "independence": "Second analytical role on the same platform; not an authenticated independent verifier.",
+  "G5": "NOT_RUN",
+  "approval": false,
+  "activation": false,
+  "authority": "none",
+  "method": "Bounded source reading and Git byte/hash inspection only. No runtime import, test, checkpoint creation, packet edit or execution of reviewed code.",
+  "repository": "/home/runner/work/_codex_/_codex_",
+  "source_commit": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+  "observation_head": "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+  "source_bindings": [
+    {
+      "path": "src/codex/institutional/core.py",
+      "git_blob": "4cfadd86670759a1f97a6612d51cc63024a58d13",
+      "sha256": "636c45dc7eed70d0bed4bc80602f6831fd76ef5a688119f082ae7f8fe4743cef"
+    },
+    {
+      "path": "src/codex/institutional/assurance.py",
+      "git_blob": "071ddd078372de5c25b71556d47e331d2a4db635",
+      "sha256": "ba67ea4d6201dd3c3243ec86715c54f21f1b620ac8dc8bc48732b818e020402c"
+    },
+    {
+      "path": "src/codex/institutional/storage.py",
+      "git_blob": "a18cf253b803807646a058a0f9316c794ad0b224",
+      "sha256": "35e7122d388e44eb1badf025a2e69f2dffee0cf473822ca001e4f9f52b2a947f"
+    }
+  ],
+  "claim_assessed": "A validated continuation checkpoint authenticates its attributed actor or establishes approval.",
+  "assessment": {
+    "verdict": "NOT_SUPPORTED; explicitly contradicted by the reviewed implementation.",
+    "confidence": "high",
+    "observation": "Schema validation, deterministic digest equality, reference consistency, prerequisite checks and local write coordination are implemented. Actor assurance remains unverified and authority/activation are deliberately absent.",
+    "inference": "A passing checkpoint is evidence of bounded technical consistency, not who authored or approved its assertions. Same-platform analytical roles must not be promoted to G5."
+  },
+  "counterevidence": [
+    {
+      "path": "src/codex/institutional/core.py",
+      "lines": [42, 43],
+      "exact_quote": "return hashlib.sha256(canonical(value)).hexdigest()",
+      "observation": "Integrity uses an unkeyed digest.",
+      "inference": "Digest equality alone cannot authenticate an actor; a replacement record and its digest can be recomputed.",
+      "confidence": "high"
+    },
+    {
+      "path": "src/codex/institutional/core.py",
+      "lines": [109, 121],
+      "exact_quotes": [
+        "\"assurance\": {\"const\": \"unverified\"},",
+        "\"authority_refs\": {\"type\": \"array\", \"maxItems\": 0},",
+        "\"validation_state\": {\"const\": \"candidate\"},",
+        "\"lifecycle\": {\"const\": \"Draft\"},"
+      ],
+      "observation": "Validated envelopes require unverified producer assurance, no authority references and Draft/candidate state.",
+      "confidence": "high"
+    },
+    {
+      "path": "src/codex/institutional/core.py",
+      "lines": [453, 453],
+      "exact_quote": "\"Untrusted content and its digest can both be replaced; no authenticated approval.\",",
+      "observation": "The generated challenge expressly rejects authenticated approval.",
+      "confidence": "high"
+    },
+    {
+      "path": "src/codex/institutional/core.py",
+      "lines": [524, 533],
+      "exact_quotes": [
+        "\"implementer\": \"unverified\",",
+        "\"independent_verifier\": \"unknown\",",
+        "\"approval\": \"NOT_RUN\",",
+        "\"uncertainty\": [\"No operational authority can be derived from these records.\"],"
+      ],
+      "observation": "The continuation's own actor and authority declarations deny the assessed claim.",
+      "confidence": "high"
+    },
+    {
+      "path": "src/codex/institutional/core.py",
+      "lines": [546, 548],
+      "exact_quotes": [
+        "\"\"\"Untrusted claims may explain denial, never establish authority.\"\"\"",
+        "reasons = [\"TRUSTED_IDENTITY_UNAVAILABLE\", \"ACTIVATION_UNSUPPORTED\"]"
+      ],
+      "observation": "Authority diagnostics always begin with unavailable trusted identity and unsupported activation.",
+      "confidence": "high"
+    },
+    {
+      "path": "src/codex/institutional/assurance.py",
+      "lines": [326, 330],
+      "exact_quote": "value[\"actor\"] == node[\"actor\"] and value[\"identity_assurance\"] == \"unverified\",",
+      "observation": "Actor substitution rejection compares supplied actor strings while requiring unverified identity assurance.",
+      "inference": "String equality is a consistency check, not an identity-authentication mechanism.",
+      "confidence": "high"
+    },
+    {
+      "path": "src/codex/institutional/assurance.py",
+      "lines": [586, 590],
+      "exact_quotes": [
+        "\"\"\"Ingest an external assertion, with exact retry and prerequisite bindings.",
+        "executes the registered procedure or authenticates the attributed actor."
+      ],
+      "quote_context": "The second quoted line continues: Nothing here / executes the registered procedure or authenticates the attributed actor.",
+      "observation": "ingest_result handles an external assertion; it does not execute or authenticate the asserted work.",
+      "confidence": "high"
+    },
+    {
+      "path": "src/codex/institutional/assurance.py",
+      "lines": [623, 633],
+      "exact_quotes": [
+        "This is not a clearance event. A ready node remains pending until a bound,",
+        "_require(state[\"current_binding\"], \"STALE_BINDING\")",
+        "_require(pending_node == state[\"pending_node\"], \"PENDING_NODE\")",
+        "_require(state[\"nodes\"][pending_node][\"ready\"], \"PREREQUISITES\")"
+      ],
+      "observation": "Resume rechecks the supplied manifest binding and exact pending-node prerequisites; it does not issue clearance.",
+      "confidence": "high"
+    },
+    {
+      "path": "src/codex/institutional/storage.py",
+      "lines": [75, 94],
+      "exact_quotes": [
+        "raise Rejected(\"CONCURRENT_MODIFICATION\", 7)",
+        "raise Rejected(\"PREDECESSOR_MISMATCH\", 7)",
+        "raise Rejected(\"SEQUENCE_MISMATCH\", 7)",
+        "\"authority\": \"explicit ordinary write only; no activation\",",
+        "\"activation\": \"unsupported\","
+      ],
+      "observation": "Predecessor and sequencing protect local continuity, not governance authorization.",
+      "confidence": "high"
+    },
+    {
+      "path": "src/codex/institutional/storage.py",
+      "lines": [158, 211],
+      "exact_quotes": [
+        "\"\"\"Recheck preview and drift, lock writers, preserve predecessor, replace atomically.\"\"\"",
+        "if verify(value, root):",
+        "_atomic_at(parent, \"checkpoint.json\", data)"
+      ],
+      "observation": "Persistence rechecks preview and repository drift, locks cooperative writers and retains the prior checkpoint before replacement.",
+      "inference": "These are meaningful continuation-integrity controls but do not establish an authenticated author or approver.",
+      "confidence": "high"
+    }
+  ],
+  "residual_source_binding_gaps": [
+    {
+      "path": "src/codex/institutional/assurance.py",
+      "lines": [276, 283],
+      "exact_quotes": [
+        "def _current(data: dict, manifest: Any) -> bool:",
+        "return current[\"payload\"][\"data\"][\"binding\"] == data[\"binding\"]"
+      ],
+      "observation": "Current binding is recomputed from the caller-supplied manifest using review.review_plan.",
+      "inference": "The supplied manifest is not independently proven to describe actual checkout, installed wheel, environment or actor by this function. External source-binding evidence remains necessary.",
+      "confidence": "high",
+      "owner_next_step": "Coordinator must retain exact source/wheel/environment receipts and avoid calling manifest equality authenticated provenance."
+    },
+    {
+      "path": "src/codex/institutional/assurance.py",
+      "lines": [812, 839],
+      "exact_quotes": [
+        "The coordinator must still preview/revalidate repository drift and use its",
+        "existing write path. No files are written and no new store is created here.",
+        "payload[\"predecessor\"] = digest(continuation)"
+      ],
+      "observation": "attach_continuation establishes a digest-linked Draft successor and validates supplied artifacts, but delegates repository drift and persistence to the coordinator.",
+      "inference": "Successful attachment alone is not proof that the persistence coordinator was invoked or the current repository source was revalidated.",
+      "confidence": "high",
+      "owner_next_step": "Require retained actual coordinator preview/apply evidence for persistence claims; no such run was performed by this lane."
+    },
+    {
+      "path": "src/codex/institutional/core.py",
+      "lines": [564, 594],
+      "exact_quotes": [
+        "if value[\"payload\"][\"dirty_tree\"] != worktree(root):",
+        "if len(expected) == 1 and inv[\"payload\"] != expected[0][\"payload\"]:",
+        "\"HEAD\",",
+        "\":!.github/agents/**\",",
+        "f\":!{NAMESPACE}/**\","
+      ],
+      "observation": "Verification compares contracts, root, tracked dirty diff and regenerated inventory. The dirty binding explicitly excludes profile contents and the checkpoint namespace.",
+      "inference": "This is intentionally scoped source binding, not a full working-directory byte attestation. Git diff HEAD does not bind untracked files; untracked runtime/configuration inputs need separate evidence.",
+      "confidence": "high",
+      "owner_next_step": "Document excluded/untracked inputs in any reproducibility claim. Do not widen prohibited profile reads."
+    },
+    {
+      "path": "src/codex/institutional/core.py",
+      "lines": [426, 426],
+      "exact_quote": "\"limitations\": [\"Metadata only; integrity is not authenticated provenance.\"],",
+      "observation": "The candidate labels its own trust evidence as metadata-only and unauthenticated.",
+      "inference": "Recorded tests and exact source parity do not close trusted identity, authorization, independent reproduction or hosted-runtime acceptance gaps.",
+      "confidence": "high",
+      "owner_next_step": "Keep independent acceptance and approval NOT_RUN until evidence from an authorized independent process exists."
+    }
+  ],
+  "limits": [
+    "This is a bounded analytical source review, not a security audit or exploit finding.",
+    "No additional agent was delegated; the role is analytical rather than authenticated organizational independence.",
+    "Runtime behavior, live CI, actor credentials, owner approval and institutional acceptance were not tested.",
+    "Exact source bindings and retained test provenance are distinct from authentication.",
+    "Architecture and dissent bearings are coordinator-owned separate artifacts.",
+    "No .github/agents file contents were read."
+  ]
+}

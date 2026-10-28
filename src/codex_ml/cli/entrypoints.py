@@ -19,50 +19,72 @@ import os
 import platform
 import runpy
 import sys
+from collections.abc import Callable
+from contextlib import nullcontext
 from importlib import import_module
-from typing import Any, NoReturn, Optional
+from pathlib import Path
+from typing import Any, NoReturn, Optional, TypeVar, overload
 
 from aries_serpent_core.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 
+_Function = TypeVar("_Function", bound=Callable[..., object])
+ArgparseJSONParser: type[argparse.ArgumentParser] | None
+
 try:  # pragma: no cover - structured logging is optional offline
-    from codex_ml.codex_structured_logging import (
-        ArgparseJSONParser,
-        capture_exceptions,
-        init_json_logging,
-        log_event,
-    )
+    from codex_ml.codex_structured_logging import ArgparseJSONParser as _StructuredParser
+    from codex_ml.codex_structured_logging import capture_exceptions as _capture_exceptions
+    from codex_ml.codex_structured_logging import init_json_logging as _init_json_logging
+    from codex_ml.codex_structured_logging import log_event as _log_event
 except (ValueError, TypeError):  # pragma: no cover - degrade gracefully without structured logging
     ArgparseJSONParser = None
 
-    def init_json_logging() -> None:
-        class _NullLogger:
-            def info(self, *_a: object, **_k: object) -> None:
-                return None
+    def init_json_logging(
+        level_env: str = "CODEX_LOG_LEVEL",
+        default_level: str = "INFO",
+        *,
+        session_id: str | None = None,
+        session_log_dir: Path | str | None = None,
+    ) -> logging.Logger:
+        fallback_logger = logging.getLogger("codex_ml.cli.fallback")
+        fallback_logger.disabled = True
+        return fallback_logger
 
-            def warning(self, *_a: object, **_k: object) -> None:
-                return None
-
-            def error(self, *_a: object, **_k: object) -> None:
-                return None
-
-        return _NullLogger()
-
-    def log_event(*_a: object, **_k: object) -> None:
+    def log_event(logger: logging.Logger, event: str, **fields: object) -> None:
         return None
 
-    class _CaptureContext:
-        def __enter__(self) -> None:  # pragma: no cover - trivial branch
-            return None
+    @overload
+    def capture_exceptions(
+        func: _Function,
+        *,
+        logger: logging.Logger | None = None,
+        event: str = "app.exception",
+    ) -> _Function: ...
 
-        def __exit__(self, *_exc: object) -> None:  # pragma: no cover - trivial branch
-            return None
+    @overload
+    def capture_exceptions(
+        func: logging.Logger | None = None,
+        *,
+        logger: logging.Logger | None = None,
+        event: str = "app.exception",
+    ) -> nullcontext[None]: ...
 
-    def capture_exceptions(logger=None, **_kwargs) -> None:
-        if callable(logger) and not isinstance(logger, type):
-            return logger
-        return _CaptureContext()
+    def capture_exceptions(
+        func: _Function | logging.Logger | None = None,
+        *,
+        logger: logging.Logger | None = None,
+        event: str = "app.exception",
+    ) -> _Function | nullcontext[None]:
+        if callable(func) and not isinstance(func, type):
+            return func
+        return nullcontext()
+
+else:
+    ArgparseJSONParser = _StructuredParser
+    init_json_logging = _init_json_logging
+    log_event = _log_event
+    capture_exceptions = _capture_exceptions
 
 
 def _die(msg: str, code: int = 2) -> NoReturn:

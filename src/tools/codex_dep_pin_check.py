@@ -11,8 +11,9 @@ import argparse
 import json
 import tomllib
 from collections.abc import Sequence
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from pathlib import Path
+from typing import TypedDict
 
 import yaml
 
@@ -25,6 +26,19 @@ class DepIssue:
     line_number: int
     requirement: str
     reason: str
+
+
+class DepIssuePayload(TypedDict):
+    path: str
+    line_number: int
+    requirement: str
+    reason: str
+
+
+class PinningReport(TypedDict):
+    scanned_root: str
+    issue_count: int
+    issues: list[DepIssuePayload]
 
 
 def _is_pinned(req: str) -> bool:
@@ -80,7 +94,7 @@ def _scan_env_yml(path: Path) -> list[DepIssue]:
     return issues
 
 
-def run_check(repo_root: Path) -> dict[str, object]:
+def run_check(repo_root: Path) -> PinningReport:
     manifests = [
         repo_root / "requirements.txt",
         repo_root / "requirements-dev.txt",
@@ -100,15 +114,23 @@ def run_check(repo_root: Path) -> dict[str, object]:
     return {
         "scanned_root": str(repo_root),
         "issue_count": len(issues),
-        "issues": [asdict(i) for i in issues],
+        "issues": [
+            {
+                "path": i.path,
+                "line_number": i.line_number,
+                "requirement": i.requirement,
+                "reason": i.reason,
+            }
+            for i in issues
+        ],
     }
 
 
-def _write_json(payload: dict[str, object], out_path: Path) -> None:
+def _write_json(payload: PinningReport, out_path: Path) -> None:
     out_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(payload: dict[str, object], out_path: Path) -> None:
+def _write_markdown(payload: PinningReport, out_path: Path) -> None:
     lines = [
         "# Codex Dependency Pinning Report",
         "",

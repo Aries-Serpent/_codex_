@@ -7,11 +7,17 @@ This module coordinates all detection engines and manages the scanning process.
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Protocol
 
 from .exact_detector import ExactDetector
 from .schema import DuplicateGroup, InventoryMetadata, SupplementalInventory
 from .shim_integration import CrossReference, ShimInventoryReader
+
+
+class DuplicateDetector(Protocol):
+    """Common scanning interface implemented by each detection engine."""
+
+    def scan(self) -> list[DuplicateGroup]: ...
 
 
 class DuplicateScanner:
@@ -32,13 +38,13 @@ class DuplicateScanner:
         """
         self.root_path = Path(root_path).resolve()
         self.config = config or {}
-        self.detectors = {}
-        self.cross_reference = None
-        self.git_metadata = None
-
-        # Initialize git metadata collector (Phase 5)
         from .git_metadata import GitMetadataCollector
 
+        self.detectors: dict[str, DuplicateDetector] = {}
+        self.cross_reference: CrossReference | None = None
+        self.git_metadata: GitMetadataCollector | None = None
+
+        # Initialize git metadata collector (Phase 5)
         try:
             self.git_metadata = GitMetadataCollector(self.root_path)
         except Exception:
@@ -126,12 +132,16 @@ class DuplicateScanner:
         Returns:
             Updated list of duplicate groups with SHIM data populated
         """
+        cross_reference = self.cross_reference
+        if cross_reference is None:
+            return groups
+
         for group in groups:
             # Extract file paths from member files
             paths = [member.path for member in group.member_files]
 
             # Cross-reference with SHIM inventory
-            result = self.cross_reference.check_paths(paths, derive_module=True)
+            result = cross_reference.check_paths(paths, derive_module=True)
 
             # Update group with SHIM data
             group.in_shim_inventory = result.in_shim_inventory
@@ -151,6 +161,10 @@ class DuplicateScanner:
         Returns:
             Updated list with git metadata
         """
+        git_metadata = self.git_metadata
+        if git_metadata is None:
+            return groups
+
         for group in groups:
             for member in group.member_files:
                 # Construct full path
@@ -158,11 +172,11 @@ class DuplicateScanner:
 
                 if file_path.exists():
                     # Enrich with git metadata
-                    self.git_metadata.enrich_member_file(member, file_path)
+                    git_metadata.enrich_member_file(member, file_path)
 
         return groups
 
-    def scan(self, modes: list[str] = None) -> SupplementalInventory:
+    def scan(self, modes: list[str] | None = None) -> SupplementalInventory:
         """
         Scan repository for duplicates using specified detection modes.
 
@@ -232,7 +246,7 @@ class DuplicateScanner:
         )
 
     def write_outputs(
-        self, inventory: SupplementalInventory, output_dir: Path, formats: list[str] = None
+        self, inventory: SupplementalInventory, output_dir: Path, formats: list[str] | None = None
     ):
         """
         Write inventory to output files.

@@ -1,0 +1,18 @@
+Processing ./.
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: codex-ml
+  Building wheel for codex-ml (pyproject.toml): started
+  Building wheel for codex-ml (pyproject.toml): finished with status 'done'
+  Created wheel for codex-ml: filename=codex_ml-0.3.0-py3-none-any.whl size=4210349 sha256=085fc8312e53379d8b0bad002963748bdd8f2d51dff8c942b8ff78aa5b01d054
+  Stored in directory: /tmp/pip-ephem-wheel-cache-v5kfig6e/wheels/f9/08/9e/9ed08961db1eb269e43a1e6376eae08eb04399fea71ce4ce85
+Successfully built codex-ml
+Processing ./packages/contracts
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: codex-contracts
+  Building wheel for codex-contracts (pyproject.toml): started
+  Building wheel for codex-contracts (pyproject.toml): finished with status 'done'
+  Created wheel for codex-contracts: filename=codex_contracts-0.1.0a1-py3-none-any.whl size=9381 sha256=bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96
+  Stored in directory: /tmp/pip-ephem-wheel-cache-3vguiysl/wheels/32/28/a9/cbabdd5cb032bb6796abcd076b3e8462aa691d2d37964f6f58
+Successfully built codex-contracts

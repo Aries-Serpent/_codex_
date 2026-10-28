@@ -1,0 +1,34 @@
+{
+  "source_candidate": "a183f97e4f534cd6712588d12d22f821931f5c9c",
+  "scope": "Inactive post-merge assurance composition, not entire institutional migration",
+  "G0_G8": {
+    "G0": {"status": "FAIL", "meaning": "Preflight and preservation", "scope": "Baseline and original evidence preserved, but progress publication captured the initial dirty startup timestamp. Three separately attributed incidents require owner disposition; no clean exclusion claim."},
+    "G1": {"status": "NOT_RUN", "meaning": "Semantic component, ecology and effectiveness investigation", "scope": "Bounded source-backed core and composition review completed; broader semantic ecology not assessed."},
+    "G2": {"status": "PASS", "meaning": "Proposed design, reuse decision and implementation boundary", "scope": "Existing semantic replay and storage reused with additive optional bindings; no agent, approval power or store created."},
+    "G3": {"status": "PASS", "meaning": "Implemented SDK and relevant source validation", "scope": "289 institutional source tests, lint/type/compile checks and read-only review; not repository-wide regressions."},
+    "G4": {"status": "NOT_RUN", "meaning": "Applicable security analysis", "scope": "Python CodeQL skipped for database size. Scoped Bandit has one pre-existing low subprocess-import advisory. Historical owner findings remain unresolved; no full security acceptance."},
+    "G5": {"status": "NOT_RUN", "meaning": "Independently established verifier, exact-artifact custody and approval", "scope": "All lanes, tests and wheel runs are same-platform technical work; no independent reproduction or approval."},
+    "G6": {"status": "PASS", "meaning": "Built wheel, resources and dependency validation", "scope": "Immutable a183f97e packaging snapshot, new wheel digest and 11 installed institutional resource entries verified; full declared base dependency closure and pip check passed."},
+    "G7": {"status": "PASS", "meaning": "Installed wheel behavior outside checkout", "scope": "285 portable tests and explicit offline rerun pass; four source/document tests failed outside checkout and were explicitly excluded from the portable cohort, not rewritten. All four pass in source."},
+    "G8": {"status": "PASS", "meaning": "Compatible checkpoint, predecessor and source/context binding", "scope": "Sequence-seven retained successor, predecessor/session/extensions and required observation retention validated, with three explicitly bound current artifacts. Applies before evidence publication, not future source freshness or full remote retention."}
+  },
+  "acceptance": {
+    "POST-01": {"status": "PASS", "scope": "Merged PR5717 and actual target/assigned base are 83e5187a; depth-two fetch confirms single parent; no subsequent target changes observed."},
+    "POST-02": {"status": "PASS", "scope": "Historical manifest/checkpoint integrity verified separately from applicability; validated compatible successor and retention binding."},
+    "POST-03": {"status": "PASS", "scope": "C1 and dropped-history C3 reproduced before edits; C2 unbound foreign fixture observed; existing attachment/replay counterevidence preserved."},
+    "POST-04": {"status": "PASS", "scope": "Semantic admission and explicit candidate/source/context/assurance association enforced on supported paths; historical artifacts classified unbound."},
+    "POST-05": {"status": "PASS", "scope": "Persisted predecessor/session/sequence, protected extensions, required history and fork/replay checks enforced; not hostile wholesale replacement detection without anchor."},
+    "POST-06": {"status": "PASS", "scope": "Documented structural-only inspection, compatible ordinary/legacy diagnostics, byte preservation and anchor limits; covered by regression tests."},
+    "POST-07": {"status": "PASS", "scope": "Bounded actual-source quotations with attributed analytical/fixture findings, remediation coverage, rotated history bearing, meta reconciliation, technical ingestion and exact blocked resume; unresolved supplied conflict remains. Not independent review or broad findings closure."},
+    "POST-08": {"status": "PASS", "scope": "New immutable candidate wheel installed outside checkout with declared dependencies and separate pytest provisioning; exact portable cohort and source-only exceptions retained."},
+    "POST-09": {"status": "PASS", "scope": "151 missing originals, 11 credential-like owner findings, three user capture incidents, CodeQL/G5 gaps remain explicit; preservation is not clearance."},
+    "POST-10": {"status": "PASS", "scope": "All 32 predecessor roadmap items/statuses/dependencies preserved, additive successor progress, experience and next deterministic action retained."}
+  },
+  "C1_C3": {
+    "C1": "Supported generic admission and default recovery now invoke existing semantic validator; source and installed regressions pass.",
+    "C2": "Explicit scoped associations added; unbound historical data stays diagnostic. Manifest scope completeness and authenticated identity remain outside this check.",
+    "C3": "Supported retained-chain loss/fork/replay/extension/sequence cases reject. Wholesale replacement without independently trusted anchor remains undetectable; not solved globally."
+  },
+  "not_established": ["Independent verification", "Merge readiness", "Owner risk acceptance", "Institutional adoption", "Governance activation", "Publication or release"],
+  "next_session_started": false
+}

@@ -1,0 +1,29 @@
+{
+  "source_candidate": "a183f97e4f534cd6712588d12d22f821931f5c9c",
+  "workspace": "/tmp/institutional-007",
+  "repository": "/home/runner/work/_codex_/_codex_",
+  "source_export": {
+    "command": "git archive a183f97e4f534cd6712588d12d22f821931f5c9c -- src packages/contracts pyproject.toml MANIFEST.in README.md LICENSE LICENSES .copilot-space/workflow.yaml",
+    "restoration": "Enumerated these paths with git ls-tree -r; restored 69 export-ignored exact blobs through git show; verified every one of 2206 exported paths with git hash-object against source-manifest.json.",
+    "profile_contents": "Not included or read"
+  },
+  "commands": [
+    {"command": "python -m pip wheel --no-deps --no-build-isolation --wheel-dir /tmp/institutional-007/wheels /tmp/institutional-007/source", "result": "PASS", "log": "package/logs/build.txt"},
+    {"command": "python -m pip wheel --no-deps --wheel-dir /tmp/institutional-007/wheels /tmp/institutional-007/source/packages/contracts", "result": "PASS", "log": "package/logs/contracts-build.txt"},
+    {"command": "python -m venv /tmp/institutional-007/venv", "result": "PASS"},
+    {"command": "env -u PYTHONPATH -u PYTHONHOME /tmp/institutional-007/venv/bin/python -I -m pip install --timeout 30 --retries 1 --find-links /tmp/institutional-007/wheels --report /tmp/institutional-007/install-report.json /tmp/institutional-007/wheels/codex_ml-0.3.0-py3-none-any.whl", "result": "PASS; full declared base", "log": "package/logs/install.txt"},
+    {"command": "env -u PYTHONPATH -u PYTHONHOME /tmp/institutional-007/venv/bin/python -I -m pip check", "result": "PASS", "log": "package/logs/pip-check.txt"},
+    {"command": "env -u PYTHONPATH -u PYTHONHOME /tmp/institutional-007/venv/bin/python -I -m pip install --timeout 30 --retries 1 --report /tmp/institutional-007/test-install-report.json pytest==9.1.1", "result": "PASS; separate test provisioning", "log": "package/logs/test-provision.txt"},
+    {"command": "env -u PYTHONPATH -u PYTHONHOME /tmp/institutional-007/venv/bin/python -I -m pip check", "result": "PASS after test tools", "log": "package/logs/pip-check-after-tests.txt"},
+    {"command": "env -u PYTHONPATH -u PYTHONHOME PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 /tmp/institutional-007/venv/bin/python -I -m pytest -c /dev/null --rootdir=/tmp/institutional-007/harness --noconftest --import-mode=importlib -q --junitxml=/tmp/institutional-007/installed-junit.xml /tmp/institutional-007/harness", "result": "285 PASS; four repository-document path failures retained", "log": "package/logs/installed-tests.txt"},
+    {"command": "env -u PYTHONPATH -u PYTHONHOME PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 /tmp/institutional-007/venv/bin/python -I -m pytest -c /dev/null --rootdir=/tmp/institutional-007/harness --noconftest --import-mode=importlib -q -k 'not exact_document_mapping and not source_expression_preservation_is_distinct_from_normalization and not lineage_and_package_claims_are_bounded and not structural_sdk_mappings_resolve_without_claiming_formula_execution' --junitxml=/tmp/institutional-007/installed-final-junit.xml /tmp/institutional-007/harness", "result": "285 PASS; four explicitly deselected source/document tests", "log": "package/logs/installed-final-tests.txt"},
+    {"command": "Same portable pytest arguments through isolated Python -c, with process-local audit hook rejecting socket.__new__, socket.connect and socket.getaddrinfo", "result": "285 PASS; four explicitly deselected; no kernel isolation claim", "log": "package/logs/installed-offline-tests.txt"},
+    {"command": "Load retained harness.test_admission via importlib file spec in isolated installed environment; call source_workflow with a new disposable root", "result": "BLOCKED final recommendation, bound technical storage/recovery, unresolved supplied conflict and exact resume checks", "artifacts": "source-review/"},
+    {"command": "bandit -q src/codex/institutional/admission.py src/codex/institutional/core.py src/codex/institutional/storage.py -f json", "result": "One pre-existing LOW B404 advisory; no medium/high severity findings", "receipt": "scoped-bandit.json"},
+    {"command": "detect-secrets scan --all-files /tmp/institutional-007/checkpoint-decoded.json", "result": "Zero detector findings in decoded successor; not historical archive clearance", "receipt": "decoded-secret-scan.json"}
+  ],
+  "installed_working_directory": "/tmp/institutional-007/runtime",
+  "test_copy_policy": "Byte-identical seven test modules plus one empty package initializer; no assertions edited for installed runs.",
+  "network_scope": "Python audit guard during explicit offline cohort and existing Git offline environment. Provisioning/build dependency resolution used package manager network access before offline tests.",
+  "retention": "Original logs and structured receipts copied into this iteration; temporary environment itself is not retained or claimed as an artifact."
+}

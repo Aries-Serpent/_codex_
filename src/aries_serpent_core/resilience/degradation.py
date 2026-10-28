@@ -4,27 +4,28 @@ Provides :class:`GracefulDegradation`, which can be used both as a *decorator*
 and as a *context manager* to wrap any code that may fail and substitute a
 safe fallback value instead of propagating the exception.
 
-Usage as a decorator::
+No-network decorator example::
 
     from aries_serpent_core.resilience import GracefulDegradation
 
-    @GracefulDegradation(fallback=0)
+    @GracefulDegradation(fallback=0, exceptions=(OSError,))
     def risky_metric() -> int:
-        return fetch_from_remote()
+        raise OSError("metrics service unavailable")
 
-Usage as a context manager::
+    assert risky_metric() == 0
 
-    from aries_serpent_core.resilience import GracefulDegradation, DegradationError
+Context-manager example with an explicit ``None`` fallback::
 
-    with GracefulDegradation(fallback="default") as dg:
-        dg.result = compute_value()
+    with GracefulDegradation(fallback=None, exceptions=(OSError,)) as dg:
+        raise OSError("metrics service unavailable")
 
-    logger.info(dg.result)
+    assert dg.result is None  # different from omitting fallback entirely
 
-Usage without a fallback (re-raises as DegradationError)::
+Without a fallback, matching failures raise ``DegradationError`` with both
+``original`` and ``__cause__`` referring to the original exception. Unmatched
+exceptions and errors raised by a callable fallback propagate unchanged.
 
-    with GracefulDegradation() as dg:
-        dg.result = dangerous_call()   # DegradationError raised on failure
+These interfaces are synchronous: they do not await coroutine results.
 """
 
 from __future__ import annotations
@@ -58,20 +59,25 @@ class GracefulDegradation:
     """Wrap a callable or a ``with`` block so that failures return a fallback value.
 
     When used as a **decorator**:
-        The wrapped function is called; if it raises any :class:`Exception`,
-        *fallback* is returned instead (or :exc:`DegradationError` if no
-        fallback was given).
+        The wrapped function is called; if it raises an exception matching
+        ``exceptions``, *fallback* is returned instead (or
+        :exc:`DegradationError` is raised if no fallback was given).
 
     When used as a **context manager**:
         Assign the value you want to capture to ``<ctx>.result`` inside the
         ``with`` block.  On success, ``<ctx>.result`` holds that value.  On
-        failure, ``<ctx>.result`` is set to *fallback* (or
+        matching failure, ``<ctx>.result`` is set to *fallback* (or
         :exc:`DegradationError` is raised if no fallback was given).
+        Entering the context resets ``result`` to ``None``; a successful
+        block must assign it explicitly. Decorator calls return their result
+        directly and do not populate this attribute.
 
     Args:
         fallback: Value to return / set on failure.  May be a plain value or a
             zero-argument callable whose return value is used.  If omitted,
-            failures raise :exc:`DegradationError`.
+            matching failures raise :exc:`DegradationError`. Explicit ``None``
+            is a valid fallback. A callable fallback runs only after a
+            matching failure; its own exceptions are not caught or retried.
         exceptions: Tuple of exception types to catch.  Defaults to
             ``(Exception,)`` — catches all non-system-exit exceptions.
         logger_name: Name used when emitting degradation log messages.

@@ -36,8 +36,12 @@ class TestImportMigration:
     def test_import_migration_initialization(self, basic_migration):
         """Test ImportMigration initializes correctly."""
         assert basic_migration.file_path == "/test/file.py", "file_path is not valid"
-        assert basic_migration.old_import == "from training.model import Model", "old_import is not valid"
-        assert basic_migration.new_import == "from training.model import Model", "new_import is not valid"
+        assert (
+            basic_migration.old_import == "from training.model import Model"
+        ), "old_import is not valid"
+        assert (
+            basic_migration.new_import == "from training.model import Model"
+        ), "new_import is not valid"
         assert basic_migration.line_number == 5, "line_number is not valid"
 
     def test_calculate_properties(self, basic_migration):
@@ -53,7 +57,9 @@ class TestImportMigration:
         assert 0 <= basic_migration.risk <= 1, "0 is not valid"
         assert 0 <= basic_migration.impact <= 1, "0 is not valid"
         assert 0 <= basic_migration.urgency <= 1, "0 is not valid"
-        assert basic_migration.optimization_score > 0, "optimization_score must be greater than zero"
+        assert (
+            basic_migration.optimization_score > 0
+        ), "optimization_score must be greater than zero"
 
     def test_properties_different_lengths(self):
         """Test properties vary with import length."""
@@ -74,7 +80,9 @@ class TestImportMigration:
         long_migration.calculate_properties()
 
         # Longer imports should have higher energy
-        assert long_migration.potential_energy > short_migration.potential_energy, "potential_energy must be greater than zero"
+        assert (
+            long_migration.potential_energy > short_migration.potential_energy
+        ), "potential_energy must be greater than zero"
 
 
 @pytest.mark.slow
@@ -111,8 +119,8 @@ class MyClass:
         # Create file that should be skipped (already migrated)
         test_file3 = repo_path / "module3.py"
         test_file3.write_text("""
-    from training.model import Model
-    from models.classifier import Classifier
+    from src.training.model import Model
+    from src.models.classifier import Classifier
 
 def already_migrated():
     pass
@@ -147,10 +155,18 @@ def already_migrated():
 
     def test_migration_map_content(self, orchestrator):
         """Test migration map has expected mappings."""
-        assert orchestrator.migration_map["from training."] == "from src.training.", "orchestrat is not valid"
-        assert orchestrator.migration_map["from models."] == "from src.models.", "orchestrat is not valid"
-        assert orchestrator.migration_map["import training."] == "import src.training.", "orchestrat is not valid"
-        assert orchestrator.migration_map["import models."] == "import src.models.", "orchestrat is not valid"
+        assert (
+            orchestrator.migration_map["from training."] == "from src.training."
+        ), "orchestrat is not valid"
+        assert (
+            orchestrator.migration_map["from models."] == "from src.models."
+        ), "orchestrat is not valid"
+        assert (
+            orchestrator.migration_map["import training."] == "import src.training."
+        ), "orchestrat is not valid"
+        assert (
+            orchestrator.migration_map["import models."] == "import src.models."
+        ), "orchestrat is not valid"
 
     def test_assess_imports(self, orchestrator, temp_repo):
         """Test import assessment scans and finds deprecated imports."""
@@ -386,8 +402,8 @@ def preprocess():
 
         # Create file with only modern imports
         (repo_path / "modern.py").write_text("""
-        from training.model import Model
-        from models.classifier import Classifier
+        from src.training.model import Model
+        from src.models.classifier import Classifier
 
 def test():
     pass
