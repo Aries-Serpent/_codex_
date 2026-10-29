@@ -277,7 +277,7 @@ jobs:
             comment += `- [Security inventory manifest](.codex/security/code_scanning_inventory/manifest.json)\n`;
             comment += `- [API inventory summary](.codex/security/code_scanning_inventory/api_inventory_summary.json)\n`;
             comment += `- [Security enforcement guide](docs/ci/SECURITY_ENFORCEMENT_GATES.md)\n`;
-            comment += `- [Security Alerts](https://github.com/${{ github.repository }}/security/code-scanning)\n`;
+            comment += `- [Security Alerts](https://github.com/${context.repo.owner}/${context.repo.repo}/security/code-scanning)\n`;
           } else {
             comment += `### Status\n`;
             comment += `✅ All CodeQL security checks passed.\n`;
@@ -294,20 +294,49 @@ jobs:
     - name: Log Gate Decision to Audit Trail
       if: always()
       shell: bash
-      run: "mkdir -p .codex/security/gate_audit\n\nAUDIT_LOG=\".codex/security/gate_audit/gate_$(date\
-        \ +%Y%m%dT%H%M%SZ).json\"\n\ncat > \"$AUDIT_LOG\" << EOF\n{\n  \"timestamp\"\
-        : \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\n  \"event\": \"${{ github.event_name\
-        \ }}\",\n  \"repository\": \"${{ github.repository }}\",\n  \"branch\": \"\
-        ${{ github.ref }}\",\n  \"commit\": \"${{ github.sha }}\",\n  \"pr_number\"\
-        : ${{ github.event.number || -1 }},\n  \"actor\": \"${{ github.actor }}\"\
-        ,\n  \"gate_status\": \"${{ steps.gate-decision.outputs.status || 'UNKNOWN' }}\",\n  \"\
-        blocked\": ${{ steps.gate-decision.outputs.blocked || 'false' }},\n  \"reason\": \"${{\
-        \ steps.gate-decision.outputs.reason || '' }}\",\n  \"critical_alerts\": ${{ steps.analyze.outputs.critical_count\
-        \ || 0 }},\n  \"high_alerts\": ${{ steps.analyze.outputs.high_count || 0 }},\n  \"medium_alerts\"\
-        : ${{ steps.analyze.outputs.medium_count || 0 }},\n  \"severity_threshold\": \"\
-        ${{ env.CODEQL_SEVERITY_THRESHOLD }}\",\n  \"dry_run\": ${{ github.event.inputs.dry_run\
-        \ || false }},\n  \"gate_version\": \"1.0.0-phase-6-lane-1\"\n}\nEOF\n\necho\
-        \ \"Audit trail recorded: $AUDIT_LOG\"\n"
+      env:
+        GATE_PR_NUMBER: ${{ github.event.number || -1 }}
+        GATE_STATUS: ${{ steps.gate-decision.outputs.status || 'UNKNOWN' }}
+        GATE_BLOCKED: ${{ steps.gate-decision.outputs.blocked || 'false' }}
+        GATE_REASON: ${{ steps.gate-decision.outputs.reason || '' }}
+        GATE_CRITICAL: ${{ steps.analyze.outputs.critical_count || 0 }}
+        GATE_HIGH: ${{ steps.analyze.outputs.high_count || 0 }}
+        GATE_MEDIUM: ${{ steps.analyze.outputs.medium_count || 0 }}
+        GATE_DRY_RUN: ${{ github.event.inputs.dry_run || false }}
+      run: |
+        python - <<'PY'
+        import json
+        import os
+        from datetime import datetime, timezone
+        from pathlib import Path
+
+        now = datetime.now(timezone.utc)
+        audit_log = Path(".codex/security/gate_audit") / (
+            "gate_" + now.strftime("%Y%m%dT%H%M%SZ") + ".json"
+        )
+        audit_log.parent.mkdir(parents=True, exist_ok=True)
+        audit = {
+            "timestamp": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "event": os.environ["GITHUB_EVENT_NAME"],
+            "repository": os.environ["GITHUB_REPOSITORY"],
+            "branch": os.environ["GITHUB_REF"],
+            "commit": os.environ["GITHUB_SHA"],
+            "pr_number": int(os.environ["GATE_PR_NUMBER"]),
+            "actor": os.environ["GITHUB_ACTOR"],
+            "gate_status": os.environ["GATE_STATUS"],
+            "blocked": os.environ["GATE_BLOCKED"].lower() == "true",
+            "reason": os.environ["GATE_REASON"],
+            "critical_alerts": int(os.environ["GATE_CRITICAL"]),
+            "high_alerts": int(os.environ["GATE_HIGH"]),
+            "medium_alerts": int(os.environ["GATE_MEDIUM"]),
+            "severity_threshold": os.environ["CODEQL_SEVERITY_THRESHOLD"],
+            "dry_run": os.environ["GATE_DRY_RUN"].lower() == "true",
+            "gate_version": "1.0.0-phase-6-lane-1",
+        }
+        with audit_log.open("w", encoding="utf-8") as handle:
+            json.dump(audit, handle, indent=2)
+        print(f"Audit trail recorded: {audit_log}")
+        PY
     - name: Upload Gate Audit Logs
       if: always()
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
@@ -337,9 +366,9 @@ jobs:
           const issueTitle = `🔐 CodeQL Security Alert: ${critical} Critical + ${high} High`;
           const issueBody = `## CodeQL Security Alert
 
-          **Branch**: \`${{ github.ref }}\`
-          **Commit**: \`${{ github.sha }}\`
-          **Author**: @${{ github.actor }}
+          **Branch**: \`${context.ref}\`
+          **Commit**: \`${context.sha}\`
+          **Author**: @${context.actor}
 
           ### Alert Summary
           - **Critical Alerts**: ${critical}
@@ -350,12 +379,12 @@ jobs:
           1. Fix or suppress all critical/high alerts
           2. Run local CodeQL scan to verify
           3. Update PR with remediation
-          4. Request approval from @${{ github.repository_owner }} if suppression needed
+          4. Request approval from @${context.repo.owner} if suppression needed
 
           ### Resources
           - [Security inventory](.codex/security/code_scanning_inventory/api_inventory_summary.json)
           - [Security enforcement guide](docs/ci/SECURITY_ENFORCEMENT_GATES.md)
-          - [Security Dashboard](https://github.com/${{ github.repository }}/security/code-scanning)
+          - [Security Dashboard](https://github.com/${context.repo.owner}/${context.repo.repo}/security/code-scanning)
 
           ### SLA
           - **Critical**: 1 hour resolution
