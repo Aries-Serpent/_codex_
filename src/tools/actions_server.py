@@ -356,8 +356,8 @@ class App(BaseHTTPRequestHandler):
             q = qs.get("q", [""])[0]
             return self._ok(code_search(owner, repo, q, ref))
         if u.path == "/repo/most_recent_branch":
-            owner = qs.get("owner", [OWNER])[0]
-            repo = qs.get("repo", [REPO])[0]
+            owner = OWNER
+            repo = REPO
             if gh_most_recent_branch is not None:
                 name = gh_most_recent_branch(owner, repo)
             else:
