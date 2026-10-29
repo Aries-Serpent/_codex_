@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 
-from pydantic import HttpUrl
+from pydantic import HttpUrl, TypeAdapter
 
 from .models import GitCreatePullRequestBody, GitCreatePullRequestResponse
 
@@ -60,7 +60,7 @@ def simulate_pull_request(
     pr_url = _build_pr_url(payload.repo, payload.head)
     return GitCreatePullRequestResponse(
         simulated=False,
-        pr_url=HttpUrl(pr_url),
+        pr_url=TypeAdapter(HttpUrl).validate_python(pr_url),
         message=f"Pull request created at {pr_url}",
     )
 

@@ -88,5 +88,6 @@ def test_alerted_log_sinks_strip_controls(monkeypatch, caplog, operation):
     ]
     assert messages
     assert all(_CONTROLS.search(message) is None for message in messages)
+    assert all("FORGED" not in message and "31m" not in message for message in messages)
     if operation == "retrieval":
-        assert len(messages) == 2
+        assert len(messages) == 1

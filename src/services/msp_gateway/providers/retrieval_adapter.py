@@ -56,12 +56,8 @@ class RetrievalAdapter:
                 index_name=index_name,
                 filters=filters,
             )
-        except Exception as e:
-            logger.error(
-                "Error querying knowledge base for tenant %s",
-                sanitize_log_input(tenant_id),
-            )
-            logger.debug("Query failure detail: %s", sanitize_log_input(str(e)))
+        except Exception:
+            logger.error("Knowledge base query failed")
             return []
 
     def build_index(

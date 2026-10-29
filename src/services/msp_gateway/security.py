@@ -234,11 +234,7 @@ def validate_prompt(prompt: str, tenant_id: str) -> tuple[bool, Optional[str]]:
     # Check for blocked patterns
     error = policy_enforcer.check_blocked_patterns(prompt)
     if error:
-        logger.warning(  # nosec: tenant_id and error are sanitized via sanitize_log_input  # pragma: allowlist secret
-            "Blocked prompt for tenant %s: %s",
-            sanitize_log_input(tenant_id),
-            sanitize_log_input(error),
-        )
+        logger.warning("Prompt blocked by policy")
         return False, error
 
     # Check prompt length (basic validation)
@@ -256,9 +252,5 @@ def redact_content(text: str, tenant_id: str) -> tuple[str, list[str]]:
     """
     redacted, redactions = policy_enforcer.redact_sensitive_content(text)
     if redactions:
-        logger.info(  # nosec: tenant_id and redactions are sanitized via sanitize_log_input  # pragma: allowlist secret
-            "Applied redactions for tenant %s: %s",
-            sanitize_log_input(tenant_id),
-            sanitize_log_input(str(redactions)),
-        )
+        logger.info("Sensitive content redacted")
     return redacted, redactions

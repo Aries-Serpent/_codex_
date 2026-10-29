@@ -1,3 +1,14 @@
+## Session: PR #5719 review remediation — 2026-10-29
+
+- Direct execution; no custom agents were invoked.
+- Restored the changelog index links, corrected Pydantic 2 URL validation, restored the startup packet baseline, and removed untrusted values from four annotated log messages.
+- Focused tests (14), Ruff/format, changed-module mypy, compile, changelog-index/link, diff, and secret checks passed.
+- Repository-wide mypy baseline remains failing: 848 errors versus a baseline of 171. The baseline was not reset.
+- The legacy SHA-256 API-key lookup remains for compatibility with the tested one-time PBKDF2 migration. Because API keys accept arbitrary strings, the weak-hash alert is not treated as a false positive; key rotation/deprecation requires an owner decision.
+- Current GitHub checks do not establish green CI or a completed CodeQL scan for this patch. No manual workflow retrigger, approval, merge, or deployment was performed.
+
+---
+
 ## Institutional authority continuation — iteration 002, 2026-10-24
 
 Assigned source HEAD is `2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9`;

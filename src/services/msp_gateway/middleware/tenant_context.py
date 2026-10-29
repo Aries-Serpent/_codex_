@@ -461,13 +461,7 @@ class TenantRegistry:
             else:
                 auth_manager.revoke_api_key_hash(tenant["api_key_hash"])
 
-        logger.info(
-            "Tenant %s updated with fields: %s",
-            sanitize_log_input(tenant_id),
-            sanitize_log_input(
-                ", ".join(updated_fields.keys()) if updated_fields else "updated_at"
-            ),
-        )
+        logger.info("Tenant record updated")
 
         return tenant
 
