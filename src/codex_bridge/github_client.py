@@ -139,7 +139,9 @@ def cache_set(key: str, data: Any) -> None:
 
 def gh_get(url: str) -> Any:
     validated = _validated_url(url)
-    r = requests.get(validated, headers=_auth_headers(), timeout=30)
+    r = requests.get(validated, headers=_auth_headers(), timeout=30, allow_redirects=False)
+    if 300 <= r.status_code < 400:
+        raise requests.HTTPError("GitHub client redirects are not permitted", response=r)
     r.raise_for_status()
     return r.json()
 
@@ -162,7 +164,7 @@ def get_text(owner: str, repo: str, ref: str, path: str) -> str:
     safe_ref = _safe_repo_component(ref, field_name="ref")
     safe_path = _safe_repo_component(path.strip("/"), field_name="path")
     raw = f"https://raw.githubusercontent.com/{safe_owner}/{safe_repo}/{safe_ref}/{quote(safe_path, safe='/')}"
-    r = requests.get(_validated_url(raw), timeout=30)
+    r = requests.get(_validated_url(raw), timeout=30, allow_redirects=False)
     if r.status_code == 200 and r.text:
         return r.text
     meta = gh_get(

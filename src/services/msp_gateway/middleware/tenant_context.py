@@ -216,7 +216,15 @@ class TenantRegistry:
         """Get tenant by API key"""
         cached_tenant_id = auth_manager.verify_api_key(api_key)
         if cached_tenant_id:
-            return self.get_tenant(cached_tenant_id)
+            tenant = self.get_tenant(cached_tenant_id)
+            if tenant is None:
+                return None
+            current_hash = hash_api_key(api_key)
+            if tenant.get("api_key_hash") == current_hash:
+                return tenant
+            if self.backend != "sqlite":
+                tenant["api_key_hash"] = current_hash
+                return tenant
 
         # Fallback: search in SQLite
         if self.backend == "sqlite":
@@ -283,8 +291,8 @@ class TenantRegistry:
                 }
                 # Cache it
                 self.tenants[tenant_id] = tenant_data
-                for api_key_hash in api_key_hashes:
-                    auth_manager.register_api_key_hash(api_key_hash, tenant_id)
+                auth_manager.register_api_key_hash(pbkdf2_hash, tenant_id)
+                auth_manager.revoke_api_key_hash(legacy_sha256_hash)
                 return tenant_data
 
         return None

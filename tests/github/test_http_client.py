@@ -8,6 +8,7 @@ Test coverage targets: URL validation, request building, error handling
 
 import urllib.error
 from unittest.mock import Mock, patch
+from urllib.parse import urlsplit
 
 import pytest
 
@@ -23,11 +24,11 @@ class TestURLValidation:
 
     def test_redact_url_for_log_removes_credentials(self):
         """Test that credentials are removed from URLs."""
-        url = "******api.github.com/repos/owner/repo"
+        url = "https://{}:{}@api.github.com/repos/owner/repo".format("user", "pass")
         redacted = redact_url_for_log(url)
         assert "user" not in redacted, "Condition must be true"
         assert "pass" not in redacted, "Condition must be true"
-        assert "api.github.com" in redacted, "Condition must be true"
+        assert urlsplit(redacted).hostname == "api.github.com"
 
     def test_redact_url_for_log_preserves_path(self):
         """Test that paths are preserved in redacted URLs."""
@@ -65,13 +66,10 @@ class TestURLValidation:
                 GitHubHTTPClient(token="test-key").get(url)
         urlopen.assert_not_called()
 
-    @pytest.mark.skip(reason="URL format doesn't support embedded credentials in test")
     def test_validated_github_api_url_rejects_embedded_credentials(self):
         """Test that embedded credentials are rejected."""
-        # Note: URL validation in the actual code checks for username/password
-        # via urlsplit, but test URLs don't parse credentials without proper format
         with pytest.raises(ValueError, match="must not contain embedded credentials"):
-            validated_github_api_url("******api.github.com/user")
+            validated_github_api_url("https://{}:{}@api.github.com/user".format("user", "pass"))
 
 
 class TestGitHubHTTPClient:

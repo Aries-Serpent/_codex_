@@ -174,11 +174,14 @@ class AuthManager:
         Returns:
             tenant_id if valid, None otherwise
         """
-        for api_key_hash in candidate_api_key_hashes(api_key):
-            tenant_id = self.api_keys.get(api_key_hash)
-            if tenant_id is not None:
-                return tenant_id
-        return None
+        current_hash, legacy_hash = candidate_api_key_hashes(api_key)
+        tenant_id = self.api_keys.get(current_hash)
+        if tenant_id is None:
+            tenant_id = self.api_keys.get(legacy_hash)
+        if tenant_id is not None:
+            self.register_api_key_hash(current_hash, tenant_id)
+            self.revoke_api_key_hash(legacy_hash)
+        return tenant_id
 
     def revoke_api_key(self, api_key: str):
         """Revoke an API key"""
