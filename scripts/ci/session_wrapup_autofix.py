@@ -350,10 +350,15 @@ def _preserve_agent_attestation(block: str, existing_body: str) -> str:
     match = re.search(r"^## 🤖 Agents Used[^\n]*", existing_body, re.MULTILINE)
     if not match or heading not in block:
         return block
-    next_heading = re.search(r"^##\s", existing_body[match.end():], re.MULTILINE)
+    next_heading = re.search(r"^##\s", existing_body[match.end() :], re.MULTILINE)
     end = match.end() + next_heading.start() if next_heading else len(existing_body)
-    recorded = existing_body[match.start():end].rstrip()
-    recorded = re.sub(r"(?:\n\s*---\s*)+$", "", recorded).rstrip()
+    recorded = existing_body[match.start() : end].rstrip()
+    lines = recorded.splitlines(keepends=True)
+    while len(lines) > 1 and lines[-1].strip() == "---":
+        lines.pop()
+        while len(lines) > 1 and not lines[-1].strip():
+            lines.pop()
+    recorded = "".join(lines).rstrip()
     start = block.index(heading)
     finish = block.index(_WEC_MARKER, start)
     return block[:start] + recorded + "\n\n---\n\n" + block[finish:]

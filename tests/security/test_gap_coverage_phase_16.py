@@ -45,7 +45,9 @@ class TestGapCoverageFileSystemOperations:
         with tempfile.TemporaryDirectory() as tmpdir:
             restricted_file = Path(tmpdir) / "restricted.txt"
             restricted_file.write_text("permission test")
-            os.chmod(tmpdir, 0o700)
+            if os.geteuid() == 0:
+                os.chown(tmpdir, 65534, 65534)
+                os.chown(restricted_file, 65534, 65534)
             identity = (
                 {"user": 65534, "group": 65534, "extra_groups": []} if os.geteuid() == 0 else {}
             )
@@ -73,7 +75,6 @@ class TestGapCoverageFileSystemOperations:
                 assert "PermissionError" in denied.stderr
             finally:
                 os.chmod(restricted_file, 0o600)
-                os.chmod(tmpdir, 0o700)
 
     def test_symbolic_link_handling(self):
         """Test handling of symbolic links."""

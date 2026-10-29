@@ -348,7 +348,6 @@ if __name__ == "__main__":
 
     test_password = "MyS3cur3P@ssw0rd!"  # nosec  # pragma: allowlist secret -- synthetic demo value
 
-    print(f"Original password: {test_password}")  # nosec
     print(f"Redacted password: {redact_password(test_password)}")
     print()
 

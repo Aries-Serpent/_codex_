@@ -10,6 +10,7 @@ import urllib.error
 from unittest.mock import Mock, patch
 
 import pytest
+
 from codex.github.http_client import (
     GitHubHTTPClient,
     redact_url_for_log,
@@ -48,6 +49,21 @@ class TestURLValidation:
         """Test that non-api.github.com hosts are rejected."""
         with pytest.raises(ValueError, match="must target https://api.github.com"):
             validated_github_api_url("https://github.com/user")
+
+    @pytest.mark.parametrize(
+        "url",
+        [
+            "file:///etc/passwd",
+            "ftp://api.github.com/user",
+            "https://api.github.com.evil.example/user",
+            "https://api.github.com/user#fragment",
+        ],
+    )
+    def test_invalid_urls_never_reach_urllib(self, url):
+        with patch("urllib.request.urlopen") as urlopen:
+            with pytest.raises(ValueError):
+                GitHubHTTPClient(token="test-key").get(url)
+        urlopen.assert_not_called()
 
     @pytest.mark.skip(reason="URL format doesn't support embedded credentials in test")
     def test_validated_github_api_url_rejects_embedded_credentials(self):

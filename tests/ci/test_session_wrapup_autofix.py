@@ -159,3 +159,25 @@ def test_pr_generator_keeps_recorded_direct_execution(monkeypatch):
     body = f"## 🤖 Agents Used\n{swa._DIRECT_EXECUTION_DECLARATION}\n"
     generated = swa._build_meaningful_pr_body("42", {}, body)
     assert swa.check_pr_body_agents_used(generated)[0]
+
+
+@pytest.mark.parametrize(
+    "suffix",
+    ["", "\n---", "\n \t--- \t\n\n---", "\n---" + "\n\n---" * 10000],
+)
+def test_agent_attestation_strips_only_trailing_separator_lines(suffix):
+    attestation = "## 🤖 Agents Used\n- `real-agent`"
+    body = attestation + suffix + "\n\n" + swa._WEC_MARKER
+    generated = swa._preserve_agent_attestation(swa._REQUIRED_PR_CHECKBOXES, body)
+    assert attestation + "\n\n---\n\n" + swa._WEC_MARKER in generated
+    assert generated.count("- `real-agent`") == 1
+
+
+@pytest.mark.parametrize(
+    "suffix",
+    ["inline---", "\n---" + "\n\n---" * 10000 + "\nnot-a-separator"],
+)
+def test_agent_attestation_preserves_non_separator_content(suffix):
+    attestation = "## 🤖 Agents Used\n- `real-agent`\n" + suffix
+    generated = swa._preserve_agent_attestation(swa._REQUIRED_PR_CHECKBOXES, attestation)
+    assert attestation + "\n\n---\n\n" + swa._WEC_MARKER in generated

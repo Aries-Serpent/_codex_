@@ -6,6 +6,8 @@ and that security utilities work as expected.
 """
 
 import logging
+import runpy
+from pathlib import Path
 
 import pytest
 
@@ -19,6 +21,14 @@ from security.logging import (
     sanitize_for_logging,
     setup_secure_logging,
 )
+
+
+def test_demo_does_not_print_plaintext_password(capsys):
+    module = Path(__file__).resolve().parents[2] / "src" / "security" / "logging.py"
+    demo = runpy.run_path(str(module), run_name="__main__")
+    output = capsys.readouterr().out
+    assert demo["test_password"] not in output
+    assert "[REDACTED_PASSWORD]" in output
 
 
 class TestTokenRedaction:

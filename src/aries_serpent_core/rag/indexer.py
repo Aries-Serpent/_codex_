@@ -10,7 +10,7 @@ import logging
 import shutil
 from dataclasses import dataclass
 from enum import Enum
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any, Optional
 
 from aries_serpent_core.security_utils import sanitize_log_message
@@ -43,6 +43,28 @@ def _safe_log_value(value: object) -> str:
     )
 
 
+def _resolve_safe_subpath(base_dir: str | Path, *parts: str) -> Path:
+    """Keep single-component names inside storage, rejecting symlink aliases."""
+    base = Path(base_dir).resolve()
+    candidate = base
+    for part in parts:
+        if (
+            not isinstance(part, str)
+            or not part.strip()
+            or part in {".", ".."}
+            or any(char in part for char in ("/", "\\", "\x00"))
+            or PureWindowsPath(part).drive
+        ):
+            raise ValueError("Invalid storage path component")
+        candidate = candidate / part
+        if candidate.is_symlink():
+            raise ValueError("Symlinks are not permitted in storage paths")
+    resolved = candidate.resolve()
+    if resolved == base or not resolved.is_relative_to(base):
+        raise ValueError("Path must stay strictly inside the storage directory")
+    return resolved
+
+
 try:
     import faiss
 except ImportError:  # pragma: no cover - exercised when optional dependency missing
@@ -73,9 +95,9 @@ def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 128) -> list[tu
             adjusted_overlap = max(0, chunk_size - 1)
             logger.warning(
                 "overlap (%s) must be less than chunk_size (%s); adjusting overlap to %s",
-                overlap,
-                chunk_size,
-                adjusted_overlap,
+                _safe_log_value(overlap),
+                _safe_log_value(chunk_size),
+                _safe_log_value(adjusted_overlap),
             )
             overlap = adjusted_overlap
         else:
@@ -236,10 +258,10 @@ def persist_index(
         raise ImportError("faiss-cpu not installed")
 
     # Create tenant directory
-    tenant_dir = Path(index_dir) / tenant_id
-    tenant_dir.mkdir(parents=True, exist_ok=True)
-
-    index_path = tenant_dir / index_name
+    index_path = _resolve_safe_subpath(index_dir, tenant_id, index_name)
+    faiss_file = _resolve_safe_subpath(index_path, "index.faiss")
+    chunks_file = _resolve_safe_subpath(index_path, "chunks.json")
+    metadata_file = _resolve_safe_subpath(index_path, "metadata.json")
     index_path.mkdir(parents=True, exist_ok=True)
 
     # Build FAISS index
@@ -253,7 +275,6 @@ def persist_index(
     logger.info("Added %d vectors to FAISS index", index.ntotal)
 
     # Save index
-    faiss_file = index_path / "index.faiss"
     faiss.write_index(index, str(faiss_file))
     logger.info("Saved FAISS index artifact")
 
@@ -270,7 +291,6 @@ def persist_index(
             }
         )
 
-    chunks_file = index_path / "chunks.json"
     with open(chunks_file, "w", encoding="utf-8") as f:
         json.dump(chunks_metadata, f, indent=2, ensure_ascii=False)
     logger.info("Saved chunk metadata artifact")
@@ -286,7 +306,6 @@ def persist_index(
         **(metadata or {}),
     }
 
-    metadata_file = index_path / "metadata.json"
     with open(metadata_file, "w", encoding="utf-8") as f:
         json.dump(index_metadata, f, indent=2)
     logger.info("Saved index metadata artifact")
@@ -313,13 +332,15 @@ def load_index(
         logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
         raise ImportError("faiss-cpu not installed")
 
-    index_path = Path(index_dir) / tenant_id / index_name
+    index_path = _resolve_safe_subpath(index_dir, tenant_id, index_name)
+    faiss_file = _resolve_safe_subpath(index_path, "index.faiss")
+    chunks_file = _resolve_safe_subpath(index_path, "chunks.json")
+    metadata_file = _resolve_safe_subpath(index_path, "metadata.json")
 
     if not index_path.exists():
         raise FileNotFoundError(f"Index not found: {index_path}")
 
     # Load FAISS index
-    faiss_file = index_path / "index.faiss"
     if not faiss_file.exists():
         raise FileNotFoundError(f"FAISS index file not found: {faiss_file}")
 
@@ -327,7 +348,6 @@ def load_index(
     logger.info("Loaded FAISS index with %d vectors", index.ntotal)
 
     # Load chunks metadata
-    chunks_file = index_path / "chunks.json"
     if chunks_file.exists():
         with open(chunks_file, encoding="utf-8") as f:
             chunks_metadata = json.load(f)
@@ -335,7 +355,6 @@ def load_index(
         chunks_metadata = []
 
     # Load index metadata
-    metadata_file = index_path / "metadata.json"
     if metadata_file.exists():
         with open(metadata_file, encoding="utf-8") as f:
             index_metadata = json.load(f)
@@ -434,7 +453,7 @@ def build_index_from_files(
 
         logger.warning(
             "Falling back to offline embedding provider for index '%s'",
-            index_name,
+            _safe_log_value(index_name),
         )
         provider = create_embedding_provider(
             provider_type="tfidf",
@@ -567,7 +586,11 @@ def manage_tenant_indices(
             message=f"Invalid operation: {operation}. Must be one of: create, update, delete, merge, list",  # noqa: E501
         )
 
-    tenant_dir = Path(index_dir) / tenant_id
+    tenant_dir = _resolve_safe_subpath(index_dir, tenant_id)
+    for index_name in index_names:
+        _resolve_safe_subpath(tenant_dir, index_name)
+    if kwargs.get("merge_name"):
+        _resolve_safe_subpath(tenant_dir, kwargs["merge_name"])
 
     # CREATE: Build new index from files
     if op_enum == IndexOperation.CREATE:
@@ -641,7 +664,7 @@ def manage_tenant_indices(
         for index_name in index_names:
             try:
                 # Delete old index if exists
-                old_path = tenant_dir / index_name
+                old_path = _resolve_safe_subpath(tenant_dir, index_name)
                 if old_path.exists():
                     shutil.rmtree(old_path)
                     logger.info("Removed old index '%s'", _safe_log_value(index_name))
@@ -693,7 +716,7 @@ def manage_tenant_indices(
         deleted = []
         for index_name in index_names:
             try:
-                index_path = tenant_dir / index_name
+                index_path = _resolve_safe_subpath(tenant_dir, index_name)
                 if index_path.exists():
                     shutil.rmtree(index_path)
                     deleted.append(index_name)
@@ -848,9 +871,12 @@ def manage_tenant_indices(
 
             indices = []
             for item in tenant_dir.iterdir():
+                if item.is_symlink():
+                    continue
+                item = _resolve_safe_subpath(tenant_dir, item.name)
                 if item.is_dir() and (item / "index.faiss").exists():
                     # Load metadata for summary
-                    metadata_file = item / "metadata.json"
+                    metadata_file = _resolve_safe_subpath(item, "metadata.json")
                     if metadata_file.exists():
                         with open(metadata_file) as f:
                             metadata = json.load(f)
