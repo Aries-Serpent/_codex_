@@ -7,6 +7,7 @@ import hashlib
 import importlib.util
 import json
 import logging
+import os
 import shutil
 from dataclasses import dataclass
 from enum import Enum
@@ -44,8 +45,9 @@ def _safe_log_value(value: object) -> str:
 
 
 def _resolve_safe_subpath(base_dir: str | Path, *parts: str) -> Path:
-    """Keep single-component names inside storage, rejecting symlink aliases."""
-    base = Path(base_dir).resolve()
+    """Resolve validated components beneath a trusted caller-selected storage root."""
+    base = os.path.realpath(os.fspath(base_dir))
+    prefix = os.path.join(base, "")
     candidate = base
     for part in parts:
         if (
@@ -56,13 +58,15 @@ def _resolve_safe_subpath(base_dir: str | Path, *parts: str) -> Path:
             or PureWindowsPath(part).drive
         ):
             raise ValueError("Invalid storage path component")
-        candidate = candidate / part
-        if candidate.is_symlink():
+        candidate = os.path.abspath(os.path.join(candidate, part))
+        if candidate == base or not candidate.startswith(prefix):
+            raise ValueError("Path must stay strictly inside the storage directory")
+        if os.path.islink(candidate):
             raise ValueError("Symlinks are not permitted in storage paths")
-    resolved = candidate.resolve()
-    if resolved == base or not resolved.is_relative_to(base):
+    resolved = os.path.realpath(candidate)
+    if resolved == base or not resolved.startswith(prefix):
         raise ValueError("Path must stay strictly inside the storage directory")
-    return resolved
+    return Path(resolved)
 
 
 try:

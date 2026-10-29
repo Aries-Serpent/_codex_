@@ -1,13 +1,18 @@
 """Regression tests for tenant storage containment without model downloads."""
 
 import json
+from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
-np = pytest.importorskip("numpy")
-pytest.importorskip("faiss")
-
 from aries_serpent_core.rag import indexer
+
+
+@pytest.fixture
+def np():
+    pytest.importorskip("faiss")
+    return pytest.importorskip("numpy")
 
 
 @pytest.mark.parametrize(
@@ -15,7 +20,7 @@ from aries_serpent_core.rag import indexer
     ["", " ", ".", "..", "../escape", "/absolute", "a/b", r"a\b", "\x00", "C:escape"],
 )
 @pytest.mark.parametrize("field", ["tenant_id", "index_name"])
-def test_persist_and_load_reject_unsafe_names(tmp_path, name, field):
+def test_persist_and_load_reject_unsafe_names(tmp_path, name, field, np):
     kwargs = {"index_dir": str(tmp_path), "tenant_id": "tenant", "index_name": "docs"}
     kwargs[field] = name
     with pytest.raises(ValueError):
@@ -42,7 +47,7 @@ def test_management_rejects_traversal_before_side_effects(tmp_path, operation):
 @pytest.mark.parametrize(
     "component", ["tenant", "docs", "index.faiss", "chunks.json", "metadata.json"]
 )
-def test_persist_and_load_reject_symlinks(tmp_path, component):
+def test_persist_and_load_reject_symlinks(tmp_path, component, np):
     storage = tmp_path / "storage"
     target = tmp_path / "target"
     target.mkdir()
@@ -65,7 +70,7 @@ def test_persist_and_load_reject_symlinks(tmp_path, component):
     assert list(target.iterdir()) == [target / "sentinel"]
 
 
-def test_index_lifecycle_preserves_metadata_and_tenant_isolation(tmp_path):
+def test_index_lifecycle_preserves_metadata_and_tenant_isolation(tmp_path, np):
     embeddings = np.eye(2, dtype=np.float32)
     chunks = [(0, 5, "alpha"), (5, 9, "beta")]
     for tenant in ("first", "second"):
@@ -97,3 +102,72 @@ def test_list_does_not_follow_index_symlink(tmp_path):
     (tenant / "alias").symlink_to(external, target_is_directory=True)
     result = indexer.manage_tenant_indices("tenant", "list", [], index_dir=tmp_path)
     assert result.success and result.index_names == []
+
+
+@pytest.mark.parametrize(
+    "parts",
+    [
+        (),
+        ("",),
+        (".",),
+        ("..",),
+        ("../escape",),
+        ("/absolute",),
+        (r"C:\escape",),
+        (r"\\host\share",),
+    ],
+)
+def test_helper_rejects_unsafe_components_before_inspection(tmp_path, parts):
+    with patch.object(indexer.os.path, "islink") as islink:
+        with pytest.raises(ValueError):
+            indexer._resolve_safe_subpath(tmp_path, *parts)
+    islink.assert_not_called()
+
+
+@pytest.mark.parametrize("base_as_string", [True, False])
+def test_helper_accepts_custom_root_and_nonexistent_descendants(tmp_path, base_as_string):
+    root = tmp_path / "custom storage"
+    base = str(root) if base_as_string else root
+    assert indexer._resolve_safe_subpath(base, "tenant", "docs") == root / "tenant" / "docs"
+    assert not root.exists()
+
+
+@pytest.mark.parametrize("target_kind", ["external", "internal", "missing"])
+def test_helper_rejects_symlink_aliases(tmp_path, target_kind):
+    root = tmp_path / "storage"
+    root.mkdir()
+    target = tmp_path / "external"
+    if target_kind == "internal":
+        target = root / "internal"
+    if target_kind != "missing":
+        target.mkdir()
+    (root / "alias").symlink_to(target, target_is_directory=True)
+    with pytest.raises(ValueError, match="Symlinks"):
+        indexer._resolve_safe_subpath(root, "alias", "docs")
+
+
+def test_helper_rejects_sibling_prefix_before_inspection(tmp_path):
+    root = tmp_path / "storage"
+    sibling = str(tmp_path / "storage-other" / "docs")
+    with (
+        patch.object(indexer.os.path, "abspath", return_value=sibling),
+        patch.object(indexer.os.path, "islink") as islink,
+    ):
+        with pytest.raises(ValueError, match="strictly inside"):
+            indexer._resolve_safe_subpath(root, "docs")
+    islink.assert_not_called()
+
+
+def test_helper_rechecks_resolved_containment(tmp_path):
+    root = tmp_path / "storage"
+    external = tmp_path / "external"
+    with patch.object(indexer.os.path, "realpath", side_effect=[str(root), str(external)]):
+        with pytest.raises(ValueError, match="strictly inside"):
+            indexer._resolve_safe_subpath(root, "docs")
+
+
+def test_helper_supports_filesystem_root():
+    root = Path(Path.cwd().anchor)
+    assert indexer._resolve_safe_subpath(root, "nonexistent-storage-component") == (
+        root / "nonexistent-storage-component"
+    )
