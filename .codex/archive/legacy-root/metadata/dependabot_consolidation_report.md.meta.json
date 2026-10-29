@@ -1,11 +1,11 @@
 {
-  "id": "DEPENDABOT_CONSOLIDATION_REPORT.md",
+  "id": "dependabot_consolidation_report.md",
   "archive_label": "ARCHIVED_HISTORICAL_ROOT",
   "status": "archived",
-  "source_path": ".codex/DEPENDABOT_CONSOLIDATION_REPORT.md",
-  "archive_path": ".codex/archive/legacy-root/DEPENDABOT_CONSOLIDATION_REPORT.md",
-  "archived_at": "2026-10-02T10:40:14Z",
-  "sha256": "c20b115b81ae2352c0e66ddf655aee54dd1c3e5dc136ea66ec01c3d33cc913e0",
-  "size_bytes": 3578,
+  "source_path": ".codex/dependabot_consolidation_report.md",
+  "archive_path": ".codex/archive/legacy-root/dependabot_consolidation_report.md",
+  "archived_at": "2026-10-02T10:40:16Z",
+  "sha256": "1d47ff7e41a0a2db56c4d8290114c78603f59a8763a163a025b3c2f0bf7b44b6",
+  "size_bytes": 5333,
   "kind": "historical_root"
 }
