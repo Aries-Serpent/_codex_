@@ -152,6 +152,21 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Fetch and verify requested LFS assets
+      if: env.LFS_FETCH_ENABLED == 'true'
+      continue-on-error: ${{ inputs.lfs_continue_on_error }}
+      env:
+        LFS_MODE: ${{ inputs.lfs_mode }}
+        LFS_INCLUDE_PATHS: ${{ inputs.lfs_include_paths }}
+        LFS_AUTH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      run: |
+        args=(--mode "$LFS_MODE")
+        if [[ "$LFS_MODE" == "full" ]]; then
+          args+=(--allow-full)
+        else
+          args+=(--include "$LFS_INCLUDE_PATHS")
+        fi
+        python3 scripts/ci/fetch_lfs_assets.py "${args[@]}"
     - name: Cache pip dependencies
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       with:
@@ -382,13 +397,11 @@ jobs:
 
         # Print summary
         print("📊 PERFORMANCE METRICS")
-        print(f"  Scoring time:\
-                 {metrics['context_scorer_time_ms']}ms")
+        print(f"  Scoring time: {metrics['context_scorer_time_ms']}ms")
         print(f"  Injection time: {metrics['pattern_injection_time_ms']}ms")
         print(f"  Total overhead: {metrics['total_overhead_ms']}ms")
         print(f"  Patterns injected: {metrics['patterns_count']}")
-        print(f"  Avg relevance:\
-                 {metrics['avg_relevance_score']:.2f}")
+        print(f"  Avg relevance: {metrics['avg_relevance_score']:.2f}")
         print(f"  OODA baseline: {metrics['ooda_baseline_ms']}ms")
         print(f"  OODA with context: {metrics['ooda_with_context_ms']}ms")
         print(f"  Improvement: {metrics['ooda_improvement_percent']:.1f}%")

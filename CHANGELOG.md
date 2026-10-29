@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (SN)
+- Skip the optional Phase 7A test file only when FastAPI is unavailable, avoiding a zero-tests pytest failure; quote the Bandit version constraint so the shell does not treat it as redirection.
+- Restore the requested LFS asset fetch/verification path in Copilot setup and align embedded Python output lines with the setup validator's indentation checks.
+
 ### Fixed — Chronicle CLI scope and bounded Phase 2 continuation (2026-10-24)
 - Preserve external absolute `.codex` database suffixes during CLI reindexing without changing repository-relative custom paths or external custom-path basename behavior.
 - Add CLI regressions across two working directories, nested state paths, custom database paths and relative paths; retain existing legacy CLI export and module-identity contracts.
