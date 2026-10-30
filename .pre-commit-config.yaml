@@ -9,10 +9,12 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
+      # Preserve generated artifacts; gitleaks still scans the repository.
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
+        exclude: "^\\.codex/evidence/institutional-foundation/|^site/(ARCHITECTURE|CHANGELOG)/index\\.html$"
       - id: end-of-file-fixer
-        exclude: "^CODEX_MANIFEST\\.json$|^\\.codex/agent_context\\.json$"
+        exclude: "^CODEX_MANIFEST\\.json$|^\\.codex/agent_context\\.json$|^\\.codex/evidence/institutional-foundation/|^site/(ARCHITECTURE|CHANGELOG)/index\\.html$"
       - id: check-yaml
         exclude: "^mkdocs\\.yml$|^.codex/reports/.*\\.yml$|^.codex/patterns/.*\\.yaml$|\
           ^.github/agents/.*\\.yml$|^.github/agents/.*\\.yaml$|\
@@ -31,6 +33,8 @@ repos:
     hooks:
       - id: detect-secrets
         args: ["--no-verify", "--baseline", ".secrets.baseline"]
+        # Generated provenance evidence is hash-heavy; gitleaks still scans it.
+        exclude: "^\\.codex/evidence/institutional-foundation/"
   # Security scanning: pip-audit for dependency vulnerabilities
   - repo: https://github.com/pypa/pip-audit
     rev: v2.6.1

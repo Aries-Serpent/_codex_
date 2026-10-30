@@ -265,23 +265,15 @@ jobs:
         echo ""
 
         echo "[TEST-RUN] Verifying test files exist..."
-        TEST_FILES=(
-          "tests/test_rag_*.py"
-          "tests/rag/"
-        )
-        TOTAL_TEST_FILES=0
-        for pattern in "${TEST_FILES[@]}"; do
-          count=$(find "$pattern" -type f -name "*.py" 2>/dev/null | wc -l)
-          if [ "$count" -gt 0 ]; then
-            echo "[TEST-RUN] ✓ Found $count test files matching $pattern"
-            TOTAL_TEST_FILES=$((TOTAL_TEST_FILES + count))
-          fi
-        done
+        ROOT_TEST_FILES=$(find tests -maxdepth 1 -type f -name 'test_rag_*.py' -print | awk 'END { print NR }')
+        NESTED_TEST_FILES=$(find tests/rag -type f -name 'test_*.py' -print | awk 'END { print NR }')
+        TOTAL_TEST_FILES=$((ROOT_TEST_FILES + NESTED_TEST_FILES))
 
         if [ "$TOTAL_TEST_FILES" -eq 0 ]; then
           echo "[TEST-RUN] ❌ ERROR: No test files found!"
           exit 1
         fi
+        echo "[TEST-RUN] ✓ Found $ROOT_TEST_FILES root-level and $NESTED_TEST_FILES nested test files"
         echo "[TEST-RUN] Total test files: $TOTAL_TEST_FILES"
         echo ""
 

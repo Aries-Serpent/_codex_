@@ -250,7 +250,7 @@ class OODAExecutor:
     ):
         """
         Initialize OODA executor.
-        
+
         Args:
             state_provider: Provider for repository/agent/environment state
             context_provider: Optional provider for context injection
@@ -285,12 +285,12 @@ class OODAExecutor:
     ) -> OODAState:
         """
         Execute a complete OODA cycle.
-        
+
         Args:
             task_id: Unique task identifier
             task_type: Type of task (ci_fix, ml_pattern, etc.)
             priority: Task priority (P0-P2)
-        
+
         Returns:
             Complete OODAState with all phase results
         """

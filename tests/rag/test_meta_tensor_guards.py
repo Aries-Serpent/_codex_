@@ -11,8 +11,10 @@ This module is part of Phase 13.2: RAG Meta-Tensor Safety
 """
 
 from datetime import UTC, datetime
+from unittest.mock import Mock
 
 import pytest
+
 from codex.rag.materialization_prevention import (
     MaterializationEvent,
     MaterializationMonitor,

@@ -239,7 +239,7 @@ class TestClientIntegration:
 
     def test_client_consolidates_duplicate_patterns(self):
         """Verify client consolidates patterns from original mcp_poster.
-        
+
         Before refactoring: 8+ duplicate urllib.request.Request patterns
         After refactoring: All delegated to GitHubHTTPClient.make_request()
         """

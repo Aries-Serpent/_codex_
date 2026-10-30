@@ -28,6 +28,13 @@ from typing import Any, Callable, Generator, Optional
 logger = logging.getLogger(__name__)
 
 
+def _cuda_module(torch: Any) -> Any | None:
+    try:
+        return torch.cuda
+    except (AttributeError, ImportError):
+        return None
+
+
 class GuardRailStatus(Enum):
     """Status of guard rail checks."""
 
@@ -111,10 +118,15 @@ class MetaTensorGuardRail:
             import torch
 
             report_details["torch_version"] = torch.__version__
-            report_details["cuda_available"] = torch.cuda.is_available()
-            report_details["device_count"] = (
-                torch.cuda.device_count() if torch.cuda.is_available() else 0
-            )
+            cuda = _cuda_module(torch)
+            if cuda is None:
+                cuda_available = False
+                device_count = 0
+            else:
+                cuda_available = cuda.is_available()
+                device_count = cuda.device_count() if cuda_available else 0
+            report_details["cuda_available"] = cuda_available
+            report_details["device_count"] = device_count
 
             # Check CUDA allocation config
             alloc_conf = os.environ.get("PYTORCH_CUDA_ALLOC_CONF", "not set")
@@ -166,10 +178,11 @@ class MetaTensorGuardRail:
             import torch
 
             # Check memory
-            if torch.cuda.is_available():
-                torch.cuda.empty_cache()
+            cuda = _cuda_module(torch)
+            if cuda is not None and cuda.is_available():
+                cuda.empty_cache()
                 report_details["gpu_memory_freed"] = True
-                gpu_mem = torch.cuda.mem_get_info()
+                gpu_mem = cuda.mem_get_info()
                 report_details["gpu_free_mb"] = gpu_mem[0] / 1024 / 1024
                 report_details["gpu_total_mb"] = gpu_mem[1] / 1024 / 1024
 
@@ -255,6 +268,7 @@ class MetaTensorGuardRail:
             "meta_submodule_params": [],
             "meta_submodule_buffers": [],
         }
+        error: Exception | None = None
 
         try:
             meta_found = False
@@ -333,6 +347,7 @@ class MetaTensorGuardRail:
         """
         start_time = datetime.now(UTC)
         report_details: dict[str, Any] = {}
+        error: Exception | None = None
 
         try:
             import psutil
@@ -352,9 +367,10 @@ class MetaTensorGuardRail:
                 error = None
 
             # Check GPU memory if available
-            if torch.cuda.is_available():
+            cuda = _cuda_module(torch)
+            if cuda is not None and cuda.is_available():
                 try:
-                    gpu_mem = torch.cuda.mem_get_info()
+                    gpu_mem = cuda.mem_get_info()
                     report_details["gpu_memory_percent"] = (
                         (gpu_mem[1] - gpu_mem[0]) / gpu_mem[1] * 100
                     )

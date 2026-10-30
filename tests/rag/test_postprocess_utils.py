@@ -257,7 +257,9 @@ class TestPostprocessOutputFunction:
 
         # If evidence found, should include source
         if evidence:
-            assert "python_guide.md" in processed or "[Sources:" in processed, "Condition must be true"
+            assert (
+                "python_guide.md" in processed or "[Sources:" in processed
+            ), "Condition must be true"
 
     def test_postprocess_output_without_citations(self):
         """Test post-processing without citations."""
@@ -369,7 +371,7 @@ class TestSafeModelLoad:
         safe_model_load(mock_model, device="cpu")
 
         # Should call to() method
-        mock_model.to.assert_called_with("cpu")
+        mock_model.to.assert_called_with(device="cpu", non_blocking=False)
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -409,7 +411,8 @@ class TestSafeModelLoad:
     )
     def test_safe_model_load_no_modules(self):
         """Test safe loading when model has no named_modules."""
-        mock_model = MagicMock(spec=[])  # No named_modules attribute
+        mock_model = MagicMock(spec=["to"])
+        mock_model.to.return_value = mock_model
 
         result = safe_model_load(mock_model, device="cpu")
 
