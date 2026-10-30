@@ -250,7 +250,7 @@ jobs:
         echo "[TEST-RUN] pytest version:"
         "$PYTHON_BIN" -m pytest --version
 
-        export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
+        export PYTHONPATH="${PYTHONPATH:-}:$(pwd)/src"
         echo "[TEST-RUN] PYTHONPATH: $PYTHONPATH"
         echo ""
 
@@ -511,6 +511,7 @@ jobs:
 
       '
     permissions:
+      contents: read
       pull-requests: write
       issues: write
     steps:
@@ -518,9 +519,17 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+        token: ${{ github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: RAG Module Tests
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
     timeout-minutes: 30

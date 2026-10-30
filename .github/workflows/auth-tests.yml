@@ -172,7 +172,7 @@ jobs:
     - name: Test examples
       run: |
         set -euo pipefail
-        python examples/authentication/02_mfa_setup.py
+        printf '\n' | python examples/authentication/02_mfa_setup.py
         python examples/authentication/03_token_management.py
         python examples/authentication/04_complete_flow.py
     - name: Security scan
