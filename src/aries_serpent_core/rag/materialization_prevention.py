@@ -286,8 +286,14 @@ class MaterializationRecoveryStrategy:
         try:
             import torch
 
-            if torch.cuda.is_available():
-                torch.cuda.empty_cache()
+            try:
+                cuda = torch.cuda
+                cuda_available = cuda.is_available()
+            except (AttributeError, ImportError):
+                cuda = None
+                cuda_available = False
+            if cuda is not None and cuda_available:
+                cuda.empty_cache()
             return True, "cache_clear"
         except Exception as e:
             logger.warning("Cache clear recovery failed: %s", e)
@@ -303,12 +309,18 @@ class MaterializationRecoveryStrategy:
         try:
             import gc
 
-            import torch
-
             gc.collect()
-            if torch.cuda.is_available():
-                torch.cuda.empty_cache()
-                torch.cuda.reset_peak_memory_stats()
+            try:
+                import torch
+
+                cuda = torch.cuda
+                cuda_available = cuda.is_available()
+            except (AttributeError, ImportError):
+                cuda = None
+                cuda_available = False
+            if cuda is not None and cuda_available:
+                cuda.empty_cache()
+                cuda.reset_peak_memory_stats()
             return True, "memory_reset"
         except Exception as e:
             logger.warning("Memory reset recovery failed: %s", e)

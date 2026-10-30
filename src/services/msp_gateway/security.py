@@ -11,13 +11,13 @@ from typing import Optional
 
 import yaml
 
-from src.utils.log_sanitizer import sanitize_log_input
+from utils.log_sanitizer import sanitize_log_input
 
 from .config import settings
 
 logger = logging.getLogger(__name__)
 
-_API_KEY_HASH_PREFIX = "pbkdf2_sha256$"
+_API_KEY_HASH_PREFIX = "pbkdf2_sha256$"  # pragma: allowlist secret -- public hash-format marker
 _API_KEY_HASH_ITERATIONS = 200_000
 
 
@@ -174,11 +174,14 @@ class AuthManager:
         Returns:
             tenant_id if valid, None otherwise
         """
-        for api_key_hash in candidate_api_key_hashes(api_key):
-            tenant_id = self.api_keys.get(api_key_hash)
-            if tenant_id is not None:
-                return tenant_id
-        return None
+        current_hash, legacy_hash = candidate_api_key_hashes(api_key)
+        tenant_id = self.api_keys.get(current_hash)
+        if tenant_id is None:
+            tenant_id = self.api_keys.get(legacy_hash)
+        if tenant_id is not None:
+            self.register_api_key_hash(current_hash, tenant_id)
+            self.revoke_api_key_hash(legacy_hash)
+        return tenant_id
 
     def revoke_api_key(self, api_key: str):
         """Revoke an API key"""
@@ -231,11 +234,7 @@ def validate_prompt(prompt: str, tenant_id: str) -> tuple[bool, Optional[str]]:
     # Check for blocked patterns
     error = policy_enforcer.check_blocked_patterns(prompt)
     if error:
-        logger.warning(  # nosec: tenant_id and error are sanitized via sanitize_log_input  # pragma: allowlist secret
-            "Blocked prompt for tenant %s: %s",
-            sanitize_log_input(tenant_id),
-            sanitize_log_input(error),
-        )
+        logger.warning("Prompt blocked by policy")
         return False, error
 
     # Check prompt length (basic validation)
@@ -253,9 +252,5 @@ def redact_content(text: str, tenant_id: str) -> tuple[str, list[str]]:
     """
     redacted, redactions = policy_enforcer.redact_sensitive_content(text)
     if redactions:
-        logger.info(  # nosec: tenant_id and redactions are sanitized via sanitize_log_input  # pragma: allowlist secret
-            "Applied redactions for tenant %s: %s",
-            sanitize_log_input(tenant_id),
-            sanitize_log_input(str(redactions)),
-        )
+        logger.info("Sensitive content redacted")
     return redacted, redactions

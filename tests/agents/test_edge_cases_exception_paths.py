@@ -182,14 +182,12 @@ class TestAgentMemoryPathTraversal:
 class TestAgentMemoryDatabaseErrors:
     """Test AgentMemory database error handling."""
 
-    def test_store_memory_to_readonly_database(self, tmp_path: Path) -> None:
+    def test_store_memory_to_readonly_database(self, tmp_path: Path, monkeypatch) -> None:
         """Test storing to read-only database."""
         db_path = tmp_path / "readonly.db"
         memory = AgentMemory(db_path=db_path)
 
-        # Make database read-only
-        db_path.chmod(0o444)
-
+        connection = sqlite3.connect(f"{db_path.as_uri()}?mode=ro", uri=True)
         try:
             entry = MemoryEntry(
                 memory_id="test",
@@ -197,12 +195,12 @@ class TestAgentMemoryDatabaseErrors:
                 content="content",
                 context={},
             )
-            # This should fail or handle gracefully
-            with pytest.raises(sqlite3.OperationalError):
-                memory.store_memory(entry)
+            with monkeypatch.context() as context:
+                context.setattr(sqlite3, "connect", lambda *args, **kwargs: connection)
+                with pytest.raises(sqlite3.OperationalError, match="readonly"):
+                    memory.store_memory(entry)
         finally:
-            # Restore permissions
-            db_path.chmod(0o644)
+            connection.close()
 
     def test_retrieve_from_corrupted_database(self, tmp_path: Path) -> None:
         """Test retrieving from corrupted database."""

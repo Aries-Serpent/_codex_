@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from src.utils.log_sanitizer import sanitize_log_input
+from utils.log_sanitizer import sanitize_log_input
 
 from ..config import settings
 from ..security import auth_manager, candidate_api_key_hashes, hash_api_key
@@ -56,8 +56,7 @@ class TenantRegistry:
         cursor = conn.cursor()
 
         # Create tenants table
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS tenants (
                 tenant_id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
@@ -69,8 +68,7 @@ class TenantRegistry:
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL
             )
-        """
-        )
+        """)
 
         cursor.execute("SELECT tenant_id, api_key FROM tenants")
         rows = cursor.fetchall()
@@ -216,9 +214,17 @@ class TenantRegistry:
 
     def get_tenant_by_api_key(self, api_key: str) -> Optional[dict[str, Any]]:
         """Get tenant by API key"""
-        tenant_id = auth_manager.verify_api_key(api_key)
-        if tenant_id:
-            return self.get_tenant(tenant_id)
+        cached_tenant_id = auth_manager.verify_api_key(api_key)
+        if cached_tenant_id:
+            tenant = self.get_tenant(cached_tenant_id)
+            if tenant is None:
+                return None
+            current_hash = hash_api_key(api_key)
+            if tenant.get("api_key_hash") == current_hash:
+                return tenant
+            if self.backend != "sqlite":
+                tenant["api_key_hash"] = current_hash
+                return tenant
 
         # Fallback: search in SQLite
         if self.backend == "sqlite":
@@ -285,8 +291,8 @@ class TenantRegistry:
                 }
                 # Cache it
                 self.tenants[tenant_id] = tenant_data
-                for api_key_hash in api_key_hashes:
-                    auth_manager.register_api_key_hash(api_key_hash, tenant_id)
+                auth_manager.register_api_key_hash(pbkdf2_hash, tenant_id)
+                auth_manager.revoke_api_key_hash(legacy_sha256_hash)
                 return tenant_data
 
         return None
@@ -299,13 +305,11 @@ class TenantRegistry:
             conn = sqlite3.connect(settings.db_path)
             cursor = conn.cursor()
 
-            cursor.execute(
-                """
+            cursor.execute("""
                 SELECT tenant_id, name, api_key, quota_json, policies_json,
                        metadata_json, active, created_at, updated_at
                 FROM tenants
-            """
-            )
+            """)
 
             rows = cursor.fetchall()
             conn.close()
@@ -457,13 +461,7 @@ class TenantRegistry:
             else:
                 auth_manager.revoke_api_key_hash(tenant["api_key_hash"])
 
-        logger.info(
-            "Tenant %s updated with fields: %s",
-            sanitize_log_input(tenant_id),
-            sanitize_log_input(
-                ", ".join(updated_fields.keys()) if updated_fields else "updated_at"
-            ),
-        )
+        logger.info("Tenant record updated")
 
         return tenant
 

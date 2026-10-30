@@ -147,14 +147,41 @@ class F1Score(MetricBase):
         super().__init__("f1_score")
 
     def reset(self) -> None:
+        """Discard accumulated classification counts without changing averaging options.
+
+        Returns:
+            None. Subsequent computation uses an empty observation set.
+        """
         self._stats = _ClassificationStats()
 
     def update(self, predictions: Any, targets: Any) -> None:
+        """Accumulate integer class predictions and corresponding target labels.
+
+        Args:
+            predictions: Class IDs, nested sequences, or optional torch tensors.
+                Tensors are detached, moved to CPU, and flattened.
+            targets: Labels in the same representation. Only paired entries up
+                to the shorter flattened length contribute; logits are not decoded.
+
+        Raises:
+            TypeError: If an entry cannot be converted to an integer.
+            ValueError: If an entry is not a valid integer representation.
+        """
         preds = [int(p) for p in _to_flat_list(predictions)]
         labels = [int(t) for t in _to_flat_list(targets)]
         self._stats.update(preds, labels)
 
     def compute(self) -> dict[str, float]:
+        """Return accumulated F1 as a mapping under ``f1_score`` without resetting.
+
+        Supports micro, macro, support-weighted, and binary averaging. Binary
+        selects label 1 when num_classes is None or 2, otherwise the greatest
+        observed label. Missing positive labels and empty state produce zero.
+        Other modes use observed labels, not a range derived from num_classes.
+
+        Raises:
+            ValueError: If the configured averaging strategy is unsupported.
+        """
         labels = self._stats.labels()
         precisions = [self._stats.precision(label) for label in labels]
         recalls = [self._stats.recall(label) for label in labels]
@@ -207,14 +234,40 @@ class RecallScore(MetricBase):
         super().__init__("recall_score")
 
     def reset(self) -> None:
+        """Clear true-positive, false-positive, false-negative, and support counts.
+
+        Returns:
+            None. The configured class count and averaging mode are retained.
+        """
         self._stats = _ClassificationStats()
 
     def update(self, predictions: Any, targets: Any) -> None:
+        """Add paired predicted and target integer IDs to the running counts.
+
+        Args:
+            predictions: Scalar IDs, nested sequences, or optional torch tensors;
+                tensor inputs are detached and flattened on CPU, not argmaxed.
+            targets: Corresponding labels. Unpaired trailing entries are ignored.
+
+        Raises:
+            TypeError: If a flattened entry cannot be converted to int.
+            ValueError: If a flattened entry has an invalid integer value.
+        """
         preds = [int(p) for p in _to_flat_list(predictions)]
         labels = [int(t) for t in _to_flat_list(targets)]
         self._stats.update(preds, labels)
 
     def compute(self) -> dict[str, float]:
+        """Return ``recall_score`` for all updates, preserving accumulated state.
+
+        Micro pools counts; macro averages observed labels; weighted uses target
+        support. Binary chooses label 1 for num_classes None or 2, otherwise the
+        greatest observed label. Empty state or an absent positive label gives
+        zero; num_classes does not add unobserved classes to other averages.
+
+        Raises:
+            ValueError: If average is not micro, macro, weighted, or binary.
+        """
         labels = self._stats.labels()
         recalls = [self._stats.recall(label) for label in labels]
         supports = [self._stats.support[label] for label in labels]
@@ -256,10 +309,26 @@ class TokenAccuracy(MetricBase):
         super().__init__("token_accuracy")
 
     def reset(self) -> None:
+        """Set matched-token and compared-token totals to zero.
+
+        Returns:
+            None. A subsequent compute returns zero until pairs are added.
+        """
         self._correct = 0
         self._total = 0
 
     def update(self, predictions: Any, targets: Any) -> None:
+        """Count equal token pairs after flattening predictions and targets.
+
+        Args:
+            predictions: Token values, nested sequences, or optional torch tensors.
+            targets: Reference values; comparison stops at the shorter flattened
+                length. No padding or ignore-index filtering is performed.
+
+        Returns:
+            None. Counts accumulate across calls; tensor inputs are detached
+            and copied to CPU before comparison.
+        """
         preds = _to_flat_list(predictions)
         labels = _to_flat_list(targets)
         total = min(len(preds), len(labels))
@@ -270,6 +339,16 @@ class TokenAccuracy(MetricBase):
     def compute(self) -> dict[str, float]:
         # If no samples have been processed, return 0.0 accuracy.
         # This behavior is tested in the empty input test case.
+        """Return ``token_accuracy`` as correct pairs divided by compared pairs.
+
+        Empty state yields 0.0. Reading the result does not reset either count.
+
+        Example:
+            >>> metric = TokenAccuracy()
+            >>> metric.update([1, 2, 3], [1, 0])
+            >>> metric.compute()
+            {'token_accuracy': 0.5}
+        """
         if self._total == 0:
             return {self.name: 0.0}
         return {self.name: self._correct / self._total}
@@ -290,6 +369,11 @@ class BLEUScore(MetricBase):
         super().__init__("bleu_score")
 
     def reset(self) -> None:
+        """Clear corpus n-gram matches, candidate totals, and both token lengths.
+
+        Returns:
+            None. The n-gram order and smoothing configuration remain unchanged.
+        """
         self._matches = [0] * self.n_gram
         self._totals = [0] * self.n_gram
         self._pred_length = 0
@@ -301,6 +385,20 @@ class BLEUScore(MetricBase):
         return Counter(tuple(tokens[i : i + n]) for i in range(len(tokens) - n + 1))
 
     def update(self, predictions: Any, targets: Any) -> None:
+        """Accumulate clipped n-gram counts for paired candidate/reference sequences.
+
+        Args:
+            predictions: Token sequences, optional torch tensors, or a mapping
+                containing input_ids or predictions. No text tokenization occurs.
+            targets: One reference sequence per candidate; extra sequences on
+                either side are ignored. Use nested lists for word-token batches.
+
+        Returns:
+            None. Corpus lengths and counts accumulate until reset.
+
+        Raises:
+            TypeError: If tokens cannot be hashed as n-gram tuple keys.
+        """
         pred_sequences = _to_sequences(predictions)
         target_sequences = _to_sequences(targets)
         for pred, target in zip(pred_sequences, target_sequences, strict=False):
@@ -319,6 +417,16 @@ class BLEUScore(MetricBase):
                 self._totals[n - 1] += total
 
     def compute(self) -> dict[str, float]:
+        """Return corpus ``bleu_score`` and ``brevity_penalty`` without resetting.
+
+        Any zero n-gram precision, including an order with no candidates, returns
+        both values as zero. Smoothing is added only inside the logarithm after
+        this check: it does not rescue zero matches. Positive smoothing can make
+        a perfect score slightly exceed 1.0.
+
+        Raises:
+            ValueError: If a configured smoothing value makes a logarithm invalid.
+        """
         precisions = []
         for matches, total in zip(self._matches, self._totals, strict=False):
             if total == 0:
@@ -372,6 +480,16 @@ class MetricRegistry:
         self._registry: dict[str, MetricSpec] = {}
 
     def register(self, name: str, metric_cls: type[MetricBase], **default_kwargs: Any) -> None:
+        """Store or replace a metric factory under a normalized name.
+
+        Args:
+            name: Registry key, stripped of whitespace and lowercased.
+            metric_cls: Metric class to instantiate later; not validated here.
+            **default_kwargs: Constructor defaults, overridden by create.
+
+        Raises:
+            ValueError: If name is empty after stripping.
+        """
         key = name.strip().lower()
         if not key:
             raise ValueError("metric name must be non-empty")
@@ -379,6 +497,20 @@ class MetricRegistry:
         self._registry[key] = spec
 
     def create(self, name: str, **overrides: Any) -> MetricBase:
+        """Construct a fresh metric using stored defaults and caller overrides.
+
+        Args:
+            name: Case-insensitive registry key with surrounding whitespace ignored.
+            **overrides: Constructor arguments taking precedence over defaults.
+
+        Returns:
+            The registered factory's new metric instance.
+
+        Raises:
+            KeyError: If the normalized name has not been registered.
+            TypeError: If the factory rejects the merged constructor arguments.
+            ValueError: If the metric constructor rejects an option.
+        """
         key = name.strip().lower()
         if key not in self._registry:
             raise KeyError(f"metric not registered: {name}")
@@ -388,6 +520,10 @@ class MetricRegistry:
         return spec.factory(**kwargs)
 
     def list(self) -> list[str]:
+        """Return a sorted new list of normalized registered metric names.
+
+        The list is a snapshot; mutating it does not modify the registry.
+        """
         return sorted(self._registry.keys())
 
 

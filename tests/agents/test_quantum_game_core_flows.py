@@ -168,8 +168,12 @@ class TestQuantumInspiredGameEngine:
         """Test QuantumInspiredGameEngine initializes correctly."""
         assert quantum_engine is not None, "quantum_engine must be initialized"
         assert hasattr(quantum_engine, "game_state")
-        assert quantum_engine.game_state.joint_wavefunction is not None, "joint_wavefunction must be initialized"
-        assert quantum_engine.game_state.entanglement_strength >= 0.0, "entanglement_strength must be greater than zero"
+        assert (
+            quantum_engine.game_state.joint_wavefunction is not None
+        ), "joint_wavefunction must be initialized"
+        assert (
+            quantum_engine.game_state.entanglement_strength >= 0.0
+        ), "entanglement_strength must be greater than zero"
 
     def test_wavefunction_normalization(self, quantum_engine):
         """Test that wavefunction remains normalized."""
@@ -229,7 +233,9 @@ class TestQuantumInspiredGameEngine:
         )
 
         # Thetas should have updated
-        assert new_blue != initial_theta_blue or new_red != initial_theta_red, "new_blue is not valid"
+        assert (
+            new_blue != initial_theta_blue or new_red != initial_theta_red
+        ), "new_blue is not valid"
 
     def test_get_payoffs_method(self, quantum_engine):
         """Test get_payoffs convenience method."""
@@ -318,16 +324,12 @@ class TestBlueRedTeamSimulator:
             assert "blue_payoff" in round_data, "Data must not be empty"
             assert "red_payoff" in round_data, "Data must not be empty"
 
-    def test_payoff_accumulation(self, simulator_quantum):
-        """Test that payoffs accumulate over rounds."""
+    def test_final_payoff_matches_final_round(self, simulator_quantum):
+        """Final payoffs describe the learned strategy in the last round."""
         results = simulator_quantum.run_simulation(num_rounds=10, learning_rate=0.1)
 
-        # Final payoffs should be sum of all rounds
-        total_blue = sum(r["blue_payoff"] for r in results["rounds"])
-        total_red = sum(r["red_payoff"] for r in results["rounds"])
-
-        assert np.isclose(results["final_blue_payoff"], total_blue)
-        assert np.isclose(results["final_red_payoff"], total_red)
+        assert np.isclose(results["final_blue_payoff"], results["rounds"][-1]["blue_payoff"])
+        assert np.isclose(results["final_red_payoff"], results["rounds"][-1]["red_payoff"])
 
     def test_zero_rounds_simulation(self, simulator_classical):
         """Test simulation with zero rounds."""
@@ -349,6 +351,15 @@ class TestBlueRedTeamSimulator:
         # Both should complete successfully
         assert results_low["num_rounds"] == 5, "Result must not be empty"
         assert results_high["num_rounds"] == 5, "Result must not be empty"
+
+    def test_zero_rounds_quantum_simulation(self, simulator_quantum):
+        results = simulator_quantum.run_simulation(num_rounds=0)
+        assert results["rounds"] == []
+        assert results["final_blue_payoff"] == results["final_red_payoff"] == 0.0
+
+    def test_negative_rounds_rejected(self, simulator_classical):
+        with pytest.raises(ValueError, match="num_rounds must be non-negative"):
+            simulator_classical.run_simulation(num_rounds=-1)
 
 
 @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy not available")

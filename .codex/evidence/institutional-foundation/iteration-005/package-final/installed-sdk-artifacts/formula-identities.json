@@ -1,0 +1,870 @@
+{
+  "formulas": [
+    {
+      "conditions": "Preserve every source finding, including dissent.",
+      "id": "RD4-F001",
+      "latex": "F_n=\\operatorname{Findings}(G_n)",
+      "metadata_ref": "planned",
+      "name": "findings",
+      "symbols": [
+        "F",
+        "G",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "Unknown criticality/boundary must remain visible; no inferred authorized boundary.",
+      "id": "RD4-F002",
+      "latex": "F_n^{\\mathrm{crit}}=\\{f\\in F_n:\\operatorname{Critical}(f)\\land\\operatorname{Open}(f)\\land\\neg\\operatorname{AuthorizedBoundary}(f)\\}",
+      "metadata_ref": "planned",
+      "name": "critical_findings",
+      "symbols": [
+        "F"
+      ]
+    },
+    {
+      "conditions": "Directed typed multigraph retains provenance and multiplicity.",
+      "id": "RD4-F003",
+      "latex": "R_n^{\\mathrm{conf}}=\\operatorname{ConflictEdges}(G_n)",
+      "metadata_ref": "planned",
+      "name": "conflict_edges",
+      "symbols": [
+        "R",
+        "G",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "Both snapshots must be bound; missing identity is unknown.",
+      "id": "RD4-F004",
+      "latex": "\\operatorname{Changed}_n=\\operatorname{Diff}(C_n^{\\mathrm{reviewed}},C_n^{\\mathrm{current}})",
+      "metadata_ref": "planned",
+      "name": "changed_manifest",
+      "symbols": [
+        "Changed",
+        "C",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "Structural correspondence only: core.candidate and core.record bind local manifests/envelopes; neither implements this review state or equations.",
+      "id": "RD4-F005",
+      "latex": "I_n=(C_n,X_n),\\qquad S_n=(I_n,G_n,V_n)",
+      "metadata_ref": "planned",
+      "name": "input_and_state",
+      "symbols": [
+        "I",
+        "C",
+        "X",
+        "S",
+        "G",
+        "V"
+      ]
+    },
+    {
+      "conditions": "Explicit applicable context events; no implicit context mutation.",
+      "id": "RD4-F006",
+      "latex": "X_{n+1}=\\operatorname{AdvanceContext}(X_n,\\operatorname{ContextEvents}_n)",
+      "metadata_ref": "planned",
+      "name": "context_advance",
+      "symbols": [
+        "X",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "Ordered append only; state folds events and caches require source-event digest.",
+      "id": "RD4-F007",
+      "latex": "V_{n+1}=\\operatorname{AppendEvents}(V_n,\\operatorname{EventBatch}_n)",
+      "metadata_ref": "planned",
+      "name": "event_append",
+      "symbols": [
+        "V",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "Finite set; expiry and parent lineage explicit; replacement never erases history.",
+      "id": "RD4-F008",
+      "latex": "\\Theta_n=\\{(b_i,\\theta_i,w_{i,n},\\operatorname{parent}_i,\\operatorname{expiry}_i,\\operatorname{mode}_i)\\}_{i=1}^{k_n},\\quad\\operatorname{mode}_i\\in\\{\\mathrm{replace},\\mathrm{supplement}\\}",
+      "metadata_ref": "planned",
+      "name": "bearing_set",
+      "symbols": [
+        "Theta",
+        "weights"
+      ]
+    },
+    {
+      "conditions": "Every predicate assessed; unknown does not admit.",
+      "id": "RD4-F009",
+      "latex": "\\operatorname{Admit}(b)=\\operatorname{Trigger}(b)\\land\\operatorname{BoundedScope}(b)\\land\\operatorname{Budgeted}(b)\\land\\operatorname{OutputDefined}(b)\\land\\neg\\operatorname{Duplicate}(b)",
+      "metadata_ref": "planned",
+      "name": "bearing_admission",
+      "symbols": [
+        "Theta",
+        "resources"
+      ]
+    },
+    {
+      "conditions": "Dispatch is not an assurance plan or authority.",
+      "id": "RD4-F010",
+      "latex": "L_{i,n}=\\operatorname{Review}_{b_i}(I_n,P_n^{\\mathrm{dispatch}})",
+      "metadata_ref": "planned",
+      "name": "review_lane",
+      "symbols": [
+        "L",
+        "I",
+        "Theta",
+        "dispatch",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "Dedicated dissent survives reconciliation; no majority erasure.",
+      "id": "RD4-F011",
+      "latex": "L_n^{\\mathrm{dissent}}=\\operatorname{DissentReview}(I_n,\\{L_{i,n}\\})",
+      "metadata_ref": "planned",
+      "name": "dissent_lane",
+      "symbols": [
+        "L",
+        "I",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "Eight distinct dimensions; unknown values not omitted; without critical dimensions independence is not_assessed.",
+      "id": "RD4-F012",
+      "latex": "\\mathbf i_{i,n}=(i_{\\mathrm{actor}},i_{\\mathrm{model}},i_{\\mathrm{prompt}},i_{\\mathrm{evidence}},i_{\\mathrm{environment}},i_{\\mathrm{procedure}},i_{\\mathrm{organization}},i_{\\mathrm{custody}})",
+      "metadata_ref": "planned",
+      "name": "independence_vector",
+      "symbols": [
+        "independence"
+      ]
+    },
+    {
+      "conditions": "Only defined with nonempty critical set, known critical values and justified scales; unknown critical prevents passing floor.",
+      "id": "RD4-F013",
+      "latex": "i_{i,n}^{\\mathrm{floor}}=\\min_{h\\in K_i^{\\mathrm{ind}}}i_h",
+      "metadata_ref": "planned",
+      "name": "independence_floor",
+      "symbols": [
+        "independence"
+      ]
+    },
+    {
+      "conditions": "Optional; arithmetic only after scale calibration, never a replacement for vector/floor.",
+      "id": "RD4-F014",
+      "latex": "\\iota_{i,n}=\\sum_h\\alpha_hi_h,\\qquad\\alpha_h\\geq0,\\quad\\sum_h\\alpha_h=1",
+      "metadata_ref": "planned",
+      "name": "optional_independence_summary",
+      "symbols": [
+        "iota",
+        "independence"
+      ]
+    },
+    {
+      "conditions": "Visualization only, no chart here; cancellation never erases source findings.",
+      "id": "RD4-F015",
+      "latex": "\\mathbf f_{i,n}=\\mu_{i,n}\\begin{bmatrix}\\cos\\theta_i\\\\\\sin\\theta_i\\end{bmatrix}",
+      "metadata_ref": "planned",
+      "name": "bearing_visualization",
+      "symbols": [
+        "mu",
+        "Theta"
+      ]
+    },
+    {
+      "conditions": "No assessed findings: not_applicable. Zero denominator: undefined, not zero. Unknown coefficients propagate; calibrated magnitude scales required.",
+      "id": "RD4-F016",
+      "latex": "T_n=\\frac{\\sum_{(f,g)\\in R_n^{\\mathrm{conf}}}\\mu_{f,n}\\mu_{g,n}c_n(f,g)}{\\sum_{f\\in F_n}\\mu_{f,n}},\\qquad c_n(f,g)\\in[0,1]",
+      "metadata_ref": "planned",
+      "name": "tension",
+      "symbols": [
+        "T",
+        "R",
+        "mu",
+        "F"
+      ]
+    },
+    {
+      "conditions": "Positive active-weight denominator; unknown coverage not dropped; no active bearings is not_assessed.",
+      "id": "RD4-F017",
+      "latex": "\\kappa_n=\\frac{\\sum_iw_{i,n}c_{i,n}}{\\sum_iw_{i,n}}",
+      "metadata_ref": "planned",
+      "name": "bearing_coverage",
+      "symbols": [
+        "coverage",
+        "weights"
+      ]
+    },
+    {
+      "conditions": "Nonempty critical set and positive active weights required; unknown critical bearing prevents known passing floor.",
+      "id": "RD4-F018",
+      "latex": "\\kappa_n^{\\mathrm{crit}}=\\min_{i\\in K_n^{\\mathrm{bear}}}c_{i,n}",
+      "metadata_ref": "planned",
+      "name": "critical_bearing_coverage",
+      "symbols": [
+        "coverage"
+      ]
+    },
+    {
+      "conditions": "k_n>0; nonnegative priorities; compatible active membership; changed membership requires explicit redistribution; absent fallback undefined.",
+      "id": "RD4-F019",
+      "latex": "w_{i,n+1}=\\begin{cases}\\pi_{i,n+1}/\\sum_j\\pi_{j,n+1}&\\sum_j\\pi_{j,n+1}>0,\\\\w_{i,n}&\\sum_j\\pi_{j,n+1}=0\\land\\operatorname{Fallback}=\\mathrm{preserve\\_prior},\\\\1/k_n&\\sum_j\\pi_{j,n+1}=0\\land\\operatorname{Fallback}=\\mathrm{balanced}.\\end{cases}",
+      "metadata_ref": "planned",
+      "name": "weight_update",
+      "symbols": [
+        "weights",
+        "Theta"
+      ]
+    },
+    {
+      "conditions": "Primarily vector/ordinal ordering. Product only with calibrated ratio scales, never inferred from notation.",
+      "id": "RD4-F020",
+      "latex": "\\mathbf u_{f,n}=(s_f,p_f,x_f,\\nu_f)",
+      "metadata_ref": "planned",
+      "name": "risk_vector",
+      "symbols": [
+        "risk"
+      ]
+    },
+    {
+      "conditions": "Limits and usage bound to operation; unknown usage is not evidence of restored budget.",
+      "id": "RD4-F021",
+      "latex": "B_n^{\\mathrm{resource}}=\\operatorname{ResourceBlockers}(r_n^{\\mathrm{used}},r_n^{\\mathrm{limit}})",
+      "metadata_ref": "planned",
+      "name": "resource_blockers",
+      "symbols": [
+        "resources",
+        "B",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "All predicates known; expired/revoked/disputed evidence ineligible, unknown not eligible.",
+      "id": "RD4-F022",
+      "latex": "\\operatorname{EligibleEvidence}(e)=[\\operatorname{Status}(e)=\\mathrm{ACTIVE}]\\land\\operatorname{Applicable}(e)\\land\\operatorname{BindingsCurrent}(e)\\land\\neg\\operatorname{Disputed}(e)",
+      "metadata_ref": "planned",
+      "name": "eligible_evidence",
+      "symbols": [
+        "evidence"
+      ]
+    },
+    {
+      "conditions": "Contribution scales/provenance lineage grouping calibrated first; otherwise ordered ledger authoritative and no aggregate, including no inferred zero from empty evidence.",
+      "id": "RD4-F023",
+      "latex": "M_{\\lambda,n}=\\min\\left(M_\\lambda^{\\mathrm{cap}},\\sum_{e:\\Lambda(e)=\\lambda\\land\\operatorname{EligibleEvidence}(e)}\\gamma_eq_ea_er_eb_e\\right)",
+      "metadata_ref": "planned",
+      "name": "lineage_memory",
+      "symbols": [
+        "memory",
+        "evidence"
+      ]
+    },
+    {
+      "conditions": "No known positive weight: unknown; report unknown fraction separately; calibrated interval/ratio scales required. Source is known uncertainty, not a health score.",
+      "id": "RD4-F024",
+      "latex": "H_n^{\\mathrm{known}}=\\frac{\\sum_{j\\in J_{\\mathrm{known}}}\\omega_jh_j}{\\sum_{j\\in J_{\\mathrm{known}}}\\omega_j}",
+      "legacy_name": "known_health",
+      "metadata_ref": "planned",
+      "name": "known_uncertainty",
+      "symbols": [
+        "uncertainty"
+      ]
+    },
+    {
+      "conditions": "Empty/zero total: undefined/not_assessed, not 0; nonnegative valid weights and full partition required.",
+      "id": "RD4-F025",
+      "latex": "\\eta_n^{\\mathrm{unknown}}=\\frac{\\sum_{j\\in J_{\\mathrm{unknown}}}\\omega_j}{\\sum_{j\\in J_{\\mathrm{all}}}\\omega_j}",
+      "metadata_ref": "planned",
+      "name": "unknown_fraction",
+      "symbols": [
+        "uncertainty"
+      ]
+    },
+    {
+      "conditions": "Empty required set does not grant approval; applicability and authorization separate; unknown is not PASS.",
+      "id": "RD4-F026",
+      "latex": "\\operatorname{Ready}(f,\\mathrm{stage})=\\bigwedge_{g\\in\\mathcal G_{f,\\mathrm{stage}}^{\\mathrm{required}}}(g=\\mathrm{PASS})",
+      "metadata_ref": "planned",
+      "name": "stage_readiness",
+      "symbols": [
+        "gates",
+        "F"
+      ]
+    },
+    {
+      "conditions": "Normalize only under explicit profile calibration; missing component/history propagates unknown.",
+      "id": "RD4-F027",
+      "latex": "\\mathbf j_n=(j_{\\mathrm{new}},j_{\\mathrm{conflict}},j_{\\mathrm{assumption}},j_{\\mathrm{reopen}},j_{\\mathrm{evidence}}),\\qquad J_n=\\boldsymbol\\lambda^\\top\\mathbf j_n",
+      "metadata_ref": "planned",
+      "name": "novelty",
+      "symbols": [
+        "novelty"
+      ]
+    },
+    {
+      "conditions": "Existing proposed 13-dimensional ordering explicit; unknown nonrequired dimensions visible.",
+      "id": "RD4-F028",
+      "latex": "\\mathbf z_n=(z_{\\mathrm{logical}},z_{\\mathrm{adversarial}},z_{\\mathrm{institutional}},z_{\\mathrm{operational}},z_{\\mathrm{historical}},z_{\\mathrm{portability}},z_{\\mathrm{epistemic}},z_{\\mathrm{ecological}},z_{\\mathrm{resource}},z_{\\mathrm{governance}},z_{\\mathrm{architectural}},z_{\\mathrm{evidentiary}},z_{\\mathrm{temporal}})^\\top\\in([0,1]\\cup\\{\\mathrm{unknown}\\})^{13}",
+      "metadata_ref": "planned",
+      "name": "resilience_vector",
+      "symbols": [
+        "z",
+        "dimensions"
+      ]
+    },
+    {
+      "conditions": "Both branches only when all required values known, required set nonempty, valid nonnegative weights and positive required total; log branch requires positive z. Calibrated scales; no inferred zero with other required unknowns.",
+      "id": "RD4-F029",
+      "latex": "Z_n=\\begin{cases}0&\\exists d\\in D_n^{\\mathrm{required}}:z_{d,n}=0,\\\\\\exp\\!\\left(\\dfrac{\\sum_{d\\in D_n^{\\mathrm{required}}}\\omega_d\\ln z_{d,n}}{\\sum_{d\\in D_n^{\\mathrm{required}}}\\omega_d}\\right)&\\text{otherwise}.\\end{cases}",
+      "metadata_ref": "planned",
+      "name": "resilience_aggregate",
+      "symbols": [
+        "z",
+        "D",
+        "weights"
+      ]
+    },
+    {
+      "conditions": "Critical set nonempty; unknown critical prevents known passing floor; metrics never close findings or grant authority.",
+      "id": "RD4-F030",
+      "latex": "Z_n^{\\mathrm{floor}}=\\min_{d\\in D_n^{\\mathrm{crit}}}z_{d,n}",
+      "metadata_ref": "planned",
+      "name": "critical_resilience_floor",
+      "symbols": [
+        "z",
+        "D"
+      ]
+    },
+    {
+      "conditions": "Q_n explicit initial-reconciliation requirements/work queue, not an ambiguous queue or approval.",
+      "id": "RD4-F031",
+      "latex": "(G_n^{r0},Q_n,D_n^{\\mathrm{prop}},\\Theta_{n+1})=\\mathcal R_0(S_n,\\{L_{i,n}\\},L_n^{\\mathrm{dissent}})",
+      "metadata_ref": "planned",
+      "name": "initial_reconciliation",
+      "symbols": [
+        "G",
+        "Q",
+        "D",
+        "Theta",
+        "S",
+        "L",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "Proposed responses only; no mutation or approval.",
+      "id": "RD4-F032",
+      "latex": "Y_n=\\operatorname{ProposeResponses}(G_n^{r0},D_n^{\\mathrm{prop}})",
+      "metadata_ref": "planned",
+      "name": "propose_responses",
+      "symbols": [
+        "Y",
+        "G",
+        "D",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "Preserve unresolved requirements and dissent.",
+      "id": "RD4-F033",
+      "latex": "(G_n^{r1},\\operatorname{Req}_n)=\\mathcal R_1(S_n,G_n^{r0},Y_n)",
+      "metadata_ref": "planned",
+      "name": "response_reconciliation",
+      "symbols": [
+        "G",
+        "Req",
+        "S",
+        "Y",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "FIXED is a proposed mutating route, not proof of implementation/closure; invalid or unknown disposition blocks affected route.",
+      "id": "RD4-F034",
+      "latex": "\\operatorname{Route}(f)=\\begin{cases}\\mathrm{mutating}&\\operatorname{Disposition}(f)=\\mathrm{FIXED},\\\\\\mathrm{nonmutating}&\\operatorname{Disposition}(f)\\in\\{\\mathrm{ACCEPTED\\_RISK},\\mathrm{NOT\\_APPLICABLE},\\mathrm{REJECTED\\_WITH\\_EVIDENCE},\\mathrm{SUPERSEDED},\\mathrm{DEFERRED},\\mathrm{OUT\\_OF\\_SCOPE\\_TRANSFER}\\}.\\end{cases}",
+      "metadata_ref": "planned",
+      "name": "disposition_routes",
+      "symbols": [
+        "F",
+        "D"
+      ]
+    },
+    {
+      "conditions": "Explicit bound change set; proposal cannot authorize itself.",
+      "id": "RD4-F035",
+      "latex": "\\Pi_n=\\operatorname{MaterializeChangeSet}(Y_n,G_n^{r1})",
+      "metadata_ref": "planned",
+      "name": "materialize_change",
+      "symbols": [
+        "Pi",
+        "Y",
+        "G",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "External operation-specific authority; no score grants it.",
+      "id": "RD4-F036",
+      "latex": "A_n^{\\mathrm{chg}}=\\operatorname{AuthorizeChange}(\\Pi_n,C_n)",
+      "metadata_ref": "planned",
+      "name": "authorize_change",
+      "symbols": [
+        "A",
+        "Pi",
+        "C",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "Only authorized bound changes; stale/unknown binding prevents apply.",
+      "id": "RD4-F037",
+      "latex": "C_{n+1}=\\operatorname{Apply}(C_n,\\Pi_n,A_n^{\\mathrm{chg}})",
+      "metadata_ref": "planned",
+      "name": "apply_change",
+      "symbols": [
+        "C",
+        "Pi",
+        "A",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "Nonmutating disposition still needs separate disposition authority/evidence.",
+      "id": "RD4-F038",
+      "latex": "C_{n+1}=C_n\\quad\\text{for a nonmutating route unless another authorized change applies}",
+      "metadata_ref": "planned",
+      "name": "nonmutating_candidate",
+      "symbols": [
+        "C",
+        "A"
+      ]
+    },
+    {
+      "conditions": "Explicit DAG with verification, reproduction and audit separated; planning is not execution.",
+      "id": "RD4-F039",
+      "latex": "P_n^{\\mathrm{assure}}=\\operatorname{PlanAssurance}(G_n^{r1},C_{n+1})",
+      "metadata_ref": "planned",
+      "name": "assurance_plan",
+      "symbols": [
+        "assurance",
+        "G",
+        "C",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "Missing/disputed/currentness failures remain requirements; technical verification is not reproduction or audit.",
+      "id": "RD4-F040",
+      "latex": "(G_n^{r2},\\operatorname{CloseReq}_n)=\\mathcal R_2(G_n^{r1},C_{n+1},O_n^{\\mathrm{tech}},O_n^{\\mathrm{repro}},O_n^{\\mathrm{audit}})",
+      "metadata_ref": "planned",
+      "name": "assurance_reconciliation",
+      "symbols": [
+        "G",
+        "Req",
+        "C",
+        "assurance",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "Separate from change authorization, externally bound to disposition and requirements.",
+      "id": "RD4-F041",
+      "latex": "A_n^{\\mathrm{disp}}=\\operatorname{AuthorizeDisposition}(G_n^{r2},\\operatorname{CloseReq}_n)",
+      "metadata_ref": "planned",
+      "name": "authorize_disposition",
+      "symbols": [
+        "A",
+        "G",
+        "Req",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "No direct reconciliation mutation; authorized service persists accepted closure.",
+      "id": "RD4-F042",
+      "latex": "\\operatorname{Closure}_n=\\operatorname{ReviewClosure}(G_n^{r2},A_n^{\\mathrm{disp}})",
+      "metadata_ref": "planned",
+      "name": "review_closure",
+      "symbols": [
+        "Closure",
+        "G",
+        "A",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "core.digest implements canonical SHA-256 only; this review predicate remains planned; missing manifest is unknown.",
+      "id": "RD4-F043",
+      "latex": "\\Delta_n^{\\mathrm{id}}=\\mathbf1[\\operatorname{digest}(C_n^{\\mathrm{reviewed}})\\ne\\operatorname{digest}(C_n^{\\mathrm{current}})]",
+      "metadata_ref": "planned",
+      "name": "identity_change",
+      "symbols": [
+        "Delta",
+        "C"
+      ]
+    },
+    {
+      "conditions": "Dependency completeness required; unknown dependencies cannot imply no impact.",
+      "id": "RD4-F044",
+      "latex": "\\Delta_{f,n}^{\\mathrm{impact}}=\\mathbf1[\\operatorname{Dep}(f)\\cap\\operatorname{Changed}_n\\ne\\varnothing]",
+      "metadata_ref": "planned",
+      "name": "finding_impact",
+      "symbols": [
+        "Delta",
+        "G",
+        "Changed",
+        "F"
+      ]
+    },
+    {
+      "conditions": "Blockers scope affected operations, not all safe development; preserve reason/owner/resume target.",
+      "id": "RD4-F045",
+      "latex": "B_n=\\{b:\\operatorname{active}(b,n)\\}",
+      "metadata_ref": "planned",
+      "name": "active_blockers",
+      "symbols": [
+        "B",
+        "n"
+      ]
+    },
+    {
+      "conditions": "Explicit requirements; unknown satisfaction remains unsatisfied for convergence, not silently omitted.",
+      "id": "RD4-F046",
+      "latex": "U_n^{\\mathrm{assure}}=\\{q\\in\\operatorname{AssuranceRequirements}_n:\\neg\\operatorname{Satisfied}(q)\\},\\quad U_n^{\\mathrm{close}}=\\{q\\in\\operatorname{CloseReq}_n:\\neg\\operatorname{Satisfied}(q)\\}",
+      "metadata_ref": "planned",
+      "name": "unsatisfied_requirements",
+      "symbols": [
+        "Req",
+        "assurance"
+      ]
+    },
+    {
+      "conditions": "Configured positive integer W_J and epsilon_J; enough assessed consecutive history and normalization calibration required; empty/missing window unknown.",
+      "id": "RD4-F047",
+      "latex": "\\operatorname{WindowSatisfied}_n=\\bigwedge_{t=n-W_J+1}^{n}(J_t^{\\mathrm{normalized}}<\\epsilon_J)",
+      "metadata_ref": "planned",
+      "name": "novelty_window",
+      "symbols": [
+        "window",
+        "novelty",
+        "n"
+      ]
+    },
+    {
+      "conditions": "Applicable required unknown predicates cannot imply convergence: add missing-evidence/calibration requirement; no uncalibrated threshold comparison.",
+      "id": "RD4-F048",
+      "latex": "\\operatorname{Continue}_n=\\mathbf1[F_n^{\\mathrm{crit}}\\ne\\varnothing\\lor T_n>T_{\\max}\\lor\\kappa_n^{\\mathrm{crit}}<1\\lor\\Delta_n^{\\mathrm{id}}=1\\lor U_n^{\\mathrm{assure}}\\ne\\varnothing\\lor U_n^{\\mathrm{close}}\\ne\\varnothing\\lor\\neg\\operatorname{WindowSatisfied}_n\\lor\\neg\\operatorname{SensitivityStable}_n]",
+      "metadata_ref": "planned",
+      "name": "continuation",
+      "symbols": [
+        "Continue",
+        "F",
+        "T",
+        "coverage",
+        "Delta",
+        "Req",
+        "window",
+        "sensitivity"
+      ]
+    },
+    {
+      "conditions": "Converged is not approved; only known predicates select convergence; stop scopes blocked operations.",
+      "id": "RD4-F049",
+      "latex": "\\operatorname{Next}_n=\\begin{cases}\\mathrm{STOP\\_SAFELY}&B_n\\ne\\varnothing,\\\\\\mathrm{ROTATE\\_AND\\_CONTINUE}&B_n=\\varnothing\\land\\operatorname{Continue}_n=1,\\\\\\mathrm{CONVERGED\\_FOR\\_AUTHORIZED\\_DECISION}&B_n=\\varnothing\\land\\operatorname{Continue}_n=0.\\end{cases}",
+      "metadata_ref": "planned",
+      "name": "next_status",
+      "symbols": [
+        "Next",
+        "B",
+        "Continue"
+      ]
+    },
+    {
+      "conditions": "Resume at pending_requirement or blocked_from_state; all predicates required and known; expiry/revocation appends reopening through authorized service, no background monitor.",
+      "id": "RD4-F050",
+      "latex": "\\operatorname{Resume}(c)=\\operatorname{Rebind}(c)\\land\\operatorname{BlockersCleared}(c)\\land\\operatorname{EvidenceRevalidated}(c)\\land\\operatorname{BudgetRestored}(c)\\land\\operatorname{TransitionValid}(c)",
+      "metadata_ref": "planned",
+      "name": "resume",
+      "symbols": [
+        "checkpoint",
+        "B",
+        "evidence",
+        "resources"
+      ]
+    },
+    {
+      "conditions": "Finite enumeration, interval proof, symbolic analysis, bounded sampling supported as proposed methods; sampling only assessed samples not continuous proof; empty assessment not stable. Compare fixed base predicate snapshots to avoid self-referential evaluation.",
+      "id": "RD4-F051",
+      "latex": "\\operatorname{SensitivityStable}_n=\\mathbf1[\\operatorname{Next}_n(\\omega,\\epsilon)=\\operatorname{Next}_n(\\omega',\\epsilon')\\ \\text{for every assessed pair in }\\Omega]",
+      "metadata_ref": "planned",
+      "name": "sensitivity_stability",
+      "symbols": [
+        "sensitivity",
+        "Next"
+      ]
+    },
+    {
+      "conditions": "Institutional prohibition, not a measured numeric score or executable permission check.",
+      "id": "RD4-F052",
+      "latex": "\\operatorname{Authority}(RD)=\\operatorname{Mutation}(RD)=\\operatorname{Execution}(RD)=\\operatorname{Reproduction}(RD)=\\operatorname{Audit}(RD)=\\operatorname{Approval}(RD)=0",
+      "metadata_ref": "planned",
+      "name": "deliberation_no_authority",
+      "symbols": [
+        "RD"
+      ]
+    },
+    {
+      "conditions": "One denotes permitted recommendation role, not authority; reopening recommendation persisted by authorized service, not direct mutation.",
+      "id": "RD4-F053",
+      "latex": "\\operatorname{Reconcile}(RD)=\\operatorname{RecommendBearing}(RD)=\\operatorname{ReopenFinding}(RD)=\\operatorname{PreserveUncertainty}(RD)=\\operatorname{RecommendContinuation}(RD)=1",
+      "metadata_ref": "planned",
+      "name": "deliberation_recommendations",
+      "symbols": [
+        "RD"
+      ]
+    },
+    {
+      "conditions": "Conceptual noncomputable relation; no calibrated multiplication, causal law or measurement claim.",
+      "id": "RD4-F054",
+      "latex": "\\operatorname{ResilienceEvidence}\\underset{\\mathrm{conceptual}}{\\propto}\\operatorname{AnalyticalDiversity}\\times\\operatorname{SequentialReconciliation}\\times\\operatorname{EvidenceBinding}\\times\\operatorname{ReversibleHistory}\\times\\operatorname{RotatedRetesting}",
+      "metadata_ref": "conceptual",
+      "name": "conceptual_resilience",
+      "symbols": [
+        "conceptual"
+      ]
+    },
+    {
+      "conditions": "All institutional roles distinct, not merely adjacent inequality; separation does not itself prove independence.",
+      "id": "RD4-F055",
+      "latex": "\\operatorname{Orchestration}\\ne\\operatorname{Reconciliation}\\ne\\operatorname{Implementation}\\ne\\operatorname{Verification}\\ne\\operatorname{Reproduction}\\ne\\operatorname{Audit}\\ne\\operatorname{Approval}\\ne\\operatorname{Authority}",
+      "metadata_ref": "planned",
+      "name": "institutional_separation",
+      "symbols": [
+        "roles"
+      ]
+    },
+    {
+      "conditions": "Event fold with source-event digest for cache; evidence eligibility explicitly bound and reevaluated for expiry/revocation before reuse.",
+      "id": "RD4-F056",
+      "latex": "G_{n+1}=\\operatorname{DeriveGraph}(V_{n+1},\\operatorname{EligibleEvidence}_n)",
+      "metadata_ref": "planned",
+      "name": "graph_derivation",
+      "symbols": [
+        "G",
+        "V",
+        "evidence",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "All 13 dimensions explicit; unknown retained; no invented calibrated scoring.",
+      "id": "RD4-F057",
+      "latex": "\\mathbf z_{n+1}=\\operatorname{AssessResilience}(C_{n+1},X_{n+1},G_{n+1})",
+      "metadata_ref": "planned",
+      "name": "resilience_assessment",
+      "symbols": [
+        "z",
+        "C",
+        "X",
+        "G",
+        "functions"
+      ]
+    },
+    {
+      "conditions": "ApplyAuthorizedRoutes expands materialization, separately authorized mutating application and nonmutating identity; ReviewAuthorizedClosure expands separate disposition authorization and closure review. Unknown required predicates preclude convergence; no scheduler/evaluator implemented; sensitivity uses noncircular base snapshots.",
+      "id": "RD4-F058",
+      "latex": "\\boxed{\\begin{aligned}I_n&=(C_n,X_n),\\quad S_n=(I_n,G_n,V_n),\\\\L_{i,n}&=\\operatorname{Review}_{b_i}(I_n,P_n^{\\mathrm{dispatch}}),\\\\L_n^{\\mathrm{dissent}}&=\\operatorname{DissentReview}(I_n,\\{L_{i,n}\\}),\\\\(G_n^{r0},Q_n,D_n^{\\mathrm{prop}},\\Theta_{n+1})&=\\mathcal R_0(S_n,\\{L_{i,n}\\},L_n^{\\mathrm{dissent}}),\\\\Y_n&=\\operatorname{ProposeResponses}(G_n^{r0},D_n^{\\mathrm{prop}}),\\\\(G_n^{r1},\\operatorname{Req}_n)&=\\mathcal R_1(S_n,G_n^{r0},Y_n),\\\\C_{n+1}&=\\operatorname{ApplyAuthorizedRoutes}(C_n,G_n^{r1},Y_n),\\\\P_n^{\\mathrm{assure}}&=\\operatorname{PlanAssurance}(G_n^{r1},C_{n+1}),\\\\(G_n^{r2},\\operatorname{CloseReq}_n)&=\\mathcal R_2(G_n^{r1},C_{n+1},O_n^{\\mathrm{tech}},O_n^{\\mathrm{repro}},O_n^{\\mathrm{audit}}),\\\\\\operatorname{Closure}_n&=\\operatorname{ReviewAuthorizedClosure}(G_n^{r2},\\operatorname{CloseReq}_n),\\\\X_{n+1}&=\\operatorname{AdvanceContext}(X_n,\\operatorname{ContextEvents}_n),\\\\V_{n+1}&=\\operatorname{AppendEvents}(V_n,\\operatorname{EventBatch}_n),\\\\G_{n+1}&=\\operatorname{DeriveGraph}(V_{n+1},\\operatorname{EligibleEvidence}_n),\\\\\\mathbf z_{n+1}&=\\operatorname{AssessResilience}(C_{n+1},X_{n+1},G_{n+1}),\\\\\\operatorname{Next}_n&=\\begin{cases}\\mathrm{STOP\\_SAFELY}&B_n\\ne\\varnothing,\\\\\\mathrm{ROTATE\\_AND\\_CONTINUE}&B_n=\\varnothing\\land\\operatorname{Continue}_n=1,\\\\\\mathrm{CONVERGED\\_FOR\\_AUTHORIZED\\_DECISION}&B_n=\\varnothing\\land\\operatorname{Continue}_n=0.\\end{cases}\\end{aligned}}",
+      "metadata_ref": "planned",
+      "name": "composite_transition",
+      "symbols": [
+        "I",
+        "S",
+        "C",
+        "X",
+        "G",
+        "V",
+        "L",
+        "Theta",
+        "dispatch",
+        "Q",
+        "D",
+        "Y",
+        "Req",
+        "assurance",
+        "Closure",
+        "evidence",
+        "z",
+        "Next",
+        "B",
+        "Continue",
+        "functions",
+        "A",
+        "Pi"
+      ]
+    }
+  ],
+  "limits": "Exact planned notation, not numerical evaluation.",
+  "metadata": {
+    "conceptual": {
+      "assumptions": "Qualitative explanatory relation only; no units, predictive law or numerical evaluator.",
+      "calibration": "None; no measured calibration and no numerical score permitted.",
+      "computability": "conceptual_noncomputable",
+      "empty": "No vacuous approval or inferred evidence.",
+      "executable_mapping": null,
+      "implementation": "planned",
+      "package_status": "Parent explicit declaration of review-formulas.json observed in codex.institutional package-data; external wheel inclusion not demonstrated and verification pending.",
+      "provenance": [
+        "iteration-004 user-supplied formal requirements",
+        "parent-provided user equation transcription, 2026-10-25T00:31:12.400+00:00",
+        "docs/design/azimuthal-formal-model.rst"
+      ],
+      "test_scope": "Notation and metadata checks, not proof.",
+      "tests": [
+        "tests/institutional/test_review_formulas.py::test_registry_contract",
+        "tests/institutional/test_review_formulas.py::test_exact_document_mapping",
+        "tests/institutional/test_review_formulas.py::test_source_expression_preservation_is_distinct_from_normalization"
+      ],
+      "unknown": "Preserve uncertainty; no substitution of guessed values.",
+      "zero_denominator": "Not applicable; no numerical evaluation."
+    },
+    "planned": {
+      "assumptions": "Typed, bound, applicable inputs and explicit profile; ordinal evidence supports ordering only.",
+      "calibration": "No measured calibration. Arithmetic requires justified interval/ratio scales; products require calibrated ratio scales.",
+      "computability": "specified_conditional_not_implemented",
+      "empty": "No vacuous approval; empty required/critical sets require explicit applicability and authority handling.",
+      "executable_mapping": null,
+      "implementation": "planned",
+      "package_status": "Parent explicit declaration of review-formulas.json observed in pyproject.toml:722 codex.institutional package-data; external wheel inclusion not demonstrated and verification pending. At initial discovery only contracts.json was declared; no packaging edit in this lane.",
+      "provenance": [
+        "iteration-004 user-supplied formal requirements",
+        "parent-provided user equation transcription, 2026-10-25T00:31:12.400+00:00",
+        "docs/design/azimuthal-formal-model.rst"
+      ],
+      "test_scope": "Presence, identity, exact notation mapping and metadata only; not mathematical proof or calibrated scoring.",
+      "tests": [
+        "tests/institutional/test_review_formulas.py::test_registry_contract",
+        "tests/institutional/test_review_formulas.py::test_exact_document_mapping",
+        "tests/institutional/test_review_formulas.py::test_source_expression_preservation_is_distinct_from_normalization"
+      ],
+      "unknown": "Propagate unknown; required unknown adds an applicable missing-evidence/calibration requirement and cannot imply convergence.",
+      "zero_denominator": "Undefined/not_assessed, never silently zero; not applicable to expressions without division."
+    }
+  },
+  "source_preservation": {
+    "binding": "source_expressions maps all 58 stable RD4 IDs to the parent-provided user transcription supplied at integration.",
+    "composite_extracted_ids": [
+      "RD4-F056",
+      "RD4-F057"
+    ],
+    "no_calibration_or_numerical_correctness_claim": true,
+    "no_semantic_correction_claim": true,
+    "normalization_disclosure": "formulas[].latex uses plain Latin families and operatorname, required instead of source req, different fallback spelling, added conditions/domains and expanded notation. F038/F046/F047 normalized formulas elaborate prose, not displayed user equations. F058 normalization merges input/state lines, adds an explicit dissent definition and expands Next membership into cases; source composite stays unchanged. Source EligibleEvidence equality and all operator names are retained without silent repair. No set difference is invented, and no equivalence, semantic correction, calibration or numerical correctness is claimed.",
+    "normalized_field": "formulas[].latex is the existing normalized LaTeX transcription, retained unchanged for compatibility.",
+    "parent_transcription_preserved": true,
+    "prose_source_ids": [
+      "RD4-F038",
+      "RD4-F046",
+      "RD4-F047"
+    ],
+    "provenance": "Parent-provided user equation transcription, 2026-10-25T00:31:12.400+00:00",
+    "separate_source_displays": {
+      "RD4-F008": [
+        "\\Theta_n=\\{(b_i,\\theta_i,w_{i,n},parent_i,expiry_i,mode_i)\\}_{i=1}^{k_n}",
+        "mode_i\\in\\{replace,supplement\\}"
+      ],
+      "RD4-F027": [
+        "\\mathbf j_n=(j_{new},j_{conflict},j_{assumption},j_{reopen},j_{evidence})",
+        "\\mathcal J_n=\\boldsymbol\\lambda^T\\mathbf j_n"
+      ]
+    },
+    "source_expressions": {
+      "RD4-F001": "\\mathcal F_n=Findings(\\mathcal G_n)",
+      "RD4-F002": "\\mathcal F_n^{crit}=\\{f\\in\\mathcal F_n:Critical(f)\\land Open(f)\\land\\neg AuthorizedBoundary(f)\\}",
+      "RD4-F003": "\\mathcal R_n^{conf}=ConflictEdges(\\mathcal G_n)",
+      "RD4-F004": "Changed_n=Diff(\\mathcal C_n^{reviewed},\\mathcal C_n^{current})",
+      "RD4-F005": "\\mathcal I_n=(\\mathcal C_n,\\mathcal X_n),\\qquad\\mathcal S_n=(\\mathcal I_n,\\mathcal G_n,\\mathcal V_n)",
+      "RD4-F006": "\\mathcal X_{n+1}=AdvanceContext(\\mathcal X_n,ContextEvents_n)",
+      "RD4-F007": "\\mathcal V_{n+1}=AppendEvents(\\mathcal V_n,EventBatch_n)",
+      "RD4-F008": "\\Theta_n=\\{(b_i,\\theta_i,w_{i,n},parent_i,expiry_i,mode_i)\\}_{i=1}^{k_n}; separate supplied display mode_i\\in\\{replace,supplement\\}",
+      "RD4-F009": "Admit(b)=Trigger(b)\\land BoundedScope(b)\\land Budgeted(b)\\land OutputDefined(b)\\land\\neg Duplicate(b)",
+      "RD4-F010": "\\mathcal L_{i,n}=Review_{b_i}(\\mathcal I_n,\\mathcal P_n^{dispatch})",
+      "RD4-F011": "\\mathcal L_n^{dissent}=DissentReview(\\mathcal I_n,\\{\\mathcal L_{i,n}\\})",
+      "RD4-F012": "\\mathbf i_{i,n}=(i_{actor},i_{model},i_{prompt},i_{evidence},i_{environment},i_{procedure},i_{organization},i_{custody})",
+      "RD4-F013": "i_{i,n}^{floor}=\\min_{h\\in K_i^{ind}}i_h",
+      "RD4-F014": "\\iota_{i,n}=\\sum_h\\alpha_hi_h,\\qquad \\alpha_h\\ge0,\\qquad \\sum_h\\alpha_h=1",
+      "RD4-F015": "\\mathbf f_{i,n}=\\mu_{i,n}\\begin{bmatrix}\\cos\\theta_i\\\\\\sin\\theta_i\\end{bmatrix}",
+      "RD4-F016": "\\mathcal T_n=\\frac{\\sum_{(f,g)\\in\\mathcal R_n^{conf}}\\mu_{f,n}\\mu_{g,n}c_n(f,g)}{\\sum_{f\\in\\mathcal F_n}\\mu_{f,n}},\\qquad c_n(f,g)\\in[0,1]",
+      "RD4-F017": "\\kappa_n=\\frac{\\sum_iw_{i,n}c_{i,n}}{\\sum_iw_{i,n}},\\qquad \\sum_iw_{i,n}>0",
+      "RD4-F018": "\\kappa_n^{crit}=\\min_{i\\in K_n^{bear}}c_{i,n}",
+      "RD4-F019": "w_{i,n+1}=\\begin{cases}\\pi_{i,n+1}/\\sum_j\\pi_{j,n+1},&\\sum_j\\pi_{j,n+1}>0\\\\w_{i,n},&\\sum_j\\pi_{j,n+1}=0\\land Fallback_n=preserve\\_prior\\\\1/k_n,&\\sum_j\\pi_{j,n+1}=0\\land Fallback_n=balanced\\end{cases}",
+      "RD4-F020": "\\mathbf u_{f,n}=(s_f,p_f,x_f,\\nu_f)",
+      "RD4-F021": "\\mathcal B_n^{resource}=ResourceBlockers(\\mathbf r_n^{used},\\mathbf r_n^{limit})",
+      "RD4-F022": "EligibleEvidence(e)=Status(e)=ACTIVE\\land Applicable(e)\\land BindingsCurrent(e)\\land\\neg Disputed(e)",
+      "RD4-F023": "M_{\\lambda,n}=\\min\\left(M_{\\lambda}^{cap},\\sum_{e:\\Lambda(e)=\\lambda\\land EligibleEvidence(e)}\\gamma_eq_ea_er_eb_e\\right)",
+      "RD4-F024": "\\mathcal H_n^{known}=\\frac{\\sum_{j\\in J_{known}}\\omega_jh_j}{\\sum_{j\\in J_{known}}\\omega_j}",
+      "RD4-F025": "\\eta_n^{unknown}=\\frac{\\sum_{j\\in J_{unknown}}\\omega_j}{\\sum_{j\\in J_{all}}\\omega_j}",
+      "RD4-F026": "Ready(f,stage)=\\bigwedge_{g\\in G_{f,stage}^{required}}(g=PASS)",
+      "RD4-F027": "\\mathbf j_n=(j_{new},j_{conflict},j_{assumption},j_{reopen},j_{evidence}); separate display \\mathcal J_n=\\boldsymbol\\lambda^T\\mathbf j_n",
+      "RD4-F028": "\\mathbf z_n=(z_{logical},z_{adversarial},z_{institutional},z_{operational},z_{historical},z_{portability},z_{epistemic},z_{ecological},z_{resource},z_{governance},z_{architectural},z_{evidentiary},z_{temporal})^T",
+      "RD4-F029": "Z_n=\\begin{cases}0,&\\exists d\\in D_n^{req}:z_{d,n}=0\\\\\\exp\\left(\\frac{\\sum_{d\\in D_n^{req}}\\omega_d\\ln z_{d,n}}{\\sum_{d\\in D_n^{req}}\\omega_d}\\right),&otherwise\\end{cases}",
+      "RD4-F030": "Z_n^{floor}=\\min_{d\\in D_n^{crit}}z_{d,n}",
+      "RD4-F031": "(\\mathcal G_n^{r0},\\mathcal Q_n,\\mathcal D_n^{prop},\\Theta_{n+1})=\\mathscr R_0(\\mathcal S_n,\\{\\mathcal L_{i,n}\\},\\mathcal L_n^{dissent})",
+      "RD4-F032": "\\mathcal Y_n=ProposeResponses(\\mathcal G_n^{r0},\\mathcal D_n^{prop})",
+      "RD4-F033": "(\\mathcal G_n^{r1},\\mathcal Req_n)=\\mathscr R_1(\\mathcal S_n,\\mathcal G_n^{r0},\\mathcal Y_n)",
+      "RD4-F034": "Route(f)=\\begin{cases}mutating,&Disposition(f)=FIXED\\\\nonmutating,&Disposition(f)\\in\\{ACCEPTED\\_RISK,NOT\\_APPLICABLE,REJECTED\\_WITH\\_EVIDENCE,SUPERSEDED,DEFERRED,OUT\\_OF\\_SCOPE\\_TRANSFER\\}\\end{cases}",
+      "RD4-F035": "\\Pi_n=MaterializeChangeSet(\\mathcal Y_n,\\mathcal G_n^{r1})",
+      "RD4-F036": "\\mathcal A_n^{chg}=AuthorizeChange(\\Pi_n,\\mathcal C_n)",
+      "RD4-F037": "\\mathcal C_{n+1}=Apply(\\mathcal C_n,\\Pi_n,\\mathcal A_n^{chg})",
+      "RD4-F038": "PROSE SOURCE: Nonmutating routes retain \\(\\mathcal C_{n+1}=\\mathcal C_n\\), unless another authorized change exists.",
+      "RD4-F039": "\\mathcal P_n^{assure}=PlanAssurance(\\mathcal G_n^{r1},\\mathcal C_{n+1})",
+      "RD4-F040": "(\\mathcal G_n^{r2},\\mathcal CloseReq_n)=\\mathscr R_2(\\mathcal G_n^{r1},\\mathcal C_{n+1},\\mathcal O_n^{tech},\\mathcal O_n^{repro},\\mathcal O_n^{audit})",
+      "RD4-F041": "\\mathcal A_n^{disp}=AuthorizeDisposition(\\mathcal G_n^{r2},\\mathcal CloseReq_n)",
+      "RD4-F042": "Closure_n=ReviewClosure(\\mathcal G_n^{r2},\\mathcal A_n^{disp})",
+      "RD4-F043": "\\Delta_n^{id}=\\mathbb1[digest(\\mathcal C_n^{reviewed})\\ne digest(\\mathcal C_n^{current})]",
+      "RD4-F044": "\\Delta_{f,n}^{impact}=\\mathbb1[Dep(f)\\cap Changed_n\\ne\\varnothing]",
+      "RD4-F045": "\\mathcal B_n=\\{b:active(b,n)\\}",
+      "RD4-F046": "PROSE SOURCE: Unsatisfied assurance and closure requirements remain explicit as \\(\\mathcal U_n^{assure}\\) and \\(\\mathcal U_n^{close}\\).",
+      "RD4-F047": "PROSE SOURCE: `WindowSatisfied` means the normalized information-return summary remains below the configured threshold for the configured window.",
+      "RD4-F048": "Continue_n=\\mathbb1[\\mathcal F_n^{crit}\\ne\\varnothing\\lor\\mathcal T_n>T_{max}\\lor\\kappa_n^{crit}<1\\lor\\Delta_n^{id}=1\\lor\\mathcal U_n^{assure}\\ne\\varnothing\\lor\\mathcal U_n^{close}\\ne\\varnothing\\lor\\neg WindowSatisfied_n\\lor\\neg SensitivityStable_n]",
+      "RD4-F049": "Next_n=\\begin{cases}STOP\\_SAFELY,&\\mathcal B_n\\ne\\varnothing\\\\ROTATE\\_AND\\_CONTINUE,&\\mathcal B_n=\\varnothing\\land Continue_n=1\\\\CONVERGED\\_FOR\\_AUTHORIZED\\_DECISION,&\\mathcal B_n=\\varnothing\\land Continue_n=0\\end{cases}",
+      "RD4-F050": "Resume(c)=Rebind(c)\\land BlockersCleared(c)\\land EvidenceRevalidated(c)\\land BudgetRestored(c)\\land TransitionValid(c)",
+      "RD4-F051": "SensitivityStable_n=\\mathbb1[Next_n(\\omega,\\epsilon)=Next_n(\\omega',\\epsilon')\\text{ for every assessed pair in }\\Omega]",
+      "RD4-F052": "Authority(RD)=Mutation(RD)=Execution(RD)=Reproduction(RD)=Audit(RD)=Approval(RD)=0",
+      "RD4-F053": "Reconcile(RD)=RecommendBearing(RD)=ReopenFinding(RD)=PreserveUncertainty(RD)=RecommendContinuation(RD)=1",
+      "RD4-F054": "ResilienceEvidence\\propto_{conceptual}AnalyticalDiversity\\times SequentialReconciliation\\times EvidenceBinding\\times ReversibleHistory\\times RotatedRetesting",
+      "RD4-F055": "Orchestration\\ne Reconciliation\\ne Implementation\\ne Verification\\ne Reproduction\\ne Audit\\ne Approval\\ne Authority",
+      "RD4-F056": "\\mathcal G_{n+1}=DeriveGraph(\\mathcal V_{n+1},EligibleEvidence_n)",
+      "RD4-F057": "\\mathbf z_{n+1}=AssessResilience(\\mathcal C_{n+1},\\mathcal X_{n+1},\\mathcal G_{n+1})",
+      "RD4-F058": "\\boxed{\\begin{aligned}\\mathcal I_n&=(\\mathcal C_n,\\mathcal X_n)\\\\\\mathcal S_n&=(\\mathcal I_n,\\mathcal G_n,\\mathcal V_n)\\\\\\mathcal L_{i,n}&=Review_{b_i}(\\mathcal I_n,\\mathcal P_n^{dispatch})\\\\(\\mathcal G_n^{r0},\\mathcal Q_n,\\mathcal D_n^{prop},\\Theta_{n+1})&=\\mathscr R_0(\\mathcal S_n,\\{\\mathcal L_{i,n}\\},\\mathcal L_n^{dissent})\\\\\\mathcal Y_n&=ProposeResponses(\\mathcal G_n^{r0},\\mathcal D_n^{prop})\\\\(\\mathcal G_n^{r1},\\mathcal Req_n)&=\\mathscr R_1(\\mathcal S_n,\\mathcal G_n^{r0},\\mathcal Y_n)\\\\\\mathcal C_{n+1}&=ApplyAuthorizedRoutes(\\mathcal C_n,\\mathcal G_n^{r1},\\mathcal Y_n)\\\\\\mathcal P_n^{assure}&=PlanAssurance(\\mathcal G_n^{r1},\\mathcal C_{n+1})\\\\(\\mathcal G_n^{r2},\\mathcal CloseReq_n)&=\\mathscr R_2(\\mathcal G_n^{r1},\\mathcal C_{n+1},\\mathcal O_n^{tech},\\mathcal O_n^{repro},\\mathcal O_n^{audit})\\\\Closure_n&=ReviewAuthorizedClosure(\\mathcal G_n^{r2},\\mathcal CloseReq_n)\\\\\\mathcal X_{n+1}&=AdvanceContext(\\mathcal X_n,ContextEvents_n)\\\\\\mathcal V_{n+1}&=AppendEvents(\\mathcal V_n,EventBatch_n)\\\\\\mathcal G_{n+1}&=DeriveGraph(\\mathcal V_{n+1},EligibleEvidence_n)\\\\\\mathbf z_{n+1}&=AssessResilience(\\mathcal C_{n+1},\\mathcal X_{n+1},\\mathcal G_{n+1})\\\\Next_n&\\in\\{STOP\\_SAFELY,ROTATE\\_AND\\_CONTINUE,CONVERGED\\_FOR\\_AUTHORIZED\\_DECISION\\}\\end{aligned}}"
+    },
+    "source_kind": "parent-provided user transcription; not the earlier lane shorthand and not an upstream bytehash verification",
+    "source_notes": {
+      "RD4-F056": "extracted from supplied composite",
+      "RD4-F057": "extracted from supplied composite"
+    },
+    "source_typography": {
+      "boxed_composite": "\\boxed{\\begin{aligned}...\\end{aligned}}",
+      "calligraphic_families": [
+        "\\mathcal F_n",
+        "\\mathcal C_n",
+        "\\mathcal G_n"
+      ],
+      "normalized_required_dimensions": "D_n^{\\mathrm{required}}",
+      "operator_policy": "Retain original operator names; typography changes are not semantic corrections.",
+      "required_dimensions": "D_n^req",
+      "source_latex": {
+        "calligraphic_families": [
+          "\\mathcal F_n",
+          "\\mathcal C_n",
+          "\\mathcal G_n"
+        ],
+        "required_dimensions": "D_n^{req}",
+        "scope": "Tokens present in the parent-provided user transcription."
+      },
+      "verification_limit": "Preserved parent transcription; no independent upstream bytehash, mathematical equivalence or numerical correctness claim."
+    },
+    "upstream_exact_latex_verified": false
+  }
+}

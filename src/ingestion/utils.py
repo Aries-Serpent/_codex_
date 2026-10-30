@@ -208,7 +208,12 @@ def split_dataset(
     result = (train_items, val_items, test_items)
     try:
         cache.set(key, result)
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # nosec B110 - cache writes are best effort; log at debug
+    except (
+        IOError,
+        OSError,
+        ModuleNotFoundError,
+        ImportError,
+    ) as exc:  # nosec B110 - cache writes are best effort; log at debug
         logger.debug("ingestion.utils: failed to cache split dataset: %s", exc, exc_info=True)
     return result
 
@@ -350,7 +355,9 @@ def read_text(path: str | Path, encoding: str = "utf-8", errors: str = "strict")
                     return result
                 # Unexpected object: coerce to string
                 return str(result)
-            except Exception as exc:  # nosec B110 - fall through to manual reader; log for visibility
+            except (
+                Exception
+            ) as exc:  # nosec B110 - fall through to manual reader; log for visibility
                 logger.debug(
                     "ingestion.utils: primary reader result normalisation failed: %s",
                     exc,

@@ -1,0 +1,91 @@
+{
+  "scope": "Preservation and renderer availability,not semantic completeness or mathematical proof.",
+  "assets": {
+    "docs/design/azimuthal-reasoning-integrity.rst": {
+      "sha256": "37afbda1e93a1a9b0322edbdff11ff15a8cda9cddc98e4829a433c71b7bab873",
+      "bytes": 29445
+    },
+    "docs/design/azimuthal-formal-model.rst": {
+      "sha256": "4fdbc0891cece14357bd2df79acb03fc901e699a5a7c9f6f4053cb79002bff3a",
+      "bytes": 43725
+    },
+    "src/codex/institutional/review-formulas.json": {
+      "sha256": "bb334de789fc66e6704b752268c84f32860a218bbc4858b6888822c4f5e23537",
+      "bytes": 54986
+    }
+  },
+  "formula_count": 58,
+  "contract_references": [
+    "codex.candidate-manifest.v1",
+    "codex.azimuthal-review-context.v1",
+    "codex.policy-record.v1",
+    "codex.policy-conflict.v1",
+    "codex.azimuthal-dispatch-plan.v1",
+    "codex.review-bearing.v1",
+    "codex.review-batch-manifest.v1",
+    "codex.dynamic-bearing.v1",
+    "codex.rubber-duck-finding.v1",
+    "codex.finding-relation.v1",
+    "codex.evidence.v1",
+    "codex.remediation-response.v1",
+    "codex.change-set.v1",
+    "codex.reconciliation.v1",
+    "codex.assurance-plan.v1",
+    "codex.assurance-result.v1",
+    "codex.test-result.v1",
+    "codex.authorization.v1",
+    "codex.blocker.v1",
+    "codex.resource-profile.v1",
+    "codex.exception.v1",
+    "codex.lifecycle-event.v1",
+    "codex.resolution-snapshot.v1",
+    "codex.continuation-state.v1",
+    "codex.resilience-record.v1",
+    "codex.renderer-validation.v1",
+    "codex.schema-migration.v1"
+  ],
+  "diagram_sources": [
+    {
+      "line": 424,
+      "syntax": "flowchart LR"
+    },
+    {
+      "line": 436,
+      "syntax": "flowchart TB"
+    },
+    {
+      "line": 472,
+      "syntax": "flowchart LR"
+    },
+    {
+      "line": 488,
+      "syntax": "stateDiagram-v2"
+    },
+    {
+      "line": 535,
+      "syntax": "xychart"
+    },
+    {
+      "line": 548,
+      "syntax": "xychart"
+    },
+    {
+      "line": 559,
+      "syntax": "xychart"
+    }
+  ],
+  "text_alternatives": "Four Text alternative and three synthetic Text/fallback blocks retained.",
+  "format": "Literal design references in RST,not mermaid directives; unchanged original bytes.",
+  "rendering": {
+    "status": "NOT_RUN",
+    "node_version": "v22.23.3",
+    "attempt": "node require.resolve mermaid,@mermaid-js/mermaid-cli,mathjax,mathjax-full; command discovery mmdc; module discovery docutils.",
+    "result": "Renderer modules/CLI and docutils unavailable.",
+    "renderer_version": "Unavailable:no renderer executed.",
+    "next_action": "Render exact digest-bound sources in approved environment; retain results/errors.",
+    "impact": "Only renderer-readiness blocked; SDK progress unaffected."
+  },
+  "numerical_model": "No new equations,weights,calibration or synthetic measurements. Existing structural predicates remain limited correspondences,not full formal convergence.",
+  "hosted_profiles": "Not accessed,installed or activated; enforcement unverified.",
+  "inspection_note": "An initial identifier-count assertion used incorrect list-table indentation; corrected inspection only,no source edits."
+}

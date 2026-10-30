@@ -31,7 +31,139 @@ import sys
 from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
+from typing import Optional, TypedDict
+
+
+class _StubFinding(TypedDict):
+    file: str
+    symbol: str
+    kind: str
+    line: int
+    detail: str
+
+
+class _TodoRow(TypedDict):
+    file: str
+    total: int
+    todo: int
+    fixme: int
+    xxx: int
+
+
+class _EmptyPackage(TypedDict):
+    path: str
+    reason: str
+
+
+class _CLIEntry(TypedDict):
+    path: str
+    function: str
+    cli_names: list[str]
+    status: str
+    doc_references: list[str]
+    decorators: list[str]
+
+
+class _RegistryImplementation(TypedDict):
+    implementation: str
+    kind: str
+    status: str
+
+
+class _RegistryEntry(TypedDict):
+    key: str
+    implementation: str
+    registration_kind: str
+    status: str
+
+
+class _Registry(TypedDict):
+    registry_file: str
+    entries: list[_RegistryEntry]
+    status: str
+
+
+class _TestMapping(TypedDict, total=False):
+    total_modules: int
+    modules_without_tests: list[str]
+    modules_without_tests_count: int
+    modules_with_tests_count: int
+
+
+class _DocTopic(TypedDict):
+    topic: str
+    lines: list[int]
+    count: int
+
+
+class _DocCrossreference(TypedDict):
+    doc: str
+    topics: list[_DocTopic]
+
+
+class _DuplicatePackage(TypedDict):
+    package: str
+    files: list[str]
+    specs: list[str]
+
+
+class _PackagingSummary(TypedDict, total=False):
+    pyproject: bool
+    requirement_files: list[str]
+    lock_files: list[str]
+    duplicate_packages: list[_DuplicatePackage]
+    lock_file_present: bool
+
+
+class _ComplianceSummary(TypedDict, total=False):
+    license_files: list[str]
+    duplicate_license_candidates: list[str]
+    detect_secrets_baseline: bool
+    pre_commit_config: bool
+
+
+class _SeedCall(TypedDict):
+    file: str
+    keywords: list[str]
+
+
+class _ReproducibilitySummary(TypedDict, total=False):
+    data_manifests: list[str]
+    seed_modules: list[str]
+    seed_calls: list[_SeedCall]
+    checkpoint_artifacts: list[str]
+
+
+class _SummaryCounts(TypedDict):
+    stubs_total: int
+    stubs_by_kind: dict[str, int]
+    todo_files: int
+    todo_total: int
+    empty_packages: int
+    cli_total: int
+    cli_status_counts: dict[str, int]
+    registry_total: int
+    registry_status_counts: dict[str, int]
+    modules_scanned: int
+    modules_without_tests: int
+
+
+class _StatusData(TypedDict, total=False):
+    generated_at: str
+    author: str
+    date: str
+    stubs: list[_StubFinding]
+    todo_counts: list[_TodoRow]
+    empty_packages: list[_EmptyPackage]
+    cli: list[_CLIEntry]
+    registries: list[_Registry]
+    tests: _TestMapping
+    docs: list[_DocCrossreference]
+    packaging: _PackagingSummary
+    compliance: _ComplianceSummary
+    repro: _ReproducibilitySummary
+    summary: _SummaryCounts
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CODEX_DIR = REPO_ROOT / ".codex"
@@ -81,6 +213,7 @@ SENSITIVE_OUTPUT_PATTERNS: tuple[re.Pattern[str], ...] = (
 
 
 def utc_timestamp() -> str:
+    """Return the current UTC time as an ISO 8601 string, to whole seconds."""
     return dt.datetime.now(UTC).isoformat(timespec="seconds")
 
 
@@ -132,6 +265,7 @@ def safe_read_text(path: Path) -> tuple[str, bool]:
 
 
 def collect_imports(tree: ast.AST) -> set[str]:
+    """Collect top-level import names, e.g. ``import a.b`` contributes ``a``."""
     modules: set[str] = set()
 
     class ImportVisitor(ast.NodeVisitor):
@@ -148,11 +282,13 @@ def collect_imports(tree: ast.AST) -> set[str]:
 
 
 def existing_src_dirs() -> list[Path]:
+    """Return existing configured source directories in sorted path order."""
     dirs = [d for d in SRC_DIRS if d.exists()]
     return sorted(dirs)
 
 
 def iter_python_files(paths: Iterable[Path]) -> Iterator[Path]:
+    """Yield sorted Python paths, excluding common build and environment folders."""
     exclude_names = {
         ".git",
         ".hg",
@@ -179,6 +315,7 @@ def iter_python_files(paths: Iterable[Path]) -> Iterator[Path]:
 
 
 def load_python_files(paths: Iterable[Path]) -> list[PythonFile]:
+    """Read Python files and parse ASTs; retain unreadable or invalid files as metadata."""
     python_files: list[PythonFile] = []
     for py_path in iter_python_files(paths):
         text, ok = safe_read_text(py_path)
@@ -199,6 +336,7 @@ def load_python_files(paths: Iterable[Path]) -> list[PythonFile]:
 
 
 def strip_docstring(body: Sequence[ast.stmt]) -> list[ast.stmt]:
+    """Copy a statement body without its leading string-literal docstring."""
     if not body:
         return []
     body_list = list(body)
@@ -212,7 +350,8 @@ def strip_docstring(body: Sequence[ast.stmt]) -> list[ast.stmt]:
     return body_list
 
 
-def get_attr_name(node: ast.AST) -> str:
+def get_attr_name(node: ast.AST | None) -> str:
+    """Resolve dotted names and call targets; return ``""`` for unnamed nodes."""
     if isinstance(node, ast.Name):
         return node.id
     if isinstance(node, ast.Attribute):
@@ -223,7 +362,8 @@ def get_attr_name(node: ast.AST) -> str:
     return ""
 
 
-def extract_raise_message(exc: ast.AST) -> Optional[str]:
+def extract_raise_message(exc: ast.AST | None) -> Optional[str]:
+    """Find the first literal string argument of a raise expression, if any."""
     if isinstance(exc, ast.Call):
         for arg in exc.args:
             if isinstance(arg, ast.Constant) and isinstance(arg.value, str):
@@ -234,14 +374,20 @@ def extract_raise_message(exc: ast.AST) -> Optional[str]:
 
 
 def classify_placeholder(message: Optional[str]) -> bool:
+    """Check whether a message contains a configured incompleteness keyword."""
     if not message:
         return False
     lowered = message.lower()
     return any(keyword in lowered for keyword in PLACEHOLDER_KEYWORDS)
 
 
-def scan_stubs(python_files: Sequence[PythonFile]) -> list[dict[str, object]]:
-    findings: list[dict[str, object]] = []
+def scan_stubs(python_files: Sequence[PythonFile]) -> list[_StubFinding]:
+    """Find trivial bodies and placeholder raises, sorted by source location.
+
+    Files must be beneath ``REPO_ROOT``; results use repository-relative paths
+    and dotted enclosing symbols. Unparsed files are skipped.
+    """
+    findings: list[_StubFinding] = []
 
     for py_file in python_files:
         if not py_file.parsed or not py_file.tree:
@@ -329,8 +475,9 @@ def scan_stubs(python_files: Sequence[PythonFile]) -> list[dict[str, object]]:
     return findings
 
 
-def count_todos(python_files: Sequence[PythonFile]) -> list[dict[str, object]]:
-    todo_rows: list[dict[str, object]] = []
+def count_todos(python_files: Sequence[PythonFile]) -> list[_TodoRow]:
+    """Count TODO/FIXME/XXX words in all text, including strings and comments."""
+    todo_rows: list[_TodoRow] = []
     patterns = {kw: re.compile(rf"\b{re.escape(kw)}\b", re.IGNORECASE) for kw in TODO_KEYWORDS}
 
     for py_file in python_files:
@@ -338,8 +485,13 @@ def count_todos(python_files: Sequence[PythonFile]) -> list[dict[str, object]]:
         counts = {kw: len(pattern.findall(text)) for kw, pattern in patterns.items()}
         total = sum(counts.values())
         if total:
-            row = {"file": str(py_file.path.relative_to(REPO_ROOT)), "total": total}
-            row.update({kw.lower(): counts[kw] for kw in TODO_KEYWORDS})
+            row: _TodoRow = {
+                "file": str(py_file.path.relative_to(REPO_ROOT)),
+                "total": total,
+                "todo": counts["TODO"],
+                "fixme": counts["FIXME"],
+                "xxx": counts["XXX"],
+            }
             todo_rows.append(row)
 
     todo_rows.sort(key=lambda item: item["file"])
@@ -347,6 +499,7 @@ def count_todos(python_files: Sequence[PythonFile]) -> list[dict[str, object]]:
 
 
 def is_trivial_init(init_path: Path) -> bool:
+    """Recognize empty initializers or ones containing only comments/imports/exports."""
     text, ok = safe_read_text(init_path)
     if not ok:
         return False
@@ -357,8 +510,9 @@ def is_trivial_init(init_path: Path) -> bool:
     return all(line.startswith(allowed_prefixes) for line in stripped_lines)
 
 
-def find_empty_packages() -> list[dict[str, str]]:
-    empty: list[dict[str, str]] = []
+def find_empty_packages() -> list[_EmptyPackage]:
+    """Locate leaf packages containing only .gitkeep or a trivial initializer."""
+    empty: list[_EmptyPackage] = []
     for src_root in existing_src_dirs():
         for directory in sorted(src_root.rglob("*")):
             if not directory.is_dir():
@@ -395,6 +549,7 @@ def find_empty_packages() -> list[dict[str, str]]:
 
 
 def load_docs_texts() -> dict[Path, str]:
+    """Load readable Markdown and reStructuredText files beneath ``DOCS_DIR``."""
     docs: dict[Path, str] = {}
     if not DOCS_DIR.exists():
         return docs
@@ -407,6 +562,7 @@ def load_docs_texts() -> dict[Path, str]:
 
 
 def find_docs_mentions(doc_texts: dict[Path, str], term: str) -> list[str]:
+    """Return relative document paths containing a case-insensitive substring."""
     mentions: list[str] = []
     lowered = term.lower()
     for doc_path, text in doc_texts.items():
@@ -416,6 +572,7 @@ def find_docs_mentions(doc_texts: dict[Path, str], term: str) -> list[str]:
 
 
 def classify_cli_status(body: Sequence[ast.stmt]) -> str:
+    """Classify a CLI body by trivial statements and placeholder raise messages."""
     body_wo_doc = strip_docstring(body)
     if not body_wo_doc:
         return "stub-empty"
@@ -451,6 +608,7 @@ def classify_cli_status(body: Sequence[ast.stmt]) -> str:
 
 
 def extract_cli_names(decorator: ast.AST) -> list[str]:
+    """Extract literal positional names and name/command/value decorator keywords."""
     names: list[str] = []
     if isinstance(decorator, ast.Call):
         for arg in decorator.args:
@@ -466,10 +624,9 @@ def extract_cli_names(decorator: ast.AST) -> list[str]:
     return names
 
 
-def discover_cli(
-    python_files: Sequence[PythonFile], doc_texts: dict[Path, str]
-) -> list[dict[str, object]]:
-    cli_entries: list[dict[str, object]] = []
+def discover_cli(python_files: Sequence[PythonFile], doc_texts: dict[Path, str]) -> list[_CLIEntry]:
+    """Discover Click/Typer-decorated functions and matching document references."""
+    cli_entries: list[_CLIEntry] = []
 
     for py_file in python_files:
         if not py_file.parsed or not py_file.tree:
@@ -501,7 +658,7 @@ def discover_cli(
             docs_mentions: list[str] = []
             for candidate in {node.name, *cli_names}:
                 docs_mentions.extend(find_docs_mentions(doc_texts, candidate))
-            entry = {
+            entry: _CLIEntry = {
                 "path": rel_path,
                 "function": node.name,
                 "cli_names": sorted(set(cli_names)),
@@ -516,6 +673,7 @@ def discover_cli(
 
 
 def registry_value_repr(py_file: PythonFile, node: ast.AST) -> str:
+    """Return a stripped source segment, falling back to the AST node type name."""
     try:
         snippet = ast.get_source_segment(py_file.text, node)
         if snippet:
@@ -525,8 +683,9 @@ def registry_value_repr(py_file: PythonFile, node: ast.AST) -> str:
     return type(node).__name__
 
 
-def inspect_registries(python_files: Sequence[PythonFile]) -> list[dict[str, object]]:
-    registries: list[dict[str, object]] = []
+def inspect_registries(python_files: Sequence[PythonFile]) -> list[_Registry]:
+    """Inspect registry-named files for register decorators and mapping assignments."""
+    registries: list[_Registry] = []
 
     for py_file in python_files:
         if "registry" not in py_file.path.name.lower():
@@ -535,7 +694,7 @@ def inspect_registries(python_files: Sequence[PythonFile]) -> list[dict[str, obj
             continue
 
         rel_path = str(py_file.path.relative_to(REPO_ROOT))
-        entries: dict[str, dict[str, object]] = {}
+        entries: dict[str, _RegistryImplementation] = {}
 
         for node in ast.walk(py_file.tree):
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
@@ -560,11 +719,6 @@ def inspect_registries(python_files: Sequence[PythonFile]) -> list[dict[str, obj
                         key_value = None
                         if isinstance(key_node, ast.Constant) and isinstance(key_node.value, str):
                             key_value = key_node.value
-                        elif isinstance(key_node, ast.Index) and isinstance(
-                            key_node.value, ast.Constant
-                        ):  # type: ignore[attr-defined]
-                            if isinstance(key_node.value.value, str):
-                                key_value = key_node.value.value
                         if key_value:
                             value_repr = registry_value_repr(py_file, node.value)
                             status = "ok"
@@ -583,9 +737,9 @@ def inspect_registries(python_files: Sequence[PythonFile]) -> list[dict[str, obj
                         and "registry" in target.id.lower()
                         and isinstance(node.value, ast.Dict)
                     ):
-                        for key_node, value_node in zip(node.value.keys, node.value.values):
-                            if isinstance(key_node, ast.Constant) and isinstance(
-                                key_node.value, str
+                        for mapping_key, value_node in zip(node.value.keys, node.value.values):
+                            if isinstance(mapping_key, ast.Constant) and isinstance(
+                                mapping_key.value, str
                             ):
                                 value_repr = registry_value_repr(py_file, value_node)
                                 status = "ok"
@@ -594,7 +748,7 @@ def inspect_registries(python_files: Sequence[PythonFile]) -> list[dict[str, obj
                                     token in lowered for token in ("todo", "tbd")
                                 ):
                                     status = "unresolved"
-                                entries[key_node.value] = {
+                                entries[mapping_key.value] = {
                                     "implementation": value_repr,
                                     "kind": "mapping",
                                     "status": status,
@@ -624,6 +778,7 @@ def inspect_registries(python_files: Sequence[PythonFile]) -> list[dict[str, obj
 
 
 def module_name_from_path(path: Path) -> str:
+    """Derive an import name, removing a source root and package __init__ suffix."""
     for src_root in existing_src_dirs():
         try:
             relative = path.relative_to(src_root)
@@ -640,7 +795,8 @@ def module_name_from_path(path: Path) -> str:
     return ".".join(relative.with_suffix("").parts)
 
 
-def map_tests(python_files: Sequence[PythonFile]) -> dict[str, object]:
+def map_tests(python_files: Sequence[PythonFile]) -> _TestMapping:
+    """Estimate test references by module names, paths, and sufficiently long basenames."""
     src_files = [pf for pf in python_files if pf.path.suffix == ".py"]
     module_entries: list[dict[str, str]] = []
     for pf in src_files:
@@ -689,13 +845,14 @@ def map_tests(python_files: Sequence[PythonFile]) -> dict[str, object]:
     }
 
 
-def docs_crossreferences(doc_texts: dict[Path, str]) -> list[dict[str, object]]:
+def docs_crossreferences(doc_texts: dict[Path, str]) -> list[_DocCrossreference]:
+    """Find configured documentation topics with one-based matching line numbers."""
     topic_patterns = {topic: re.compile(re.escape(topic), re.IGNORECASE) for topic in DOC_TOPICS}
-    crossrefs: list[dict[str, object]] = []
+    crossrefs: list[_DocCrossreference] = []
 
     for doc_path, text in doc_texts.items():
         lines = text.splitlines()
-        topics: list[dict[str, object]] = []
+        topics: list[_DocTopic] = []
         for topic, pattern in topic_patterns.items():
             matches = [idx + 1 for idx, line in enumerate(lines) if pattern.search(line)]
             if matches:
@@ -719,6 +876,11 @@ def docs_crossreferences(doc_texts: dict[Path, str]) -> list[dict[str, object]]:
 
 
 def parse_requirements_line(line: str) -> Optional[str]:
+    """Normalize the name before a version operator; skip blank/comment/option lines.
+
+    For example, ``"Some_Package>=1"`` returns ``"some-package"``. This is a
+    lightweight text heuristic, not a full requirements-file parser.
+    """
     cleaned = line.strip()
     if not cleaned or cleaned.startswith("#"):
         return None
@@ -731,8 +893,9 @@ def parse_requirements_line(line: str) -> Optional[str]:
     return package.lower().replace("_", "-")
 
 
-def packaging_summary() -> dict[str, object]:
-    summary: dict[str, object] = {}
+def packaging_summary() -> _PackagingSummary:
+    """Summarize requirement files, known locks, and repeated package specifications."""
+    summary: _PackagingSummary = {}
 
     pyproject = REPO_ROOT / "pyproject.toml"
     summary["pyproject"] = pyproject.exists()
@@ -768,7 +931,7 @@ def packaging_summary() -> dict[str, object]:
                 continue
             package_map.setdefault(package, []).append({"file": rel_path, "spec": line.strip()})
 
-    duplicates: list[dict[str, object]] = []
+    duplicates: list[_DuplicatePackage] = []
     for package, records in sorted(package_map.items()):
         files = {record["file"] for record in records}
         specs = {record["spec"] for record in records}
@@ -786,7 +949,8 @@ def packaging_summary() -> dict[str, object]:
     return summary
 
 
-def compliance_summary() -> dict[str, object]:
+def compliance_summary() -> _ComplianceSummary:
+    """List license candidates and the presence of secret/pre-commit configuration."""
     license_files = [
         str(path.relative_to(REPO_ROOT))
         for path in sorted(REPO_ROOT.glob("**/LICENSE*"))
@@ -805,7 +969,8 @@ def compliance_summary() -> dict[str, object]:
     }
 
 
-def reproducibility_summary(python_files: Sequence[PythonFile]) -> dict[str, object]:
+def reproducibility_summary(python_files: Sequence[PythonFile]) -> _ReproducibilitySummary:
+    """Find manifest/checkpoint artifacts and textual matches for common seed calls."""
     manifest_files = [
         str(path.relative_to(REPO_ROOT))
         for path in sorted(REPO_ROOT.rglob("manifest.json"))
@@ -813,7 +978,7 @@ def reproducibility_summary(python_files: Sequence[PythonFile]) -> dict[str, obj
     ]
 
     seed_modules: list[str] = []
-    seed_calls: list[dict[str, object]] = []
+    seed_calls: list[_SeedCall] = []
     seed_patterns = [
         "random.seed",
         "np.random.seed",
@@ -852,7 +1017,12 @@ def reproducibility_summary(python_files: Sequence[PythonFile]) -> dict[str, obj
     }
 
 
-def build_summary_counts(data: dict[str, object]) -> dict[str, object]:
+def build_summary_counts(data: _StatusData) -> _SummaryCounts:
+    """Aggregate scan sections, treating omitted sections as empty.
+
+    ``build_summary_counts({})["stubs_total"]`` is ``0``; callers can supply
+    only the scan sections they have collected.
+    """
     stubs = data.get("stubs", [])
     todo_counts = data.get("todo_counts", [])
     empty_packages = data.get("empty_packages", [])
@@ -870,8 +1040,8 @@ def build_summary_counts(data: dict[str, object]) -> dict[str, object]:
         cli_status_counts[status] = cli_status_counts.get(status, 0) + 1
 
     registry_status_counts: dict[str, int] = {}
-    for entry in registries:
-        status = entry["status"]
+    for registry in registries:
+        status = registry["status"]
         registry_status_counts[status] = registry_status_counts.get(status, 0) + 1
 
     return {
@@ -890,10 +1060,16 @@ def build_summary_counts(data: dict[str, object]) -> dict[str, object]:
 
 
 def render_table_rows(rows: list[str]) -> list[str]:
+    """Return table rows or a single ``| (none) |`` placeholder when empty."""
     return rows if rows else ["| (none) |"]
 
 
-def write_report(author: str, date: str, data: dict[str, object], write: bool) -> Path:
+def write_report(author: str, date: str, data: _StatusData, write: bool) -> Path:
+    """Render collected sections and return the dated Markdown output path.
+
+    With ``write=False``, emit only a size notice to stderr, not repository
+    content. The status directory is created in either mode.
+    """
     STATUS_DIR.mkdir(parents=True, exist_ok=True)
     out_path = STATUS_DIR / f"_codex_status_update-{date}.md"
     generated_ts = dt.datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S")
@@ -981,9 +1157,9 @@ def write_report(author: str, date: str, data: dict[str, object], write: bool) -
     for registry in data.get("registries", []):
         entries = registry.get("entries", [])
         if entries:
-            for entry in entries:
+            for registry_entry in entries:
                 registry_rows.append(
-                    f"| {registry['registry_file']} | {entry['key']} | {entry['implementation']} | {entry['status']} |"
+                    f"| {registry['registry_file']} | {registry_entry['key']} | {registry_entry['implementation']} | {registry_entry['status']} |"
                 )
         else:
             registry_rows.append(
@@ -1016,9 +1192,9 @@ def write_report(author: str, date: str, data: dict[str, object], write: bool) -
     lines.append("| Doc | Topic | Line(s) | Count |")
     lines.append("| --- | --- | --- | --- |")
     doc_rows: list[str] = []
-    for entry in data.get("docs", []):
-        doc = entry["doc"]
-        topics = entry.get("topics", [])
+    for doc_entry in data.get("docs", []):
+        doc = doc_entry["doc"]
+        topics = doc_entry.get("topics", [])
         for topic in topics:
             lines_repr = ", ".join(str(num) for num in topic.get("lines", []))
             doc_rows.append(f"| {doc} | {topic['topic']} | {lines_repr} | {topic['count']} |")
@@ -1072,8 +1248,8 @@ def write_report(author: str, date: str, data: dict[str, object], write: bool) -
     if seed_calls:
         lines.append("<details><summary>Seed invocation sources</summary>")
         lines.append("")
-        for record in seed_calls:
-            lines.append(f"- {record['file']}: {record['keywords']}")
+        for seed_call in seed_calls:
+            lines.append(f"- {seed_call['file']}: {seed_call['keywords']}")
         lines.append("")
         lines.append("</details>")
         lines.append("")
@@ -1095,13 +1271,20 @@ def write_report(author: str, date: str, data: dict[str, object], write: bool) -
     return out_path
 
 
-def write_status_snapshot(data: dict[str, object]) -> None:
+def write_status_snapshot(data: _StatusData) -> None:
+    """Persist the scan as sorted, indented JSON in ``CODEX_DIR/status_scan.json``."""
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
     snapshot_path = CODEX_DIR / "status_scan.json"
     snapshot_path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
 
 
 def generate(author: str, date: str, write: bool) -> Path:
+    """Scan configured repository paths and render a report, optionally persisting it.
+
+    ``generate("reviewer", "2026-10-22", write=False)`` previews report size
+    without writing Markdown or the JSON snapshot. Scanning failures may still
+    append to the error log.
+    """
     src_python_files = load_python_files(existing_src_dirs())
     doc_texts = load_docs_texts()
 
@@ -1116,7 +1299,7 @@ def generate(author: str, date: str, write: bool) -> Path:
     compliance = compliance_summary()
     reproducibility = reproducibility_summary(src_python_files)
 
-    data: dict[str, object] = {
+    data: _StatusData = {
         "generated_at": utc_timestamp(),
         "author": author,
         "date": date,
@@ -1148,6 +1331,7 @@ def generate(author: str, date: str, write: bool) -> Path:
 
 
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
+    """Parse --author, an optional ISO date string, and the --write switch."""
     parser = argparse.ArgumentParser(description="Generate exhaustive status update")
     parser.add_argument("--author", required=True, help="Report author name or handle")
     parser.add_argument(
@@ -1158,6 +1342,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
 
 
 def main(argv: Optional[Sequence[str]] = None) -> None:
+    """Run the offline scan from CLI arguments; preview unless --write is given."""
     args = parse_args(argv)
     generate(author=args.author, date=args.date, write=args.write)
 

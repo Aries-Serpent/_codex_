@@ -90,7 +90,9 @@ def _log_security_event(
     except Exception:
         # Fallback to standard logging
         safe_event = sanitize_for_logging(event_type)
-        safe_context = {key: sanitize_for_logging(value) for key, value in context.items() if value is not None}
+        safe_context = {
+            key: sanitize_for_logging(value) for key, value in context.items() if value is not None
+        }
         msg = f"Security event {safe_event}: {safe_context}"
         if severity == "CRITICAL":
             fallback_logger.critical(msg, exc_info=True)

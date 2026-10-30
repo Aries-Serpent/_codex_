@@ -1,0 +1,167 @@
+{
+  "artifact_type": "durable-institutional-program-handoff",
+  "version": 1,
+  "repository_root_context": "/home/runner/work/_codex_/_codex_",
+  "iteration": "006",
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001",
+  "state": "bounded_technical_work_complete_draft_review_required",
+  "maintained_roadmap": ".codex/evidence/institutional-foundation/iteration-006/program-roadmap.json",
+  "standalone_next_session_prompt": ".codex/evidence/institutional-foundation/iteration-006/next-session-prompt.rst",
+  "prompt_execution": "NOT_RUN; do not launch or self-trigger",
+  "final_binding_protocol": {
+    "evidence_candidate": "ad4c89d8f903ed9c4b87d0b6caa4568d02dd6ec1",
+    "retention_binding": ".codex/evidence/institutional-foundation/iteration-006/retention-binding.json",
+    "security_analysis": ".codex/evidence/institutional-foundation/iteration-006/codeql-result.json",
+    "digest_resolution": "Checkpoint and manifest digests are resolved from retention-binding.json and checkpoint-verification.json. This handoff is covered by the manifest, so it does not embed those digests.",
+    "publication": "The PR/current remote ref establishes the final pushed head externally. Checkpoint inventory binds an immutable pre-final evidence candidate; final bookkeeping and eventual merge require successor revalidation, not rewritten historical hashes.",
+    "retrieval": "Retrieve repository-relative files from the final task commit or actual merged base. All current iteration log paths must be committed explicitly despite the repository *.log ignore. Historical missing bytes remain listed, not restored.",
+    "next_action": "Owner security triage and original-byte retention recovery or an existing-policy disposition. retention_security is declared-blocked, not dispatch-ready; any later changed requirement needs a versioned plan with source/context revalidation. Do not append PASS to bypass it."
+  },
+  "path_policy": "All durable references are repository-relative to repository_root_context. Runner-local virtual environments are disposable execution environments, never retention.",
+  "source_and_artifact_identity": {
+    "historical_source": "3d7babe7233401e0dfd7b792f87a376898db61d0",
+    "historical_wheel_sha256": "e88afdbc52d79f2155fdadacddac9d2e16cab15e7307822aecdccfe13c9a9c33",
+    "tested_source": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+    "tested_wheel_sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00",
+    "source_review_candidate": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+    "source_binding_receipt": ".codex/evidence/institutional-foundation/iteration-005/final-source-binding.json",
+    "exact_final_package_receipt": ".codex/evidence/institutional-foundation/iteration-005/package-final/gate-status.json",
+    "historical_package_receipt": ".codex/evidence/institutional-foundation/iteration-005/package-original/gate-status.json",
+    "limits": "Retained same-platform technical observations; exact source parity supports unchanged-wheel applicability, not current merged-SHA equivalence, authenticated independence or release.",
+    "current_source_parity": ".codex/evidence/institutional-foundation/iteration-006/runtime/current-source-parity.json",
+    "new_runtime_implementation_or_build": false
+  },
+  "branch_and_pr": {
+    "observed_originating_branch": "copilot/codex-institutional-foundation-001",
+    "intended_continuation_base": "0D_base_",
+    "PR_identity": null,
+    "PR_state": "pending_external_attestation",
+    "merged": null,
+    "actual_merged_SHA": null,
+    "required_next_observation": "Verify actual PR merged into actual 0D_base_, merge SHA and ancestry before merged-base continuation; do not assume or execute a merge.",
+    "external_attestation": "Coordinator may append actual PR/merge attestation after authorized operation; no fabricated final commit or circular self-reference."
+  },
+  "retained_history": [
+    ".codex/evidence/institutional-foundation/iteration-004/gate-adjudication.json",
+    ".codex/evidence/institutional-foundation/iteration-004/implementation-status.json",
+    ".codex/evidence/institutional-foundation/iteration-004/continuation.json.gz",
+    ".codex/evidence/institutional-foundation/iteration-005/gate-adjudication.json",
+    ".codex/evidence/institutional-foundation/iteration-005/formula-design-preservation.json",
+    ".codex/evidence/institutional-foundation/iteration-005/experience-final.json",
+    ".codex/evidence/institutional-foundation/iteration-005/continuation.json.gz",
+    ".codex/evidence/institutional-foundation/iteration-005/checkpoint-verification.json"
+  ],
+  "final_artifact_discovery": {
+    "status": "Resolve final digests through checkpoint-verification.json and retention-binding.json; PR API establishes eventual head without circular commit requirements.",
+    "checkpoint": ".codex/evidence/institutional-foundation/iteration-006/continuation.json.gz",
+    "checkpoint_verification": ".codex/evidence/institutional-foundation/iteration-006/checkpoint-verification.json",
+    "manifest": ".codex/evidence/institutional-foundation/iteration-006/retention-manifest.json",
+    "gate_observation": ".codex/evidence/institutional-foundation/iteration-006/gate-adjudication.json",
+    "experience": ".codex/evidence/institutional-foundation/iteration-006/experience-final.json",
+    "checkpoint_digest": null,
+    "manifest_digest": null,
+    "final_checkpoint_sequence": 6,
+    "eligible_pending_node": null,
+    "pending_node": "retention_security",
+    "pending_ready": false,
+    "rule": "Discover finalized retained artifacts, verify them, then fill actual values without changing immutable predecessors. Never infer digest, sequence or eligible node from a draft path."
+  },
+  "historical_checkpoint_reference": {
+    "path": ".codex/evidence/institutional-foundation/iteration-005/continuation.json.gz",
+    "sequence": 5,
+    "canonical_digest": "e2ed9e24c5c7ea3f9e17745830059c39cb492fd2c8c478caeba5e1b2b145f12b",
+    "pending_node_at_that_time": "technical_verification",
+    "source_SHA": "00306262216ef95d7cf1b927fe15e2ef073572ac",
+    "rule": "Historical pending state is not the current eligible node. Replay final history/cache and rebind actual merged source/configuration before authorized successor mutation."
+  },
+  "current_iteration_receipts": {
+    "analytical": [
+      ".codex/evidence/institutional-foundation/iteration-006/architecture-bearing.json",
+      ".codex/evidence/institutional-foundation/iteration-006/dissent-bearing.json",
+      ".codex/evidence/institutional-foundation/iteration-006/verification-bearing.json",
+      ".codex/evidence/institutional-foundation/iteration-006/snapshot-reconciliation.json",
+      ".codex/evidence/institutional-foundation/iteration-006/design-rendering-observation.json"
+    ],
+    "runtime_discovery": [
+      ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-checks.json",
+      ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-initial.json",
+      ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-meta.json",
+      ".codex/evidence/institutional-foundation/iteration-006/runtime/repository-assurance-final.json",
+      ".codex/evidence/institutional-foundation/iteration-006/runtime/admission-observation.json",
+      ".codex/evidence/institutional-foundation/iteration-006/runtime/summary.json",
+      ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-completion.json",
+      ".codex/evidence/institutional-foundation/iteration-006/runtime/meta-assurance-final.json"
+    ],
+    "review_receipt_presence": "Actual initial, meta, assurance, admission, summary and scoped-meta receipts retained.",
+    "runtime_acceptance": "Executed bounded technical workflow; final recommendation remains BLOCKED, not institutional acceptance.",
+    "final_observation": "Actual source review and scoped rotated meta path EXECUTED; only 090/H1-attach-only received a formal nonmutating REJECTED_WITH_EVIDENCE recommendation. Broad eight findings, dissent and C1/C2/C3 remain open. Latest meta final is BLOCKED pending retention_security. Runtime lane reports 25 synthetic checks within overlapping 34/54 assertion stages and a separate 20-check scoped meta run; these stages are not all summed. Historical suites were not rerun.",
+    "synthetic_pending_scope": "Synthetic technical_verification resumed; its independent_reproduction pending state is stale fixture context, not the universal next-session target.",
+    "source_loop_requirement": "Keep actual analytical source quotations and speculative hypotheses distinct; retain the completed narrow recommendation and all unclosed concerns. After triage, extend recurrence, stronger evidence or safe admission rather than repeat the completed meta path."
+  },
+  "open_acceptance": {
+    "missing_historical_logs": {
+      "count": 151,
+      "inventory": ".codex/evidence/institutional-foundation/iteration-006/security/retention-aggregate.json",
+      "status": "blocked",
+      "rule": "Original bytes only with recorded size/digest, or honest unavailable adjudication. No regenerated historical logs, blanket failure inference or virtual-environment retention."
+    },
+    "unresolved_secret_triage": {
+      "count": 11,
+      "receipt": ".codex/evidence/institutional-foundation/iteration-006/security/three-source-static-triage.json",
+      "status": "blocked",
+      "rule": "Credential-like findings require security-owner triage; no plaintext disclosure or universal clean-scan claim."
+    },
+    "snapshot_user_captures": {
+      "receipt": ".codex/evidence/institutional-foundation/iteration-006/snapshot-reconciliation.json",
+      "historical_capture": "a6442c9e3865611917424100f05e889a7c470975",
+      "newer_capture": "64cd6ebed63d14a16e21079e4c67a318ccc92373",
+      "status": "blocked_owner_review_only",
+      "rule": "Retain distinct attribution, current user bytes and history. Any correction is separately owner-reviewed forward action, never silent packet reversal."
+    },
+    "architecture_composition": {
+      "receipt": ".codex/evidence/institutional-foundation/iteration-006/architecture-bearing.json",
+      "status": "unclosed",
+      "items": [
+        "C1 semantic validation versus generic persistence admission",
+        "C2 assurance manifest and repository candidate not cross-bound by co-storage",
+        "C3 cooperative append-only construction versus hostile resealing"
+      ],
+      "institutional_result": "Concrete recommendation to compose existing validators, candidate association and continuity policy; no new functionality implemented by this handoff."
+    },
+    "G1": "NOT_RUN; broader semantic ecology remains open",
+    "G5": "NOT_RUN",
+    "full_G4": "NOT_RUN; prior Python CodeQL skipped for size and current checker errored during git diff before analysis. Scoped scans do not close this gap.",
+    "approval": "NOT_RUN",
+    "activation": "unsupported",
+    "release_or_publication": "NOT_RUN"
+  },
+  "next_slices": [
+    "Evidence acceptance plus safe admission composition",
+    "Independent exact-artifact assurance and trusted provider boundaries",
+    "Source-backed rotated response and bounded recurrence extension"
+  ],
+  "continuation_rules": {
+    "preserve_program": "Maintain all roadmap IDs, evidence, dependencies and future items; do not restart or collapse to the next three slices.",
+    "source_rebinding": "Verify actual merged SHA, current policy, merge delta, configuration and final checkpoint; create a compatible successor via existing coordinator only under actual authorization.",
+    "execution_budget": "At most four useful disjoint lanes; shared manifests/checkpoints remain coordinator-owned. Bounded retries only with new causal evidence.",
+    "trust": "No role-name independence, fixture-principal trust, score-based closure or inference of permission from a policy/receipt.",
+    "metrics": "Denominated descriptive observations only; preserve overlapping cohorts and unknown causal outcomes.",
+    "retention": "Repository-relative retrievable evidence and immutable artifacts; no runner-local environment as durable evidence."
+  },
+  "this_lane": {
+    "owned_files": [
+      ".codex/evidence/institutional-foundation/iteration-006/program-roadmap.json",
+      ".codex/evidence/institutional-foundation/iteration-006/next-session-prompt.rst",
+      ".codex/evidence/institutional-foundation/iteration-006/handoff.json"
+    ],
+    "new_runtime_functionality": false,
+    "tests_or_builds_executed": false,
+    "workflow_or_next_session_executed": false,
+    "Reconciler_implemented_or_executed": false,
+    "approval_decided": false,
+    "G5": "NOT_RUN",
+    "authority": "none",
+    "commit_or_push": false,
+    "coordinator_followup": "Finish reserved checkpoint/manifest digest bindings and supply external PR/merge attestation later. Preserve executed scoped-meta facts, latest retention_security blocker and broad unresolved findings; do not convert technical execution to institutional acceptance."
+  }
+}

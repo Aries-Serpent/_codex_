@@ -1,0 +1,57 @@
+Collecting setuptools==81.0.0
+  Using cached setuptools-81.0.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting wheel==0.48.0
+  Using cached wheel-0.48.0-py3-none-any.whl.metadata (2.3 kB)
+Collecting hatchling==1.32.0
+  Using cached hatchling-1.32.0-py3-none-any.whl.metadata (3.9 kB)
+Collecting jsonschema==4.25.1
+  Using cached jsonschema-4.25.1-py3-none-any.whl.metadata (7.6 kB)
+Collecting packaging>=24.0 (from wheel==0.48.0)
+  Using cached packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting pathspec>=0.10.1 (from hatchling==1.32.0)
+  Using cached pathspec-1.1.1-py3-none-any.whl.metadata (14 kB)
+Collecting pluggy>=1.0.0 (from hatchling==1.32.0)
+  Using cached pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+Collecting tomlkit>=0.11.1 (from hatchling==1.32.0)
+  Using cached tomlkit-0.15.2-py3-none-any.whl.metadata (3.4 kB)
+Collecting trove-classifiers (from hatchling==1.32.0)
+  Using cached trove_classifiers-2026.9.21.13-py3-none-any.whl.metadata (2.4 kB)
+Collecting attrs>=22.2.0 (from jsonschema==4.25.1)
+  Using cached attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+Collecting jsonschema-specifications>=2023.03.6 (from jsonschema==4.25.1)
+  Using cached jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+Collecting referencing>=0.28.4 (from jsonschema==4.25.1)
+  Using cached referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+Collecting rpds-py>=0.7.1 (from jsonschema==4.25.1)
+  Using cached rpds_py-2026.9.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+Collecting typing-extensions>=4.4.0 (from referencing>=0.28.4->jsonschema==4.25.1)
+  Using cached typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Using cached setuptools-81.0.0-py3-none-any.whl (1.1 MB)
+Using cached wheel-0.48.0-py3-none-any.whl (33 kB)
+Using cached hatchling-1.32.0-py3-none-any.whl (78 kB)
+Using cached jsonschema-4.25.1-py3-none-any.whl (90 kB)
+Using cached attrs-26.1.0-py3-none-any.whl (67 kB)
+Using cached jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+Using cached packaging-26.3-py3-none-any.whl (129 kB)
+Using cached pathspec-1.1.1-py3-none-any.whl (57 kB)
+Using cached pluggy-1.7.0-py3-none-any.whl (27 kB)
+Using cached referencing-0.37.0-py3-none-any.whl (26 kB)
+Using cached rpds_py-2026.9.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (371 kB)
+Using cached tomlkit-0.15.2-py3-none-any.whl (52 kB)
+Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Using cached trove_classifiers-2026.9.21.13-py3-none-any.whl (14 kB)
+Saved ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/setuptools-81.0.0-py3-none-any.whl
+Saved ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/wheel-0.48.0-py3-none-any.whl
+Saved ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/hatchling-1.32.0-py3-none-any.whl
+Saved ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/jsonschema-4.25.1-py3-none-any.whl
+Saved ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/attrs-26.1.0-py3-none-any.whl
+Saved ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/jsonschema_specifications-2025.9.1-py3-none-any.whl
+Saved ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/packaging-26.3-py3-none-any.whl
+Saved ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/pathspec-1.1.1-py3-none-any.whl
+Saved ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/pluggy-1.7.0-py3-none-any.whl
+Saved ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/referencing-0.37.0-py3-none-any.whl
+Saved ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/rpds_py-2026.9.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+Saved ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/tomlkit-0.15.2-py3-none-any.whl
+Saved ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/typing_extensions-4.16.0-py3-none-any.whl
+Saved ./.codex/evidence/institutional-foundation/iteration-004/runtime-wheel/wheelhouse/trove_classifiers-2026.9.21.13-py3-none-any.whl
+Successfully downloaded setuptools wheel hatchling jsonschema attrs jsonschema-specifications packaging pathspec pluggy referencing rpds-py tomlkit typing-extensions trove-classifiers

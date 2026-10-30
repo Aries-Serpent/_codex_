@@ -1,0 +1,19 @@
+{
+  "stage": "full declared base dependency resolution before any third-party provisioning; advisory preflight required on selected versions",
+  "source_commit": "47daeb752582a8f03cd59341d95eb87141a9c7bf",
+  "wheel_sha256": "0a684e9e09a787b15004cad1582ad2470b5e2bf8c4584d8bfcb9b568e75895f0",
+  "workspace": "/home/runner/work/_codex_/lane-a-full-base-47daeb7-20261025",
+  "optional_extras": false,
+  "no_deps": false,
+  "local_contracts_wheel": {
+    "path": "/home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-005/package-changed/artifacts/codex_contracts-0.1.0a1-py3-none-any.whl",
+    "sha256": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+    "origin": "locally built immutable contracts wheel, not registry-only"
+  },
+  "result": {
+    "exit": 0,
+    "timeout": false
+  },
+  "log": "full-base-resolution.log",
+  "install_not_yet_attempted": "This preflight observation preceded dependency installation; the later successful install is recorded separately in full-base-install.log."
+}

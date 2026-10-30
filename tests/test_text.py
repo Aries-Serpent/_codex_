@@ -8,9 +8,7 @@ from pathlib import Path
 
 import pytest
 
-# Import semantic assertions
-sys.path.insert(0, str(Path(__file__).parent))
-from conftest_semantic_assertions import (
+from tests.conftest_semantic_assertions import (
     assert_exception_raised,
     assert_floats_approximately_equal,
     assert_instance_of,

@@ -2,6 +2,67 @@
 
 ## [Unreleased]
 
+### Fixed (SN)
+- Skip the optional Phase 7A test file only when FastAPI is unavailable, avoiding a zero-tests pytest failure; quote the Bandit version constraint so the shell does not treat it as redirection.
+- Restore the requested LFS asset fetch/verification path in Copilot setup and align embedded Python output lines with the setup validator's indentation checks.
+
+### Fixed — Chronicle CLI scope and bounded Phase 2 continuation (2026-10-24)
+- Preserve external absolute `.codex` database suffixes during CLI reindexing without changing repository-relative custom paths or external custom-path basename behavior.
+- Add CLI regressions across two working directories, nested state paths, custom database paths and relative paths; retain existing legacy CLI export and module-identity contracts.
+- Emit logging-viewer JSON directly to stdout rather than through logger formatting. Cover canonical/legacy entrypoints, Unicode, empty results and logger-independent JSON while preserving text rendering.
+- Resume validation in disposable snapshots with external evidence and explicit dependency/import provenance. Recover selected historical manifests without treating incomplete observations as current acceptance.
+- Supersede stale active-run instructions with current branch-aware checkpoints. Phase 2, complete-suite acceptance and repository-wide 80% coverage remain unverified; no release or publication is performed.
+
+### Fixed — Continued PyPI integration and measured global gates (2026-10-22)
+- Canonicalize auth exception identity across legacy import orders and catch actual credential/refresh domain errors without hiding unexpected exceptions. Share registration email validation and reject malformed dot placement while preserving tagged and Unicode addresses.
+- Require successful phase-7 login fixtures and use actual access, refresh and session tokens; distinguish schema validation from authentication errors and exercise the injected authenticator's unexpected-error response. The complete auth/API cohort passes 245 cases.
+- Complete the core CLI/config follow-up: all 123 original combined cases pass and 39 scoped type errors are removed. Add another 106 substantive ML public docstrings without executable AST changes.
+- Measure full-source typing at 1,055 errors in 323 files; repository Ruff and full-source Black pass on the same snapshot. Direct AST API documentation is 81.853187%; explicitly restoring 27 inherited MCP methods gives 81.893240%, still below 90%. The facade refactor itself adds no documentation.
+- Preserve the second broad run's exit 137 and incomplete counts. Continue a new immutable full-suite coverage run with periodic raw-data saves; no completed-suite or repository-wide coverage result is claimed. Phase 2 remains incomplete and publication has not started.
+
+### Fixed — Continuing PyPI suite root-cause remediation (2026-10-22)
+- Reject invalid clock injection without corrupting the previous clock, and keep replacement pattern entries consistent with their tag index.
+- Allocate default ingest snapshot directories atomically, including repeated identical input at a fixed timestamp; reject explicit ID reuse without modifying saved content. Correct migrated mock targets and preserve exact size/count checks using sparse files and lightweight fixtures.
+- Restore actual packaged dataset/collate and differential-privacy providers during training initialization. Dependent checks verify optimizer steps and parameter updates rather than accepting a silently inactive optimizer.
+- Validate classification batch shapes consistently before streaming counter changes. Report malformed optional sanitizer YAML without exposing its contents and retain verified default PII protection.
+- Repair stale ML, rotation, catalog, physics, checksum and variable-manager test contracts; isolate synthetic token environment changes and test mocked authentication transports without remote writes.
+- Remove 74 scoped tool and 86 scoped agent typing diagnostics, add 36 tool and 177 ML public docstrings, and decompose the MCP facade while retaining its public signatures. These scoped results do not replace the outstanding global typing/documentation measurements.
+- Continue the immutable, single-process full-suite coverage run without an outer timeout. Preserve overlapping cohort evidence separately; Phase 2 remains incomplete, Phase 3 is gated, and publication/release have not started.
+
+### Fixed — Resumed PyPI Phase 2 validation (2026-10-22)
+- Refresh stale checkpoints without marking Phase 2 complete: BrainClient authentication was repaired, while the historical 15-failure broad run still required fresh verification.
+- Serialize each AgentMemory instance's full SQLite transaction lifetime. A deterministic regression reproduces the prior lock failure; the fresh Chronicle/prior-cohort run passes 365 tests and requires all 500 concurrent writes to persist. Its 87.80% coverage covers only cost/analytics modules.
+- Validate plain mappings and resolved OmegaConf training sections consistently across both engines, with explicit errors for invalid nested configuration shapes.
+- Repair deleted-current-directory recovery, root-logger mock compatibility, test-package shadowing, and shared decision-test fixtures. Assert actual weighted scores and boolean escalation without weakening policy thresholds.
+- Evaluate scoped, unexpired custom RBAC grants with explicit-deny precedence; test tenant/user/resource boundaries, expiration, revocation and permission-level ordering.
+- Integrate the parallel and dependent repairs: 1,607 selected tests pass with six skips. Stabilize scalability measurement with independently warmed equal-work batches, preserve its original bound, and verify that synthetic quadratic work is still rejected; this is not full-suite coverage.
+- Remove scoped typing diagnostics in independent tools/ML batches, repair drift-detector initialization and absent dataset-hash output paths, and add 19 substantive logging/resilience API docstrings. The final sequential typing scan still reports 1,263 errors in 339 files; the defined API-docstring inventory is 79.195618%, not the required 90%.
+- Verify local contracts/root builds and clean wheelhouse installations without treating them as registry availability. Registry-only installation remains blocked by unpublished `codex-contracts`; public `codex-ml==0.3.0` artifacts already exist and must not be overwritten.
+- Record the runtime dependency audit accurately: pip-audit reports no known vulnerabilities for 47 public packages, but two local distributions are unauditable, OSV DNS failed, and Safety is unavailable. The frozen unbounded full-suite run terminated internally after logger/cwd pollution and did not produce coverage; a clean broad rerun and remaining global gates are required. Publication and release remain gated.
+- Run configured hooks across 265 changed paths. Verified scanner false positives have narrow annotations and the API example passes its doctest; all applicable hooks pass except the unsuppressed `SMELL-S001` class-size finding on `GitHubMCPPoster` (38 methods, limit 20).
+
+### Changed — Evidence-backed agent restrictions remediation (2026-10-22)
+- Audit instruction precedence, enforcement, memory provenance, all 661 agent-directory files programmatically, and accessible GitHub controls; distinguish candidates from verified hosted loading and denied settings from absence.
+- Replace circular startup, compulsory delegation, unlimited cleanup, fixed review counts and mandatory public retriggers with scoped, capability-aware preparation and truthful reporting. Preserve actual security owner/reason checks and execution approvals.
+- Permit requested workflow preparation with review, syntax and secret checks; remove unsupported administrative authority claims from feature flags, cached context, checkboxes and local provenance.
+- Reduce Copilot setup to one supported job with real worker-limit consumers, explicit asset intent before fetching, secret-safe diagnostics, and honest ready/partial/not-ready reporting.
+- Add a task-invocable, bounded targeted LFS path with required-content verification and explicit current-HEAD full-fetch opt-in; never fall back to a broad history download.
+- Correct the earlier runner-escalation claim: resource recommendations cannot move an already running job. Runner selection occurs through `runs-on` before setup starts.
+- Keep historical context unchanged, local evolution safeguards intact, and inaccessible hosted/admin controls explicitly unverified. No workflow was activated and no GitHub settings were changed.
+
+### Fixed — Chronicle and PyPI Phase 2 triage (2026-10-22)
+- Preserve portable `.codex` scope paths and restore canonical Chronicle CLI exports and module identity through the legacy facade.
+- Defer optional ML backend imports until use, validate training configuration shapes, and preserve CLI help startup without increasing timeout thresholds.
+- Regenerate the dependency lock, declare local editable contracts for development, separate incompatible security/ML extras, and restore standalone async-test dependencies.
+- Correct existing PyPI workflow expressions, artifact selection, least-privilege permissions, and verification-interpreter selection without publishing artifacts.
+- Repair agent exports, canonical autonomous-runner mock targets, manifest-driven installation checks, and the informational mypy hook's shell syntax.
+- Add real SQLite analytics and compatibility regressions. The focused gate passed 325 tests with five skips and 86.08% selected-scope coverage; autonomous-runner tests separately passed all 17 cases.
+- Save blocked Phase 2 checkpoints: repository-wide test, formatting, typing, documentation, and standalone distribution-installation criteria are not satisfied.
+
+### Fixed — PR #5706 CI rescue findings (2026-10-21)
+- Removed the reported trailing whitespace and converted the performance instrumentation command to a YAML block scalar without changing its decoded contents; strict yamllint passes.
+- Refreshed the current-session accountability records and PDA entry after Cognitive Pre-flight reported missing REQ-4 evidence; the latest completed no-deferral enforcement run passed.
+
 ### Changed — Dependabot consolidation PR preparation (2026-10-16)
 - Prepared the consolidated Cargo and npm dependency updates for review on `copilot/consolidate-dependabot-prs`; the existing DOMPurify 3.4.17 lock entry matches Dependabot PR #5699. The source PR is linked for closure when the consolidated PR merges.
 - Verified npm audits report zero vulnerabilities in both workspaces, cognitive_app tests and build pass, and the documented fast validation passes.

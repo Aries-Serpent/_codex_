@@ -1,0 +1,139 @@
+{
+  "task": "CODEX-INSTITUTIONAL-FOUNDATION-001/iteration-002",
+  "source_head": "2f2de42b6b0a830d9f7cb5d8b70330674eda4dc9",
+  "historical_candidate": "592e882f516744937957a2287fd93ad9d0c870ee",
+  "candidate_commit": "22a75dda20c14ccf0753bfde6d7d72e9b1268397",
+  "collected_at": "2026-10-24T21:44:04Z",
+  "producer": {
+    "identity": "coordinator",
+    "assurance": "unverified implementer"
+  },
+  "gates": {
+    "G0": "PASS",
+    "G1": "PASS",
+    "G2": "PASS",
+    "G3": "PASS",
+    "G4": "PASS",
+    "G5": "NOT_RUN",
+    "G6": "PASS",
+    "G7": "PASS",
+    "G8": "PASS"
+  },
+  "new_gates": {
+    "N1": "PASS",
+    "N2": "PASS",
+    "N3": "PASS",
+    "N4": "PASS",
+    "N5": "PASS",
+    "N6": "PASS",
+    "N7": "PASS",
+    "N8": "PASS",
+    "N9": "PASS",
+    "N10": "PASS"
+  },
+  "gate_qualifications": {
+    "N2": "PASS for availability/rebuild reporting, original-wheel evaluation NOT_RUN; source rebuild is not original artifact evaluation.",
+    "N4": "PASS for honest independence assessment only; G5 remains NOT_RUN.",
+    "N8": "PASS for bounded-capture tests and explicit unresolved security/platform limits; CodeQL NOT_RUN.",
+    "G5": "NOT_RUN: no policy-accepted independent identity/reproduction mechanism.",
+    "G8": "PASS: saved successor schema/integrity/reference checked against candidate source at collection. Later evidence-only commits require source drift revalidation."
+  },
+  "source": {
+    "results": {
+      "tests": 77,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "coverage": {
+      "covered_lines": 611,
+      "num_statements": 664,
+      "percent_covered": 90.44117647058823,
+      "percent_covered_display": "90.44",
+      "missing_lines": 53,
+      "excluded_lines": 4,
+      "percent_statements_covered": 92.01807228915662,
+      "percent_statements_covered_display": "92.02",
+      "num_branches": 288,
+      "num_partial_branches": 36,
+      "covered_branches": 250,
+      "missing_branches": 38,
+      "percent_branches_covered": 86.80555555555556,
+      "percent_branches_covered_display": "86.81"
+    },
+    "command": "python -m pytest --confcutdir=tests/institutional tests/institutional -q --cov=codex.institutional --cov-report=json:/tmp/institutional-resume/coverage.json --cov-fail-under=80",
+    "exit": 0,
+    "baseline_expectations": "Retained all historical test assertions; capture mock changed from subprocess.run to bounded capture seam because implementation replaced run. No weakened safety assertion.",
+    "typing_failure": "Initial mypy found two selector fileobj union-attribute errors; narrowed registered pipe to BufferedReader with cast, then all six modules type-check. Tests were not executed in that failed chained command."
+  },
+  "external": {
+    "results": {
+      "tests": 77,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "offline_results": {
+      "tests": 77,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "exit": 0,
+    "source_isolation": "current/import-origins.json",
+    "harness": "Exact committed test modules retained as *.py.txt; implementer-owned, not withheld tests."
+  },
+  "historical_rebuild": {
+    "results": {
+      "tests": 40,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "original_artifact_evaluation": "NOT_RUN",
+    "report": "reproduction.json"
+  },
+  "packaging_regression": {
+    "results": {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "exit": 0,
+    "command": "python -m pytest --noconftest tests/test_packaging_metadata.py tests/test_packaging_entrypoints.py tests/test_package_dependency_contract.py -q"
+  },
+  "checks": {
+    "Black": "PASS: --check, nine Python files unchanged",
+    "isort": "PASS: --check-only",
+    "Ruff": "PASS",
+    "mypy": "PASS: --follow-imports=skip, six runtime source files; unused config section notes only",
+    "compileall": "PASS",
+    "git_diff_check": "PASS; pre-existing user dirty packet preserved",
+    "Bandit": "Completed scoped scan, exit1/four LOW findings with dispositions in security.json",
+    "CodeQL": "NOT_RUN: skipped for database size"
+  },
+  "measurements": {
+    "historical_harness_cases": 40,
+    "changed_candidate_cases": 77,
+    "new_parameterized_cases": 37,
+    "statement_coverage": "92.02% (611/664 statements)",
+    "branch_coverage": "86.81% (250/288 branches)",
+    "combined": "90.44%",
+    "denominators": "Tests source/external/offline overlap and are not added. Percentages apply only to institutional runtime scope.",
+    "semantic_cohort_source_paths": 6,
+    "semantic_runtime_observations": 0,
+    "effective_agent_outcomes": "unknown; no causal effectiveness inference"
+  },
+  "authority": "Typed fixture mechanics only; default provider unavailable; CLI cannot load imported fixture/provider claims. Activation/approval/publication not performed.",
+  "prior_evidence": "Historical files remain unchanged; successor records appended in iteration-002.",
+  "limits": [
+    "Full repository suite and CI not run; no green-CI claim.",
+    "Original historical wheel unavailable; rebuilt bytes differ.",
+    "No independent reproduction, final approval, governance activation or publication.",
+    "Dependency provisioning used network and local contracts wheel; no offline or registry-only install claim.",
+    "Raw agent reports retained as inert unverified leads, with corrected overbroad integrated-gate assertions in semantic-cohort.json.",
+    "Retained own wheels are checksummed bytes, not authenticated publisher attestations."
+  ],
+  "continuation": "continuation.json.gz"
+}

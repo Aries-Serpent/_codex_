@@ -12,13 +12,17 @@ Integrates with the core RAG pipeline in src/codex/rag/
 
 import json
 import logging
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 import typer
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
+
+if TYPE_CHECKING:
+    from aries_serpent_core.rag.benchmarks.runner import BenchmarkResult
 
 logger = logging.getLogger(__name__)
 
@@ -106,6 +110,40 @@ def _format_bytes(size_bytes: int) -> str:
     return f"{size_bytes:.2f} TB"
 
 
+def _benchmark_result(data: Mapping[str, object]) -> "BenchmarkResult":
+    """Validate a serialized benchmark row before baseline comparison."""
+    from aries_serpent_core.rag.benchmarks.runner import BenchmarkResult
+
+    name = data.get("name")
+    duration_ms = data.get("duration_ms")
+    memory_mb = data.get("memory_mb")
+    success = data.get("success")
+    error = data.get("error")
+    metadata = data.get("metadata")
+    if not isinstance(name, str):
+        raise TypeError("Benchmark name must be a string")
+    if not isinstance(duration_ms, (int, float)) or isinstance(duration_ms, bool):
+        raise TypeError("Benchmark duration_ms must be numeric")
+    if not isinstance(memory_mb, (int, float)) or isinstance(memory_mb, bool):
+        raise TypeError("Benchmark memory_mb must be numeric")
+    if not isinstance(success, bool):
+        raise TypeError("Benchmark success must be a boolean")
+    if error is not None and not isinstance(error, str):
+        raise TypeError("Benchmark error must be a string or null")
+    if metadata is not None and (
+        not isinstance(metadata, dict) or any(not isinstance(key, str) for key in metadata)
+    ):
+        raise TypeError("Benchmark metadata must be an object with string keys or null")
+    return BenchmarkResult(
+        name=name,
+        duration_ms=float(duration_ms),
+        memory_mb=float(memory_mb),
+        success=success,
+        error=error,
+        metadata=metadata,
+    )
+
+
 @app.command("build")
 def build(
     files: list[str] = typer.Option(
@@ -168,7 +206,7 @@ def build(
         codex rag build --files "docs/**/*.md" --tenant-id customer_a --index-name docs
     """
     try:
-        from codex.rag import build_index_from_files
+        from aries_serpent_core.rag import build_index_from_files
 
         # Validate inputs
         if overlap >= chunk_size:
@@ -320,7 +358,7 @@ def query(
             progress.update(task, description="Searching...")
 
             results = retriever.query(
-                query_text=query_text,
+                q=query_text,
                 top_k=top_k,
                 min_score=min_score,
             )
@@ -599,7 +637,7 @@ def merge(
         codex rag merge --source idx1 --source idx2 --target combined --tenant-id customer_a
     """
     try:
-        from codex.rag import IndexOperation, manage_tenant_indices
+        from aries_serpent_core.rag import IndexOperation, manage_tenant_indices
 
         if not source_indices or len(source_indices) < 2:
             console.print(
@@ -785,7 +823,7 @@ def metrics(
         codex rag metrics --format json --output metrics.json
     """
     try:
-        from codex.rag import get_metrics
+        from aries_serpent_core.rag import get_metrics
 
         metrics_obj = get_metrics()
 
@@ -948,7 +986,7 @@ def benchmark(
             from aries_serpent_core.rag.benchmarks.runner import BenchmarkRunner
 
             runner = BenchmarkRunner()
-            runner.results = [type("obj", (), r) for r in results]
+            runner.results = [_benchmark_result(r) for r in results]
 
             comparison = runner.compare_with_baseline(baseline, threshold)
 

@@ -35,7 +35,10 @@ Design principles
 -----------------
 - **Idempotent**: safe to run multiple times; duplicate entries are never added.
 - **Minimal**: only appends what is strictly required to pass REQ-4 / REQ-5.
-- **Offline**: no network calls; reads only local files.
+- **Mode-aware**: local/no-PR checks need no remote access; authorized PR,
+  workflow and approval modes use GitHub APIs/CLI and may write shared state.
+- **Evidence-safe**: record actual agents or explicit direct execution; do not
+  infer dispatch from a registry, template, local flag or helper invocation.
 - **Audit-safe**: every auto-generated entry is clearly tagged ``[auto-generated]``.
 """
 
@@ -341,11 +344,31 @@ def _log_human_grants_to_accountability(
         logger.debug("Could not append human-grant note to accountability report", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
 
 
+def _preserve_agent_attestation(block: str, existing_body: str) -> str:
+    """Carry recorded utilization forward without inferring any new execution."""
+    heading = "## 🤖 Agents Used"
+    match = re.search(r"^## 🤖 Agents Used[^\n]*", existing_body, re.MULTILINE)
+    if not match or heading not in block:
+        return block
+    next_heading = re.search(r"^##\s", existing_body[match.end() :], re.MULTILINE)
+    end = match.end() + next_heading.start() if next_heading else len(existing_body)
+    recorded = existing_body[match.start() : end].rstrip()
+    lines = recorded.splitlines(keepends=True)
+    while len(lines) > 1 and lines[-1].strip() == "---":
+        lines.pop()
+        while len(lines) > 1 and not lines[-1].strip():
+            lines.pop()
+    recorded = "".join(lines).rstrip()
+    start = block.index(heading)
+    finish = block.index(_WEC_MARKER, start)
+    return block[:start] + recorded + "\n\n---\n\n" + block[finish:]
+
+
 def build_wec_for_report_progress(pr_number: str) -> str:
     """Return the complete WEC block ready to embed in a ``report_progress`` call.
 
-    This is the **one function agents MUST call** before every ``report_progress``
-    invocation to get the correct WEC block.  It performs the full pipeline:
+    Use only for a relevant authorized PR update when this host exposes
+    ``report_progress`` (or its equivalent). It performs the following pipeline:
 
     1. Fetches the live PR body via ``gh pr view`` (requires GH_TOKEN / gh CLI).
     2. Calls ``_extract_wec_state()`` to read current checkbox states.
@@ -378,7 +401,9 @@ def build_wec_for_report_progress(pr_number: str) -> str:
 
     live_state = _extract_wec_state(pr_body)
     human_grants = _detect_human_grants(pr_number, live_state)
-    return _build_wec_block(existing_state=live_state, human_grants=human_grants)
+    return _preserve_agent_attestation(
+        _build_wec_block(existing_state=live_state, human_grants=human_grants), pr_body
+    )
 
 
 def _auth_enabled_in_env() -> bool:
@@ -470,14 +495,11 @@ def _build_wec_block(
         "",
         "## 🤖 Agents Used",
         "",
-        "> **For Copilot Cloud Agent:** List every Custom Agent (from `AGENT_REGISTRY.yaml`) invoked during this session.",
-        "> Use `- [x] \\`agent_type\\`` format.",
-        "> Required by CAD-Mandate (Rule 3).",
+        "> Record only agents actually invoked, or explicitly declare:",
+        "> - None — direct execution (no delegated agents).",
+        "> A template or registry entry is not execution evidence.",
         "",
-        "- [ ] `ci-testing-agent`",
-        "- [ ] `unified-coverage-agent`",
-        "- [ ] `ci-auto-healer-agent`",
-        "- [ ] `general-purpose`",
+        "Delegation: not recorded.",
         "",
         "---",
         "",
@@ -551,7 +573,7 @@ _FOLLOWUP_MARKER         = "## 🔄 Follow-Up Prompt"
 
 
 # ---------------------------------------------------------------------------
-# Merge-readiness scorecard (CTEP P3 — mandatory session-close gate)
+# Optional PR scorecard (local diagnostics, not platform authorization)
 # ---------------------------------------------------------------------------
 
 def _compute_merge_readiness_score() -> dict:
@@ -701,35 +723,28 @@ def _build_scorecard_md(data: dict) -> str:
 
 
 def _build_followup_prompt_md(data: dict) -> str:
-    """Render the follow-up prompt section, highlighting failing dimensions."""
+    """Render a bounded handoff without public pings or invented next tasks."""
     failing = [d[0] for d in data["dimensions"] if not d[3]]
-    lines = [_FOLLOWUP_MARKER, ""]
+    lines = [
+        _FOLLOWUP_MARKER, "",
+        "This handoff does not authorize new work, public retriggers, workflow "
+        "activation, approvals, merges or deployment.",
+        "",
+    ]
     if not failing:
-        lines += [
-            "```",
-            "@copilot CTEP Mode: ON",
-            "",
-            "All 10 merge-readiness dimensions are green (100/100).",
-            "Next session priorities:",
-            "  P1 — CI/CD Maturity: add cache to uncovered Python workflows",
-            "       (target: aais_v4_scorer CI/CD Maturity ≥ 85)",
-            "  P2 — Reliability: create .github/workflows/self-healing.yml stub",
-            "  P3 — Node.js action runtime hygiene: run --pattern 21 to verify no deprecated refs",
-            "  P4 — Post-merge: sync_tracked_files --fix on main after merge",
-            "```",
-        ]
+        lines.append(
+            "No additional work inferred from this diagnostic score. "
+            "Verify relevant current CI and actual platform controls before "
+            "any separate readiness claim."
+        )
     else:
-        lines += ["```", "@copilot CTEP Mode: ON", "", "Failing dimensions to fix:"]
+        lines.append("Diagnostic findings for review within the authorized scope:")
         for f in failing:
-            lines.append(f"  - {f}")
-        lines += [
-            "",
-            "Run (self-heal readiness + refresh scorecard):",
-            "  python3 scripts/ci/session_wrapup_autofix.py --pr-number <N> --fix-all",
-            "Run (dispatch/approval sweep):",
-            "  python3 scripts/ci/session_wrapup_autofix.py --pr-number <N> --activate-workflows",
-            "```",
-        ]
+            lines.append(f"- {f}")
+        lines.append(
+            "\nRecord evidence, impact, owner/mitigation and the next authorized "
+            "decision. A local score is not proof of CI success or permission."
+        )
     return "\n".join(lines)
 
 
@@ -752,7 +767,9 @@ def _build_recent_changes_md(n: int = 8) -> str:
     return "\n".join(f"- `{c}`" for c in commits)
 
 
-def _build_meaningful_pr_body(pr_number: str, existing_wec_state: dict) -> str:
+def _build_meaningful_pr_body(
+    pr_number: str, existing_wec_state: dict, existing_pr_body: str = ""
+) -> str:
     """Build a complete, meaningful PR description.
 
     Structure:
@@ -768,7 +785,9 @@ def _build_meaningful_pr_body(pr_number: str, existing_wec_state: dict) -> str:
     changes_md = _build_recent_changes_md()
     scorecard_md = _build_scorecard_md(score_data)
     followup_md = _build_followup_prompt_md(score_data)
-    wec_block = _build_wec_block(existing_wec_state)
+    wec_block = _preserve_agent_attestation(
+        _build_wec_block(existing_wec_state), existing_pr_body
+    )
     sha = _short_sha()
     now = _now_iso()
 
@@ -1088,6 +1107,8 @@ _AGENT_PLACEHOLDER_VALUES = frozenset({
     "tbd",
 })
 
+_DIRECT_EXECUTION_DECLARATION = "- None — direct execution (no delegated agents)."
+
 
 @functools.lru_cache(maxsize=None)
 def _load_registered_agent_ids() -> frozenset[str]:
@@ -1098,22 +1119,35 @@ def _load_registered_agent_ids() -> frozenset[str]:
         for m in re.finditer(r"^\s*-\s+id:\s+(\S+)", text, re.MULTILINE):
             ids.add(m.group(1).strip())
     except FileNotFoundError:
-        logger.warning("AGENT_REGISTRY.yaml not found — agent ID validation skipped")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning("AGENT_REGISTRY.yaml not found — cannot validate claimed agent IDs")  # codeql[py/clear-text-logging-sensitive-data]
     return frozenset(ids)
 
 
-def check_req14_agents_used() -> bool:
-    """Return True iff the active accountability report has an Agents Used section
-    that contains at least one valid registered custom agent identifier.
+def _validate_agent_attestation(section: str) -> tuple[bool, str]:
+    """Validate an explicit declaration, not an inference that an agent ran."""
+    direct = _DIRECT_EXECUTION_DECLARATION in section.splitlines()
+    identifiers = re.findall(
+        r"^\s*-\s+(?:\[[xX]\]\s+)?`([^`]+)`", section, re.MULTILINE
+    )
+    if direct:
+        if identifiers:
+            return False, "Direct execution conflicts with listed delegated agents"
+        return True, ""
+    if not identifiers:
+        return False, "Record actual agent identifiers or an explicit direct-execution declaration"
+    registered = _load_registered_agent_ids()
+    if not registered:
+        return False, "Agent registry unavailable; cannot validate claimed identifiers"
+    for identifier in identifiers:
+        if identifier.lower().strip() in _AGENT_PLACEHOLDER_VALUES:
+            return False, f"Placeholder identifier `{identifier}` is not execution evidence"
+        if identifier not in registered:
+            return False, f"Unregistered agent identifier `{identifier}`"
+    return True, ""
 
-    Validation rules:
-    - The section heading must exist (``Agents Used``).
-    - At least one backtick-quoted identifier must appear in that section.
-    - None of those identifiers may be a known placeholder value.
-    - At least one identifier must be present in AGENT_REGISTRY.yaml (when the
-      registry is available).  If the registry is unavailable the identifier
-      format check alone is used.
-    """
+
+def check_req14_agents_used() -> bool:
+    """Accept actual agent IDs or an explicit no-delegation attestation."""
     if not ACCOUNTABILITY_REPORT.exists():
         return False
     content = ACCOUNTABILITY_REPORT.read_text(encoding="utf-8")
@@ -1131,25 +1165,16 @@ def check_req14_agents_used() -> bool:
         if next_heading
         else content[section_start:]
     )
-    # Find all backtick-quoted agent identifiers in the section.
-    identifiers = re.findall(r"`([^`]+)`", section)
-    if not identifiers:
-        return False
-    registered = _load_registered_agent_ids()
-    for ident in identifiers:
-        low = ident.lower().strip()
-        if low in _AGENT_PLACEHOLDER_VALUES:
-            continue
-        # Accept any non-placeholder identifier when registry is unavailable.
-        if not registered or ident in registered:
-            return True
-    return False
+    return _validate_agent_attestation(section)[0]
 
 
-def fix_req14_agents_used(dry_run: bool = False) -> bool:
-    """Ensure the active accountability report has an Agents Used section with a
-    real agent identifier.  Placeholder-only sections are treated as missing.
-    """
+def fix_req14_agents_used(
+    dry_run: bool = False,
+    *,
+    agents_used: list[str] | None = None,
+    direct_execution: bool = False,
+) -> bool:
+    """Write only caller-supplied utilization; never invent fallback agents."""
     if not ACCOUNTABILITY_REPORT.exists():
         print(f"⚠  {ACCOUNTABILITY_REPORT} does not exist — cannot auto-fix.", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
         return False
@@ -1157,36 +1182,41 @@ def fix_req14_agents_used(dry_run: bool = False) -> bool:
     if check_req14_agents_used():
         return False
 
+    if not direct_execution and not agents_used:
+        print("Agent use is unrecorded; supply actual IDs or --direct-execution. No evidence invented.")
+        return False
+    declaration = (
+        _DIRECT_EXECUTION_DECLARATION
+        if direct_execution
+        else "\n".join(f"- `{identifier}`" for identifier in agents_used or [])
+    )
+    if direct_execution and agents_used:
+        raise ValueError("Direct execution cannot also claim delegated agents")
+    valid, reason = _validate_agent_attestation(declaration)
+    if not valid:
+        raise ValueError(reason)
+
     if dry_run:
         print(f"[dry-run] Would append/replace Agents Used in {ACCOUNTABILITY_REPORT}")  # codeql[py/clear-text-logging-sensitive-data]
         return True
 
-    # Provide a meaningful fallback agent — session-analysis-agent is always
-    # applicable since a session wrap-up is by definition a session-analysis task.
-    entry = (
-        "\n### Agents Used\n"
-        "- `session-analysis-agent` (session wrap-up)\n"
-        "- `memory-sync-agent` (PDA/accountability update)\n"
-        "\n> ⚠️ Auto-populated by CI session wrap-up. "
-        "Replace with actual agents used in this session.\n"
-    )
-    with ACCOUNTABILITY_REPORT.open("a", encoding="utf-8") as fh:
-        fh.write(entry)
+    content = ACCOUNTABILITY_REPORT.read_text(encoding="utf-8")
+    entry = f"### Agents Used\n{declaration}\n\n"
+    heading = re.search(r"^#{1,4}\s+Agents Used[^\n]*", content, re.MULTILINE)
+    if heading:
+        next_heading = re.search(r"^#{1,4}\s+\S", content[heading.end():], re.MULTILINE)
+        end = heading.end() + next_heading.start() if next_heading else len(content)
+        content = content[:heading.start()] + entry + content[end:]
+    else:
+        content = content.rstrip() + "\n\n" + entry
+    ACCOUNTABILITY_REPORT.write_text(content, encoding="utf-8")
 
     print(f"✅ Appended Agents Used to {ACCOUNTABILITY_REPORT}")  # codeql[py/clear-text-logging-sensitive-data]
     return True
 
 
 def check_pr_body_agents_used(pr_body: str) -> tuple[bool, str]:
-    """Validate the '## 🤖 Agents Used' block in a PR body.
-
-    Returns:
-        tuple[bool, str]: ``(ok, reason)`` where *ok* is True only when the
-        section is present, contains at least one backtick-quoted agent
-        identifier that is not a placeholder, and that identifier matches a
-        registered agent (when the registry is available).  *reason* is a
-        human-readable explanation on failure, or ``""`` on success.
-    """
+    """Validate actual delegated IDs or an explicit direct-execution declaration."""
     if "## 🤖 Agents Used" not in pr_body:
         return False, "PR body is missing the '## 🤖 Agents Used' section"
     section_start = pr_body.index("## 🤖 Agents Used")
@@ -1196,27 +1226,7 @@ def check_pr_body_agents_used(pr_body: str) -> tuple[bool, str]:
         if next_h2
         else pr_body[section_start:]
     )
-    identifiers = re.findall(r"`([^`]+)`", section)
-    if not identifiers:
-        return False, "Agents Used section contains no backtick-quoted agent identifiers"
-    registered = _load_registered_agent_ids()
-    valid_found = False
-    for ident in identifiers:
-        low = ident.lower().strip()
-        if low in _AGENT_PLACEHOLDER_VALUES:
-            return (
-                False,
-                f"Agents Used section contains placeholder identifier `{ident}` — "
-                "replace with the actual agent(s) used in this session",
-            )
-        if not registered or ident in registered:
-            valid_found = True
-    if not valid_found:
-        return (
-            False,
-            "Agents Used section contains no identifiers found in AGENT_REGISTRY.yaml",
-        )
-    return True, ""
+    return _validate_agent_attestation(section)
 
 
 def fix_changelog(
@@ -1297,8 +1307,8 @@ def update_pr_description(
 ) -> bool:
     """Replace a generic or scorecard-free PR description with meaningful content.
 
-    HARDENED BEHAVIOUR (S294 — mandatory session-close gate):
-    Called on EVERY agent session completion via ``auto_fix_all_missing()``.
+    Use only for an authorized PR-body update, not every session completion.
+    Read-only/local/no-PR preparation needs no public status update.
 
     Detects two conditions and rebuilds the entire non-WEC portion when either fires:
       1. Body still contains ``# Pull Request Template`` — the default GitHub template.
@@ -1326,7 +1336,7 @@ def update_pr_description(
     is_generic      = _GENERIC_TEMPLATE_MARKER in pr_body
     missing_scorecard = _SCORECARD_MARKER not in pr_body
 
-    # ALWAYS refresh the scorecard on every session close (S295 compliance fix).
+    # Refresh the scorecard when this explicitly requested update mode is invoked.
     # Previous behaviour skipped the update when an old scorecard was present,
     # causing stale scores to persist across sessions.  The scorecard is cheap
     # to compute (<5 s) and must reflect the CURRENT state of the branch.
@@ -1344,7 +1354,7 @@ def update_pr_description(
         print(f"[dry-run] Would rebuild PR #{pr_number} description with scorecard + follow-up")  # codeql[py/clear-text-logging-sensitive-data]
         return True
 
-    new_body = _build_meaningful_pr_body(pr_number, existing_state)
+    new_body = _build_meaningful_pr_body(pr_number, existing_state, pr_body)
     try:
         subprocess.run(
             ["gh", "pr", "edit", pr_number, "--body", new_body],
@@ -1449,6 +1459,7 @@ def fix_pr_body_checkboxes(
         _build_wec_block(existing_state, human_grants=human_grants)
         if existing_state else _REQUIRED_PR_CHECKBOXES
     )
+    new_wec = _preserve_agent_attestation(new_wec, pr_body)
     new_body = stripped_body.rstrip() + new_wec
 
     if dry_run:
@@ -1801,9 +1812,8 @@ def select_merge_required_workflows(
     Cognitive Brain Pattern
     -----------------------
     Pattern ID: SCP-005 (RP-WEC-STARTUP)
-    Every Copilot session MUST call this function (or the equivalent WEC injection)
-    at session start. Without this, the workflow-execution-gate never dispatches
-    the validation/security suites, leaving the PR in a permanently "unstable" state.
+    This is an explicit workflow-selection operation requiring its own
+    authorization, not a startup requirement or proof of hosted execution.
 
     Returns True if an update was made, False if already up to date.
     """
@@ -1891,7 +1901,9 @@ def select_merge_required_workflows(
         )
         return False
 
-    new_wec_block = _build_wec_block(updated_state, human_grants=human_grants)
+    new_wec_block = _preserve_agent_attestation(
+        _build_wec_block(updated_state, human_grants=human_grants), pr_body
+    )
 
     # Strip existing WEC block and replace with updated one
     stripped_body = pr_body
@@ -2369,6 +2381,21 @@ def main(argv: list[str] | None = None) -> int:
         help="PR number (used to tag auto-generated entries and check for duplicates)",
     )
     parser.add_argument(
+        "--no-pr",
+        action="store_true",
+        help="Local preparation: PR-specific bookkeeping checks do not apply",
+    )
+    parser.add_argument(
+        "--direct-execution",
+        action="store_true",
+        help="Explicitly attest that no delegated agents were invoked",
+    )
+    parser.add_argument(
+        "--agents-used",
+        nargs="+",
+        help="Actual registered agents invoked; never inferred by this helper",
+    )
+    parser.add_argument(
         "--sha",
         default="",
         metavar="SHA",
@@ -2390,7 +2417,7 @@ def main(argv: list[str] | None = None) -> int:
         "--fix-req14",
         action="store_true",
         default=False,
-        help="Apply Agents Used fix to docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (REQ-14)",
+        help="Record explicitly supplied actual agents or direct execution (REQ-14)",
     )
     parser.add_argument(
         "--fix-changelog",
@@ -2415,10 +2442,9 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         default=False,
         help=(
-            "MANDATORY session-close gate: refresh the PR description with the "
+            "With authorization, refresh an active PR description with the "
             "current merge-readiness scorecard + follow-up prompt + WEC block. "
-            "This MUST be called at the end of every Copilot agent session, "
-            "unconditionally — regardless of whether REQ-4/5 need fixing."
+            "Not required for local/no-PR or read-only tasks."
         ),
     )
     parser.add_argument(
@@ -2429,7 +2455,7 @@ def main(argv: list[str] | None = None) -> int:
             "Copilot Session Startup Protocol: activate all merge-required workflows "
             "in the WEC block (validate, resilient_validation, codeql, security-suite, "
             "reference-integrity, nox_gates, auto-approve). "
-            "Should be called at the start of every Copilot coding agent session."
+            "Requires separate workflow-execution authorization; not a startup prerequisite."
         ),
     )
     parser.add_argument(
@@ -2438,7 +2464,7 @@ def main(argv: list[str] | None = None) -> int:
         default=False,
         help=(
             "Approve all action_required workflow runs for the PR. "
-            "Called at every session startup and by unified-copilot-management."
+            "Requires operation-specific approval authorization."
         ),
     )
     parser.add_argument(
@@ -2611,6 +2637,15 @@ def main(argv: list[str] | None = None) -> int:
 
 
     args = parser.parse_args(argv)
+    if args.no_pr and args.pr_number != "unknown":
+        parser.error("--no-pr cannot be combined with --pr-number")
+    if args.direct_execution and args.agents_used:
+        parser.error("--direct-execution cannot be combined with --agents-used")
+    if args.no_pr and any((
+        args.fix_pr_body, args.fix_all, args.update_pr_description,
+        args.activate_workflows, args.approve_runs,
+    )):
+        parser.error("--no-pr cannot request PR mutations or workflow execution")
 
     # --print-wec-block: one-shot WEC generator for agents before report_progress
     if getattr(args, "print_wec_block", False):
@@ -2819,6 +2854,9 @@ def main(argv: list[str] | None = None) -> int:
         return _run_verify_issues(args.verify_issues, args.verify_repo, args.dry_run)
 
     if args.check:
+        if args.pr_number == "unknown":
+            print("Local/no-PR preparation: PR bookkeeping is not applicable; no files or PRs changed.")
+            return 0
         acct_ok = _accountability_report_is_current()
         cl_ok = _changelog_is_current() and _changelog_has_unreleased()
         mfst_ok = CODEX_MANIFEST.exists() and SECRETS_BASELINE.exists()
@@ -2834,16 +2872,23 @@ def main(argv: list[str] | None = None) -> int:
             print("⚠  REQ-6: CODEX_MANIFEST.json or .secrets.baseline missing")  # codeql[py/clear-text-logging-sensitive-data]
 
         # REQ-14
-        req14_ok = check_req14_agents_used()
+        supplied = (
+            _DIRECT_EXECUTION_DECLARATION
+            if args.direct_execution
+            else "\n".join(f"- `{identifier}`" for identifier in args.agents_used or [])
+        )
+        req14_ok = (
+            _validate_agent_attestation(supplied)[0]
+            if supplied else check_req14_agents_used()
+        )
 
         if not req14_ok:
             print(
                 f"❌ REQ-14: {ACCOUNTABILITY_REPORT.relative_to(REPO_ROOT)} "
-                "missing Agents Used section with a valid registered agent identifier "
-                "(placeholder-only entries such as `unknown-agent` are not accepted)"
+                "missing actual agent identifiers or an explicit direct-execution declaration"
             )
         else:
-            print(f"✅ REQ-14: {ACCOUNTABILITY_REPORT.relative_to(REPO_ROOT)} has valid Agents Used entry")  # codeql[py/clear-text-logging-sensitive-data]
+            print("✅ REQ-14: Actual agent IDs or explicit direct execution declared")  # codeql[py/clear-text-logging-sensitive-data]
 
         return 0 if (acct_ok and cl_ok and req14_ok) else 1
 
@@ -2851,6 +2896,9 @@ def main(argv: list[str] | None = None) -> int:
 
     # Default: auto-detect what needs fixing when no explicit flags given
     if not any([fix_acct, fix_cl, fix_mfst, fix_body, fix_req14]):
+        if args.pr_number == "unknown":
+            print("Local/no-PR preparation: no automatic report, manifest or PR mutation requested.")
+            return 0
         fix_acct = not _accountability_report_is_current()
         fix_cl = not _changelog_is_current() or not _changelog_has_unreleased()
         fix_mfst = True   # always idempotent — cheap to check
@@ -2866,7 +2914,11 @@ def main(argv: list[str] | None = None) -> int:
     errors = 0
 
     if fix_req14:
-        fix_req14_agents_used(dry_run=args.dry_run)
+        fix_req14_agents_used(
+            dry_run=args.dry_run,
+            agents_used=args.agents_used,
+            direct_execution=args.direct_execution,
+        )
         if not check_req14_agents_used():
             errors += 1
 

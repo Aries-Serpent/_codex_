@@ -19,7 +19,7 @@ class MSPClient:
     def __init__(
         self,
         base_url: str = "http://127.0.0.1:8080",
-        api_key: str = None,
+        api_key: Optional[str] = None,
         timeout: float = 30.0,
         *,
         endpoint: Optional[str] = None,
@@ -232,7 +232,7 @@ class MSPClient:
         Returns:
             Updated tenant response
         """
-        data = {}
+        data: dict[str, object] = {}
         if name is not None:
             data["name"] = name
         if quota is not None:

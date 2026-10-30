@@ -1,0 +1,17 @@
+{
+  "operation": "runtime-tools-gh-advisory-database before provisioning",
+  "result": "No vulnerabilities found in the provided dependencies.",
+  "packages": {
+    "codex-ml": "0.3.0",
+    "codex-contracts": "0.1.0a1",
+    "jsonschema": "4.25.1",
+    "jsonschema-specifications": "2025.9.1",
+    "referencing": "0.37.0",
+    "rpds-py": "2026.9.1",
+    "attrs": "26.1.0",
+    "typing-extensions": "4.16.0"
+  },
+  "scope": "SDK-only runtime, not complete codex-ml base dependency closure",
+  "followup": "typing-extensions 4.16.0 separately checked before corrective install; no vulnerabilities found",
+  "initial_failure": "referencing requires typing-extensions on Python <3.13; omitted explicit closure dependency caused TypeVar default TypeError before workflow execution; corrected without modifying runtime source"
+}

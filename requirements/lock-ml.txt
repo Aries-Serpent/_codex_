@@ -583,9 +583,9 @@ huggingface-hub==1.12.2 ; python_full_version < '3.13' and sys_platform == 'linu
     #   sentence-transformers
     #   tokenizers
     #   transformers
-hydra-core==1.3.4 ; python_full_version < '3.13' and sys_platform == 'linux' \
-    --hash=sha256:ad0f7b05a0242255a8984d5a4ed2f6847f7b783ed727368a2c0155ec52d6c34c \
-    --hash=sha256:e58683692904a09f1fdfffa1a9b86bfd94e215b59f1ee17e7cd7d92738090d33
+hydra-core==1.3.8 ; python_full_version < '3.13' and sys_platform == 'linux' \
+    --hash=sha256:18d5dfb841734a936507e75e7b8390b406ed22494f7fb8b4b7b7c122102de3d5 \
+    --hash=sha256:d5f184c291691cba835c7f04bc4e36270ad88b1d7e394a3712f5af084c30b394
     # via codex-ml
 idna==3.18 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:7f952cbe720b688055e3f87de14f5c3e5fdaa8bc3928985c4077ca689de849a2 \
@@ -2056,9 +2056,9 @@ uvloop==0.22.1 ; python_full_version < '3.13' and platform_python_implementation
     --hash=sha256:daf620c2995d193449393d6c62131b3fbd40a63bf7b307a1527856ace637fe88 \
     --hash=sha256:e047cc068570bac9866237739607d1313b9253c3051ad84738cbb095be0537b2
     # via uvicorn
-virtualenv==21.7.13 ; python_full_version < '3.13' and sys_platform == 'linux' \
-    --hash=sha256:1bea5af7463f59c4719db48fe739579a2a4f569c96f26c086edda85c96da9f59 \
-    --hash=sha256:1bea5af7463f59c4719db48fe739579a2a4f569c96f26c086edda85c96da9f59
+virtualenv==21.15.1 ; python_full_version < '3.13' and sys_platform == 'linux' \
+    --hash=sha256:0d14a991689c67600316880eadc0a37b7690cb632e3b4ac67e2bc05b2b2e24a4 \
+    --hash=sha256:e79c90b8f601701599c25905e02839924fede2c798d52325670d24fbdaab74ee
     # via ray
 watchdog==6.0.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:20ffe5b202af80ab4266dcd3e91aae72bf2da48c0d33bdb15c66658e685e94e2 \

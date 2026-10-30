@@ -213,12 +213,15 @@ class TestAuthManager:
         assert auth.verify_api_key("key_shared") == "tenant_new", "Condition must be true"
 
     def test_verify_api_key_accepts_legacy_hash(self):
-        from services.msp_gateway.security import legacy_hash_api_key
+        from services.msp_gateway.security import hash_api_key, legacy_hash_api_key
 
         auth = self._make_auth()
         auth.register_api_key_hash(legacy_hash_api_key("legacy-key"), "tenant_legacy")
 
         assert auth.verify_api_key("legacy-key") == "tenant_legacy", "Condition must be true"
+        assert auth.api_keys == {hash_api_key("legacy-key"): "tenant_legacy"}
+        auth.revoke_api_key("legacy-key")
+        assert auth.verify_api_key("legacy-key") is None
 
 
 # ---------------------------------------------------------------------------

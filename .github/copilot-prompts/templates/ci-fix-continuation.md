@@ -38,9 +38,7 @@
 ```bash
 {fix_1_local_validation}
 
-# CI validation
-gh run rerun {run_1_id} --failed
-gh run watch {new_run_id}
+# Inspect available CI evidence; rerun/dispatch only when separately authorized.
 ```
 
 ---
@@ -77,7 +75,13 @@ Execute CI fixes in order of priority. Validate each fix before proceeding. Upda
 1. Apply fix
 2. Run local validation
 3. Commit changes
-4. Trigger CI run
-5. Monitor results
-6. If fail: analyze, adjust, retry (max 5 iterations per fix)
-7. If pass: mark complete (✅), proceed to next fix
+4. Inspect applicable CI results; trigger/rerun only when separately authorized
+5. Record actual results, not assumed green checks
+6. If fail: analyze and retry with new evidence within a risk-based budget
+7. Mark only verified scoped work complete; retain blockers, dissent and next action
+
+Follow `.codex/CODEBASE_AGENCY_POLICY.md`. Read-only tasks permit no edits or
+dispatch; missing optional context/specialists does not block authorized direct
+preparation. Keep required security owner/reason checks and actual approvals.
+Self-testing is not independent verification. No publication, merge, protected
+settings change, activation or self-triggered session without applicable authority.

@@ -4,13 +4,18 @@ import sys
 
 import pytest
 
-pytest.importorskip("torch")
+torch = pytest.importorskip("torch")
+if getattr(torch, "IS_CODEX_STUB", False):
+    pytest.skip("PyTorch is unavailable", allow_module_level=True)
 
 
+import torch.nn as nn
 from codex.rag.utils import safe_model_to_device
 
-import torch
-import torch.nn as nn
+try:
+    _CUDA_AVAILABLE = torch.cuda.is_available()
+except (AttributeError, ImportError):
+    _CUDA_AVAILABLE = False
 
 # PyTorch 2.x (<2.2.0) has an isinstance bug with Python 3.12 union types
 # that triggers when creating nn.LayerNorm or similar modules.
@@ -52,7 +57,7 @@ class TestSafeModelToDevice:
         assert result is not None, "result must be initialized"
         assert all(p.device.type == "cpu" for p in result.parameters()), "Result must not be empty"
 
-    @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
+    @pytest.mark.skipif(not _CUDA_AVAILABLE, reason="CUDA not available")
     def test_cpu_to_cuda(self):
         """Test moving CPU model to CUDA."""
         model = SimpleModel()
@@ -61,7 +66,7 @@ class TestSafeModelToDevice:
         assert all(p.device.type == "cuda" for p in result.parameters()), "Result must not be empty"
         assert all(p.device.index == 0 for p in result.parameters()), "Result must not be empty"
 
-    @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
+    @pytest.mark.skipif(not _CUDA_AVAILABLE, reason="CUDA not available")
     def test_cuda_to_cpu(self):
         """Test moving CUDA model to CPU."""
         model = SimpleModel().to("cuda:0")
@@ -78,7 +83,9 @@ class TestSafeModelToDevice:
         result = safe_model_to_device(model, "cpu", dtype=torch.float16)
 
         assert all(p.device.type == "cpu" for p in result.parameters()), "Result must not be empty"
-        assert all(p.dtype == torch.float16 for p in result.parameters()), "Result must not be empty"
+        assert all(
+            p.dtype == torch.float16 for p in result.parameters()
+        ), "Result must not be empty"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -99,7 +106,7 @@ class TestSafeModelToDevice:
         assert all(not p.is_meta for p in result.parameters()), "Result must not be empty"
         assert all(p.device.type == "cpu" for p in result.parameters()), "Result must not be empty"
 
-    @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
+    @pytest.mark.skipif(not _CUDA_AVAILABLE, reason="CUDA not available")
     def test_meta_tensor_to_cuda(self):
         """Test meta tensor conversion to CUDA."""
         with torch.device("meta"):
@@ -121,7 +128,9 @@ class TestSafeModelToDevice:
         result = safe_model_to_device(model, "cpu", dtype=torch.float16)
 
         assert all(not p.is_meta for p in result.parameters()), "Result must not be empty"
-        assert all(p.dtype == torch.float16 for p in result.parameters()), "Result must not be empty"
+        assert all(
+            p.dtype == torch.float16 for p in result.parameters()
+        ), "Result must not be empty"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -166,9 +175,11 @@ class TestSafeModelToDevice:
         # Test different string formats
         for device in ["cpu", torch.device("cpu")]:
             result = safe_model_to_device(model, device)
-            assert all(p.device.type == "cpu" for p in result.parameters()), "Result must not be empty"
+            assert all(
+                p.device.type == "cpu" for p in result.parameters()
+            ), "Result must not be empty"
 
-    @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
+    @pytest.mark.skipif(not _CUDA_AVAILABLE, reason="CUDA not available")
     def test_specific_gpu_selection(self):
         """Test moving to specific GPU."""
         if torch.cuda.device_count() < 2:

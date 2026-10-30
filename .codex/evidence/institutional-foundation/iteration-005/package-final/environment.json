@@ -1,0 +1,18 @@
+{
+  "workspace": "/home/runner/work/_codex_/lane-a-package-final-0030626-20261025",
+  "location_note": "External sibling workspace outside checkout; actual path retained, removed after evidence retention.",
+  "venvs": {
+    "build-venv": {
+      "pyvenv_cfg": "home = /opt/hostedtoolcache/Python/3.12.10/x64/bin\ninclude-system-site-packages = false\nversion = 3.12.10\nexecutable = /opt/hostedtoolcache/Python/3.12.10/x64/bin/python3.12\ncommand = /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m venv /home/runner/work/_codex_/lane-a-package-final-0030626-20261025/build-venv\n"
+    },
+    "full-base-venv": {
+      "pyvenv_cfg": "home = /opt/hostedtoolcache/Python/3.12.10/x64/bin\ninclude-system-site-packages = false\nversion = 3.12.10\nexecutable = /opt/hostedtoolcache/Python/3.12.10/x64/bin/python3.12\ncommand = /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -m venv /home/runner/work/_codex_/lane-a-package-final-0030626-20261025/full-base-venv\n"
+    }
+  },
+  "PYTHONPATH": "absent",
+  "full_declared_base_closure": "29 declared base requirements installed and version specifiers satisfied; pip check 0 before and after test tools.",
+  "optional_extras": false,
+  "advisory_versions_match_prechecked_versions": true,
+  "test_tools": "pytest==9.1.1, iniconfig==2.3.0, pluggy==1.7.0 added after SDK harness; not package runtime requirements.",
+  "workspace_removed": true
+}

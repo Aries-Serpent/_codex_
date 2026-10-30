@@ -21,7 +21,7 @@ def is_cuda_available() -> bool:
     """Local CUDA detection to avoid conftest import path conflicts."""
     try:
         return torch is not None and torch.cuda.is_available()
-    except AttributeError:
+    except (AttributeError, ImportError):
         return False
 
 

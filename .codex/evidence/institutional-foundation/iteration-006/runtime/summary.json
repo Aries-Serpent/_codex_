@@ -1,0 +1,130 @@
+{
+  "status": "COMPLETE_SCOPED_ROTATED_META_FINAL_BLOCKED",
+  "synthetic_assertions": 25,
+  "runtime_assertions": 14,
+  "historical_tests_rerun": 0,
+  "attempts": {
+    "initial": "Import failed: missing Python-3.12 typing-extensions dependency; retained setup.log",
+    "second": "Synthetic scenario PASS after separately advisory-checked closure correction",
+    "third": "Separate targeted guard and dependency-origin assertions PASS; no repeated synthetic scenario"
+  },
+  "after_history_digest": "0965ead6ab858c55adb5bc7859735ae464a3f960358a6844151a88abdb0a20e4",
+  "pending_node": "independent_reproduction",
+  "repository_source_commit": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+  "wheel_sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00",
+  "retained_bytes_excluding_cache": 1754885,
+  "validation": {
+    "black": "PASS; two fixed adapters",
+    "ruff": "PASS; two fixed adapters",
+    "isort": "PASS; two fixed adapters",
+    "mypy": "PASS; two source files",
+    "compile": "PASS in-memory; two fixed adapters",
+    "diff_check": "PASS scoped runtime path",
+    "secret_scan": "All retained owned payload files scanned: no secrets detected; final receipt/summary/manifest receive separate final-metadata scan"
+  },
+  "scope": "SDK-only installed-wheel new scenarios; historical full-base closure and tests not rerun; all co-stored artifacts explicitly unbound",
+  "actual_workspace": "Fresh noneditable installed SDK environment, runtime cwd and temporary/cache storage were inside iteration-006/runtime under the checkout; this was not outside-checkout execution.",
+  "G5": "NOT_RUN",
+  "authority": "none",
+  "approval": false,
+  "activation": false,
+  "checkpoint_writes": false,
+  "repository_candidate_file_count": 4,
+  "retention_blocker": "Coordinator-reported 151 historical raw log streams unavailable; no reconstruction or historical validator reruns",
+  "repository_review": "EXECUTED_GENUINE_090_180_AND_CROSS_CUTTING_DISSENT",
+  "runtime_classification": "fixture_only remains true despite genuine source bytes and analytical observations",
+  "admission_assertions": 12,
+  "admission_observation": "Executed: assurance semantic validator/attachment reject; generic validate/inspect_candidate structurally admit; no storage.apply",
+  "repository_assertions": 18,
+  "repository_final_recommendation": "BLOCKED",
+  "repository_unresolved_findings": [
+    "090/C1",
+    "090/C2",
+    "090/C3",
+    "090/H1-broad",
+    "180/binding-1",
+    "180/binding-2",
+    "dissent/C1-generic",
+    "dissent/H1-broad"
+  ],
+  "repository_pending_node": "historical_retention",
+  "repository_history_digest": "ecd5b58b51e02dec3735ead20a5491cde77067d5a007a4ce5812f959b32a1127",
+  "repository_recommendation_digest": "6f61353b22d372d57a6fbdb0b532288b9218536696769a97558384d0de4d7ecf",
+  "repository_binding": "40273aa58ef73ad9635171d3625960440a9d0f9d68add2c6239a3eb52d53703e",
+  "hypothesis_disposition": "Scoped nonmutating recommendation emitted only for attachment-validator subcase; broad claim retained",
+  "co_stored_artifacts": "UNBOUND_TO_CONTINUATION_INVENTORY",
+  "public_attachment_helpers": "All new review and assurance attachments validated in memory; no checkpoint or incorrect data persisted",
+  "cleanup": "Owned runtime/cache and runtime/work removed; no venv/cache/temp fixtures retained",
+  "runtime_ready": "Historical prepared runtime removed after observation retention; setup not repeated",
+  "execution_location": "Inside checkout; installed-origin isolated SDK execution only, not outside-checkout execution",
+  "synthetic_preserved_sha256": "477ff61ccd47eb7687a286a85f7390e5e67ac67ac8b294e14ed13554ddc3aad1",
+  "meta_assertions": 20,
+  "meta_final_digest": "db033963aafa89d307956f2f009263a006ba5b5bf2396ecc28494973ccdc8aef",
+  "meta_history_digest": "cd3f3e3ea3067f0d79862317dbc4c45c3c5436fc65013deed636f1a2567b27ae",
+  "meta_pending_node": "retention_security",
+  "meta_scope_limited_rejection": "Only 090/H1-attach-only; 090/H1-broad and dissent/H1-broad remain unresolved",
+  "security_context": "13 coordinator-reported archive findings remain under triage; candidate four files unaffected per coordinator",
+  "meta_cleanup": "Owned cache/work removed after retaining outputs and both attempts",
+  "distinct_assertion_labels": 74,
+  "check_count_interpretation": "Per-scenario assertions include overlapping environment/source checks; assertion labels are not unique unit-test cases. Prior scoped-meta normalization attempt is not counted again.",
+  "new_assertion_counts": {
+    "synthetic": 25,
+    "runtime": 14,
+    "admission": 12,
+    "repository": 18,
+    "scoped_meta": 20
+  },
+  "artifact_manifest": "artifact-manifest.json generated after final JSONs; self-excluded",
+  "final_handoff": {
+    "count_milestones": {
+      "synthetic_resumption": 25,
+      "new_combined": 34,
+      "source_backed": 54,
+      "scoped_rotated_meta": 20
+    },
+    "count_overlap": "25 synthetic +14 runtime assertions share5 environment checks =>34 distinct labels. +12 admission and18 first repository assertions each share5 environment checks =>54. Subsequent20 scoped-meta assertions are separate scenario counts with repeated environment/source checks, not20 unique tests or historical107/285 cases. Confidence-normalization rerun not counted twice.",
+    "actual_cadence": [
+      "meta-initial.json",
+      "meta-remediation-proposal.json",
+      "meta-rotated-followup.json",
+      "meta-review.json",
+      "meta-assurance-dispatch.json",
+      "meta-assurance-result.json",
+      "meta-assurance-history.json",
+      "meta-assurance-final.json"
+    ],
+    "blocked_nodes": {
+      "synthetic": "independent_reproduction (stale downstream proof); institutional_audit also stale",
+      "first_source_backed": "historical_retention",
+      "latest_scoped_meta": "retention_security"
+    },
+    "broad_findings_retained": [
+      "090/H1-broad",
+      "dissent/H1-broad"
+    ],
+    "helper_validation": "review.attach_continuation and assurance.attach_continuation validate new schema attachments in memory only; storage.apply NOT_CALLED; no shared checkpoint changed",
+    "source_commit": "fa2e6e406f5767fd8ab5a15ffc99b49f9123f71c",
+    "candidate_manifest_digest": "fe3e7ba8930591a0a9576e6c71e35c62ba75fd1d9344c82bff5ca6d1159b0665",
+    "candidate_binding": "bc8d59bf047bd0f78f32088586edd5870dc29e69854e59acc266c1fb612a020b",
+    "environment_digest": "6bac38cc9316387f57ce02fa66cf6ac4d69067f66d95ab389c2f19adfd2d6024",
+    "environment_receipt": "meta-environment.json: actual inside-checkout cwd/prefix and installed origins; SDK-only fresh noneditable exact retained wheel; not external execution",
+    "wheel_sha256": "08fe4659b7338d8f8cf161da8c1cca31700d35e1dfa6832983fefa20f2e4cb00",
+    "reproduction_command": "bash /home/runner/work/_codex_/_codex_/.codex/evidence/institutional-foundation/iteration-006/runtime/provision-meta.sh",
+    "reproduction_scope": "Recreates cleaned venv with fixed previously checked SDK subset and retained local wheels, then runs explicit fixed meta_workflow.py; no record execution, wheel rebuild, full-base or pip-check claim. Later cleanup removes only absolute runtime/cache and runtime/work.",
+    "actual_actors": [
+      "rd6-architecture",
+      "rd6-snapshot",
+      "rd6-dissent",
+      "rd6-runtime"
+    ],
+    "actor_assurance": "Unverified attribution; environmental aliases do not authenticate actors; no G5",
+    "production_changes": "None; evidence and analytical findings only. No new wheel required.",
+    "remaining": "151 missing historical log streams;13 archive findings under triage;generic semantic dispatch/candidate association and hostile-reseal limits remain; coordinator owns checkpoint/readiness and PR/handoff."
+  },
+  "retained_payload_file_count_before_final_metadata": 99,
+  "aggregate_exclusions": [
+    "runtime/cache absent",
+    "runtime/work absent"
+  ],
+  "manifest_self_exclusion": "artifact-manifest.json excludes itself; includes all other final owned files including summary.json and owned-secret-scan.json"
+}

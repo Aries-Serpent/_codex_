@@ -173,7 +173,7 @@ def safe_model_to_device(
 
     try:
         meta_status = has_meta_tensors(model)
-    except (AttributeError, ValueError, TypeError, RuntimeError):
+    except Exception:
         logger.debug("Unable to inspect meta tensor state", exc_info=True)
         meta_status = None
 

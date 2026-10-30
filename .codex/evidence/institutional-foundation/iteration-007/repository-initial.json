@@ -1,0 +1,232 @@
+{
+  "schema": "codex.review.v1",
+  "id": "codex.review.v1:eb928d2cb2145b036f3cc3203fe52fc5de1928783d2b4731525d9211755217d1",
+  "created_at": "2026-10-25T05:03:14Z",
+  "producer": {
+    "identity": "codex-institutional",
+    "assurance": "unverified"
+  },
+  "evidence_refs": [],
+  "authority_refs": [],
+  "validation_state": "candidate",
+  "lifecycle": "Draft",
+  "supersedes": null,
+  "extensions": {},
+  "payload": {
+    "kind": "recommendation",
+    "data": {
+      "plan_digest": "0c3316b561362ff50a2c3d54acfd85eea4ad4802c662b8f664c9e0fd4ede2de1",
+      "binding": "e053e2c445dd0f0051516e3ca789d5321fa73ba66ba9ef7c4e6b13659dd39923",
+      "stage": "initial",
+      "outputs": [
+        {
+          "schema": "codex.review.v1",
+          "id": "codex.review.v1:4fb030a2c6a8f4341b360ad8799c66a95f742792d240a82a99e8f41a9aa27c8e",
+          "created_at": "2026-10-25T05:03:14Z",
+          "producer": {
+            "identity": "codex-institutional",
+            "assurance": "unverified"
+          },
+          "evidence_refs": [],
+          "authority_refs": [],
+          "validation_state": "candidate",
+          "lifecycle": "Draft",
+          "supersedes": null,
+          "extensions": {},
+          "payload": {
+            "kind": "lane-output",
+            "data": {
+              "plan_digest": "0c3316b561362ff50a2c3d54acfd85eea4ad4802c662b8f664c9e0fd4ede2de1",
+              "binding": "e053e2c445dd0f0051516e3ca789d5321fa73ba66ba9ef7c4e6b13659dd39923",
+              "lane": "architecture",
+              "actor": "same-platform:coordinator",
+              "run": "source-composition:architecture",
+              "identity": "unverified",
+              "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+              "findings": [
+                {
+                  "id": "semantic-dispatch",
+                  "source_quote": "validate_artifact(child)",
+                  "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                  "kind": "inference",
+                  "confidence": 0.8,
+                  "coverage": [
+                    "admission"
+                  ],
+                  "clearance_conditions": [
+                    "inspect-dispatch"
+                  ]
+                }
+              ]
+            }
+          },
+          "integrity": "4d1d5d7d501ba4d6121d02fa4f4fe0d04ce0518ef85373f41ad5b2306d378880"
+        },
+        {
+          "schema": "codex.review.v1",
+          "id": "codex.review.v1:1d5d6529f928b410f056538aea8a95c36777860e7ef2169bf19e7c593f38d29e",
+          "created_at": "2026-10-25T05:03:14Z",
+          "producer": {
+            "identity": "codex-institutional",
+            "assurance": "unverified"
+          },
+          "evidence_refs": [],
+          "authority_refs": [],
+          "validation_state": "candidate",
+          "lifecycle": "Draft",
+          "supersedes": null,
+          "extensions": {},
+          "payload": {
+            "kind": "lane-output",
+            "data": {
+              "plan_digest": "0c3316b561362ff50a2c3d54acfd85eea4ad4802c662b8f664c9e0fd4ede2de1",
+              "binding": "e053e2c445dd0f0051516e3ca789d5321fa73ba66ba9ef7c4e6b13659dd39923",
+              "lane": "verification",
+              "actor": "same-platform:coordinator",
+              "run": "source-composition:verification",
+              "identity": "unverified",
+              "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+              "findings": [
+                {
+                  "id": "semantic-dispatch",
+                  "source_quote": "validate_artifact(child)",
+                  "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                  "kind": "inference",
+                  "confidence": 0.8,
+                  "coverage": [
+                    "admission"
+                  ],
+                  "clearance_conditions": [
+                    "inspect-dispatch"
+                  ]
+                }
+              ]
+            }
+          },
+          "integrity": "c452e9ce816107fea7f8b5f45ae93745fe85d6adadd3db7d8715373c78321d40"
+        },
+        {
+          "schema": "codex.review.v1",
+          "id": "codex.review.v1:f62510be9845e962b50bca1f0fe260f5deeb9c4682520da661ffe27de1f00fdf",
+          "created_at": "2026-10-25T05:03:14Z",
+          "producer": {
+            "identity": "codex-institutional",
+            "assurance": "unverified"
+          },
+          "evidence_refs": [],
+          "authority_refs": [],
+          "validation_state": "candidate",
+          "lifecycle": "Draft",
+          "supersedes": null,
+          "extensions": {},
+          "payload": {
+            "kind": "lane-output",
+            "data": {
+              "plan_digest": "0c3316b561362ff50a2c3d54acfd85eea4ad4802c662b8f664c9e0fd4ede2de1",
+              "binding": "e053e2c445dd0f0051516e3ca789d5321fa73ba66ba9ef7c4e6b13659dd39923",
+              "lane": "dissent",
+              "actor": "same-platform:coordinator",
+              "run": "source-composition:dissent",
+              "identity": "unverified",
+              "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+              "findings": [
+                {
+                  "id": "semantic-dispatch",
+                  "source_quote": "validate_artifact(child)",
+                  "normalized": "Semantic dispatch is present; this alone is not authentication.",
+                  "kind": "inference",
+                  "confidence": 0.8,
+                  "coverage": [
+                    "admission"
+                  ],
+                  "clearance_conditions": [
+                    "inspect-dispatch"
+                  ]
+                }
+              ]
+            }
+          },
+          "integrity": "3c8684a0c4cbc834af0e4e17f13e35e0770cde12a977877da1a9c1abf36c9b34"
+        }
+      ],
+      "findings": {
+        "architecture/semantic-dispatch": {
+          "id": "semantic-dispatch",
+          "source_quote": "validate_artifact(child)",
+          "normalized": "Semantic dispatch is present; this alone is not authentication.",
+          "kind": "inference",
+          "confidence": 0.8,
+          "coverage": [
+            "admission"
+          ],
+          "clearance_conditions": [
+            "inspect-dispatch"
+          ],
+          "actor": "same-platform:coordinator",
+          "run": "source-composition:architecture",
+          "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+          "identity": "unverified"
+        },
+        "verification/semantic-dispatch": {
+          "id": "semantic-dispatch",
+          "source_quote": "validate_artifact(child)",
+          "normalized": "Semantic dispatch is present; this alone is not authentication.",
+          "kind": "inference",
+          "confidence": 0.8,
+          "coverage": [
+            "admission"
+          ],
+          "clearance_conditions": [
+            "inspect-dispatch"
+          ],
+          "actor": "same-platform:coordinator",
+          "run": "source-composition:verification",
+          "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+          "identity": "unverified"
+        },
+        "dissent/semantic-dispatch": {
+          "id": "semantic-dispatch",
+          "source_quote": "validate_artifact(child)",
+          "normalized": "Semantic dispatch is present; this alone is not authentication.",
+          "kind": "inference",
+          "confidence": 0.8,
+          "coverage": [
+            "admission"
+          ],
+          "clearance_conditions": [
+            "inspect-dispatch"
+          ],
+          "actor": "same-platform:coordinator",
+          "run": "source-composition:dissent",
+          "source": "FACT: exact quotation from core.inspect_candidate: validate_artifact(child)\nINFERENCE: scoped semantic dispatch is not whole-history authentication.",
+          "identity": "unverified"
+        }
+      },
+      "relations": [
+        {
+          "type": "contradicts",
+          "from": "architecture/semantic-dispatch",
+          "to": "dissent/semantic-dispatch"
+        }
+      ],
+      "blockers": [
+        {
+          "blocked_from_state": "initial",
+          "pending_requirement": "resolve-conflict",
+          "cause": "unresolved-conflict",
+          "clearance_conditions": [
+            "finding-bound-evidence",
+            "explicit-dissent-disposition"
+          ],
+          "scope": "architecture/semantic-dispatch|dissent/semantic-dispatch"
+        }
+      ],
+      "recommendation": "blocked",
+      "authorization": "none",
+      "classification": "Repository-Internal",
+      "independence": "unverified",
+      "routing": "diagnostic-only; FIXED mutation is never executed"
+    }
+  },
+  "integrity": "4b0564f605153329eaa26b28a3733a1fd9ee6fc186cf9d8f9e1bcaaf76ae5e32"
+}

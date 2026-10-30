@@ -93,7 +93,9 @@ def _safe_repo_component(value: str, *, field_name: str) -> str:
     if cleaned.startswith("/") or cleaned.endswith("/") or "//" in cleaned:
         raise ValueError(f"GitHub client URL {field_name} must be a relative path component")
     if cleaned in {".", ".."} or ".." in cleaned:
-        raise ValueError(f"GitHub client URL {field_name} contains invalid path traversal characters")
+        raise ValueError(
+            f"GitHub client URL {field_name} contains invalid path traversal characters"
+        )
 
     if field_name == "path":
         segments = [segment for segment in cleaned.split("/") if segment]
@@ -101,7 +103,9 @@ def _safe_repo_component(value: str, *, field_name: str) -> str:
             raise ValueError(f"GitHub client URL {field_name} cannot be empty")
         for segment in segments:
             if segment in {".", ".."}:
-                raise ValueError(f"GitHub client URL {field_name} contains invalid path traversal characters")
+                raise ValueError(
+                    f"GitHub client URL {field_name} contains invalid path traversal characters"
+                )
             if any(ch in segment for ch in rejected_chars):
                 raise ValueError(f"GitHub client URL {field_name} contains invalid characters")
         return "/".join(segments)
@@ -135,7 +139,9 @@ def cache_set(key: str, data: Any) -> None:
 
 def gh_get(url: str) -> Any:
     validated = _validated_url(url)
-    r = requests.get(validated, headers=_auth_headers(), timeout=30)
+    r = requests.get(validated, headers=_auth_headers(), timeout=30, allow_redirects=False)
+    if 300 <= r.status_code < 400:
+        raise requests.HTTPError("GitHub client redirects are not permitted", response=r)
     r.raise_for_status()
     return r.json()
 
@@ -158,10 +164,12 @@ def get_text(owner: str, repo: str, ref: str, path: str) -> str:
     safe_ref = _safe_repo_component(ref, field_name="ref")
     safe_path = _safe_repo_component(path.strip("/"), field_name="path")
     raw = f"https://raw.githubusercontent.com/{safe_owner}/{safe_repo}/{safe_ref}/{quote(safe_path, safe='/')}"
-    r = requests.get(_validated_url(raw), timeout=30)
+    r = requests.get(_validated_url(raw), timeout=30, allow_redirects=False)
     if r.status_code == 200 and r.text:
         return r.text
-    meta = gh_get(f"{BASE}/repos/{safe_owner}/{safe_repo}/contents/{quote(safe_path, safe='/')}?ref={quote(safe_ref)}")
+    meta = gh_get(
+        f"{BASE}/repos/{safe_owner}/{safe_repo}/contents/{quote(safe_path, safe='/')}?ref={quote(safe_ref)}"
+    )
     if isinstance(meta, dict) and meta.get("encoding") == "base64":
         return base64.b64decode(meta["content"]).decode("utf-8", errors="replace")
     return json.dumps(meta, ensure_ascii=False)

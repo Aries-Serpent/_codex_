@@ -1,13 +1,10 @@
 # Changelog
-**Last Updated:** 2026-07-11
-**Version:** v0.2.0
 
-> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-10-29 | Edit this file to add descriptions.
 > Directory: `docs/CHANGELOG/`
 
 ## Contents
 
-- [INDEX](INDEX.md)
 - [change_log](change_log.md)
 - [changelog_codex](changelog_codex.md)
 - [changelog_session_logging](changelog_session_logging.md)

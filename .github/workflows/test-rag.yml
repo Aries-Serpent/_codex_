@@ -241,73 +241,133 @@ jobs:
         \ completed in ${CACHE_DURATION}s (or skipped with warning)\"\n"
     - name: Run RAG tests with coverage
       id: run-tests
-      run: "PYTHON_BIN=\"${VENV_PYTHON:-python3}\"\necho \"[TEST-RUN] Using Python:\
-        \ $PYTHON_BIN\"\n\"$PYTHON_BIN\" --version\necho \"[TEST-RUN] pytest version:\"\
-        \n\"$PYTHON_BIN\" -m pytest --version\n \n# Ensure plugins are loaded before\
-        \ running tests\nexport PYTHONPATH=\"${PYTHONPATH}:$(pwd)/src\"\necho \"[TEST-RUN]\
-        \ PYTHONPATH: $PYTHONPATH\"\necho \"\"\n \n# Pre-test environment checks\n\
-        echo \"[TEST-RUN] ========== Pre-Test Environment Check ==========\"\necho\
-        \ \"[TEST-RUN] Disk space:\"\ndf -h / | tail -1 | awk '{print \"  Available:\
-        \ \" $4 \", Used: \" $3 \", Size: \" $2}'\n \necho \"[TEST-RUN] Memory info:\"\
-        \nfree -h | head -2 | tail -1 | awk '{print \"  Total: \" $2 \", Used: \"\
-        \ $3 \", Available: \" $7}'\n \necho \"[TEST-RUN] System info:\"\necho \"\
-        \  CPU cores: $(nproc)\"\necho \"  Uptime: $(uptime -p)\"\necho \"\"\n \n\
-        echo \"[TEST-RUN] Verifying test files exist...\"\nTEST_FILES=(\n  \"tests/test_rag_*.py\"\
-        \n  \"tests/rag/\"\n)\nTOTAL_TEST_FILES=0\nfor pattern in \"${TEST_FILES[@]}\"\
-        ; do\n  count=$(find $pattern -type f -name \"*.py\" 2>/dev/null | wc -l)\n\
-        \  if [ \"$count\" -gt 0 ]; then\n    echo \"[TEST-RUN] \u2713 Found $count\
-        \ test files matching $pattern\"\n    TOTAL_TEST_FILES=$((TOTAL_TEST_FILES\
-        \ + count))\n  fi\ndone\n \nif [ \"$TOTAL_TEST_FILES\" -eq 0 ]; then\n  echo\
-        \ \"[TEST-RUN] \u274C ERROR: No test files found!\"\n  exit 1\nfi\necho \"\
-        [TEST-RUN] Total test files: $TOTAL_TEST_FILES\"\necho \"\"\n \necho \"[TEST-RUN]\
-        \ ========== Test Execution Configuration ==========\"\necho \"[TEST-RUN]\
-        \ Module: src/codex/rag\"\necho \"[TEST-RUN] Coverage config: tests/rag/.coveragerc\"\
-        \necho \"[TEST-RUN] Individual test timeout: 300s (5 min)\"\necho \"[TEST-RUN]\
-        \ Workflow timeout: 60 minutes\"\necho \"[TEST-RUN] Parallel execution: Disabled\
-        \ (serial mode)\"\necho \"\"\n \n# Run RAG tests serially to avoid xdist worker\
-        \ plugin-discovery failures\n# (workers crash when pytest-cov/timeout aren't\
-        \ auto-discoverable in the worker env)\n#\n# --cov-config=tests/rag/.coveragerc\
-        \ scopes coverage to src/codex/rag only,\n# preventing the global .coveragerc\
-        \ `source=src` from diluting the line-rate.\n# (S235 fix: on main branch `--cov=src`\
-        \ was measuring all of src/ with only\n# RAG tests running \u2192 5 % line-rate;\
-        \ this config isolates the RAG module.)\n \necho \"[TEST-RUN] ========== Starting\
-        \ Test Execution ==========\"\nTEST_START=$(date +%s)\nTEST_START_ISO=$(date\
-        \ -u +'%Y-%m-%d %H:%M:%S UTC')\necho \"[TEST-RUN] Start time: $TEST_START_ISO\"\
-        \necho \"\"\n \n# Skip tests that download/load heavy embedding models in CI to avoid timeouts.\n# The model-cache step already validates the all-MiniLM-L6-v2 artifact; unit\n# tests cover the rest of the RAG surface.\nexport CODEX_SKIP_EMBEDDING_MODEL_LOAD=1\n\n# Run tests with comprehensive output\nif timeout 2700 \"\
-        $PYTHON_BIN\" -m pytest tests/test_rag_*.py tests/rag/ \\\n  -v \\\n  --tb=short\
-        \ \\\n  --timeout=300 \\\n  --timeout-method=signal \\\n  --cov=src/codex/rag\
-        \ \\\n  --cov-config=tests/rag/.coveragerc \\\n  --cov-report=xml \\\n  --cov-report=html\
-        \ \\\n  --cov-report=term-missing 2>&1 | tee /tmp/test_output.log; then\n\
-        \  TEST_EXIT=0\n  TEST_STATUS=\"PASSED\"\n  echo \"[TEST-RUN] \u2705 Tests\
-        \ PASSED\"\nelse\n  TEST_EXIT=$?\n  TEST_STATUS=\"FAILED\"\n  echo \"[TEST-RUN]\
-        \ \u274C Tests FAILED with exit code $TEST_EXIT\"\nfi\nTEST_END=$(date +%s)\n\
-        TEST_END_ISO=$(date -u +'%Y-%m-%d %H:%M:%S UTC')\nTEST_DURATION=$((TEST_END\
-        \ - TEST_START))\nTEST_DURATION_MIN=$((TEST_DURATION / 60))\nTEST_DURATION_SEC=$((TEST_DURATION\
-        \ % 60))\n \necho \"\"\necho \"[TEST-RUN] ========== Test Execution Summary\
-        \ ==========\"\necho \"[TEST-RUN] End time: $TEST_END_ISO\"\necho \"[TEST-RUN]\
-        \ Duration: ${TEST_DURATION_MIN}m ${TEST_DURATION_SEC}s\"\necho \"[TEST-RUN]\
-        \ Status: $TEST_STATUS\"\necho \"\"\n \n# Analyze test output for patterns\n\
-        if grep -q \"FAILED\" /tmp/test_output.log; then\n  FAILED_COUNT=$(grep -c\
-        \ \"^FAILED\" /tmp/test_output.log)\n  echo \"[TEST-RUN] Failed tests: $FAILED_COUNT\"\
-        \nfi\n \nif grep -q \"passed\" /tmp/test_output.log; then\n  # Extract summary\
-        \ line\n  grep \"passed\" /tmp/test_output.log | tail -1 | sed 's/^/[TEST-RUN]\
-        \ /'\nfi\n \necho \"\"\necho \"[TEST-RUN] ========== Artifact Verification\
-        \ ==========\"\n \nif [ -f coverage.xml ]; then\n  COVERAGE_SIZE=$(du -h coverage.xml\
-        \ | cut -f1)\n  echo \"[TEST-RUN] \u2713 coverage.xml generated ($COVERAGE_SIZE)\"\
-        \n  # Verify XML is valid\n  if \"$PYTHON_BIN\" -c \"import xml.etree.ElementTree\
-        \ as ET; ET.parse('coverage.xml')\" 2>/dev/null; then\n    echo \"[TEST-RUN]\
-        \ \u2713 coverage.xml is valid XML\"\n  else\n    echo \"[TEST-RUN] \u26A0\
-        \uFE0F  coverage.xml appears to be invalid XML\"\n  fi\nelse\n  echo \"[TEST-RUN]\
-        \ \u274C coverage.xml NOT FOUND\"\n  TEST_EXIT=1\nfi\n \nif [ -d htmlcov ];\
-        \ then\n  HTMLCOV_SIZE=$(du -sh htmlcov | cut -f1)\n  HTMLCOV_FILES=$(find\
-        \ htmlcov -type f | wc -l)\n  echo \"[TEST-RUN] \u2713 htmlcov/ generated\
-        \ ($HTMLCOV_SIZE, $HTMLCOV_FILES files)\"\nelse\n  echo \"[TEST-RUN] \u274C\
-        \ htmlcov/ NOT FOUND\"\n  TEST_EXIT=1\nfi\n \necho \"\"\nif [ $TEST_EXIT -eq\
-        \ 0 ]; then\n  echo \"[TEST-RUN] \u2705 All test artifacts verified successfully\"\
-        \nelse\n  echo \"[TEST-RUN] \u274C Test artifact verification FAILED\"\n \
-        \ echo \"[TEST-RUN] Last 100 lines of test output:\"\n  tail -100 /tmp/test_output.log\n\
-        fi\n \necho \"[TEST-RUN] Final disk space:\"\ndf -h / | tail -1 | awk '{print\
-        \ \"  Available: \" $4 \", Used: \" $3 \", Size: \" $2}'\n \nexit $TEST_EXIT\n"
+      run: |
+        set -euo pipefail
+
+        PYTHON_BIN="${VENV_PYTHON:-python3}"
+        echo "[TEST-RUN] Using Python: $PYTHON_BIN"
+        "$PYTHON_BIN" --version
+        echo "[TEST-RUN] pytest version:"
+        "$PYTHON_BIN" -m pytest --version
+
+        export PYTHONPATH="${PYTHONPATH:-}:$(pwd)/src"
+        echo "[TEST-RUN] PYTHONPATH: $PYTHONPATH"
+        echo ""
+
+        echo "[TEST-RUN] ========== Pre-Test Environment Check =========="
+        echo "[TEST-RUN] Disk space:"
+        df -h / | tail -1 | awk '{print "  Available: " $4 ", Used: " $3 ", Size: " $2}'
+        echo "[TEST-RUN] Memory info:"
+        free -h | head -2 | tail -1 | awk '{print "  Total: " $2 ", Used: " $3 ", Available: " $7}'
+        echo "[TEST-RUN] System info:"
+        echo "  CPU cores: $(nproc)"
+        echo "  Uptime: $(uptime -p)"
+        echo ""
+
+        echo "[TEST-RUN] Verifying test files exist..."
+        ROOT_TEST_FILES=$(find tests -maxdepth 1 -type f -name 'test_rag_*.py' -print | awk 'END { print NR }')
+        NESTED_TEST_FILES=$(find tests/rag -type f -name 'test_*.py' -print | awk 'END { print NR }')
+        TOTAL_TEST_FILES=$((ROOT_TEST_FILES + NESTED_TEST_FILES))
+
+        if [ "$TOTAL_TEST_FILES" -eq 0 ]; then
+          echo "[TEST-RUN] ❌ ERROR: No test files found!"
+          exit 1
+        fi
+        echo "[TEST-RUN] ✓ Found $ROOT_TEST_FILES root-level and $NESTED_TEST_FILES nested test files"
+        echo "[TEST-RUN] Total test files: $TOTAL_TEST_FILES"
+        echo ""
+
+        echo "[TEST-RUN] ========== Test Execution Configuration =========="
+        echo "[TEST-RUN] Module: src/codex/rag"
+        echo "[TEST-RUN] Coverage config: tests/rag/.coveragerc"
+        echo "[TEST-RUN] Individual test timeout: 300s (5 min)"
+        echo "[TEST-RUN] Workflow timeout: 60 minutes"
+        echo "[TEST-RUN] Parallel execution: Disabled (serial mode)"
+        echo ""
+
+        echo "[TEST-RUN] ========== Starting Test Execution =========="
+        TEST_START=$(date +%s)
+        TEST_START_ISO=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
+        echo "[TEST-RUN] Start time: $TEST_START_ISO"
+        echo ""
+
+        export CODEX_SKIP_EMBEDDING_MODEL_LOAD=1
+
+        TEST_EXIT=0
+        TEST_STATUS="PASSED"
+        if ! timeout 2700 "$PYTHON_BIN" -m pytest \
+          tests/test_rag_*.py tests/rag/ \
+          -v --tb=short --timeout=300 --timeout-method=signal \
+          --cov=src/codex/rag --cov-config=tests/rag/.coveragerc \
+          --cov-report=xml --cov-report=html --cov-report=term-missing \
+          2>&1 | tee /tmp/test_output.log; then
+          TEST_EXIT=$?
+          TEST_STATUS="FAILED"
+          echo "[TEST-RUN] ❌ Tests FAILED with exit code $TEST_EXIT"
+        else
+          echo "[TEST-RUN] ✅ Tests PASSED"
+        fi
+
+        TEST_END=$(date +%s)
+        TEST_END_ISO=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
+        TEST_DURATION=$((TEST_END - TEST_START))
+        TEST_DURATION_MIN=$((TEST_DURATION / 60))
+        TEST_DURATION_SEC=$((TEST_DURATION % 60))
+
+        echo ""
+        echo "[TEST-RUN] ========== Test Execution Summary =========="
+        echo "[TEST-RUN] End time: $TEST_END_ISO"
+        echo "[TEST-RUN] Duration: ${TEST_DURATION_MIN}m ${TEST_DURATION_SEC}s"
+        echo "[TEST-RUN] Status: $TEST_STATUS"
+        echo ""
+
+        if grep -q "FAILED" /tmp/test_output.log; then
+          FAILED_COUNT=$(grep -c "^FAILED" /tmp/test_output.log || true)
+          echo "[TEST-RUN] Failed tests: $FAILED_COUNT"
+        fi
+
+        if grep -q "passed" /tmp/test_output.log; then
+          grep "passed" /tmp/test_output.log | tail -1 | sed 's/^/[TEST-RUN] /'
+        fi
+
+        echo ""
+        echo "[TEST-RUN] ========== Artifact Verification =========="
+
+        if [ -f coverage.xml ]; then
+          COVERAGE_SIZE=$(du -h coverage.xml | cut -f1)
+          echo "[TEST-RUN] ✓ coverage.xml generated ($COVERAGE_SIZE)"
+          if "$PYTHON_BIN" -c "import xml.etree.ElementTree as ET; ET.parse('coverage.xml')" 2>/dev/null; then
+            echo "[TEST-RUN] ✓ coverage.xml is valid XML"
+          else
+            echo "[TEST-RUN] ⚠️  coverage.xml appears to be invalid XML"
+          fi
+        else
+          echo "[TEST-RUN] ❌ coverage.xml NOT FOUND"
+          TEST_EXIT=1
+        fi
+
+        if [ -d htmlcov ]; then
+          HTMLCOV_SIZE=$(du -sh htmlcov | cut -f1)
+          HTMLCOV_FILES=$(find htmlcov -type f | wc -l)
+          echo "[TEST-RUN] ✓ htmlcov/ generated ($HTMLCOV_SIZE, $HTMLCOV_FILES files)"
+        else
+          echo "[TEST-RUN] ❌ htmlcov/ NOT FOUND"
+          TEST_EXIT=1
+        fi
+
+        echo ""
+        if [ "$TEST_EXIT" -eq 0 ]; then
+          echo "[TEST-RUN] ✅ All test artifacts verified successfully"
+        else
+          echo "[TEST-RUN] ❌ Test artifact verification FAILED"
+          echo "[TEST-RUN] Last 100 lines of test output:"
+          tail -100 /tmp/test_output.log
+        fi
+
+        echo "[TEST-RUN] Final disk space:"
+        df -h / | tail -1 | awk '{print "  Available: " $4 ", Used: " $3 ", Size: " $2}'
+
+        exit "$TEST_EXIT"
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5
       if: always()
@@ -318,7 +378,7 @@ jobs:
         fail_ci_if_error: false
         name: rag-coverage-${{ matrix.python-version }}
     - name: Upload HTML coverage report
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       if: always()
       with:
         path: htmlcov/
@@ -421,7 +481,7 @@ jobs:
         \ \u26A0\uFE0F  generate_cache_keys.py not found (skipping detailed check)\"\
         \nfi\n \necho \"[CACHE-HEALTH] \u2705 Cache health report complete\"\n"
     - name: Upload security report
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       if: always()
       with:
         path: bandit-report.txt
@@ -443,6 +503,7 @@ jobs:
 
       '
     permissions:
+      contents: read
       pull-requests: write
       issues: write
     steps:
@@ -450,9 +511,17 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+        token: ${{ github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: RAG Module Tests
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
     timeout-minutes: 30

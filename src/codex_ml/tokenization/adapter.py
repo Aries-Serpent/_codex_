@@ -147,20 +147,51 @@ class HFTokenizerAdapter(TokenizerAdapter):
             self.tokenizer.add_special_tokens({"pad_token": "<pad>"})  # type: ignore[arg-type]  # nosec B105
 
     def encode(self, text: str, **kwargs: Any) -> list[int]:
+        """Return backend token IDs for ``text``, forwarding all ``kwargs``.
+
+        Transformers encoding options and errors are unchanged. If construction
+        fell back because transformers was unavailable, whitespace hashing is
+        used instead and keyword options are ignored by that backend.
+        """
         return self.tokenizer.encode(text, **kwargs)
 
     def decode(self, tokens: Iterable[int], **kwargs: Any) -> str:
+        """Decode ``tokens`` with the selected backend and forwarded ``kwargs``.
+
+        Return backend text without additional normalization. The whitespace
+        fallback renders integer IDs rather than recovering the original words;
+        backend validation errors propagate.
+        """
         return self.tokenizer.decode(tokens, **kwargs)
 
     def batch_encode(self, texts: Iterable[str], **kwargs: Any) -> list[list[int]]:
+        """Materialize ``texts`` and return batch_encode_plus input_ids.
+
+        Forward ``kwargs`` unchanged, so backend options may alter the returned
+        container type. Errors propagate, including AttributeError with the
+        whitespace fallback, which does not implement batch_encode_plus.
+        """
         return self.tokenizer.batch_encode_plus(list(texts), **kwargs)["input_ids"]  # type: ignore[attr-defined]
 
     def save_pretrained(self, output_dir: str) -> None:
+        """Save backend artifacts in ``output_dir`` and return None.
+
+        Delegate directory creation, filenames, and overwrite behavior to the
+        backend; I/O errors propagate. The whitespace fallback writes only its
+        marker file, not a Hugging Face vocabulary.
+        """
         self.tokenizer.save_pretrained(output_dir)
 
     def add_special_tokens(
         self, tokens: Sequence[str]
     ) -> dict[str, int]:  # pragma: no cover - thin wrapper
+        """Register ``tokens`` as additional specials and return discovered IDs.
+
+        Mutate the backend vocabulary. Prefer get_vocab lookups; if unavailable
+        and tokens were added, infer IDs from vocab_size minus the added count.
+        Return an empty map if neither path yields IDs. Backend errors propagate;
+        this wrapper requires the backend's mapping-style add_special_tokens API.
+        """
         added = self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})  # type: ignore[arg-type]
         mapping: dict[str, int] = {}
         if hasattr(self.tokenizer, "get_vocab"):
@@ -174,10 +205,20 @@ class HFTokenizerAdapter(TokenizerAdapter):
         return mapping
 
     def save(self, path: Path) -> None:  # pragma: no cover - delegation
+        """Save pretrained artifacts to directory ``path`` via the backend.
+
+        Convert the path to str; unlike WhitespaceTokenizer.save, a suffix does
+        not request a single file. Return None and propagate backend I/O errors.
+        """
         self.save_pretrained(str(path))
 
     @property
     def vocab_size(self) -> int:
+        """Return the backend's vocab_size as int, or zero if the attribute is absent.
+
+        This is the backend-reported base size, which may exclude added tokens;
+        integer-conversion and backend property errors propagate.
+        """
         return int(getattr(self.tokenizer, "vocab_size", 0))
 
 
@@ -189,6 +230,20 @@ class WhitespaceTokenizer(TokenizerAdapter):
         self._dynamic_vocab: set[str] = set()
 
     def encode(self, text: str, **kwargs: Any) -> list[int]:
+        """Split ``text`` on whitespace and return stable 31-bit hashed IDs.
+
+        Each word uses an eight-byte BLAKE2b digest modulo 2**31; collisions are
+        possible and IDs do not index a reversible vocabulary. Remember distinct
+        words for vocab_size. Ignore kwargs and raise TypeError for non-string
+        input; special-token registration does not change hashing.
+
+        Example:
+            >>> tokenizer = WhitespaceTokenizer()
+            >>> tokenizer.encode("same same")[0] == tokenizer.encode("same")[0]
+            True
+            >>> tokenizer.vocab_size
+            1
+        """
         if not isinstance(text, str):
             raise TypeError("text must be a string")
         tokens = text.split()
@@ -202,12 +257,24 @@ class WhitespaceTokenizer(TokenizerAdapter):
     def decode(
         self, tokens: Iterable[int], **kwargs: Any
     ) -> str:  # pragma: no cover - lossy decode
+        """Return space-separated integer IDs, not the original token text.
+
+        Validate every value in ``tokens`` as int (ValueError otherwise);
+        kwargs are ignored. Validation traverses the iterable before formatting,
+        so a one-shot iterator is exhausted and produces an empty string.
+        """
         for tok in tokens:
             if not isinstance(tok, int):
                 raise ValueError("tokens must be integers")
         return " ".join(str(t) for t in tokens)
 
     def batch_encode(self, texts: Iterable[str], **kwargs: Any) -> list[list[int]]:
+        """Hash each string in ``texts`` in order and return one ID list per item.
+
+        Update the shared distinct-word vocabulary as encode does. Raise TypeError
+        on a non-string item, retaining vocabulary updates from earlier items.
+        Forward kwargs to encode, where they are ignored.
+        """
         encoded: list[list[int]] = []
         for text in texts:
             if not isinstance(text, str):
@@ -218,6 +285,12 @@ class WhitespaceTokenizer(TokenizerAdapter):
     def add_special_tokens(
         self, tokens: Sequence[str]
     ) -> dict[str, int]:  # pragma: no cover - simple mapping
+        """Append stringified ``tokens`` and return sequential bookkeeping IDs.
+
+        IDs start at the current vocab_size and are not used by encode's hashes.
+        Duplicate strings are appended too; the returned mapping keeps their last
+        assigned ID. Later newly observed words also contribute to vocab_size.
+        """
         mapping: dict[str, int] = {}
         start = self.vocab_size
         for offset, tok in enumerate(tokens):
@@ -226,10 +299,21 @@ class WhitespaceTokenizer(TokenizerAdapter):
         return mapping
 
     def save_pretrained(self, output_dir: str) -> None:  # pragma: no cover - trivial
+        """Create ``output_dir`` and overwrite tokenizer.txt with 'whitespace'.
+
+        Return None. This marker does not serialize observed words or specials.
+        Directory creation and UTF-8 write errors propagate.
+        """
         Path(output_dir).mkdir(parents=True, exist_ok=True)
         (Path(output_dir) / "tokenizer.txt").write_text("whitespace", encoding="utf-8")
 
     def save(self, path: Path) -> None:  # pragma: no cover - trivial
+        """Write a whitespace marker to file ``path`` when it has a suffix.
+
+        Otherwise treat path as a directory and use save_pretrained. Create
+        parents as needed, overwrite the marker, and return None. Vocabulary
+        state is not persisted; filesystem errors propagate.
+        """
         if path.suffix:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text("whitespace", encoding="utf-8")
@@ -238,10 +322,16 @@ class WhitespaceTokenizer(TokenizerAdapter):
 
     @property
     def vocab_size(self) -> int:
+        """Return distinct observed words plus the number of registered specials.
+
+        Specials are counted with duplicates and may overlap observed words.
+        This count is not an upper bound on the hashed IDs produced by encode.
+        """
         return len(self._dynamic_vocab) + len(self._special_tokens)
 
     @property
     def name_or_path(self) -> str:
+        """Return the constant identifier 'whitespace-tokenizer', not a saved path."""
         return "whitespace-tokenizer"
 
 
@@ -305,6 +395,15 @@ class SentencePieceTokenizer(TokenizerAdapter):
 
     @classmethod
     def from_pretrained(cls, path_or_folder: str | Path) -> SentencePieceTokenizer:
+        """Load a SentencePiece model and discovered special-token sidecar.
+
+        ``path_or_folder`` may name a model or a directory; directories select
+        the lexicographically first *.model file and raise FileNotFoundError if
+        empty. Return a new tokenizer, requiring optional sentencepiece.
+        Sidecar JSON/value errors and model loading failures propagate; no
+        download is attempted. Construction may persist special-token metadata
+        through the underlying SentencePieceAdapter.
+        """
         path = Path(path_or_folder)
         model_file = cls._resolve_model_path(path)
         special_tokens = cls._discover_special_tokens(model_file)
@@ -481,6 +580,15 @@ class SentencePieceTokenizer(TokenizerAdapter):
         max_length: Optional[int] = None,
         padding: Optional[str] = None,
     ) -> list[int]:
+        """Return SentencePiece IDs for ``text`` with optional length control.
+
+        ``only_first``/``longest_first`` truncation keeps the prefix and
+        ``only_second`` keeps the suffix when max_length is truthy. Padding True,
+        longest, or max_length with a truthy max_length clips to that length and
+        pads using the processor's nonnegative pad ID, or zero. Other policy
+        strings have no effect. Processor errors propagate; registered sidecar
+        specials are not explicitly inserted by this method.
+        """
         encode_fn = getattr(self._processor, "encode", None)
         if callable(encode_fn):
             ids = list(encode_fn(text, out_type=int))
@@ -511,6 +619,12 @@ class SentencePieceTokenizer(TokenizerAdapter):
         return 0
 
     def decode(self, tokens: Iterable[int], **_: Any) -> str:
+        """Materialize ``tokens`` and return the processor's decoded string.
+
+        Use decode when available, otherwise legacy DecodeIds. Extra keyword
+        arguments are ignored; invalid IDs and processor errors propagate.
+        No padding or sidecar special-token filtering is performed here.
+        """
         decode_fn = getattr(self._processor, "decode", None)
         if callable(decode_fn):
             return decode_fn(list(tokens))
@@ -524,12 +638,26 @@ class SentencePieceTokenizer(TokenizerAdapter):
         max_length: Optional[int] = None,
         padding: Optional[str] = None,
     ) -> list[list[int]]:
+        """Encode ``texts`` in order with the same per-text length policy.
+
+        Return lists of IDs by passing truncation, max_length, and padding to
+        encode. 'longest' does not compute a batch maximum: padding still needs
+        an explicit max_length. Input/processor failures propagate.
+        """
         return [
             self.encode(text, truncation=truncation, max_length=max_length, padding=padding)
             for text in texts
         ]
 
     def save_pretrained(self, output_dir: str) -> None:
+        """Create ``output_dir`` and persist the model plus available sidecars.
+
+        For a file-backed model, copy the model, optional .vocab, and existing
+        specials sidecar, or write a mapped-specials JSON file. For an in-memory
+        processor, write serialized bytes to sentencepiece.model and any specials.
+        Return None; require sentencepiece (ImportError if absent). Copy/write
+        failures propagate, including SameFileError when copying onto the source.
+        """
         if not _ensure_sentencepiece():  # pragma: no cover - safety guard
             raise ImportError(
                 "Install optional dependency `sentencepiece` to use SentencePieceTokenizer"
@@ -569,12 +697,23 @@ class SentencePieceTokenizer(TokenizerAdapter):
                 fallback.write_text(json.dumps(self.special_tokens, indent=2), encoding="utf-8")
 
     def save(self, path: Path) -> None:  # pragma: no cover - compatibility wrapper
+        """Save model artifacts to directory ``path`` through save_pretrained.
+
+        A filename suffix does not change directory semantics. Return None and
+        propagate optional-dependency, serialization, and filesystem failures.
+        """
         self.save_pretrained(str(path))
 
     @property
     def vocab_size(self) -> int:
+        """Return the processor's base piece count, excluding sidecar specials.
+
+        Try get_piece_size, piece_size, then vocab_size; return zero if no getter
+        yields an integer-convertible value through the compatibility helper.
+        """
         return self._processor_vocab_size(self._processor)
 
     @property
     def name_or_path(self) -> str:
+        """Return the model path, or 'sentencepiece-tokenizer' for an in-memory model."""
         return str(self.model_path or "sentencepiece-tokenizer")

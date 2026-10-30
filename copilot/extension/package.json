@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "axios": "^1.20.0",
-    "dotenv": "^18.0.7",
+    "dotenv": "^18.0.8",
     "express": "^5.3.0",
     "helmet": "^8.3.0",
     "morgan": "^1.12.1"
@@ -18,7 +18,7 @@
     "node": ">=22.0.0"
   },
   "overrides": {
-    "qs": "6.16.0"
+    "qs": "6.16.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

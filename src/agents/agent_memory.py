@@ -22,10 +22,12 @@ import os
 import sqlite3
 import tempfile
 import uuid
+from contextlib import closing, contextmanager
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Optional, cast
+from threading import RLock
+from typing import Any, Iterator, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -154,7 +156,16 @@ class PatternLibrary:
         examples: list[dict[str, Any]],
         tags: list[str],
     ) -> None:
-        """Add a new pattern to the library."""
+        """Add or replace a pattern while keeping its tag index consistent."""
+        previous = self.patterns.get(pattern_id)
+        if previous is not None:
+            for tag in previous["tags"]:
+                indexed = self.pattern_index.get(tag, [])
+                remaining = [item for item in indexed if item != pattern_id]
+                if remaining:
+                    self.pattern_index[tag] = remaining
+                else:
+                    self.pattern_index.pop(tag, None)
         self.patterns[pattern_id] = {
             "pattern_id": pattern_id,
             "name": name,
@@ -169,7 +180,7 @@ class PatternLibrary:
         }
 
         # Index by tags
-        for tag in tags:
+        for tag in dict.fromkeys(tags):
             if tag not in self.pattern_index:
                 self.pattern_index[tag] = []
             self.pattern_index[tag].append(pattern_id)
@@ -293,14 +304,20 @@ class AgentMemory:
 
         self.db_path = db_path
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self._database_lock = RLock()
 
         self._init_database()
 
+    @contextmanager
+    def _connection(self) -> Iterator[sqlite3.Connection]:
+        # Reads also update access counters, so serialize their full transactions.
+        with self._database_lock, closing(sqlite3.connect(self.db_path)) as conn, conn:
+            yield conn
+
     def _init_database(self) -> None:
         """Initialize database schema."""
-        with sqlite3.connect(self.db_path) as conn:
-            conn.execute(
-                """
+        with self._connection() as conn:
+            conn.execute("""
                 CREATE TABLE IF NOT EXISTS memories (
                     memory_id TEXT PRIMARY KEY,
                     category TEXT NOT NULL,
@@ -313,11 +330,9 @@ class AgentMemory:
                     tags TEXT,
                     related_memories TEXT
                 )
-            """
-            )
+            """)
 
-            conn.execute(
-                """
+            conn.execute("""
                 CREATE TABLE IF NOT EXISTS context_frames (
                     frame_id TEXT PRIMARY KEY,
                     task_description TEXT,
@@ -326,19 +341,16 @@ class AgentMemory:
                     status TEXT DEFAULT 'active',
                     data TEXT
                 )
-            """
-            )
+            """)
 
-            conn.execute(
-                """
+            conn.execute("""
                 CREATE TABLE IF NOT EXISTS patterns (
                     pattern_id TEXT PRIMARY KEY,
                     name TEXT NOT NULL,
                     description TEXT,
                     data TEXT
                 )
-            """
-            )
+            """)
 
             # Create indexes
             conn.execute("CREATE INDEX IF NOT EXISTS idx_memories_category ON memories(category)")
@@ -405,7 +417,7 @@ class AgentMemory:
             )
 
         # Store the entry
-        with sqlite3.connect(self.db_path) as conn:
+        with self._connection() as conn:
             conn.execute(
                 """
                 INSERT OR REPLACE INTO memories
@@ -489,7 +501,7 @@ class AgentMemory:
         if lookup_id is None:
             return None
 
-        with sqlite3.connect(self.db_path) as conn:
+        with self._connection() as conn:
             cursor = conn.execute("SELECT * FROM memories WHERE memory_id = ?", (lookup_id,))
             row = cursor.fetchone()
 
@@ -527,7 +539,7 @@ class AgentMemory:
         if key is None:
             return None
 
-        with sqlite3.connect(self.db_path) as conn:
+        with self._connection() as conn:
             cursor = conn.execute("SELECT * FROM memories WHERE memory_id = ?", (key,))
             row = cursor.fetchone()
 
@@ -551,7 +563,7 @@ class AgentMemory:
 
     def clear(self) -> None:
         """Clear all memories from the database."""
-        with sqlite3.connect(self.db_path) as conn:
+        with self._connection() as conn:
             conn.execute("DELETE FROM memories")
             conn.commit()
 
@@ -577,7 +589,7 @@ class AgentMemory:
         query += " ORDER BY confidence DESC, access_count DESC LIMIT ?"
         params.append(limit)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with self._connection() as conn:
             cursor = conn.execute(query, params)
             rows = cursor.fetchall()
 
@@ -606,7 +618,7 @@ class AgentMemory:
 
     def store_context_frame(self, frame: ContextFrame) -> None:
         """Store a context frame."""
-        with sqlite3.connect(self.db_path) as conn:
+        with self._connection() as conn:
             conn.execute(
                 """
                 INSERT OR REPLACE INTO context_frames
@@ -626,7 +638,7 @@ class AgentMemory:
 
     def get_recent_context_frames(self, limit: int = 10) -> list[ContextFrame]:
         """Get recent context frames."""
-        with sqlite3.connect(self.db_path) as conn:
+        with self._connection() as conn:
             cursor = conn.execute(
                 """
                 SELECT data FROM context_frames
@@ -655,7 +667,7 @@ class AgentMemory:
         """
         cutoff = datetime.now(UTC).isoformat()[:10]  # Date only
 
-        with sqlite3.connect(self.db_path) as conn:
+        with self._connection() as conn:
             # Get old, low-access memories
             cursor = conn.execute(
                 """
@@ -690,15 +702,11 @@ class AgentMemory:
 
     def get_memory_stats(self) -> dict[str, Any]:
         """Get statistics about stored memories."""
-        with sqlite3.connect(self.db_path) as conn:
+        with self._connection() as conn:
             total = conn.execute("SELECT COUNT(*) FROM memories").fetchone()[0]
-            by_category = dict(
-                conn.execute(
-                    """
+            by_category = dict(conn.execute("""
                 SELECT category, COUNT(*) FROM memories GROUP BY category
-            """
-                ).fetchall()
-            )
+            """).fetchall())
             avg_confidence = (
                 conn.execute("SELECT AVG(confidence) FROM memories").fetchone()[0] or 0.0
             )
@@ -764,7 +772,7 @@ class AgentMemory:
         Returns:
             True if successful, False otherwise
         """
-        with sqlite3.connect(self.db_path) as conn:
+        with self._connection() as conn:
             cursor = conn.execute("SELECT * FROM memories WHERE memory_id = ?", (memory_id,))
             if not cursor.fetchone():
                 return False
@@ -1106,9 +1114,7 @@ class AgentMemorySystem:
         """
         # Extract keywords from task description
         keywords = [
-            word.lower()
-            for word in task_description.split()
-            if len(word) > 3  # Skip short words
+            word.lower() for word in task_description.split() if len(word) > 3  # Skip short words
         ][:10]
 
         if not keywords:
@@ -1218,7 +1224,7 @@ class AgentMemorySystem:
 
         invalidated = 0
 
-        with sqlite3.connect(self.memory.db_path) as conn:
+        with self.memory._connection() as conn:
             # Get old memories with low access counts
             cursor = conn.execute(
                 """
