@@ -12,9 +12,7 @@ import pytest
 from orchestration.gates.contract_gate import (
     ContractGateSystem,
 )
-from orchestration.healing.policy_tier_engine import (
-    PolicyTierEngine,  # pragma: allowlist secret
-)
+from orchestration.healing.policy_tier_engine import PolicyTierEngine  # pragma: allowlist secret
 from orchestration.safety.rollback_controls import (
     RollbackControlSystem,
 )

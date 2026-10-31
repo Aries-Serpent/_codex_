@@ -102,7 +102,8 @@ jobs:
     name: "\u26A1 Auto-Approve Pending Runs (Push Event)"
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: github.event_name == 'push'
+    # Prepared feature-branch revisions must never execute approval mutations.
+    if: github.event_name == 'push' && endsWith(github.workflow_ref, '@refs/heads/main')
     steps:
     - name: Mask secrets
       run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
@@ -160,7 +161,8 @@ jobs:
   evaluate-approval:
     name: "\U0001F4CB Evaluate Approval Rules (5-tier priority)"
     runs-on: ubuntu-latest
-    if: 'github.event_name == ''workflow_dispatch'' &&
+    if: 'endsWith(github.workflow_ref, ''@refs/heads/main'') &&
+      github.event_name == ''workflow_dispatch'' &&
 
       github.event.inputs.approval_source != ''''
 
@@ -388,7 +390,8 @@ jobs:
     name: "\u26A1 Execute Approval Decision"
     needs: evaluate-approval
     runs-on: ubuntu-latest
-    if: 'needs.evaluate-approval.outputs.should_proceed == ''true'' &&
+    if: 'endsWith(github.workflow_ref, ''@refs/heads/main'') &&
+      needs.evaluate-approval.outputs.should_proceed == ''true'' &&
 
       needs.evaluate-approval.outputs.approval_decision == ''APPROVE''
 
@@ -629,7 +632,9 @@ jobs:
     name: "\u26A1 Approve pending workflow runs"
     runs-on: ubuntu-latest
     # Dispatches requesting policy evaluation must not take a parallel bypass.
-    if: github.event_name != 'workflow_dispatch' || github.event.inputs.approval_source == ''
+    if: >-
+      endsWith(github.workflow_ref, '@refs/heads/main') &&
+      (github.event_name != 'workflow_dispatch' || github.event.inputs.approval_source == '')
     env:
       GH_TRICKLE_POLITE_SLEEP: '1.0'
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

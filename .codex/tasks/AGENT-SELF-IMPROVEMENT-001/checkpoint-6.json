@@ -29,6 +29,14 @@
     {"command": "sha256sum -- *.whl *.tar.gz > SHA256SUMS && sha256sum --check SHA256SUMS", "result": "Both artifacts passed for all six distributions"}
   ],
   "artifact_root": "/tmp/evidence-gated-artifacts",
+  "distribution_matrix": [
+    {"source": "/home/runner/work/_codex_/_codex_", "distribution": "codex-ml", "import_name": "codex_ml"},
+    {"source": "/home/runner/work/_codex_/_codex_/packages/cognitive_sdk", "distribution": "codex-cognitive-sdk", "import_name": "codex_cognitive_sdk"},
+    {"source": "/home/runner/work/_codex_/_codex_/packages/contracts", "distribution": "codex-contracts", "import_name": "codex_contracts"},
+    {"source": "/home/runner/work/_codex_/_codex_/packages/evaluation", "distribution": "codex-ml-evaluation", "import_name": "codex_evaluation"},
+    {"source": "/home/runner/work/_codex_/_codex_/packages/lora", "distribution": "codex-ml-lora", "import_name": "codex_lora"},
+    {"source": "/home/runner/work/_codex_/_codex_/packages/telemetry", "distribution": "codex-ml-telemetry", "import_name": "codex_ml_telemetry"}
+  ],
   "artifact_root_persistence": "Temporary local validation outputs are not durable hosted provenance",
   "d_mode_value_recorded": false,
   "approvals_required": [

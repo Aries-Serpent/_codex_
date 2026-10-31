@@ -198,6 +198,7 @@ def test_legacy_workflow_bypasses_unreachable():
     assert "exit 0" not in approve["run"]
     assert "approval_source == ''" in workflow["jobs"]["approve-original"]["if"]
     for job_id in ("approve-on-push", "evaluate-approval", "execute-approval", "approve-original"):
+        assert "endsWith(github.workflow_ref" in workflow["jobs"][job_id]["if"]
         checkout = next(
             step
             for step in workflow["jobs"][job_id]["steps"]
@@ -209,6 +210,7 @@ def test_legacy_workflow_bypasses_unreachable():
 def test_preliminary_inspection_failure_is_recorded(monkeypatch, tmp_path):
     import json
     import sys
+
     from scripts.ci import require_wec_auto_approve as gate
 
     monkeypatch.chdir(tmp_path)

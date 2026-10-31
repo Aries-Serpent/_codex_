@@ -10,6 +10,7 @@
     "Fail-closed helper rejects missing labels, stale SHA, ambiguous run/PR association, self-approval and unknown identity",
     "Requester checks include GITHUB_ACTOR and GITHUB_TRIGGERING_ACTOR",
     "Privileged approval helpers use trusted default-branch code; no PR-controlled checkout",
+    "Approval jobs additionally require a main workflow revision; feature-branch preparation cannot execute approval mutations",
     "All six triggers route through gated helpers; explicit policy dispatch cannot use parallel bypass",
     "Legacy always-on approval, rerun fallback, monitoring approvals, auto-opt-in and workflow git-push paths are disabled",
     "Preliminary, policy and mutation decisions produce artifacts without token values",
@@ -30,6 +31,7 @@
   "d_mode_value_recorded": false,
   "approvals_required": [
     "Maintainer review before activating prepared workflows",
+    "Direct push/PR workflow revisions are intentionally denied by the main-revision guard; maintainer must choose default-branch workflow_run/schedule/manual routing before activation",
     "Verify GitHub App installation identity and least-privilege scope; unknown identity remains denied",
     "Review removal of unused CODEX_MASTER_KEY/CODEX_BACKUP_KEY fallbacks where a scoped App suffices; no secret removed",
     "Independently approve any E to D_CAPABLE registry write",
