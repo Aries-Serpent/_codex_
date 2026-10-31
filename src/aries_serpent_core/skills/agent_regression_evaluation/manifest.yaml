@@ -1,0 +1,18 @@
+id: agent.regression.evaluation
+version: 1.0.0
+name: agent-regression-evaluation
+description: >
+  Compare deterministic historical task replay observations with baseline and
+  holdout cases. Track correctness, regressions, false positives, interventions,
+  runtime and cost rather than raw coverage. Missing replay evidence is unknown.
+  This assessor consumes replay outputs, not a hosted agent invocation API.
+entrypoint: aries_serpent_core.skills.assurance:agent_regression_evaluation
+capability_tags: [regression, replay, measurement]
+io:
+  input_schema: ../assurance_schema/input.json
+  output_schema: ../assurance_schema/output.json
+policy:
+  allowlist: ["*"]
+  risk_tier: low
+  budgets: {calls: 100, tokens: 20000, wallclock_ms: 10000}
+telemetry: {emit_jsonl: false, emit_otel: false}

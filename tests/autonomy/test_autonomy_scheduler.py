@@ -10,6 +10,7 @@ Covers:
 from __future__ import annotations
 
 import json
+import importlib.util
 import os
 import sys
 import time
@@ -19,6 +20,54 @@ from unittest.mock import patch
 import pytest
 
 SCRIPTS_DIR = Path(__file__).resolve().parents[2] / "scripts"
+
+
+@pytest.mark.parametrize(
+    "key,attribute",
+    [
+        ("AUTONOMY_DRY_RUN", "DRY_RUN"),
+        ("AGENT_KILL_SWITCH", "KILL_SWITCH"),
+    ],
+)
+@pytest.mark.parametrize(
+    "value,expected", [(None, False), ("0", False), ("1", True), ("invalid", False)]
+)
+def test_flag_parsing_preserved(monkeypatch, key, attribute, value, expected):
+    if value is None:
+        monkeypatch.delenv(key, raising=False)
+    else:
+        monkeypatch.setenv(key, value)
+    spec = importlib.util.spec_from_file_location(
+        "scheduler_env_fixture", SCRIPTS_DIR / "autonomy_scheduler.py"
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert getattr(module, attribute) is expected
+
+
+@pytest.mark.parametrize(
+    "key,attribute,default",
+    [
+        ("AUTONOMY_BUDGET_SECONDS", "BUDGET_SECONDS", 300),
+        ("AUTONOMY_MAX_ITERATIONS", "MAX_ITERATIONS", 10),
+    ],
+)
+@pytest.mark.parametrize("value", [None, "0", "1", "-1", "invalid"])
+def test_numeric_parsing_preserved(monkeypatch, key, attribute, default, value):
+    if value is None:
+        monkeypatch.delenv(key, raising=False)
+    else:
+        monkeypatch.setenv(key, value)
+    spec = importlib.util.spec_from_file_location(
+        "scheduler_env_fixture", SCRIPTS_DIR / "autonomy_scheduler.py"
+    )
+    module = importlib.util.module_from_spec(spec)
+    if value == "invalid":
+        with pytest.raises(ValueError):
+            spec.loader.exec_module(module)
+    else:
+        spec.loader.exec_module(module)
+        assert getattr(module, attribute) == (default if value is None else int(value))
 
 
 def _import_scheduler():
@@ -42,7 +91,10 @@ class TestBudgetCap:
 
         assert fast() == "done", "Condition must be true"
 
-    @pytest.mark.flaky(reruns=2, reason="P2-timing: budget_cap timeout precision - improved with deterministic validation")
+    @pytest.mark.flaky(
+        reruns=2,
+        reason="P2-timing: budget_cap timeout precision - improved with deterministic validation",
+    )
     @pytest.mark.timeout(90)
     def test_budget_cap_raises_on_timeout(self):
         mod = _import_scheduler()

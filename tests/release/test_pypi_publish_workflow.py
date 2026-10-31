@@ -100,11 +100,14 @@ def test_publish_jobs_validate_tag_and_provenance_before_upload() -> None:
     assert "Verify artifact provenance" in _step_names(validation_job)
 
     for job in (testpypi_job, pypi_job):
-        assert job["permissions"]["id-token"] == "write"
+        assert "id-token" not in job["permissions"]
         assert "attestations" not in job["permissions"]
-        assert all("run" not in step for step in job["steps"])
+        scripts = [step for step in job["steps"] if "run" in step]
+        assert len(scripts) == 1
+        assert scripts[0]["name"] == "Verify exact validated artifact checksums"
+        assert "sha256sum --check SHA256SUMS" in scripts[0]["run"]
         assert all(step.get("uses") != "actions/checkout@v7" for step in job["steps"])
-        assert len(job["steps"]) == 2
+        assert len(job["steps"]) == 3
 
 
 def test_job_conditions_are_matrix_free_and_selection_guards_operational_steps() -> None:
@@ -154,3 +157,20 @@ def test_post_publish_import_uses_the_verification_virtualenv() -> None:
     assert '"$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}/bin/python"' in step["run"]
     assert 'os.environ["IMPORT_NAME"]' in step["run"]
     assert step["env"]["DISTRIBUTION_NAME"] == "${{ matrix.distribution.name }}"
+
+
+def test_checksums_bind_build_validation_and_publication() -> None:
+    jobs = _load_workflow()["jobs"]
+    build = _step(jobs["build"], "Record validated artifact checksums")
+    assert "sha256sum -- *.whl *.tar.gz > SHA256SUMS" in build["run"]
+    assert (
+        "sha256sum --check SHA256SUMS"
+        in _step(jobs["validate"], "Validate downloaded artifacts")["run"]
+    )
+    provenance = _step(jobs["attest"], "Generate build provenance")["with"]["subject-path"]
+    assert "*.whl" in provenance and "*.tar.gz" in provenance
+    for name in ("publish-testpypi", "publish-pypi"):
+        steps = _step_names(jobs[name])
+        assert steps.index("Verify exact validated artifact checksums") < steps.index(
+            "Publish to TestPyPI" if name == "publish-testpypi" else "Publish to PyPI"
+        )

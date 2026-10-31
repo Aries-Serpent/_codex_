@@ -545,12 +545,13 @@ class TestLaneScheduler:
 
         # lane_a must pass before lane_b can run
         result_b = self.scheduler.schedule_lane("lane_b")
-        assert result_b.state == LaneState.PENDING, "Result must not be empty"
+        assert result_b.state == LaneState.BLOCKED, "Unfinished upstream must block"
 
         # Schedule lane_a first
-        self.scheduler.schedule_lane("lane_a")
+        result_a = self.scheduler.schedule_lane("lane_a")
+        assert result_a.state == LaneState.INCOMPLETE
         result_b = self.scheduler.schedule_lane("lane_b")
-        assert result_b.state == LaneState.PASSED, "Result must not be empty"
+        assert result_b.state == LaneState.BLOCKED, "Scheduling is not execution"
 
     def test_deterministic_execution_order(self):
         """Test that execution order is deterministic."""
@@ -566,9 +567,10 @@ class TestLaneScheduler:
         self.scheduler.reset_all_lanes()
         result2 = self.scheduler.schedule_all_lanes()
 
-        # Both should succeed and have consistent ordering
-        assert all(r.state == LaneState.PASSED for r in result1.values()), "Result must not be empty"
-        assert all(r.state == LaneState.PASSED for r in result2.values()), "Result must not be empty"
+        # Both handoffs remain incomplete with consistent dependency ordering.
+        assert all(r.state == LaneState.INCOMPLETE for r in result1.values())
+        assert all(r.state == LaneState.INCOMPLETE for r in result2.values())
+        assert list(result1) == list(result2) == ["lane_a", "lane_b", "lane_c"]
 
     def test_get_lane_state(self):
         """Test getting lane state."""
@@ -593,7 +595,7 @@ class TestLaneScheduler:
         lane = Lane(lane_id="lane_a", name="Phase A")
         self.scheduler.register_lane(lane)
         self.scheduler.schedule_lane("lane_a")
-        assert self.scheduler.get_lane_state("lane_a") == LaneState.PASSED, "Condition must be true"
+        assert self.scheduler.get_lane_state("lane_a") == LaneState.INCOMPLETE
 
         self.scheduler.reset_lane("lane_a")
         assert self.scheduler.get_lane_state("lane_a") == LaneState.PENDING, "Condition must be true"
@@ -692,4 +694,5 @@ class TestIntegration:
         scheduler.register_lanes(lanes)
 
         results = scheduler.schedule_all_lanes()
-        assert all(r.state == LaneState.PASSED for r in results.values()), "Result must not be empty"
+        assert results["validate"].state == LaneState.INCOMPLETE
+        assert results["execute"].state == LaneState.BLOCKED

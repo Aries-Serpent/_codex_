@@ -1,0 +1,44 @@
+{
+  "task_id": "AGENT-SELF-IMPROVEMENT-001",
+  "plan_version": "v4",
+  "base_sha": "4a7d955b8b214d6002932261afdebd60f37ede8e",
+  "current_sha": "0f7eac6a030953e060d6cbb9bc31be19eff4dc93",
+  "branch": "copilot/agent-self-improvement-001-evidence-gated-skills",
+  "phase": 6,
+  "phase_status": "completed_local_with_external_limits",
+  "completed": [
+    "Preserved six-distribution matrix, credential upload paths and build/validate/attest sequence",
+    "Fixed existing selection-expression, matrix-filter and installed-interpreter defects identified by release tests",
+    "Both wheel and sdist provenance subjects now match actual downloaded paths",
+    "Checksum manifest binds validated build outputs to downloaded publication artifacts; publisher removes manifest before upload",
+    "Validation uses read-only attestation permissions and github.token; password publishers no longer receive unused OIDC scope",
+    "Wheel/sdist metadata name and version must agree",
+    "All six real distributions built locally with repository-locked build dependencies",
+    "All six wheel/sdist pairs validated; all six clean offline wheel installs/imports passed",
+    "Build produced wheels from the built sdists; new skill manifests and schemas confirmed in base wheel",
+    "Twelve artifact SHA-256 checks passed"
+  ],
+  "pending": ["Actual hosted provenance verification, supported-version matrix and external Trusted Publisher verification remain maintainer/runtime work"],
+  "blocked": ["actionlint executable unavailable; YAML and workflow regression validation performed instead"],
+  "changed_paths": [".github/workflows/pypi-publish.yml", "scripts/release/publishing_assurance.py", "tests/release/test_pypi_publish_workflow.py", "tests/release/test_publishing_assurance.py"],
+  "tests": [
+    {"command": "python -m pip install --require-hashes -r /home/runner/work/_codex_/_codex_/requirements/lock-release.txt", "result": "Installed existing locked build toolchain; dependency advisory check found no vulnerabilities"},
+    {"command": "python -m build --no-isolation SOURCE --outdir /tmp/evidence-gated-artifacts/DISTRIBUTION", "result": "Passed for codex-ml, codex-cognitive-sdk, codex-contracts, codex-ml-evaluation, codex-ml-lora, codex-ml-telemetry"},
+    {"command": "python -m scripts.release.publishing_assurance validate-dist --distribution DISTRIBUTION --dist-dir /tmp/evidence-gated-artifacts/DISTRIBUTION", "result": "Passed for all six distributions"},
+    {"command": "PIP_NO_INDEX=1 PIP_DISABLE_PIP_VERSION_CHECK=1 python -m scripts.release.publishing_assurance install-wheel --distribution DISTRIBUTION --dist-dir /tmp/evidence-gated-artifacts/DISTRIBUTION --work-dir /tmp/evidence-gated-installs/DISTRIBUTION --import-name MODULE", "result": "Six independent clean environments installed and imported successfully"},
+    {"command": "sha256sum -- *.whl *.tar.gz > SHA256SUMS && sha256sum --check SHA256SUMS", "result": "Both artifacts passed for all six distributions"}
+  ],
+  "artifact_root": "/tmp/evidence-gated-artifacts",
+  "artifact_root_persistence": "Temporary local validation outputs are not durable hosted provenance",
+  "d_mode_value_recorded": false,
+  "approvals_required": [
+    "Review and merge prepared workflows to main",
+    "Configure/verify PyPI and TestPyPI Trusted Publishers before any OIDC migration",
+    "Approve secret removal/migration; PYPI_TOKEN and TEST_PYPI_API_TOKEN remain configured",
+    "Verify environment protections and independent required production reviewers",
+    "Approve any version change, package publication or incident/yank action"
+  ],
+  "main_activation_pending": ["Prepared, inactive until maintainer commits/merges/pushes to main"],
+  "next_action": "Maintainer verifies hosted provenance and external publisher/protection settings; do not dispatch or publish",
+  "updated_at_utc": "2026-10-31T20:35:00Z"
+}

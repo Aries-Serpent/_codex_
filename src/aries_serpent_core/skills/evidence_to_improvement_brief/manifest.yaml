@@ -1,0 +1,19 @@
+id: evidence.to.improvement.brief
+version: 1.0.0
+name: evidence-to-improvement-brief
+description: >
+  Turn current measured CI, package or Chronicle signals into deterministic
+  bounded proposals with source, timestamps, freshness, baseline SHA, hypothesis,
+  metrics, confidence, risk, acceptance checks, scope, dependencies, budget,
+  stop condition and disconfirming evidence. Session-productivity signals
+  remain signal-only. A brief never authorizes implementation or publication.
+entrypoint: aries_serpent_core.skills.assurance:evidence_to_improvement_brief
+capability_tags: [improvement, measurement, evidence]
+io:
+  input_schema: ../assurance_schema/input.json
+  output_schema: ../assurance_schema/output.json
+policy:
+  allowlist: ["*"]
+  risk_tier: low
+  budgets: {calls: 100, tokens: 20000, wallclock_ms: 10000}
+telemetry: {emit_jsonl: false, emit_otel: false}

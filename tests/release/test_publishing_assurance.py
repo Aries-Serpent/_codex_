@@ -47,9 +47,7 @@ def _create_minimal_wheel(
     files: dict[str, bytes] = {
         f"{import_name}/__init__.py": f"__version__ = {version!r}\n".encode("utf-8"),
         f"{dist_info}/METADATA": (
-            "Metadata-Version: 2.1\n"
-            f"Name: {distribution}\n"
-            f"Version: {version}\n"
+            "Metadata-Version: 2.1\n" f"Name: {distribution}\n" f"Version: {version}\n"
         ).encode("utf-8"),
         f"{dist_info}/WHEEL": (
             "Wheel-Version: 1.0\n"
@@ -62,8 +60,8 @@ def _create_minimal_wheel(
 
     records: list[tuple[str, str, str]] = []
     for file_name, payload in files.items():
-        digest = base64.urlsafe_b64encode(hashlib.sha256(payload).digest()).rstrip(b"=").decode(
-            "utf-8"
+        digest = (
+            base64.urlsafe_b64encode(hashlib.sha256(payload).digest()).rstrip(b"=").decode("utf-8")
         )
         records.append((file_name, f"sha256={digest}", str(len(payload))))
     records.append((f"{dist_info}/RECORD", "", ""))
@@ -84,7 +82,12 @@ def _create_minimal_sdist(
     extra_files: dict[str, bytes] | None = None,
 ) -> Path:
     sdist_path = dist_dir / f"{distribution}-{version}.tar.gz"
-    files = {f"{distribution}-{version}/pyproject.toml": b"[build-system]\n"}
+    files = {
+        f"{distribution}-{version}/pyproject.toml": b"[build-system]\n",
+        f"{distribution}-{version}/PKG-INFO": (
+            f"Metadata-Version: 2.1\nName: {distribution}\nVersion: {version}\n"
+        ).encode(),
+    }
     files.update(extra_files or {})
     with tarfile.open(sdist_path, "w:gz") as archive:
         for file_name, payload in files.items():
@@ -127,6 +130,22 @@ def test_collect_distribution_artifacts_returns_validated_metadata(tmp_path: Pat
     assert artifacts.wheel_path == wheel_path, "wheel_path is not valid"
     assert artifacts.sdist_path == sdist_path, "sdist_path is not valid"
     assert artifacts.metadata_name == "codex-cognitive-sdk", "Data must not be empty"
+
+
+def test_sdist_metadata_must_match_wheel(tmp_path: Path) -> None:
+    _create_minimal_wheel(
+        tmp_path, distribution="codex-contracts", version="0.1.0", import_name="codex_contracts"
+    )
+    _create_minimal_sdist(
+        tmp_path,
+        distribution="codex-contracts",
+        version="0.1.0",
+        extra_files={
+            "codex-contracts-0.1.0/PKG-INFO": b"Name: different\nVersion: 0.1.0\n",
+        },
+    )
+    with pytest.raises(ValueError, match="metadata name or version mismatch"):
+        collect_distribution_artifacts(tmp_path, "codex-contracts")
 
 
 def test_collect_distribution_artifacts_rejects_duplicate_wheels(tmp_path: Path) -> None:
@@ -221,8 +240,7 @@ def test_validate_release_tag_rejects_version_mismatch(tmp_path: Path) -> None:
     with pytest.raises(
         ValueError,
         match=(
-            r"expected codex-cognitive-sdk-v0\.1\.0a1, "
-            r"found codex-cognitive-sdk-v0\.1\.0a2"
+            r"expected codex-cognitive-sdk-v0\.1\.0a1, " r"found codex-cognitive-sdk-v0\.1\.0a2"
         ),
     ):
         validate_release_tag(

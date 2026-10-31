@@ -1,0 +1,21 @@
+id: pypi.release.assurance
+version: 1.0.0
+name: pypi-release-assurance
+description: >
+  Assess independent wheel/sdist, metadata, version/tag, clean installed imports,
+  artifact checksum and provenance evidence for the actual six-distribution
+  publishing workflow. Use scripts.release.publishing_assurance for local checks.
+  TestPyPI is a deployment test; production needs human approval. External Trusted
+  Publisher configuration stays unverified until a maintainer verifies it.
+  Never print credentials, dispatch or publish. Correct immutable releases with
+  an approved new version and yank/incident handling.
+entrypoint: aries_serpent_core.skills.assurance:pypi_release_assurance
+capability_tags: [packaging, release, evidence]
+io:
+  input_schema: ../assurance_schema/input.json
+  output_schema: ../assurance_schema/output.json
+policy:
+  allowlist: ["*"]
+  risk_tier: low
+  budgets: {calls: 100, tokens: 20000, wallclock_ms: 10000}
+telemetry: {emit_jsonl: false, emit_otel: false}

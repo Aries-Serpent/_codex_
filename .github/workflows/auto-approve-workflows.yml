@@ -1,3 +1,4 @@
+# Prepared, inactive until maintainer commits/merges/pushes to main.
 name: "\u26A1 Auto-Approve Pending Workflow Runs"
 'on':
   push:
@@ -94,6 +95,8 @@ permissions:
   actions: write
   pull-requests: write
   contents: read
+env:
+  APPROVAL_INTENT: ${{ github.event.inputs.approval_intent || '' }}
 jobs:
   approve-on-push:
     name: "\u26A1 Auto-Approve Pending Runs (Push Event)"
@@ -108,6 +111,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
+        ref: ${{ github.event.repository.default_branch }}
         persist-credentials: false
         fetch-depth: 0
     - name: Resolve PR for current push
@@ -141,10 +145,16 @@ jobs:
         REPO: ${{ github.repository }}
         HEAD_SHA: ${{ github.sha }}
         PR_NUMBER: ${{ steps.resolve.outputs.pr_number }}
-      run: "set -euo pipefail\n\n# Execute the approval script for this PR\npython\
-        \ scripts/ci/approve_pending_runs.py 2>&1 || {\n  EXIT_CODE=$?\n  echo \"\
-        ::warning::approval script exited with code $EXIT_CODE (non-fatal for push\
-        \ event)\"\n  exit 0\n}\n"
+      run: |
+        set -euo pipefail
+        python3 scripts/ci/approve_pending_runs.py
+    - name: Upload push approval decision
+      if: always()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: approval-decision-push
+        path: approval-decision.json
+        if-no-files-found: warn
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   evaluate-approval:
@@ -165,6 +175,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
+        ref: ${{ github.event.repository.default_branch }}
         persist-credentials: false
         fetch-depth: 0
     - name: Gate approval on wec:auto-approve label
@@ -342,6 +353,34 @@ jobs:
         \ >> $GITHUB_OUTPUT\necho \"confidence=0.0\" >> $GITHUB_OUTPUT\necho \"target_pr=$TARGET_PR\"\
         \ >> $GITHUB_OUTPUT\necho \"should_proceed=false\" >> $GITHUB_OUTPUT\necho\
         \ \"\u26D4 Fallback: No matching approval rule found\"\n"
+    - name: Record policy decision
+      if: always()
+      env:
+        POLICY_DECISION: ${{ steps.evaluate.outputs.decision }}
+        POLICY_RULE: ${{ steps.evaluate.outputs.rule }}
+        TARGET_PR: ${{ github.event.inputs.target_pr }}
+      run: |
+        python3 - <<'PY'
+        import json
+        import os
+        from pathlib import Path
+        path = Path("approval-decision.json")
+        data = json.loads(path.read_text()) if path.exists() else {"schema_version": 1, "decisions": []}
+        data["decisions"].append({
+            "rule": os.environ.get("POLICY_RULE") or "evaluation-blocked",
+            "pr": os.environ.get("TARGET_PR") or None,
+            "head_sha": None,
+            "outcome": os.environ.get("POLICY_DECISION") or "denied",
+        })
+        path.write_text(json.dumps(data, indent=2) + "\n")
+        PY
+    - name: Upload evaluation decision
+      if: always()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: approval-decision-evaluate
+        path: approval-decision.json
+        if-no-files-found: error
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     timeout-minutes: 30
@@ -362,6 +401,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
+        ref: ${{ github.event.repository.default_branch }}
         persist-credentials: false
     - name: Resolve token chain (Tier 1-4 with fallbacks)
       id: token
@@ -396,10 +436,8 @@ jobs:
         python3 scripts/ci/require_wec_auto_approve.py --pr-number "$TARGET_PR" --repo "$REPO"
     - name: Approve workflow run(s)
       id: approve
-      if: >-
-        ${{ needs.evaluate-approval.outputs.should_proceed == 'true' &&
-        needs.evaluate-approval.outputs.approval_decision == 'APPROVE' &&
-        steps.label_check.outcome == 'success' }}
+      # Retained for maintainer review; unscoped legacy approval is unreachable.
+      if: ${{ false }}
       env:
         GH_TOKEN: ${{ steps.token.outputs.token }}
         RUN_ID: ${{ github.event.inputs.target_run_id }}
@@ -438,8 +476,26 @@ jobs:
         \ echo \"unknown\")\n      if [ -n \"$RUN_ID\" ]; then\n        gh run approve\
         \ \"$RUN_ID\" 2>/dev/null && echo \"\u2705 Approved: $RUN_NAME (#$RUN_ID)\"\
         \ || true\n      fi\n    done\n  fi\nfi\n"
+    - name: Approve scoped runs with current authorization
+      env:
+        GH_TOKEN: ${{ steps.token.outputs.token }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ needs.evaluate-approval.outputs.target_pr }}
+        TARGET_RUN_ID: ${{ github.event.inputs.target_run_id }}
+        DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+      run: |
+        set -euo pipefail
+        python3 scripts/ci/approve_pending_runs.py
+    - name: Upload scoped approval decision
+      if: always()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: approval-decision-execute
+        path: approval-decision.json
+        if-no-files-found: warn
     - name: Log approval to audit trail
-      if: always() && needs.evaluate-approval.outputs.should_proceed == 'true'
+      # Evidence must not cause an autonomous repository push.
+      if: ${{ false }}
       env:
         RULE_MATCHED: ${{ needs.evaluate-approval.outputs.rule_matched }}
         CONFIDENCE: ${{ needs.evaluate-approval.outputs.confidence_score }}
@@ -529,6 +585,8 @@ jobs:
       with:
         persist-credentials: false
     - name: Publish metrics to artifact
+      # Legacy metrics include git push; decisions are retained as artifacts instead.
+      if: ${{ false }}
       env:
         APPROVAL_SOURCE: ${{ github.event.inputs.approval_source }}
         RULE_MATCHED: ${{ needs.evaluate-approval.outputs.rule_matched }}
@@ -570,10 +628,17 @@ jobs:
   approve-original:
     name: "\u26A1 Approve pending workflow runs"
     runs-on: ubuntu-latest
+    # Dispatches requesting policy evaluation must not take a parallel bypass.
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.approval_source == ''
     env:
       GH_TRICKLE_POLITE_SLEEP: '1.0'
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     steps:
+    - name: Checkout approval helper
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        ref: ${{ github.event.repository.default_branch }}
+        persist-credentials: false
     - name: Generate Cognitive Brain App token
       id: app-token
       uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510
@@ -582,7 +647,8 @@ jobs:
         app-id: ${{ secrets._GITHUB_APP_ID }}
         private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
     - name: Configure auto-approve mode
-      if: github.event_name == 'workflow_dispatch'
+      # Labels and PR checkboxes must be selected by a maintainer, not this job.
+      if: ${{ false }}
       env:
         GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
           secrets.CODEX_BACKUP_KEY || github.token }}
@@ -680,7 +746,8 @@ jobs:
         \  #${PR_NUM}, SHA=${HEAD_SHA:0:12}\"\n"
     - name: Approve pending (action_required) workflow runs
       id: approve
-      if: steps.resolve.outputs.skip != 'true'
+      # All triggers use the same fail-closed helper below.
+      if: ${{ false }}
       continue-on-error: true
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       env:
@@ -805,9 +872,27 @@ jobs:
           core.summary.addRaw('\\n' + lines.join('\\n') + '\\n');\nawait core.summary.write();\n\
           \nif (totalErrors > 0) {\n  core.setFailed(`${totalErrors} run(s) failed\
           \ to be approved \u2014 check the logs above`);\n}\n"
+    - name: Approve only labelled current PR runs
+      env:
+        GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ steps.resolve.outputs.pr_number }}
+        HEAD_SHA: ${{ steps.resolve.outputs.head_sha }}
+        TARGET_RUN_ID: ${{ github.event.inputs.target_run_id }}
+        DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+      run: |
+        set -euo pipefail
+        python3 scripts/ci/approve_pending_runs.py
+    - name: Upload sweep approval decision
+      if: always()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: approval-decision-original
+        path: approval-decision.json
+        if-no-files-found: warn
     - name: Monitor active Copilot session (60m)
-      if: github.event_name == 'workflow_run' && github.event.workflow_run.name ==
-        'Copilot coding agent' && github.event.workflow_run.status == 'in_progress'
+      # A scheduler event never authorizes repeated approval attempts.
+      if: ${{ false }}
       env:
         GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
           secrets.CODEX_BACKUP_KEY || github.token }}

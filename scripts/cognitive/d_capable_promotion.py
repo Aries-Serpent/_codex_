@@ -40,7 +40,7 @@ MIN_TAGS = 3
 
 def load_registry(path: Path) -> dict:
     try:
-        import yaml  # type: ignore[import]
+        import yaml
     except ImportError:
         print("::error::pyyaml not installed — run: pip install pyyaml", file=sys.stderr)
         sys.exit(1)
@@ -53,11 +53,51 @@ def load_registry(path: Path) -> dict:
 
 def save_registry(data: dict, path: Path) -> None:
     try:
-        import yaml  # type: ignore[import]
+        import yaml
     except ImportError:
         print("::error::pyyaml not installed", file=sys.stderr)
         sys.exit(1)
-    path.write_text(yaml.dump(data, default_flow_style=False, allow_unicode=True, sort_keys=False))
+    original = path.read_text(encoding="utf-8")
+    root = yaml.compose(original)
+    if not isinstance(root, yaml.MappingNode):
+        raise ValueError("registry must be a mapping")
+    replacements = []
+    for key, node in root.value:
+        if key.value == "agents":
+            if not isinstance(node, yaml.SequenceNode):
+                raise ValueError("agents must be a sequence")
+            if len(node.value) != len(data.get("agents", [])):
+                raise ValueError("minimal-diff writer cannot add or remove agents")
+            for old_agent, new_agent in zip(node.value, data["agents"], strict=True):
+                if not isinstance(old_agent, yaml.MappingNode):
+                    raise ValueError("agent must be a mapping")
+                for field, value in old_agent.value:
+                    if field.value == "autonomy_model":
+                        replacements.append((value, new_agent["autonomy_model"]))
+        elif key.value == "last_updated":
+            replacements.append((node, data["last_updated"]))
+    updated = original
+    for node, value in sorted(
+        replacements, key=lambda pair: pair[0].start_mark.index, reverse=True
+    ):
+        if not isinstance(node, yaml.ScalarNode) or not isinstance(value, str):
+            raise ValueError("minimal-diff writer requires string scalars")
+        if not value or any(
+            char not in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_:.-"
+            for char in value
+        ):
+            raise ValueError("unsupported registry scalar")
+        quote = node.style if node.style in ("'", '"') else ""
+        updated = (
+            updated[: node.start_mark.index]
+            + quote
+            + value
+            + quote
+            + updated[node.end_mark.index :]
+        )
+    if yaml.safe_load(updated) != data:
+        raise ValueError("minimal-diff writer refuses unrelated registry changes")
+    path.write_text(updated, encoding="utf-8")
 
 
 def evaluate_agent(agent: dict) -> tuple[bool, list[str]]:
@@ -68,16 +108,21 @@ def evaluate_agent(agent: dict) -> tuple[bool, list[str]]:
         blocked.append(f"already at {agent.get('autonomy_model', '?')}")
     if agent.get("maturity") not in ELIGIBLE_MATURITIES:
         blocked.append(f"maturity={agent.get('maturity', 'unknown')} (need production/stable)")
-    if (agent.get("violations_30d") or 0) > 0:
-        blocked.append(f"violations_30d={agent['violations_30d']}")
+    if type(agent.get("violations_30d")) is not int or agent["violations_30d"] != 0:
+        blocked.append("violations_30d must be an explicitly measured zero")
     if agent.get("handoff_protocol") not in ELIGIBLE_HANDOFFS:
         blocked.append(
             f"handoff_protocol={agent.get('handoff_protocol', 'none')} (need structured/soft)"
         )
-    tags = agent.get("capability_tags") or []
-    if len(tags) < MIN_TAGS:
-        blocked.append(f"only {len(tags)} capability_tags (need ≥{MIN_TAGS})")
-    if not (agent.get("description") or "").strip():
+    tags = agent.get("capability_tags")
+    if (
+        not isinstance(tags, list)
+        or not all(isinstance(tag, str) and tag.strip() for tag in tags)
+        or len(set(tags)) < MIN_TAGS
+    ):
+        blocked.append(f"need ≥{MIN_TAGS} distinct populated capability_tags")
+    description = agent.get("description")
+    if not isinstance(description, str) or not description.strip():
         blocked.append("description is empty")
 
     return len(blocked) == 0, blocked
@@ -161,6 +206,7 @@ def run(registry_path: Path, apply: bool) -> int:
 
     # GitHub Actions output
     import os
+
     if "GITHUB_OUTPUT" in os.environ:
         with open(os.environ["GITHUB_OUTPUT"], "a") as f:
             f.write(f"eligible_count={len(eligible)}\n")

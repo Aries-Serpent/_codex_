@@ -114,6 +114,37 @@ def _validate_archive_hygiene(path: Path) -> None:
         raise ValueError(f"forbidden Python cache entries in {path.name}: {forbidden}")
 
 
+def _parse_sdist_metadata(path: Path) -> tuple[str, str]:
+    if path.suffix == ".zip":
+        with zipfile.ZipFile(path) as archive:
+            names = [
+                name
+                for name in archive.namelist()
+                if len(PurePosixPath(name).parts) == 2 and name.endswith("/PKG-INFO")
+            ]
+            member = _find_single_string(names, kind="sdist metadata", root=path)
+            raw = archive.read(member)
+    else:
+        with tarfile.open(path, "r:*") as archive:
+            names = [
+                member.name
+                for member in archive.getmembers()
+                if member.isfile()
+                and len(PurePosixPath(member.name).parts) == 2
+                and member.name.endswith("/PKG-INFO")
+            ]
+            member = _find_single_string(names, kind="sdist metadata", root=path)
+            stream = archive.extractfile(member)
+            if stream is None:
+                raise ValueError("sdist metadata is not a regular file")
+            raw = stream.read()
+    metadata = Parser().parsestr(raw.decode("utf-8"))
+    name, version = metadata.get("Name"), metadata.get("Version")
+    if not name or not version:
+        raise ValueError("sdist metadata is missing Name/Version")
+    return name, version
+
+
 def collect_distribution_artifacts(dist_dir: Path, distribution: str) -> DistributionArtifacts:
     """Resolve and validate the wheel/sdist pair for one distribution."""
 
@@ -123,16 +154,11 @@ def collect_distribution_artifacts(dist_dir: Path, distribution: str) -> Distrib
 
     wheel_paths = sorted(path for path in root.rglob("*.whl") if path.is_file())
     sdist_paths = sorted(
-        path
-        for suffix in _SDIST_SUFFIXES
-        for path in root.rglob(f"*{suffix}")
-        if path.is_file()
+        path for suffix in _SDIST_SUFFIXES for path in root.rglob(f"*{suffix}") if path.is_file()
     )
 
     duplicate_wheels = [
-        name
-        for name, count in Counter(path.name for path in wheel_paths).items()
-        if count > 1
+        name for name, count in Counter(path.name for path in wheel_paths).items() if count > 1
     ]
     if duplicate_wheels:
         raise ValueError(f"duplicate wheel path(s) detected for {distribution}: {duplicate_wheels}")
@@ -151,6 +177,13 @@ def collect_distribution_artifacts(dist_dir: Path, distribution: str) -> Distrib
         raise ValueError(
             f"source distribution name mismatch: expected {distribution}, found {sdist_name}"
         )
+    sdist_metadata_name, sdist_version = _parse_sdist_metadata(sdist_path)
+    if (
+        normalize_distribution_name(sdist_metadata_name)
+        != normalize_distribution_name(distribution)
+        or sdist_version != version
+    ):
+        raise ValueError("wheel/sdist metadata name or version mismatch")
 
     _validate_archive_hygiene(wheel_path)
     _validate_archive_hygiene(sdist_path)
@@ -224,10 +257,7 @@ def install_wheel_in_isolated_venv(
         [
             str(python_path),
             "-Ic",
-            (
-                "import importlib.metadata as metadata, sys; "
-                "print(metadata.version(sys.argv[1]))"
-            ),
+            ("import importlib.metadata as metadata, sys; " "print(metadata.version(sys.argv[1]))"),
             distribution,
         ],
         capture_output=True,
@@ -260,11 +290,7 @@ def install_wheel_in_isolated_venv(
 def _extract_subject_names(attestation_payload: list[dict[str, Any]]) -> set[str]:
     subject_names: set[str] = set()
     for entry in attestation_payload:
-        subjects = (
-            entry.get("verificationResult", {})
-            .get("statement", {})
-            .get("subject", [])
-        )
+        subjects = entry.get("verificationResult", {}).get("statement", {}).get("subject", [])
         for subject in subjects:
             name = subject.get("name")
             if isinstance(name, str) and name:
