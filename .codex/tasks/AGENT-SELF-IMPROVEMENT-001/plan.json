@@ -6,6 +6,8 @@
   "repository_root": "/home/runner/work/_codex_/_codex_",
   "reviewed_baseline_sha": "933dbf77bbc91a8cb45edbc0064533b3c2158e4a",
   "orientation_sha": "829b999326a7470f85f4ad8aa043b86a859f6a6b",
+  "recovery_source_sha": "204b81043da6a50639697a81c3e646aec8d7944c",
+  "recovery_orientation_sha": "48290eaaa9802b4143e75a9debc8b8ed257504db",
   "verification_snapshot": "checkpoint.json binds final tested source SHA and content hashes; uncommitted edits are not closure at orientation SHA",
   "allowed_statuses": ["confirmed_open", "partially_resolved", "resolved_at_current_sha", "unverified", "decision_required", "external_blocked", "not_applicable"],
   "evidence_policy": {
@@ -51,7 +53,8 @@
     {"id":"T08","depends_on":["T03","T07"],"conditional_dependencies":["T04 when governance helpers shared"],"owner":"parent","surfaces":["monitor"],"status":"pending","outputs":["read-only truthful health/healing/fixer/evolution adapters"],"stop":"No fake fitness or monitor/workflow activation"},
     {"id":"T09","depends_on":["T01","T02","T06"],"owner":"parent","surfaces":["scheduler"],"status":"pending","outputs":["dependency-aware isolated local runtime or complete human handoff"],"stop":"No hosted dispatch claim without supported invocation"},
     {"id":"T10","depends_on":["T00"],"conditional_dependencies":["T06 for skill mappings"],"owner":"maintainer for access decision; parent only permitted inventory","status":"external_blocked","outputs":["verified inventory/profile mapping/consolidation"],"stop":"Restricted registry/profile access; do not work around"},
-    {"id":"T11","depends_on":["T01","T02","T03","T04","T05","T06","T07","T08","T09","T10"],"owner":"parent and independent reviewer","status":"partial","outputs":["current-source validation","adversarial review","truthful limits/handoff"],"stop":"Externally blocked tasks cannot be marked complete"}
+    {"id":"T11","depends_on":["T01","T02","T03","T04","T05","T06","T07","T08","T09","T10"],"owner":"parent and independent reviewer","status":"partial","outputs":["current-source validation","adversarial review","truthful limits/handoff"],"stop":"Externally blocked tasks cannot be marked complete"},
+    {"id":"T12","depends_on":["T00"],"owner":"parent integrator and dependency-pr5744-review","status":"applied_pending_persistence","outputs":["explicit cherry-picks of intended PR5744 MCP and pyasn1 changes","manifest and advisory checks"],"source_branch":"dependabot/pip/mcp-2.2.0","source_commits":["3f246e7a5e6b7fca80e20cf8437660f6dcfc95dc","1b3d96b7293b2d43274483e332f6918d76674d10"],"validation":"7 packaging tests passed; target-version advisory checks found no vulnerabilities; exact source dependency patch applied, startup SHA256 unchanged","stop":"Signed CLI commit service failed twice; preserve applied index and persist via authorized progress tool; additional lock drift requires separately scoped reconciliation"}
   ],
   "independent_subtasks": [
     {"id":"T03-legacy","depends_on":["T00"],"parent_task":"T03","owner":"legacy-record-integrity","surfaces":["pda"],"reason":"Non-destructive record adapter is independent of shared learning identity changes"}

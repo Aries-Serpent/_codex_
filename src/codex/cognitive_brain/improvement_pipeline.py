@@ -18,13 +18,16 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import re
+import subprocess
 import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Mapping, Optional, Sequence
+from typing import Any, Mapping, Optional, Sequence, cast
 
 from codex.cognitive_brain.authority import AuthorityEnvelope
+from codex.cognitive_brain.isolated_execution import IsolatedExecutor, scrub_environment
 
 # The evidence contract ships in the codex-cognitive-sdk distribution; the
 # source tree is used directly when running from a checkout.
@@ -105,11 +108,13 @@ def signal_from_pda_record(record: Mapping[str, Any]) -> SignalEvidence:
         "verification_cmd": record.get("verification_cmd"),
         "files": list(files),
     }
+    # The SDK annotates its string-constant containers as field types. Keep the
+    # canonical wire strings unchanged while satisfying that annotation.
     return SignalEvidence(
-        source=SignalSource.PDA_FAILURE_LOG,
+        source=cast(SignalSource, SignalSource.PDA_FAILURE_LOG),
         kind="ci_job_failure",
         measured_at=timestamp,
-        availability=DataAvailability.MEASURED,
+        availability=cast(DataAvailability, DataAvailability.MEASURED),
         summary=str(record.get("root_cause") or record.get("error_text") or ""),
         details=details,
     )
@@ -140,6 +145,9 @@ class ImprovementPipeline:
         signal: SignalEvidence,
         *,
         human_approved: bool = False,
+        patch_bytes: Optional[bytes] = None,
+        patch_hash: Optional[str] = None,
+        base_sha: Optional[str] = None,
     ) -> ProposalDecision:
         """Run one signal through retrieval and bounded proposal.
 
@@ -149,6 +157,11 @@ class ImprovementPipeline:
         """
 
         signal.validate()
+        actual_proposal = None
+        if any(value is not None for value in (patch_bytes, patch_hash, base_sha)):
+            actual_proposal = self.proposal_from_patch(
+                patch_bytes=patch_bytes, patch_hash=patch_hash, base_sha=base_sha
+            )
 
         if signal.availability != DataAvailability.MEASURED:
             return self._inactionable(signal, f"signal not measured: {signal.availability}")
@@ -171,7 +184,7 @@ class ImprovementPipeline:
             success_rate=float(best.success_rate),
         )
 
-        proposal = self._build_proposal(signal, best)
+        proposal = actual_proposal or self._build_proposal(signal, best)
         if proposal is None:
             return self._inactionable(
                 signal, "matched pattern carries no applicable fix", pattern_ref
@@ -189,6 +202,57 @@ class ImprovementPipeline:
 
         event = self._make_event(signal, pattern_ref, proposal)
         return ProposalDecision(event=event, actionable=True, reason="matched and authorized")
+
+    def proposal_from_patch(
+        self,
+        *,
+        patch_bytes: Optional[bytes],
+        patch_hash: Optional[str],
+        base_sha: Optional[str],
+    ) -> PatchProposal:
+        """Describe actual canonical UTF-8 diff bytes, never render template text.
+
+        Git's read-only inventory and the existing executor's inventory parser
+        define the same files/size at preparation and execution. Application
+        against the immutable base is still verified only by the executor.
+        """
+        if (
+            not isinstance(patch_bytes, bytes)
+            or not 0 < len(patch_bytes) <= 1024 * 1024
+            or not patch_bytes.endswith(b"\n")
+            or b"\r" in patch_bytes
+            or b"\0" in patch_bytes
+        ):
+            raise ValueError("actual patch requires canonical UTF-8 LF diff bytes")
+        if (
+            not isinstance(base_sha, str)
+            or re.fullmatch(r"[0-9a-f]{40}", base_sha) is None
+            or base_sha != self.sha
+        ):
+            raise ValueError("actual patch base must match the pipeline immutable SHA")
+        if hashlib.sha256(patch_bytes).hexdigest() != patch_hash:
+            raise ValueError("actual patch hash mismatch")
+        try:
+            patch_bytes.decode("utf-8")
+            inventory = subprocess.run(
+                ["git", "apply", "--numstat", "-z", "-"],
+                input=patch_bytes,
+                capture_output=True,
+                env=scrub_environment(),
+                timeout=30,
+                check=True,
+            )
+            files, lines = IsolatedExecutor._patch_inventory(inventory.stdout.decode("utf-8"))
+        except (UnicodeError, OSError, subprocess.SubprocessError) as exc:
+            raise ValueError("malformed actual patch") from exc
+        if not files or not lines:
+            raise ValueError("no-op patch is not an executable repair")
+        return PatchProposal(
+            patch_hash=patch_hash,
+            files=tuple(sorted(files)),
+            diff_lines=lines,
+            description="Actual caller-supplied local diff; template is advisory only",
+        )
 
     # ------------------------------------------------------------------
     # Internals

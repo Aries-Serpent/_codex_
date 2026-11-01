@@ -17,6 +17,12 @@ claims only for this continuation, not the preserved checkpoints 0–7.
 - Four supplied baseline regressions passed here before product edits:
   **4 passed in 2.60s**, using the existing `.venv_ci` Python 3.12.10.
   The earlier failing bare-interpreter environment is not this baseline result.
+- Recovery source: `204b81043da6a50639697a81c3e646aec8d7944c`.
+  The prior implementation is now committed, not missing dirty work.
+  The only initial dirty file was the startup packet; its bytes were preserved
+  by orientation commit `48290eaaa9802b4143e75a9debc8b8ed257504db`.
+  The current recovery selection passed **619 tests in 21.58s** on Python
+  3.12.10 before continuation edits. This is local evidence only.
 - Preparation is not permission to activate, approve, rerun, merge, promote,
   publish, change credentials/settings, or bypass owners. Restricted agent
   registry/profile files were not accessed; their counts remain unverified.
@@ -34,15 +40,21 @@ Behavior must fail on the baseline and pass on the disposable candidate.
 Empty/unknown/malformed gates and launch errors cannot verify a repair.
 
 The event store remains a versioned JSONL audit trail. Execution claims use
-cross-process file locking. Breakers reconstruct from durable observations.
+cross-process file locking. Production breakers reconstruct from qualified
+durable receipts; unqualified observations make eligibility unknown. Fixture
+history is separate and cannot reset production breakers.
 Learning checks event/pattern/patch/observation identity, claims observations
 durably, and refuses ambiguous replay. Separate evidence and brain files are
 **not** one atomic transaction: pending learning intents require reconciliation.
 An EMA is not a calibrated probability. Synthetic fixture learning must be
 explicitly isolated and cannot establish production provenance.
 
-Local process groups, resource limits and scrubbed HOME/PATH are enforceable
-partial boundaries, **not** network isolation or a full filesystem sandbox.
+Private Git metadata and read-only candidate access use Linux Landlock ABI 4+
+on supported architectures. Independent filesystem byte/type inventory does
+not trust a gate-controlled index. TCP bind/connect are denied; UDP, Unix
+sockets and escaped-session lifecycle containment remain limitations. Process
+groups, resource limits and scrubbed HOME/PATH are partial boundaries,
+**not** a full sandbox or general network isolation.
 Unsupported rename/binary/symlink operations fail closed. Behavioral gate
 names alone do not establish an authenticated independent validator.
 
@@ -62,6 +74,7 @@ names alone do not establish an authenticated independent validator.
 | T09 | T01,T02,T06 | Existing lane scheduler/runtime or complete human handoffs | Dependency-aware isolation, overlap/cancellation/checkpoint proof |
 | T10 | T00; T06 for mappings | Permitted inventory and evidence-backed consolidation recommendations | Registry/profile access restriction; no indirect workaround |
 | T11 | All implemented local tasks | Integrated replay, independent review, exact validation and handoff | Externally blocked work remains incomplete |
+| T12 | Independent of local composition | Explicit dependency cherry-picks from PR #5744: MCP 2.2.0 and pyasn1 0.6.5 | Advisory/manifest checks; preserve unrelated startup bytes; no merge of source branch |
 
 Integrating owner: direct parent execution. No two lanes edit the SDK,
 executor, common ledger or pattern store concurrently. Independent supported
@@ -70,6 +83,17 @@ three-cycle stop limits. Actual agents: `integrity-contract-review`,
 `durable-evidence`, `shared-skill-invariants`, `approval-transition-integrity`,
 `installed-release-integrity`, and `legacy-record-integrity`.
 This is supported local delegation, not proof of a hosted swarm runtime.
+
+Current continuation lanes: `compose-local-path`, `release-build-proof`,
+`monitor-truthfulness`, `legacy-durable-write`, and read-only
+`continuation-authority-review`. Additional owner-requested T12 is assigned to
+`dependency-pr5744-review` for independent dependency verification; the parent
+exclusively applies its cherry-picks to this working branch.
+PR #5744 source commits are `3f246e7a5e6b7fca80e20cf8437660f6dcfc95dc`
+(MCP) and `1b3d96b7293b2d43274483e332f6918d76674d10` (pyasn1).
+The latter also changes the startup timestamp; that unrelated change is excluded.
+The source branch merge commit is not an intended dependency patch.
+Advisory checks returned no vulnerabilities for both target versions.
 
 ## Review and verification
 

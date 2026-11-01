@@ -24,7 +24,8 @@ import sys
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
-from typing import Any, List, Optional, Sequence, Tuple
+from types import MappingProxyType
+from typing import Any, Callable, List, Mapping, Optional, Sequence, Tuple, cast
 
 from aries_serpent_core.cognitive.brain_interface import AgentBrainInterface
 from aries_serpent_core.skills.assurance import (
@@ -34,6 +35,7 @@ from aries_serpent_core.skills.assurance import (
 )
 from codex.cognitive_brain.authority import AuthorityEnvelope
 from codex.cognitive_brain.evidence_store import EvidenceIntegrityError, EvidenceStore
+from codex.cognitive_brain.improvement_evaluator import evaluate_event
 from codex.cognitive_brain.improvement_pipeline import (
     DataAvailability,
     ImprovementPipeline,
@@ -42,6 +44,7 @@ from codex.cognitive_brain.improvement_pipeline import (
     load_pda_signals,
     signal_from_pda_record,
 )
+from codex.cognitive_brain.isolated_execution import IsolatedExecutor
 
 logger = logging.getLogger(__name__)
 
@@ -58,6 +61,9 @@ def assess_evidence_record(
     observed_at: Optional[datetime] = None,
     freshness_seconds: int = 3600,
     human_approved: bool = False,
+    patch_bytes: Optional[bytes] = None,
+    patch_hash: Optional[str] = None,
+    base_sha: Optional[str] = None,
 ) -> dict[str, Any]:
     """Join exported observations to bounded proposals, never execute them.
 
@@ -93,7 +99,7 @@ def assess_evidence_record(
         baseline = signal.details.get("baseline_metric")
         expected = record["brief"].get("expected_metric")
         if any(
-            type(value) not in (int, float) or not math.isfinite(value)
+            type(value) not in (int, float) or not math.isfinite(cast(float, value))
             for value in (baseline, expected)
         ):
             raise ValueError("code proposals require finite measured baseline and expected metrics")
@@ -125,7 +131,13 @@ def assess_evidence_record(
             or str(PurePosixPath(path)) == "."
         ):
             raise ValueError("write paths must be bounded repository-relative paths")
-    decision = pipeline.process_signal(signal, human_approved=human_approved)
+    decision = pipeline.process_signal(
+        signal,
+        human_approved=human_approved,
+        patch_bytes=patch_bytes,
+        patch_hash=patch_hash,
+        base_sha=base_sha,
+    )
     result["event"] = decision.event.to_dict()
     result["pipeline_actionable"] = decision.actionable
     result["review"] = rubber_duck_review(
@@ -201,6 +213,254 @@ def assess_evidence_record(
     )
     result["reason"] = "Supplied observations assessed; no patch execution or integration performed"
     return result
+
+
+def compose_local_improvement(
+    record: dict[str, Any],
+    *,
+    pipeline: ImprovementPipeline,
+    patch_bytes: bytes,
+    patch_hash: str,
+    base_sha: str,
+    executor: Optional[IsolatedExecutor] = None,
+    execute_authorized: bool = False,
+    human_approved: bool = False,
+    observed_at: Optional[datetime] = None,
+    freshness_seconds: int = 3600,
+    review_verifier: Optional[Callable[[Mapping[str, Any]], bool]] = None,
+    synthetic: bool = False,
+) -> dict[str, Any]:
+    """Compose existing skills/pipeline/executor/store/evaluator locally.
+
+    Defaults to read-only preparation, even when supplied reviews pass. For
+    execution the trusted local caller must separately opt in, provide human
+    approval and an executor with the same authority and an explicit in-repo
+    work root. Distinct review names and boolean fields are not authentication:
+    an injected trusted ``review_verifier`` must return exactly True over an
+    immutable binding containing canonical record bytes/digest, author/observer,
+    evidence digest, event, base and patch identities. The verifier must actually
+    authenticate task-specific review evidence; this module cannot do so itself.
+    Negative/boundary taxonomy is supplied human-review evidence, not independent
+    rerun proof unless the trusted verifier authenticates that mapping.
+    Production uses the current UTC clock; only explicit ``synthetic=True``
+    fixture mode accepts ``observed_at`` and never qualifies production evidence.
+
+    Exactly one attempt is made per call, never automatic corrections,
+    integration, outcome collection or learning. Authentic private readers and
+    post-merge measurement remain separate authorized human handoff work. A crash
+    after recording the event but before execution/result storage leaves pending
+    evidence requiring manual reconciliation; replay never retries that event.
+    """
+    if any(type(value) is not bool for value in (execute_authorized, human_approved, synthetic)):
+        raise ValueError("local execution and human approval must be explicit booleans")
+    if observed_at is not None and not synthetic:
+        raise ValueError("clock injection is restricted to explicit synthetic fixture mode")
+    canonical_record = json.dumps(
+        record, sort_keys=True, separators=(",", ":"), allow_nan=False
+    ).encode("utf-8")
+    # Snapshot caller evidence before verification; the verifier receives only
+    # immutable canonical bytes and scalar identity fields, not mutable records.
+    record = json.loads(canonical_record)
+    store = pipeline.evidence_store
+    if not isinstance(store, EvidenceStore):
+        raise ValueError("local composition requires the existing durable eligibility store")
+    actual = pipeline.proposal_from_patch(
+        patch_bytes=patch_bytes, patch_hash=patch_hash, base_sha=base_sha
+    )
+    now = observed_at or datetime.now(timezone.utc)
+    result = assess_evidence_record(
+        record,
+        pipeline=pipeline,
+        observed_at=now,
+        freshness_seconds=freshness_seconds,
+        human_approved=human_approved,
+        patch_bytes=patch_bytes,
+        patch_hash=patch_hash,
+        base_sha=base_sha,
+    )
+    handoff = {
+        "patch_hash": actual.patch_hash,
+        "base_sha": base_sha,
+        "files": list(actual.files),
+        "attempt_id": None,
+        "artifact_hash": None,
+        "artifact_path": None,
+        "candidate_tree_hash": None,
+        "required_gates": [],
+        "gate_logs": [],
+        "baseline_gate_logs": [],
+        "integration_authorized": False,
+        "learning_performed": False,
+        "synthetic": synthetic,
+        "limits": [
+            "Local caller review identities are not hosted approval authentication",
+            "Negative/boundary taxonomy is human-review evidence, not authenticated rerun proof",
+            "No PR creation, merge, private reader or authentic post-merge outcome",
+            "TCP/filesystem confinement is not a full sandbox; UDP/Unix sockets unsupported",
+            "No automatic integration, correction retry or confidence learning",
+            "Crash after event recording requires manual reconciliation; replay never retries",
+            "Synthetic fixture evidence never qualifies production review or outcome evidence",
+        ],
+    }
+    result["handoff"] = handoff
+    result["synthetic"] = synthetic
+    if "event" not in result:
+        return result
+    event = result["event"] = json.loads(json.dumps(result["event"]))
+    handoff["event_id"] = event["event_id"]
+    review = record.get("local_review", {})
+    validation = record.get("validation", {})
+    questions = result["review"]["questions"]
+    answers = review.get("answers", {}) if isinstance(review, dict) else {}
+
+    def fresh(timestamp: Any) -> bool:
+        try:
+            measured = datetime.fromisoformat(
+                record["signal"]["measured_at"].replace("Z", "+00:00")
+            )
+            reviewed = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+            return (
+                reviewed.tzinfo is not None
+                and measured <= reviewed <= now
+                and (now - reviewed).total_seconds() <= freshness_seconds
+            )
+        except (ValueError, TypeError, AttributeError):
+            return False
+
+    reviewed = (
+        isinstance(review, dict)
+        and review.get("decision") == "pass"
+        and review.get("author") == record.get("author")
+        and isinstance(review.get("observer"), str)
+        and bool(review["observer"].strip())
+        and review["observer"].strip() != str(record.get("author", "")).strip()
+        and review["observer"] == validation.get("observer")
+        and review.get("objective") == result["review"]["objective"]
+        and review.get("base_sha") == base_sha
+        and review.get("patch_hash") == patch_hash
+        and review.get("event_id") == event["event_id"]
+        and review.get("evidence_digest") == result.get("evidence_digest")
+        and review.get("files") == list(actual.files)
+        and isinstance(answers, dict)
+        and all(isinstance(answers.get(q), str) and answers[q].strip() for q in questions)
+        and fresh(review.get("timestamp"))
+        and all(fresh(check.get("timestamp")) for check in validation.get("checks", []))
+    )
+    result["task_review_supplied"] = reviewed
+    result["task_review_passed"] = False
+    if result["status"] != "ready-for-human-review" or not reviewed:
+        return {**result, "reason": "Fresh proposal-bound validation and task review required"}
+    review_binding = MappingProxyType(
+        {
+            "canonical_record": canonical_record,
+            "record_digest": hashlib.sha256(canonical_record).hexdigest(),
+            "evidence_digest": result["evidence_digest"],
+            "author": record["author"],
+            "observer": review["observer"],
+            "event_id": event["event_id"],
+            "base_sha": base_sha,
+            "patch_hash": patch_hash,
+            "synthetic": synthetic,
+        }
+    )
+    try:
+        verified_review = callable(review_verifier) and review_verifier(review_binding) is True
+    except Exception:
+        verified_review = False
+    result["task_review_passed"] = verified_review
+    result["review_scope"] = (
+        ("synthetic-fixture" if synthetic else "trusted-local-review")
+        if verified_review
+        else "unverified-human-review"
+    )
+    if not execute_authorized:
+        return {
+            **result,
+            "reason": "Read-only local preparation; explicit execution opt-in required",
+        }
+    if not verified_review:
+        return {
+            **result,
+            "status": "blocked",
+            "reason": "Trusted proposal-bound independent review verifier required",
+        }
+    if not human_approved:
+        return {
+            **result,
+            "status": "blocked",
+            "reason": "Explicit human execution approval required",
+        }
+    if not isinstance(executor, IsolatedExecutor) or executor.authority != pipeline.authority:
+        raise ValueError("local execution requires the existing executor with matching authority")
+    if executor.work_root is None or not Path(executor.work_root).resolve().is_relative_to(
+        executor.repo_path.resolve()
+    ):
+        raise ValueError(
+            "local execution requires an explicit repository-local disposable work root"
+        )
+    commands = record["brief"]["verification_commands"]
+    if [list(command) for _, command in executor.gates] != commands:
+        return {
+            **result,
+            "status": "blocked",
+            "reason": "Executor gates differ from reviewed commands",
+        }
+    if store.seen(event["event_id"]):
+        pending = not any(
+            record["kind"] == "execution" for record in store.audit_trail(event["event_id"])
+        )
+        return {
+            **result,
+            "status": "duplicate",
+            "manual_reconciliation_required": pending,
+            "reason": (
+                "Pending recorded event requires manual reconciliation; no automatic retry"
+                if pending
+                else "Event already recorded; no replay execution"
+            ),
+            "evaluation": asdict(evaluate_event(store, event["event_id"])),
+        }
+    event["synthetic"] = synthetic
+    if not store.record_event(event):
+        return {
+            **result,
+            "status": "duplicate",
+            "manual_reconciliation_required": True,
+            "reason": "Concurrent event recording requires manual reconciliation; no retry",
+        }
+    outcome = executor.execute(
+        event_id=event["event_id"],
+        patch_content=patch_bytes.decode("utf-8"),
+        patch_hash=patch_hash,
+        base_sha=base_sha,
+        files=actual.files,
+        diff_lines=actual.diff_lines,
+        human_approved=human_approved,
+    )
+    # Normalize dataclass tuples to the durable JSON contract without inventing
+    # gate/attempt evidence on rejected or interrupted executions.
+    execution = json.loads(json.dumps(asdict(outcome)))
+    execution["pattern_id"] = event["pattern"]["pattern_id"]
+    execution["synthetic"] = synthetic
+    store.record("execution", event["event_id"], execution)
+    for key in (
+        "attempt_id",
+        "artifact_hash",
+        "artifact_path",
+        "candidate_tree_hash",
+        "required_gates",
+        "gate_logs",
+        "baseline_gate_logs",
+    ):
+        handoff[key] = execution[key]
+    return {
+        **result,
+        "status": outcome.status,
+        "execution_authorized": True,
+        "execution": execution,
+        "evaluation": asdict(evaluate_event(store, event["event_id"])),
+        "reason": "Local attempt recorded; human PR/outcome handoff only",
+    }
 
 
 def _valid_command(command: Any) -> bool:

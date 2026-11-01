@@ -70,6 +70,11 @@ from typing import Any
 COPILOT_BOT_LOGINS = {"Copilot", "github-copilot[bot]", "copilot-swe-agent[bot]"}
 
 
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
 def _gh(
     method: str,
     path: str,
@@ -79,6 +84,12 @@ def _gh(
     timeout: int = 20,
 ) -> tuple[int, Any]:
     """Minimal GitHub REST call — returns (status_code, parsed_json)."""
+    if (
+        not path.startswith("/")
+        or path.startswith("//")
+        or any(char in path for char in ("\r", "\n", "\0", "\\"))
+    ):
+        raise ValueError("invalid GitHub API path")
     url = f"https://api.github.com{path}"
     data = json.dumps(body).encode() if body else None
     headers = {
@@ -90,8 +101,11 @@ def _gh(
     }
     req = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            body_bytes = resp.read()
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+        with opener.open(req, timeout=timeout) as resp:
+            body_bytes = resp.read(1024 * 1024 + 1)
+            if len(body_bytes) > 1024 * 1024:
+                return 502, {"error": "GitHub API response exceeds size limit"}
             try:
                 parsed = json.loads(body_bytes) if body_bytes.strip() else {}
             except json.JSONDecodeError as jde:

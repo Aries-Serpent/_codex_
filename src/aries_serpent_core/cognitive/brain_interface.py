@@ -37,6 +37,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import tempfile
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
@@ -48,6 +49,15 @@ logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
+
+
+class PatternPersistenceError(OSError):
+    """Persistence failed; replacement may already be visible but not durable."""
+
+    def __init__(self, message: str, *, replaced: bool = False) -> None:
+        super().__init__(message)
+        self.replaced = replaced
+
 
 # Minimum match score for PatternConfidence.LOW results.
 # Override via COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE env variable (float, 0–1).
@@ -339,20 +349,31 @@ class AgentBrainInterface:
         logger.info(f"AgentBrainInterface initialized for {agent_id}")
 
     def _load_patterns(self) -> None:
-        """Load patterns from the pattern store."""
-        if self.pattern_store_path.exists():
-            try:
-                with open(self.pattern_store_path, encoding="utf-8") as f:
-                    data = json.load(f)
-                    self._patterns = data.get("patterns", {})
-                    logger.debug(f"Loaded {len(self._patterns)} patterns")
-            except (OSError, json.JSONDecodeError) as e:
-                type(e).__name__
-                logger.warning("Failed to load patterns: <ERROR_TYPE>")
-                self._patterns = {}
-        else:
+        """Load patterns, propagating invalid or unreadable existing stores."""
+        try:
+            data = self._read_pattern_store()
+        except FileNotFoundError:
             logger.debug("Pattern store not found, starting with empty patterns")
             self._patterns = {}
+        else:
+            self._patterns = data.get("patterns", {})
+            logger.debug(f"Loaded {len(self._patterns)} patterns")
+
+    def _read_pattern_store(self) -> dict[str, Any]:
+        """Read and validate the legacy store without changing its contents."""
+        with open(self.pattern_store_path, encoding="utf-8") as f:
+            data = json.load(f)
+        if not isinstance(data, dict):
+            raise ValueError("Pattern store must be an object")
+        patterns = data.get("patterns", {})
+        if not isinstance(patterns, dict) or any(
+            not isinstance(pattern, dict) for pattern in patterns.values()
+        ):
+            raise ValueError("Pattern store patterns must be objects")
+        for key in ("metadata", "statistics"):
+            if key in data and not isinstance(data[key], dict):
+                raise ValueError(f"Pattern store {key} must be an object")
+        return data
 
     def _load_session_state(self) -> None:
         """Load current session state."""
@@ -589,6 +610,7 @@ class AgentBrainInterface:
             True if pattern was added successfully
         """
         pattern_name = pattern_id.lower().replace("-", "_")
+        previous_pattern = self._patterns.get(pattern_name)
 
         self._patterns[pattern_name] = {
             "id": pattern_id,
@@ -604,21 +626,36 @@ class AgentBrainInterface:
             "submitted_at": datetime.now(timezone.utc).isoformat(),
         }
 
-        self._save_patterns()
+        try:
+            self._save_patterns()
+        except Exception as exc:
+            if not isinstance(exc, PatternPersistenceError) or not exc.replaced:
+                if previous_pattern is None:
+                    del self._patterns[pattern_name]
+                else:
+                    self._patterns[pattern_name] = previous_pattern
+            raise
         logger.info(f"New pattern submitted: {pattern_id}")
         return True
 
     def _save_patterns(self) -> None:
-        """Save patterns to the pattern store."""
+        """Atomically replace the store after syncing its contents.
+
+        POSIX also syncs the directory; Windows has no portable directory sync.
+        Invalid existing data and write failures propagate to the caller.
+        A failure after replacement is visible is not a durability confirmation.
+        """
+        temporary_path = None
+        replaced = False
         try:
             # Ensure directory exists
             self.cognitive_brain_dir.mkdir(parents=True, exist_ok=True)
 
             # Load existing data to preserve metadata
-            existing_data = {}
-            if self.pattern_store_path.exists():
-                with open(self.pattern_store_path, encoding="utf-8") as f:
-                    existing_data = json.load(f)
+            try:
+                existing_data = self._read_pattern_store()
+            except FileNotFoundError:
+                existing_data = {}
 
             # Update patterns
             existing_data["patterns"] = self._patterns
@@ -626,24 +663,61 @@ class AgentBrainInterface:
             existing_data["metadata"]["last_updated"] = datetime.now(timezone.utc).isoformat()
 
             # Recalculate statistics
-            existing_data["statistics"] = {
-                "total_patterns": len(self._patterns),
-                "total_applications": sum(
-                    p.get("times_applied", 0) for p in self._patterns.values()
-                ),
-                "average_success_rate": sum(
-                    p.get("success_rate", 0) for p in self._patterns.values()
-                )
-                / max(len(self._patterns), 1),
-            }
+            existing_data.setdefault("statistics", {}).update(
+                {
+                    "total_patterns": len(self._patterns),
+                    "total_applications": sum(
+                        p.get("times_applied", 0) for p in self._patterns.values()
+                    ),
+                    "average_success_rate": sum(
+                        p.get("success_rate", 0) for p in self._patterns.values()
+                    )
+                    / max(len(self._patterns), 1),
+                }
+            )
 
-            with open(self.pattern_store_path, "w", encoding="utf-8") as f:
-                json.dump(existing_data, f, indent=2)
+            payload = json.dumps(existing_data, indent=2)
+            directory_fd = (
+                os.open(
+                    self.pattern_store_path.parent,
+                    os.O_RDONLY | getattr(os, "O_DIRECTORY", 0),
+                )
+                if os.name == "posix"
+                else None
+            )
+            try:
+                with tempfile.NamedTemporaryFile(
+                    mode="w",
+                    encoding="utf-8",
+                    dir=self.pattern_store_path.parent,
+                    prefix=f".{self.pattern_store_path.name}.",
+                    delete=False,
+                ) as f:
+                    temporary_path = Path(f.name)
+                    if os.name == "posix" and self.pattern_store_path.exists():
+                        os.fchmod(f.fileno(), self.pattern_store_path.stat().st_mode & 0o777)
+                    f.write(payload)
+                    f.flush()
+                    os.fsync(f.fileno())
+                os.replace(temporary_path, self.pattern_store_path)
+                replaced = True
+                if directory_fd is not None:
+                    os.fsync(directory_fd)
+            finally:
+                if directory_fd is not None:
+                    os.close(directory_fd)
 
             logger.debug("Patterns saved successfully")
-        except OSError as e:
-            type(e).__name__
-            logger.error("Failed to save patterns: <ERROR_TYPE>")
+        except OSError as exc:
+            raise PatternPersistenceError(
+                "Pattern store persistence failed", replaced=replaced
+            ) from exc
+        finally:
+            if temporary_path is not None:
+                try:
+                    temporary_path.unlink(missing_ok=True)
+                except OSError:
+                    logger.warning("Failed to clean up pattern store temporary file")
 
     # =========================================================================
     # Objective Alignment
@@ -824,7 +898,11 @@ class AgentBrainInterface:
             suggested_improvements: Suggestions for improving the pattern
 
         Returns:
-            True if feedback was submitted successfully
+            True if feedback was persisted, False if the pattern was not found.
+
+        Raises:
+            OSError: Pattern persistence failed.
+            ValueError: The existing pattern store is malformed.
 
         Example:
             >>> brain.submit_learning(
@@ -845,13 +923,14 @@ class AgentBrainInterface:
         )
 
         # Update pattern success rate
-        self._update_pattern_stats(feedback)
+        if not self._update_pattern_stats(feedback):
+            return False
 
         logger.info(f"Learning feedback submitted: {pattern_id} - {outcome}")
 
         return True
 
-    def _update_pattern_stats(self, feedback: LearningFeedback) -> None:
+    def _update_pattern_stats(self, feedback: LearningFeedback) -> bool:
         """Update pattern statistics based on feedback."""
         pattern_name = None
         for name, pattern_data in self._patterns.items():
@@ -859,11 +938,12 @@ class AgentBrainInterface:
                 pattern_name = name
                 break
 
-        if not pattern_name:
+        if pattern_name is None:
             logger.warning(f"Pattern {feedback.pattern_id} not found for stats update")
-            return
+            return False
 
         pattern = self._patterns[pattern_name]
+        previous_pattern = pattern.copy()
 
         # Update times applied
         pattern["times_applied"] = pattern.get("times_applied", 0) + 1
@@ -880,7 +960,14 @@ class AgentBrainInterface:
         pattern["success_rate"] = (alpha * new_success) + ((1 - alpha) * old_rate)
 
         # Save updated patterns
-        self._save_patterns()
+        try:
+            self._save_patterns()
+        except Exception as exc:
+            if not isinstance(exc, PatternPersistenceError) or not exc.replaced:
+                pattern.clear()
+                pattern.update(previous_pattern)
+            raise
+        return True
 
     # =========================================================================
     # Convenience Methods

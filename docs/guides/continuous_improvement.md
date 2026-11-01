@@ -64,13 +64,40 @@ negative, boundary and regression observations. Reassessment does not change
 the proposal ID merely because observation time advances.
 
 Complete supplied observations produce `ready-for-human-review`, **not**
-authenticated approval or an executed/merged improvement. The runner never
+authenticated approval or an executed/merged improvement. The assessment CLI never
 executes commands, patches, agents, releases or confidence updates. Its output
 always denies execution and integration authority. A non-ready or malformed
 record or empty bundle produces a nonzero CLI exit; valid records remain available on stdout.
 Sanitize exported source evidence before use; do not include credentials or
 personal information. Actual isolated verification and measured post-merge
 outcome tracking remain separate authorized stages.
+
+### Explicit local composition
+
+`compose_local_improvement` in the same maintained runner joins assessment,
+eligible retrieval, task review, canonical patch preparation, isolated
+verification, retained execution evidence and read-only evaluation. Unlike
+the assessment CLI, this API can make one disposable local attempt only when
+the caller explicitly authorizes execution, supplies human approval, a
+matching executor and a trusted independent review verifier.
+
+The verifier must affirm the bound review with exactly `True`; distinct names
+in an exported record are not independent approval. The actual UTF-8 patch
+bytes, SHA-256, immutable base and reviewed commands must agree. Template
+descriptions are never executable patches. Production freshness uses the UTC
+clock; injected observation time requires explicit synthetic fixture mode.
+
+The result retains event/attempt/base/patch identities, gate outputs and
+candidate tree identity for a human handoff. Local passing gates still produce
+partial evaluation without independently observed PR, merge and post-merge
+outcome evidence. Negative/boundary review observations are not a claim that
+each review category mechanically re-ran as a separate executor gate.
+
+Replay never executes a recorded event again. A crash after event persistence
+but before execution requires an owner to inspect the exact journal and claim
+identities and authorize reconciliation; do not delete records or automatically
+retry. Cross-store pending learning intents likewise stay blocked. No result
+authorizes PR creation, integration, publishing or automatic confidence learning.
 
 ### Optional live CI metadata collection
 

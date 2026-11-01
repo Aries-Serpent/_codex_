@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0.0",
+  "task_id": "AGENT-SELF-IMPROVEMENT-001",
+  "status": "continuation_in_progress",
+  "repository_root": "/home/runner/work/_codex_/_codex_",
+  "source_sha": "204b81043da6a50639697a81c3e646aec8d7944c",
+  "baseline_tested_sha": "48290eaaa9802b4143e75a9debc8b8ed257504db",
+  "initial_dirty_work": {
+    "path": ".codex/session_startup_packet.json",
+    "preservation": "Bytes preserved by initial progress commit; never overwritten",
+    "sha256": "1122bbdca55d61655bb24f15289cb1e400dfb33dfcdb5141145defb501a11aa8"
+  },
+  "baseline_validation": {
+    "interpreter": ".venv_ci/bin/python",
+    "version": "3.12.10",
+    "command": ".venv_ci/bin/python -m pytest tests/self_improvement tests/skills/test_assurance_skills.py tests/skills/test_assurance_invariants.py tests/ci/test_approval_integrity.py tests/ci/test_once_label_cleanup.py tests/ci/test_pda_record_integrity.py tests/ci/test_evidence_gated_approval.py tests/ci/test_e_to_d_gate.py tests/release/test_pypi_publish_workflow.py tests/release/test_publishing_assurance.py -q --override-ini=addopts='' -p no:cacheprovider",
+    "result": "619 passed in 21.58s",
+    "scope": "Local pre-continuation source; not validation of subsequent edits"
+  },
+  "hosted_ci": {
+    "run_id": 41336673593,
+    "sha": "48290eaaa9802b4143e75a9debc8b8ed257504db",
+    "conclusion": "skipped",
+    "run_attempt": 2,
+    "triggering_actor": "mbaetiong",
+    "owner_note": "Owner reports approval workflow approved; live snapshot shows attempt 2 completed/skipped, not passing product CI",
+    "logs": "Attempt 1 had zero jobs; approval is not merge, deployment or publication authority"
+  },
+  "agents": [
+    "compose-local-path",
+    "release-build-proof",
+    "monitor-truthfulness",
+    "legacy-durable-write",
+    "continuation-authority-review",
+    "dependency-pr5744-review"
+  ],
+  "traceability": {
+    "gap_ids": "G01-G40 acceptance criteria retained in plan.json",
+    "branch_review_ids": "B01-B10 meanings unavailable; original review required",
+    "additional_task": "T12 owner-requested dependency cherry-picks PR5744"
+  },
+  "dependency_integration": {
+    "source_pr": 5744,
+    "source_branch": "dependabot/pip/mcp-2.2.0",
+    "source_commits": [
+      "3f246e7a5e6b7fca80e20cf8437660f6dcfc95dc",
+      "1b3d96b7293b2d43274483e332f6918d76674d10"
+    ],
+    "application": "Explicit git cherry-picks applied to index; unrelated timestamp conflict resolved to original destination bytes",
+    "excluded": "Source merge commit and startup timestamp churn",
+    "signed_commit_attempts": "CLI signing service returned Bad Request twice; no signing bypass",
+    "validation": "7 packaging tests passed in 5.76s; no target-version advisories found",
+    "remaining": "Persist via authorized progress tool; uv/ML/evaluation lock drift remains separately scoped"
+  },
+  "content_sha256": {
+    "pyproject.toml": "c76c5a08abd6d2c4201c3bb46ee65c7c23213232475ab925488c442dd651ace5",
+    "requirements/extras.txt": "9b5c264e21485de0fc57f283f66ce16e8abb8b785c026db5967da517a946aa86",
+    "requirements/lock-dev.txt": "438344f22ff20c7ac41d6baf91fe5ef45034588a2ec5386b3f7eee96697084e5",
+    "scripts/ci/approve_pending_runs.py": "271aa28d32df8873afd125046e7058acb5c86f2d6158ab250741acc9f3b8bae3",
+    "src/codex/cognitive_brain/isolated_execution.py": "e35648ae394078bd87f35e541f05cec6c4e0d56650b5dd168c2e994c216e974f",
+    "src/codex/cognitive_brain/evidence_store.py": "99fa0893e215ab48b043ddaa0617f5d0071ce0cf150b3fde6bab44a1f241c7c5",
+    "src/codex/cognitive_brain/improvement_evaluator.py": "271c1693655c8895a3e6ba6ad8b8d7c64c82b26178b8513e7167f07345755eff"
+  },
+  "parent_validation": [
+    "94 approval transport/inventory/cleanup tests passed in 3.48s",
+    "Approval transport Ruff/Black/isort/mypy/compile passed; redirects and ambient proxies denied; bounded response reads",
+    "Six common integrity sources passed Ruff/Black/isort/mypy/compile",
+    "Bandit common/release selection: two medium findings, no high; approval urlopen warning eliminated by fixed-origin nonredirecting opener",
+    "Remaining release exec warning executes only fixed internal public-check strings after source binding; no untrusted code string accepted",
+    "All G01-G40 acceptance criteria preserved exactly; B01-B10 placeholders and fourteen negative mappings retained"
+  ],
+  "lane_validation": {
+    "composition": "75 focused tests passed; trusted independent review callback, synthetic-only clock injection, real-process before-fail/after-pass fixture, replay-safe partial handoff; scoped mypy correction pending",
+    "monitor": "50 tests passed, including 30 integrity fixtures; Ruff/Black/isort/mypy/compile passed; no health/evolution/local-fixer execution claim",
+    "legacy": {
+      "result": "108 passed, 1 baseline test deselected; Ruff/Black/isort/mypy/compile passed",
+      "deselected": "tests/cognitive/test_brain_interface.py::TestObjectiveAlignment::test_update_objective_progress",
+      "reason": "Baseline method lacks progress_note parameter; initial complete run reproduced TypeError; unchanged method",
+      "scope": "String-ID restart, atomic write/error propagation, metadata/raw-byte preservation and platform fixtures; no actual Windows runtime proof"
+    },
+    "release": {
+      "result": "12 actual artifacts built and installed-functional checks passed for captured export; 50 helper tests and five actual no-execution negatives passed",
+      "export_sha256": "83af4a1f73d7fb6c398c09a9416423bd78984d516cb41b1c793ce60010c0f902",
+      "export_scope": "2600 permitted files, dirty captured snapshot; restricted agent profiles excluded; not full checkout",
+      "limitations": [
+        "Final source drifted during three bounded build cycles; final-current-source assurance remains unverified",
+        "Clean virtual environments were checkout-local, isolated execution cwd was /; literal outside-checkout installation criterion remains unmet",
+        "Full runtime dependency resolution was not tested",
+        "Disposable artifact files were removed by the lane; reported digests retained here, not retained downloadable distributions",
+        "No hosted TestPyPI/PyPI promotion or publication"
+      ],
+      "artifact_sha256": {
+        "codex_ml-0.3.0-py3-none-any.whl": "88409900a3bd6a2b2e2b21ac7571f49864c9c30829ed4403a35d5db8317c4f3f",
+        "codex_ml-0.3.0.tar.gz": "4a70d43a9e6845bff3bc09a7034b7a7e9ae7227315d44b8ce3d1f2bae6b0bc61",
+        "codex_cognitive_sdk-0.1.0a1-py3-none-any.whl": "f23446cbc9813e2f5639aae38936e852d96e9b16572a88697dd5dcdf0140646d",
+        "codex_cognitive_sdk-0.1.0a1.tar.gz": "df58fb8b2835fe2a4009c9eceb35acf5bef998ce22d2f934e665b8d518de10fb",
+        "codex_contracts-0.1.0a1-py3-none-any.whl": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+        "codex_contracts-0.1.0a1.tar.gz": "2772501da8b587709acedc45d70e653d02da8d12b343d790d3735e6df6ea6121",
+        "codex_ml_evaluation-0.1.0a1-py3-none-any.whl": "1cf14edad842852326b8453db70c4a922bcb3c7ac40c95dd62b2bf244a68c231",
+        "codex_ml_evaluation-0.1.0a1.tar.gz": "05e6b5c5197faed2b4acd9641bfc8e73a124760d63d12e23e5e6e7b77377fc66",
+        "codex_ml_lora-0.1.0a1-py3-none-any.whl": "c85db3a2a3c9ff07c17ba46cc725de54c3a239b9aa4fefd891aa4833d0277adf",
+        "codex_ml_lora-0.1.0a1.tar.gz": "8676bed190b621742ce3d4fc478956c28ed3c490e5fb3819a4f07e4c7e6346fb",
+        "codex_ml_telemetry-0.1.0a1-py3-none-any.whl": "75991cb3df808c0a793603f3142cb4f1d1480d424f5307522aa485c27ca4adc8",
+        "codex_ml_telemetry-0.1.0a1.tar.gz": "2d3ceb461f1c27797e4c6a4f5f06b1b36c12b9520e3c3ff827c397671bd32d7a"
+      }
+    }
+  },
+  "independent_review": {
+    "initial": "Architecture review drove trusted verifier, fixture-clock and crash/replay corrections",
+    "legacy": "Independent Windows portability finding fixed with platform-guarded fsync/mode handling and fixtures",
+    "final": "Strict read-only final-composition-review found no significant issues",
+    "preservation": "Earlier reviewer ran unrequested tests/stash; no stash remains, startup/dependency/approval hashes preserved. Test-generated operational files retained under /tmp/codex-continuation-retained-fixtures and original tracked bytes verified restored. That review's follow-up is not final assurance."
+  },
+  "remaining": [
+    "Final integrated source hashes and independent review",
+    "Twelve real wheel/sdist installed-functional artifact proofs",
+    "Merged-SHA observation requires independent authorized source",
+    "Cross-store pending learning intent requires owner reconciliation",
+    "Restricted agent inventory and original B01-B10 evidence",
+    "Credential routing, publishing migration and execution protections remain owner-controlled"
+  ],
+  "rollback": "Owner-reviewed scoped revert only; preserve raw journals, startup bytes and ambiguous claims; append authorized reconciliation rather than replay",
+  "execution_authority": false,
+  "production_release_ready": false
+}
