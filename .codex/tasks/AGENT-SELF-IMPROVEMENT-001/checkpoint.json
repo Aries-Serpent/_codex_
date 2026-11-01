@@ -78,10 +78,23 @@
     "pr": {
       "requested_label": "wec:auto-approve",
       "requested_base": "0D_base_",
+      "number": 5746,
+      "url": "https://github.com/Aries-Serpent/_codex_/pull/5746",
+      "actual_base": "0D_base_",
+      "actual_draft": true,
+      "creation": "Tool successfully created PR but hosted read reports draft=true despite requested draft=false; no actual wec:auto-approve label present",
+      "merge_conflict_recovery": {
+        "reported_state": "dirty at creation",
+        "local_merge_sha": "d999f9486defaf1bc5cf12118160944801c6fc9b",
+        "parents": ["8d03b374e2cd4c63e5abc2e134fbd46390ca7742", "31f117c768a743e4e79633c67b9844e923019030"],
+        "resolution": "Only startup timestamp conflicted; original orientation bytes preserved. Adopted base manifest/secrets metadata. Finalized signed true two-parent local merge; did not merge hosted PR.",
+        "verification": "git diff --check passed; release2269 build-input hashes unchanged; startup SHA256 unchanged"
+      },
+      "remaining_gate_controls": "Browser has no authenticated edit/label/ready-for-review controls; owner must mark draft ready, apply fresh wec:auto-approve and allow genuine reviews/checks. No claim label was applied or gates passed.",
       "template": ".github/pull_request_template.md",
       "gate_status": "Preparation for review only; current hosted approval run41338406715 action_required with zero jobs; no product CI green or merge authorization",
       "integrated_gate_status": "Run41340186568 for23cc9066189dd7e16e165f8f8696dc4f7cbfb02c completed action_required,0jobs; failed-job logs contain no jobs. No rerun or approval attempted.",
-      "tool_limit": "PR creation tool has no explicit base or label fields; verify returned PR routing and disclose any unmet base/label requirement rather than inventing it"
+      "tool_limit": "PR creation tool has no explicit base or label fields. Returned PR confirmed correct0D_base_ base; actual label and ready state cannot be set by this tool."
     }
   },
   "changed_files": [

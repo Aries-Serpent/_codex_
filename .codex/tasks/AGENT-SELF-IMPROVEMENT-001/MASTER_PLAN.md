@@ -165,6 +165,23 @@ exits zero. Source/checkpoint identity validation and diff checks passed.
 Its hosted approval run `41340186568` still requires action with zero jobs.
 The PR is prepared for genuine review and gates, not certified merge-ready.
 
+PR [#5746](https://github.com/Aries-Serpent/_codex_/pull/5746) was created
+with the filled repository WEC template and confirmed actual base `0D_base_`.
+The platform retained draft status despite the requested non-draft creation;
+no actual `wec:auto-approve` label was attached. Browser access offers no
+authenticated edit/label/ready controls. The owner must supply these genuine
+gate actions; template text does not substitute for them.
+
+GitHub initially reported merge conflicts. The integration base was then
+merged locally as signed two-parent commit
+`d999f9486defaf1bc5cf12118160944801c6fc9b`. Only the startup timestamp
+conflicted; its original orientation bytes were preserved. Base manifest and
+secret-baseline metadata were adopted. No hosted PR merge occurred.
+All 2,269 build-input hashes still match the retained release snapshot, and
+diff/startup-byte checks passed. Publishing this local merge prepares the
+branch for GitHub to recompute mergeability; it does not approve the draft,
+label, hosted reviews or failing/missing checks.
+
 Scoped source continuation and intended PR #5744 dependency changes are
 committed at `26e285a0fc3bbc093ce87ad2c8d5df7a046507e9`.
 Local results: recovery 619 tests; composition 75; monitor 50; legacy 108
