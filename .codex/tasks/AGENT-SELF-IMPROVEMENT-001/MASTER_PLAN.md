@@ -157,6 +157,14 @@ tool has no base/label arguments, so actual routing must be verified from
 its returned PR rather than assumed. Current hosted approval run
 `41338406715` is `action_required` with zero jobs, not green product CI.
 
+Integrated continuation source:
+`23cc9066189dd7e16e165f8f8696dc4f7cbfb02c`. Secret scanning passed;
+Actions CodeQL found zero alerts, while Python CodeQL was skipped because
+the database is too large. The committed monitor's Bandit medium/high check
+exits zero. Source/checkpoint identity validation and diff checks passed.
+Its hosted approval run `41340186568` still requires action with zero jobs.
+The PR is prepared for genuine review and gates, not certified merge-ready.
+
 Scoped source continuation and intended PR #5744 dependency changes are
 committed at `26e285a0fc3bbc093ce87ad2c8d5df7a046507e9`.
 Local results: recovery 619 tests; composition 75; monitor 50; legacy 108

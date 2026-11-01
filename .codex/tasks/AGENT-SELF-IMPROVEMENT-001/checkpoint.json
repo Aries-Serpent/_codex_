@@ -9,6 +9,7 @@
   "pr_continuation": {
     "recovered_sha": "2a47c400cfdebc9d502ed3578015dcb8e99029dd",
     "orientation_sha": "985ed3c1e9795089843ccbd4e594715cc046897d",
+    "integrated_source_sha": "23cc9066189dd7e16e165f8f8696dc4f7cbfb02c",
     "requested_base": "0D_base_",
     "observed_base_sha": "31f117c768a743e4e79633c67b9844e923019030",
     "common_ancestor": "4a7d955b8b214d6002932261afdebd60f37ede8e",
@@ -24,6 +25,8 @@
       "baseline_command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest tests/self_improvement tests/skills/test_assurance_skills.py tests/skills/test_assurance_invariants.py tests/ci/test_approval_integrity.py tests/ci/test_approval_transport_integrity.py tests/ci/test_once_label_cleanup.py tests/ci/test_pda_record_integrity.py tests/ci/test_evidence_gated_approval.py tests/ci/test_e_to_d_gate.py tests/release/test_pypi_publish_workflow.py tests/release/test_publishing_assurance.py -q --override-ini=addopts='' -p no:cacheprovider --basetemp=/tmp/codex-pr-prep-tests",
       "monitor": "78 focused tests passed; Ruff/Black/isort, scoped mypy follow-imports=skip, compile and secret/diff checks passed; parent did not rerun completed agent tests",
       "review": "Independent strict read-only pr-gate-source-review found no significant issues",
+      "security": "Secret scans clean; Actions CodeQL zero alerts; Python CodeQL skipped due oversized database, not a clean Python result. Bandit -ll on committed monitor exits0 with no medium/high findings.",
+      "final_identity_checks": "All40 exact acceptance strings,14negative mappings,10 B-review placeholders,all gap handoff coverage,12 retained artifact digests and unchanged monitor/startup bytes verified; git diff --check passed",
       "monitor_sha256": "9c0d7965b4567c8b707451de2199533fb6365b8dcadfaa0d870a217586950ced",
       "monitor_test_sha256": "8a1126d9e6e0a6cf6b053973aa05784289bc9bcacf461198fe933fc01bc27479"
     },
@@ -77,6 +80,7 @@
       "requested_base": "0D_base_",
       "template": ".github/pull_request_template.md",
       "gate_status": "Preparation for review only; current hosted approval run41338406715 action_required with zero jobs; no product CI green or merge authorization",
+      "integrated_gate_status": "Run41340186568 for23cc9066189dd7e16e165f8f8696dc4f7cbfb02c completed action_required,0jobs; failed-job logs contain no jobs. No rerun or approval attempted.",
       "tool_limit": "PR creation tool has no explicit base or label fields; verify returned PR routing and disclose any unmet base/label requirement rather than inventing it"
     }
   },
