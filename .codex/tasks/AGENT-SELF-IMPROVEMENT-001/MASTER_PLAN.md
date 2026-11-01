@@ -112,6 +112,51 @@ and no failed-job logs: it provides no product verification.
 
 ## Continuation and rollback
 
+### PR-preparation continuation
+
+Recovered `2a47c400cfdebc9d502ed3578015dcb8e99029dd`; orientation
+`985ed3c1e9795089843ccbd4e594715cc046897d` preserves the newly dirty startup
+packet without overwriting it. Current focused regression selection:
+**694 passed in 45.27s**. Independent monitor transport lane:
+**78 passed**, configured formatting/type/compile checks passed, and an
+independent read-only reviewer found no significant issues. Transport uses
+only explicit caller credentials, fixed-origin validated paths, no redirects
+or ambient proxies, bounded bodies and sanitized error logging. No live
+credential operation or workflow dispatch was performed.
+
+The parent closed the earlier local release-placement/retention gap: all
+six real distributions built as wheel and sdist, installed in twelve clean
+virtual environments physically under `/tmp`, and passed their public
+functions from cwd `/` with isolated interpreters. The retained source
+manifest binds 2,269 permitted tracked build inputs to snapshot
+`c8f844fa128f65b0336bb9ce4a87444b95f29d07f154f74a066f8ed661048a4d`;
+their bytes still match current build inputs. Actual artifacts, logs and
+results remain under `/tmp/codex-release-985ed3c1`. All twelve digests and
+recreation commands are recorded in `checkpoint.json`. This is not a
+full-checkout snapshot, resolved runtime-dependency installation, actual
+TestPyPI publication or hosted provenance. Retained `/tmp` files are session
+artifacts, not uploaded durable GitHub artifacts.
+
+Read-only legacy revalidation confirms 444 raw objects and an unchanged
+SHA-256: 77 failures, 57 caller-labelled repairs, 267 sessions, 42 unknown and
+one malformed record; zero verified attempts means an unknown verified rate.
+The ledger now supplies an owner, next action and stop condition for every
+remaining gap, grouped by T01–T12. It preserves exact G01–G40 acceptance
+criteria, fourteen negatives and unavailable B01–B10 meanings. Incomplete
+calibration, SQLite adapters, actual health/healing integration, recovery,
+merged-SHA observations, inventory and owner-controlled publishing decisions
+remain incomplete; they are not waived by preparing a PR.
+
+Requested PR integration base is `0D_base_`, observed at
+`31f117c768a743e4e79633c67b9844e923019030`; common ancestor is the original
+`4a7d955b8b214d6002932261afdebd60f37ede8e`. No base merge, rebase or main
+push was performed. PR preparation uses the existing WEC template and
+requests `wec:auto-approve` without treating template text as a fresh label,
+independent approval, passing hosted CI or merge permission. The creation
+tool has no base/label arguments, so actual routing must be verified from
+its returned PR rather than assumed. Current hosted approval run
+`41338406715` is `action_required` with zero jobs, not green product CI.
+
 Scoped source continuation and intended PR #5744 dependency changes are
 committed at `26e285a0fc3bbc093ce87ad2c8d5df7a046507e9`.
 Local results: recovery 619 tests; composition 75; monitor 50; legacy 108

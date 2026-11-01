@@ -21,12 +21,14 @@ Usage::
 
     python scripts/ci/proactive_ci_monitor.py \\
         --repo Aries-Serpent/_codex_ \\
-        --token "$GITHUB_TOKEN" \\
+        --token "<caller-supplied-token>" \\
         [--dry-run]
+
+Credentials must be supplied explicitly through ``--token`` (or the existing
+Python ``token`` argument); this script does not discover credentials.
 
 Environment variables
 ---------------------
-GITHUB_TOKEN        GitHub PAT with ``repo`` + ``workflow`` scopes.
 PROACTIVE_DRY_RUN   Set to ``1`` to skip comment posting (print only).
 PROACTIVE_MAX_AGE_H Max age in hours of failed runs to consider (default 24).
 """
@@ -40,9 +42,11 @@ import os
 import re
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from collections.abc import Callable, Sequence
 from datetime import datetime, timezone
+from email.message import Message
 from typing import Any
 
 logger = logging.getLogger("proactive_ci_monitor")
@@ -203,6 +207,41 @@ def _classify(log_text: str, history: list[dict] | None = None) -> dict:
 # ---------------------------------------------------------------------------
 
 
+_GITHUB_API_ORIGIN = "https://api.github.com"
+_MAX_RESPONSE_BYTES = 1024 * 1024
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+def _github_url(path: str) -> str:
+    """Accept only escaped, origin-relative API paths without traversal."""
+    if (
+        not isinstance(path, str)
+        or not path.startswith("/")
+        or path.startswith("//")
+        or not path.isascii()
+        or re.search(r"[\x00-\x20\x7f\\#]", path)
+        or re.search(r"%(?![0-9a-fA-F]{2})", path)
+    ):
+        raise ValueError("invalid GitHub API path")
+    parsed = urllib.parse.urlsplit(path)
+    decoded = urllib.parse.unquote(path)
+    decoded_path = urllib.parse.unquote(parsed.path)
+    if (
+        parsed.scheme
+        or parsed.netloc
+        or parsed.fragment
+        or re.search(r"[\x00-\x1f\x7f\\]", decoded)
+        or decoded_path.startswith("//")
+        or any(segment in {".", ".."} for segment in decoded_path.split("/"))
+    ):
+        raise ValueError("invalid GitHub API path")
+    return _GITHUB_API_ORIGIN + path
+
+
 def _error_label(exc: Exception) -> str:
     """Describe denied reads without echoing URLs, bodies or credentials."""
     if isinstance(exc, urllib.error.HTTPError):
@@ -216,8 +255,15 @@ def _gh(
     method: str = "GET",
     body: dict | None = None,
 ) -> Any:
-    """Make a GitHub API call; return parsed JSON or raise on error."""
-    url = f"https://api.github.com{path}"
+    """Use only the explicit token, fixed origin and bounded, direct transport."""
+    url = _github_url(path)
+    if (
+        not isinstance(token, str)
+        or not token
+        or not token.strip("*")
+        or any(ord(char) <= 32 or ord(char) >= 127 for char in token)
+    ):
+        raise ValueError("explicit GitHub API token required")
     data = json.dumps(body).encode() if body else None
     req = urllib.request.Request(
         url,
@@ -231,12 +277,24 @@ def _gh(
         },
     )
     try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            return json.loads(resp.read())
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+        with opener.open(req, timeout=30) as resp:
+            body_bytes = resp.read(_MAX_RESPONSE_BYTES + 1)
+            if len(body_bytes) > _MAX_RESPONSE_BYTES:
+                raise ValueError("GitHub API response exceeds size limit")
+            try:
+                return json.loads(body_bytes)
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                raise ValueError("invalid JSON from GitHub API") from None
     except urllib.error.HTTPError as exc:
-        body_text = exc.read().decode(errors="replace")
-        logger.warning("GitHub API %s %s → %s: %s", method, path, exc.code, body_text[:300])
-        raise
+        status = exc.code
+        exc.close()
+        logger.warning("GitHub API request failed: HTTP %d", status)
+        raise urllib.error.HTTPError(
+            _GITHUB_API_ORIGIN, status, "GitHub API request failed", Message(), None
+        ) from None
+    except urllib.error.URLError:
+        raise urllib.error.URLError("GitHub API transport failed") from None
 
 
 def _list_open_prs(repo: str, token: str) -> list[dict]:
@@ -404,7 +462,7 @@ def _post_rescue_comment(
         )
         return True
     except Exception as exc:
-        logger.error("Failed to post comment to PR #%d: %s", pr_number, exc)
+        logger.error("Failed to post comment to PR #%d: %s", pr_number, _error_label(exc))
         return False
 
 
@@ -463,7 +521,7 @@ def scan(
             pr_data = _gh(f"/repos/{repo}/pulls/{target_pr}", token)
             prs = [pr_data]
         except Exception as exc:
-            logger.error("Could not fetch PR #%d: %s", target_pr, exc)
+            logger.error("Could not fetch PR #%d: %s", target_pr, _error_label(exc))
             report["complete"] = False
             report["exit_code"] = 1
             report["errors"].append(f"PR #{target_pr}: {_error_label(exc)}")
@@ -683,8 +741,8 @@ def main() -> int:
     )
     parser.add_argument(
         "--token",
-        default=os.environ.get("GITHUB_TOKEN", ""),
-        help="GitHub PAT  (default: $GITHUB_TOKEN)",
+        default="",
+        help="Explicit caller-supplied GitHub token (no environment lookup)",
     )
     parser.add_argument(
         "--dry-run",
@@ -721,7 +779,7 @@ def main() -> int:
         logger.error("--repo is required (or set GITHUB_REPOSITORY)")
         return 1
     if not args.token:
-        logger.error("--token is required (or set GITHUB_TOKEN)")
+        logger.error("--token is required")
         return 1
 
     report = scan(

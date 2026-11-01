@@ -6,6 +6,80 @@
   "source_sha": "204b81043da6a50639697a81c3e646aec8d7944c",
   "baseline_tested_sha": "48290eaaa9802b4143e75a9debc8b8ed257504db",
   "verified_source_commit": "26e285a0fc3bbc093ce87ad2c8d5df7a046507e9",
+  "pr_continuation": {
+    "recovered_sha": "2a47c400cfdebc9d502ed3578015dcb8e99029dd",
+    "orientation_sha": "985ed3c1e9795089843ccbd4e594715cc046897d",
+    "requested_base": "0D_base_",
+    "observed_base_sha": "31f117c768a743e4e79633c67b9844e923019030",
+    "common_ancestor": "4a7d955b8b214d6002932261afdebd60f37ede8e",
+    "initial_dirty_work": {
+      "path": ".codex/session_startup_packet.json",
+      "sha256": "24b5a6cafc76bdc6a9ba455da53af95446c9fb935ac146815f50327df4247ec8",
+      "preservation": "Preserved without overwrite by orientation progress commit"
+    },
+    "agents": ["stable-release-assurance", "monitor-transport-assurance", "gap-resumption-review", "pr-gate-source-review"],
+    "execution": "Release specialist stopped on its own unavailable scratch boundary; parent directly built and retained authorized /tmp fixtures. Monitor agent owns only monitor transport/test. No registry/profile reads, hosted approvals, reruns, merges or publication.",
+    "validation": {
+      "committed_baseline": "694 passed in45.27s using .venv_ci Python3.12, focused selection including all self_improvement and approval/release tests; no sum with prior overlapping selections",
+      "baseline_command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest tests/self_improvement tests/skills/test_assurance_skills.py tests/skills/test_assurance_invariants.py tests/ci/test_approval_integrity.py tests/ci/test_approval_transport_integrity.py tests/ci/test_once_label_cleanup.py tests/ci/test_pda_record_integrity.py tests/ci/test_evidence_gated_approval.py tests/ci/test_e_to_d_gate.py tests/release/test_pypi_publish_workflow.py tests/release/test_publishing_assurance.py -q --override-ini=addopts='' -p no:cacheprovider --basetemp=/tmp/codex-pr-prep-tests",
+      "monitor": "78 focused tests passed; Ruff/Black/isort, scoped mypy follow-imports=skip, compile and secret/diff checks passed; parent did not rerun completed agent tests",
+      "review": "Independent strict read-only pr-gate-source-review found no significant issues",
+      "monitor_sha256": "9c0d7965b4567c8b707451de2199533fb6365b8dcadfaa0d870a217586950ced",
+      "monitor_test_sha256": "8a1126d9e6e0a6cf6b053973aa05784289bc9bcacf461198fe933fc01bc27479"
+    },
+    "legacy_inventory": {
+      "path": ".codex/aftermath/pda_iterations.jsonl",
+      "sha256": "a63ef2911870b2830f89c85fea909c613c50dabe8bd41f3d636b2cc443621f1f",
+      "objects": 444,
+      "missing_type": 24,
+      "missing_schema": 444,
+      "failure": 77,
+      "caller_labelled_repair": 57,
+      "session": 267,
+      "unknown": 42,
+      "malformed": 1,
+      "verified_attempts": 0,
+      "verified_rate": null,
+      "validation": "Read-only existing _classify/_aggregate; before/after raw bytes unchanged"
+    },
+    "release_assurance": {
+      "source_sha": "985ed3c1e9795089843ccbd4e594715cc046897d",
+      "snapshot_sha256": "c8f844fa128f65b0336bb9ce4a87444b95f29d07f154f74a066f8ed661048a4d",
+      "manifest": "/tmp/codex-release-985ed3c1/snapshot.json",
+      "results": "/tmp/codex-release-985ed3c1/results.json",
+      "retained_root": "/tmp/codex-release-985ed3c1",
+      "scope": "2269 permitted tracked src/packages and build inputs; not full checkout, restricted profiles excluded; current build-input hashes equal snapshot",
+      "build_command": ".venv_ci/bin/python -B -m build --no-isolation /tmp/codex-release-985ed3c1/source/MATRIX_PATH --outdir /tmp/codex-release-985ed3c1/dist/DISTRIBUTION",
+      "install_command": "/tmp/codex-release-985ed3c1/installed/DISTRIBUTION/KIND/bin/python -I -m pip --isolated install --no-cache-dir --no-deps --no-index --no-build-isolation ARTIFACT",
+      "sdist_tools": "Existing lock-release.txt restored with explicit https://pypi.org/simple, --isolated --require-hashes; ten tool advisories returned no vulnerabilities",
+      "verification_command": "OUTSIDE_VENV/bin/python -I -B FROZEN_HELPER verify-installed --distribution NAME --dist-dir DIST --source-sha 985ed3c1e9795089843ccbd4e594715cc046897d --origin testpypi --import-name IMPORT --artifact-kind KIND; cwd /",
+      "result": "All12 actual wheel/sdist public-function checks passed; clean venvs physically outside checkout under /tmp; artifacts and logs retained",
+      "correction_cycles": "One orchestration correction: used maintained record_build_identity instead of nonexistent write_build_identity; no code workaround or fourth historical build cycle",
+      "artifact_sha256": {
+        "codex_ml-0.3.0-py3-none-any.whl": "b34d7e64aece04ddf34c808836f1dffb25a2a9b41d67c9676b5c6d4e1e06e992",
+        "codex_ml-0.3.0.tar.gz": "18e586dc522f2d1fdae5adbdc9082dbf650f922146c4893ac63fe079325aa544",
+        "codex_cognitive_sdk-0.1.0a1-py3-none-any.whl": "f23446cbc9813e2f5639aae38936e852d96e9b16572a88697dd5dcdf0140646d",
+        "codex_cognitive_sdk-0.1.0a1.tar.gz": "fbd1e55c11223943838e178832bf3c3918b4dab762eaaa6619c298f347daa083",
+        "codex_contracts-0.1.0a1-py3-none-any.whl": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+        "codex_contracts-0.1.0a1.tar.gz": "c518780a7ac27c24254f2ffcf3e6ac0dd6e7ea323aa2beff1150708b2e649f47",
+        "codex_ml_evaluation-0.1.0a1-py3-none-any.whl": "1cf14edad842852326b8453db70c4a922bcb3c7ac40c95dd62b2bf244a68c231",
+        "codex_ml_evaluation-0.1.0a1.tar.gz": "10e8f945d280d77d59ac3447bd525cb990271cab71488b9ec7b57aace7ecee4c",
+        "codex_ml_lora-0.1.0a1-py3-none-any.whl": "c85db3a2a3c9ff07c17ba46cc725de54c3a239b9aa4fefd891aa4833d0277adf",
+        "codex_ml_lora-0.1.0a1.tar.gz": "3b97696c3441bf3cccf37c1319fa3337f8d8a7c7cbe5f7be15f1edd5dc0eea6c",
+        "codex_ml_telemetry-0.1.0a1-py3-none-any.whl": "75991cb3df808c0a793603f3142cb4f1d1480d424f5307522aa485c27ca4adc8",
+        "codex_ml_telemetry-0.1.0a1.tar.gz": "5f24b35e37f1bb22e8d65bd86b531a3e6f3767f9554a13e7d84a0a59c6019b95"
+      },
+      "limits": "Local expected-origin binding, not actual TestPyPI upload/download or hosted provenance. Full runtime dependency resolution not tested. /tmp files are retained for this session, not durable GitHub artifacts; checkpoint records identities for recreation."
+    },
+    "handoff": "All G01-G40 acceptance criteria and14 negative mappings retained; per-task gap IDs, owner, next action and stop condition in plan.json pr_preparation.remaining_gap_handoff. Original B01-B10 evidence and restricted inventory remain unavailable.",
+    "pr": {
+      "requested_label": "wec:auto-approve",
+      "requested_base": "0D_base_",
+      "template": ".github/pull_request_template.md",
+      "gate_status": "Preparation for review only; current hosted approval run41338406715 action_required with zero jobs; no product CI green or merge authorization",
+      "tool_limit": "PR creation tool has no explicit base or label fields; verify returned PR routing and disclose any unmet base/label requirement rather than inventing it"
+    }
+  },
   "changed_files": [
     ".codex/tasks/AGENT-SELF-IMPROVEMENT-001/MASTER_PLAN.md",
     ".codex/tasks/AGENT-SELF-IMPROVEMENT-001/checkpoint.json",
@@ -153,8 +227,8 @@
     "prior_owner_approval": "Earlier source attempt2 skipped; not permission to rerun/approve this source or publish"
   },
   "remaining": [
-    "Final-current-source/outside-checkout release proof and retained actual distributions",
-    "Full Python CodeQL unavailable due database size; authenticated monitor transport owner decision",
+    "Full runtime dependency-resolution and hosted same-bundle protected release proof",
+    "Full Python CodeQL unavailable due database size; monitor credential use remains operation-specific owner decision",
     "Merged-SHA observation requires independent authorized source",
     "Cross-store pending learning intent requires owner reconciliation",
     "Restricted agent inventory and original B01-B10 evidence",
