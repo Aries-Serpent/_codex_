@@ -33,7 +33,7 @@ Keeping the maintenance workflow local avoids exposing repository data to extern
 
 `python -m codex.cognitive_brain.improvement_loop_runner --help` describes
 the existing PDA-log runner and its optional `--evidence-bundle` mode.
-This mode reads local JSONL exports, not live GitHub or Chronicle services,
+By default this mode reads local JSONL exports, not live GitHub or Chronicle services,
 and prints one assessment per valid input record. Each record contains:
 
 - `repo` and immutable `sha`, matching the caller's `--repo` and `--sha`;
@@ -69,6 +69,46 @@ record or empty bundle produces a nonzero CLI exit; valid records remain availab
 Sanitize exported source evidence before use; do not include credentials or
 personal information. Actual isolated verification and measured post-merge
 outcome tracking remain separate authorized stages.
+
+### Optional live CI metadata collection
+
+Add `--collect-ci-run RUN_ID` together with `--evidence-bundle` to read public
+GitHub Actions metadata for one run and replace exported signals in the
+input records. The positional JSONL file still supplies repository/SHA,
+briefs and any previously recorded validation. All records share the same
+collected snapshot. Caller-supplied write boundaries provide candidate files;
+GitHub metadata never supplies patch content or write scope.
+
+`codex.cognitive_brain.ci_signal_collection.collect_ci_run` also accepts an
+injected authorized JSON reader for private repositories. The default reader
+uses the existing optional `requests` dependency lazily, does not resolve
+credentials, and does not inherit proxy/netrc settings. It performs only
+fixed-origin HTTPS GETs with redirects disabled, no retries, ten-second
+connect/read timeouts and a one-MiB response cap. A disposable process bounds
+DNS, TLS, response headers and slow-stream body reads to twenty seconds or
+the remaining sixty-second collection budget, whichever is smaller; timeout
+cleanup permits two additional one-second joins. Caller-injected readers must
+provide their own blocking-operation cancellation; the collector checks their
+elapsed time but cannot interrupt arbitrary caller code.
+
+Collection is bounded to five pages, 500 jobs and seven reads. It uses the
+attempt-specific jobs endpoint and checks the run again after pagination.
+Repository, immutable SHA, run ID, every job's attempt, timestamps, job IDs and complete
+pagination must agree. Pending, gated, cancelled, denied, empty or entirely
+skipped inventories are explicitly unavailable; malformed or changing
+metadata is an error. Neither produces a synthetic zero-failure baseline.
+
+A completed measurable attempt produces `failed_jobs_in_run_attempt`,
+with its failure count, structured job IDs/outcomes and source references.
+Successful attempts remain non-actionable metric samples. Skipped/neutral
+jobs cannot refresh the age of an old executed-job measurement. Remote logs,
+job/step names, actor details and error response text are not copied.
+
+Collection success is not independent validation, C2 hosted enforcement
+proof, approval or execution authority. The existing freshness, measured
+baseline, scoped proposal and per-observation digest checks still apply.
+Private access, Chronicle/package collectors, isolated verification and
+post-merge outcomes remain separate integrations.
 
 ## Read-only transition evidence
 

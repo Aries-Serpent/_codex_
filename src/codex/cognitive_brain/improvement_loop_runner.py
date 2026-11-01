@@ -21,6 +21,7 @@ import logging
 import math
 import re
 import sys
+from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any, List, Optional, Sequence, Tuple
@@ -281,6 +282,12 @@ def _build_parser() -> argparse.ArgumentParser:
         "never execute patches or authenticate approval/observer identities.",
     )
     parser.add_argument(
+        "--collect-ci-run",
+        type=int,
+        help="Read one GitHub Actions run's public metadata and replace exported signals in "
+        "evidence-bundle records; requires --evidence-bundle and never reads credentials or logs.",
+    )
+    parser.add_argument(
         "--repo", required=True, help="Repository slug, e.g. 'Aries-Serpent/_codex_'."
     )
     parser.add_argument("--ref", required=True, help="Git ref the signals were observed on.")
@@ -304,6 +311,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     """CLI entry point. Returns 0 on success, 1 if any record was malformed."""
 
     args = _build_parser().parse_args(argv)
+    if args.collect_ci_run is not None and not args.evidence_bundle:
+        print("--collect-ci-run requires --evidence-bundle", file=sys.stderr)
+        return EXIT_MALFORMED
 
     brain = AgentBrainInterface(
         agent_id="improvement-loop",
@@ -323,16 +333,35 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             return EXIT_MALFORMED
         bundle_errors = 0
         assessed_records = 0
+        collected = None
+        if args.collect_ci_run is not None:
+            from codex.cognitive_brain.ci_signal_collection import collect_ci_run
+
+            try:
+                collected = collect_ci_run(repo=args.repo, sha=args.sha, run_id=args.collect_ci_run)
+            except ValueError:
+                print("invalid CI collection context", file=sys.stderr)
+                return EXIT_MALFORMED
         with args.jsonl_path.open(encoding="utf-8") as handle:
             for lineno, line in enumerate(handle, start=1):
                 if not line.strip():
                     continue
                 try:
+                    record = json.loads(line)
+                    if collected is not None:
+                        signal = asdict(collected)
+                        signal["details"] = {
+                            **signal["details"],
+                            "files": record["brief"].get("write_paths", []),
+                        }
+                        record = {**record, "signal": signal}
                     result = assess_evidence_record(
-                        json.loads(line),
+                        record,
                         pipeline=pipeline,
                         human_approved=args.human_approved,
                     )
+                    if collected is not None:
+                        result["collection"] = asdict(collected)
                     assessed_records += 1
                     print(json.dumps(result))
                     if result["status"] != "ready-for-human-review":
