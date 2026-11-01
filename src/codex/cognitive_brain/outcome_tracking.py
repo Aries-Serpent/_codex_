@@ -8,7 +8,6 @@ the pattern store.
 
 from __future__ import annotations
 
-import fcntl
 import json
 import logging
 import os
@@ -17,9 +16,10 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Iterator, Mapping, Optional
+from typing import TYPE_CHECKING, Any, Callable, Iterator, Mapping, Optional
 
-from codex.cognitive_brain.evidence_store import EvidenceIntegrityError, EvidenceStore
+if TYPE_CHECKING:
+    from codex.cognitive_brain.evidence_store import EvidenceStore
 
 logger = logging.getLogger(__name__)
 
@@ -139,6 +139,13 @@ class OutcomeTracker:
         measurement_verifier: Optional[Callable[[Mapping[str, Any]], bool]] = None,
         allow_synthetic: bool = False,
     ) -> None:
+        try:
+            from codex.cognitive_brain.evidence_store import EvidenceIntegrityError, EvidenceStore
+        except ModuleNotFoundError as exc:
+            if exc.name == "fcntl":
+                raise RuntimeError("Outcome learning requires POSIX fcntl locking") from exc
+            raise
+
         self.brain = brain_interface
         self.outcome_source = outcome_source
         self.alpha = alpha
@@ -171,6 +178,7 @@ class OutcomeTracker:
         or not a measured terminal state — confidence must never move on
         unverified feedback.
         """
+        from codex.cognitive_brain.evidence_store import EvidenceIntegrityError
 
         record = self.outcome_source(event_id)
         if isinstance(record, Mapping) and type(record.get("synthetic", False)) is not bool:
@@ -191,6 +199,10 @@ class OutcomeTracker:
     @contextmanager
     def _learning_guard(self) -> Iterator[None]:
         """Serialize tracker writers only; other SDK writers must remain excluded."""
+        import fcntl
+
+        from codex.cognitive_brain.evidence_store import EvidenceIntegrityError
+
         path = getattr(self.brain, "pattern_store_path", None)
         if path is None:
             raise EvidenceIntegrityError("durable brain pattern store required")
@@ -211,6 +223,8 @@ class OutcomeTracker:
         patch_hash: str,
         record: Mapping[str, Any],
     ) -> Optional[ConfidenceUpdate]:
+        from codex.cognitive_brain.evidence_store import EvidenceIntegrityError
+
         if not isinstance(record, Mapping):
             raise EvidenceIntegrityError("malformed outcome record")
         if type(record.get("merged")) is not bool or record.get("outcome") not in (
@@ -303,6 +317,8 @@ class OutcomeTracker:
         )
 
     def _durable_pattern(self, pattern_id: str) -> Mapping[str, Any]:
+        from codex.cognitive_brain.evidence_store import EvidenceIntegrityError
+
         try:
             data = json.loads(Path(self.brain.pattern_store_path).read_text(encoding="utf-8"))
             patterns = data["patterns"]

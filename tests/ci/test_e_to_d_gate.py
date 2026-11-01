@@ -8,7 +8,7 @@ import yaml
 
 from scripts.ci.e_to_d_gate import assess
 from scripts.ci.generate_manifest import add_integrity_hash
-from scripts.cognitive.d_capable_promotion import evaluate_agent, save_registry
+from scripts.cognitive.d_capable_promotion import evaluate_agent, run, save_registry
 
 AGENT = {
     "id": "fixture",
@@ -141,3 +141,65 @@ def test_minimal_writer_refuses_other_changes(tmp_path):
     with pytest.raises(ValueError, match="unrelated"):
         save_registry(data, registry)
     assert registry.read_text() == original
+
+
+@pytest.mark.parametrize("document_start", ["", "---\n"])
+@pytest.mark.parametrize("document_end", ["", "\n", "\n...\n"])
+def test_promotion_inserts_missing_timestamp(tmp_path, monkeypatch, document_start, document_end):
+    monkeypatch.chdir(tmp_path)
+    original = (
+        "# Keep header\n"
+        + document_start
+        + yaml.safe_dump({"agents": [AGENT]}, sort_keys=False).rstrip("\n")
+        + document_end
+    )
+    registry = tmp_path / "fixture.yaml"
+    registry.write_text(original)
+    assert run(registry, apply=True) == 0
+    updated = registry.read_text()
+    data = yaml.safe_load(updated)
+    assert data["agents"] == [{**AGENT, "autonomy_model": "D_CAPABLE"}]
+    timestamp_line = f"last_updated: '{data['last_updated']}'\n"
+    assert timestamp_line in updated
+    assert updated.replace(timestamp_line, "") == original.replace(
+        "autonomy_model: E", "autonomy_model: D_CAPABLE"
+    )
+
+
+def test_timestamp_insertion_still_refuses_unrelated_changes(tmp_path):
+    registry = tmp_path / "fixture.yaml"
+    original = yaml.safe_dump({"agents": [AGENT]}, sort_keys=False)
+    registry.write_text(original)
+    data = yaml.safe_load(original)
+    data["last_updated"] = "2026-11-01T00:00:00Z"
+    data["agents"][0]["description"] = "unrelated"
+    with pytest.raises(ValueError, match="unrelated"):
+        save_registry(data, registry)
+    assert registry.read_text() == original
+
+
+@pytest.mark.parametrize(
+    "original",
+    [
+        "# header\n  agents:\n    - id: fixture\n      autonomy_model: E\n",
+        "# header\n{agents: [{id: fixture, autonomy_model: E}]}",
+        "---\n&registry {agents: [{id: fixture, autonomy_model: E}]}\n...\n",
+    ],
+)
+def test_timestamp_insertion_preserves_root_layout(tmp_path, original):
+    registry = tmp_path / "fixture.yaml"
+    registry.write_text(original)
+    data = yaml.safe_load(original)
+    data["agents"][0]["autonomy_model"] = "D_CAPABLE"
+    data["last_updated"] = "2026-11-01T00:00:00Z"
+    save_registry(data, registry)
+    updated = registry.read_text()
+    assert yaml.safe_load(updated) == data
+    timestamp = "last_updated: '2026-11-01T00:00:00Z'"
+    if yaml.compose(original).flow_style:
+        timestamp += ", "
+    else:
+        timestamp += "\n  "
+    assert updated.replace(timestamp, "") == original.replace(
+        "autonomy_model: E", "autonomy_model: D_CAPABLE"
+    )

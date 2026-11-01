@@ -27,7 +27,6 @@ from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence, cast
 
 from codex.cognitive_brain.authority import AuthorityEnvelope
-from codex.cognitive_brain.isolated_execution import IsolatedExecutor, scrub_environment
 
 # The evidence contract ships in the codex-cognitive-sdk distribution; the
 # source tree is used directly when running from a checkout.
@@ -216,6 +215,8 @@ class ImprovementPipeline:
         define the same files/size at preparation and execution. Application
         against the immutable base is still verified only by the executor.
         """
+        from codex.cognitive_brain.isolated_execution import IsolatedExecutor, scrub_environment
+
         if (
             not isinstance(patch_bytes, bytes)
             or not 0 < len(patch_bytes) <= 1024 * 1024

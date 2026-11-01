@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -63,6 +65,41 @@ def _failure_record() -> dict:
         "files": ["src/codex/ci_config.py"],
         "verification_cmd": "nox -s tests",
     }
+
+
+def test_template_pipeline_without_posix_dependencies(tmp_path: Path) -> None:
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            """
+import sys
+from types import SimpleNamespace
+sys.modules["fcntl"] = None
+from codex.cognitive_brain.authority import AuthorityEnvelope
+from codex.cognitive_brain.improvement_pipeline import ImprovementPipeline, signal_from_pda_record
+import os
+os.environ.clear()
+signal = signal_from_pda_record({
+    "type": "failure", "timestamp": "2026-11-01T00:00:00Z",
+    "fix_template": "repair", "files": ["src/fixture.py"],
+})
+match = SimpleNamespace(pattern_id="fixture", times_applied=1, success_rate=0.9, solutions=[])
+pipeline = ImprovementPipeline(
+    repo="fixture/repo", ref="main", sha="a" * 40,
+    brain_interface=SimpleNamespace(query_patterns=lambda _: [match]),
+    authority=AuthorityEnvelope(require_human_approval=False),
+)
+assert pipeline.process_signal(signal).actionable
+assert "codex.cognitive_brain.isolated_execution" not in sys.modules
+""",
+        ],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
 
 
 def test_signal_to_pattern_to_proposal(tmp_path: Path, monkeypatch) -> None:

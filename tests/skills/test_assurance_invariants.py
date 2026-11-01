@@ -1,5 +1,6 @@
 """Direct-handler assurance invariants, independent of envelope schema validation."""
 
+import json
 from copy import deepcopy
 
 import pytest
@@ -107,6 +108,28 @@ def test_contract_required_checks_cannot_be_replaced():
         assurance.lane_contract_and_handoff({"contract": item, "handoff": handoff})["status"]
         == "contract-valid"
     )
+
+
+@pytest.mark.parametrize("checks", [None, ["negative", "boundary", "regression"]])
+def test_published_contract_schema_matches_handler(checks):
+    item = contract()
+    if checks is None:
+        item.pop("required_checks", None)
+    else:
+        item["required_checks"] = checks
+    schema = json.loads((assurance._SCHEMA_ROOT / "lane-contract.json").read_text())
+    assurance.jsonschema.Draft7Validator(schema).validate(item)
+    assert assurance.lane_contract_and_handoff({"contract": item})["status"] == "contract-valid"
+
+
+@pytest.mark.parametrize("checks", [[], ["negative", "negative"], [""], "negative"])
+def test_published_contract_schema_rejects_invalid_checks(checks):
+    item = {**contract(), "required_checks": checks}
+    schema = json.loads((assurance._SCHEMA_ROOT / "lane-contract.json").read_text())
+    with pytest.raises(assurance.jsonschema.ValidationError):
+        assurance.jsonschema.Draft7Validator(schema).validate(item)
+    with pytest.raises(assurance.jsonschema.ValidationError):
+        assurance.lane_contract_and_handoff({"contract": item})
 
 
 @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])

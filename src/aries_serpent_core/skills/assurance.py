@@ -234,12 +234,6 @@ def lane_contract_and_handoff(payload: dict[str, Any]) -> dict[str, Any]:
     """Validate a human-mediated lane contract and optional evidence handoff."""
     contract = payload["contract"]
     schema = json.loads((_SCHEMA_ROOT / "lane-contract.json").read_text())
-    schema["properties"]["required_checks"] = {
-        "type": "array",
-        "minItems": 1,
-        "uniqueItems": True,
-        "items": {"type": "string", "minLength": 1},
-    }
     jsonschema.Draft7Validator(schema).validate(contract)
     if not all(_nonempty_text(contract[key]) for key in ("run_id", "lane_id")):
         raise ValueError("contract identity must be nonempty")

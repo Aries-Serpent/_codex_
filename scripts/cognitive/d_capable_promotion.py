@@ -100,6 +100,22 @@ def save_registry(data: dict, path: Path) -> None:
             + quote
             + updated[node.end_mark.index :]
         )
+    if "last_updated" in data and not any(key.value == "last_updated" for key, _ in root.value):
+        insertion = root.start_mark.index
+        timestamp = {"last_updated": data["last_updated"]}
+        if root.flow_style:
+            insertion = next(
+                token.end_mark.index
+                for token in yaml.scan(original)
+                if isinstance(token, yaml.FlowMappingStartToken)
+                and token.start_mark.index >= insertion
+            )
+            text = yaml.safe_dump(timestamp, default_flow_style=True).strip()[1:-1] + ", "
+        else:
+            text = yaml.safe_dump(timestamp, sort_keys=False).replace(
+                "\n", "\n" + " " * root.start_mark.column
+            )
+        updated = updated[:insertion] + text + updated[insertion:]
     if yaml.safe_load(updated) != data:
         raise ValueError("minimal-diff writer refuses unrelated registry changes")
     path.write_text(updated, encoding="utf-8")

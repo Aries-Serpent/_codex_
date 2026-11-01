@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 from aries_serpent_core.cognitive.brain_interface import AgentBrainInterface
@@ -41,6 +43,39 @@ def _tracker(tmp_path: Path, outcomes: dict) -> OutcomeTracker:
         for event_id, record in outcomes.items()
     }
     return OutcomeTracker(_brain(tmp_path), outcome_source=outcomes.get, allow_synthetic=True)
+
+
+def test_outcome_helpers_without_posix_dependencies(tmp_path: Path) -> None:
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            """
+import sys
+sys.modules["fcntl"] = None
+from codex.cognitive_brain.outcome_tracking import (
+    OutcomeTracker, store_outcome_source, verified_measurement,
+)
+assert not verified_measurement({"merged": False})
+assert "codex.cognitive_brain.evidence_store" not in sys.modules
+class Store:
+    def outcome_for(self, event_id):
+        return {"event_id": event_id}
+assert store_outcome_source(Store())("fixture") == {"event_id": "fixture"}
+try:
+    OutcomeTracker(None, lambda _: None)
+except RuntimeError as exc:
+    assert str(exc) == "Outcome learning requires POSIX fcntl locking"
+else:
+    raise AssertionError("POSIX-only learning must fail explicitly")
+""",
+        ],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
 
 
 def test_successful_merged_outcome_updates_confidence(tmp_path: Path) -> None:
