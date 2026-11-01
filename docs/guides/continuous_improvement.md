@@ -57,6 +57,8 @@ generated `proposal_id`, event proposal `patch_hash`, SHA and author.
 Both the validation envelope and every command observation must carry the
 assessment's `evidence_digest`, binding the exact signal, generated proposal,
 file scope and context; every observation also carries the proposal/content IDs.
+Command observations require a timezone-aware `timestamp` and a nonempty
+`evidence_ref`; missing measurements cannot be replaced with NaN or empty strings.
 It must supply the declared verification commands and complete independent
 negative, boundary and regression observations. Reassessment does not change
 the proposal ID merely because observation time advances.
@@ -109,6 +111,52 @@ proof, approval or execution authority. The existing freshness, measured
 baseline, scoped proposal and per-observation digest checks still apply.
 Private access, Chronicle/package collectors, isolated verification and
 post-merge outcomes remain separate integrations.
+
+## Local candidate and durable evidence integrity
+
+`IsolatedExecutor` resolves an immutable base commit, hashes the actual patch
+bytes, and reconciles Git's actual path/line inventory before applying anything
+to the disposable private Git snapshot. It has independent Git metadata, not
+a writable link to the source repository. Declared paths are not proof of scope.
+Binary, rename, symlink, mode-only and no-op repairs are conservatively rejected.
+Empty, unknown or compile-only gate contracts cannot verify a repair.
+The default contract runs real unittest discovery: behavior must fail on the
+baseline and pass on the candidate. Bare `python`/`python3` gates resolve to the
+running supported interpreter; launch errors are not timeout results.
+
+Patch bytes, attempt identities and bounded gate output are retained under
+`.codex/improvement/artifacts/<actual-sha256>`. No candidate is copied back or
+automatically integrated. Supported Linux execution requires Landlock ABI 4+
+with read-only runtime paths and private writable checkout/HOME. Rules are
+inherited by descendants; source files and Git metadata are inaccessible.
+TCP bind/connect is denied. UDP/Unix sockets, process counts and escaped-session
+lifecycle containment are unsupported: this is not a full sandbox.
+Address-space/output limits and process groups also apply. Legacy declared line counts
+remain a ceiling; explicit base inputs must be immutable commit SHAs.
+
+Execution claims and observation consumption survive restart. Breakers
+reconstruct from durable outcomes, and proposal callers can inject the
+authoritative evidence store to exclude disabled patterns. Wrong event,
+pattern or patch identities are errors, not learning. Replayed observations
+cause zero additional learning; new regression/rollback observations require
+distinct identities. A pending cross-file learning intent requires
+reconciliation: evidence JSONL and the brain JSON file are not one atomic
+transaction, and their EMA is not a calibrated success probability.
+
+Shared skill handlers reject nonfinite measurements, empty references,
+holdout-only replay and mismatched handoff/validation SHAs. Supplied
+observations still do not authenticate their observer. Production outcomes
+require a trusted measured-merge verifier; labelled synthetic fixtures cannot
+establish production success.
+
+PDA summaries preserve mixed legacy raw records and distinguish caller-labelled
+repair rates from uniquely attempt-linked verified-result rates. With no
+verified attempts, the verified rate is unknown, not zero or success. Unknown,
+session, malformed and unsupported-schema records remain explicit.
+
+See the requested task bundle under
+`/home/runner/work/_codex_/_codex_/.codex/tasks/AGENT-SELF-IMPROVEMENT-001/`
+for all forty gaps, remaining owner decisions and source-bound validation.
 
 ## Read-only transition evidence
 

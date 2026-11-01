@@ -85,6 +85,7 @@ def attach_validation(record, result):
                 "name": kind,
                 "kind": kind,
                 "completed": True,
+                "timestamp": "2026-11-01T00:00:05Z",
                 "command": command,
                 "returncode": 0,
                 "evidence_ref": f"fixture:{kind}",

@@ -515,7 +515,7 @@ class AgentBrainInterface:
             pattern_symptoms = pattern_data.get("symptoms", [])
             score = self._calculate_match_score(symptoms, pattern_symptoms)
 
-            if score < min_score:
+            if score <= 0 or score < min_score:
                 continue
 
             confidence = self._get_confidence_level(score)

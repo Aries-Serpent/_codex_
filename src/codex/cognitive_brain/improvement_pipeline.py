@@ -33,8 +33,8 @@ try:
         EVIDENCE_SCHEMA_VERSION,
         DataAvailability,
         ImprovementEvent,
-        PatternRef,
         PatchProposal,
+        PatternRef,
         SignalEvidence,
         SignalSource,
         make_event_id,
@@ -44,12 +44,12 @@ except ImportError:  # pragma: no cover - exercised only outside the repo
     _sdk_src = str(_repo_root / "packages" / "cognitive_sdk" / "src")
     if _sdk_src not in sys.path:
         sys.path.append(_sdk_src)
-    from codex_cognitive_sdk.evidence import (  # type: ignore[no-redef]
+    from codex_cognitive_sdk.evidence import (
         EVIDENCE_SCHEMA_VERSION,
         DataAvailability,
         ImprovementEvent,
-        PatternRef,
         PatchProposal,
+        PatternRef,
         SignalEvidence,
         SignalSource,
         make_event_id,
@@ -77,11 +77,24 @@ def signal_from_pda_record(record: Mapping[str, Any]) -> SignalEvidence:
     malformed evidence fails closed instead of being treated as healthy.
     """
 
+    if not isinstance(record, Mapping):
+        raise ValueError("PDA record must be an object")
     if record.get("type") != "failure":
         raise ValueError(f"expected a PDA failure record, got type={record.get('type')!r}")
-    timestamp = str(record.get("timestamp", ""))
-    if not timestamp:
-        raise ValueError("PDA failure record is missing its timestamp")
+    timestamp = record.get("timestamp")
+    if not isinstance(timestamp, str) or not timestamp.strip():
+        raise ValueError("PDA failure record requires a timestamp")
+    try:
+        measured = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ValueError("PDA failure timestamp is invalid") from exc
+    if measured.tzinfo is None:
+        raise ValueError("PDA failure timestamp must be timezone aware")
+    files = record.get("files") or []
+    if not isinstance(files, (list, tuple)) or any(
+        not isinstance(path, str) or not path.strip() for path in files
+    ):
+        raise ValueError("PDA failure files must be a sequence of nonempty paths")
     details = {
         "pattern_id": record.get("pattern_id"),
         "workflow": record.get("workflow"),
@@ -90,7 +103,7 @@ def signal_from_pda_record(record: Mapping[str, Any]) -> SignalEvidence:
         "root_cause": record.get("root_cause"),
         "fix_template": record.get("fix_template"),
         "verification_cmd": record.get("verification_cmd"),
-        "files": list(record.get("files") or []),
+        "files": list(files),
     }
     return SignalEvidence(
         source=SignalSource.PDA_FAILURE_LOG,
@@ -113,12 +126,14 @@ class ImprovementPipeline:
         sha: str,
         brain_interface: Any,
         authority: Optional[AuthorityEnvelope] = None,
+        evidence_store: Any = None,
     ) -> None:
         self.repo = repo
         self.ref = ref
         self.sha = sha
         self.brain = brain_interface
         self.authority = authority or AuthorityEnvelope()
+        self.evidence_store = evidence_store
 
     def process_signal(
         self,
@@ -140,8 +155,12 @@ class ImprovementPipeline:
         if signal.kind in _NON_ACTIONABLE_KINDS:
             return self._inactionable(signal, f"non-actionable signal kind: {signal.kind}")
 
-        symptoms = [signal.summary, signal.kind.replace("_", " "), *self._detail_terms(signal)]
+        symptoms = [signal.summary, *self._detail_terms(signal)]
         matches = self.brain.query_patterns(symptoms)
+        if self.evidence_store is not None:
+            matches = [
+                match for match in matches if self.evidence_store.pattern_enabled(match.pattern_id)
+            ]
         if not matches:
             return self._inactionable(signal, "no pattern matched the signal")
 
@@ -255,6 +274,8 @@ def load_pda_signals(jsonl_path: Path) -> list[SignalEvidence]:
             if not line:
                 continue
             record = json.loads(line)
+            if not isinstance(record, Mapping):
+                raise ValueError("PDA record must be an object")
             if record.get("type") != "failure":
                 continue
             signals.append(signal_from_pda_record(record))

@@ -120,16 +120,30 @@ jobs:
             --distribution "$DISTRIBUTION_NAME" \
             --dist-dir "dist/$DISTRIBUTION_NAME"
 
+      - name: Record retained build identity
+        if: env.SELECTED_DISTRIBUTION == 'true'
+        env:
+          DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
+          TARGET_ORIGIN: ${{ github.event_name == 'release' && 'pypi' || github.event.inputs.environment }}
+        run: |
+          python -m scripts.release.publishing_assurance record-build \
+            --distribution "$DISTRIBUTION_NAME" \
+            --dist-dir "dist/$DISTRIBUTION_NAME" \
+            --source-sha "$GITHUB_SHA" --origin "$TARGET_ORIGIN"
+
       - name: Install built wheel in isolated virtualenv
         if: env.SELECTED_DISTRIBUTION == 'true'
         env:
           DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
           IMPORT_NAME: ${{ matrix.distribution.import }}
+          TARGET_ORIGIN: ${{ github.event_name == 'release' && 'pypi' || github.event.inputs.environment }}
         run: |
-          python -m scripts.release.publishing_assurance install-wheel \
+          python -m scripts.release.publishing_assurance install-artifacts \
             --distribution "$DISTRIBUTION_NAME" \
             --dist-dir "dist/$DISTRIBUTION_NAME" \
             --work-dir "$RUNNER_TEMP/publishing-assurance/$DISTRIBUTION_NAME" \
+            --source-sha "$GITHUB_SHA" --origin "$TARGET_ORIGIN" \
+            --build-requirements requirements/lock-release.txt \
             --import-name "$IMPORT_NAME"
 
       - name: Record validated artifact checksums
@@ -139,6 +153,7 @@ jobs:
         run: |
           cd "dist/$DISTRIBUTION_NAME"
           sha256sum -- *.whl *.tar.gz > SHA256SUMS
+          sha256sum BUILD_IDENTITY.json >> SHA256SUMS
 
       - name: Upload artifacts
         if: env.SELECTED_DISTRIBUTION == 'true'
@@ -292,7 +307,7 @@ jobs:
             --dist-dir dist \
             --repo "$GITHUB_REPOSITORY" \
             --signer-workflow "$GITHUB_REPOSITORY/.github/workflows/pypi-publish.yml" \
-            --source-ref "$GITHUB_REF"
+            --source-ref "$GITHUB_REF" --source-digest "$GITHUB_SHA"
 
   publish-testpypi:
     name: Publish ${{ matrix.distribution.name }} to TestPyPI
@@ -342,7 +357,7 @@ jobs:
         run: |
           cd dist
           sha256sum --check SHA256SUMS
-          rm SHA256SUMS
+          rm SHA256SUMS BUILD_IDENTITY.json
       - name: Publish to TestPyPI
         if: github.event.inputs.package == 'all' || github.event.inputs.package == matrix.distribution.name
         uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086
@@ -415,7 +430,7 @@ jobs:
         run: |
           cd dist
           sha256sum --check SHA256SUMS
-          rm SHA256SUMS
+          rm SHA256SUMS BUILD_IDENTITY.json
       - name: Publish to PyPI
         if: >-
           (github.event_name == 'release' &&
@@ -448,6 +463,10 @@ jobs:
       github.ref_type == 'tag'))))
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      TARGET_ORIGIN: ${{ github.event_name == 'release' && 'pypi' || github.event.inputs.environment }}
     strategy:
       fail-fast: false
       matrix:
@@ -506,6 +525,24 @@ jobs:
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
 
+      - name: Download retained validated artifacts
+        if: >-
+          (github.event_name == 'release' &&
+          startsWith(github.event.release.tag_name, matrix.distribution.release_tag_prefix)) ||
+          (github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.environment == 'testpypi' &&
+          (github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name)) ||
+          (github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.environment == 'pypi' &&
+          startsWith(github.ref_name, matrix.distribution.release_tag_prefix) &&
+          (github.event.inputs.package == 'all' ||
+          github.event.inputs.package == matrix.distribution.name))
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: python-package-${{ matrix.distribution.name }}
+          path: dist/
+
       - name: Create isolated verification environment
         if: >-
           (github.event_name == 'release' &&
@@ -522,8 +559,8 @@ jobs:
         env:
           DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
         run: |
-          python -m venv "$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}"
-          "$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}/bin/python" -m pip install --upgrade pip
+          (cd dist && sha256sum --check SHA256SUMS)
+          python -m venv --clear "$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}"
 
       - name: Install from TestPyPI
         if: >-
@@ -535,10 +572,10 @@ jobs:
         env:
           DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
         run: |
-          "$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}/bin/python" -m pip install \
-            --index-url https://test.pypi.org/simple/ \
-            --extra-index-url https://pypi.org/simple/ \
-            "$DISTRIBUTION_NAME"
+          python -m scripts.release.publishing_assurance verify-published \
+            --distribution "$DISTRIBUTION_NAME" --dist-dir dist \
+            --source-sha "$GITHUB_SHA" --origin testpypi \
+            --python-path "$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}/bin/python"
 
       - name: Install from PyPI
         if: >-
@@ -553,7 +590,10 @@ jobs:
         env:
           DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
         run: |
-          "$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}/bin/python" -m pip install "$DISTRIBUTION_NAME"
+          python -m scripts.release.publishing_assurance verify-published \
+            --distribution "$DISTRIBUTION_NAME" --dist-dir dist \
+            --source-sha "$GITHUB_SHA" --origin pypi \
+            --python-path "$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}/bin/python"
 
       - name: Test installed import
         if: >-
@@ -571,9 +611,21 @@ jobs:
         env:
           DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
           IMPORT_NAME: ${{ matrix.distribution.import }}
+          ASSURANCE_SCRIPT: ${{ github.workspace }}/scripts/release/publishing_assurance.py
+          RETAINED_DIST: ${{ github.workspace }}/dist
         run: |
+          cd "$RUNNER_TEMP"
           "$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}/bin/python" -I - <<'PY'
-          import importlib
           import os
-          importlib.import_module(os.environ["IMPORT_NAME"])
+          import runpy
+          from pathlib import Path
+          assurance = runpy.run_path(os.environ["ASSURANCE_SCRIPT"])
+          result = assurance["verify_installed_artifact"](
+              os.environ["DISTRIBUTION_NAME"],
+              Path(os.environ["RETAINED_DIST"]),
+              source_sha=os.environ["GITHUB_SHA"],
+              origin=os.environ["TARGET_ORIGIN"],
+              import_name=os.environ["IMPORT_NAME"],
+          )
+          print(result)
           PY

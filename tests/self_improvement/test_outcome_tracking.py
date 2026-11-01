@@ -30,7 +30,17 @@ def _brain(tmp_path: Path) -> AgentBrainInterface:
 
 
 def _tracker(tmp_path: Path, outcomes: dict) -> OutcomeTracker:
-    return OutcomeTracker(_brain(tmp_path), outcome_source=outcomes.get)
+    outcomes = {
+        event_id: {
+            **record,
+            "event_id": event_id,
+            "pattern_id": "RP-019",
+            "patch_hash": "p",
+            "synthetic": True,
+        }
+        for event_id, record in outcomes.items()
+    }
+    return OutcomeTracker(_brain(tmp_path), outcome_source=outcomes.get, allow_synthetic=True)
 
 
 def test_successful_merged_outcome_updates_confidence(tmp_path: Path) -> None:

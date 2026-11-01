@@ -389,6 +389,9 @@ jobs:
   execute-approval:
     name: "\u26A1 Execute Approval Decision"
     needs: evaluate-approval
+    outputs:
+      approved_any: ${{ steps.scoped_approval.outputs.approved_any }}
+      approved_sha: ${{ steps.scoped_approval.outputs.approved_sha }}
     runs-on: ubuntu-latest
     if: 'endsWith(github.workflow_ref, ''@refs/heads/main'') &&
       needs.evaluate-approval.outputs.should_proceed == ''true'' &&
@@ -480,6 +483,7 @@ jobs:
         \ \"$RUN_ID\" 2>/dev/null && echo \"\u2705 Approved: $RUN_NAME (#$RUN_ID)\"\
         \ || true\n      fi\n    done\n  fi\nfi\n"
     - name: Approve scoped runs with current authorization
+      id: scoped_approval
       env:
         GH_TOKEN: ${{ steps.token.outputs.token }}
         REPO: ${{ github.repository }}
@@ -489,6 +493,28 @@ jobs:
       run: |
         set -euo pipefail
         python3 scripts/ci/approve_pending_runs.py
+        python3 - <<'PY'
+        import json
+        import os
+        from pathlib import Path
+        data = json.loads(Path("approval-decision.json").read_text())
+        decisions = data["decisions"]
+        approved = [
+            decision for decision in decisions
+            if decision.get("outcome") == "approved"
+            and str(decision.get("pr")) == os.environ["PR_NUMBER"]
+            and decision.get("rule") == "authorized"
+        ]
+        shas = {decision["head_sha"] for decision in approved}
+        valid = len(shas) == 1 and not any(
+            decision.get("outcome") in {"denied", "error", "dry-run"}
+            for decision in decisions
+        )
+        with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+            output.write(f"approved_any={str(valid).lower()}\n")
+            if valid:
+                output.write(f"approved_sha={next(iter(shas))}\n")
+        PY
     - name: Upload scoped approval decision
       if: always()
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
@@ -552,9 +578,14 @@ jobs:
     - execute-approval
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: "always() &&\nneeds.evaluate-approval.outputs.should_proceed == 'true' &&\n\
-      (github.event.inputs.approval_source == 'self-approve-pending-runs' ||\n github.event.inputs.approval_source\
-      \ == 'trigger-on-approval')\n"
+    if: >-
+      !cancelled() &&
+      needs.execute-approval.result == 'success' &&
+      needs.execute-approval.outputs.approved_any == 'true' &&
+      github.event.inputs.dry_run != 'true' &&
+      needs.evaluate-approval.outputs.should_proceed == 'true' &&
+      (github.event.inputs.approval_source == 'self-approve-pending-runs' ||
+      github.event.inputs.approval_source == 'trigger-on-approval')
     permissions:
       pull-requests: write
     steps:
@@ -563,14 +594,22 @@ jobs:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         TARGET_PR: ${{ needs.evaluate-approval.outputs.target_pr }}
+        APPROVED_SHA: ${{ needs.execute-approval.outputs.approved_sha }}
         REPO: ${{ github.repository }}
-      run: "set -euo pipefail\n\nif [ -z \"$TARGET_PR\" ]; then\n  exit 0\nfi\n\n\
-        # Only cleanup if single-session mode was used\nLABELS=$(gh pr view \"$TARGET_PR\"\
-        \ --repo \"$REPO\" --json labels -q '.labels[].name' 2>/dev/null || echo \"\
-        \")\nif echo \"$LABELS\" | grep -q \"^wec:auto-approve-once$\"; then\n  gh\
-        \ pr edit \"$TARGET_PR\" --repo \"$REPO\" --remove-label \"wec:auto-approve-once\"\
-        \ 2>/dev/null && \\\n    echo \"\u2705 Removed single-session label 'wec:auto-approve-once'\"\
-        \ || \\\n    echo \"\u26A0\uFE0F Could not remove label (non-fatal)\"\nfi\n"
+      run: |
+        set -euo pipefail
+        if [ -z "${TARGET_PR:-}" ] || [ -z "${APPROVED_SHA:-}" ]; then
+          exit 0
+        fi
+        CURRENT_SHA=$(gh pr view "$TARGET_PR" --repo "$REPO" --json headRefOid -q '.headRefOid')
+        if [ "$CURRENT_SHA" != "$APPROVED_SHA" ]; then
+          echo "::notice::PR changed after approval; preserving once label"
+          exit 0
+        fi
+        LABELS=$(gh pr view "$TARGET_PR" --repo "$REPO" --json labels -q '.labels[].name')
+        if echo "$LABELS" | grep -q "^wec:auto-approve-once$"; then
+          gh pr edit "$TARGET_PR" --repo "$REPO" --remove-label "wec:auto-approve-once"
+        fi
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   publish-metrics:

@@ -33,6 +33,7 @@ from aries_serpent_core.skills.assurance import (
     rubber_duck_review,
 )
 from codex.cognitive_brain.authority import AuthorityEnvelope
+from codex.cognitive_brain.evidence_store import EvidenceIntegrityError, EvidenceStore
 from codex.cognitive_brain.improvement_pipeline import (
     DataAvailability,
     ImprovementPipeline,
@@ -219,6 +220,7 @@ def run_from_pda(
     brain_interface: Any,
     authority: Optional[AuthorityEnvelope] = None,
     human_approved: bool = False,
+    evidence_store: Optional[EvidenceStore] = None,
 ) -> List[ProposalDecision]:
     """Load PDA failure signals and run each through the pipeline.
 
@@ -226,12 +228,18 @@ def run_from_pda(
     from :func:`signal_from_pda_record` so bad evidence fails closed.
     """
 
+    if evidence_store is None:
+        root = getattr(brain_interface, "repo_root", None)
+        if root is None:
+            raise ValueError("a repository root or durable eligibility store is required")
+        evidence_store = EvidenceStore(Path(root) / ".codex" / "improvement" / "evidence.jsonl")
     pipeline = ImprovementPipeline(
         repo=repo,
         ref=ref,
         sha=sha,
         brain_interface=brain_interface,
         authority=authority,
+        evidence_store=evidence_store,
     )
     signals = load_pda_signals(Path(jsonl_path))
     return [pipeline.process_signal(signal, human_approved=human_approved) for signal in signals]
@@ -315,6 +323,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         print("--collect-ci-run requires --evidence-bundle", file=sys.stderr)
         return EXIT_MALFORMED
 
+    try:
+        evidence_store = EvidenceStore(args.repo_root / ".codex" / "improvement" / "evidence.jsonl")
+    except (EvidenceIntegrityError, OSError):
+        print("durable eligibility evidence unavailable or corrupt", file=sys.stderr)
+        return EXIT_MALFORMED
     brain = AgentBrainInterface(
         agent_id="improvement-loop",
         repo_root=args.repo_root,
@@ -325,6 +338,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         ref=args.ref,
         sha=args.sha,
         brain_interface=brain,
+        evidence_store=evidence_store,
     )
 
     if args.evidence_bundle:

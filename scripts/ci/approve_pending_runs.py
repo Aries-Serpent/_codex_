@@ -191,6 +191,10 @@ def _has_wec_auto_approve_label(
     if status != 200 or not isinstance(payload, dict):
         return False
 
+    return _wec_label_valid(payload, ttl_hours=ttl_hours)
+
+
+def _wec_label_valid(payload: dict[str, Any], *, ttl_hours: int = 1) -> bool:
     labels = payload.get("labels", [])
     label_names = {label.get("name") if isinstance(label, dict) else label for label in labels}
     if "wec:auto-approve" in label_names:
@@ -224,23 +228,32 @@ def _filter_prs_by_wec_label(
 
 
 def _search_wec_labelled_prs(token: str, repo: str) -> list[tuple[str, str]]:
-    """Use the Search API to find open PRs with a WEC auto-approve label in one request."""
+    """Inventory labelled PRs completely; failed or truncated searches are unknown."""
     results: dict[int, str] = {}
     for label in ("wec:auto-approve", "wec:auto-approve-once"):
-        page = 1
-        while True:
+        seen: set[int] = set()
+        expected_total: int | None = None
+        for page in range(1, 11):
             q = urllib.parse.quote(f"repo:{repo} is:pr is:open label:{label}")
             status, payload = _gh("GET", f"/search/issues?q={q}&per_page=100&page={page}", token)
             if status != 200 or not isinstance(payload, dict):
-                break
-            items = payload.get("items", [])
+                raise RuntimeError(f"Could not search PRs (HTTP {status})")
+            items, total = _inventory_page(payload, "items")
+            if payload.get("incomplete_results") is not False or total > 1000:
+                raise RuntimeError("Incomplete PR search inventory")
+            if expected_total is not None and total != expected_total:
+                raise RuntimeError("PR search inventory changed during pagination")
+            expected_total = total
             for item in items:
                 pr_num = item.get("number")
-                if pr_num is not None:
-                    results[pr_num] = ""
-            if len(items) < 100:
+                if type(pr_num) is not int or pr_num <= 0 or pr_num in seen:
+                    raise RuntimeError("Invalid or repeated PR search identity")
+                seen.add(pr_num)
+                results[pr_num] = ""
+            if _inventory_complete(len(items), len(seen), total):
                 break
-            page += 1
+        else:
+            raise RuntimeError("PR search inspection budget exhausted")
 
     if not results:
         return []
@@ -248,11 +261,47 @@ def _search_wec_labelled_prs(token: str, repo: str) -> list[tuple[str, str]]:
     targets: list[tuple[str, str]] = []
     for pr_num in results:
         status, payload = _gh("GET", f"/repos/{repo}/pulls/{pr_num}", token)
-        if status == 200 and isinstance(payload, dict):
-            sha = (payload.get("head") or {}).get("sha", "")
-            if sha and _has_wec_auto_approve_label(token, repo, pr_num):
-                targets.append((str(pr_num), sha))
+        if status != 200 or not isinstance(payload, dict):
+            raise RuntimeError(f"Could not inspect discovered PR (HTTP {status})")
+        sha = _inventory_pr_sha(payload)
+        labels = payload.get("labels")
+        if not isinstance(labels, list) or not all(
+            isinstance(label, dict) and isinstance(label.get("name"), str) for label in labels
+        ):
+            raise RuntimeError("Malformed discovered PR labels")
+        if payload.get("state") not in {"open", "closed"}:
+            raise RuntimeError("Malformed discovered PR state")
+        if payload["state"] == "open" and _wec_label_valid(payload):
+            targets.append((str(pr_num), sha))
     return targets
+
+
+def _inventory_page(payload: dict[str, Any], key: str) -> tuple[list[dict[str, Any]], int]:
+    items = payload.get(key)
+    total = payload.get("total_count")
+    if (
+        not isinstance(items, list)
+        or len(items) > 100
+        or not all(isinstance(item, dict) for item in items)
+        or type(total) is not int
+        or total < 0
+    ):
+        raise RuntimeError("Malformed inventory response")
+    return items, total
+
+
+def _inventory_complete(page_size: int, seen: int, total: int) -> bool:
+    if seen > total or (page_size < 100 and seen != total):
+        raise RuntimeError("Incomplete or inconsistent inventory pagination")
+    return seen == total
+
+
+def _inventory_pr_sha(pr: dict[str, Any]) -> str:
+    head = pr.get("head")
+    sha = head.get("sha") if isinstance(head, dict) else None
+    if not isinstance(sha, str) or not sha.strip():
+        raise RuntimeError("Malformed PR head in inventory")
+    return sha
 
 
 def _get_action_required_runs(
@@ -262,19 +311,35 @@ def _get_action_required_runs(
 ) -> list[dict[str, Any]]:
     """List all action_required workflow runs, optionally filtered by SHA."""
     all_runs: list[dict[str, Any]] = []
-    page = 1
-    while True:
+    seen: set[int] = set()
+    expected_total: int | None = None
+    for page in range(1, 101):
         path = f"/repos/{repo}/actions/runs?status=action_required&per_page=100&page={page}"
         if head_sha:
             path += f"&head_sha={head_sha}"
         status, data = _gh("GET", path, token)
         if status != 200 or not isinstance(data, dict):
             raise RuntimeError(f"Could not list runs (HTTP {status})")
-        runs: list[dict[str, Any]] = data.get("workflow_runs", [])
+        runs, total = _inventory_page(data, "workflow_runs")
+        if expected_total is not None and total != expected_total:
+            raise RuntimeError("Run inventory changed during pagination")
+        expected_total = total
+        for run in runs:
+            run_id = run.get("id")
+            if (
+                type(run_id) is not int
+                or run_id <= 0
+                or run_id in seen
+                or not isinstance(run.get("head_sha"), str)
+                or not run["head_sha"].strip()
+            ):
+                raise RuntimeError("Invalid or repeated run inventory identity")
+            seen.add(run_id)
         all_runs.extend(runs)
-        if len(runs) < 100:
+        if _inventory_complete(len(runs), len(seen), total):
             break
-        page += 1
+    else:
+        raise RuntimeError("Run inventory inspection budget exhausted")
     return all_runs
 
 
@@ -310,19 +375,25 @@ def _approve_run(
 def _get_open_pr_shas(token: str, repo: str) -> list[tuple[str, str]]:
     """Return list of (pr_number, head_sha) for all open PRs."""
     pairs: list[tuple[str, str]] = []
-    page = 1
-    while True:
+    seen: set[int] = set()
+    for page in range(1, 101):
         status, data = _gh("GET", f"/repos/{repo}/pulls?state=open&per_page=100&page={page}", token)
         if status != 200 or not isinstance(data, list):
-            break
+            raise RuntimeError(f"Could not list open PRs (HTTP {status})")
+        if len(data) > 100:
+            raise RuntimeError("Oversized PR inventory page")
         for pr in data:
-            num = str(pr.get("number", ""))
-            sha = pr.get("head", {}).get("sha", "")
-            if num and sha:
-                pairs.append((num, sha))
+            if not isinstance(pr, dict):
+                raise RuntimeError("Malformed PR inventory entry")
+            num = pr.get("number")
+            if type(num) is not int or num <= 0 or num in seen:
+                raise RuntimeError("Invalid or repeated PR inventory identity")
+            seen.add(num)
+            pairs.append((str(num), _inventory_pr_sha(pr)))
         if len(data) < 100:
             break
-        page += 1
+    else:
+        raise RuntimeError("PR inventory inspection budget exhausted")
     return pairs
 
 

@@ -29,6 +29,8 @@ def validation():
         "author": "fixture-author",
         "observer": "fixture-validator",
         "base_sha": SHA,
+        "run_id": "fixture-run",
+        "lane_id": "packaging",
         "required_checks": ["negative", "boundary", "regression"],
         "checks": [
             {
@@ -39,6 +41,9 @@ def validation():
                 "returncode": 0,
                 "evidence_ref": f"fixture:{kind}",
                 "base_sha": SHA,
+                "run_id": "fixture-run",
+                "lane_id": "packaging",
+                "timestamp": "2026-10-31T00:00:00Z",
             }
             for kind in ("negative", "boundary", "regression")
         ],
@@ -139,7 +144,7 @@ def test_partial_or_self_validation_unknown():
     assert assurance.adversarial_validation(payload)["status"] == "unknown"
 
 
-def test_offline_signal_brief_review_validation_bundle(monkeypatch, tmp_path):
+def test_offline_signal_brief_review_validation_bundle(monkeypatch):
     import socket
 
     monkeypatch.setattr(
@@ -156,9 +161,7 @@ def test_offline_signal_brief_review_validation_bundle(monkeypatch, tmp_path):
     bundle = {"proposal": first, "review": review, "validation": result, "fixture_only": True}
     import json
 
-    output = tmp_path / "evidence-bundle.json"
-    output.write_text(json.dumps(bundle, sort_keys=True))
-    assert json.loads(output.read_text())["validation"]["status"] == "pass"
+    assert json.loads(json.dumps(bundle, sort_keys=True))["validation"]["status"] == "pass"
     assert not first["execution_authorized"]
 
 
@@ -216,7 +219,11 @@ def test_unvalidated_passed_handoff_rejected():
         "lane_id": "packaging",
         "state": "passed",
         "changed_paths": [],
-        "validation": {},
+        "validation": {
+            "run_id": item["run_id"],
+            "base_sha": SHA,
+            "lane_id": item["lane_id"],
+        },
         "metrics": {},
         "risks": [],
         "unresolved_questions": [],

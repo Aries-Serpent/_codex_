@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -52,12 +53,14 @@ def load_registry(path: Path) -> dict:
 
 
 def save_registry(data: dict, path: Path) -> None:
+    validate_registry(data)
     try:
         import yaml
     except ImportError:
         print("::error::pyyaml not installed", file=sys.stderr)
         sys.exit(1)
     original = path.read_text(encoding="utf-8")
+    validate_registry(yaml.safe_load(original))
     root = yaml.compose(original)
     if not isinstance(root, yaml.MappingNode):
         raise ValueError("registry must be a mapping")
@@ -88,6 +91,8 @@ def save_registry(data: dict, path: Path) -> None:
         ):
             raise ValueError("unsupported registry scalar")
         quote = node.style if node.style in ("'", '"') else ""
+        if not quote and not isinstance(yaml.safe_load(value), str):
+            quote = "'"
         updated = (
             updated[: node.start_mark.index]
             + quote
@@ -98,6 +103,29 @@ def save_registry(data: dict, path: Path) -> None:
     if yaml.safe_load(updated) != data:
         raise ValueError("minimal-diff writer refuses unrelated registry changes")
     path.write_text(updated, encoding="utf-8")
+
+
+def validate_registry(data: dict) -> None:
+    """Require a structurally valid registry with unambiguous agent identities."""
+    if not isinstance(data, dict):
+        raise ValueError("registry must be a mapping")
+    agents = data.get("agents")
+    if not isinstance(agents, list):
+        raise ValueError("registry agents must be a list of mappings")
+    seen: set[str] = set()
+    for agent in agents:
+        if not isinstance(agent, dict):
+            raise ValueError("registry agents must be a list of mappings")
+        identity = agent.get("id")
+        if (
+            not isinstance(identity, str)
+            or not 3 <= len(identity) <= 64
+            or re.fullmatch(r"[a-z][a-z0-9-]*[a-z0-9]", identity) is None
+        ):
+            raise ValueError("agent ID must satisfy the canonical kebab-case identity schema")
+        if identity in seen:
+            raise ValueError("agent IDs must be unique")
+        seen.add(identity)
 
 
 def evaluate_agent(agent: dict) -> tuple[bool, list[str]]:
@@ -130,7 +158,12 @@ def evaluate_agent(agent: dict) -> tuple[bool, list[str]]:
 
 def run(registry_path: Path, apply: bool) -> int:
     data = load_registry(registry_path)
-    agents: list[dict] = data.get("agents", [])
+    try:
+        validate_registry(data)
+    except ValueError as exc:
+        print(f"::error::Invalid registry: {exc}", file=sys.stderr)
+        return 1
+    agents: list[dict] = data["agents"]
 
     eligible: list[dict] = []
     ineligible: list[tuple[dict, list[str]]] = []
@@ -186,9 +219,8 @@ def run(registry_path: Path, apply: bool) -> int:
 
     # Apply promotions if requested
     if apply and eligible:
-        for agent in agents:
-            if any(e["id"] == agent["id"] for e in eligible):
-                agent["autonomy_model"] = "D_CAPABLE"
+        for agent in eligible:
+            agent["autonomy_model"] = "D_CAPABLE"
         data["last_updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         save_registry(data, registry_path)
         print(f"\n✅ Applied {len(eligible)} promotion(s) to {registry_path}")

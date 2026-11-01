@@ -174,3 +174,75 @@ def test_checksums_bind_build_validation_and_publication() -> None:
         assert steps.index("Verify exact validated artifact checksums") < steps.index(
             "Publish to TestPyPI" if name == "publish-testpypi" else "Publish to PyPI"
         )
+
+
+def test_exact_artifact_verification_has_no_unpinned_resolution_or_fallback() -> None:
+    jobs = _load_workflow()["jobs"]
+    job = jobs["verify-installation"]
+    assert job["permissions"] == {"contents": "read"}
+    download = _step(job, "Download retained validated artifacts")
+    assert download["with"] == {
+        "name": "python-package-${{ matrix.distribution.name }}",
+        "path": "dist/",
+    }
+    assert (
+        "sha256sum --check SHA256SUMS"
+        in _step(job, "Create isolated verification environment")["run"]
+    )
+    for step_name, origin in (("Install from TestPyPI", "testpypi"), ("Install from PyPI", "pypi")):
+        command = _step(job, step_name)["run"]
+        assert "verify-published" in command
+        assert f"--origin {origin}" in command
+        assert '--source-sha "$GITHUB_SHA"' in command
+        assert "--dist-dir dist" in command
+        assert '--python-path "$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}/bin/python"' in command
+        assert "pip install" not in command
+        assert "--extra-index-url" not in command
+    smoke = _step(job, "Test installed import")["run"]
+    assert 'cd "$RUNNER_TEMP"' in smoke
+    assert 'assurance["verify_installed_artifact"]' in smoke
+    assert 'source_sha=os.environ["GITHUB_SHA"]' in smoke
+    assert 'origin=os.environ["TARGET_ORIGIN"]' in smoke
+
+
+def test_all_six_packages_keep_independent_tags_and_flat_artifact_subjects() -> None:
+    jobs = _load_workflow()["jobs"]
+    expected = {
+        "codex-ml": "v",
+        "codex-cognitive-sdk": "codex-cognitive-sdk-v",
+        "codex-contracts": "codex-contracts-v",
+        "codex-ml-evaluation": "codex-ml-evaluation-v",
+        "codex-ml-lora": "codex-ml-lora-v",
+        "codex-ml-telemetry": "codex-ml-telemetry-v",
+    }
+    for job in jobs.values():
+        assert {
+            entry["name"]: entry["release_tag_prefix"] for entry in _distribution_entries(job)
+        } == expected
+        assert "uses" not in job, "nested workflows are not authorized"
+    for name in ("attest", "validate", "publish-testpypi", "publish-pypi"):
+        assert _step(jobs[name], "Download artifacts")["with"]["path"] == "dist/"
+    subject = _step(jobs["attest"], "Generate build provenance")["with"]["subject-path"]
+    assert subject.split() == ["dist/*.whl", "dist/*.tar.gz"]
+    assert (
+        _step(jobs["publish-testpypi"], "Publish to TestPyPI")["with"]["password"]
+        == "${{ secrets.TEST_PYPI_API_TOKEN }}"
+    )
+    assert (
+        _step(jobs["publish-pypi"], "Publish to PyPI")["with"]["password"]
+        == "${{ secrets.PYPI_TOKEN }}"
+    )
+
+
+def test_build_checks_functional_wheel_and_sdist_with_explicit_tool_sourcing() -> None:
+    jobs = _load_workflow()["jobs"]
+    command = _step(jobs["build"], "Install built wheel in isolated virtualenv")["run"]
+    assert "install-artifacts" in command
+    assert "--build-requirements requirements/lock-release.txt" in command
+    assert '--source-sha "$GITHUB_SHA" --origin "$TARGET_ORIGIN"' in command
+    identity = _step(jobs["build"], "Record retained build identity")["run"]
+    assert "record-build" in identity
+    checksums = _step(jobs["build"], "Record validated artifact checksums")["run"]
+    assert "sha256sum BUILD_IDENTITY.json >> SHA256SUMS" in checksums
+    verify = _step(jobs["validate"], "Verify artifact provenance")["run"]
+    assert '--source-digest "$GITHUB_SHA"' in verify
