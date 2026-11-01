@@ -62,7 +62,7 @@ dependencies = [
     "PyNaCl>=1.6.2,<2.0.0",  # Security: Cryptographic library
     "pyotp>=2.10.0",  # MFA/TOTP support for auth flows
     "pyOpenSSL>=26.4.0,<27.0.0",  # Security: CVE-2026-27448/27459 fixes
-    "pyasn1>=0.4.8",  # Security: Transitive dependency from cryptography/pyOpenSSL
+    "pyasn1>=0.6.5",  # Security: Transitive dependency from cryptography/pyOpenSSL
     # Standard library replacements & utilities
     "certifi>=2026.7.22",  # Security: Phase 5.4.1 - PYSEC-2024-230 (SSL verification bypass fix), CVE-2024-39689
     "filelock>=4.2.1",
