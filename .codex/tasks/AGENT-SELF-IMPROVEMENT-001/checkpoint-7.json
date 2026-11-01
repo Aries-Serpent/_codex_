@@ -2,7 +2,7 @@
   "task_id": "AGENT-SELF-IMPROVEMENT-001",
   "plan_version": "v4",
   "base_sha": "4a7d955b8b214d6002932261afdebd60f37ede8e",
-  "current_sha": "cb7a3cca9e7e20b0313d9bd672c719cebe9ad12b",
+  "current_sha": "61201ecbd1b3f5b01ef48c053783aa492b83264d",
   "sha_semantics": "HEAD snapshot before checkpoint commit; continuation must recheck HEAD and preserve intervening changes",
   "branch": "copilot/agent-self-improvement-001-evidence-gated-skills",
   "phase": 7,
@@ -31,11 +31,17 @@
     "Continuation: 278 focused tests passed, three-source-file strict scoped mypy and configured Ruff/Black/isort passed; Bandit found no medium/high findings in changed source",
     "Continuation: independent reviewer identified four evidence-binding/empty-input issues; all fixed with regressions, follow-up reported no significant remaining issues",
     "Continuation: secret scan clean; CodeQL Actions zero alerts, Python again skipped for database-size limit",
-    "Continuation: pre-existing startup-packet timestamp change preserved byte-for-byte and excluded from automatic commits; original index visibility restored after final commit"
+    "Continuation: pre-existing startup-packet timestamp change preserved byte-for-byte and excluded from automatic commits; original index visibility restored after final commit",
+    "Iteration 2: optional public GitHub Actions metadata collection feeds existing evidence-bundle assessment; no credentials, logs, actor/job names, workflow mutations or execution authority",
+    "Iteration 2: completed immutable run/attempt/SHA and all job attempts verified; bounded pagination, duplicate/foreign-job checks, run reread and source timestamps prevent incomplete or stale fabricated measurements",
+    "Iteration 2: disposable public-reader process supervises blocking DNS/TLS/header/body operations; bounded temporary response read occurs only after worker exit",
+    "Iteration 2: independent reviewer found transport deadline, job-attempt and IPC blocking issues; all fixed with regressions, final follow-up found no significant issues",
+    "Iteration 2: 333 focused tests passed with 90.97% aggregate collector/runner coverage; configured format/lint, scoped mypy, compile, Bandit and secret checks passed",
+    "Iteration 2: pre-existing startup-packet bytes preserved; automatic first progress commit captured timestamp, then index-only restoration removed the accidental churn while leaving original working content untouched"
   ],
   "pending": [
     "Phase 1 actual restricted-registry C1/C3/C5 assessment, hosted C2 proof and authorized profile documentation updates; local C1/C4 validators now implemented",
-    "Phase 4 live source collectors, authenticated independent validator execution, authorized isolated patch verification and measured outcome integration; exported-input proposal assessment now implemented",
+    "Phase 4 Chronicle/package collectors, private CI reader access and authenticated independent validator execution, authorized isolated patch verification and measured outcome integration; public CI metadata collector and exported-input proposal assessment now implemented",
     "Phase 5 registry/profile inventory and mappings",
     "Maintainer hosted activation/provenance and external PyPI protections"
   ],
@@ -54,6 +60,7 @@
     "src/aries_serpent_core/skills/evidence_to_improvement_brief/manifest.yaml", "src/aries_serpent_core/skills/lane_contract_and_handoff/manifest.yaml",
     "src/aries_serpent_core/skills/agent_regression_evaluation/manifest.yaml", "src/aries_serpent_core/skills/pypi_release_assurance/manifest.yaml",
     "src/codex/cognitive_brain/improvement_loop_runner.py", "tests/self_improvement/test_evidence_bundle_runner.py", "docs/guides/continuous_improvement.md",
+    "src/codex/cognitive_brain/ci_signal_collection.py", "tests/self_improvement/test_ci_signal_collection.py",
     "src/orchestration/scheduling/lane_scheduler_v1.py", "tests/autonomy/test_agent_runner.py", "tests/autonomy/test_autonomy_scheduler.py",
     "tests/ci/test_evidence_gated_approval.py", "tests/ci/test_e_to_d_gate.py", "tests/skills/test_assurance_skills.py",
     "tests/orchestration/test_human_mediated_lanes.py", "tests/orchestration/test_foundation_hardening.py",
@@ -72,7 +79,11 @@
     {"command": "python -m pytest tests/ci/test_e_to_d_gate.py tests/skills/test_assurance_skills.py tests/self_improvement -q --override-ini=addopts=''", "result": "Continuation baseline: 91 passed in 5.54s; final scoped integration: 136 passed in 4.85s"},
     {"command": "python -m pytest tests/release/test_pypi_publish_workflow.py tests/release/test_publishing_assurance.py tests/ci/test_evidence_gated_approval.py tests/ci/test_e_to_d_gate.py tests/autonomy/test_agent_runner.py tests/autonomy/test_autonomy_scheduler.py tests/skills/test_assurance_skills.py tests/orchestration/test_human_mediated_lanes.py tests/orchestration/test_foundation_hardening.py tests/self_improvement -q --override-ini=addopts='' --cov=scripts.ci.e_to_d_gate --cov=codex.cognitive_brain.improvement_loop_runner --cov=aries_serpent_core.skills.assurance --cov-report=term-missing --cov-report=", "result": "Continuation: 278 passed in 19.77s; aggregate line/branch coverage 88.12%; gate 82.83%, assurance 86.71%, runner 91.67%"},
     {"command": "python -m mypy --follow-imports=skip --check-untyped-defs scripts/ci/e_to_d_gate.py src/codex/cognitive_brain/improvement_loop_runner.py src/aries_serpent_core/skills/assurance.py", "result": "Continuation: success, no issues in three source files"},
-    {"command": "bandit -q -ll scripts/ci/e_to_d_gate.py src/codex/cognitive_brain/improvement_loop_runner.py src/aries_serpent_core/skills/assurance.py", "result": "Continuation: exit 0, no medium/high findings"}
+    {"command": "bandit -q -ll scripts/ci/e_to_d_gate.py src/codex/cognitive_brain/improvement_loop_runner.py src/aries_serpent_core/skills/assurance.py", "result": "Continuation: exit 0, no medium/high findings"},
+    {"command": "python -m pytest tests/self_improvement tests/skills/test_assurance_skills.py -q --override-ini=addopts=''", "result": "Iteration 2: baseline 110 passed in 5.70s; final scoped suite 165 passed in 4.95s"},
+    {"command": "python -m pytest tests/release/test_pypi_publish_workflow.py tests/release/test_publishing_assurance.py tests/ci/test_evidence_gated_approval.py tests/ci/test_e_to_d_gate.py tests/autonomy/test_agent_runner.py tests/autonomy/test_autonomy_scheduler.py tests/skills/test_assurance_skills.py tests/orchestration/test_human_mediated_lanes.py tests/orchestration/test_foundation_hardening.py tests/self_improvement -q --override-ini=addopts='' --cov=codex.cognitive_brain.ci_signal_collection --cov=codex.cognitive_brain.improvement_loop_runner --cov-report=term-missing --cov-report=", "result": "Iteration 2: 333 passed in 13.15s; aggregate collector/runner coverage 90.97%; collector 89.70%, runner 92.24%"},
+    {"command": "python -m mypy --follow-imports=skip --check-untyped-defs src/codex/cognitive_brain/ci_signal_collection.py src/codex/cognitive_brain/improvement_loop_runner.py", "result": "Iteration 2: no issues found in two source files"},
+    {"command": "bandit -q -ll src/codex/cognitive_brain/ci_signal_collection.py src/codex/cognitive_brain/improvement_loop_runner.py", "result": "Iteration 2: exit 0, no medium/high findings"}
   ],
   "autonomy_env_keys_found": ["AUTONOMY_BUDGET_SECONDS", "AUTONOMY_MAX_ITERATIONS", "AUTONOMY_DRY_RUN", "AGENT_KILL_SWITCH", "COPILOT_AGENT_MAX_AUTONOMY_LEVEL", "AGENT_RUNNER_ITERATIONS", "AGENT_RUNNER_BUDGET_SECONDS", "AGENT_RUNNER_DRY_RUN", "CODEX_AUTONOMY_REGISTRY"],
   "d_mode_variable_name": "not-found; COPILOT_AGENT_MAX_AUTONOMY_LEVEL declared-only",
@@ -110,6 +121,38 @@
       "Python CodeQL database-size limit persists; changed-source Bandit and independent review are fallback evidence, not a successful Python CodeQL run"
     ]
   },
-  "next_action": "Recheck HEAD/worktree; obtain authorized restricted-registry/profile assessment and genuine hosted C2 evidence, then integrate live collectors and independently executed isolated/outcome stages without treating exported observations as authority. Phase 4/5 and hosted/PyPI gates remain incomplete.",
-  "updated_at_utc": "2026-11-01T01:45:49Z"
+  "iteration_2": {
+    "started_from_sha": "7af1c1ad0e227ef8d917f0fe455fb2412b5f0938",
+    "implementation_sha": "61201ecbd1b3f5b01ef48c053783aa492b83264d",
+    "delegated_agents": ["signal-seams: read-only source exploration", "ci-collector-review: read-only diff review and two follow-ups"],
+    "worktree_preservation": "Startup packet working SHA-256 remains 2dd96ffb68b435cc238cf1100fcde4536fe4f8a28caca30db877eecfd5f2f6e8; index-only restoration returns tracked timestamp to iteration baseline without modifying user bytes; temporary index visibility restored after checkpoint commit",
+    "public_collection_probe": {
+      "repo": "Aries-Serpent/_codex_",
+      "sha": "7af1c1ad0e227ef8d917f0fe455fb2412b5f0938",
+      "run_id": 41262525428,
+      "availability": "error",
+      "summary": "GitHub metadata collection failed",
+      "observed_at": "2026-11-01T02:51:07Z",
+      "measured_health_claimed": false,
+      "credentials_used": false
+    },
+    "hosted_ci": {
+      "implementation_sha": "61201ecbd1b3f5b01ef48c053783aa492b83264d",
+      "runs": [41266972358, 41266972369, 41266972357],
+      "observed_conclusion": "action_required",
+      "green_ci_claimed": false,
+      "approval_or_retry_attempted": false
+    },
+    "limits": [
+      "Direct public collection probe returned explicit error; positive measurement behavior verified with offline REST fixtures, not a successful live collection",
+      "Default transport has hard supervised worker lifetime; injected reader cancellation, credentials and operation-specific access remain caller responsibilities",
+      "A collected run is measured source evidence, not independent command validation, C2 enforcement proof or integration authority",
+      "No registry/profile access, workflow edits/activation/dispatch, token/settings changes, promotions or package publication",
+      "Chronicle/package collectors, private source access, isolated implementation/validation, outcome updates, Phase 5 inventory and hosted/PyPI gates remain incomplete",
+      "Actions CodeQL zero alerts; Python database-size limit persists; scoped Bandit and independent review are fallback evidence only",
+      "No new dependency declarations; public reader lazily uses the existing optional requests dependency; no release rebuild because packaging was unchanged"
+    ]
+  },
+  "next_action": "Recheck HEAD/worktree; obtain permitted registry/profile and hosted C2 evidence; continue Chronicle/package source collectors and authorized isolated/outcome integration. Do not treat CI collection or supplied observer identity as approval. Phase 4/5 and hosted/PyPI gates remain incomplete.",
+  "updated_at_utc": "2026-11-01T02:54:49Z"
 }
