@@ -112,6 +112,31 @@ and no failed-job logs: it provides no product verification.
 
 ## Continuation and rollback
 
+Scoped source continuation and intended PR #5744 dependency changes are
+committed at `26e285a0fc3bbc093ce87ad2c8d5df7a046507e9`.
+Local results: recovery 619 tests; composition 75; monitor 50; legacy 108
+with one unchanged baseline test deselected; approval 94; packaging 7.
+These selections overlap and must not be summed. Composition/monitor/legacy
+configured formatting, type and compile checks passed. Secret scans found
+no secrets. Actions CodeQL found no alerts; Python CodeQL was skipped for
+database size. Bandit's two final medium static findings and owners are
+classified in `checkpoint.json`, not presented as a clean security scan.
+
+Twelve real distributions passed installed public-function checks for the
+captured permitted export identified in the checkpoint. Three cycles exhausted
+the release lane's budget; later source drift, checkout-local venv placement
+and removed disposable artifact files leave final-source/outside-checkout
+release acceptance open. Artifact digests are retained, not downloadable builds.
+No package was published. Latest source CI requires action and has zero jobs;
+the owner's approval of an earlier workflow attempt resulted in a skipped
+attempt, not green product CI.
+
+The maintained local composer and read-only convergence contracts exist.
+Calibration, SQLite adapters, actual health/evolution/local-fixer integration,
+merged-SHA observation, permitted inventory and the original B01–B10 review
+remain open. The repository scheduler remains explicitly human-mediated; tool
+delegation is not lane-runtime overlap/cancellation/recovery evidence.
+
 First complete T02 identity/chronology and fixture-only learning boundaries,
 then T03/T06 integration into the maintained T07 runner. Implement T08/T09
 only after shared contracts are published. Keep T04/T05 external activation,

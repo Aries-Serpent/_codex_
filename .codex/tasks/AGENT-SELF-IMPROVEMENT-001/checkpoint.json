@@ -1,10 +1,29 @@
 {
   "schema_version": "1.0.0",
   "task_id": "AGENT-SELF-IMPROVEMENT-001",
-  "status": "continuation_in_progress",
+  "status": "scoped_continuation_verified_with_open_gaps",
   "repository_root": "/home/runner/work/_codex_/_codex_",
   "source_sha": "204b81043da6a50639697a81c3e646aec8d7944c",
   "baseline_tested_sha": "48290eaaa9802b4143e75a9debc8b8ed257504db",
+  "verified_source_commit": "26e285a0fc3bbc093ce87ad2c8d5df7a046507e9",
+  "changed_files": [
+    ".codex/tasks/AGENT-SELF-IMPROVEMENT-001/MASTER_PLAN.md",
+    ".codex/tasks/AGENT-SELF-IMPROVEMENT-001/checkpoint.json",
+    ".codex/tasks/AGENT-SELF-IMPROVEMENT-001/plan.json",
+    "docs/guides/continuous_improvement.md",
+    "pyproject.toml",
+    "requirements/extras.txt",
+    "requirements/lock-dev.txt",
+    "scripts/ci/approve_pending_runs.py",
+    "scripts/ci/proactive_ci_monitor.py",
+    "src/aries_serpent_core/cognitive/brain_interface.py",
+    "src/codex/cognitive_brain/improvement_loop_runner.py",
+    "src/codex/cognitive_brain/improvement_pipeline.py",
+    "tests/ci/test_approval_transport_integrity.py",
+    "tests/ci/test_proactive_monitor_integrity.py",
+    "tests/self_improvement/test_legacy_pattern_persistence.py",
+    "tests/self_improvement/test_local_composition.py"
+  ],
   "initial_dirty_work": {
     "path": ".codex/session_startup_packet.json",
     "preservation": "Bytes preserved by initial progress commit; never overwritten",
@@ -50,7 +69,8 @@
     "excluded": "Source merge commit and startup timestamp churn",
     "signed_commit_attempts": "CLI signing service returned Bad Request twice; no signing bypass",
     "validation": "7 packaging tests passed in 5.76s; no target-version advisories found",
-    "remaining": "Persist via authorized progress tool; uv/ML/evaluation lock drift remains separately scoped"
+    "applied_commit": "26e285a0fc3bbc093ce87ad2c8d5df7a046507e9",
+    "remaining": "uv/ML/evaluation lock drift remains separately scoped; no full resolver compatibility claim"
   },
   "content_sha256": {
     "pyproject.toml": "c76c5a08abd6d2c4201c3bb46ee65c7c23213232475ab925488c442dd651ace5",
@@ -70,7 +90,7 @@
     "All G01-G40 acceptance criteria preserved exactly; B01-B10 placeholders and fourteen negative mappings retained"
   ],
   "lane_validation": {
-    "composition": "75 focused tests passed; trusted independent review callback, synthetic-only clock injection, real-process before-fail/after-pass fixture, replay-safe partial handoff; scoped mypy correction pending",
+    "composition": "75 focused tests passed; trusted independent review callback, synthetic-only clock injection, real-process before-fail/after-pass fixture, replay-safe partial handoff; scoped mypy clean in3 files after behavior-preserving casts; Ruff/Black/isort/compile passed",
     "monitor": "50 tests passed, including 30 integrity fixtures; Ruff/Black/isort/mypy/compile passed; no health/evolution/local-fixer execution claim",
     "legacy": {
       "result": "108 passed, 1 baseline test deselected; Ruff/Black/isort/mypy/compile passed",
@@ -105,19 +125,43 @@
       }
     }
   },
+  "final_verification": "Parsed checkpoint/ledger; preserved all40 exact acceptance strings,14 negatives and10 review placeholders; validated12 reported artifact digest shapes and scoped source content hashes; no code difference from verified source commit; git diff --check passed",
   "independent_review": {
     "initial": "Architecture review drove trusted verifier, fixture-clock and crash/replay corrections",
     "legacy": "Independent Windows portability finding fixed with platform-guarded fsync/mode handling and fixtures",
     "final": "Strict read-only final-composition-review found no significant issues",
     "preservation": "Earlier reviewer ran unrequested tests/stash; no stash remains, startup/dependency/approval hashes preserved. Test-generated operational files retained under /tmp/codex-continuation-retained-fixtures and original tracked bytes verified restored. That review's follow-up is not final assurance."
   },
+  "security_assessment": {
+    "secret_scanning": "All16 scoped edited/created files scanned; no secrets found before source persistence",
+    "dependency_advisories": "No advisories found for MCP2.2.0/pyasn1 0.6.5 or restored release lock tools",
+    "codeql": "Actions: zero alerts; Python skipped because database too large, not a clean Python CodeQL result",
+    "bandit": "Final Python source selection: two medium static findings, zero high; command exits1",
+    "triage": [
+      "Publishing exec executes only fixed internal public-check strings after installed source binding; no untrusted string accepted",
+      "Monitor urlopen uses fixed api.github.com origin, not arbitrary schemes; authenticated transport is NOT qualified (existing placeholder Authorization), owner-controlled credential/routing decision remains open",
+      "Approval transport hardened: no redirects or ambient proxies, bounded response, invalid paths rejected"
+    ],
+    "owner": "Maintainer/security owner for full Python CodeQL and authenticated monitor transport before production use"
+  },
+  "latest_hosted_ci": {
+    "source_sha": "26e285a0fc3bbc093ce87ad2c8d5df7a046507e9",
+    "run_id": 41337987050,
+    "conclusion": "action_required",
+    "jobs": 0,
+    "logs": "No failed jobs found; no product verification",
+    "prior_owner_approval": "Earlier source attempt2 skipped; not permission to rerun/approve this source or publish"
+  },
   "remaining": [
-    "Final integrated source hashes and independent review",
-    "Twelve real wheel/sdist installed-functional artifact proofs",
+    "Final-current-source/outside-checkout release proof and retained actual distributions",
+    "Full Python CodeQL unavailable due database size; authenticated monitor transport owner decision",
     "Merged-SHA observation requires independent authorized source",
     "Cross-store pending learning intent requires owner reconciliation",
     "Restricted agent inventory and original B01-B10 evidence",
-    "Credential routing, publishing migration and execution protections remain owner-controlled"
+    "Credential routing, publishing migration and execution protections remain owner-controlled",
+    "Calibration, actual SQLite adapters and maintained health/evolution/local-fixer integration",
+    "Lane runtime overlap/cancellation/recovery; retain explicit human-mediated handoffs",
+    "Additional dependency lock drift; no full resolver compatibility proof"
   ],
   "rollback": "Owner-reviewed scoped revert only; preserve raw journals, startup bytes and ambiguous claims; append authorized reconciliation rather than replay",
   "execution_authority": false,
