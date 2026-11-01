@@ -171,6 +171,15 @@ def test_stale_and_session_tips_not_actionable():
     assert assurance.evidence_to_improvement_brief(payload)["status"] == "signal-only"
 
 
+def test_proposal_identity_is_stable_across_fresh_reassessment():
+    payload = brief()
+    first = assurance.evidence_to_improvement_brief(payload)
+    payload["observed_at"] = "2026-10-31T00:00:20Z"
+    second = assurance.evidence_to_improvement_brief(payload)
+    assert first["proposal_id"] == second["proposal_id"]
+    assert first["brief"]["observed_at"] != second["brief"]["observed_at"]
+
+
 def test_handoff_scope_and_identity():
     item = contract()
     handoff = {

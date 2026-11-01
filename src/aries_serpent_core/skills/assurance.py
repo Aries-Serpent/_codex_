@@ -99,14 +99,17 @@ def evidence_to_improvement_brief(payload: dict[str, Any]) -> dict[str, Any]:
     missing = [key for key in required if key not in payload or payload[key] is None]
     if missing:
         return {"status": "unknown", "missing": missing, "execution_authorized": False}
-    measured = datetime.fromisoformat(payload["timestamp"].replace("Z", "+00:00"))
-    observed = datetime.fromisoformat(payload["observed_at"].replace("Z", "+00:00"))
-    age = (observed - measured).total_seconds()
-    if (
-        measured.tzinfo is None
-        or observed.tzinfo is None
-        or not 0 <= age <= payload["freshness_seconds"]
-    ):
+    try:
+        measured = datetime.fromisoformat(payload["timestamp"].replace("Z", "+00:00"))
+        observed = datetime.fromisoformat(payload["observed_at"].replace("Z", "+00:00"))
+        valid_time = (
+            measured.tzinfo is not None
+            and observed.tzinfo is not None
+            and 0 <= (observed - measured).total_seconds() <= payload["freshness_seconds"]
+        )
+    except (ValueError, TypeError, AttributeError):
+        valid_time = False
+    if not valid_time:
         return {
             "status": "unknown",
             "reason": "stale or invalid timestamp evidence",
@@ -118,7 +121,11 @@ def evidence_to_improvement_brief(payload: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("proposal needs a positive budget and a measurable change")
     brief = {key: payload[key] for key in required}
     brief["observed_at"] = payload["observed_at"]
-    canonical = json.dumps(brief, sort_keys=True, separators=(",", ":"))
+    canonical = json.dumps(
+        {key: value for key, value in brief.items() if key != "observed_at"},
+        sort_keys=True,
+        separators=(",", ":"),
+    )
     return {
         "status": (
             "signal-only" if payload.get("category") == "session-productivity" else "proposal"

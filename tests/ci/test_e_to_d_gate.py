@@ -1,15 +1,19 @@
 """Promotion criteria and minimal-diff preservation use temporary registries only."""
 
+import json
 from copy import deepcopy
 
 import pytest
 import yaml
 
 from scripts.ci.e_to_d_gate import assess
+from scripts.ci.generate_manifest import add_integrity_hash
 from scripts.cognitive.d_capable_promotion import evaluate_agent, save_registry
 
 AGENT = {
     "id": "fixture",
+    "name": "Fixture Agent",
+    "status": "active",
     "autonomy_model": "E",
     "maturity": "production",
     "violations_30d": 0,
@@ -58,6 +62,61 @@ def test_gate_never_writes_registry(tmp_path):
     assert report["status"] == "unknown"
     assert report["promotion_authorized"] is False
     assert report["registry_written"] is False
+    assert report["conditions"]["C3"]["status"] == "unknown"
+
+
+def test_local_schema_and_hash_do_not_establish_hosted_readiness(tmp_path):
+    agents = [{**AGENT, "id": f"fixture-{i}", "enforcement_tier": "GROUNDED"} for i in range(8)]
+    registry = tmp_path / "fixture.yaml"
+    registry.write_text(yaml.safe_dump({"agents": agents}))
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(json.dumps(add_integrity_hash({"fixture": True})))
+    before = registry.read_bytes(), manifest.read_bytes()
+    report = assess(registry, manifest=manifest)
+    assert report["conditions"]["C1"]["status"] == "pass"
+    assert report["conditions"]["C4"]["status"] == "pass"
+    assert report["conditions"]["C2"]["status"] == "unknown"
+    assert report["status"] == "unknown"
+    assert not report["promotion_authorized"]
+    assert (registry.read_bytes(), manifest.read_bytes()) == before
+
+
+@pytest.mark.parametrize("payload", [{}, {"integrity_sha256": "incorrect"}, [], None])
+def test_missing_or_invalid_hash_fails(tmp_path, payload):
+    registry = tmp_path / "fixture.yaml"
+    registry.write_text(yaml.safe_dump({"agents": [AGENT]}))
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(json.dumps(payload))
+    assert assess(registry, manifest=manifest)["conditions"]["C4"]["status"] == "fail"
+
+
+@pytest.mark.parametrize("agents", [[], [AGENT, AGENT], [{**AGENT, "name": ""}]])
+def test_canonical_schema_and_population_fail_closed(tmp_path, agents):
+    registry = tmp_path / "fixture.yaml"
+    registry.write_text(yaml.safe_dump({"agents": agents}))
+    report = assess(registry)
+    assert report["conditions"]["C1"]["status"] == "fail"
+    assert report["status"] == "fail"
+
+
+def test_cli_cannot_overwrite_manifest_alias(tmp_path, monkeypatch):
+    from scripts.ci.e_to_d_gate import main
+
+    registry = tmp_path / "fixture.yaml"
+    registry.write_text(yaml.safe_dump({"agents": [AGENT]}))
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(json.dumps(add_integrity_hash({"fixture": True})))
+    alias = tmp_path / "alias.json"
+    alias.hardlink_to(manifest)
+    before = manifest.read_bytes()
+    monkeypatch.setattr(
+        "sys.argv",
+        ["gate", "--registry", str(registry), "--manifest", str(manifest), "--output", str(alias)],
+    )
+    with pytest.raises(SystemExit) as exc:
+        main()
+    assert exc.value.code == 2
+    assert manifest.read_bytes() == before
 
 
 def test_minimal_writer_preserves_comments_and_order(tmp_path):

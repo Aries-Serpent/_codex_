@@ -28,3 +28,57 @@ Invoke this runner from `launchd`, `systemd`, or any other local scheduler you c
 ## Rationale
 
 Keeping the maintenance workflow local avoids exposing repository data to external services and keeps automation simple. Run the job on a workstation or server you manage, and adjust the interval to match your cleanup requirements.
+
+## Evidence-gated proposal assessment
+
+`python -m codex.cognitive_brain.improvement_loop_runner --help` describes
+the existing PDA-log runner and its optional `--evidence-bundle` mode.
+This mode reads local JSONL exports, not live GitHub or Chronicle services,
+and prints one assessment per valid input record. Each record contains:
+
+- `repo` and immutable `sha`, matching the caller's `--repo` and `--sha`;
+- `signal`, using the cognitive SDK's `SignalEvidence` fields, with
+  timezone-aware `measured_at` and an explicit availability;
+- `brief`, containing the evidence-to-improvement skill's hypothesis,
+  metrics, scope, lane/dependencies, acceptance criteria, commands, budget,
+  stop condition and falsification;
+- `author` and optional `validation`, plus `correction_cycle` from zero to three.
+
+Code proposals require a finite `signal.details.baseline_metric` matching the
+brief baseline. Assessment time and freshness are controlled by the caller,
+not the exported brief. Missing, stale or unavailable observations do not
+reach pattern retrieval. Chronicle productivity observations must be marked
+`category: session-productivity` in the brief and remain signal-only.
+
+The existing `ImprovementPipeline` still enforces its authority envelope.
+Without caller-supplied approval it returns a blocked proposal; approval
+fields in exported records cannot grant authority. Validation must bind the
+generated `proposal_id`, event proposal `patch_hash`, SHA and author.
+Both the validation envelope and every command observation must carry the
+assessment's `evidence_digest`, binding the exact signal, generated proposal,
+file scope and context; every observation also carries the proposal/content IDs.
+It must supply the declared verification commands and complete independent
+negative, boundary and regression observations. Reassessment does not change
+the proposal ID merely because observation time advances.
+
+Complete supplied observations produce `ready-for-human-review`, **not**
+authenticated approval or an executed/merged improvement. The runner never
+executes commands, patches, agents, releases or confidence updates. Its output
+always denies execution and integration authority. A non-ready or malformed
+record or empty bundle produces a nonzero CLI exit; valid records remain available on stdout.
+Sanitize exported source evidence before use; do not include credentials or
+personal information. Actual isolated verification and measured post-merge
+outcome tracking remain separate authorized stages.
+
+## Read-only transition evidence
+
+`python -m scripts.ci.e_to_d_gate --help` describes assessment of an explicitly
+supplied registry and optional `--manifest` path. It validates registry entries
+against `configs/schemas/agent_spec.schema.json`, rejects empty populations
+and duplicate IDs, and reuses the manifest generator's canonical SHA-256
+verification. Inputs are never written, including when output aliases an input.
+
+A matching local manifest hash is not hosted provenance. The active Tier-1
+hosted-gate condition remains unknown without verified hosted evidence, so
+local schema/hash success cannot authorize promotion. Registry/profile access,
+promotion and hosted activation still require their applicable authority.
