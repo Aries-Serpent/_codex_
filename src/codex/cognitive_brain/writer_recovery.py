@@ -1,7 +1,8 @@
 """Recovery boundary for cooperating maintained AgentBrainInterface writers.
 
-Only ``submit_pattern``, ``submit_learning``/``_update_pattern_stats`` and
-``_save_patterns`` participate. Filesystem edits, other implementations and
+Only ``submit_pattern``, ``submit_learning``/``_update_pattern_stats``,
+``_save_patterns`` and the full ``OutcomeTracker`` learning sequence participate.
+Filesystem edits, other implementations and
 older SDK processes are not excluded. The operator must explicitly attest that
 this limited writer coverage fits the deployment; otherwise recovery is denied.
 No pattern statistic is an observation-specific consumption receipt.

@@ -57,7 +57,10 @@ def _read(
     info = path.stat()
     if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_size > 4 * 1024 * 1024:
         raise ValueError("artifact must be a bounded, unaliased regular file")
-    data = path.read_bytes()
+    with path.open("rb") as handle:
+        data = handle.read(4 * 1024 * 1024 + 1)
+    if len(data) > 4 * 1024 * 1024:
+        raise ValueError("artifact exceeds size limit")
     identity = _file_identity(info)
     if path != path.resolve() or _file_identity(path.stat()) != identity:
         raise ValueError("artifact changed while reading")
@@ -81,15 +84,19 @@ def _patch_scope(patch: str) -> tuple[list[str], int]:
     """Conservatively support ordinary textual patches; other forms stay unknown."""
     paths: list[str] = []
     lines = 0
+    in_hunk = False
     for line in patch.splitlines():
         if line.startswith("diff --git "):
+            in_hunk = False
             match = re.fullmatch(r"diff --git a/(\S+) b/(\S+)", line)
             if not match or match[1] != match[2] or not _path(match[1]):
                 raise ValueError("unsupported or noncanonical patch scope")
             paths.append(match[1])
         elif line.startswith(("rename ", "copy ", "Binary ", "GIT binary", "new mode ")):
             raise ValueError("unsupported retained patch form")
-        elif line.startswith(("+", "-")) and not line.startswith(("+++", "---")):
+        elif line.startswith("@@ "):
+            in_hunk = True
+        elif in_hunk and line.startswith(("+", "-")):
             lines += 1
     if not paths or len(paths) != len(set(paths)) or not lines:
         raise ValueError("missing or duplicate patch paths")
@@ -156,7 +163,7 @@ def read_retained_execution(repo_path: str | Path, outcome: Any) -> dict[str, An
             or not all(_path(path) for path in declared)
             or len(set(declared)) != len(declared)
             or set(declared) != set(paths)
-            or inventory.get("files") != paths
+            or inventory.get("files") != sorted(paths)
             or inventory.get("diff_lines") != lines
             or type(identity.get("declared_lines")) is not int
             or identity["declared_lines"] < lines

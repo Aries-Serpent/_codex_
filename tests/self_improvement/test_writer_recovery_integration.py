@@ -168,19 +168,40 @@ def _reader(
         connection.close()
 
 
-def _tracker_writer(root: str, paused: Any, resume: Any, connection: Any) -> None:
+def _tracker_writer(root: str, paused: Any, resume: Any, connection: Any, phase: str) -> None:
     try:
         brain = AgentBrainInterface("tracker", repo_root=root, auto_register=False)
         store = EvidenceStore(Path(root) / "evidence.jsonl")
         original = brain_module.os.replace
 
-        def replacement(source: Any, destination: Any) -> None:
+        def wait() -> None:
             paused.set()
             if not resume.wait(10):
                 raise TimeoutError("tracker resume")
+
+        def replacement(source: Any, destination: Any) -> None:
+            if phase == "replace":
+                wait()
             original(source, destination)
 
         brain_module.os.replace = replacement
+        claim = EvidenceStore.claim_observation
+        complete = EvidenceStore.complete_observation
+
+        def claim_and_pause(subject: EvidenceStore, *args: Any, **kwargs: Any) -> bool:
+            claimed = claim(subject, *args, **kwargs)
+            if claimed:
+                wait()
+            return claimed
+
+        def pause_and_complete(subject: EvidenceStore, *args: Any, **kwargs: Any) -> None:
+            wait()
+            complete(subject, *args, **kwargs)
+
+        if phase == "claimed":
+            EvidenceStore.claim_observation = claim_and_pause
+        elif phase == "completion":
+            EvidenceStore.complete_observation = pause_and_complete
         observation = {
             "event_id": "tracker-event",
             "pattern_id": "RP-1",
@@ -684,8 +705,9 @@ def test_platform_without_fcntl_fails_closed_without_filesystem_mutation(
     assert _files(tmp_path) == before
 
 
+@pytest.mark.parametrize("phase", ["claimed", "replace", "completion"])
 def test_tracker_sidecar_and_recovery_directory_journal_order_do_not_invert(
-    tmp_path: Path, spawn_context: SpawnContext
+    tmp_path: Path, spawn_context: SpawnContext, phase: str
 ) -> None:
     brain = _brain(tmp_path)
     store = EvidenceStore(tmp_path / "evidence.jsonl")
@@ -694,7 +716,7 @@ def test_tracker_sidecar_and_recovery_directory_journal_order_do_not_invert(
     writer_receiver, writer_sender = ctx.Pipe(duplex=False)
     reader_receiver, reader_sender = ctx.Pipe(duplex=False)
     writer = ctx.Process(
-        target=_tracker_writer, args=(str(tmp_path), paused, resume, writer_sender)
+        target=_tracker_writer, args=(str(tmp_path), paused, resume, writer_sender, phase)
     )
     reader = ctx.Process(
         target=_reader,

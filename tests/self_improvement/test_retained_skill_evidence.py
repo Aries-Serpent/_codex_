@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+from contextlib import contextmanager
 from copy import deepcopy
 from dataclasses import asdict
 from pathlib import Path
@@ -438,3 +439,81 @@ def test_local_retained_evidence_does_not_infer_independence_from_labels(executi
     assert result["status"] == "pass"
     assert not result["authenticated_review"]
     assert "unauthenticated" in result["reason"]
+
+
+def test_artifact_growth_is_rejected_with_a_bounded_read(tmp_path, monkeypatch):
+    path = tmp_path / "artifact"
+    path.write_bytes(b"small")
+    open_path = Path.open
+    reads = []
+    observed = {}
+    limit = 4 * 1024 * 1024
+
+    @contextmanager
+    def grow_before_open(subject, *args, **kwargs):
+        if subject == path:
+            with open_path(subject, "wb") as handle:
+                handle.truncate(limit * 2)
+        with open_path(subject, *args, **kwargs) as handle:
+
+            class Reader:
+                def read(self, size):
+                    reads.append(size)
+                    return handle.read(size)
+
+            yield Reader()
+
+    monkeypatch.setattr(Path, "open", grow_before_open)
+    with pytest.raises(ValueError, match="exceeds size limit"):
+        retained_module._read(tmp_path, path, observed)
+    assert reads == [limit + 1]
+    assert not observed
+
+
+def test_patch_hunk_counts_include_header_like_content():
+    patch = """diff --git a/doc.md b/doc.md
+--- a/doc.md
++++ b/doc.md
+@@ -1,2 +1,2 @@
+----
+-old
++++new
++---
+diff --git a/other.md b/other.md
+--- a/other.md
++++ b/other.md
+@@ -1 +1 @@
+-before
++after
+"""
+    paths, lines = retained_module._patch_scope(patch)
+    assert paths == ["doc.md", "other.md"]
+    assert lines == 6
+    assert IsolatedExecutor._patch_inventory("2\t2\tdoc.md\0" "1\t1\tother.md\0") == (
+        sorted(paths),
+        lines,
+    )
+
+
+def test_retained_inventory_uses_executor_canonical_path_order(execution, monkeypatch):
+    repo, _, outcome = execution
+    directory = Path(outcome["artifact_path"])
+    identity_path = directory / f"{outcome['attempt_id']}-identity.json"
+    inventory_path = directory / "inventory.json"
+    originals = {path: path.read_bytes() for path in (identity_path, inventory_path)}
+    paths = ["src/z.py", "src/a.py"]
+    monkeypatch.setattr(retained_module, "_patch_scope", lambda _: (paths, 4))
+    try:
+        identity = json.loads(originals[identity_path])
+        identity["declared_files"] = paths
+        identity_path.write_text(json.dumps(identity))
+        inventory = json.loads(originals[inventory_path])
+        inventory["files"] = sorted(paths)
+        inventory_path.write_text(json.dumps(inventory))
+        assert read_retained_execution(repo, outcome)["status"] == "pass"
+        inventory["files"] = paths
+        inventory_path.write_text(json.dumps(inventory))
+        assert read_retained_execution(repo, outcome)["status"] == "unknown"
+    finally:
+        for path, data in originals.items():
+            path.write_bytes(data)

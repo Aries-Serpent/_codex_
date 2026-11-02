@@ -21,6 +21,8 @@ def test_codeql_retains_sarif_separately_from_source_metadata():
     assert "0D_base_" in document["on"]["pull_request"]["branches"]
     assert document["permissions"] == {"contents": "read", "security-events": "write"}
     steps = document["jobs"]["codeql"]["steps"]
+    checkout = next(step for step in steps if step.get("uses", "").startswith("actions/checkout@"))
+    assert checkout["with"]["fetch-depth"] >= 2
     analyze = next(step for step in steps if step["name"] == "Analyze code")
     assert analyze["with"]["upload"] == "never"
     assert analyze["with"]["output"] == "codeql-results"
