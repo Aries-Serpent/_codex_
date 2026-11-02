@@ -30,24 +30,7 @@
       },
       {
         "lane": "sqlite-pattern-adapters",
-        "changed_files": ["tests/self_improvement/test_sqlite_pattern_identity.py"        ],
-        "integration": {
-          "command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest tests/self_improvement/test_durable_integrity.py tests/self_improvement/test_outcome_tracking.py tests/self_improvement/test_execution_cancellation.py tests/self_improvement/test_pattern_calibration.py tests/self_improvement/test_learning_reconciliation.py tests/self_improvement/test_sqlite_pattern_identity.py --override-ini=addopts='' -p no:cacheprovider --basetemp=/tmp/codex-reconciliation-integration-20261102 -q",
-          "result": "219 passed in9.19s before final attempt-correlation precision correction; affected post-correction selection recorded above. Overlapping selections must not be summed.",
-          "review": "One interface review, one adversarial case selection and one bounded combined-diff review. No blocking combined findings. Low-confidence attempt attribution lead tightened with six cases; no repeated review loop. Reviewer labels do not establish authenticated independence.",
-          "preservation": "Exact forty G01-G40 acceptance strings, fourteen negative mappings, ten B01-B10 placeholders, numbered checkpoints0-7 and dependency-source hashes verified unchanged against orientation capture. MCP2.2.0/pyasn1 0.6.5 preserved.",
-          "security": "All eight intentionally changed paths passed precommit secret scanning. Postcommit security analysis pending; prior Python scanner skips are not passes. Lane scanner staged visible parent changes as a side effect; lane files then unstaged only, contents preserved. Parent explicitly stages eight authorized files only.",
-          "source_test_patch_sha256": "e3edc00eb946b11c9b59f66625404330c3b4f6741a48b9e1265012348f04eac1",
-          "patch_binding": "git diff --cached --binary against initial progress HEAD f8a86149db883e484692214e54d0dd484a5623a8, restricted to the four source/test paths below; ledger/docs excluded to avoid self-reference. Immutable base f48fb7a36eb31fd1ff518c186e54ec212c0d8366.",
-          "source_sha256": {
-            "src/codex/cognitive_brain/evidence_store.py": "455a3b50e7762fadffd298bc7f06bfeb574dbd36b426f50b3244550c80a547cc",
-            "src/codex/cognitive_brain/learning_reconciliation.py": "26abd4307979bcd6d031ae53c33897e92e9ff1d982c4701b8ef1e166d5cb768a",
-            "tests/self_improvement/test_learning_reconciliation.py": "508c6d35cafc72434eafa011a1539a11ad7eb203f9301785930824942570e1f6",
-            "tests/self_improvement/test_sqlite_pattern_identity.py": "e9f76ddf215c869e5be64d338369336d0c6c77c9eeaf86f60ef07754e26a268c"
-          }
-        },
-        "next_command": "Review inspect_learning/reconcile_learning integration with owner-provided policy, independent consumption receipts and a real all-writer external snapshot protocol; trace unverified adapters only. Do not apply reconciliation to live stores under this task.",
-        "remaining": "G07/G08/G11/G12/G16 remain partial. No cross-file exactly-once claim, production recovery, execution replay, calibration proof, blanket SQLite migration, hosted CI success or release authority.",
+        "changed_files": ["tests/self_improvement/test_sqlite_pattern_identity.py"],
         "before_edit": "Disposable SessionDatabase and SessionDB probe inserted RP-019,0012,12,integer12 and recorder00012; both reopened with exact TEXT identities and propagated foreign-key IntegrityError. No defect reproduced; no source migration.",
         "trace": [
           "src/aries_serpent_core/cli.py:912-917 constructs SessionDatabase",
@@ -63,8 +46,32 @@
         "remaining": "G16 partial for untraced stores; one path does not prove all SQLite compatibility"
       }
     ],
-    "remaining": "Implement and validate learning reconciliation and trace actual SQLite adapters on new disposable fixtures. Parent exclusively updates shared task records.",
-    "next_action": "Await useful independent lane deliveries, then one bounded combined-diff review and changed-seam integration selection."
+    "initial_remaining": "Implement and validate learning reconciliation and trace actual SQLite adapters on new disposable fixtures. Parent exclusively updates shared task records.",
+    "initial_next_action": "Await useful independent lane deliveries, then one bounded combined-diff review and changed-seam integration selection.",
+    "integration": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest tests/self_improvement/test_durable_integrity.py tests/self_improvement/test_outcome_tracking.py tests/self_improvement/test_execution_cancellation.py tests/self_improvement/test_pattern_calibration.py tests/self_improvement/test_learning_reconciliation.py tests/self_improvement/test_sqlite_pattern_identity.py --override-ini=addopts='' -p no:cacheprovider --basetemp=/tmp/codex-reconciliation-integration-20261102 -q",
+      "result": "219 passed in9.19s before final attempt-correlation precision correction; affected post-correction selection recorded above. Overlapping selections must not be summed.",
+      "review": "One interface review, one adversarial case selection and one bounded combined-diff review. No blocking combined findings. Low-confidence attempt attribution lead tightened with six cases; no repeated review loop. Reviewer labels do not establish authenticated independence.",
+      "preservation": "Exact forty G01-G40 acceptance strings, fourteen negative mappings, ten B01-B10 placeholders, numbered checkpoints0-7 and dependency-source hashes verified unchanged against orientation capture. MCP2.2.0/pyasn1 0.6.5 preserved.",
+      "security": "All eight intentionally changed paths passed precommit secret scanning. Postcommit Python CodeQL skipped analysis because database size is too large; not a passed analysis or evidence of zero vulnerabilities. Maintainer/security owner must obtain full Python analysis before relying on security closure. Lane scanner staged visible parent changes as a side effect; lane files then unstaged only, contents preserved. Parent explicitly staged eight authorized files only.",
+      "persistence": {
+        "implementation_commit": "3d8f5b6d3a609324f3c4bf4ae4821f109eae18b5",
+        "parent": "f8a86149db883e484692214e54d0dd484a5623a8",
+        "branch": "copilot/copilotagent-self-improvement-001-evidence-gated-s",
+        "operation": "Normal authorized progress-tool commit/push; exactly eight scoped files, no startup packet change in implementation commit. Post-CodeQL tracked/staged diff empty.",
+        "final_checkpoint": "Subsequent evidence-only update records implementation identity, scanner limitation and correctly nests integration evidence outside SQLite milestone; no source changes after source freeze."
+      },
+      "source_test_patch_sha256": "e3edc00eb946b11c9b59f66625404330c3b4f6741a48b9e1265012348f04eac1",
+      "patch_binding": "git diff --cached --binary against initial progress HEAD f8a86149db883e484692214e54d0dd484a5623a8, restricted to the four source/test paths below; ledger/docs excluded to avoid self-reference. Immutable base f48fb7a36eb31fd1ff518c186e54ec212c0d8366.",
+      "source_sha256": {
+        "src/codex/cognitive_brain/evidence_store.py": "455a3b50e7762fadffd298bc7f06bfeb574dbd36b426f50b3244550c80a547cc",
+        "src/codex/cognitive_brain/learning_reconciliation.py": "26abd4307979bcd6d031ae53c33897e92e9ff1d982c4701b8ef1e166d5cb768a",
+        "tests/self_improvement/test_learning_reconciliation.py": "508c6d35cafc72434eafa011a1539a11ad7eb203f9301785930824942570e1f6",
+        "tests/self_improvement/test_sqlite_pattern_identity.py": "e9f76ddf215c869e5be64d338369336d0c6c77c9eeaf86f60ef07754e26a268c"
+      }
+    },
+    "next_command": "Review inspect_learning/reconcile_learning integration with owner-provided policy, independent consumption receipts and a real all-writer external snapshot protocol; trace unverified adapters only. Do not apply reconciliation to live stores under this task.",
+    "remaining": "G07/G08/G11/G12/G16 remain partial. No cross-file exactly-once claim, production recovery, execution replay, calibration proof, blanket SQLite migration, hosted CI success or release authority."
   },
   "post_merge_continuation": {
     "orientation_source_sha": "406ab5e805f736b0b73630a91336d4e0feabfea8",
