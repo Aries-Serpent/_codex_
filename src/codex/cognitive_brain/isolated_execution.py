@@ -897,6 +897,8 @@ class IsolatedExecutor:
                             try:
                                 proc.wait(timeout=0.2)
                             except subprocess.TimeoutExpired:
+                                # SIGTERM is best-effort; if the process does not exit within
+                                # this short grace period, final cleanup below will SIGKILL it.
                                 pass
                             break
                         remaining = deadline - time.monotonic()
