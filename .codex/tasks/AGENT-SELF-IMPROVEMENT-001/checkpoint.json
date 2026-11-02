@@ -56,7 +56,7 @@
       "quality": "Delegated Ruff/Black/isort/compile on all12 changed Python paths passed; mypy seven changed source modules passed; git diff --check passed. Lane/parent checks cover new tests separately.",
       "scope": "Local disposable fixtures only; not hosted CI, authenticated review, calibrated production improvement or live recovery.",
       "preservation": "Exact40 acceptance strings/14 negative mappings/10 B placeholders, checkpoints0-7 and three dependency-source hashes verified unchanged against orientation capture.",
-      "security": "All16 scoped changed paths passed precommit secret scan; postcommit CodeQL pending. Historical oversized database skips are not passes."
+      "security": "All16 scoped changed paths passed precommit secret scan. Postcommit Python CodeQL skipped analysis because database size is too large; not a passed analysis or evidence of zero vulnerabilities. Maintainer/security owner must obtain full Python analysis before relying on security closure."
     },
     "source_binding": {
       "parent_sha": "500767308d4c97bd5ed1d6cb94b1406188da7be9",
@@ -76,6 +76,13 @@
         "tests/self_improvement/test_retained_skill_evidence.py": "f003db4f2972c42856848f4a9b6be1fcd7662c21ac5dda4ad84a896a003fd38a",
         "tests/self_improvement/test_writer_recovery_integration.py": "2aac906af4bb1b65cf4905e9eb8b0de675b55abc515af3d2628e1845b7f5e3c7"
       }
+    },
+    "persistence": {
+      "implementation_commit": "49462cef19c41aa316dcc72a1300fe7d56f9219c",
+      "parent_sha": "500767308d4c97bd5ed1d6cb94b1406188da7be9",
+      "branch": "copilot/copilotagent-self-improvement-001-evidence-gated-s",
+      "scope": "Normal authorized progress-tool commit/push of exactly16 scoped files. Implementation commit excludes startup packet; no tracked/staged changes after scanner. This subsequent evidence-only update records scanner limitation and immutable source identity.",
+      "authority": "No PR mutation, workflow operation, merge, publishing, live learning/recovery or production database migration performed."
     },
     "next_action": "Owner review of participating-writer deployment map and genuine policy/receipts; independently authorized bounded live transport and permitted profile mappings remain separate gates. Do not apply recovery to live stores under this task.",
     "status": "scoped_implementation_verified_with_open_gates"
