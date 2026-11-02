@@ -10,6 +10,7 @@ Covers:
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import sys
@@ -19,6 +20,61 @@ from unittest.mock import patch
 import pytest
 
 SCRIPTS_DIR = Path(__file__).resolve().parents[2] / "scripts"
+
+
+@pytest.fixture(autouse=True)
+def isolate_reflection_artifacts(monkeypatch, tmp_path):
+    from codex.reflection import persist_reflection
+
+    monkeypatch.setattr(
+        sys.modules[persist_reflection.__module__], "REFLECTION_DIR", tmp_path / "reflections"
+    )
+
+
+@pytest.mark.parametrize(
+    "value,expected", [(None, False), ("0", False), ("1", True), ("invalid", False)]
+)
+def test_kill_switch_parsing_preserved(monkeypatch, value, expected):
+    if value is None:
+        monkeypatch.delenv("AGENT_KILL_SWITCH", raising=False)
+    else:
+        monkeypatch.setenv("AGENT_KILL_SWITCH", value)
+    spec = importlib.util.spec_from_file_location(
+        "runner_env_fixture", SCRIPTS_DIR / "agent_runner.py"
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert module._KILL_SWITCH is expected
+
+
+@pytest.mark.parametrize(
+    "key,field,default",
+    [
+        ("AGENT_RUNNER_ITERATIONS", "iterations", 3),
+        ("AGENT_RUNNER_BUDGET_SECONDS", "budget_seconds", 180),
+        ("AGENT_RUNNER_DRY_RUN", "dry_run", False),
+    ],
+)
+@pytest.mark.parametrize("value", [None, "0", "1", "invalid"])
+def test_runner_cli_env_parsing_preserved(monkeypatch, key, field, default, value):
+    module = _import_runner()
+    for name in ("AGENT_RUNNER_ITERATIONS", "AGENT_RUNNER_BUDGET_SECONDS", "AGENT_RUNNER_DRY_RUN"):
+        monkeypatch.delenv(name, raising=False)
+    if value is not None:
+        monkeypatch.setenv(key, value)
+    monkeypatch.setattr(sys, "argv", ["agent_runner.py"])
+    calls = []
+    monkeypatch.setattr(module, "run", lambda **kwargs: calls.append(kwargs) or 0)
+    if value == "invalid" and field != "dry_run":
+        with pytest.raises(ValueError):
+            module.main()
+        assert calls == []
+    else:
+        assert module.main() == 0
+        expected = (
+            default if value is None else (value == "1" if field == "dry_run" else int(value))
+        )
+        assert calls[0][field] == expected
 
 
 def _import_runner():

@@ -1,0 +1,25 @@
+{
+  "task_id": "AGENT-SELF-IMPROVEMENT-001",
+  "plan_version": "v4",
+  "base_sha": "4a7d955b8b214d6002932261afdebd60f37ede8e",
+  "current_sha": "0f7eac6a030953e060d6cbb9bc31be19eff4dc93",
+  "branch": "copilot/agent-self-improvement-001-evidence-gated-skills",
+  "phase": 5,
+  "phase_status": "blocked",
+  "completed": ["Kept registry/profile files untouched; no promotion, profile deletion, mass conversion or tool-filter expansion"],
+  "pending": [
+    "Authorized registry counts/schema/profile inventory and repeatable stale-total/selectability validator",
+    "Correct D_CAPABLE UNLOCKED and missing-workflow profile claims against actual evidence",
+    "Map review/validation/handoff skills to Orchestrator and Deep Research",
+    "Map adversarial/replay/evidence skills to relevant test/CI and improvement profiles",
+    "Map release assurance to PyPI operations; retain deprecated agents as policy documents"
+  ],
+  "blocked": ["Registry/profile file access unavailable; supplied counts and selectable-profile claims remain unverified"],
+  "changed_paths": [],
+  "tests": [],
+  "d_mode_value_recorded": false,
+  "approvals_required": ["Authorized maintainer must perform profile/registry review; local manifests do not establish hosted capability"],
+  "main_activation_pending": [],
+  "next_action": "Maintainer inspects profile/registry evidence and reviews only necessary skill mappings",
+  "updated_at_utc": "2026-10-31T20:35:00Z"
+}

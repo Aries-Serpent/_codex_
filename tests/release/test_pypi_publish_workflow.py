@@ -100,11 +100,14 @@ def test_publish_jobs_validate_tag_and_provenance_before_upload() -> None:
     assert "Verify artifact provenance" in _step_names(validation_job)
 
     for job in (testpypi_job, pypi_job):
-        assert job["permissions"]["id-token"] == "write"
+        assert "id-token" not in job["permissions"]
         assert "attestations" not in job["permissions"]
-        assert all("run" not in step for step in job["steps"])
+        scripts = [step for step in job["steps"] if "run" in step]
+        assert len(scripts) == 1
+        assert scripts[0]["name"] == "Verify exact validated artifact checksums"
+        assert "sha256sum --check SHA256SUMS" in scripts[0]["run"]
         assert all(step.get("uses") != "actions/checkout@v7" for step in job["steps"])
-        assert len(job["steps"]) == 2
+        assert len(job["steps"]) == 3
 
 
 def test_job_conditions_are_matrix_free_and_selection_guards_operational_steps() -> None:
@@ -154,3 +157,92 @@ def test_post_publish_import_uses_the_verification_virtualenv() -> None:
     assert '"$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}/bin/python"' in step["run"]
     assert 'os.environ["IMPORT_NAME"]' in step["run"]
     assert step["env"]["DISTRIBUTION_NAME"] == "${{ matrix.distribution.name }}"
+
+
+def test_checksums_bind_build_validation_and_publication() -> None:
+    jobs = _load_workflow()["jobs"]
+    build = _step(jobs["build"], "Record validated artifact checksums")
+    assert "sha256sum -- *.whl *.tar.gz > SHA256SUMS" in build["run"]
+    assert (
+        "sha256sum --check SHA256SUMS"
+        in _step(jobs["validate"], "Validate downloaded artifacts")["run"]
+    )
+    provenance = _step(jobs["attest"], "Generate build provenance")["with"]["subject-path"]
+    assert "*.whl" in provenance and "*.tar.gz" in provenance
+    for name in ("publish-testpypi", "publish-pypi"):
+        steps = _step_names(jobs[name])
+        assert steps.index("Verify exact validated artifact checksums") < steps.index(
+            "Publish to TestPyPI" if name == "publish-testpypi" else "Publish to PyPI"
+        )
+
+
+def test_exact_artifact_verification_has_no_unpinned_resolution_or_fallback() -> None:
+    jobs = _load_workflow()["jobs"]
+    job = jobs["verify-installation"]
+    assert job["permissions"] == {"contents": "read"}
+    download = _step(job, "Download retained validated artifacts")
+    assert download["with"] == {
+        "name": "python-package-${{ matrix.distribution.name }}",
+        "path": "dist/",
+    }
+    assert (
+        "sha256sum --check SHA256SUMS"
+        in _step(job, "Create isolated verification environment")["run"]
+    )
+    for step_name, origin in (("Install from TestPyPI", "testpypi"), ("Install from PyPI", "pypi")):
+        command = _step(job, step_name)["run"]
+        assert "verify-published" in command
+        assert f"--origin {origin}" in command
+        assert '--source-sha "$GITHUB_SHA"' in command
+        assert "--dist-dir dist" in command
+        assert '--python-path "$RUNNER_TEMP/verify-${DISTRIBUTION_NAME}/bin/python"' in command
+        assert "pip install" not in command
+        assert "--extra-index-url" not in command
+    smoke = _step(job, "Test installed import")["run"]
+    assert 'cd "$RUNNER_TEMP"' in smoke
+    assert 'assurance["verify_installed_artifact"]' in smoke
+    assert 'source_sha=os.environ["GITHUB_SHA"]' in smoke
+    assert 'origin=os.environ["TARGET_ORIGIN"]' in smoke
+
+
+def test_all_six_packages_keep_independent_tags_and_flat_artifact_subjects() -> None:
+    jobs = _load_workflow()["jobs"]
+    expected = {
+        "codex-ml": "v",
+        "codex-cognitive-sdk": "codex-cognitive-sdk-v",
+        "codex-contracts": "codex-contracts-v",
+        "codex-ml-evaluation": "codex-ml-evaluation-v",
+        "codex-ml-lora": "codex-ml-lora-v",
+        "codex-ml-telemetry": "codex-ml-telemetry-v",
+    }
+    for job in jobs.values():
+        assert {
+            entry["name"]: entry["release_tag_prefix"] for entry in _distribution_entries(job)
+        } == expected
+        assert "uses" not in job, "nested workflows are not authorized"
+    for name in ("attest", "validate", "publish-testpypi", "publish-pypi"):
+        assert _step(jobs[name], "Download artifacts")["with"]["path"] == "dist/"
+    subject = _step(jobs["attest"], "Generate build provenance")["with"]["subject-path"]
+    assert subject.split() == ["dist/*.whl", "dist/*.tar.gz"]
+    assert (
+        _step(jobs["publish-testpypi"], "Publish to TestPyPI")["with"]["password"]
+        == "${{ secrets.TEST_PYPI_API_TOKEN }}"
+    )
+    assert (
+        _step(jobs["publish-pypi"], "Publish to PyPI")["with"]["password"]
+        == "${{ secrets.PYPI_TOKEN }}"
+    )
+
+
+def test_build_checks_functional_wheel_and_sdist_with_explicit_tool_sourcing() -> None:
+    jobs = _load_workflow()["jobs"]
+    command = _step(jobs["build"], "Install built wheel in isolated virtualenv")["run"]
+    assert "install-artifacts" in command
+    assert "--build-requirements requirements/lock-release.txt" in command
+    assert '--source-sha "$GITHUB_SHA" --origin "$TARGET_ORIGIN"' in command
+    identity = _step(jobs["build"], "Record retained build identity")["run"]
+    assert "record-build" in identity
+    checksums = _step(jobs["build"], "Record validated artifact checksums")["run"]
+    assert "sha256sum BUILD_IDENTITY.json >> SHA256SUMS" in checksums
+    verify = _step(jobs["validate"], "Verify artifact provenance")["run"]
+    assert '--source-digest "$GITHUB_SHA"' in verify

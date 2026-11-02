@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -51,6 +55,42 @@ def _pipeline(tmp_path: Path) -> ImprovementPipeline:
     )
 
 
+@pytest.mark.parametrize("directory", [".", "src", "src/nested", "docs"])
+@pytest.mark.parametrize("nested_temp", [False, True])
+def test_actual_patch_inventory_is_independent_of_cwd(
+    tmp_path, monkeypatch, directory, nested_temp
+):
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    (tmp_path / "src/nested").mkdir(parents=True)
+    (tmp_path / "docs").mkdir()
+    if nested_temp:
+        monkeypatch.setattr(tempfile, "tempdir", str(tmp_path / "src"))
+    pipeline = ImprovementPipeline(
+        repo="fixture/repo", ref="main", sha="a" * 40, brain_interface=None
+    )
+    patch = b"""diff --git a/src/value.py b/src/value.py
+--- a/src/value.py
++++ b/src/value.py
+@@ -1 +1 @@
+-value = 1
++value = 2
+diff --git a/docs/value.txt b/docs/value.txt
+--- a/docs/value.txt
++++ b/docs/value.txt
+@@ -1 +1 @@
+-before
++after
+"""
+    digest = hashlib.sha256(patch).hexdigest()
+    monkeypatch.chdir(tmp_path / directory)
+    proposal = pipeline.proposal_from_patch(
+        patch_bytes=patch, patch_hash=digest, base_sha=pipeline.sha
+    )
+    assert proposal.files == ("docs/value.txt", "src/value.py")
+    assert proposal.diff_lines == 4
+    assert proposal.patch_hash == digest
+
+
 def _failure_record() -> dict:
     return {
         "type": "failure",
@@ -63,6 +103,41 @@ def _failure_record() -> dict:
         "files": ["src/codex/ci_config.py"],
         "verification_cmd": "nox -s tests",
     }
+
+
+def test_template_pipeline_without_posix_dependencies(tmp_path: Path) -> None:
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            """
+import sys
+from types import SimpleNamespace
+sys.modules["fcntl"] = None
+from codex.cognitive_brain.authority import AuthorityEnvelope
+from codex.cognitive_brain.improvement_pipeline import ImprovementPipeline, signal_from_pda_record
+import os
+os.environ.clear()
+signal = signal_from_pda_record({
+    "type": "failure", "timestamp": "2026-11-01T00:00:00Z",
+    "fix_template": "repair", "files": ["src/fixture.py"],
+})
+match = SimpleNamespace(pattern_id="fixture", times_applied=1, success_rate=0.9, solutions=[])
+pipeline = ImprovementPipeline(
+    repo="fixture/repo", ref="main", sha="a" * 40,
+    brain_interface=SimpleNamespace(query_patterns=lambda _: [match]),
+    authority=AuthorityEnvelope(require_human_approval=False),
+)
+assert pipeline.process_signal(signal).actionable
+assert "codex.cognitive_brain.isolated_execution" not in sys.modules
+""",
+        ],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
 
 
 def test_signal_to_pattern_to_proposal(tmp_path: Path, monkeypatch) -> None:

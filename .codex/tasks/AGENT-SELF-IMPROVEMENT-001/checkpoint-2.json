@@ -1,0 +1,28 @@
+{
+  "task_id": "AGENT-SELF-IMPROVEMENT-001",
+  "plan_version": "v4",
+  "base_sha": "4a7d955b8b214d6002932261afdebd60f37ede8e",
+  "current_sha": "0f7eac6a030953e060d6cbb9bc31be19eff4dc93",
+  "branch": "copilot/agent-self-improvement-001-evidence-gated-skills",
+  "phase": 2,
+  "phase_status": "completed",
+  "completed": [
+    "Six reusable manifests under src/aries_serpent_core/skills use verified SkillRegistry discovery",
+    "Shared deterministic read-only handlers do not author patches, run commands, invoke agents, approve or publish",
+    "Rubber-duck questions/risks have no success verdict",
+    "Adversarial assessment returns pass/fail/unknown for complete supplied independent observations",
+    "Timestamp/freshness and immutable SHA gate bounded measurable briefs; session tips remain signal-only",
+    "JSON lane and handoff contracts bind scope and identity; unvalidated passed handoffs are refused",
+    "Replay assessor tracks holdout correctness, regressions, false positives, interventions, runtime and cost",
+    "Release assessor requires wheel/sdist, tag, install, import, checksum and provenance evidence"
+  ],
+  "pending": ["Authorized profile mappings in Phase 5"],
+  "blocked": ["Hosted skill selection/activation is not established by local discovery"],
+  "changed_paths": ["src/aries_serpent_core/skills/assurance.py", "src/aries_serpent_core/skills/assurance_schema", "src/aries_serpent_core/skills/rubber_duck_review/manifest.yaml", "src/aries_serpent_core/skills/adversarial_validation/manifest.yaml", "src/aries_serpent_core/skills/evidence_to_improvement_brief/manifest.yaml", "src/aries_serpent_core/skills/lane_contract_and_handoff/manifest.yaml", "src/aries_serpent_core/skills/agent_regression_evaluation/manifest.yaml", "src/aries_serpent_core/skills/pypi_release_assurance/manifest.yaml", "tests/skills/test_assurance_skills.py"],
+  "tests": [{"command": "python -m pytest tests/skills/test_assurance_skills.py -q --override-ini=addopts=''", "result": "16 passed in 1.29s, including actual discovery/envelope execution"}],
+  "d_mode_value_recorded": false,
+  "approvals_required": ["Profile/registry maintainer review; local manifest discovery is not hosted activation"],
+  "main_activation_pending": [],
+  "next_action": "Map skills to authorized profiles without widening intentional tool filters",
+  "updated_at_utc": "2026-10-31T20:30:00Z"
+}

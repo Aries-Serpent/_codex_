@@ -21,12 +21,14 @@ Usage::
 
     python scripts/ci/proactive_ci_monitor.py \\
         --repo Aries-Serpent/_codex_ \\
-        --token "$GITHUB_TOKEN" \\
+        --token "<caller-supplied-token>" \\
         [--dry-run]
+
+Credentials must be supplied explicitly through ``--token`` (or the existing
+Python ``token`` argument); this script does not discover credentials.
 
 Environment variables
 ---------------------
-GITHUB_TOKEN        GitHub PAT with ``repo`` + ``workflow`` scopes.
 PROACTIVE_DRY_RUN   Set to ``1`` to skip comment posting (print only).
 PROACTIVE_MAX_AGE_H Max age in hours of failed runs to consider (default 24).
 """
@@ -40,8 +42,11 @@ import os
 import re
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
+from collections.abc import Callable, Sequence
 from datetime import datetime, timezone
+from email.message import Message
 from typing import Any
 
 logger = logging.getLogger("proactive_ci_monitor")
@@ -71,9 +76,7 @@ _PATTERNS: list[dict] = [
         "id": "RP-COMMENT-GATE",
         "category": "pre-flight-gate",
         "confidence": 0.95,
-        "regex": re.compile(
-            r"blocking comment.*unaddressed|comment.review.gate.*failed", re.I
-        ),
+        "regex": re.compile(r"blocking comment.*unaddressed|comment.review.gate.*failed", re.I),
         "fix": "Reply to every BLOCKING comment, then push a new commit.",
     },
     {
@@ -184,7 +187,11 @@ def _classify(log_text: str, history: list[dict] | None = None) -> dict:
                 "trend": skill_result.get("trend"),
             }
         except Exception as exc:  # noqa: BLE001
-            logger.warning("ci.health.analyzer raised %s; falling back to built-in", exc, exc_info=True)
+            logger.warning(
+                "ci.health.analyzer raised %s; falling back to built-in",
+                exc,
+                exc_info=True,
+            )
 
     # ── Built-in fallback ────────────────────────────────────────────────────
     for pat in _PATTERNS:
@@ -200,14 +207,63 @@ def _classify(log_text: str, history: list[dict] | None = None) -> dict:
 # ---------------------------------------------------------------------------
 
 
+_GITHUB_API_ORIGIN = "https://api.github.com"
+_MAX_RESPONSE_BYTES = 1024 * 1024
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+def _github_url(path: str) -> str:
+    """Accept only escaped, origin-relative API paths without traversal."""
+    if (
+        not isinstance(path, str)
+        or not path.startswith("/")
+        or path.startswith("//")
+        or not path.isascii()
+        or re.search(r"[\x00-\x20\x7f\\#]", path)
+        or re.search(r"%(?![0-9a-fA-F]{2})", path)
+    ):
+        raise ValueError("invalid GitHub API path")
+    parsed = urllib.parse.urlsplit(path)
+    decoded = urllib.parse.unquote(path)
+    decoded_path = urllib.parse.unquote(parsed.path)
+    if (
+        parsed.scheme
+        or parsed.netloc
+        or parsed.fragment
+        or re.search(r"[\x00-\x1f\x7f\\]", decoded)
+        or decoded_path.startswith("//")
+        or any(segment in {".", ".."} for segment in decoded_path.split("/"))
+    ):
+        raise ValueError("invalid GitHub API path")
+    return _GITHUB_API_ORIGIN + path
+
+
+def _error_label(exc: Exception) -> str:
+    """Describe denied reads without echoing URLs, bodies or credentials."""
+    if isinstance(exc, urllib.error.HTTPError):
+        return f"HTTP {exc.code}"
+    return type(exc).__name__
+
+
 def _gh(
     path: str,
     token: str,
     method: str = "GET",
     body: dict | None = None,
 ) -> Any:
-    """Make a GitHub API call; return parsed JSON or raise on error."""
-    url = f"https://api.github.com{path}"
+    """Use only the explicit token, fixed origin and bounded, direct transport."""
+    url = _github_url(path)
+    if (
+        not isinstance(token, str)
+        or not token
+        or not token.strip("*")
+        or any(ord(char) <= 32 or ord(char) >= 127 for char in token)
+    ):
+        raise ValueError("explicit GitHub API token required")
     data = json.dumps(body).encode() if body else None
     req = urllib.request.Request(
         url,
@@ -221,52 +277,77 @@ def _gh(
         },
     )
     try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            return json.loads(resp.read())
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+        with opener.open(req, timeout=30) as resp:
+            body_bytes = resp.read(_MAX_RESPONSE_BYTES + 1)
+            if len(body_bytes) > _MAX_RESPONSE_BYTES:
+                raise ValueError("GitHub API response exceeds size limit")
+            try:
+                return json.loads(body_bytes)
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                raise ValueError("invalid JSON from GitHub API") from None
     except urllib.error.HTTPError as exc:
-        body_text = exc.read().decode(errors="replace")
-        logger.warning("GitHub API %s %s → %s: %s", method, path, exc.code, body_text[:300])
-        raise
+        status = exc.code
+        exc.close()
+        logger.warning("GitHub API request failed: HTTP %d", status)
+        raise urllib.error.HTTPError(
+            _GITHUB_API_ORIGIN, status, "GitHub API request failed", Message(), None
+        ) from None
+    except urllib.error.URLError:
+        raise urllib.error.URLError("GitHub API transport failed") from None
 
 
 def _list_open_prs(repo: str, token: str) -> list[dict]:
     """Return all open PRs (paginated)."""
-    prs: list[dict] = []
-    page = 1
-    while True:
-        batch = _gh(f"/repos/{repo}/pulls?state=open&per_page=50&page={page}", token)
-        if not batch:
-            break
-        prs.extend(batch)
-        if len(batch) < 50:
-            break
-        page += 1
-    return prs
+    return _read_pages(f"/repos/{repo}/pulls?state=open&per_page=50", token, page_size=50)
 
 
 def _latest_runs_for_sha(repo: str, sha: str, token: str) -> list[dict]:
     """Return workflow runs for a specific commit SHA."""
-    data = _gh(f"/repos/{repo}/actions/runs?head_sha={sha}&per_page=50", token)
-    return data.get("workflow_runs", [])
+    return _read_pages(
+        f"/repos/{repo}/actions/runs?head_sha={sha}&per_page=50",
+        token,
+        key="workflow_runs",
+        page_size=50,
+    )
+
+
+def _read_pages(
+    path: str, token: str, *, key: str | None = None, page_size: int = 100
+) -> list[dict]:
+    """Read every page; denied, malformed or capped results are incomplete."""
+    items: list[dict] = []
+    for page in range(1, 101):
+        data = _gh(f"{path}&page={page}", token)
+        batch = data.get(key) if key and isinstance(data, dict) else data
+        if not isinstance(batch, list) or any(not isinstance(item, dict) for item in batch):
+            raise ValueError("Malformed paginated response")
+        items.extend(batch)
+        total = data.get("total_count") if key else None
+        if isinstance(total, int) and len(items) >= total:
+            return items
+        if len(batch) < page_size:
+            if isinstance(total, int) and len(items) < total:
+                raise ValueError("Incomplete paginated response")
+            return items
+    raise ValueError("Pagination limit reached; results are incomplete")
 
 
 def _get_run_logs_text(repo: str, run_id: int, token: str) -> str:
-    """Download and return the first 20 000 chars of run logs (best-effort)."""
-    try:
-        # Get jobs first — look for failed steps
-        jobs = _gh(f"/repos/{repo}/actions/runs/{run_id}/jobs?filter=latest", token)
-        snippets: list[str] = []
-        for job in jobs.get("jobs", []):
-            if job.get("conclusion") not in {"failure", "cancelled"}:
-                continue
-            for step in job.get("steps", []):
-                if step.get("conclusion") == "failure":
-                    snippets.append(
-                        f"{job['name']} › {step['name']}"
-                    )
-        return "\n".join(snippets)
-    except Exception:  # noqa: BLE001 — any API or parse failure; return empty string so caller proceeds
-        return ""
+    """Return failed step names, not full logs; propagate incomplete reads."""
+    jobs = _read_pages(
+        f"/repos/{repo}/actions/runs/{run_id}/jobs?filter=latest&per_page=100",
+        token,
+        key="jobs",
+    )
+    snippets: list[str] = []
+    for job in jobs:
+        if job.get("conclusion") not in {"failure", "cancelled", "timed_out"}:
+            continue
+        for step in job.get("steps", []):
+            if step.get("conclusion") == "failure":
+                snippets.append(f"{job['name']} › {step['name']}")
+    return "\n".join(snippets)
 
 
 def _existing_rescue_comment(
@@ -277,16 +358,20 @@ def _existing_rescue_comment(
     token: str,
 ) -> bool:
     """Return True if a rescue/healing comment for this (sha12, run_id) exists."""
-    comments = _gh(
+    comments = _read_pages(
         f"/repos/{repo}/issues/{pr_number}/comments?per_page=100",
         token,
     )
     marker_sha = f"<!-- copilot-healing:{sha12}:"
     marker_run = f"ci-rescue:3856:run-{run_id}"
     marker_run_generic = f"ci-rescue-rca:3856:sha-{sha12}"
+    marker_monitor = f"<!-- proactive-ci-monitor:{sha12}:{run_id} -->"
     for c in comments:
         body = c.get("body", "")
-        if marker_sha in body or marker_run in body or marker_run_generic in body:
+        if any(
+            marker in body
+            for marker in (marker_sha, marker_run, marker_run_generic, marker_monitor)
+        ):
             return True
     return False
 
@@ -299,7 +384,7 @@ def _post_rescue_comment(
     pattern: dict,
     dry_run: bool,
     token: str,
-) -> None:
+) -> bool:
     """Post a structured RCA + @copilot tag comment to the PR."""
     sha12 = pr_sha[:12]
     run_id = run["id"]
@@ -341,7 +426,7 @@ def _post_rescue_comment(
         f"### Fix\n\n"
         f"```\n{pattern['fix']}\n```\n\n"
         f"{trend_section}"
-        f"@copilot Fix the failing CI workflow \"{workflow_name}\" (run #{run_id}).\n\n"
+        f'@copilot Fix the failing CI workflow "{workflow_name}" (run #{run_id}).\n\n'
         f"**Steps:**\n"
         f"1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues)\n"
         f"2. Check logs: {run_url}\n"
@@ -360,7 +445,7 @@ def _post_rescue_comment(
             run_id,
             pattern["id"],
         )
-        return
+        return False
 
     try:
         _gh(
@@ -369,9 +454,16 @@ def _post_rescue_comment(
             method="POST",
             body={"body": body},
         )
-        logger.info("Posted rescue comment to PR #%d (run %d, %s)", pr_number, run_id, pattern["id"])
+        logger.info(
+            "Posted rescue comment to PR #%d (run %d, %s)",
+            pr_number,
+            run_id,
+            pattern["id"],
+        )
+        return True
     except Exception as exc:
-        logger.error("Failed to post comment to PR #%d: %s", pr_number, exc)
+        logger.error("Failed to post comment to PR #%d: %s", pr_number, _error_label(exc))
+        return False
 
 
 # ---------------------------------------------------------------------------
@@ -406,6 +498,10 @@ def scan(
         "skipped_transient": 0,
         "below_confidence": 0,
         "already_addressed": 0,
+        "planned": 0,
+        "complete": True,
+        "exit_code": 0,
+        "errors": [],
         "details": [],
         "config": {
             "dry_run": dry_run,
@@ -425,11 +521,20 @@ def scan(
             pr_data = _gh(f"/repos/{repo}/pulls/{target_pr}", token)
             prs = [pr_data]
         except Exception as exc:
-            logger.error("Could not fetch PR #%d: %s", target_pr, exc)
+            logger.error("Could not fetch PR #%d: %s", target_pr, _error_label(exc))
+            report["complete"] = False
+            report["exit_code"] = 1
+            report["errors"].append(f"PR #{target_pr}: {_error_label(exc)}")
             return report
     else:
         logger.info("All-open-PR mode: fetching PRs for %s …", repo)
-        prs = _list_open_prs(repo, token)
+        try:
+            prs = _list_open_prs(repo, token)
+        except Exception as exc:
+            report["complete"] = False
+            report["exit_code"] = 1
+            report["errors"].append(f"Open PR listing: {_error_label(exc)}")
+            return report
 
     logger.info("Scanning %d open PR(s).", len(prs))
     report["scanned_prs"] = len(prs)
@@ -443,7 +548,12 @@ def scan(
         pr_sha: str = pr["head"]["sha"]
         sha12 = pr_sha[:12]
 
-        runs = _latest_runs_for_sha(repo, pr_sha, token)
+        try:
+            runs = _latest_runs_for_sha(repo, pr_sha, token)
+        except Exception as exc:
+            report["complete"] = False
+            report["errors"].append(f"PR #{pr_number} runs: {_error_label(exc)}")
+            continue
         for run in runs:
             conclusion = run.get("conclusion")
             if conclusion not in {"failure", "cancelled", "timed_out"}:
@@ -464,7 +574,12 @@ def scan(
 
             # Classify — pass accumulated history for this PR so ci.health.analyzer
             # can compute recurrence / flap trends across runs in this scan.
-            log_text = _get_run_logs_text(repo, run_id, token)
+            try:
+                log_text = _get_run_logs_text(repo, run_id, token)
+            except Exception as exc:
+                report["complete"] = False
+                report["errors"].append(f"Run #{run_id} jobs: {_error_label(exc)}")
+                continue
             log_text = f"{workflow_name}\n{log_text}"
             prior_history = _pr_history.get(pr_number, [])
             pattern = _classify(log_text, history=prior_history)
@@ -504,12 +619,23 @@ def scan(
                 report["details"].append(detail)
                 logger.debug(
                     "PR #%d run %d: pattern %s confidence %.2f < threshold %.2f — skipping",
-                    pr_number, run_id, pattern["id"], pattern["confidence"], min_confidence,
+                    pr_number,
+                    run_id,
+                    pattern["id"],
+                    pattern["confidence"],
+                    min_confidence,
                 )
                 continue
 
             # Duplicate check
-            already = _existing_rescue_comment(repo, pr_number, sha12, run_id, token)
+            try:
+                already = _existing_rescue_comment(repo, pr_number, sha12, run_id, token)
+            except Exception as exc:
+                report["complete"] = False
+                report["errors"].append(f"PR #{pr_number} comments: {_error_label(exc)}")
+                detail["action"] = "incomplete"
+                report["details"].append(detail)
+                continue
             if already:
                 report["already_addressed"] += 1
                 detail["action"] = "already-addressed"
@@ -517,11 +643,79 @@ def scan(
                 continue
 
             # Escalate
-            _post_rescue_comment(repo, pr_number, pr_sha, run, pattern, dry_run, token)
-            report["escalated"] += 1
-            detail["action"] = "escalated" if not dry_run else "dry-run"
+            posted = _post_rescue_comment(repo, pr_number, pr_sha, run, pattern, dry_run, token)
+            if dry_run:
+                report["planned"] += 1
+                detail["action"] = "dry-run"
+            elif posted:
+                report["escalated"] += 1
+                detail["action"] = "escalated"
+            else:
+                report["complete"] = False
+                report["errors"].append(f"PR #{pr_number} comment POST failed")
+                detail["action"] = "post-failed"
             report["details"].append(detail)
 
+    report["exit_code"] = 0 if report["complete"] else 1
+    return report
+
+
+def monitor_until_converged(
+    reader: Callable[[], dict],
+    *,
+    max_iterations: int = 1,
+    required_checks: Sequence[str] = (),
+) -> dict:
+    """Observe injected local snapshots without fixes, posting or API access.
+
+    Snapshots contain ``checks`` with ``name`` and ``status`` (``success`` or
+    ``passed`` are positive evidence), plus an explicit ``complete`` flag.
+    Missing required checks, informational/unknown checks and incomplete reads
+    cannot establish convergence. Health/evolution execution is not integrated.
+    """
+    if (
+        isinstance(max_iterations, bool)
+        or not isinstance(max_iterations, int)
+        or max_iterations <= 0
+    ):
+        raise ValueError("max_iterations must be a positive integer")
+    report: dict[str, Any] = {
+        "converged": False,
+        "iterations": 0,
+        "exit_code": 1,
+        "read_only": True,
+        "snapshots": [],
+        "errors": [],
+        "pending_integrations": ["maintained-health", "evolution", "local-fixer"],
+    }
+    for iteration in range(1, max_iterations + 1):
+        report["iterations"] = iteration
+        try:
+            snapshot = reader()
+            if not isinstance(snapshot, dict):
+                raise ValueError("Snapshot must be a dictionary")
+            checks = snapshot.get("checks")
+            if not isinstance(checks, list) or any(
+                not isinstance(check, dict) or not isinstance(check.get("name"), str)
+                for check in checks
+            ):
+                raise ValueError("Snapshot checks must be named dictionaries")
+            report["snapshots"].append(snapshot)
+            if snapshot.get("complete") is not True:
+                report["errors"].append("Incomplete snapshot")
+                break
+            names = {check["name"] for check in checks}
+            if (
+                checks
+                and set(required_checks).issubset(names)
+                and all(check.get("status") in {"passed", "success"} for check in checks)
+            ):
+                report["converged"] = True
+                report["exit_code"] = 0
+                break
+        except Exception as exc:
+            report["errors"].append(f"Reader failed: {_error_label(exc)}")
+            break
     return report
 
 
@@ -547,8 +741,8 @@ def main() -> int:
     )
     parser.add_argument(
         "--token",
-        default=os.environ.get("GITHUB_TOKEN", ""),
-        help="GitHub PAT  (default: $GITHUB_TOKEN)",
+        default="",
+        help="Explicit caller-supplied GitHub token (no environment lookup)",
     )
     parser.add_argument(
         "--dry-run",
@@ -585,7 +779,7 @@ def main() -> int:
         logger.error("--repo is required (or set GITHUB_REPOSITORY)")
         return 1
     if not args.token:
-        logger.error("--token is required (or set GITHUB_TOKEN)")
+        logger.error("--token is required")
         return 1
 
     report = scan(
@@ -614,7 +808,7 @@ def main() -> int:
         report.get("below_confidence", 0),
         report["already_addressed"],
     )
-    return 0
+    return 0 if report["complete"] else 1
 
 
 if __name__ == "__main__":

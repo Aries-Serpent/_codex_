@@ -1,0 +1,43 @@
+{
+  "task_id": "AGENT-SELF-IMPROVEMENT-001",
+  "plan_version": "v4",
+  "base_sha": "4a7d955b8b214d6002932261afdebd60f37ede8e",
+  "current_sha": "0f7eac6a030953e060d6cbb9bc31be19eff4dc93",
+  "branch": "copilot/agent-self-improvement-001-evidence-gated-skills",
+  "phase": 1,
+  "phase_status": "completed_with_limits",
+  "completed": [
+    "Fail-closed helper rejects missing labels, stale SHA, ambiguous run/PR association, self-approval and unknown identity",
+    "Requester checks include GITHUB_ACTOR and GITHUB_TRIGGERING_ACTOR",
+    "Privileged approval helpers use trusted default-branch code; no PR-controlled checkout",
+    "Approval jobs additionally require a main workflow revision; feature-branch preparation cannot execute approval mutations",
+    "All six triggers route through gated helpers; explicit policy dispatch cannot use parallel bypass",
+    "Legacy always-on approval, rerun fallback, monitoring approvals, auto-opt-in and workflow git-push paths are disabled",
+    "Preliminary, policy and mutation decisions produce artifacts without token values",
+    "Autonomy parsing is unchanged; unset, zero, one and invalid values regression-tested",
+    "Promotion criteria require explicit measured zero violations and distinct tags",
+    "Minimal-diff registry writer preserves comments and refuses unrelated changes",
+    "Read-only gate assesses temporary fixtures without registry writes"
+  ],
+  "pending": [
+    "ADR C1 schema, C2 hosted active-gate evidence and C4 manifest integrity proof; readiness remains unknown and denied",
+    "Authorized registry/profile inspection and documentation claims correction"
+  ],
+  "blocked": ["Registry/profile access unavailable", "Installation-token identity unavailable through /user is denied, never treated as human approval"],
+  "changed_paths": ["scripts/ci/approve_pending_runs.py", "scripts/ci/require_wec_auto_approve.py", "scripts/ci/e_to_d_gate.py", "scripts/cognitive/d_capable_promotion.py", ".github/workflows/auto-approve-workflows.yml", ".github/workflows/e-to-d-transition-gate.yml", "tests/ci/test_evidence_gated_approval.py", "tests/ci/test_e_to_d_gate.py", "tests/autonomy/test_agent_runner.py", "tests/autonomy/test_autonomy_scheduler.py"],
+  "tests": [{"command": "python -m pytest tests/ci/test_evidence_gated_approval.py tests/ci/test_e_to_d_gate.py tests/autonomy/test_agent_runner.py tests/autonomy/test_autonomy_scheduler.py tests/skills/test_assurance_skills.py tests/orchestration/test_human_mediated_lanes.py tests/orchestration/test_foundation_hardening.py tests/release/test_pypi_publish_workflow.py tests/release/test_publishing_assurance.py -q --override-ini=addopts=''", "result": "167 passed in 5.12s; subsequent audit/discovery additions require final rerun"}],
+  "autonomy_env_keys_found": ["AUTONOMY_BUDGET_SECONDS", "AUTONOMY_MAX_ITERATIONS", "AUTONOMY_DRY_RUN", "AGENT_KILL_SWITCH", "COPILOT_AGENT_MAX_AUTONOMY_LEVEL", "AGENT_RUNNER_ITERATIONS", "AGENT_RUNNER_BUDGET_SECONDS", "AGENT_RUNNER_DRY_RUN", "CODEX_AUTONOMY_REGISTRY"],
+  "d_mode_variable_name": "not-found; COPILOT_AGENT_MAX_AUTONOMY_LEVEL is declared-only",
+  "d_mode_value_recorded": false,
+  "approvals_required": [
+    "Maintainer review before activating prepared workflows",
+    "Direct push/PR workflow revisions are intentionally denied by the main-revision guard; maintainer must choose default-branch workflow_run/schedule/manual routing before activation",
+    "Verify GitHub App installation identity and least-privilege scope; unknown identity remains denied",
+    "Review removal of unused CODEX_MASTER_KEY/CODEX_BACKUP_KEY fallbacks where a scoped App suffices; no secret removed",
+    "Independently approve any E to D_CAPABLE registry write",
+    "Review other legacy approval entrypoints separately; this patch does not establish repository-wide approval safety"
+  ],
+  "main_activation_pending": ["Prepared, inactive until maintainer commits/merges/pushes to main; no dispatch, approval or settings mutation performed"],
+  "next_action": "Supply authorized ADR infrastructure evidence; keep unknown transition readiness denied",
+  "updated_at_utc": "2026-10-31T20:30:00Z"
+}

@@ -1,0 +1,582 @@
+{
+  "schema_version": "1.0.0",
+  "task_id": "AGENT-SELF-IMPROVEMENT-001",
+  "status": "scoped_continuation_verified_with_open_gaps",
+  "draft_review_continuation": {
+    "reviewed_head": "9ee90a57df1e8ffc513d477bdd78fa475a5cc8da",
+    "preparation_parent": "67a291dab6b812595ea86f1fe89b7d65aa65206e",
+    "immutable_base": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",
+    "reviewed_checkpoint_sha256": "4acdfb5cf12fe6e5b155bf54363e4f295ee8f984c686248d3310a8b95cf202c4",
+    "authority": "Scoped commits/pushes and one draft PR into 0D_base_, body/evidence updates, normal checks and narrowly inspected test/static-security operations only. No ready, approvals, labels, settings, history rewrite, merge, publishing or live recovery/learning/monitor activation.",
+    "agents": ["cumulative-readiness", "hosted-scan-coverage", "draft-review-packet", "draft-scope-review", "draft-final-diff-review"],
+    "ownership": "Three independent lanes; parent alone stages/commits/pushes and owns workflow/shared records/PR mutations. No nested agent trees or restricted profile reads.",
+    "orientation": "Reviewed source hashes matched. Deepened shallow history to verify zero behind/13 ahead, 26 cumulative changed paths before bookkeeping and this correction. No existing exact-head PR at orientation. Normal initial progress included existing startup timestamp work; not intentionally edited/staged/reverted and not feature evidence.",
+    "changes": {
+      "spawn_fixture": "Demonstrated unrelated site-packages/tests shadowing in spawned children under pytest importlib mode. Scoped syspath fixture makes local targets importable; no production defect found. Historical addopts='' disabled importlib, explaining the earlier 375-pass selection.",
+      "workflow": "Enterprise retains separate CodeQL SARIF and allowlisted checkout/event/PR/run/attempt metadata, plus Semgrep SARIF; exposes informational scanner exit codes and actual dependency results instead of unconditional COMPLETE. Pins, permissions, source scope, upload:never and informational finding semantics preserved.",
+      "workflow_sha256": "a5339bd0551582b1d51f04758e75863d14c2cf3450422671f4e9df611a3eb5fa",
+      "workflow_tests_sha256": "05895f64eb819ebfec53eee33f938d027f29214bf590b83e0bc2152df82b64a3",
+      "spawn_test_sha256": "7b8d104a029081354e50e0bdfd805136890e9fd86605e3f5ad047045583fbd81"
+    },
+    "fresh_validation": {
+      "spawn_command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest -o addopts='' --import-mode=importlib -p no:cacheprovider --basetemp=<disposable-directory> tests/self_improvement/test_writer_recovery_integration.py -q -k 'process_writers or lock_exception or tracker_sidecar'",
+      "spawn_result": "Lane A: 6 passed under each python -m pytest and pytest entrypoint; Ruff/Black/isort/mypy/compile/diff passed. Parent did not rerun completed agent work.",
+      "workflow_command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest -o addopts='' -p no:cacheprovider --basetemp=/tmp/codex-pr-workflow-final tests/ci/test_enterprise_scan_reporting.py tests/unit/test_check_workflow_yaml.py -q",
+      "workflow_result": "23 passed in3.29s after configured formatting; earlier23-pass run overlaps and is not additive.",
+      "workflow_quality": "actionlint1.7.7 and scripts/ci/check_workflow_yaml.py passed modified workflow. Scoped new-test Ruff/Black/isort/mypy and in-memory compilation passed; only unused existing mypy-section notes. Full check-jsonschema not installed.",
+      "review": "One short rubber-duck review and one bounded final code review. No significant issues in final proposed correction. Dormant disabled governance leads not expanded into scope.",
+      "historical": "375 passes in34.49s remain source-bound historical eleven-file evidence, not fresh full-suite/hosted results. All12 hashes matched before the new test-only import fix; all seven production source hashes are unchanged.",
+      "security": "All seven changed paths passed precommit secret scanning. Postcommit CodeQL: Actions zero alerts; Python analysis skipped because database size is too large, not passed."
+    },
+    "hosted_preparation": {
+      "semgrep_run": "41380669128 attempt1, source49462cef19c41aa316dcc72a1300fe7d56f9219c: action_required, zero jobs; requested logs contained no failed jobs, not executed scan evidence",
+      "coverage": "Enterprise and Nox automatically target source-changing PRs into0D_base_; CodeQL GA gate does not. Security suite has narrow manifest/container/config filters and broad manual defaults; not selected by default.",
+      "approval_boundary": "Existing WEC and successful PR Nox can attempt downstream approval dispatch independent of checklist. No opt-in, authorization label, approval input, approval-capable dispatch or wec_enforcer --dispatch-checked executed.",
+      "protection_api": "Local GH CLI has no token; no authenticated protection request was made. Required checks unknown, not absent. Available MCP read tools used for runs/logs.",
+      "status": "Draft PR5747 created and verified into0D_base_, head552c6acb8271f7913c0d64da9cc0f628ae13a6d9. PR observed draft=true, mergeable_state=unstable, not merge authorization.",
+      "pr_url": "https://github.com/Aries-Serpent/_codex_/pull/5747",
+      "test_merge_sha": "7579e93c88a583488f1a4e4e9bff4dde985e2a41",
+      "test_merge_parents": ["f48fb7a36eb31fd1ff518c186e54ec212c0d8366", "552c6acb8271f7913c0d64da9cc0f628ae13a6d9"],
+      "owner_approved_execution": "User reported all workflows approved; MCP shows Enterprise41384159500 attempt2 in_progress, triggering_actor=mbaetiong. Agent performed no approvals/dispatch/rerun.",
+      "initial_checks": "Enterprise attempt1 action_required; attempt2 running. At first PR check refresh, zero checks; later47 mixed running/success/skipped/neutral/failure checks. No full green or scan closure claim.",
+      "concrete_failure": "Cognitive Preflight41384159212 job125081269514 failed REQ-4 at03:38:52Z: accountability report absent from evaluated changes; REQ-5 skipped, not independently failed. Automatic fix push403 under contents:read. Parent adds truthful accountability and Unreleased changelog entries, not governance changes.",
+      "external_advance": "Manifest workflow independently committed2bb3034c2997adfe73dd77733bda66df55f58de9 [skip ci], CODEX_MANIFEST.json and matching .secrets.baseline only. Inspected new delta and fast-forwarded without discarding local work. No production/workflow source change; prior run/test-merge does not equal advanced head.",
+      "body_gate_limit": "Created body explicitly unchecked autoapproval. Later live browser fetch proved repository automation replaced the body and checked auto-approve-workflows. This is not owner authorization. Agent has no authenticated browser/CLI body-edit session; final PR facility may only reuse existing PR. Restore truthful body/unchecked opt-in through authorized maintainer if facility cannot update it; do not activate approval or weaken gates.",
+      "bounded_monitoring": {
+        "snapshot": "2026-11-02T03:46:39Z, Enterprise41384159500 attempt2 in_progress; no agent approval/dispatch/rerun",
+        "bandit": "Job125081275959 success but retained report175findings:146low/29medium, no report errors. Not a clean-security result or claim all findings pre-existing. Artifact13114104553.",
+        "semgrep": "Job125081276231 success, SARIF0findings,2rules/2003files, processing completed. Artifact13114561850; limited configured rules, not repository security proof.",
+        "javascript_codeql": "Job125081276280 success, retained SARIF execution successful with0results. SARIF artifact13114362409, metadata13114736632.",
+        "analyzed_identity": "JS retained metadata checkout/event7579e93c88a583488f1a4e4e9bff4dde985e2a41, PRhead552c6acb8271f7913c0d64da9cc0f628ae13a6d9, basef48fb7a36eb31fd1ff518c186e54ec212c0d8366, attempt2. checkout_parents empty due shallow checkout; separately fetched exact merge object proves the recorded two parent edges.",
+        "python_codeql": "Job125081276178 still analyzing; logs404 while running, no retained SARIF/metadata yet. Not passed or zero-alert evidence. Compliance report awaiting Python.",
+        "nox": "Workflow203185765 disabled_manually, zero branch runs; YAML has no draft exclusion. Do not enable/change settings without separate owner operation authority. Owner must arrange suitable quality coverage.",
+        "limits": "CodeQL upload:never means retained SARIF, not uploaded code-scanning evidence. Retention capped60days; action-v3/Node20 deprecations retained as maintenance handoff. Scanner exits unavailable until final compliance output; do not infer zero from success.",
+        "final_checkpoint": "Following docs-only bookkeeping commit is a new PR head, not this analyzed head/test-merge. All production/workflow source hashes remain fixed; refresh new-head checks without relabeling these results."
+      }
+    },
+    "PDA": {
+      "plan": "Review cumulative seams, fix demonstrated compatibility/reporting defects, publish truthful draft, inspect exact-source checks.",
+      "do": "Scoped spawn fixture, retained scanner reports/source identity and nonmisleading summaries; three disjoint lanes and bounded reviews.",
+      "assess": "Focused local checks passed as listed; an additional63disposable PDA integrity fixtures passed in2.85s. No hosted clean-scan, unrestricted containment, causal calibration, independent review or acceptance closure.",
+      "act": "Draft5747 created; inspect owner-approved exact-source runs and fix concrete REQ-4 bookkeeping with truthful accountability/changelog entries. Preserve40/14/10, checkpoints0-7 and original journal prefix; carry numbered owner-gated T02/T03/T06/T07/T08/T09 follow-ups. No agent approvals or live activation."
+    },
+    "remaining": "Participating writers only; default live transport unavailable; genuine policy/independent receipts absent. Original B01-B10, restricted inventory, untraced stores, empirical calibration, unrestricted containment and publisher settings remain open. No broad T08/T09 features before review."
+  },
+  "writer_handoff_skill_continuation": {
+    "reviewed_head": "36944aee2b4f047a3d3e69334798cf0f2eb744fc",
+    "immutable_base": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",
+    "reviewed_checkpoint_sha256": "1457702155be7a318135989a45d88a7966e2a839fd53f140bf1dcce02dbcc2cb",
+    "orientation": "HEAD matched reviewed commit; one status inspection showed only automatic startup-packet dirty work. No completed lanes or historical baselines repeated.",
+    "authority": "Related source/tests/docs/ledger normal progress commits on authorized branch only; disposable writes, no live recovery/learning/migration or PR/workflow/settings/merge/publishing operations.",
+    "agents": ["writer-recovery-integration", "post-attempt-handoff", "retained-skill-evidence", "integration-interface-review", "runner-focused-validation", "three-slice-combined-review", "three-slice-validation"],
+    "ownership": "Three disjoint implementation lanes; parent alone owns runner/shared task records/documentation. No nested agents or restricted profiles.",
+    "interface_review": "One bounded review highlighted missing writer exclusion/fresh reload, unauthenticated observer/agent labels, external-before-journal ordering and artifact TOCTOU. Constraints sent to all lanes; no reviewer identity is authentication.",
+    "sqlite_trace": {
+      "path": "scripts/ci/pattern_recorder.py main:584-607 -> CLI --pattern-id type=int:515 -> _open_db INTEGER pattern_id:63-95 -> _insert_pattern bound parameters:98-135 -> query/export:253,428-456,611-639",
+      "domain": "Numeric CI issue-pattern IDs; 0012 and12 both intentionally become integer12, unlike opaque session TEXT IDs. Session filter remains bound opaque text. Server patterns endpoints share this integer schema; no server or schema migration.",
+      "tests": "tests/self_improvement/test_ci_pattern_sqlite_domain.py",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest tests/self_improvement/test_ci_pattern_sqlite_domain.py -o addopts='' -p no:cacheprovider --basetemp=/tmp/codex-ci-pattern-domain-final -q",
+      "result": "3 passed in4.45s: actual CLI close/reopen/export/query, opaque ID rejected before DB creation, trigger-denied write explicit with raw rows preserved. Initial test expectation used wrong export key; corrected to documented occurrences, not a production defect.",
+      "quality": "Ruff/Black/isort/mypy passed; unused torch/omegaconf mypy sections only. No source defect reproduced or migration warranted.",
+      "remaining": "G16 partial; ThreadSafeSessionDB has TEXT schema but no pattern insertion/retrieval API, so no claimed pattern round-trip coverage there. Other untraced stores remain open."
+    },
+    "initial_progress_commit": "500767308d4c97bd5ed1d6cb94b1406188da7be9",
+    "startup_packet": "Not intentionally edited, staged or reverted; normal initial progress tool included existing automatic timestamp work. Not implementation evidence.",
+    "handoff_lane": {
+      "api": "post_attempt_handoff.compose_post_attempt_handoff and RecordedFixtureReader; explicit runner wrapper, compose_local_improvement unchanged",
+      "delivery": "Persisted event/pattern/patch/attempt/PR/merge/run/window joins; contradictory states rejected, absent associations partial. Default live transport unavailable. Offline bytes bounded per-response/aggregate/path/read/deadline. Scanner-only, learning-ineligible, diagnostic calibration with explicit unauthenticated origin.",
+      "snapshot": "Final journal digest recheck detects intervening writes and invalidates observer/calibration result; snapshot.atomic=False, no cross-file/point-in-time transaction claim.",
+      "command": "python -m pytest -q tests/self_improvement/test_post_attempt_handoff.py --basetemp=.pytest-post-attempt-handoff -o addopts=''",
+      "result": "27 passed in2.05s reported by lane; Black/Ruff/isort/mypy(helper)/compileall/diff checks passed; no network or commits by lane",
+      "parent_wrapper": "Explicit matching typed wrapper plus tests/self_improvement/test_post_attempt_runner.py; delegated focused run2passed in1.35s. Parent Ruff/Black/isort/mypy passed after isort normalized import layout.",
+      "limits": "Recorded fixtures are not live GitHub observations or causal improvement. Reader labels do not authenticate origin; no supported live transport implemented."
+    },
+    "writer_lane": {
+      "api": "learning_reconciliation.pattern_store_lock and writer_recovery.MaintainedWriterRecovery(snapshot/inspect/reconcile); explicit policy/consumption/measurement provider injection and participating_writers_only=False default",
+      "writers": "AgentBrainInterface.submit_pattern, submit_learning/_update_pattern_stats and _save_patterns share existing-parent POSIX directory flock plus process/thread reentrant exclusion. Semantic updates reload disk; direct stale-cache saves reject.",
+      "failure_semantics": "Atomic replace/fsync retained. Pre-replace failures roll back cache; post-replace errors report replaced=True and do not roll back visible persisted state or confirm durability. No learning replay. Existing pathless nonpersistent injected EMA consumers remain compatible.",
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -m pytest -q -o addopts='' --basetemp=.codex/lane_a_test_runtime tests/self_improvement/test_writer_recovery_integration.py",
+      "result": "41 passed in9.17s; Ruff/Black/isort/mypy(four files)/compileall/diff checks passed",
+      "compatibility_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -m pytest -q -o addopts='' --basetemp=.codex/lane_a_compat_runtime tests/self_improvement/test_pattern_calibration.py::test_legacy_ema_formula_remains_unchanged tests/self_improvement/test_legacy_pattern_persistence.py",
+      "compatibility_result": "50 passed in1.38s; initial sibling calibration run exposed missing pattern_store_path on pathless injected EMA fixtures, corrected without weakening real writer reload. Overlaps other selections.",
+      "coverage": "Spawned separate-process writers, paused replacement, fresh reload/no lost updates, missing/malformed/unreadable states, lock release, pre/post replacement failure, Windows persistence mocks/unsupported lock denial, zero-write denied/dryrun and actual OutcomeTracker concurrent inspection lock-order fixture",
+      "limits": "Cannot exclude scripts/cognitive/session_manager.py::_save_patterns or src/aries_serpent_core/campaigns/orchestrator.py::_update_pattern_store, older SDKs or manual edits. Explicit deployment coverage assertion is not authorization. Default recovery unavailable; genuine policy and independent observation-specific receipts not supplied."
+    },
+    "skill_lane": {
+      "api": "aries_serpent_core.skills.retained_evidence.read_retained_execution(repo_path,outcome); optional retained_evidence in relevant existing assurance consumers",
+      "command": "PYTHONPATH=src python -m pytest -q -o addopts='' --basetemp=.pytest-lane-c-retained tests/self_improvement/test_retained_skill_evidence.py tests/skills/test_assurance_skills.py tests/skills/test_assurance_invariants.py",
+      "delivery": "Canonical patch/base/scope/attempt, retained artifact/outcome and gate-output hashes validated with bounded no-link reads and final inode/content/mtime/ctime reread. Substantive negative/boundary/regression and distinct command/gate holdout evidence; denied/cancelled preserved.",
+      "result": "148 focused new/existing tests passed in2.32s; Ruff/Black/isort/mypy(three files)/compile/diff checks passed",
+      "limits": "Local retained consistency only: authenticated_review=False, production_proof=False, execution_authorized=False, retained authority explicitly not rederived. Coherently fabricated collections cannot be authenticated. Supplied-observation mode stays compatible and explicitly unverified/nonproduction. Profile mapping absent; no packaging rebuild or profile reads."
+    },
+    "combined_review": "One bounded combined-diff code-review agent found no significant issues. No repeated review loop or authenticated reviewer claim.",
+    "combined_validation": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest -o addopts='' -p no:cacheprovider --basetemp=/tmp/codex-three-integration-final tests/self_improvement/test_learning_reconciliation.py tests/self_improvement/test_legacy_pattern_persistence.py tests/self_improvement/test_outcome_tracking.py tests/self_improvement/test_local_composition.py tests/self_improvement/test_merged_observation.py tests/self_improvement/test_pattern_calibration.py tests/self_improvement/test_writer_recovery_integration.py tests/self_improvement/test_post_attempt_handoff.py tests/self_improvement/test_retained_skill_evidence.py tests/self_improvement/test_ci_pattern_sqlite_domain.py tests/self_improvement/test_post_attempt_runner.py -v",
+      "result": "375 passed in34.49s; all eleven specified test files, final frozen source. Overlaps lane selections and must not be summed.",
+      "quality": "Delegated Ruff/Black/isort/compile on all12 changed Python paths passed; mypy seven changed source modules passed; git diff --check passed. Lane/parent checks cover new tests separately.",
+      "scope": "Local disposable fixtures only; not hosted CI, authenticated review, calibrated production improvement or live recovery.",
+      "preservation": "Exact40 acceptance strings/14 negative mappings/10 B placeholders, checkpoints0-7 and three dependency-source hashes verified unchanged against orientation capture.",
+      "security": "All16 scoped changed paths passed precommit secret scan. Postcommit Python CodeQL skipped analysis because database size is too large; not a passed analysis or evidence of zero vulnerabilities. Maintainer/security owner must obtain full Python analysis before relying on security closure."
+    },
+    "source_binding": {
+      "parent_sha": "500767308d4c97bd5ed1d6cb94b1406188da7be9",
+      "patch_sha256": "c69ad42bc489b293ca43b4a2d397f072d713515087f4bb4fd8812806216aa367",
+      "method": "git diff --cached --binary against parent SHA restricted to twelve Python paths below; docs/ledger excluded to avoid self-reference. Immutable historical base retained above.",
+      "sha256": {
+        "src/aries_serpent_core/cognitive/brain_interface.py": "2ffd111d43ed7ed28138a90a5178bc84d6aed6eb116884148e70bfff4525b021",
+        "src/aries_serpent_core/skills/assurance.py": "317296071ac631b83774d7eec6e64f87791b8b93efa1d9d955fd37a2eafc13f4",
+        "src/aries_serpent_core/skills/retained_evidence.py": "9c3edfbb12ef2647867eed46a5f107cf42ebfe23dff69f7af3bb5eeacee9fb1c",
+        "src/codex/cognitive_brain/improvement_loop_runner.py": "5c22d9b0d32545f3c14433887ff9a6045434d041bcc4dc5d142d524724d75e5e",
+        "src/codex/cognitive_brain/learning_reconciliation.py": "a6d6ee6068e267276dc60eebc0d9cc8a1db7d8e8cca0da36312ec8d225bc2989",
+        "src/codex/cognitive_brain/post_attempt_handoff.py": "efcd66a7fdf24561b9c6cea54cd182b2f40fc6d96e2821cf4345be8fb545b4b3",
+        "src/codex/cognitive_brain/writer_recovery.py": "9487a85599c7f776d7867099809921f0852040d4ea7909ad5f5ab0fa29562482",
+        "tests/self_improvement/test_ci_pattern_sqlite_domain.py": "d1d95723302c60f5ce76ab3118e3c0eef6f2e07c679076714d4c8c17eed2794a",
+        "tests/self_improvement/test_post_attempt_handoff.py": "cb5904b95fe629e2e71e39b8b138cb6c846782fa5fc21bcc96df644dd0775edb",
+        "tests/self_improvement/test_post_attempt_runner.py": "08f7691691df53a74d47b8ec98741b121af9c896c2c45de565bb31ff50e75375",
+        "tests/self_improvement/test_retained_skill_evidence.py": "f003db4f2972c42856848f4a9b6be1fcd7662c21ac5dda4ad84a896a003fd38a",
+        "tests/self_improvement/test_writer_recovery_integration.py": "2aac906af4bb1b65cf4905e9eb8b0de675b55abc515af3d2628e1845b7f5e3c7"
+      }
+    },
+    "persistence": {
+      "implementation_commit": "49462cef19c41aa316dcc72a1300fe7d56f9219c",
+      "parent_sha": "500767308d4c97bd5ed1d6cb94b1406188da7be9",
+      "branch": "copilot/copilotagent-self-improvement-001-evidence-gated-s",
+      "scope": "Normal authorized progress-tool commit/push of exactly16 scoped files. Implementation commit excludes startup packet; no tracked/staged changes after scanner. This subsequent evidence-only update records scanner limitation and immutable source identity.",
+      "authority": "No PR mutation, workflow operation, merge, publishing, live learning/recovery or production database migration performed."
+    },
+    "next_action": "Owner review of participating-writer deployment map and genuine policy/receipts; independently authorized bounded live transport and permitted profile mappings remain separate gates. Do not apply recovery to live stores under this task.",
+    "status": "scoped_implementation_verified_with_open_gates"
+  },
+  "reconciliation_continuation": {
+    "reviewed_head": "831b60da86a6307674798a5d1dcd86b2a4358651",
+    "base_sha": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",
+    "reviewed_checkpoint_sha256": "7e5270e6f6247831450805656a9936ed2d1cc99c0098d101b94a7bb1fede6509",
+    "orientation": "HEAD matched reviewed checkpoint. One status inspection found only startup-packet dirty work; no subsequent implementation to recover. Prior three lanes are preserved, not repeated.",
+    "initial_progress_commit": "f8a86149db883e484692214e54d0dd484a5623a8",
+    "startup_packet": "Not intentionally edited, staged or reverted. Normal progress tool included existing timestamp work at initial checkpoint, matching previously documented tool behavior.",
+    "authority": "Scoped reconciliation/SQLite implementation, tests, documentation and ledger commits/pushes on the authorized working branch only. No live reconciliation or database experiments, PR mutations, workflow operations, merges or publication.",
+    "agents": ["reconciliation-interface-review", "learning-reconciliation", "sqlite-pattern-adapters", "recovery-adversarial-selection", "recovery-combined-review"],
+    "design": "Explicit denied-by-default trusted policy plus independent consumption and existing measurement proof; append-only recovery without learner replay; distinguish pending from complete-without-qualification. SQLite domains remain separate.",
+    "chronicle": "Prior copied-index empty result retained; no repeat search or live database opening.",
+    "milestones": [
+      {
+        "lane": "learning-reconciliation",
+        "changed_files": ["src/codex/cognitive_brain/evidence_store.py", "src/codex/cognitive_brain/learning_reconciliation.py", "tests/self_improvement/test_learning_reconciliation.py"],
+        "before_edit": "Disposable persisted-state reproduction: pending reclaim refused with learning pending reconciliation; normal completion could qualify. Complete-before-qualification reclaim returned False and repeat completion raised no pending consumption, leaving unqualified/disabled. Reproduction retained in test docstring; no import failure or production incident claimed.",
+        "delivery": "Read-only inspect_learning and explicit reconcile_learning with denied-by-default injected policy; independent observation-specific consumption proof plus existing measurement verifier; exact journal/external/observation identities and only persisted patch-correlated attempts. Single append records already_applied with receipt or permanently non-replayable unqualified abandoned. No learner invocation, execution claim changes, breaker reset, automatic load qualification or tail repair.",
+        "snapshot_contract": "Caller-supplied ExternalSnapshot identity/recheck must represent a present readable store and exclude ALL writers throughout; fresh rechecks under journal locks detect stale/missing/unreadable states. Tracker lock alone cannot exclude arbitrary SDK writes. This is a trusted integration requirement, not demonstrated production adapter or cross-file transaction.",
+        "focused_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv_ci/bin/python -m pytest -o addopts='' -p no:cacheprovider --basetemp=tests/self_improvement/.lane_a_pytest tests/self_improvement/test_learning_reconciliation.py -q",
+        "focused_result": "67 passed before final six attempt-correlation cases; synthetic disposable proof callbacks are not genuine production authorization/measurement evidence",
+        "post_review_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv_ci/bin/python -m pytest -o addopts='' -p no:cacheprovider --basetemp=tests/self_improvement/.lane_a_pytest tests/self_improvement/test_learning_reconciliation.py -q -k 'attempt_source_requires_explicit_matching_patch or inspect_exact_readonly_identity or single_append_resolves_and_restarts or abandon_permanent_unknown_and_later_measurements or restart_rejects_invalid_reconciliation_records'",
+        "post_review_result": "17 passed, 56 deselected in1.93s after exact execution top-level/event proposal patch matching; missing/foreign patches cannot contribute attempts",
+        "quality": "Lane Ruff/Black/isort/mypy/compile/diff checks passed after final patch. Parent four-file Ruff/Black/isort/mypy/compile checks passed before final patch; mypy only unused torch/omegaconf section notes.",
+        "retention": "Disposable journals/databases removed by lane; fixtures, commands and source digests retained. No production journal, brain or database recovery performed.",
+        "limits": "At-most-once learning, not atomic exactly-once across files. Ambiguous external writes remain blocked without independent proof. Corrupt/truncated bytes remain errors, never repaired. Execution recovery remains separate."
+      },
+      {
+        "lane": "sqlite-pattern-adapters",
+        "changed_files": ["tests/self_improvement/test_sqlite_pattern_identity.py"],
+        "before_edit": "Disposable SessionDatabase and SessionDB probe inserted RP-019,0012,12,integer12 and recorder00012; both reopened with exact TEXT identities and propagated foreign-key IntegrityError. No defect reproduced; no source migration.",
+        "trace": [
+          "src/aries_serpent_core/cli.py:912-917 constructs SessionDatabase",
+          "src/aries_serpent_core/logging/session_db.py:103,234,286 delegates maintained facade calls",
+          "src/aries_serpent_core/logging/session_database.py:205-212 defines TEXT pattern_id;403-410 binds insert;481-485 retrieves",
+          "src/aries_serpent_core/logging/pattern_event_recorder.py:58-63 binds recorder pattern IDs",
+          "cognitive_app/src/server/cli_api_server.py:424,1276 separate integer CI issue-pattern domain, unchanged"
+        ],
+        "command": ".venv_ci/bin/python -m pytest tests/self_improvement/test_sqlite_pattern_identity.py -o addopts='' -p no:cacheprovider --basetemp=.lane_b_pytest_identity_20261102 -q",
+        "result": "12passed in2.59s on Python3.12.10",
+        "quality": ".venv_ci/bin/python -m ruff check --no-cache, black --check, isort --check-only, mypy --cache-dir=.lane_b_mypy_identity_cache, py_compile <new test path>; git diff --check all passed; unused torch/omegaconf mypy sections noted",
+        "retention": "Disposable probe/pytest databases and mypy cache removed; tests/commands retained, not hosted artifacts; ignored bytecode may remain",
+        "remaining": "G16 partial for untraced stores; one path does not prove all SQLite compatibility"
+      }
+    ],
+    "initial_remaining": "Implement and validate learning reconciliation and trace actual SQLite adapters on new disposable fixtures. Parent exclusively updates shared task records.",
+    "initial_next_action": "Await useful independent lane deliveries, then one bounded combined-diff review and changed-seam integration selection.",
+    "integration": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest tests/self_improvement/test_durable_integrity.py tests/self_improvement/test_outcome_tracking.py tests/self_improvement/test_execution_cancellation.py tests/self_improvement/test_pattern_calibration.py tests/self_improvement/test_learning_reconciliation.py tests/self_improvement/test_sqlite_pattern_identity.py --override-ini=addopts='' -p no:cacheprovider --basetemp=/tmp/codex-reconciliation-integration-20261102 -q",
+      "result": "219 passed in9.19s before final attempt-correlation precision correction; affected post-correction selection recorded above. Overlapping selections must not be summed.",
+      "review": "One interface review, one adversarial case selection and one bounded combined-diff review. No blocking combined findings. Low-confidence attempt attribution lead tightened with six cases; no repeated review loop. Reviewer labels do not establish authenticated independence.",
+      "preservation": "Exact forty G01-G40 acceptance strings, fourteen negative mappings, ten B01-B10 placeholders, numbered checkpoints0-7 and dependency-source hashes verified unchanged against orientation capture. MCP2.2.0/pyasn1 0.6.5 preserved.",
+      "security": "All eight intentionally changed paths passed precommit secret scanning. Postcommit Python CodeQL skipped analysis because database size is too large; not a passed analysis or evidence of zero vulnerabilities. Maintainer/security owner must obtain full Python analysis before relying on security closure. Lane scanner staged visible parent changes as a side effect; lane files then unstaged only, contents preserved. Parent explicitly staged eight authorized files only.",
+      "persistence": {
+        "implementation_commit": "3d8f5b6d3a609324f3c4bf4ae4821f109eae18b5",
+        "parent": "f8a86149db883e484692214e54d0dd484a5623a8",
+        "branch": "copilot/copilotagent-self-improvement-001-evidence-gated-s",
+        "operation": "Normal authorized progress-tool commit/push; exactly eight scoped files, no startup packet change in implementation commit. Post-CodeQL tracked/staged diff empty.",
+        "final_checkpoint": "Subsequent evidence-only update records implementation identity, scanner limitation and correctly nests integration evidence outside SQLite milestone; no source changes after source freeze."
+      },
+      "source_test_patch_sha256": "e3edc00eb946b11c9b59f66625404330c3b4f6741a48b9e1265012348f04eac1",
+      "patch_binding": "git diff --cached --binary against initial progress HEAD f8a86149db883e484692214e54d0dd484a5623a8, restricted to the four source/test paths below; ledger/docs excluded to avoid self-reference. Immutable base f48fb7a36eb31fd1ff518c186e54ec212c0d8366.",
+      "source_sha256": {
+        "src/codex/cognitive_brain/evidence_store.py": "455a3b50e7762fadffd298bc7f06bfeb574dbd36b426f50b3244550c80a547cc",
+        "src/codex/cognitive_brain/learning_reconciliation.py": "26abd4307979bcd6d031ae53c33897e92e9ff1d982c4701b8ef1e166d5cb768a",
+        "tests/self_improvement/test_learning_reconciliation.py": "508c6d35cafc72434eafa011a1539a11ad7eb203f9301785930824942570e1f6",
+        "tests/self_improvement/test_sqlite_pattern_identity.py": "e9f76ddf215c869e5be64d338369336d0c6c77c9eeaf86f60ef07754e26a268c"
+      }
+    },
+    "next_command": "Review inspect_learning/reconcile_learning integration with owner-provided policy, independent consumption receipts and a real all-writer external snapshot protocol; trace unverified adapters only. Do not apply reconciliation to live stores under this task.",
+    "remaining": "G07/G08/G11/G12/G16 remain partial. No cross-file exactly-once claim, production recovery, execution replay, calibration proof, blanket SQLite migration, hosted CI success or release authority."
+  },
+  "post_merge_continuation": {
+    "orientation_source_sha": "406ab5e805f736b0b73630a91336d4e0feabfea8",
+    "base_sha": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",
+    "delivered_source_sha": "6b48e75d7d16acc45ecc64071f86e8df9639e22b",
+    "progress_commits": ["7d66bf14a64dee601d66f69fe733d64523306af0", "6b48e75d7d16acc45ecc64071f86e8df9639e22b"],
+    "orientation": "git status and git diff f48fb7a3..HEAD showed startup timestamp changes only; no uncommitted implementation to recover",
+    "startup_packet": "Not intentionally edited, staged or reverted. Initial progress tool included existing timestamp work in 7d66bf14; recorded once under explicit owner exception.",
+    "superseded_hosted_observations": {
+      "pr": "PR5746 is merged; earlier draft and action-required observations remain historical, not current gate status.",
+      "run_id": 41367213426,
+      "run_attempt": 1,
+      "source_sha": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",
+      "scope": "compliance-scanners",
+      "result": "Five successful jobs including Python CodeQL Analyze code; does not establish product-test success, zero alerts, or causal improvement.",
+      "source": "Read-only GitHub MCP metadata inspected in preceding turn; supplied owner baseline retained, not a new local observer execution."
+    },
+    "chronicle": {
+      "command": "CODEX_CAMPAIGN_METRICS_LOG=/tmp/codex-three-lane-chronicle/metrics.jsonl PYTHONPATH=/home/runner/work/_codex_/_codex_/src /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -B -m aries_serpent_core.cli chronicle search AGENT-SELF-IMPROVEMENT-001 --index /tmp/codex-three-lane-chronicle/index.json --json",
+      "result": "exit0; empty index, zero sessions/hits; copied index and metrics under /tmp, no live database commands",
+      "retention": "Session-local files, not hosted durable artifacts"
+    },
+    "agents": ["three-lane-interface-review", "merged-observer", "qualified-calibration", "durable-cancellation"],
+    "milestones": [
+      {
+        "lane": "A",
+        "behavior": "Read-only observe_merged_pr with PR/run/window identities, complete collector-validated jobs and immutable compliance-scanners handoff; recorded/live/synthetic origin never authorizes learning",
+        "command": ".venv_ci/bin/python -m pytest tests/self_improvement/test_merged_observation.py -o addopts='' -p no:cacheprovider --basetemp=.pytest_lane_a_basetemp -q",
+        "result": "Initial69passed1failed test mock corrected; affected reruns2passed and4passed; six added adversarial cases passed. Final79cases covered across runs, not a single79case final run.",
+        "quality": "Agent reports Ruff/Black/isort/mypy --follow-imports=silent --cache-dir=/dev/null, compile and secret checks passed",
+        "limits": "Recorded metadata fixture, not live verification; caller owns hard injected-reader deadlines/response limits; no causal or all-tests claim"
+      },
+      {
+        "lane": "B",
+        "behavior": "Receipt-qualified read-only calibration diagnostics, Beta prior/95percent interval, deterministic disjoint sample provenance, Brier and expiry; public EMA unchanged",
+        "command": "PYTHONDONTWRITEBYTECODE=1 python -m pytest tests/self_improvement/test_pattern_calibration.py -p no:cacheprovider -o addopts='' --basetemp=.pattern-calibration-pytest-20261102-final",
+        "result": "22passed initial focused file;26passed after independent adversarial assertions",
+        "quality": "Agent reports configured Ruff/Black/isort/mypy --follow-imports=silent, compilation, secret and diff checks passed",
+        "limits": "Trusted local receipt reconstruction and private EvidenceStore snapshot fields; fixture diagnostics are not empirical calibration"
+      },
+      {
+        "lane": "C",
+        "behavior": "Cooperative Event cancellation records cancelled terminal status/exit130, cleans supported process group with TERM/grace/KILL, retains claim across restart",
+        "command": "TMPDIR=\"$PWD/.codex-lane-c-runtime-20261102\" PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src pytest -q -o addopts='' -p no:cacheprovider --basetemp=.codex-lane-c-defaults-20261102 tests/self_improvement/test_execution_cancellation.py",
+        "result": "14passed initial;9passed11deselected affected adversarial selection; final20passed in4.29s after restoring original tempfile defaults; temporary directories removed",
+        "quality": "Agent reports Ruff/Black/isort/mypy, compilation and scoped diff checks passed",
+        "limits": "UDP/Unix sockets, escaped sessions and full descendant containment unsupported; cancellation consumes rather than replays an interrupted identity"
+      }
+    ],
+    "lane_source_sha256": {
+      "src/codex/cognitive_brain/merged_observation.py": "65ed0385bdf6bcfec891c22d1ab0e09950b3e70a73374e032b00b76bc88c3e90",
+      "tests/self_improvement/test_merged_observation.py": "f6c09518e96c27f71c5a71702583abdc897fe44363a329b49d809dd1fa8d0c17",
+      "src/codex/cognitive_brain/pattern_calibration.py": "51fa980d36cc5ca8c9ad6891af1514f77723c3c7828539a680c8ebe0ac3c170a",
+      "tests/self_improvement/test_pattern_calibration.py": "d1679aa4f9b0a8f6af4ad1c45f97d08086d87dd91eb8175d223203d7012b2d5c",
+      "src/codex/cognitive_brain/isolated_execution.py": "bc14c3a2b69069fa7b34e1eb246a4c627b60e5f3831ce52942d99b26597e428d",
+      "tests/self_improvement/test_execution_cancellation.py": "f12b2685878c44021029fa9c5afaadfc14144f54f9a76b26c176977fa7ee49b4"
+    },
+    "integration": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest tests/self_improvement/test_merged_observation.py tests/self_improvement/test_pattern_calibration.py tests/self_improvement/test_execution_cancellation.py tests/self_improvement/test_isolated_execution.py tests/self_improvement/test_execution_integrity.py tests/self_improvement/test_ci_signal_collection.py tests/self_improvement/test_local_composition.py --override-ini=addopts='' -p no:cacheprovider --basetemp=/tmp/codex-three-lane-integration-20261102 -q",
+      "result": "240passed in30.50s before final cancellation race correction; only affected tests rerun after corrections",
+      "quality_command": ".venv_ci/bin/python -m {ruff check,black --check,isort --check-only,mypy --follow-imports=silent --cache-dir=/dev/null} <six lane source/test paths>; git diff --check",
+      "quality_result": "Ruff/Black/isort passed; mypy no issues in6 files, unused torch/omegaconf configuration notes only; diff check passed",
+      "scope": "One bounded changed-seam integration selection, not full suite, coverage, dependency resolution, packaging, hosted product CI or deployment assurance"
+    },
+    "review": {
+      "design": "three-lane-interface-review: separate PR validation/collector allowlist, receipt-qualified model separate from mutable calibrator, durable cancelled schema and claim retention",
+      "adversarial": "three-lane-adversarial selected identity/pagination/window, receipt alias/holdout leakage and descendant/race/restart assertions; owners added relevant tests",
+      "delivery": "three-lane-delivery-review reviewed combined implementation once; concrete post-wait cancellation race found, Lane C assigned fix and deterministic regression; no other blocking findings",
+      "parent_scope_fix": "Restored unrelated tempfile workspace/output defaults; explicit fixture work roots retained"
+    },
+    "final_cancellation_correction": {
+      "finding": "Cancellation set immediately after wait returned could overwrite the already observed gate exit; preserve actual GateLog pass/fail while outer cancellation still blocks attempt verification",
+      "command": "TMPDIR=\"$PWD/.codex-lane-c-wait-runtime-20261102\" PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src pytest -q -o addopts='' -p no:cacheprovider --basetemp=.codex-lane-c-wait-pytest-20261102 tests/self_improvement/test_execution_cancellation.py -k 'observed_gate_exit or real_process_group or after_passing_candidate or after_durable_completion or terminal_gate_statuses or output_limit or uncancelled_execution or passing_baseline'",
+      "result": "11passed11deselected after fix; deterministic real-exit0/7 cases; scoped Ruff/Black/isort/mypy/compile/diff passed",
+      "source_sha256": {
+        "src/codex/cognitive_brain/isolated_execution.py": "5f2d1fbab37a7449a7fb4c12a43e39c474df2fc02697157893423e217dc78234",
+        "tests/self_improvement/test_execution_cancellation.py": "3bd9b05ae782173eff5a91b218e02293f782560a239549e700b16682f1230eed"
+      }
+    },
+    "precommit_checks": {
+      "secrets": "Runtime secret scanner found no secrets in all9 scoped source/test/ledger files",
+      "traceability": "Exact40acceptance strings,14negative mappings and10B placeholders preserved; numbered checkpoints untouched; initial local tuple/list comparison assertion corrected before passing normalized JSON comparison",
+      "source_changes": "Only6 lane source/test files and3 task ledger files intentionally changed; no package rebuild, dependency or unrelated transport/persistence changes"
+    },
+    "final_verification": {
+      "source_sha": "6b48e75d7d16acc45ecc64071f86e8df9639e22b",
+      "codeql": "Python analysis skipped because database size too large; NOT a passing current Python scan. Earlier hosted Python analysis success on merged base is separately scoped historical metadata.",
+      "compile": "All6 changed Python source/test files compiled in memory with supported .venv_ci Python3.12; no bytecode writes",
+      "identities": "All6 current SHA256 values verified, using final_cancellation_correction overrides for C;40 exact acceptance strings,14negatives,10B placeholders preserved",
+      "diff": "git diff --check passed; clean worktree after source commit before this evidence-only checkpoint",
+      "reviews": "One design and one combined delivery rubber-duck review; independent adversarial test selection applied; concrete observed-exit race fixed without repeated review loops",
+      "gaps": "G13/G28 confirmed_open to partially_resolved; G04/G06 remain partially_resolved. No acceptance criterion marked resolved.",
+      "scoped_patch": {
+        "base_sha": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",
+        "source_sha": "6b48e75d7d16acc45ecc64071f86e8df9639e22b",
+        "scope": "Six files named in lane_source_sha256; task ledgers and startup excluded",
+        "path": "/tmp/codex-three-lane-final.patch",
+        "bytes": 83382,
+        "sha256": "d8c39a70c4eccd9a004aa639fa91a17efd47a33cdde07faabe6af4f6e5256243",
+        "recreate": "git diff f48fb7a36eb31fd1ff518c186e54ec212c0d8366 6b48e75d7d16acc45ecc64071f86e8df9639e22b -- <six lane_source_sha256 paths>",
+        "retention": "Session-local /tmp only; source/tests and recorded identities are committed, not hosted test artifacts"
+      }
+    },
+    "next_command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest tests/self_improvement/test_durable_integrity.py tests/self_improvement/test_outcome_tracking.py --override-ini=addopts='' -p no:cacheprovider --basetemp=/tmp/codex-t02-reconciliation-next -q",
+    "remaining": "Next deliverable T02 pending-intent inspection/authorized append-only reconciliation, followed by domain-specific T03 SQLite tracing. Qualified production calibration/observer integration, unsupported runtime containment, restricted inventory, B01-B10 and publisher settings remain owner-gated; current Python CodeQL unavailable. No automatic replay.",
+    "authority": "Only normal progress-tool commits/pushes on the authorized working branch; no PR edits, workflows, merge, publishing, settings or live healing"
+  },
+  "repository_root": "/home/runner/work/_codex_/_codex_",
+  "source_sha": "204b81043da6a50639697a81c3e646aec8d7944c",
+  "baseline_tested_sha": "48290eaaa9802b4143e75a9debc8b8ed257504db",
+  "verified_source_commit": "26e285a0fc3bbc093ce87ad2c8d5df7a046507e9",
+  "pr_continuation": {
+    "recovered_sha": "2a47c400cfdebc9d502ed3578015dcb8e99029dd",
+    "orientation_sha": "985ed3c1e9795089843ccbd4e594715cc046897d",
+    "integrated_source_sha": "23cc9066189dd7e16e165f8f8696dc4f7cbfb02c",
+    "requested_base": "0D_base_",
+    "observed_base_sha": "31f117c768a743e4e79633c67b9844e923019030",
+    "common_ancestor": "4a7d955b8b214d6002932261afdebd60f37ede8e",
+    "initial_dirty_work": {
+      "path": ".codex/session_startup_packet.json",
+      "sha256": "24b5a6cafc76bdc6a9ba455da53af95446c9fb935ac146815f50327df4247ec8",
+      "preservation": "Preserved without overwrite by orientation progress commit"
+    },
+    "agents": ["stable-release-assurance", "monitor-transport-assurance", "gap-resumption-review", "pr-gate-source-review"],
+    "execution": "Release specialist stopped on its own unavailable scratch boundary; parent directly built and retained authorized /tmp fixtures. Monitor agent owns only monitor transport/test. No registry/profile reads, hosted approvals, reruns, merges or publication.",
+    "validation": {
+      "committed_baseline": "694 passed in45.27s using .venv_ci Python3.12, focused selection including all self_improvement and approval/release tests; no sum with prior overlapping selections",
+      "baseline_command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest tests/self_improvement tests/skills/test_assurance_skills.py tests/skills/test_assurance_invariants.py tests/ci/test_approval_integrity.py tests/ci/test_approval_transport_integrity.py tests/ci/test_once_label_cleanup.py tests/ci/test_pda_record_integrity.py tests/ci/test_evidence_gated_approval.py tests/ci/test_e_to_d_gate.py tests/release/test_pypi_publish_workflow.py tests/release/test_publishing_assurance.py -q --override-ini=addopts='' -p no:cacheprovider --basetemp=/tmp/codex-pr-prep-tests",
+      "monitor": "78 focused tests passed; Ruff/Black/isort, scoped mypy follow-imports=skip, compile and secret/diff checks passed; parent did not rerun completed agent tests",
+      "review": "Independent strict read-only pr-gate-source-review found no significant issues",
+      "security": "Secret scans clean; Actions CodeQL zero alerts; Python CodeQL skipped due oversized database, not a clean Python result. Bandit -ll on committed monitor exits0 with no medium/high findings.",
+      "final_identity_checks": "All40 exact acceptance strings,14negative mappings,10 B-review placeholders,all gap handoff coverage,12 retained artifact digests and unchanged monitor/startup bytes verified; git diff --check passed",
+      "monitor_sha256": "9c0d7965b4567c8b707451de2199533fb6365b8dcadfaa0d870a217586950ced",
+      "monitor_test_sha256": "8a1126d9e6e0a6cf6b053973aa05784289bc9bcacf461198fe933fc01bc27479"
+    },
+    "legacy_inventory": {
+      "path": ".codex/aftermath/pda_iterations.jsonl",
+      "sha256": "a63ef2911870b2830f89c85fea909c613c50dabe8bd41f3d636b2cc443621f1f",
+      "objects": 444,
+      "missing_type": 24,
+      "missing_schema": 444,
+      "failure": 77,
+      "caller_labelled_repair": 57,
+      "session": 267,
+      "unknown": 42,
+      "malformed": 1,
+      "verified_attempts": 0,
+      "verified_rate": null,
+      "validation": "Read-only existing _classify/_aggregate; before/after raw bytes unchanged"
+    },
+    "release_assurance": {
+      "source_sha": "985ed3c1e9795089843ccbd4e594715cc046897d",
+      "snapshot_sha256": "c8f844fa128f65b0336bb9ce4a87444b95f29d07f154f74a066f8ed661048a4d",
+      "manifest": "/tmp/codex-release-985ed3c1/snapshot.json",
+      "results": "/tmp/codex-release-985ed3c1/results.json",
+      "retained_root": "/tmp/codex-release-985ed3c1",
+      "scope": "2269 permitted tracked src/packages and build inputs; not full checkout, restricted profiles excluded; current build-input hashes equal snapshot",
+      "build_command": ".venv_ci/bin/python -B -m build --no-isolation /tmp/codex-release-985ed3c1/source/MATRIX_PATH --outdir /tmp/codex-release-985ed3c1/dist/DISTRIBUTION",
+      "install_command": "/tmp/codex-release-985ed3c1/installed/DISTRIBUTION/KIND/bin/python -I -m pip --isolated install --no-cache-dir --no-deps --no-index --no-build-isolation ARTIFACT",
+      "sdist_tools": "Existing lock-release.txt restored with explicit https://pypi.org/simple, --isolated --require-hashes; ten tool advisories returned no vulnerabilities",
+      "verification_command": "OUTSIDE_VENV/bin/python -I -B FROZEN_HELPER verify-installed --distribution NAME --dist-dir DIST --source-sha 985ed3c1e9795089843ccbd4e594715cc046897d --origin testpypi --import-name IMPORT --artifact-kind KIND; cwd /",
+      "result": "All12 actual wheel/sdist public-function checks passed; clean venvs physically outside checkout under /tmp; artifacts and logs retained",
+      "correction_cycles": "One orchestration correction: used maintained record_build_identity instead of nonexistent write_build_identity; no code workaround or fourth historical build cycle",
+      "artifact_sha256": {
+        "codex_ml-0.3.0-py3-none-any.whl": "b34d7e64aece04ddf34c808836f1dffb25a2a9b41d67c9676b5c6d4e1e06e992",
+        "codex_ml-0.3.0.tar.gz": "18e586dc522f2d1fdae5adbdc9082dbf650f922146c4893ac63fe079325aa544",
+        "codex_cognitive_sdk-0.1.0a1-py3-none-any.whl": "f23446cbc9813e2f5639aae38936e852d96e9b16572a88697dd5dcdf0140646d",
+        "codex_cognitive_sdk-0.1.0a1.tar.gz": "fbd1e55c11223943838e178832bf3c3918b4dab762eaaa6619c298f347daa083",
+        "codex_contracts-0.1.0a1-py3-none-any.whl": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+        "codex_contracts-0.1.0a1.tar.gz": "c518780a7ac27c24254f2ffcf3e6ac0dd6e7ea323aa2beff1150708b2e649f47",
+        "codex_ml_evaluation-0.1.0a1-py3-none-any.whl": "1cf14edad842852326b8453db70c4a922bcb3c7ac40c95dd62b2bf244a68c231",
+        "codex_ml_evaluation-0.1.0a1.tar.gz": "10e8f945d280d77d59ac3447bd525cb990271cab71488b9ec7b57aace7ecee4c",
+        "codex_ml_lora-0.1.0a1-py3-none-any.whl": "c85db3a2a3c9ff07c17ba46cc725de54c3a239b9aa4fefd891aa4833d0277adf",
+        "codex_ml_lora-0.1.0a1.tar.gz": "3b97696c3441bf3cccf37c1319fa3337f8d8a7c7cbe5f7be15f1edd5dc0eea6c",
+        "codex_ml_telemetry-0.1.0a1-py3-none-any.whl": "75991cb3df808c0a793603f3142cb4f1d1480d424f5307522aa485c27ca4adc8",
+        "codex_ml_telemetry-0.1.0a1.tar.gz": "5f24b35e37f1bb22e8d65bd86b531a3e6f3767f9554a13e7d84a0a59c6019b95"
+      },
+      "limits": "Local expected-origin binding, not actual TestPyPI upload/download or hosted provenance. Full runtime dependency resolution not tested. /tmp files are retained for this session, not durable GitHub artifacts; checkpoint records identities for recreation."
+    },
+    "handoff": "All G01-G40 acceptance criteria and14 negative mappings retained; per-task gap IDs, owner, next action and stop condition in plan.json pr_preparation.remaining_gap_handoff. Original B01-B10 evidence and restricted inventory remain unavailable.",
+    "pr": {
+      "requested_label": "wec:auto-approve",
+      "requested_base": "0D_base_",
+      "number": 5746,
+      "url": "https://github.com/Aries-Serpent/_codex_/pull/5746",
+      "actual_base": "0D_base_",
+      "actual_draft": true,
+      "creation": "Tool successfully created PR but hosted read reports draft=true despite requested draft=false; no actual wec:auto-approve label present",
+      "merge_conflict_recovery": {
+        "reported_state": "dirty at creation",
+        "local_merge_sha": "d999f9486defaf1bc5cf12118160944801c6fc9b",
+        "parents": ["8d03b374e2cd4c63e5abc2e134fbd46390ca7742", "31f117c768a743e4e79633c67b9844e923019030"],
+        "resolution": "Only startup timestamp conflicted; original orientation bytes preserved. Adopted base manifest/secrets metadata. Finalized signed true two-parent local merge; did not merge hosted PR.",
+        "verification": "git diff --check passed; release2269 build-input hashes unchanged; startup SHA256 unchanged"
+      },
+      "remaining_gate_controls": "Browser has no authenticated edit/label/ready-for-review controls; owner must mark draft ready, apply fresh wec:auto-approve and allow genuine reviews/checks. No claim label was applied or gates passed.",
+      "template": ".github/pull_request_template.md",
+      "gate_status": "Preparation for review only; current hosted approval run41338406715 action_required with zero jobs; no product CI green or merge authorization",
+      "integrated_gate_status": "Run41340186568 for23cc9066189dd7e16e165f8f8696dc4f7cbfb02c completed action_required,0jobs; failed-job logs contain no jobs. No rerun or approval attempted.",
+      "tool_limit": "PR creation tool has no explicit base or label fields. Returned PR confirmed correct0D_base_ base; actual label and ready state cannot be set by this tool."
+    }
+  },
+  "changed_files": [
+    ".codex/tasks/AGENT-SELF-IMPROVEMENT-001/MASTER_PLAN.md",
+    ".codex/tasks/AGENT-SELF-IMPROVEMENT-001/checkpoint.json",
+    ".codex/tasks/AGENT-SELF-IMPROVEMENT-001/plan.json",
+    "docs/guides/continuous_improvement.md",
+    "pyproject.toml",
+    "requirements/extras.txt",
+    "requirements/lock-dev.txt",
+    "scripts/ci/approve_pending_runs.py",
+    "scripts/ci/proactive_ci_monitor.py",
+    "src/aries_serpent_core/cognitive/brain_interface.py",
+    "src/codex/cognitive_brain/improvement_loop_runner.py",
+    "src/codex/cognitive_brain/improvement_pipeline.py",
+    "tests/ci/test_approval_transport_integrity.py",
+    "tests/ci/test_proactive_monitor_integrity.py",
+    "tests/self_improvement/test_legacy_pattern_persistence.py",
+    "tests/self_improvement/test_local_composition.py"
+  ],
+  "initial_dirty_work": {
+    "path": ".codex/session_startup_packet.json",
+    "preservation": "Bytes preserved by initial progress commit; never overwritten",
+    "sha256": "1122bbdca55d61655bb24f15289cb1e400dfb33dfcdb5141145defb501a11aa8"
+  },
+  "baseline_validation": {
+    "interpreter": ".venv_ci/bin/python",
+    "version": "3.12.10",
+    "command": ".venv_ci/bin/python -m pytest tests/self_improvement tests/skills/test_assurance_skills.py tests/skills/test_assurance_invariants.py tests/ci/test_approval_integrity.py tests/ci/test_once_label_cleanup.py tests/ci/test_pda_record_integrity.py tests/ci/test_evidence_gated_approval.py tests/ci/test_e_to_d_gate.py tests/release/test_pypi_publish_workflow.py tests/release/test_publishing_assurance.py -q --override-ini=addopts='' -p no:cacheprovider",
+    "result": "619 passed in 21.58s",
+    "scope": "Local pre-continuation source; not validation of subsequent edits"
+  },
+  "hosted_ci": {
+    "run_id": 41336673593,
+    "sha": "48290eaaa9802b4143e75a9debc8b8ed257504db",
+    "conclusion": "skipped",
+    "run_attempt": 2,
+    "triggering_actor": "mbaetiong",
+    "owner_note": "Owner reports approval workflow approved; live snapshot shows attempt 2 completed/skipped, not passing product CI",
+    "logs": "Attempt 1 had zero jobs; approval is not merge, deployment or publication authority"
+  },
+  "agents": [
+    "compose-local-path",
+    "release-build-proof",
+    "monitor-truthfulness",
+    "legacy-durable-write",
+    "continuation-authority-review",
+    "dependency-pr5744-review"
+  ],
+  "traceability": {
+    "gap_ids": "G01-G40 acceptance criteria retained in plan.json",
+    "branch_review_ids": "B01-B10 meanings unavailable; original review required",
+    "additional_task": "T12 owner-requested dependency cherry-picks PR5744"
+  },
+  "dependency_integration": {
+    "source_pr": 5744,
+    "source_branch": "dependabot/pip/mcp-2.2.0",
+    "source_commits": [
+      "3f246e7a5e6b7fca80e20cf8437660f6dcfc95dc",
+      "1b3d96b7293b2d43274483e332f6918d76674d10"
+    ],
+    "application": "Explicit git cherry-picks applied to index; unrelated timestamp conflict resolved to original destination bytes",
+    "excluded": "Source merge commit and startup timestamp churn",
+    "signed_commit_attempts": "CLI signing service returned Bad Request twice; no signing bypass",
+    "validation": "7 packaging tests passed in 5.76s; no target-version advisories found",
+    "applied_commit": "26e285a0fc3bbc093ce87ad2c8d5df7a046507e9",
+    "remaining": "uv/ML/evaluation lock drift remains separately scoped; no full resolver compatibility claim"
+  },
+  "content_sha256": {
+    "pyproject.toml": "c76c5a08abd6d2c4201c3bb46ee65c7c23213232475ab925488c442dd651ace5",
+    "requirements/extras.txt": "9b5c264e21485de0fc57f283f66ce16e8abb8b785c026db5967da517a946aa86",
+    "requirements/lock-dev.txt": "438344f22ff20c7ac41d6baf91fe5ef45034588a2ec5386b3f7eee96697084e5",
+    "scripts/ci/approve_pending_runs.py": "271aa28d32df8873afd125046e7058acb5c86f2d6158ab250741acc9f3b8bae3",
+    "src/codex/cognitive_brain/isolated_execution.py": "e35648ae394078bd87f35e541f05cec6c4e0d56650b5dd168c2e994c216e974f",
+    "src/codex/cognitive_brain/evidence_store.py": "99fa0893e215ab48b043ddaa0617f5d0071ce0cf150b3fde6bab44a1f241c7c5",
+    "src/codex/cognitive_brain/improvement_evaluator.py": "271c1693655c8895a3e6ba6ad8b8d7c64c82b26178b8513e7167f07345755eff"
+  },
+  "parent_validation": [
+    "94 approval transport/inventory/cleanup tests passed in 3.48s",
+    "Approval transport Ruff/Black/isort/mypy/compile passed; redirects and ambient proxies denied; bounded response reads",
+    "Six common integrity sources passed Ruff/Black/isort/mypy/compile",
+    "Bandit common/release selection: two medium findings, no high; approval urlopen warning eliminated by fixed-origin nonredirecting opener",
+    "Remaining release exec warning executes only fixed internal public-check strings after source binding; no untrusted code string accepted",
+    "All G01-G40 acceptance criteria preserved exactly; B01-B10 placeholders and fourteen negative mappings retained"
+  ],
+  "lane_validation": {
+    "composition": "75 focused tests passed; trusted independent review callback, synthetic-only clock injection, real-process before-fail/after-pass fixture, replay-safe partial handoff; scoped mypy clean in3 files after behavior-preserving casts; Ruff/Black/isort/compile passed",
+    "monitor": "50 tests passed, including 30 integrity fixtures; Ruff/Black/isort/mypy/compile passed; no health/evolution/local-fixer execution claim",
+    "legacy": {
+      "result": "108 passed, 1 baseline test deselected; Ruff/Black/isort/mypy/compile passed",
+      "deselected": "tests/cognitive/test_brain_interface.py::TestObjectiveAlignment::test_update_objective_progress",
+      "reason": "Baseline method lacks progress_note parameter; initial complete run reproduced TypeError; unchanged method",
+      "scope": "String-ID restart, atomic write/error propagation, metadata/raw-byte preservation and platform fixtures; no actual Windows runtime proof"
+    },
+    "release": {
+      "result": "12 actual artifacts built and installed-functional checks passed for captured export; 50 helper tests and five actual no-execution negatives passed",
+      "export_sha256": "83af4a1f73d7fb6c398c09a9416423bd78984d516cb41b1c793ce60010c0f902",
+      "export_scope": "2600 permitted files, dirty captured snapshot; restricted agent profiles excluded; not full checkout",
+      "limitations": [
+        "Final source drifted during three bounded build cycles; final-current-source assurance remains unverified",
+        "Clean virtual environments were checkout-local, isolated execution cwd was /; literal outside-checkout installation criterion remains unmet",
+        "Full runtime dependency resolution was not tested",
+        "Disposable artifact files were removed by the lane; reported digests retained here, not retained downloadable distributions",
+        "No hosted TestPyPI/PyPI promotion or publication"
+      ],
+      "artifact_sha256": {
+        "codex_ml-0.3.0-py3-none-any.whl": "88409900a3bd6a2b2e2b21ac7571f49864c9c30829ed4403a35d5db8317c4f3f",
+        "codex_ml-0.3.0.tar.gz": "4a70d43a9e6845bff3bc09a7034b7a7e9ae7227315d44b8ce3d1f2bae6b0bc61",
+        "codex_cognitive_sdk-0.1.0a1-py3-none-any.whl": "f23446cbc9813e2f5639aae38936e852d96e9b16572a88697dd5dcdf0140646d",
+        "codex_cognitive_sdk-0.1.0a1.tar.gz": "df58fb8b2835fe2a4009c9eceb35acf5bef998ce22d2f934e665b8d518de10fb",
+        "codex_contracts-0.1.0a1-py3-none-any.whl": "bedcd0b015a696d702ff368919d5038201fe30ba7f2da5b932fd30b964ca8f96",
+        "codex_contracts-0.1.0a1.tar.gz": "2772501da8b587709acedc45d70e653d02da8d12b343d790d3735e6df6ea6121",
+        "codex_ml_evaluation-0.1.0a1-py3-none-any.whl": "1cf14edad842852326b8453db70c4a922bcb3c7ac40c95dd62b2bf244a68c231",
+        "codex_ml_evaluation-0.1.0a1.tar.gz": "05e6b5c5197faed2b4acd9641bfc8e73a124760d63d12e23e5e6e7b77377fc66",
+        "codex_ml_lora-0.1.0a1-py3-none-any.whl": "c85db3a2a3c9ff07c17ba46cc725de54c3a239b9aa4fefd891aa4833d0277adf",
+        "codex_ml_lora-0.1.0a1.tar.gz": "8676bed190b621742ce3d4fc478956c28ed3c490e5fb3819a4f07e4c7e6346fb",
+        "codex_ml_telemetry-0.1.0a1-py3-none-any.whl": "75991cb3df808c0a793603f3142cb4f1d1480d424f5307522aa485c27ca4adc8",
+        "codex_ml_telemetry-0.1.0a1.tar.gz": "2d3ceb461f1c27797e4c6a4f5f06b1b36c12b9520e3c3ff827c397671bd32d7a"
+      }
+    }
+  },
+  "final_verification": "Parsed checkpoint/ledger; preserved all40 exact acceptance strings,14 negatives and10 review placeholders; validated12 reported artifact digest shapes and scoped source content hashes; no code difference from verified source commit; git diff --check passed",
+  "independent_review": {
+    "initial": "Architecture review drove trusted verifier, fixture-clock and crash/replay corrections",
+    "legacy": "Independent Windows portability finding fixed with platform-guarded fsync/mode handling and fixtures",
+    "final": "Strict read-only final-composition-review found no significant issues",
+    "preservation": "Earlier reviewer ran unrequested tests/stash; no stash remains, startup/dependency/approval hashes preserved. Test-generated operational files retained under /tmp/codex-continuation-retained-fixtures and original tracked bytes verified restored. That review's follow-up is not final assurance."
+  },
+  "security_assessment": {
+    "secret_scanning": "All16 scoped edited/created files scanned; no secrets found before source persistence",
+    "dependency_advisories": "No advisories found for MCP2.2.0/pyasn1 0.6.5 or restored release lock tools",
+    "codeql": "Actions: zero alerts; Python skipped because database too large, not a clean Python CodeQL result",
+    "bandit": "Final Python source selection: two medium static findings, zero high; command exits1",
+    "triage": [
+      "Publishing exec executes only fixed internal public-check strings after installed source binding; no untrusted string accepted",
+      "Monitor urlopen uses fixed api.github.com origin, not arbitrary schemes; authenticated transport is NOT qualified (existing placeholder Authorization), owner-controlled credential/routing decision remains open",
+      "Approval transport hardened: no redirects or ambient proxies, bounded response, invalid paths rejected"
+    ],
+    "owner": "Maintainer/security owner for full Python CodeQL and authenticated monitor transport before production use"
+  },
+  "latest_hosted_ci": {
+    "source_sha": "26e285a0fc3bbc093ce87ad2c8d5df7a046507e9",
+    "run_id": 41337987050,
+    "conclusion": "action_required",
+    "jobs": 0,
+    "logs": "No failed jobs found; no product verification",
+    "prior_owner_approval": "Earlier source attempt2 skipped; not permission to rerun/approve this source or publish"
+  },
+  "remaining": [
+    "Full runtime dependency-resolution and hosted same-bundle protected release proof",
+    "Full Python CodeQL unavailable due database size; monitor credential use remains operation-specific owner decision",
+    "Merged-SHA observation requires independent authorized source",
+    "Cross-store pending learning intent requires owner reconciliation",
+    "Restricted agent inventory and original B01-B10 evidence",
+    "Credential routing, publishing migration and execution protections remain owner-controlled",
+    "Calibration, actual SQLite adapters and maintained health/evolution/local-fixer integration",
+    "Lane runtime overlap/cancellation/recovery; retain explicit human-mediated handoffs",
+    "Additional dependency lock drift; no full resolver compatibility proof"
+  ],
+  "rollback": "Owner-reviewed scoped revert only; preserve raw journals, startup bytes and ambiguous claims; append authorized reconciliation rather than replay",
+  "execution_authority": false,
+  "production_release_ready": false
+}

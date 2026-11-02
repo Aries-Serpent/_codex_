@@ -36,15 +36,22 @@ def _brain(tmp_path: Path) -> AgentBrainInterface:
 
 
 def _wired(tmp_path: Path) -> tuple[EvidenceStore, OutcomeTracker]:
-    store = EvidenceStore(tmp_path / "evidence.jsonl")
-    tracker = OutcomeTracker(_brain(tmp_path), outcome_source=store_outcome_source(store))
+    store = EvidenceStore(tmp_path / "evidence.jsonl", allow_synthetic=True)
+    tracker = OutcomeTracker(
+        _brain(tmp_path), outcome_source=store_outcome_source(store), allow_synthetic=True
+    )
     return store, tracker
 
 
 def test_persisted_success_outcome_updates_confidence(tmp_path: Path) -> None:
     store, tracker = _wired(tmp_path)
     store.record_outcome(
-        event_id="e1", merged=True, outcome="success", pattern_id="RP-019", patch_hash="p"
+        event_id="e1",
+        merged=True,
+        outcome="success",
+        pattern_id="RP-019",
+        patch_hash="p",
+        synthetic=True,
     )
     update = tracker.process_outcome(event_id="e1", pattern_id="RP-019", patch_hash="p")
     assert update is not None
@@ -54,7 +61,12 @@ def test_persisted_success_outcome_updates_confidence(tmp_path: Path) -> None:
 def test_persisted_regression_lowers_confidence(tmp_path: Path) -> None:
     store, tracker = _wired(tmp_path)
     store.record_outcome(
-        event_id="e2", merged=True, outcome="regression", pattern_id="RP-019", patch_hash="p"
+        event_id="e2",
+        merged=True,
+        outcome="regression",
+        pattern_id="RP-019",
+        patch_hash="p",
+        synthetic=True,
     )
     update = tracker.process_outcome(event_id="e2", pattern_id="RP-019", patch_hash="p")
     assert update is not None
@@ -81,9 +93,16 @@ def test_unrecorded_event_does_not_update(tmp_path: Path) -> None:
 def test_outcome_survives_store_restart(tmp_path: Path) -> None:
     path = tmp_path / "evidence.jsonl"
     EvidenceStore(path).record_outcome(
-        event_id="e6", merged=True, outcome="success", pattern_id="RP-019", patch_hash="p"
+        event_id="e6",
+        merged=True,
+        outcome="success",
+        pattern_id="RP-019",
+        patch_hash="p",
+        synthetic=True,
     )
-    recovered = EvidenceStore(path)
-    tracker = OutcomeTracker(_brain(tmp_path), outcome_source=store_outcome_source(recovered))
+    recovered = EvidenceStore(path, allow_synthetic=True)
+    tracker = OutcomeTracker(
+        _brain(tmp_path), outcome_source=store_outcome_source(recovered), allow_synthetic=True
+    )
     update = tracker.process_outcome(event_id="e6", pattern_id="RP-019", patch_hash="p")
     assert update is not None and update.outcome == "success"

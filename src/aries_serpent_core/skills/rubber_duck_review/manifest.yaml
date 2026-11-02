@@ -1,0 +1,18 @@
+id: rubber.duck.review
+version: 1.0.0
+name: rubber-duck-review
+description: >
+  Read-only structured critique. Restate objective and acceptance criteria;
+  question assumptions, missing evidence, dependency order, data/control flow
+  and simpler alternatives. Ask what would falsify the plan. Return questions,
+  risks and reasoning, not a success verdict, patch or approval.
+entrypoint: aries_serpent_core.skills.assurance:rubber_duck_review
+capability_tags: [review, reasoning, evidence]
+io:
+  input_schema: ../assurance_schema/input.json
+  output_schema: ../assurance_schema/output.json
+policy:
+  allowlist: ["*"]
+  risk_tier: low
+  budgets: {calls: 100, tokens: 20000, wallclock_ms: 10000}
+telemetry: {emit_jsonl: false, emit_otel: false}

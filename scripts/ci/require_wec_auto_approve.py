@@ -9,6 +9,7 @@ import os
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 LABEL_NAME = "wec:auto-approve"
@@ -53,7 +54,9 @@ def _parse_pr_created_at(value: Any) -> datetime | None:
         return None
 
 
-def has_wec_auto_approve(token: str, repo: str, pr_number: int, ttl_hours: int = DEFAULT_TTL_HOURS) -> bool:
+def has_wec_auto_approve(
+    token: str, repo: str, pr_number: int, ttl_hours: int = DEFAULT_TTL_HOURS
+) -> bool:
     status, data = _gh("GET", f"/repos/{repo}/issues/{pr_number}", token)
     if status != 200 or not isinstance(data, dict):
         return False
@@ -71,32 +74,72 @@ def has_wec_auto_approve(token: str, repo: str, pr_number: int, ttl_hours: int =
         return False
 
     age_hours = (datetime.now(timezone.utc) - created_dt).total_seconds() / 3600
-    return age_hours <= ttl_hours
+    return 0 <= age_hours <= ttl_hours
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--pr-number", type=int, required=True, help="Pull request number to validate")
-    parser.add_argument("--repo", default=os.environ.get("REPO") or os.environ.get("GITHUB_REPOSITORY", ""), help="Repository slug, e.g. owner/repo")
-    parser.add_argument("--token", default=os.environ.get("GH_TOKEN") or os.environ.get("CODEX_MASTER_KEY") or os.environ.get("CODEX_BACKUP_KEY") or "", help="GitHub token")
+    parser.add_argument(
+        "--pr-number", type=int, required=True, help="Pull request number to validate"
+    )
+    parser.add_argument(
+        "--repo",
+        default=os.environ.get("REPO") or os.environ.get("GITHUB_REPOSITORY", ""),
+        help="Repository slug, e.g. owner/repo",
+    )
+    parser.add_argument(
+        "--token",
+        default=os.environ.get("GH_TOKEN")
+        or os.environ.get("CODEX_MASTER_KEY")
+        or os.environ.get("CODEX_BACKUP_KEY")
+        or "",
+        help="GitHub token",
+    )
     args = parser.parse_args()
+
+    def finish(code: int, rule: str) -> int:
+        Path("approval-decision.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "decisions": [
+                        {
+                            "rule": rule,
+                            "pr": args.pr_number,
+                            "head_sha": os.environ.get("HEAD_SHA") or None,
+                            "outcome": "authorized" if code == 0 else "denied",
+                        }
+                    ],
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        return code
 
     if not args.repo:
         print("::error::REPO is required to validate wec:auto-approve.")
-        return 1
+        return finish(1, "missing-repository")
     if not args.token:
-        print("::notice::No GH_TOKEN/CODEX_MASTER_KEY provided; refusing to auto-approve without a token and label gate.")
-        return 1
+        print(
+            "::notice::No GH_TOKEN/CODEX_MASTER_KEY provided; refusing to auto-approve without a token and label gate."
+        )
+        return finish(1, "missing-token")
 
-    if has_wec_auto_approve(args.token, args.repo, args.pr_number):
+    try:
+        authorized = has_wec_auto_approve(args.token, args.repo, args.pr_number)
+    except Exception:
+        return finish(1, "inspection-error")
+    if authorized:
         print(f"✅ PR #{args.pr_number} has required label '{LABEL_NAME}'.")
-        return 0
+        return finish(0, "label-present")
 
     print(
         f"::error::Approval denied for PR #{args.pr_number}: missing required label '{LABEL_NAME}'. "
         "Add the label to enable auto-approval."
     )
-    return 1
+    return finish(1, "missing-or-expired-label")
 
 
 if __name__ == "__main__":

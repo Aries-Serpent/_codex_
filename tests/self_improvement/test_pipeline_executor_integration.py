@@ -76,6 +76,13 @@ def repo(tmp_path: Path) -> Path:
     subprocess.run(["git", "config", "user.name", "t"], cwd=tmp_path, check=True)
     (tmp_path / "src").mkdir()
     (tmp_path / "src" / "ok.py").write_text("x = 1\n")
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests" / "test_repair.py").write_text(
+        "import unittest, runpy\n"
+        "class Repair(unittest.TestCase):\n"
+        " def test_timeout(self):\n"
+        "  self.assertEqual(runpy.run_path('src/codex/ci_config.py')['TIMEOUT_MINUTES'], 30)\n"
+    )
     subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
     subprocess.run(["git", "commit", "-qm", "init"], cwd=tmp_path, check=True)
     return tmp_path
@@ -148,7 +155,9 @@ def _git_status(repo: Path) -> str:
         text=True,
     ).stdout
     return "".join(
-        line for line in out.splitlines(keepends=True) if ".codex" not in line and "ledger" not in line
+        line
+        for line in out.splitlines(keepends=True)
+        if ".codex" not in line and "ledger" not in line
     )
 
 
@@ -180,7 +189,7 @@ def test_actionable_proposal_executes_verified(repo: Path, tmp_path: Path) -> No
 
     assert outcome.status == "verified", outcome.reason
     assert outcome.artifact_hash
-    assert [log.returncode for log in outcome.gate_logs] == [0]
+    assert [log.returncode for log in outcome.gate_logs] == [0, 0]
     # The patch applied only inside the disposable worktree.
     assert (repo / "src" / "ok.py").read_text() == before
     assert not (repo / TARGET_FILE).exists()
