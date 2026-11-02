@@ -15,6 +15,7 @@ import json
 import os
 import re
 from dataclasses import dataclass, field
+from pathlib import PurePosixPath
 from typing import Mapping, Optional, Tuple
 
 
@@ -59,7 +60,15 @@ class AuthorityEnvelope:
 
         violations = []
         for path in paths:
-            if not path or path.startswith("/"):
+            if (
+                not isinstance(path, str)
+                or not path
+                or path.startswith("/")
+                or "\\" in path
+                or "\x00" in path
+                or ".." in PurePosixPath(path).parts
+                or str(PurePosixPath(path)) != path.rstrip("/")
+            ):
                 violations.append(f"path outside allowlist: {path}")
                 continue
             normalized = path.replace("\\", "/")
@@ -74,6 +83,10 @@ class AuthorityEnvelope:
         """Return reasons for any size-limit breach."""
 
         violations = []
+        if type(diff_lines) is not int or diff_lines < 0:
+            return ("invalid diff line count",)
+        if type(file_count) is not int or file_count < 0:
+            return ("invalid file count",)
         if diff_lines > self.limits.max_diff_lines:
             violations.append(f"diff too large: {diff_lines} > {self.limits.max_diff_lines} lines")
         if file_count > self.limits.max_files:

@@ -18,11 +18,13 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import re
+import subprocess
 import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Mapping, Optional, Sequence
+from typing import Any, Mapping, Optional, Sequence, cast
 
 from codex.cognitive_brain.authority import AuthorityEnvelope
 
@@ -33,8 +35,8 @@ try:
         EVIDENCE_SCHEMA_VERSION,
         DataAvailability,
         ImprovementEvent,
-        PatternRef,
         PatchProposal,
+        PatternRef,
         SignalEvidence,
         SignalSource,
         make_event_id,
@@ -44,12 +46,12 @@ except ImportError:  # pragma: no cover - exercised only outside the repo
     _sdk_src = str(_repo_root / "packages" / "cognitive_sdk" / "src")
     if _sdk_src not in sys.path:
         sys.path.append(_sdk_src)
-    from codex_cognitive_sdk.evidence import (  # type: ignore[no-redef]
+    from codex_cognitive_sdk.evidence import (
         EVIDENCE_SCHEMA_VERSION,
         DataAvailability,
         ImprovementEvent,
-        PatternRef,
         PatchProposal,
+        PatternRef,
         SignalEvidence,
         SignalSource,
         make_event_id,
@@ -77,11 +79,24 @@ def signal_from_pda_record(record: Mapping[str, Any]) -> SignalEvidence:
     malformed evidence fails closed instead of being treated as healthy.
     """
 
+    if not isinstance(record, Mapping):
+        raise ValueError("PDA record must be an object")
     if record.get("type") != "failure":
         raise ValueError(f"expected a PDA failure record, got type={record.get('type')!r}")
-    timestamp = str(record.get("timestamp", ""))
-    if not timestamp:
-        raise ValueError("PDA failure record is missing its timestamp")
+    timestamp = record.get("timestamp")
+    if not isinstance(timestamp, str) or not timestamp.strip():
+        raise ValueError("PDA failure record requires a timestamp")
+    try:
+        measured = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ValueError("PDA failure timestamp is invalid") from exc
+    if measured.tzinfo is None:
+        raise ValueError("PDA failure timestamp must be timezone aware")
+    files = record.get("files") or []
+    if not isinstance(files, (list, tuple)) or any(
+        not isinstance(path, str) or not path.strip() for path in files
+    ):
+        raise ValueError("PDA failure files must be a sequence of nonempty paths")
     details = {
         "pattern_id": record.get("pattern_id"),
         "workflow": record.get("workflow"),
@@ -90,13 +105,15 @@ def signal_from_pda_record(record: Mapping[str, Any]) -> SignalEvidence:
         "root_cause": record.get("root_cause"),
         "fix_template": record.get("fix_template"),
         "verification_cmd": record.get("verification_cmd"),
-        "files": list(record.get("files") or []),
+        "files": list(files),
     }
+    # The SDK annotates its string-constant containers as field types. Keep the
+    # canonical wire strings unchanged while satisfying that annotation.
     return SignalEvidence(
-        source=SignalSource.PDA_FAILURE_LOG,
+        source=cast(SignalSource, SignalSource.PDA_FAILURE_LOG),
         kind="ci_job_failure",
         measured_at=timestamp,
-        availability=DataAvailability.MEASURED,
+        availability=cast(DataAvailability, DataAvailability.MEASURED),
         summary=str(record.get("root_cause") or record.get("error_text") or ""),
         details=details,
     )
@@ -113,18 +130,23 @@ class ImprovementPipeline:
         sha: str,
         brain_interface: Any,
         authority: Optional[AuthorityEnvelope] = None,
+        evidence_store: Any = None,
     ) -> None:
         self.repo = repo
         self.ref = ref
         self.sha = sha
         self.brain = brain_interface
         self.authority = authority or AuthorityEnvelope()
+        self.evidence_store = evidence_store
 
     def process_signal(
         self,
         signal: SignalEvidence,
         *,
         human_approved: bool = False,
+        patch_bytes: Optional[bytes] = None,
+        patch_hash: Optional[str] = None,
+        base_sha: Optional[str] = None,
     ) -> ProposalDecision:
         """Run one signal through retrieval and bounded proposal.
 
@@ -134,14 +156,23 @@ class ImprovementPipeline:
         """
 
         signal.validate()
+        actual_proposal = None
+        if any(value is not None for value in (patch_bytes, patch_hash, base_sha)):
+            actual_proposal = self.proposal_from_patch(
+                patch_bytes=patch_bytes, patch_hash=patch_hash, base_sha=base_sha
+            )
 
         if signal.availability != DataAvailability.MEASURED:
             return self._inactionable(signal, f"signal not measured: {signal.availability}")
         if signal.kind in _NON_ACTIONABLE_KINDS:
             return self._inactionable(signal, f"non-actionable signal kind: {signal.kind}")
 
-        symptoms = [signal.summary, signal.kind.replace("_", " "), *self._detail_terms(signal)]
+        symptoms = [signal.summary, *self._detail_terms(signal)]
         matches = self.brain.query_patterns(symptoms)
+        if self.evidence_store is not None:
+            matches = [
+                match for match in matches if self.evidence_store.pattern_enabled(match.pattern_id)
+            ]
         if not matches:
             return self._inactionable(signal, "no pattern matched the signal")
 
@@ -152,7 +183,7 @@ class ImprovementPipeline:
             success_rate=float(best.success_rate),
         )
 
-        proposal = self._build_proposal(signal, best)
+        proposal = actual_proposal or self._build_proposal(signal, best)
         if proposal is None:
             return self._inactionable(
                 signal, "matched pattern carries no applicable fix", pattern_ref
@@ -170,6 +201,59 @@ class ImprovementPipeline:
 
         event = self._make_event(signal, pattern_ref, proposal)
         return ProposalDecision(event=event, actionable=True, reason="matched and authorized")
+
+    def proposal_from_patch(
+        self,
+        *,
+        patch_bytes: Optional[bytes],
+        patch_hash: Optional[str],
+        base_sha: Optional[str],
+    ) -> PatchProposal:
+        """Describe actual canonical UTF-8 diff bytes, never render template text.
+
+        Git's read-only inventory and the existing executor's inventory parser
+        define the same files/size at preparation and execution. Application
+        against the immutable base is still verified only by the executor.
+        """
+        from codex.cognitive_brain.isolated_execution import IsolatedExecutor, scrub_environment
+
+        if (
+            not isinstance(patch_bytes, bytes)
+            or not 0 < len(patch_bytes) <= 1024 * 1024
+            or not patch_bytes.endswith(b"\n")
+            or b"\r" in patch_bytes
+            or b"\0" in patch_bytes
+        ):
+            raise ValueError("actual patch requires canonical UTF-8 LF diff bytes")
+        if (
+            not isinstance(base_sha, str)
+            or re.fullmatch(r"[0-9a-f]{40}", base_sha) is None
+            or base_sha != self.sha
+        ):
+            raise ValueError("actual patch base must match the pipeline immutable SHA")
+        if hashlib.sha256(patch_bytes).hexdigest() != patch_hash:
+            raise ValueError("actual patch hash mismatch")
+        try:
+            patch_bytes.decode("utf-8")
+            inventory = subprocess.run(
+                ["git", "apply", "--numstat", "-z", "-"],
+                input=patch_bytes,
+                capture_output=True,
+                env=scrub_environment(),
+                timeout=30,
+                check=True,
+            )
+            files, lines = IsolatedExecutor._patch_inventory(inventory.stdout.decode("utf-8"))
+        except (UnicodeError, OSError, subprocess.SubprocessError) as exc:
+            raise ValueError("malformed actual patch") from exc
+        if not files or not lines:
+            raise ValueError("no-op patch is not an executable repair")
+        return PatchProposal(
+            patch_hash=patch_hash,
+            files=tuple(sorted(files)),
+            diff_lines=lines,
+            description="Actual caller-supplied local diff; template is advisory only",
+        )
 
     # ------------------------------------------------------------------
     # Internals
@@ -255,6 +339,8 @@ def load_pda_signals(jsonl_path: Path) -> list[SignalEvidence]:
             if not line:
                 continue
             record = json.loads(line)
+            if not isinstance(record, Mapping):
+                raise ValueError("PDA record must be an object")
             if record.get("type") != "failure":
                 continue
             signals.append(signal_from_pda_record(record))

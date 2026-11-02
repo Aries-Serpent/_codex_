@@ -1,0 +1,19 @@
+id: lane.contract.and.handoff
+version: 1.0.0
+name: lane-contract-and-handoff
+description: >
+  Validate shared run ID, immutable base SHA, lane identity, dependencies,
+  read/write boundaries, timeout and cost budget, evidence, acceptance criteria,
+  output schema and six-state lifecycle. Handoffs include changed paths, tests,
+  metrics, risks, questions and artifacts. Passed requires independent evidence.
+  Runtime invocation is human-mediated; contract validation is not execution.
+entrypoint: aries_serpent_core.skills.assurance:lane_contract_and_handoff
+capability_tags: [orchestration, contracts, evidence]
+io:
+  input_schema: ../assurance_schema/input.json
+  output_schema: ../assurance_schema/output.json
+policy:
+  allowlist: ["*"]
+  risk_tier: low
+  budgets: {calls: 100, tokens: 20000, wallclock_ms: 10000}
+telemetry: {emit_jsonl: false, emit_otel: false}

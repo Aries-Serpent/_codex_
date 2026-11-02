@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_id", "base_sha", "lane_id", "state", "changed_paths", "validation", "metrics", "risks", "unresolved_questions", "artifact_refs"],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "base_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "lane_id": {"type": "string", "minLength": 1},
+    "state": {"enum": ["pending", "running", "passed", "failed", "blocked", "incomplete"]},
+    "changed_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "validation": {"type": "object"},
+    "metrics": {"type": "object"},
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "unresolved_questions": {"type": "array", "items": {"type": "string"}},
+    "artifact_refs": {"type": "array", "items": {"type": "string", "minLength": 1}}
+  }
+}

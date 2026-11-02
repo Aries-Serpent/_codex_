@@ -39,10 +39,14 @@ def test_restart_recovers_evidence_and_idempotency(tmp_path: Path) -> None:
 
 
 def test_repeated_failures_trip_circuit_breaker(tmp_path: Path) -> None:
-    store = EvidenceStore(tmp_path / "evidence.jsonl")
+    store = EvidenceStore(tmp_path / "evidence.jsonl", allow_synthetic=True)
     for i in range(3):
         store.record_outcome(
-            event_id=f"e{i}", merged=True, outcome="rollback", pattern_id="RP-019"
+            event_id=f"e{i}",
+            merged=True,
+            outcome="rollback",
+            pattern_id="RP-019",
+            synthetic=True,
         )
     assert not store.pattern_enabled("RP-019")
     assert "consecutive" in store.disable_reason("RP-019")
@@ -51,10 +55,14 @@ def test_repeated_failures_trip_circuit_breaker(tmp_path: Path) -> None:
 
 
 def test_success_resets_failure_streak(tmp_path: Path) -> None:
-    store = EvidenceStore(tmp_path / "evidence.jsonl")
+    store = EvidenceStore(tmp_path / "evidence.jsonl", allow_synthetic=True)
     for outcome in ("rollback", "success", "rollback"):
         store.record_outcome(
-            event_id=f"e-{outcome}", merged=True, outcome=outcome, pattern_id="RP-1"
+            event_id=f"e-{outcome}",
+            merged=True,
+            outcome=outcome,
+            pattern_id="RP-1",
+            synthetic=True,
         )
     assert store.pattern_enabled("RP-1")
 

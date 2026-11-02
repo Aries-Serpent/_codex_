@@ -1,0 +1,77 @@
+{
+  "task_id": "AGENT-SELF-IMPROVEMENT-001",
+  "plan_version": "v4",
+  "base_sha": "4a7d955b8b214d6002932261afdebd60f37ede8e",
+  "current_sha": "4a7d955b8b214d6002932261afdebd60f37ede8e",
+  "branch": "copilot/agent-self-improvement-001-evidence-gated-skills",
+  "phase": 0,
+  "phase_status": "completed_with_limits",
+  "completed": [
+    "Read agency policy, healing tiers, sprint template and Python/workflow instructions",
+    "Baseline commit verified; checkout is not sparse",
+    "Preserved pre-existing dirty .codex/session_startup_packet.json",
+    "Autonomy baseline: 14 tests passed",
+    "Read-only GitHub runs inspection: approval run 41197723298 completed successfully; no failed jobs",
+    "Six distributions confirmed in pypi-publish.yml; password credentials remain configured"
+  ],
+  "pending": ["Phases 1 through 7"],
+  "blocked": [
+    "Profile and registry file access unavailable for this task; reflection rows 1, 2 registry counts, and profile claims remain unverified",
+    "Hosted skill selection, agent dispatch and external PyPI publisher configuration unverified"
+  ],
+  "changed_paths": [],
+  "tests": [
+    {
+      "command": "python -m pytest tests/autonomy/test_agent_runner.py tests/autonomy/test_autonomy_scheduler.py -q --override-ini=addopts=''",
+      "result": "14 passed in 6.24s",
+      "side_effect": "Existing runner test created a reflection artifact; remove only that task-generated artifact"
+    }
+  ],
+  "autonomy_env_keys_found": [
+    "AUTONOMY_BUDGET_SECONDS",
+    "AUTONOMY_MAX_ITERATIONS",
+    "AUTONOMY_DRY_RUN",
+    "AGENT_KILL_SWITCH",
+    "COPILOT_AGENT_MAX_AUTONOMY_LEVEL",
+    "CODEX_AUTONOMY_REGISTRY"
+  ],
+  "d_mode_variable_name": "not-found; COPILOT_AGENT_MAX_AUTONOMY_LEVEL is declared-only",
+  "d_mode_value_recorded": false,
+  "autonomy_sources": [
+    "scripts/autonomy_scheduler.py:58-62",
+    "scripts/agent_runner.py:47",
+    ".github/copilot-orchestrator/workflow_dispatcher.py:71",
+    "src/aries_serpent_core/autonomy/registry.py:32",
+    "src/agents/VARIABLE_EXPECTATIONS.md:20",
+    "scripts/tools/variable_audit_cli.py:170"
+  ],
+  "reflection": [
+    {"row": 1, "status": "blocked", "evidence": "Registry access unavailable; supplied counts not independently verified"},
+    {"row": 2, "status": "verified", "evidence": "scripts/autonomy_scheduler.py:58-62 and scripts/agent_runner.py:47"},
+    {"row": 3, "status": "declared-only", "evidence": "src/agents/VARIABLE_EXPECTATIONS.md:20; inventory found audit/context consumers, not runtime enforcement"},
+    {"row": 4, "status": "verified", "evidence": "scripts/ci/require_wec_auto_approve.py and scripts/ci/approve_pending_runs.py exist"},
+    {"row": 5, "status": "verified", "evidence": "git ls-tree HEAD .github/workflows finds no e-to-d transition gate; ADR exists"},
+    {"row": 6, "status": "corrected", "evidence": "Always-on code belongs to approve-original, not execute-approval; schedule sweeps open PRs"},
+    {"row": 7, "status": "verified", "evidence": "auto-approve-workflows.yml approve-on-push catches helper failures and exits zero"},
+    {"row": 8, "status": "verified", "evidence": "git grep HEAD finds d_capable_promotion only in its own usage string, excluding inaccessible profiles"},
+    {"row": 9, "status": "verified", "evidence": "pypi-publish.yml:334,387 use TEST_PYPI_API_TOKEN and PYPI_TOKEN; OIDC publisher remains unverified"},
+    {"row": 10, "status": "pending", "evidence": "Chronicle signal consumers to inspect during Phase 4"},
+    {"row": 11, "status": "verified", "evidence": "src/orchestration/scheduling/lane_scheduler_v1.py:229-245 simulates success"},
+    {"row": 12, "status": "unverified", "evidence": "No supported isolated hosted dispatch demonstrated; task tool availability is not a repository runtime API"}
+  ],
+  "workflow_inventory": [
+    ".github/workflows/auto-approve-workflows.yml",
+    ".github/workflows/pypi-publish.yml",
+    ".github/workflows/agent-orchestration-unified.yml"
+  ],
+  "token_names": ["GITHUB_APP_PRIVATE_KEY", "GITHUB_APP_ID", "GITHUB_APP_INSTALLATION_ID", "CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GH_TOKEN", "github.token", "PYPI_TOKEN", "TEST_PYPI_API_TOKEN"],
+  "approvals_required": [
+    "Maintainer review of fail-closed approval changes",
+    "Profile and registry inspection/update by an authorized maintainer",
+    "Any E to D_CAPABLE promotion",
+    "Secret migration, GitHub/PyPI settings and production releases"
+  ],
+  "main_activation_pending": ["Every workflow patch is prepared, inactive until maintainer commits/merges/pushes to main"],
+  "next_action": "Prepare unified fail-closed approval path and regression tests",
+  "updated_at_utc": "2026-10-31T20:14:00Z"
+}

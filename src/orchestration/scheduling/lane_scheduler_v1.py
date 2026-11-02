@@ -20,6 +20,8 @@ class LaneState(Enum):
     RUNNING = "running"
     PASSED = "passed"
     FAILED = "failed"
+    BLOCKED = "blocked"
+    INCOMPLETE = "incomplete"
 
 
 class ExecutionMode(Enum):
@@ -83,13 +85,13 @@ class ScheduleResult:
 
 
 class LaneSchedulerV1:
-    """Basic lane execution coordinator (v1).
+    """Dependency coordinator with human-mediated execution only.
 
     v1 features:
     - Track lane states
     - Enforce upstream dependencies
     - Deterministic ordering
-    - Support sequential/parallel/sharded modes
+    - Record requested modes without claiming concurrent execution
     """
 
     def __init__(self):
@@ -217,32 +219,31 @@ class LaneSchedulerV1:
                 d for d in lane.upstream_dependencies if self.lanes[d].state != LaneState.PASSED
             ]
             error_msg = f"Upstream dependencies not ready: {failed_deps}"
+            lane.state = LaneState.BLOCKED
 
             result = ScheduleResult(
                 lane_id=lane_id,
-                state=LaneState.PENDING,
+                state=LaneState.BLOCKED,
                 error_message=error_msg,
             )
             logger.warning(f"Lane {lane_id} scheduling blocked: {error_msg}")
             return result
 
-        # Simulate lane execution
-        lane.state = LaneState.RUNNING
-        logger.info(f"Lane {lane_id} scheduled for execution")
-
-        # Simulate successful execution
-        lane.state = LaneState.PASSED
+        # This coordinator has no isolated agent invocation implementation.
+        # Scheduling produces a human-mediated handoff, never execution evidence.
+        lane.state = LaneState.INCOMPLETE
 
         execution_order = self._get_execution_order()
         result = ScheduleResult(
             lane_id=lane_id,
-            state=LaneState.PASSED,
+            state=LaneState.INCOMPLETE,
             execution_order=execution_order,
             end_time=datetime.now(timezone.utc).isoformat(),
+            error_message="Human-mediated execution required; no isolated runtime dispatcher",
         )
 
         self.execution_history.append(result)
-        logger.info(f"Lane {lane_id} passed")
+        logger.info(f"Lane {lane_id} requires human-mediated execution")
 
         return result
 
@@ -274,7 +275,7 @@ class LaneSchedulerV1:
                 result = self.schedule_lane(lane_id)
                 results[lane_id] = result
 
-                if result.state == LaneState.PENDING:
+                if result.state == LaneState.BLOCKED:
                     logger.warning(f"Lane {lane_id} could not be scheduled")
 
             return results

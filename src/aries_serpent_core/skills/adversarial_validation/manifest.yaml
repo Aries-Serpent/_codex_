@@ -1,0 +1,19 @@
+id: adversarial.validation
+version: 1.0.0
+name: adversarial-validation
+description: >
+  Independently assess supplied command observations that attempt to falsify
+  a claim with negative, boundary and regression checks. Require exact commands,
+  immutable SHA, evidence references, completion and independent observer.
+  Partial evidence is unknown; failed checks fail. Never weaken tests or infer
+  permission from a verdict. This handler does not execute the checks.
+entrypoint: aries_serpent_core.skills.assurance:adversarial_validation
+capability_tags: [testing, validation, evidence]
+io:
+  input_schema: ../assurance_schema/input.json
+  output_schema: ../assurance_schema/output.json
+policy:
+  allowlist: ["*"]
+  risk_tier: low
+  budgets: {calls: 100, tokens: 20000, wallclock_ms: 10000}
+telemetry: {emit_jsonl: false, emit_otel: false}

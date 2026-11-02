@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""Approve all action_required workflow runs for a PR's HEAD SHA.
+"""Approve only independently requested, labelled, current PR workflow runs.
 
 Mirrors the post_rescue_comment.py pattern — uses the Cognitive Brain GitHub
 App installation token (primary) or CODEX_MASTER_KEY PAT (fallback) to call
   POST /repos/{owner}/{repo}/actions/runs/{run_id}/approve
-on every pending run.  Enables the Copilot agent's autonomous self-approval
-loop: agent pushes → self-approve-pending-runs.yml fires via schedule →
-runs unblock → CI completes without any human touchpoint.
+on eligible pending runs. A token or label is not independent approval:
+unknown identity, self-approval and ambiguous PR associations are denied.
+GitHub rejection is final; it never triggers a rerun fallback.
 
 Token priority
 --------------
 1. Cognitive Brain App installation token
      (_GITHUB_APP_ID + _GITHUB_APP_PRIVATE_KEY + _GITHUB_APP_INSTALLATION_ID)
-     The App has full-admin org-wide access — no action_required restrictions.
+     Actual installation scope must be verified by the maintainer.
 2. CODEX_MASTER_KEY  (PAT with repo + workflow + actions:write)
 3. CODEX_BACKUP_KEY  (fallback PAT)
 4. GH_TOKEN          (github.token — approve will likely fail but we try)
@@ -62,11 +62,18 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 COPILOT_BOT_LOGINS = {"Copilot", "github-copilot[bot]", "copilot-swe-agent[bot]"}
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
 
 def _gh(
     method: str,
@@ -77,6 +84,12 @@ def _gh(
     timeout: int = 20,
 ) -> tuple[int, Any]:
     """Minimal GitHub REST call — returns (status_code, parsed_json)."""
+    if (
+        not path.startswith("/")
+        or path.startswith("//")
+        or any(char in path for char in ("\r", "\n", "\0", "\\"))
+    ):
+        raise ValueError("invalid GitHub API path")
     url = f"https://api.github.com{path}"
     data = json.dumps(body).encode() if body else None
     headers = {
@@ -88,13 +101,18 @@ def _gh(
     }
     req = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            body_bytes = resp.read()
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+        with opener.open(req, timeout=timeout) as resp:
+            body_bytes = resp.read(1024 * 1024 + 1)
+            if len(body_bytes) > 1024 * 1024:
+                return 502, {"error": "GitHub API response exceeds size limit"}
             try:
                 parsed = json.loads(body_bytes) if body_bytes.strip() else {}
             except json.JSONDecodeError as jde:
-                parsed = {"error": f"Invalid JSON from GitHub API: {jde}",
-                          "raw": body_bytes[:200].decode("utf-8", errors="replace")}
+                parsed = {
+                    "error": f"Invalid JSON from GitHub API: {jde}",
+                    "raw": body_bytes[:200].decode("utf-8", errors="replace"),
+                }
             return resp.status, parsed
     except urllib.error.HTTPError as exc:
         try:
@@ -108,32 +126,26 @@ def _mint_app_token(app_id: str, private_key_pem: str, installation_id: str) -> 
     """Mint a short-lived GitHub App installation token.
 
     Returns the token string, or None if minting fails.
-    Requires PyJWT + cryptography; installs them silently if absent.
+    Requires existing PyJWT + cryptography; missing dependencies fail closed.
     """
     try:
-        import jwt as _jwt  # type: ignore[import-untyped]
+        import jwt as _jwt
     except ImportError:
-        import subprocess as _sp
-        _sp.run(
-            [sys.executable, "-m", "pip", "install", "--quiet",
-             "PyJWT==2.8.0", "cryptography==44.0.2"],
-            check=True,
-        )
-        import jwt as _jwt  # type: ignore[import-untyped]
+        return None
 
     now = int(time.time())
     payload = {"iat": now - 60, "exp": now + 540, "iss": str(app_id)}
     try:
         app_jwt = _jwt.encode(payload, private_key_pem, algorithm="RS256")
-    except Exception as exc:
-        print(f"⚠️  App JWT signing failed: {exc}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
+    except Exception:
+        print("App JWT signing failed", file=sys.stderr)
         return None
 
     path = f"/app/installations/{installation_id}/access_tokens"
     status, resp_body = _gh("POST", path, app_jwt)
     if status == 201 and isinstance(resp_body, dict) and resp_body.get("token"):
         return resp_body["token"]
-    print(f"⚠️  App token mint failed — HTTP {status}: {resp_body}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"App token mint failed (HTTP {status})", file=sys.stderr)
     return None
 
 
@@ -142,16 +154,22 @@ def _resolve_token() -> tuple[str, str]:
     CB App → CODEX_MASTER_KEY → CODEX_BACKUP_KEY → GH_TOKEN.
     """
     app_key = os.environ.get("GITHUB_APP_PRIVATE_KEY", "").strip()
-    app_id  = os.environ.get("GITHUB_APP_ID", "").strip()
+    app_id = os.environ.get("GITHUB_APP_ID", "").strip()
     inst_id = os.environ.get("GITHUB_APP_INSTALLATION_ID", "").strip()
 
     if app_key and app_id and inst_id:
-        print("ℹ️  Trying Cognitive Brain App installation token…")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            "ℹ️  Trying Cognitive Brain App installation token…"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         token = _mint_app_token(app_id, app_key, inst_id)
         if token:
-            print("✅ Using Cognitive Brain App token")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                "✅ Using Cognitive Brain App token"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return token, "cognitive-brain-app"
-        print("⚠️  App token unavailable — falling back to PAT")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            "⚠️  App token unavailable — falling back to PAT"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
     for env_name in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GH_TOKEN"):
         val = os.environ.get(env_name, "").strip()
@@ -159,8 +177,7 @@ def _resolve_token() -> tuple[str, str]:
             print(f"ℹ️  Using {env_name}")  # codeql[py/clear-text-logging-sensitive-data]
             return val, env_name
 
-    print("❌ No token available — set GH_TOKEN, CODEX_MASTER_KEY, or App secrets",
-          file=sys.stderr)
+    print("❌ No token available — set GH_TOKEN, CODEX_MASTER_KEY, or App secrets", file=sys.stderr)
     raise SystemExit(1)
 
 
@@ -176,7 +193,9 @@ def _parse_iso8601_datetime(value: str | None) -> datetime | None:
         return None
 
 
-def _has_wec_auto_approve_label(token: str, repo: str, pr_number: str | int, *, ttl_hours: int = 1) -> bool:
+def _has_wec_auto_approve_label(
+    token: str, repo: str, pr_number: str | int, *, ttl_hours: int = 1
+) -> bool:
     """Require a valid label-based WEC auto-approve gate before approving a PR.
 
     The permanent label (wec:auto-approve) is always allowed. The one-session label
@@ -186,6 +205,10 @@ def _has_wec_auto_approve_label(token: str, repo: str, pr_number: str | int, *, 
     if status != 200 or not isinstance(payload, dict):
         return False
 
+    return _wec_label_valid(payload, ttl_hours=ttl_hours)
+
+
+def _wec_label_valid(payload: dict[str, Any], *, ttl_hours: int = 1) -> bool:
     labels = payload.get("labels", [])
     label_names = {label.get("name") if isinstance(label, dict) else label for label in labels}
     if "wec:auto-approve" in label_names:
@@ -199,10 +222,12 @@ def _has_wec_auto_approve_label(token: str, repo: str, pr_number: str | int, *, 
         return False
 
     age_hours = (datetime.now(timezone.utc) - created_dt).total_seconds() / 3600
-    return age_hours <= ttl_hours
+    return 0 <= age_hours <= ttl_hours
 
 
-def _filter_prs_by_wec_label(token: str, repo: str, prs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _filter_prs_by_wec_label(
+    token: str, repo: str, prs: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
     """Return only PRs currently opted into WEC auto-approval."""
     authorized: list[dict[str, Any]] = []
     for pr in prs:
@@ -217,23 +242,32 @@ def _filter_prs_by_wec_label(token: str, repo: str, prs: list[dict[str, Any]]) -
 
 
 def _search_wec_labelled_prs(token: str, repo: str) -> list[tuple[str, str]]:
-    """Use the Search API to find open PRs with a WEC auto-approve label in one request."""
+    """Inventory labelled PRs completely; failed or truncated searches are unknown."""
     results: dict[int, str] = {}
     for label in ("wec:auto-approve", "wec:auto-approve-once"):
-        page = 1
-        while True:
+        seen: set[int] = set()
+        expected_total: int | None = None
+        for page in range(1, 11):
             q = urllib.parse.quote(f"repo:{repo} is:pr is:open label:{label}")
             status, payload = _gh("GET", f"/search/issues?q={q}&per_page=100&page={page}", token)
             if status != 200 or not isinstance(payload, dict):
-                break
-            items = payload.get("items", [])
+                raise RuntimeError(f"Could not search PRs (HTTP {status})")
+            items, total = _inventory_page(payload, "items")
+            if payload.get("incomplete_results") is not False or total > 1000:
+                raise RuntimeError("Incomplete PR search inventory")
+            if expected_total is not None and total != expected_total:
+                raise RuntimeError("PR search inventory changed during pagination")
+            expected_total = total
             for item in items:
                 pr_num = item.get("number")
-                if pr_num is not None:
-                    results[pr_num] = ""
-            if len(items) < 100:
+                if type(pr_num) is not int or pr_num <= 0 or pr_num in seen:
+                    raise RuntimeError("Invalid or repeated PR search identity")
+                seen.add(pr_num)
+                results[pr_num] = ""
+            if _inventory_complete(len(items), len(seen), total):
                 break
-            page += 1
+        else:
+            raise RuntimeError("PR search inspection budget exhausted")
 
     if not results:
         return []
@@ -241,11 +275,47 @@ def _search_wec_labelled_prs(token: str, repo: str) -> list[tuple[str, str]]:
     targets: list[tuple[str, str]] = []
     for pr_num in results:
         status, payload = _gh("GET", f"/repos/{repo}/pulls/{pr_num}", token)
-        if status == 200 and isinstance(payload, dict):
-            sha = (payload.get("head") or {}).get("sha", "")
-            if sha:
-                targets.append((str(pr_num), sha))
+        if status != 200 or not isinstance(payload, dict):
+            raise RuntimeError(f"Could not inspect discovered PR (HTTP {status})")
+        sha = _inventory_pr_sha(payload)
+        labels = payload.get("labels")
+        if not isinstance(labels, list) or not all(
+            isinstance(label, dict) and isinstance(label.get("name"), str) for label in labels
+        ):
+            raise RuntimeError("Malformed discovered PR labels")
+        if payload.get("state") not in {"open", "closed"}:
+            raise RuntimeError("Malformed discovered PR state")
+        if payload["state"] == "open" and _wec_label_valid(payload):
+            targets.append((str(pr_num), sha))
     return targets
+
+
+def _inventory_page(payload: dict[str, Any], key: str) -> tuple[list[dict[str, Any]], int]:
+    items = payload.get(key)
+    total = payload.get("total_count")
+    if (
+        not isinstance(items, list)
+        or len(items) > 100
+        or not all(isinstance(item, dict) for item in items)
+        or type(total) is not int
+        or total < 0
+    ):
+        raise RuntimeError("Malformed inventory response")
+    return items, total
+
+
+def _inventory_complete(page_size: int, seen: int, total: int) -> bool:
+    if seen > total or (page_size < 100 and seen != total):
+        raise RuntimeError("Incomplete or inconsistent inventory pagination")
+    return seen == total
+
+
+def _inventory_pr_sha(pr: dict[str, Any]) -> str:
+    head = pr.get("head")
+    sha = head.get("sha") if isinstance(head, dict) else None
+    if not isinstance(sha, str) or not sha.strip():
+        raise RuntimeError("Malformed PR head in inventory")
+    return sha
 
 
 def _get_action_required_runs(
@@ -255,20 +325,35 @@ def _get_action_required_runs(
 ) -> list[dict[str, Any]]:
     """List all action_required workflow runs, optionally filtered by SHA."""
     all_runs: list[dict[str, Any]] = []
-    page = 1
-    while True:
+    seen: set[int] = set()
+    expected_total: int | None = None
+    for page in range(1, 101):
         path = f"/repos/{repo}/actions/runs?status=action_required&per_page=100&page={page}"
         if head_sha:
             path += f"&head_sha={head_sha}"
         status, data = _gh("GET", path, token)
         if status != 200 or not isinstance(data, dict):
-            print(f"⚠️  Could not list runs (HTTP {status}): {data}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
-            break
-        runs: list[dict[str, Any]] = data.get("workflow_runs", [])
+            raise RuntimeError(f"Could not list runs (HTTP {status})")
+        runs, total = _inventory_page(data, "workflow_runs")
+        if expected_total is not None and total != expected_total:
+            raise RuntimeError("Run inventory changed during pagination")
+        expected_total = total
+        for run in runs:
+            run_id = run.get("id")
+            if (
+                type(run_id) is not int
+                or run_id <= 0
+                or run_id in seen
+                or not isinstance(run.get("head_sha"), str)
+                or not run["head_sha"].strip()
+            ):
+                raise RuntimeError("Invalid or repeated run inventory identity")
+            seen.add(run_id)
         all_runs.extend(runs)
-        if len(runs) < 100:
+        if _inventory_complete(len(runs), len(seen), total):
             break
-        page += 1
+    else:
+        raise RuntimeError("Run inventory inspection budget exhausted")
     return all_runs
 
 
@@ -280,9 +365,9 @@ def _approve_run(
     dry_run: bool = False,
 ) -> str:
     """Approve a single action_required run.  Returns status label."""
-    run_id   = run["id"]
+    run_id = run["id"]
     run_name = run.get("name") or str(run.get("workflow_id", run_id))
-    label    = f"{run_name} (#{run_id})"
+    label = f"{run_name} (#{run_id})"
 
     if dry_run:
         print(f"  [DRY] Would approve: {label}")  # codeql[py/clear-text-logging-sensitive-data]
@@ -297,41 +382,32 @@ def _approve_run(
         print(f"  ⏭️  Already processed: {label}")  # codeql[py/clear-text-logging-sensitive-data]
         return "skipped"
 
-    msg = body.get("message", "") if isinstance(body, dict) else str(body)
-    print(f"  ⚠️  approve → HTTP {status} ({msg}) — trying rerun: {label}")  # codeql[py/clear-text-logging-sensitive-data]
-
-    # Fallback: rerun (clears action_required for same-repo pushes)
-    status2, body2 = _gh("POST", f"/repos/{repo}/actions/runs/{run_id}/rerun", token)
-    if status2 in (200, 201, 204):
-        print(f"  ✅ Rerun queued: {label}")  # codeql[py/clear-text-logging-sensitive-data]
-        return "rerun"
-    if status2 in (409, 422):
-        print(f"  ⏭️  Already running: {label}")  # codeql[py/clear-text-logging-sensitive-data]
-        return "skipped"
-    msg2 = body2.get("message", "") if isinstance(body2, dict) else str(body2)
-    print(f"  ❌ Both approve and rerun failed for {label}: HTTP {status2} ({msg2})",
-          file=sys.stderr)
+    print(f"  ❌ Approval denied by GitHub (HTTP {status}): {label}", file=sys.stderr)
     return "error"
 
 
 def _get_open_pr_shas(token: str, repo: str) -> list[tuple[str, str]]:
     """Return list of (pr_number, head_sha) for all open PRs."""
     pairs: list[tuple[str, str]] = []
-    page = 1
-    while True:
-        status, data = _gh(
-            "GET", f"/repos/{repo}/pulls?state=open&per_page=100&page={page}", token
-        )
+    seen: set[int] = set()
+    for page in range(1, 101):
+        status, data = _gh("GET", f"/repos/{repo}/pulls?state=open&per_page=100&page={page}", token)
         if status != 200 or not isinstance(data, list):
-            break
+            raise RuntimeError(f"Could not list open PRs (HTTP {status})")
+        if len(data) > 100:
+            raise RuntimeError("Oversized PR inventory page")
         for pr in data:
-            num  = str(pr.get("number", ""))
-            sha  = pr.get("head", {}).get("sha", "")
-            if num and sha:
-                pairs.append((num, sha))
+            if not isinstance(pr, dict):
+                raise RuntimeError("Malformed PR inventory entry")
+            num = pr.get("number")
+            if type(num) is not int or num <= 0 or num in seen:
+                raise RuntimeError("Invalid or repeated PR inventory identity")
+            seen.add(num)
+            pairs.append((str(num), _inventory_pr_sha(pr)))
         if len(data) < 100:
             break
-        page += 1
+    else:
+        raise RuntimeError("PR inventory inspection budget exhausted")
     return pairs
 
 
@@ -346,7 +422,9 @@ def _fetch_pr_comments(token: str, repo: str, pr_number: str) -> list[dict[str, 
             token,
         )
         if status != 200 or not isinstance(data, list):
-            print(f"⚠️  Could not list PR comments (HTTP {status}): {data}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"⚠️  Could not list PR comments (HTTP {status}): {data}", file=sys.stderr
+            )  # codeql[py/clear-text-logging-sensitive-data]
             break
         comments.extend(data)
         if len(data) < 100:
@@ -410,7 +488,9 @@ def _cleanup_copilot_eyes_reactions(
                 continue
             label = f"comment {comment_id} reaction {reaction_id} by {login}"
             if dry_run:
-                print(f"  [DRY] Would remove stale 👀: {label}")  # codeql[py/clear-text-logging-sensitive-data]
+                print(
+                    f"  [DRY] Would remove stale 👀: {label}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 removed += 1
                 continue
             status, body = _gh(
@@ -419,11 +499,15 @@ def _cleanup_copilot_eyes_reactions(
                 token,
             )
             if status == 204:
-                print(f"  ✅ Removed stale 👀: {label}")  # codeql[py/clear-text-logging-sensitive-data]
+                print(
+                    f"  ✅ Removed stale 👀: {label}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 removed += 1
                 continue
             msg = body.get("message", "") if isinstance(body, dict) else str(body)
-            print(f"  ⚠️  Could not remove stale 👀 ({label}) — HTTP {status}: {msg}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"  ⚠️  Could not remove stale 👀 ({label}) — HTTP {status}: {msg}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             blocked += 1
 
     return removed, blocked
@@ -431,16 +515,115 @@ def _cleanup_copilot_eyes_reactions(
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 
-def main() -> int:
-    repo      = os.environ.get("REPO") or os.environ.get("GITHUB_REPOSITORY", "")
-    head_sha  = os.environ.get("HEAD_SHA", "").strip() or None
-    pr_number = os.environ.get("PR_NUMBER", "").strip()
-    dry_run   = os.environ.get("DRY_RUN", "false").lower() == "true"
-    max_wait  = int(os.environ.get("MAX_WAIT_SEC", "30"))
-    cleanup_eyes = os.environ.get("CLEANUP_COPILOT_EYES", "true").lower() != "false"
 
+def _authorize_run(
+    token: str, repo: str, pr_number: str, head_sha: str, run: dict[str, Any]
+) -> str:
+    """Revalidate independent human authorization immediately before approval."""
+    status, identity = _gh("GET", "/user", token)
+    if status != 200 or not isinstance(identity, dict) or identity.get("type") != "User":
+        return "unknown-approver-identity"
+    approver = str(identity.get("login", "")).casefold()
+    requester = os.environ.get("GITHUB_ACTOR", "").casefold()
+    triggering_requester = os.environ.get("GITHUB_TRIGGERING_ACTOR", "").casefold()
+    if not approver or not requester or not triggering_requester:
+        return "unknown-requester-identity"
+    status, current_run = _gh("GET", f"/repos/{repo}/actions/runs/{run['id']}", token)
+    if status != 200 or not isinstance(current_run, dict):
+        return "unknown-run"
+    if current_run.get("head_sha") != head_sha or run.get("head_sha") != head_sha:
+        return "stale-head-sha"
+    if current_run.get("conclusion") != "action_required":
+        return "run-not-action-required"
+    associations = current_run.get("pull_requests")
+    if (
+        not isinstance(associations, list)
+        or len(associations) != 1
+        or not isinstance(associations[0], dict)
+        or str(associations[0].get("number")) != pr_number
+    ):
+        return "unknown-or-mismatched-pr-association"
+    status, pr = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
+    if status != 200 or not isinstance(pr, dict):
+        return "unknown-pr"
+    if pr.get("state") != "open" or (pr.get("head") or {}).get("sha") != head_sha:
+        return "stale-head-sha"
+    author = str((pr.get("user") or {}).get("login", "")).casefold()
+    run_actors = {
+        str((current_run.get(key) or {}).get("login", "")).casefold()
+        for key in ("actor", "triggering_actor")
+    }
+    if not author or "" in run_actors:
+        return "unknown-author-identity"
+    if {approver, requester, triggering_requester} & (run_actors | {author}):
+        return "self-approval"
+    if not _has_wec_auto_approve_label(token, repo, pr_number):
+        return "missing-or-expired-label"
+    # A label expresses opt-in, not independent review of the current commit.
+    reviews: dict[str, dict[str, Any]] = {}
+    for page in range(1, 11):
+        status, batch = _gh(
+            "GET", f"/repos/{repo}/pulls/{pr_number}/reviews?per_page=100&page={page}", token
+        )
+        if status != 200 or not isinstance(batch, list):
+            return "unknown-review-evidence"
+        for review in batch:
+            if not isinstance(review, dict):
+                return "unknown-review-evidence"
+            reviewer = str((review.get("user") or {}).get("login", "")).casefold()
+            if reviewer and review.get("state") != "COMMENTED":
+                reviews[reviewer] = review
+        if len(batch) < 100:
+            break
+    else:
+        return "review-inspection-budget-exhausted"
+    if not any(
+        reviewer not in run_actors | {author}
+        and (review.get("user") or {}).get("type") == "User"
+        and review.get("author_association") in {"OWNER", "MEMBER", "COLLABORATOR"}
+        and review.get("state") == "APPROVED"
+        and review.get("commit_id") == head_sha
+        for reviewer, review in reviews.items()
+    ):
+        return "missing-independent-current-review"
+    # Separate lookups must remain bound to the same final PR context.
+    status, latest = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
+    if (
+        status != 200
+        or not isinstance(latest, dict)
+        or latest.get("state") != "open"
+        or (latest.get("head") or {}).get("sha") != head_sha
+        or latest.get("labels") != pr.get("labels")
+    ):
+        return "changed-pr-context"
+    return "authorized"
+
+
+def _run_decisions(decisions: list[dict[str, Any]]) -> int:
+    repo = os.environ.get("REPO") or os.environ.get("GITHUB_REPOSITORY", "")
+    head_sha = os.environ.get("HEAD_SHA", "").strip() or None
+    pr_number = os.environ.get("PR_NUMBER", "").strip()
+    dry_run = os.environ.get("DRY_RUN", "false").lower() == "true"
+    max_wait = int(os.environ.get("MAX_WAIT_SEC", "30"))
+    if os.environ.get("APPROVAL_INTENT") in {"deny", "force_deny"}:
+        decisions.append(
+            {"rule": "explicit-denial", "pr": pr_number, "head_sha": head_sha, "outcome": "denied"}
+        )
+        return 1
     if not repo:
-        print("❌ REPO env var required (owner/repo)", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
+        decisions.append(
+            {
+                "rule": "missing-repository",
+                "pr": pr_number,
+                "head_sha": head_sha,
+                "outcome": "denied",
+            }
+        )
+        return 1
+    if head_sha and not pr_number:
+        decisions.append(
+            {"rule": "missing-pr", "pr": None, "head_sha": head_sha, "outcome": "denied"}
+        )
         return 1
 
     token, token_source = _resolve_token()
@@ -448,8 +631,12 @@ def main() -> int:
     print(f"\n{'─'*60}")  # codeql[py/clear-text-logging-sensitive-data]
     print(f"⚡ approve_pending_runs — {mode_tag}")  # codeql[py/clear-text-logging-sensitive-data]
     print(f"   repo        : {repo}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"   head_sha    : {head_sha or '(all open PRs)'}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"   pr_number   : {pr_number or '(all)'}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"   head_sha    : {head_sha or '(all open PRs)'}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"   pr_number   : {pr_number or '(all)'}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     print(f"   token_source: {token_source}")  # codeql[py/clear-text-logging-sensitive-data]
     print(f"{'─'*60}\n")  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -460,13 +647,37 @@ def main() -> int:
                 f"⏭️  Skipping PR #{pr_number}: missing or expired required WEC approval label "
                 "('wec:auto-approve' or active 'wec:auto-approve-once')"
             )
-            return 0
+            decisions.append(
+                {
+                    "rule": "missing-or-expired-label",
+                    "pr": pr_number,
+                    "head_sha": head_sha,
+                    "outcome": "denied",
+                }
+            )
+            return 1
         targets = [(pr_number, head_sha)]
-    elif head_sha:
-        targets = [("?", head_sha)]
+    elif pr_number:
+        status, pr = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
+        sha = (
+            (pr.get("head") or {}).get("sha", "") if status == 200 and isinstance(pr, dict) else ""
+        )
+        if not sha:
+            decisions.append(
+                {"rule": "unknown-pr", "pr": pr_number, "head_sha": None, "outcome": "denied"}
+            )
+            return 1
+        targets = [(pr_number, sha)]
     else:
         # Sweep mode: use Search API to find only WEC-labelled PRs in one query
-        print("📋 Sweep mode — searching for WEC-labelled open PRs…")  # codeql[py/clear-text-logging-sensitive-data]
+        if os.environ.get("GITHUB_EVENT_NAME") != "schedule":
+            decisions.append(
+                {"rule": "missing-pr-context", "pr": None, "head_sha": None, "outcome": "denied"}
+            )
+            return 1
+        print(
+            "📋 Sweep mode — searching for WEC-labelled open PRs…"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         targets = _search_wec_labelled_prs(token, repo)
         print(
             f"   Found {len(targets)} authorized PR(s) with a valid WEC auto-approve label "
@@ -474,16 +685,24 @@ def main() -> int:
         )  # codeql[py/clear-text-logging-sensitive-data]
 
     if not targets:
-        print("ℹ️  No authorized targets — nothing to do.")  # codeql[py/clear-text-logging-sensitive-data]
+        decisions.append(
+            {"rule": "no-authorized-targets", "pr": None, "head_sha": None, "outcome": "skipped"}
+        )
+        print(
+            "ℹ️  No authorized targets — nothing to do."
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return 0
 
     # Wait briefly for runs to register after a fresh push ────────────────────
     total_approved = total_skipped = total_errors = 0
     waited = 0
-    cleaned_prs: set[str] = set()
+    target_run_id = os.environ.get("TARGET_RUN_ID", "").strip()
+    matched_target = False
 
     for pr_num, sha in targets:
-        print(f"\n── PR #{pr_num} @ {sha[:12]} ──────────────────────────────")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"\n── PR #{pr_num} @ {sha[:12]} ──────────────────────────────"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         runs: list[dict[str, Any]] = []
 
         # Poll until we see action_required runs (they may take a few seconds)
@@ -493,46 +712,91 @@ def main() -> int:
             if runs or time.time() >= deadline:
                 break
             remaining = int(deadline - time.time())
-            print(f"   ⏳ No action_required runs yet — waiting ({remaining}s left)…")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"   ⏳ No action_required runs yet — waiting ({remaining}s left)…"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             time.sleep(5)
             waited += 5
 
-        print(f"   Found {len(runs)} action_required run(s)")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"   Found {len(runs)} action_required run(s)"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         if not runs:
+            decisions.append(
+                {"rule": "no-pending-runs", "pr": pr_num, "head_sha": sha, "outcome": "skipped"}
+            )
             print("   Nothing to approve.")  # codeql[py/clear-text-logging-sensitive-data]
             continue
 
         for run in runs:
-            result = _approve_run(token, repo, run, dry_run=dry_run)
-            if result in ("approved", "rerun", "dry-run"):
+            if target_run_id and str(run.get("id")) != target_run_id:
+                continue
+            matched_target = True
+            rule = _authorize_run(token, repo, pr_num, sha, run)
+            result = (
+                _approve_run(token, repo, run, dry_run=dry_run)
+                if rule == "authorized"
+                else "denied"
+            )
+            decisions.append(
+                {
+                    "rule": rule,
+                    "pr": pr_num,
+                    "head_sha": sha,
+                    "run_id": run["id"],
+                    "outcome": result,
+                }
+            )
+            if result in ("approved", "dry-run"):
                 total_approved += 1
             elif result == "skipped":
                 total_skipped += 1
             else:
                 total_errors += 1
 
-        if cleanup_eyes and pr_num not in {"", "?"} and pr_num not in cleaned_prs:
-            print(f"   🧹 Copilot queue hygiene for PR #{pr_num} (remove stale 👀)…")  # codeql[py/clear-text-logging-sensitive-data]
-            removed, blocked = _cleanup_copilot_eyes_reactions(
-                token,
-                repo,
-                pr_num,
-                dry_run=dry_run,
-            )
-            cleaned_prs.add(pr_num)
-            if removed:
-                print(f"   ✅ Removed {removed} stale Copilot 👀 reaction(s)")  # codeql[py/clear-text-logging-sensitive-data]
-            if blocked:
-                print(f"   ⚠️  {blocked} reaction cleanup operation(s) blocked")  # codeql[py/clear-text-logging-sensitive-data]
-
     # Summary ─────────────────────────────────────────────────────────────────
     print(f"\n{'─'*60}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"⚡ Summary — approved={total_approved}  skipped={total_skipped}  errors={total_errors}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"⚡ Summary — approved={total_approved}  skipped={total_skipped}  errors={total_errors}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     if waited:
-        print(f"   (waited {waited}s for runs to register)")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"   (waited {waited}s for runs to register)"
+        )  # codeql[py/clear-text-logging-sensitive-data]
     print(f"{'─'*60}\n")  # codeql[py/clear-text-logging-sensitive-data]
 
+    if target_run_id and not matched_target:
+        decisions.append(
+            {
+                "rule": "target-run-not-in-pr-scope",
+                "pr": pr_number,
+                "head_sha": head_sha,
+                "outcome": "denied",
+            }
+        )
+        return 1
     return 1 if total_errors > 0 else 0
+
+
+def main() -> int:
+    decisions: list[dict[str, Any]] = []
+    try:
+        return _run_decisions(decisions)
+    except (Exception, SystemExit):
+        decisions.append(
+            {
+                "rule": "inspection-error",
+                "pr": os.environ.get("PR_NUMBER") or None,
+                "head_sha": os.environ.get("HEAD_SHA") or None,
+                "outcome": "denied",
+            }
+        )
+        return 1
+    finally:
+        Path("approval-decision.json").write_text(
+            json.dumps({"schema_version": 1, "decisions": decisions}, indent=2) + "\n",
+            encoding="utf-8",
+        )
 
 
 if __name__ == "__main__":

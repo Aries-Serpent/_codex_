@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed — Evidence-gated self-improvement continuation (2026-11-01)
+- Add bounded CI-signal collection, durable evidence/identity checks, and measured-proposal validation for the improvement workflow.
+- Add explicit human-mediated approval and handoff controls, assurance skill contracts, and release-validation coverage while keeping production readiness and publication gates explicit.
+
 ### Fixed (SN)
 - Skip the optional Phase 7A test file only when FastAPI is unavailable, avoiding a zero-tests pytest failure; quote the Bandit version constraint so the shell does not treat it as redirection.
 - Restore the requested LFS asset fetch/verification path in Copilot setup and align embedded Python output lines with the setup validator's indentation checks.

@@ -1,0 +1,31 @@
+# Prepared, inactive until maintainer commits/merges/pushes to main.
+name: Read-only E to D transition assessment
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  assess:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install existing assessment dependencies
+        run: |
+          python -m pip install -r requirements/agent.txt
+      - name: Assess without promotion
+        run: |
+          python -m scripts.ci.e_to_d_gate \
+            --registry .github/agents/AGENT_REGISTRY.yaml \
+            --output e-to-d-report.json
+      - name: Upload read-only report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: e-to-d-report
+          path: e-to-d-report.json

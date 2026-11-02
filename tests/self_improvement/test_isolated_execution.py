@@ -23,6 +23,13 @@ def repo(tmp_path: Path) -> Path:
     subprocess.run(["git", "config", "user.name", "t"], cwd=tmp_path, check=True)
     (tmp_path / "src").mkdir()
     (tmp_path / "src" / "ok.py").write_text("x = 1\n")
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests" / "test_repair.py").write_text(
+        "import unittest, runpy\n"
+        "class Repair(unittest.TestCase):\n"
+        " def test_value(self):\n"
+        "  self.assertEqual(runpy.run_path('src/new.py')['y'], 2)\n"
+    )
     subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
     subprocess.run(["git", "commit", "-qm", "init"], cwd=tmp_path, check=True)
     return tmp_path
