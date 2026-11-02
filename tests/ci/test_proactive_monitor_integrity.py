@@ -32,7 +32,7 @@ def snapshot(status="passed", *, complete=True, name="lint"):
 @pytest.mark.parametrize("iterations", [0, -1, True, 1.5, "2"])
 def test_positive_iterations_required(iterations):
     with pytest.raises(ValueError, match="positive integer"):
-        monitor.monitor_until_converged(lambda: snapshot(), max_iterations=iterations)
+        monitor.monitor_until_converged(snapshot, max_iterations=iterations)
 
 
 @pytest.mark.parametrize("status", ["missing", "info", "unknown", "failure", "queued"])
@@ -46,7 +46,7 @@ def test_nonpositive_evidence_never_converges(status):
 
 
 def test_missing_required_check_never_converges():
-    result = monitor.monitor_until_converged(lambda: snapshot(), required_checks=["lint", "tests"])
+    result = monitor.monitor_until_converged(snapshot, required_checks=["lint", "tests"])
     assert not result["converged"]
 
 

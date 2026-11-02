@@ -57,11 +57,14 @@ def _read(
     info = path.stat()
     if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_size > 4 * 1024 * 1024:
         raise ValueError("artifact must be a bounded, unaliased regular file")
-    with path.open("rb") as handle:
+    identity = _file_identity(info)
+    descriptor = os.open(path, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW)
+    with os.fdopen(descriptor, "rb") as handle:
+        if _file_identity(os.fstat(handle.fileno())) != identity:
+            raise ValueError("artifact changed before reading")
         data = handle.read(4 * 1024 * 1024 + 1)
     if len(data) > 4 * 1024 * 1024:
         raise ValueError("artifact exceeds size limit")
-    identity = _file_identity(info)
     if path != path.resolve() or _file_identity(path.stat()) != identity:
         raise ValueError("artifact changed while reading")
     if observed is not None:

@@ -213,6 +213,9 @@ class LaneSchedulerV1:
 
         lane = self.lanes[lane_id]
 
+        if lane.state == LaneState.PASSED:
+            return ScheduleResult(lane_id=lane_id, state=LaneState.PASSED)
+
         # Check dependencies
         if not self._check_dependencies_ready(lane_id):
             failed_deps = [

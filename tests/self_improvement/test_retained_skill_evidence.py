@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -444,30 +445,66 @@ def test_local_retained_evidence_does_not_infer_independence_from_labels(executi
 def test_artifact_growth_is_rejected_with_a_bounded_read(tmp_path, monkeypatch):
     path = tmp_path / "artifact"
     path.write_bytes(b"small")
-    open_path = Path.open
+    fdopen = os.fdopen
     reads = []
     observed = {}
     limit = 4 * 1024 * 1024
 
     @contextmanager
-    def grow_before_open(subject, *args, **kwargs):
-        if subject == path:
-            with open_path(subject, "wb") as handle:
-                handle.truncate(limit * 2)
-        with open_path(subject, *args, **kwargs) as handle:
+    def grow_before_read(descriptor, *args, **kwargs):
+        with fdopen(descriptor, *args, **kwargs) as handle:
 
             class Reader:
+                def fileno(self):
+                    return handle.fileno()
+
                 def read(self, size):
+                    with path.open("wb") as writer:
+                        writer.truncate(limit * 2)
                     reads.append(size)
                     return handle.read(size)
 
             yield Reader()
 
-    monkeypatch.setattr(Path, "open", grow_before_open)
+    monkeypatch.setattr(os, "fdopen", grow_before_read)
     with pytest.raises(ValueError, match="exceeds size limit"):
         retained_module._read(tmp_path, path, observed)
     assert reads == [limit + 1]
     assert not observed
+
+
+@pytest.mark.parametrize("replacement", ["fifo", "symlink", "regular"])
+def test_replacement_between_stat_and_open_fails_closed(tmp_path, monkeypatch, replacement):
+    path = tmp_path / "artifact"
+    path.write_bytes(b"original")
+    substitute = tmp_path / "substitute"
+    if replacement == "fifo":
+        os.mkfifo(substitute)
+    elif replacement == "symlink":
+        target = tmp_path / "target"
+        target.write_bytes(b"untrusted")
+        substitute.symlink_to(target)
+    else:
+        substitute.write_bytes(b"untrusted")
+    open_descriptor = os.open
+    descriptors = []
+    observed = {}
+
+    def replace_before_open(subject, flags, *args, **kwargs):
+        assert flags & os.O_NONBLOCK
+        assert flags & os.O_NOFOLLOW
+        substitute.replace(path)
+        descriptor = open_descriptor(subject, flags, *args, **kwargs)
+        descriptors.append(descriptor)
+        return descriptor
+
+    monkeypatch.setattr(os, "open", replace_before_open)
+    with pytest.raises((ValueError, OSError)):
+        retained_module._read(tmp_path, path, observed)
+    assert not observed
+    for descriptor in descriptors:
+        with pytest.raises(OSError):
+            os.fstat(descriptor)
 
 
 def test_patch_hunk_counts_include_header_like_content():

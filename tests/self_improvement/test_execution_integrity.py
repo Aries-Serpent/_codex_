@@ -229,7 +229,8 @@ def _claim(path, start, results):
     results.put(ledger.claim("event", "a" * 64, "b" * 40))
 
 
-def test_atomic_claim_and_restart(tmp_path):
+def test_atomic_claim_and_restart(tmp_path, monkeypatch):
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[2]))
     context = multiprocessing.get_context("spawn")
     start, results = context.Event(), context.Queue()
     path = tmp_path / "claims.jsonl"

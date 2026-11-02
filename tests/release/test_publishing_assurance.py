@@ -687,11 +687,15 @@ def test_real_untrusted_installed_module_is_rejected_without_execution(
             str(python),
             "-I",
             "-c",
-            "import sys, runpy; from pathlib import Path; "
-            "sys.path.insert(0, sys.argv[1]); "
-            "helper=runpy.run_path(sys.argv[2]); "
-            "helper['verify_installed_artifact']('codex-contracts', Path(sys.argv[3]), "
-            "source_sha='a'*40, origin='testpypi', import_name='codex_contracts')",
+            "".join(
+                [
+                    "import sys, runpy; from pathlib import Path; ",
+                    "sys.path.insert(0, sys.argv[1]); ",
+                    "helper=runpy.run_path(sys.argv[2]); ",
+                    "helper['verify_installed_artifact']('codex-contracts', Path(sys.argv[3]), ",
+                    "source_sha='a'*40, origin='testpypi', import_name='codex_contracts')",
+                ]
+            ),
             str(shadow),
             str(helper),
             str(dist_dir),

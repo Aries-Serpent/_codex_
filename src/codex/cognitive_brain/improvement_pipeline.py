@@ -21,6 +21,7 @@ import logging
 import re
 import subprocess
 import sys
+import tempfile
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -235,14 +236,19 @@ class ImprovementPipeline:
             raise ValueError("actual patch hash mismatch")
         try:
             patch_bytes.decode("utf-8")
-            inventory = subprocess.run(
-                ["git", "apply", "--numstat", "-z", "-"],
-                input=patch_bytes,
-                capture_output=True,
-                env=scrub_environment(),
-                timeout=30,
-                check=True,
-            )
+            with tempfile.TemporaryDirectory(prefix="codex-patch-inventory-") as directory:
+                inventory = subprocess.run(
+                    ["git", "apply", "--numstat", "-z", "-"],
+                    input=patch_bytes,
+                    cwd=directory,
+                    capture_output=True,
+                    env={
+                        **scrub_environment(),
+                        "GIT_CEILING_DIRECTORIES": str(Path(directory).parent),
+                    },
+                    timeout=30,
+                    check=True,
+                )
             files, lines = IsolatedExecutor._patch_inventory(inventory.stdout.decode("utf-8"))
         except (UnicodeError, OSError, subprocess.SubprocessError) as exc:
             raise ValueError("malformed actual patch") from exc

@@ -892,6 +892,7 @@ class IsolatedExecutor:
                             try:
                                 os.killpg(proc.pid, signal.SIGTERM)
                             except ProcessLookupError:
+                                # The process group may have already exited; this race is harmless.
                                 pass
                             try:
                                 proc.wait(timeout=0.2)

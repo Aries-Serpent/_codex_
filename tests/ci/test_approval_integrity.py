@@ -74,7 +74,9 @@ def test_search_failure_is_not_empty_success(offline, status, payload):
     install, _ = offline
     install(lambda path: (status, payload))
     assert approval.main() == 1
-    assert json.loads(open("approval-decision.json").read())["decisions"][-1] == {
+    with open("approval-decision.json", encoding="utf-8") as f:
+        decision = json.load(f)
+    assert decision["decisions"][-1] == {
         "rule": "inspection-error",
         "pr": None,
         "head_sha": None,
@@ -87,9 +89,9 @@ def test_complete_empty_search_is_legitimate_success(offline):
     install(lambda path: (200, {"items": [], "total_count": 0, "incomplete_results": False}))
     assert approval.main() == 0
     assert len(calls) == 2
-    assert json.loads(open("approval-decision.json").read())["decisions"][0]["rule"] == (
-        "no-authorized-targets"
-    )
+    with open("approval-decision.json", encoding="utf-8") as f:
+        decision = json.load(f)
+    assert decision["decisions"][0]["rule"] == "no-authorized-targets"
 
 
 def test_complete_search_pagination_retains_all_targets(offline):
@@ -265,9 +267,9 @@ def test_complete_empty_run_inventory_is_success(offline, monkeypatch):
         )
     )
     assert approval.main() == 0
-    assert json.loads(open("approval-decision.json").read())["decisions"][0]["rule"] == (
-        "no-pending-runs"
-    )
+    with open("approval-decision.json", encoding="utf-8") as f:
+        decision = json.load(f)
+    assert decision["decisions"][0]["rule"] == "no-pending-runs"
 
 
 def test_complete_run_pagination_preserves_all_identities(offline):
