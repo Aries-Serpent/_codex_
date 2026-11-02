@@ -2,6 +2,91 @@
   "schema_version": "1.0.0",
   "task_id": "AGENT-SELF-IMPROVEMENT-001",
   "status": "scoped_continuation_verified_with_open_gaps",
+  "post_merge_continuation": {
+    "orientation_source_sha": "406ab5e805f736b0b73630a91336d4e0feabfea8",
+    "base_sha": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",
+    "orientation": "git status and git diff f48fb7a3..HEAD showed startup timestamp changes only; no uncommitted implementation to recover",
+    "startup_packet": "Not intentionally edited, staged or reverted. Initial progress tool included existing timestamp work in 7d66bf14; recorded once under explicit owner exception.",
+    "superseded_hosted_observations": {
+      "pr": "PR5746 is merged; earlier draft and action-required observations remain historical, not current gate status.",
+      "run_id": 41367213426,
+      "run_attempt": 1,
+      "source_sha": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",
+      "scope": "compliance-scanners",
+      "result": "Five successful jobs including Python CodeQL Analyze code; does not establish product-test success, zero alerts, or causal improvement.",
+      "source": "Read-only GitHub MCP metadata inspected in preceding turn; supplied owner baseline retained, not a new local observer execution."
+    },
+    "chronicle": {
+      "command": "CODEX_CAMPAIGN_METRICS_LOG=/tmp/codex-three-lane-chronicle/metrics.jsonl PYTHONPATH=/home/runner/work/_codex_/_codex_/src /home/runner/work/_codex_/_codex_/.venv_ci/bin/python -B -m aries_serpent_core.cli chronicle search AGENT-SELF-IMPROVEMENT-001 --index /tmp/codex-three-lane-chronicle/index.json --json",
+      "result": "exit0; empty index, zero sessions/hits; copied index and metrics under /tmp, no live database commands",
+      "retention": "Session-local files, not hosted durable artifacts"
+    },
+    "agents": ["three-lane-interface-review", "merged-observer", "qualified-calibration", "durable-cancellation"],
+    "milestones": [
+      {
+        "lane": "A",
+        "behavior": "Read-only observe_merged_pr with PR/run/window identities, complete collector-validated jobs and immutable compliance-scanners handoff; recorded/live/synthetic origin never authorizes learning",
+        "command": ".venv_ci/bin/python -m pytest tests/self_improvement/test_merged_observation.py -o addopts='' -p no:cacheprovider --basetemp=.pytest_lane_a_basetemp -q",
+        "result": "Initial69passed1failed test mock corrected; affected reruns2passed and4passed; six added adversarial cases passed. Final79cases covered across runs, not a single79case final run.",
+        "quality": "Agent reports Ruff/Black/isort/mypy --follow-imports=silent --cache-dir=/dev/null, compile and secret checks passed",
+        "limits": "Recorded metadata fixture, not live verification; caller owns hard injected-reader deadlines/response limits; no causal or all-tests claim"
+      },
+      {
+        "lane": "B",
+        "behavior": "Receipt-qualified read-only calibration diagnostics, Beta prior/95percent interval, deterministic disjoint sample provenance, Brier and expiry; public EMA unchanged",
+        "command": "PYTHONDONTWRITEBYTECODE=1 python -m pytest tests/self_improvement/test_pattern_calibration.py -p no:cacheprovider -o addopts='' --basetemp=.pattern-calibration-pytest-20261102-final",
+        "result": "22passed initial focused file;26passed after independent adversarial assertions",
+        "quality": "Agent reports configured Ruff/Black/isort/mypy --follow-imports=silent, compilation, secret and diff checks passed",
+        "limits": "Trusted local receipt reconstruction and private EvidenceStore snapshot fields; fixture diagnostics are not empirical calibration"
+      },
+      {
+        "lane": "C",
+        "behavior": "Cooperative Event cancellation records cancelled terminal status/exit130, cleans supported process group with TERM/grace/KILL, retains claim across restart",
+        "command": "TMPDIR=\"$PWD/.codex-lane-c-runtime-20261102\" PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src pytest -q -o addopts='' -p no:cacheprovider --basetemp=.codex-lane-c-defaults-20261102 tests/self_improvement/test_execution_cancellation.py",
+        "result": "14passed initial;9passed11deselected affected adversarial selection; final20passed in4.29s after restoring original tempfile defaults; temporary directories removed",
+        "quality": "Agent reports Ruff/Black/isort/mypy, compilation and scoped diff checks passed",
+        "limits": "UDP/Unix sockets, escaped sessions and full descendant containment unsupported; cancellation consumes rather than replays an interrupted identity"
+      }
+    ],
+    "lane_source_sha256": {
+      "src/codex/cognitive_brain/merged_observation.py": "65ed0385bdf6bcfec891c22d1ab0e09950b3e70a73374e032b00b76bc88c3e90",
+      "tests/self_improvement/test_merged_observation.py": "f6c09518e96c27f71c5a71702583abdc897fe44363a329b49d809dd1fa8d0c17",
+      "src/codex/cognitive_brain/pattern_calibration.py": "51fa980d36cc5ca8c9ad6891af1514f77723c3c7828539a680c8ebe0ac3c170a",
+      "tests/self_improvement/test_pattern_calibration.py": "d1679aa4f9b0a8f6af4ad1c45f97d08086d87dd91eb8175d223203d7012b2d5c",
+      "src/codex/cognitive_brain/isolated_execution.py": "bc14c3a2b69069fa7b34e1eb246a4c627b60e5f3831ce52942d99b26597e428d",
+      "tests/self_improvement/test_execution_cancellation.py": "f12b2685878c44021029fa9c5afaadfc14144f54f9a76b26c176977fa7ee49b4"
+    },
+    "integration": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest tests/self_improvement/test_merged_observation.py tests/self_improvement/test_pattern_calibration.py tests/self_improvement/test_execution_cancellation.py tests/self_improvement/test_isolated_execution.py tests/self_improvement/test_execution_integrity.py tests/self_improvement/test_ci_signal_collection.py tests/self_improvement/test_local_composition.py --override-ini=addopts='' -p no:cacheprovider --basetemp=/tmp/codex-three-lane-integration-20261102 -q",
+      "result": "240passed in30.50s before final cancellation race correction; only affected tests rerun after corrections",
+      "quality_command": ".venv_ci/bin/python -m {ruff check,black --check,isort --check-only,mypy --follow-imports=silent --cache-dir=/dev/null} <six lane source/test paths>; git diff --check",
+      "quality_result": "Ruff/Black/isort passed; mypy no issues in6 files, unused torch/omegaconf configuration notes only; diff check passed",
+      "scope": "One bounded changed-seam integration selection, not full suite, coverage, dependency resolution, packaging, hosted product CI or deployment assurance"
+    },
+    "review": {
+      "design": "three-lane-interface-review: separate PR validation/collector allowlist, receipt-qualified model separate from mutable calibrator, durable cancelled schema and claim retention",
+      "adversarial": "three-lane-adversarial selected identity/pagination/window, receipt alias/holdout leakage and descendant/race/restart assertions; owners added relevant tests",
+      "delivery": "three-lane-delivery-review reviewed combined implementation once; concrete post-wait cancellation race found, Lane C assigned fix and deterministic regression; no other blocking findings",
+      "parent_scope_fix": "Restored unrelated tempfile workspace/output defaults; explicit fixture work roots retained"
+    },
+    "final_cancellation_correction": {
+      "finding": "Cancellation set immediately after wait returned could overwrite the already observed gate exit; preserve actual GateLog pass/fail while outer cancellation still blocks attempt verification",
+      "command": "TMPDIR=\"$PWD/.codex-lane-c-wait-runtime-20261102\" PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src pytest -q -o addopts='' -p no:cacheprovider --basetemp=.codex-lane-c-wait-pytest-20261102 tests/self_improvement/test_execution_cancellation.py -k 'observed_gate_exit or real_process_group or after_passing_candidate or after_durable_completion or terminal_gate_statuses or output_limit or uncancelled_execution or passing_baseline'",
+      "result": "11passed11deselected after fix; deterministic real-exit0/7 cases; scoped Ruff/Black/isort/mypy/compile/diff passed",
+      "source_sha256": {
+        "src/codex/cognitive_brain/isolated_execution.py": "5f2d1fbab37a7449a7fb4c12a43e39c474df2fc02697157893423e217dc78234",
+        "tests/self_improvement/test_execution_cancellation.py": "3bd9b05ae782173eff5a91b218e02293f782560a239549e700b16682f1230eed"
+      }
+    },
+    "precommit_checks": {
+      "secrets": "Runtime secret scanner found no secrets in all9 scoped source/test/ledger files",
+      "traceability": "Exact40acceptance strings,14negative mappings and10B placeholders preserved; numbered checkpoints untouched; initial local tuple/list comparison assertion corrected before passing normalized JSON comparison",
+      "source_changes": "Only6 lane source/test files and3 task ledger files intentionally changed; no package rebuild, dependency or unrelated transport/persistence changes"
+    },
+    "next_command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest tests/self_improvement/test_durable_integrity.py tests/self_improvement/test_outcome_tracking.py --override-ini=addopts='' -p no:cacheprovider --basetemp=/tmp/codex-t02-reconciliation-next -q",
+    "remaining": "Security checker and final source checkpoint pending; next deliverable T02 pending-intent inspection/authorized append-only reconciliation, followed by domain-specific T03 SQLite tracing. No automatic replay.",
+    "authority": "Only normal progress-tool commits/pushes on the authorized working branch; no PR edits, workflows, merge, publishing, settings or live healing"
+  },
   "repository_root": "/home/runner/work/_codex_/_codex_",
   "source_sha": "204b81043da6a50639697a81c3e646aec8d7944c",
   "baseline_tested_sha": "48290eaaa9802b4143e75a9debc8b8ed257504db",

@@ -5,6 +5,34 @@ The machine-readable ledger is `plan.json`; `checkpoint.json` records the
 tested source snapshot and actual results. These supersede historical completion
 claims only for this continuation, not the preserved checkpoints 0–7.
 
+## Post-merge continuation — 2026-11-02
+
+PR #5746 is merged at `f48fb7a36eb31fd1ff518c186e54ec212c0d8366`.
+The earlier draft and pending-CI observations below remain historical.
+Run `41367213426`, attempt 1, has five successful compliance/scanner jobs,
+including completed Python CodeQL analysis. This does not establish zero
+alerts, all product tests passing, or causal improvement.
+
+The bounded continuation owns three disjoint seams: a read-only merged
+observation wrapper, qualified pattern-calibration diagnostics, and durable
+executor cancellation. The parent exclusively updates the ledger/checkpoint.
+The existing monitor transport and JSON atomic persistence are not replaced.
+Independent interface and adversarial reviews guide focused validation;
+reviewer names or supplied observations do not authenticate production review.
+
+Only the authorized working-branch progress-tool commits/pushes are permitted.
+No PR mutation, workflow operation, merge, publishing, settings change or live
+healing is authorized. The initial progress operation included the existing
+startup timestamp; the checkpoint records the explicit owner exception.
+The copied Chronicle index was empty; no live evidence database was opened.
+
+Next unfinished delivery after these seams: T02 append-only pending-intent
+inspection and explicitly authorized reconciliation, without automatic replay;
+then T03 tracing of maintained SQLite/CLI adapters. Session pattern TEXT IDs
+must not be conflated with the separate integer CI issue-pattern domain.
+All forty acceptance strings, fourteen negative mappings, ten unavailable
+B-review placeholders and numbered checkpoints 0–7 remain authoritative.
+
 ## Baseline and boundaries
 
 - Checkout: `/home/runner/work/_codex_/_codex_`.
