@@ -12,15 +12,11 @@ from types import SimpleNamespace
 import pytest
 
 import aries_serpent_core.cognitive.brain_interface as brain_module
-from aries_serpent_core.cognitive.brain_interface import (
-    AgentBrainInterface,
-    PatternPersistenceError,
-)
 from codex.cognitive_brain.evidence_store import EvidenceIntegrityError, EvidenceStore
 from codex.cognitive_brain.outcome_tracking import OutcomeTracker, store_outcome_source
 
 
-def _brain(repo_root: Path) -> AgentBrainInterface:
+def _brain(repo_root: Path) -> brain_module.AgentBrainInterface:
     directory = repo_root / ".codex" / "cognitive_brain"
     directory.mkdir(parents=True)
     data = {
@@ -41,7 +37,7 @@ def _brain(repo_root: Path) -> AgentBrainInterface:
     (directory / "pattern_learning_store.json").write_text(
         json.dumps(data, indent=3) + "\n", encoding="utf-8"
     )
-    return AgentBrainInterface("test-agent", repo_root=repo_root, auto_register=False)
+    return brain_module.AgentBrainInterface("test-agent", repo_root=repo_root, auto_register=False)
 
 
 @pytest.mark.parametrize(
@@ -57,7 +53,7 @@ def test_string_id_learning_survives_restart(
 
     assert brain.submit_learning("RP-019", outcome) is True
 
-    restarted = AgentBrainInterface("test-agent", repo_root=tmp_path, auto_register=False)
+    restarted = brain_module.AgentBrainInterface("test-agent", repo_root=tmp_path, auto_register=False)
     pattern = restarted.get_pattern("RP-019")
     assert pattern is not None
     assert pattern.pattern_id == "RP-019"
@@ -140,7 +136,7 @@ def test_failed_write_preserves_exact_bytes_and_memory(
     else:
         monkeypatch.setattr(brain_module.os, "replace", fail)
 
-    with pytest.raises(PatternPersistenceError) as error:
+    with pytest.raises(brain_module.PatternPersistenceError) as error:
         if operation == "learning":
             brain.submit_learning("RP-019", "success")
         else:
@@ -166,7 +162,7 @@ def test_directory_sync_failure_is_not_confirmed_or_rolled_back_to_stale_memory(
         fsync(fd)
 
     monkeypatch.setattr(brain_module.os, "fsync", fail_directory_sync)
-    with pytest.raises(PatternPersistenceError) as error:
+    with pytest.raises(brain_module.PatternPersistenceError) as error:
         brain.submit_learning("RP-019", "success")
 
     assert error.value.replaced is True
@@ -216,12 +212,12 @@ def test_windows_platform_fixture_without_unix_primitives(
     )
     if failure is None:
         assert brain.submit_learning("RP-019", "success") is True
-        restarted = AgentBrainInterface("test-agent", repo_root=tmp_path, auto_register=False)
+        restarted = brain_module.AgentBrainInterface("test-agent", repo_root=tmp_path, auto_register=False)
         pattern = restarted.get_pattern("RP-019")
         assert pattern is not None and pattern.times_applied == 4
         assert calls == ["file_sync", "replace"]
     else:
-        with pytest.raises(PatternPersistenceError) as error:
+        with pytest.raises(brain_module.PatternPersistenceError) as error:
             brain.submit_learning("RP-019", "success")
         assert error.value.replaced is False
         assert brain.pattern_store_path.read_bytes() == raw
@@ -244,7 +240,7 @@ def test_posix_directory_open_failure_is_not_silently_ignored(
         "os",
         SimpleNamespace(name="posix", O_RDONLY=os.O_RDONLY, open=fail_open),
     )
-    with pytest.raises(PatternPersistenceError) as error:
+    with pytest.raises(brain_module.PatternPersistenceError) as error:
         brain.submit_learning("RP-019", "success")
     assert error.value.replaced is False
     assert brain.pattern_store_path.read_bytes() == raw
@@ -269,7 +265,7 @@ def test_restart_rejects_malformed_store_without_fake_empty_state(
     brain = _brain(tmp_path)
     brain.pattern_store_path.write_bytes(raw)
     with pytest.raises(ValueError):
-        AgentBrainInterface("test-agent", repo_root=tmp_path, auto_register=False)
+        brain_module.AgentBrainInterface("test-agent", repo_root=tmp_path, auto_register=False)
     assert brain.pattern_store_path.read_bytes() == raw
 
 
@@ -306,7 +302,7 @@ def test_outcome_learning_failure_propagates_and_leaves_intent_pending(
         replace(source, destination)
 
     monkeypatch.setattr(brain_module.os, "replace", fail_brain_replace)
-    with pytest.raises(PatternPersistenceError):
+    with pytest.raises(brain_module.PatternPersistenceError):
         tracker.process_outcome(event_id="e1", pattern_id="RP-019", patch_hash="p")
 
     assert brain.pattern_store_path.read_bytes() == raw
