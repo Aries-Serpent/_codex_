@@ -43,7 +43,12 @@ jobs:
         run: pip install bandit
 
       - name: Run Bandit scan
-        run: bandit -r src -f json -c .bandit.yaml -o bandit-report.json || true
+        id: scan
+        run: |
+          status=0
+          bandit -r src -f json -c .bandit.yaml -o bandit-report.json || status=$?
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
+          printf 'Bandit exit code: %s (informational; inspect report)\n' "$status" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload Bandit results (JSON)
         if: always()
@@ -52,6 +57,9 @@ jobs:
           name: bandit-report
           path: bandit-report.json
           retention-days: 90
+          if-no-files-found: error
+    outputs:
+      scan-exit-code: ${{ steps.scan.outputs.exit_code }}
 
   codeql:
     name: CodeQL Security Analysis (Matrix)
@@ -67,6 +75,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
+      - name: Retain analyzed source identity
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text())
+          pr = event.get("pull_request", {})
+          source = {
+              "checkout_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
+              "checkout_parents": subprocess.check_output(["git", "show", "-s", "--format=%P", "HEAD"], text=True).split(),
+              "event_sha": os.environ["GITHUB_SHA"],
+              "ref": os.environ["GITHUB_REF"],
+              "event_name": os.environ["GITHUB_EVENT_NAME"],
+              "pr_number": pr.get("number"),
+              "pr_head_sha": pr.get("head", {}).get("sha"),
+              "pr_base_sha": pr.get("base", {}).get("sha"),
+              "run_id": os.environ["GITHUB_RUN_ID"],
+              "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+          }
+          Path("scan-source.json").write_text(json.dumps(source, indent=2) + "\n")
+          PY
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@c20e34f438d671fc35777cc9820dd7adf8252874
         with:
@@ -81,6 +114,26 @@ jobs:
         with:
           category: /language:${{ matrix.language }}
           upload: never
+          output: codeql-results
+
+      - name: Retain CodeQL SARIF and source identity
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: codeql-results-${{ matrix.language }}
+          path: |
+            codeql-results/*.sarif
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Retain CodeQL source metadata
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: codeql-source-${{ matrix.language }}
+          path: scan-source.json
+          if-no-files-found: error
+          retention-days: 90
 
   semgrep:
     name: Semgrep Custom Rules
@@ -94,13 +147,29 @@ jobs:
         run: pip install semgrep
 
       - name: Run Semgrep
-        run: semgrep --config semgrep/semgrep.yml src --sarif > semgrep-report.json || true
+        id: scan
+        run: |
+          status=0
+          semgrep --config semgrep/semgrep.yml src --sarif > semgrep-report.json || status=$?
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
+          printf 'Semgrep exit code: %s (informational; inspect SARIF)\n' "$status" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Retain Semgrep SARIF
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: semgrep-report
+          path: semgrep-report.json
+          if-no-files-found: error
+          retention-days: 90
 
       - name: Upload Semgrep results
         if: always()
         uses: github/codeql-action/upload-sarif@c20e34f438d671fc35777cc9820dd7adf8252874
         with:
           sarif_file: semgrep-report.json
+    outputs:
+      scan-exit-code: ${{ steps.scan.outputs.exit_code }}
 
   compliance-report:
     if: always()
@@ -116,16 +185,18 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Create compliance dashboard
+        env:
+          CODEQL_RESULT: ${{ needs.codeql.result }}
+          BANDIT_RESULT: ${{ needs.bandit.result }}
+          BANDIT_EXIT: ${{ needs.bandit.outputs.scan-exit-code }}
+          SEMGREP_RESULT: ${{ needs.semgrep.result }}
+          SEMGREP_EXIT: ${{ needs.semgrep.outputs.scan-exit-code }}
         run: |
-          echo "# 🛡️ Compliance Audit Report"
-          echo "Generated: $(date)"
-          echo ""
-          echo "## Security Scan Results"
-          echo "- CodeQL: COMPLETE"
-          echo "- Bandit: COMPLETE"
-          echo "- Semgrep: COMPLETE"
-          echo ""
-          echo "## Next Steps"
-          echo "1. Review security alerts in GitHub Security tab"
-          echo "2. Address critical/high severity issues"
-          echo "3. Create issues for medium/low severity findings"
+          {
+            echo "# Compliance scan execution report"
+            printf -- '- CodeQL job result: %s; upload disabled, inspect retained SARIF\n' "$CODEQL_RESULT"
+            printf -- '- Bandit job result: %s; scanner exit: %s\n' "$BANDIT_RESULT" "${BANDIT_EXIT:-unavailable}"
+            printf -- '- Semgrep job result: %s; scanner exit: %s\n' "$SEMGREP_RESULT" "${SEMGREP_EXIT:-unavailable}"
+            echo "Bandit and Semgrep findings remain informational; job success is not a clean scan."
+            echo "Missing reports or gated jobs are unavailable, never evidence of zero findings."
+          } | tee -a "$GITHUB_STEP_SUMMARY"

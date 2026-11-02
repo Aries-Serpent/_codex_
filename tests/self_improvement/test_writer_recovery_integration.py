@@ -10,6 +10,7 @@ import os
 import stat
 from contextlib import contextmanager
 from dataclasses import replace
+from multiprocessing.context import SpawnContext
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
@@ -26,6 +27,14 @@ from codex.cognitive_brain.evidence_store import EvidenceIntegrityError, Evidenc
 from codex.cognitive_brain.learning_reconciliation import pattern_store_lock
 from codex.cognitive_brain.outcome_tracking import OutcomeTracker
 from codex.cognitive_brain.writer_recovery import MaintainedWriterRecovery
+
+
+@pytest.fixture
+def spawn_context(monkeypatch: pytest.MonkeyPatch) -> SpawnContext:
+    # Spawn imports targets afresh; importlib mode alone does not make the local
+    # tests package precede an unrelated site-packages/tests package in children.
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[2]))
+    return multiprocessing.get_context("spawn")
 
 
 def _brain(root: Path) -> AgentBrainInterface:
@@ -201,10 +210,10 @@ def _tracker_writer(root: str, paused: Any, resume: Any, connection: Any) -> Non
 @pytest.mark.parametrize("pause", ["before", "after"])
 @pytest.mark.parametrize("operation", ["learning", "patterns"])
 def test_process_writers_and_snapshot_exclude_replace_without_lost_updates(
-    tmp_path: Path, pause: str, operation: str
+    tmp_path: Path, pause: str, operation: str, spawn_context: SpawnContext
 ) -> None:
     brain = _brain(tmp_path)
-    ctx = multiprocessing.get_context("spawn")
+    ctx = spawn_context
     first_ready, second_ready = ctx.Event(), ctx.Event()
     first_start, second_start = ctx.Event(), ctx.Event()
     paused, resume = ctx.Event(), ctx.Event()
@@ -508,13 +517,15 @@ def test_callback_exception_and_abandonment_leave_ambiguity_semantics_intact(
     assert brain.submit_learning("RP-1", "success")
 
 
-def test_lock_exception_releases_process_and_thread_ownership(tmp_path: Path) -> None:
+def test_lock_exception_releases_process_and_thread_ownership(
+    tmp_path: Path, spawn_context: SpawnContext
+) -> None:
     brain = _brain(tmp_path)
     with pytest.raises(RuntimeError):
         with pattern_store_lock(brain.pattern_store_path):
             with pattern_store_lock(brain.pattern_store_path):
                 raise RuntimeError("fixture")
-    ctx = multiprocessing.get_context("spawn")
+    ctx = spawn_context
     started, done = ctx.Event(), ctx.Event()
     receiver, sender = ctx.Pipe(duplex=False)
     process = ctx.Process(
@@ -674,11 +685,11 @@ def test_platform_without_fcntl_fails_closed_without_filesystem_mutation(
 
 
 def test_tracker_sidecar_and_recovery_directory_journal_order_do_not_invert(
-    tmp_path: Path,
+    tmp_path: Path, spawn_context: SpawnContext
 ) -> None:
     brain = _brain(tmp_path)
     store = EvidenceStore(tmp_path / "evidence.jsonl")
-    ctx = multiprocessing.get_context("spawn")
+    ctx = spawn_context
     paused, resume, started, done = (ctx.Event() for _ in range(4))
     writer_receiver, writer_sender = ctx.Pipe(duplex=False)
     reader_receiver, reader_sender = ctx.Pipe(duplex=False)

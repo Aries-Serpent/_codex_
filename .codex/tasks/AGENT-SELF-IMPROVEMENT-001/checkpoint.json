@@ -2,6 +2,47 @@
   "schema_version": "1.0.0",
   "task_id": "AGENT-SELF-IMPROVEMENT-001",
   "status": "scoped_continuation_verified_with_open_gaps",
+  "draft_review_continuation": {
+    "reviewed_head": "9ee90a57df1e8ffc513d477bdd78fa475a5cc8da",
+    "preparation_parent": "67a291dab6b812595ea86f1fe89b7d65aa65206e",
+    "immutable_base": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",
+    "reviewed_checkpoint_sha256": "4acdfb5cf12fe6e5b155bf54363e4f295ee8f984c686248d3310a8b95cf202c4",
+    "authority": "Scoped commits/pushes and one draft PR into 0D_base_, body/evidence updates, normal checks and narrowly inspected test/static-security operations only. No ready, approvals, labels, settings, history rewrite, merge, publishing or live recovery/learning/monitor activation.",
+    "agents": ["cumulative-readiness", "hosted-scan-coverage", "draft-review-packet", "draft-scope-review", "draft-final-diff-review"],
+    "ownership": "Three independent lanes; parent alone stages/commits/pushes and owns workflow/shared records/PR mutations. No nested agent trees or restricted profile reads.",
+    "orientation": "Reviewed source hashes matched. Deepened shallow history to verify zero behind/13 ahead, 26 cumulative changed paths before bookkeeping and this correction. No existing exact-head PR at orientation. Normal initial progress included existing startup timestamp work; not intentionally edited/staged/reverted and not feature evidence.",
+    "changes": {
+      "spawn_fixture": "Demonstrated unrelated site-packages/tests shadowing in spawned children under pytest importlib mode. Scoped syspath fixture makes local targets importable; no production defect found. Historical addopts='' disabled importlib, explaining the earlier 375-pass selection.",
+      "workflow": "Enterprise retains separate CodeQL SARIF and allowlisted checkout/event/PR/run/attempt metadata, plus Semgrep SARIF; exposes informational scanner exit codes and actual dependency results instead of unconditional COMPLETE. Pins, permissions, source scope, upload:never and informational finding semantics preserved.",
+      "workflow_sha256": "a5339bd0551582b1d51f04758e75863d14c2cf3450422671f4e9df611a3eb5fa",
+      "workflow_tests_sha256": "05895f64eb819ebfec53eee33f938d027f29214bf590b83e0bc2152df82b64a3",
+      "spawn_test_sha256": "7b8d104a029081354e50e0bdfd805136890e9fd86605e3f5ad047045583fbd81"
+    },
+    "fresh_validation": {
+      "spawn_command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest -o addopts='' --import-mode=importlib -p no:cacheprovider --basetemp=<disposable-directory> tests/self_improvement/test_writer_recovery_integration.py -q -k 'process_writers or lock_exception or tracker_sidecar'",
+      "spawn_result": "Lane A: 6 passed under each python -m pytest and pytest entrypoint; Ruff/Black/isort/mypy/compile/diff passed. Parent did not rerun completed agent work.",
+      "workflow_command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest -o addopts='' -p no:cacheprovider --basetemp=/tmp/codex-pr-workflow-final tests/ci/test_enterprise_scan_reporting.py tests/unit/test_check_workflow_yaml.py -q",
+      "workflow_result": "23 passed in3.29s after configured formatting; earlier23-pass run overlaps and is not additive.",
+      "workflow_quality": "actionlint1.7.7 and scripts/ci/check_workflow_yaml.py passed modified workflow. Scoped new-test Ruff/Black/isort/mypy and in-memory compilation passed; only unused existing mypy-section notes. Full check-jsonschema not installed.",
+      "review": "One short rubber-duck review and one bounded final code review. No significant issues in final proposed correction. Dormant disabled governance leads not expanded into scope.",
+      "historical": "375 passes in34.49s remain source-bound historical eleven-file evidence, not fresh full-suite/hosted results. All12 hashes matched before the new test-only import fix; ten production hashes are unchanged.",
+      "security": "Precommit secret scan and postcommit CodeQL results must be recorded separately; prior local Python CodeQL skipped for oversized database, not passed."
+    },
+    "hosted_preparation": {
+      "semgrep_run": "41380669128 attempt1, source49462cef19c41aa316dcc72a1300fe7d56f9219c: action_required, zero jobs; requested logs contained no failed jobs, not executed scan evidence",
+      "coverage": "Enterprise and Nox automatically target source-changing PRs into0D_base_; CodeQL GA gate does not. Security suite has narrow manifest/container/config filters and broad manual defaults; not selected by default.",
+      "approval_boundary": "Existing WEC and successful PR Nox can attempt downstream approval dispatch independent of checklist. No opt-in, authorization label, approval input, approval-capable dispatch or wec_enforcer --dispatch-checked executed.",
+      "protection_api": "Local GH CLI has no token; no authenticated protection request was made. Required checks unknown, not absent. Available MCP read tools used for runs/logs.",
+      "status": "Draft creation and exact-head/test-merge check refresh follow scoped publication; no current-source hosted analysis asserted."
+    },
+    "PDA": {
+      "plan": "Review cumulative seams, fix demonstrated compatibility/reporting defects, publish truthful draft, inspect exact-source checks.",
+      "do": "Scoped spawn fixture, retained scanner reports/source identity and nonmisleading summaries; three disjoint lanes and bounded reviews.",
+      "assess": "Focused local checks passed as listed; no hosted clean-scan, unrestricted containment, causal calibration, independent review or acceptance closure.",
+      "act": "Preserve40/14/10 and checkpoints0-7; carry numbered owner-gated T02/T03/T06/T07/T08/T09 follow-ups into draft. Append session PDA without changing legacy raw records."
+    },
+    "remaining": "Participating writers only; default live transport unavailable; genuine policy/independent receipts absent. Original B01-B10, restricted inventory, untraced stores, empirical calibration, unrestricted containment and publisher settings remain open. No broad T08/T09 features before review."
+  },
   "writer_handoff_skill_continuation": {
     "reviewed_head": "36944aee2b4f047a3d3e69334798cf0f2eb744fc",
     "immutable_base": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",

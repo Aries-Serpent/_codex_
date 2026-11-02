@@ -7,6 +7,23 @@ claims only for this continuation, not the preserved checkpoints 0–7.
 
 ## Post-merge continuation — 2026-11-02
 
+### Draft review preparation (supersedes historical operation limits below)
+
+The owner now authorizes scoped progress commits/pushes, one **draft** into
+`0D_base_`, its description and applicable test/static-security checks—not
+approval, ready status, labels, settings, merge, publishing or live learning.
+Three bounded lanes reviewed cumulative compatibility, hosted scan coverage
+and the template packet. A demonstrated spawn/importlib collision is fixed
+in the test fixture; six selected cases pass under each pytest entrypoint.
+Enterprise now retains CodeQL SARIF separately from source metadata, exposes
+informational scanner exits and reports actual job outcomes. Its reporting
+contracts and existing YAML checker tests pass **23 tests**; actionlint passes.
+No current-source hosted scan is yet asserted. Historical local Python CodeQL
+was skipped, and run `41380669128` was action_required with zero jobs.
+Exact source hashes, PDA, bounded reviews and numbered unresolved follow-ups
+remain in `checkpoint.json.draft_review_continuation` and `plan.json`.
+No acceptance strings or B01–B10 placeholders are closed by opening a draft.
+
 PR #5746 is merged at `f48fb7a36eb31fd1ff518c186e54ec212c0d8366`.
 The earlier draft and pending-CI observations below remain historical.
 Run `41367213426`, attempt 1, has five successful compliance/scanner jobs,

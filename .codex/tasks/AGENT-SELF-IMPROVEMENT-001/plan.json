@@ -3,6 +3,16 @@
   "task_id": "AGENT-SELF-IMPROVEMENT-001",
   "plan_version": "v6",
   "status": "implementation_partial",
+  "draft_review_stage": {
+    "reviewed_head": "9ee90a57df1e8ffc513d477bdd78fa475a5cc8da",
+    "base": "0D_base_",
+    "immutable_base_sha": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",
+    "status": "scoped_corrections_verified_draft_publication_next",
+    "delivery": "Preserve completed integration; fix spawn/importlib fixture and Enterprise scan retention/truthful reporting. Three lanes and bounded reviews completed; fresh23 reporting/YAML tests and6 spawn cases per entrypoint passed.",
+    "gates": "Publish one draft and inspect exact-source hosted checks; action_required remains blocked. No autoapproval opt-in, labels, settings, merge, publication or live learning/recovery. Acceptance statuses unchanged.",
+    "PDA": "Plan/do/assess/act recorded in checkpoint.json.draft_review_continuation and appended session journal; historical journal bytes preserved.",
+    "followups": "Numbered owner-gated T02/T03/T06/T07/T08/T09 remain in pr_preparation.remaining_gap_handoff; B01-B10 unavailable. Draft is a review vehicle, not closure."
+  },
   "repository_root": "/home/runner/work/_codex_/_codex_",
   "reviewed_baseline_sha": "933dbf77bbc91a8cb45edbc0064533b3c2158e4a",
   "orientation_sha": "829b999326a7470f85f4ad8aa043b86a859f6a6b",
