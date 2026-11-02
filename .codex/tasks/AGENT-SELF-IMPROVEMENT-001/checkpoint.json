@@ -25,21 +25,40 @@
       "workflow_result": "23 passed in3.29s after configured formatting; earlier23-pass run overlaps and is not additive.",
       "workflow_quality": "actionlint1.7.7 and scripts/ci/check_workflow_yaml.py passed modified workflow. Scoped new-test Ruff/Black/isort/mypy and in-memory compilation passed; only unused existing mypy-section notes. Full check-jsonschema not installed.",
       "review": "One short rubber-duck review and one bounded final code review. No significant issues in final proposed correction. Dormant disabled governance leads not expanded into scope.",
-      "historical": "375 passes in34.49s remain source-bound historical eleven-file evidence, not fresh full-suite/hosted results. All12 hashes matched before the new test-only import fix; ten production hashes are unchanged.",
-      "security": "Precommit secret scan and postcommit CodeQL results must be recorded separately; prior local Python CodeQL skipped for oversized database, not passed."
+      "historical": "375 passes in34.49s remain source-bound historical eleven-file evidence, not fresh full-suite/hosted results. All12 hashes matched before the new test-only import fix; all seven production source hashes are unchanged.",
+      "security": "All seven changed paths passed precommit secret scanning. Postcommit CodeQL: Actions zero alerts; Python analysis skipped because database size is too large, not passed."
     },
     "hosted_preparation": {
       "semgrep_run": "41380669128 attempt1, source49462cef19c41aa316dcc72a1300fe7d56f9219c: action_required, zero jobs; requested logs contained no failed jobs, not executed scan evidence",
       "coverage": "Enterprise and Nox automatically target source-changing PRs into0D_base_; CodeQL GA gate does not. Security suite has narrow manifest/container/config filters and broad manual defaults; not selected by default.",
       "approval_boundary": "Existing WEC and successful PR Nox can attempt downstream approval dispatch independent of checklist. No opt-in, authorization label, approval input, approval-capable dispatch or wec_enforcer --dispatch-checked executed.",
       "protection_api": "Local GH CLI has no token; no authenticated protection request was made. Required checks unknown, not absent. Available MCP read tools used for runs/logs.",
-      "status": "Draft creation and exact-head/test-merge check refresh follow scoped publication; no current-source hosted analysis asserted."
+      "status": "Draft PR5747 created and verified into0D_base_, head552c6acb8271f7913c0d64da9cc0f628ae13a6d9. PR observed draft=true, mergeable_state=unstable, not merge authorization.",
+      "pr_url": "https://github.com/Aries-Serpent/_codex_/pull/5747",
+      "test_merge_sha": "7579e93c88a583488f1a4e4e9bff4dde985e2a41",
+      "test_merge_parents": ["f48fb7a36eb31fd1ff518c186e54ec212c0d8366", "552c6acb8271f7913c0d64da9cc0f628ae13a6d9"],
+      "owner_approved_execution": "User reported all workflows approved; MCP shows Enterprise41384159500 attempt2 in_progress, triggering_actor=mbaetiong. Agent performed no approvals/dispatch/rerun.",
+      "initial_checks": "Enterprise attempt1 action_required; attempt2 running. At first PR check refresh, zero checks; later47 mixed running/success/skipped/neutral/failure checks. No full green or scan closure claim.",
+      "concrete_failure": "Cognitive Preflight41384159212 job125081269514 failed REQ-4 at03:38:52Z: accountability report absent from evaluated changes; REQ-5 skipped, not independently failed. Automatic fix push403 under contents:read. Parent adds truthful accountability and Unreleased changelog entries, not governance changes.",
+      "external_advance": "Manifest workflow independently committed2bb3034c2997adfe73dd77733bda66df55f58de9 [skip ci], CODEX_MANIFEST.json and matching .secrets.baseline only. Inspected new delta and fast-forwarded without discarding local work. No production/workflow source change; prior run/test-merge does not equal advanced head.",
+      "body_gate_limit": "Created body explicitly unchecked autoapproval. Later live browser fetch proved repository automation replaced the body and checked auto-approve-workflows. This is not owner authorization. Agent has no authenticated browser/CLI body-edit session; final PR facility may only reuse existing PR. Restore truthful body/unchecked opt-in through authorized maintainer if facility cannot update it; do not activate approval or weaken gates.",
+      "bounded_monitoring": {
+        "snapshot": "2026-11-02T03:46:39Z, Enterprise41384159500 attempt2 in_progress; no agent approval/dispatch/rerun",
+        "bandit": "Job125081275959 success but retained report175findings:146low/29medium, no report errors. Not a clean-security result or claim all findings pre-existing. Artifact13114104553.",
+        "semgrep": "Job125081276231 success, SARIF0findings,2rules/2003files, processing completed. Artifact13114561850; limited configured rules, not repository security proof.",
+        "javascript_codeql": "Job125081276280 success, retained SARIF execution successful with0results. SARIF artifact13114362409, metadata13114736632.",
+        "analyzed_identity": "JS retained metadata checkout/event7579e93c88a583488f1a4e4e9bff4dde985e2a41, PRhead552c6acb8271f7913c0d64da9cc0f628ae13a6d9, basef48fb7a36eb31fd1ff518c186e54ec212c0d8366, attempt2. checkout_parents empty due shallow checkout; separately fetched exact merge object proves the recorded two parent edges.",
+        "python_codeql": "Job125081276178 still analyzing; logs404 while running, no retained SARIF/metadata yet. Not passed or zero-alert evidence. Compliance report awaiting Python.",
+        "nox": "Workflow203185765 disabled_manually, zero branch runs; YAML has no draft exclusion. Do not enable/change settings without separate owner operation authority. Owner must arrange suitable quality coverage.",
+        "limits": "CodeQL upload:never means retained SARIF, not uploaded code-scanning evidence. Retention capped60days; action-v3/Node20 deprecations retained as maintenance handoff. Scanner exits unavailable until final compliance output; do not infer zero from success.",
+        "final_checkpoint": "Following docs-only bookkeeping commit is a new PR head, not this analyzed head/test-merge. All production/workflow source hashes remain fixed; refresh new-head checks without relabeling these results."
+      }
     },
     "PDA": {
       "plan": "Review cumulative seams, fix demonstrated compatibility/reporting defects, publish truthful draft, inspect exact-source checks.",
       "do": "Scoped spawn fixture, retained scanner reports/source identity and nonmisleading summaries; three disjoint lanes and bounded reviews.",
-      "assess": "Focused local checks passed as listed; no hosted clean-scan, unrestricted containment, causal calibration, independent review or acceptance closure.",
-      "act": "Preserve40/14/10 and checkpoints0-7; carry numbered owner-gated T02/T03/T06/T07/T08/T09 follow-ups into draft. Append session PDA without changing legacy raw records."
+      "assess": "Focused local checks passed as listed; an additional63disposable PDA integrity fixtures passed in2.85s. No hosted clean-scan, unrestricted containment, causal calibration, independent review or acceptance closure.",
+      "act": "Draft5747 created; inspect owner-approved exact-source runs and fix concrete REQ-4 bookkeeping with truthful accountability/changelog entries. Preserve40/14/10, checkpoints0-7 and original journal prefix; carry numbered owner-gated T02/T03/T06/T07/T08/T09 follow-ups. No agent approvals or live activation."
     },
     "remaining": "Participating writers only; default live transport unavailable; genuine policy/independent receipts absent. Original B01-B10, restricted inventory, untraced stores, empirical calibration, unrestricted containment and publisher settings remain open. No broad T08/T09 features before review."
   },
