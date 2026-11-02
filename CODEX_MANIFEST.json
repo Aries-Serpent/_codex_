@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-11-01T07:00:06Z",
+  "generated_at": "2026-11-02T03:39:37Z",
   "agents": [
     {
       "name": "deep-research-analysis-agent",
@@ -860,6 +860,11 @@
       "has_concurrency": true
     },
     {
+      "name": "e-to-d-transition-gate",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "enterprise-compliance",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1370,5 +1375,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "630efe84b6206fed3d2d2d76a3ee5a222daef486b8a1573af92e6b21e0b3d01d"
+  "integrity_sha256": "ba320c28a75dc532afb07e8fae28e8be66ce6c40b854b2ccde2aa08ba25d12a4"
 }

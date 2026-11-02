@@ -38,11 +38,14 @@ import json
 import logging
 import os
 import tempfile
+from copy import deepcopy
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
+
+from codex.cognitive_brain.learning_reconciliation import pattern_store_lock
 
 # Setup logging
 logging.basicConfig(
@@ -353,11 +356,16 @@ class AgentBrainInterface:
         try:
             data = self._read_pattern_store()
         except FileNotFoundError:
+            if getattr(self, "_pattern_store_present", False):
+                raise
             logger.debug("Pattern store not found, starting with empty patterns")
             self._patterns = {}
+            self._pattern_store_present = False
         else:
             self._patterns = data.get("patterns", {})
+            self._pattern_store_present = True
             logger.debug(f"Loaded {len(self._patterns)} patterns")
+        self._pattern_store_baseline = deepcopy(self._patterns)
 
     def _read_pattern_store(self) -> dict[str, Any]:
         """Read and validate the legacy store without changing its contents."""
@@ -609,6 +617,21 @@ class AgentBrainInterface:
         Returns:
             True if pattern was added successfully
         """
+        self.cognitive_brain_dir.mkdir(parents=True, exist_ok=True)
+        with pattern_store_lock(self.pattern_store_path):
+            self._load_patterns()
+            return self._submit_pattern_locked(
+                pattern_id, category, symptoms, solutions, diagnosis_steps
+            )
+
+    def _submit_pattern_locked(
+        self,
+        pattern_id: str,
+        category: str,
+        symptoms: list[str],
+        solutions: list[str],
+        diagnosis_steps: Optional[list[str]],
+    ) -> bool:
         pattern_name = pattern_id.lower().replace("-", "_")
         previous_pattern = self._patterns.get(pattern_name)
 
@@ -639,6 +662,12 @@ class AgentBrainInterface:
         return True
 
     def _save_patterns(self) -> None:
+        """Persist under the maintained writer/snapshot exclusion protocol."""
+        self.cognitive_brain_dir.mkdir(parents=True, exist_ok=True)
+        with pattern_store_lock(self.pattern_store_path):
+            self._save_patterns_locked()
+
+    def _save_patterns_locked(self) -> None:
         """Atomically replace the store after syncing its contents.
 
         POSIX also syncs the directory; Windows has no portable directory sync.
@@ -655,7 +684,11 @@ class AgentBrainInterface:
             try:
                 existing_data = self._read_pattern_store()
             except FileNotFoundError:
+                if self._pattern_store_present:
+                    raise
                 existing_data = {}
+            if existing_data.get("patterns", {}) != self._pattern_store_baseline:
+                raise ValueError("stale pattern cache; reload before saving")
 
             # Update patterns
             existing_data["patterns"] = self._patterns
@@ -701,6 +734,8 @@ class AgentBrainInterface:
                     os.fsync(f.fileno())
                 os.replace(temporary_path, self.pattern_store_path)
                 replaced = True
+                self._pattern_store_baseline = deepcopy(self._patterns)
+                self._pattern_store_present = True
                 if directory_fd is not None:
                     os.fsync(directory_fd)
             finally:
@@ -932,6 +967,19 @@ class AgentBrainInterface:
 
     def _update_pattern_stats(self, feedback: LearningFeedback) -> bool:
         """Update pattern statistics based on feedback."""
+        if not hasattr(self, "pattern_store_path"):
+            # Preserve pathless, injected nonpersistent consumers of the EMA.
+            # The maintained saver itself requires a path and cannot write here.
+            return self._update_pattern_stats_locked(feedback)
+        with pattern_store_lock(self.pattern_store_path):
+            # Learning must not recreate a missing store from cached patterns.
+            data = self._read_pattern_store()
+            self._patterns = data.get("patterns", {})
+            self._pattern_store_baseline = deepcopy(self._patterns)
+            self._pattern_store_present = True
+            return self._update_pattern_stats_locked(feedback)
+
+    def _update_pattern_stats_locked(self, feedback: LearningFeedback) -> bool:
         pattern_name = None
         for name, pattern_data in self._patterns.items():
             if pattern_data.get("id") == feedback.pattern_id:

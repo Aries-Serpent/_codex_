@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Changed — Evidence-gated recovery draft continuation (2026-11-02)
+- Add read-only merged observations and calibration diagnostics, durable cancellation, explicit append-only learning reconciliation, cooperating-writer snapshots and separate retained-evidence human handoffs; default live transport/recovery and genuine owner evidence remain gated.
+- Retain Enterprise CodeQL SARIF and analyzed-source/run metadata, expose informational scanner exits and report actual job outcomes without implying a clean scan from job success.
+- Fix spawned pytest importlib target shadowing in the writer-recovery test fixture. Record scoped local validation, PDA and draft PR #5747 separately from pending hosted checks; no publication, activation or acceptance closure.
+
 ### Changed — Evidence-gated self-improvement continuation (2026-11-01)
 - Add bounded CI-signal collection, durable evidence/identity checks, and measured-proposal validation for the improvement workflow.
 - Add explicit human-mediated approval and handoff controls, assurance skill contracts, and release-validation coverage while keeping production readiness and publication gates explicit.

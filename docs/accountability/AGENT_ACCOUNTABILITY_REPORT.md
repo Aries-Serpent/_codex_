@@ -1,3 +1,48 @@
+## Session: PR #5747 evidence-gated draft continuation — 2026-11-02
+
+- Opened a draft into `0D_base_` at base `f48fb7a36eb31fd1ff518c186e54ec212c0d8366`,
+  implementation head `552c6acb8271f7913c0d64da9cc0f628ae13a6d9`. GitHub test-merge
+  `7579e93c88a583488f1a4e4e9bff4dde985e2a41` has that base/head as its two
+  parents. The draft is a review vehicle, not acceptance closure.
+- Actual lanes: `cumulative-readiness`, `hosted-scan-coverage`,
+  `draft-review-packet`; bounded reviews: `draft-scope-review`,
+  `draft-final-diff-review`; read-only check follow-up:
+  `approved-scan-monitor`, `preflight-exact-failure`. Parent alone integrates
+  shared records, workflow edits and commits; no nested agents/profile reads.
+- Fixed the demonstrated spawned pytest importlib collision in a scoped test
+  fixture. Six selected cases passed with each pytest entrypoint. Enterprise
+  retains SARIF/source metadata and exposes scanner exits/actual job outcomes;
+  reporting/YAML contracts passed 23 tests. Scoped actionlint, format/lint/type,
+  compilation, secret and whitespace checks passed. Disposable PDA integrity
+  fixtures passed 63 tests. Historical 375-test evidence remains source-bound,
+  overlapping and distinct from these fresh checks.
+- Postcommit Actions CodeQL found zero alerts; Python CodeQL skipped for
+  oversized database, not passed. After the owner reported workflow approval,
+  Enterprise run `41384159500` attempt 2 was observed running, triggered by
+  `mbaetiong`. Cognitive Pre-flight run `41384159212` failed REQ-4 because the
+  evaluated changes omitted this report; REQ-5 was skipped, not independently
+  failed. Its automatic bookkeeping push returned 403 under `contents: read`.
+  This report and the matching Unreleased changelog entry address the concrete
+  freshness failure without changing governance. No full green/clean-scan claim.
+- Bounded hosted snapshot at 03:46:39Z: Enterprise attempt 2 retained JavaScript
+  CodeQL SARIF with zero results, and source metadata matches the fetched test
+  merge above. Semgrep reported zero findings under two configured rules.
+  Bandit retained **175 findings (146 low, 29 medium)** despite job success.
+  Python CodeQL was still analyzing; no retained Python result or complete
+  compliance result was available. Nox is `disabled_manually`, not draft-skipped.
+  Report artifact IDs and exact source/attempt distinctions are checkpointed.
+- Repository automation subsequently replaced the PR body and rechecked
+  auto-approval, contradicting the submitted unchecked opt-in. That mutation
+  is not owner authority. The browser/CLI body-edit session is unauthenticated;
+  final body restoration may require the maintainer if PR reuse cannot update
+  it. No labels/approvals or governance weakening were introduced.
+- PDA and the task ledger/checkpoint preserve all forty acceptance strings,
+  fourteen negative mappings, ten unavailable B-review placeholders and numbered
+  checkpoints. No ready status, approvals, labels, settings, merge, publishing,
+  live learning/recovery or monitor activation performed by the agent.
+
+---
+
 ## Session: PR #5746 Cognitive Pre-flight follow-up — 2026-11-01
 
 - Direct execution; no custom agents were invoked for this bounded CI repair.

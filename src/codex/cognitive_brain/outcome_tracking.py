@@ -198,17 +198,18 @@ class OutcomeTracker:
 
     @contextmanager
     def _learning_guard(self) -> Iterator[None]:
-        """Serialize tracker writers only; other SDK writers must remain excluded."""
+        """Lock directory, then tracker, then journal throughout learning."""
         import fcntl
 
         from codex.cognitive_brain.evidence_store import EvidenceIntegrityError
+        from codex.cognitive_brain.learning_reconciliation import pattern_store_lock
 
         path = getattr(self.brain, "pattern_store_path", None)
         if path is None:
             raise EvidenceIntegrityError("durable brain pattern store required")
         lock_path = Path(path).with_name(Path(path).name + ".outcome.lock")
         lock_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(lock_path, "a", encoding="utf-8") as handle:
+        with pattern_store_lock(Path(path)), open(lock_path, "a", encoding="utf-8") as handle:
             fcntl.flock(handle, fcntl.LOCK_EX)
             try:
                 yield

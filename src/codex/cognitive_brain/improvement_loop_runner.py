@@ -45,6 +45,12 @@ from codex.cognitive_brain.improvement_pipeline import (
     signal_from_pda_record,
 )
 from codex.cognitive_brain.isolated_execution import IsolatedExecutor
+from codex.cognitive_brain.post_attempt_handoff import (
+    RecordedFixtureReader,
+)
+from codex.cognitive_brain.post_attempt_handoff import (
+    compose_post_attempt_handoff as _compose_post_attempt_handoff,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -461,6 +467,34 @@ def compose_local_improvement(
         "evaluation": asdict(evaluate_event(store, event["event_id"])),
         "reason": "Local attempt recorded; human PR/outcome handoff only",
     }
+
+
+def compose_post_attempt_handoff(
+    store: EvidenceStore,
+    *,
+    event_id: str,
+    pattern_id: str | None = None,
+    patch_hash: str | None = None,
+    attempt_id: str | None = None,
+    observation_context: Mapping[str, Any] | None = None,
+    reader: RecordedFixtureReader | None = None,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    """Explicit post-attempt diagnostics; never part of local preparation.
+
+    Offline retained metadata is not fresh live observation, independent review,
+    qualified learning, or permission to reconcile an external write.
+    """
+    return _compose_post_attempt_handoff(
+        store,
+        event_id=event_id,
+        pattern_id=pattern_id,
+        patch_hash=patch_hash,
+        attempt_id=attempt_id,
+        observation_context=observation_context,
+        reader=reader,
+        now=now,
+    )
 
 
 def _valid_command(command: Any) -> bool:

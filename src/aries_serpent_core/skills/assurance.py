@@ -16,6 +16,8 @@ from typing import Any, TypeGuard
 
 import jsonschema
 
+from .retained_evidence import read_retained_execution
+
 _SCHEMA_ROOT = Path(__file__).parent / "assurance_schema"
 
 
@@ -68,6 +70,53 @@ def _valid_observation_times(observation: dict[str, Any]) -> bool:
     return True
 
 
+def _retained(payload: dict[str, Any]) -> dict[str, Any] | None:
+    if "retained_evidence" not in payload:
+        return None
+    evidence = payload["retained_evidence"]
+    if not isinstance(evidence, dict) or not isinstance(evidence.get("repo_path"), (str, Path)):
+        return {"status": "unknown", "reason": "retained artifact identity required"}
+    result = read_retained_execution(evidence["repo_path"], evidence.get("outcome"))
+    if result["status"] == "pass" and any(
+        key in payload and payload[key] != result[key]
+        for key in ("base_sha", "patch_hash", "attempt_id", "event_id")
+    ):
+        return {**result, "status": "unknown", "reason": "payload/retained identity mismatch"}
+    return result
+
+
+def _retained_observations(
+    retained: dict[str, Any], observations: list[dict[str, Any]], *, replay: bool = False
+) -> bool:
+    gates = {log["name"]: log for log in retained["gate_logs"]}
+    baseline = {log["name"]: log for log in retained["baseline_gate_logs"]}
+    used = set()
+    commands = set()
+    for item in observations:
+        name = item.get("gate_name")
+        if not isinstance(name, str) or name in used or name not in gates:
+            return False
+        gate = gates[name]
+        if item.get("evidence_ref") != gate["output_path"] or item.get("command") != list(
+            gate["command"]
+        ):
+            return False
+        if replay:
+            before = baseline.get(name)
+            if (
+                before is None
+                or item.get("baseline") != ("pass" if before["returncode"] == 0 else "fail")
+                or item.get("actual") != ("pass" if gate["returncode"] == 0 else "fail")
+                or tuple(gate["command"]) in commands
+            ):
+                return False
+            commands.add(tuple(gate["command"]))
+        elif item.get("returncode") != gate["returncode"]:
+            return False
+        used.add(name)
+    return True
+
+
 def rubber_duck_review(payload: dict[str, Any]) -> dict[str, Any]:
     """Return questions and risks, never a success verdict."""
     criteria = payload.get("acceptance_criteria", [])
@@ -88,21 +137,33 @@ def rubber_duck_review(payload: dict[str, Any]) -> dict[str, Any]:
         "risks": ["Author reasoning is not independent validation", "Scheduling is not execution"],
         "approval_authority": False,
         "patch_authored": False,
+        "authenticated_review": False,
+        "production_proof": False,
     }
 
 
 def adversarial_validation(payload: dict[str, Any]) -> dict[str, Any]:
-    """Assess complete independent command observations; partial evidence is unknown."""
+    """Assess supplied or retained observations without authenticating an observer."""
     required = payload.get("required_checks", [])
     checks = payload.get("checks", [])
     status = "unknown"
     reason = "Missing complete independent negative, boundary and regression evidence"
     observer = payload.get("observer")
     author = payload.get("author")
+    retained = _retained(payload)
+    if retained is not None and retained["status"] != "pass":
+        return {
+            "status": "unknown",
+            "reason": "retained execution is absent, invalid, denied or cancelled",
+            "retained_evidence": retained,
+            "approval_authority": False,
+            "authenticated_review": False,
+            "production_proof": False,
+        }
     if (
         _nonempty_text(observer)
         and _nonempty_text(author)
-        and observer.strip() != author.strip()
+        and (retained is not None or observer.strip() != author.strip())
         and isinstance(required, list)
         and required
         and all(_nonempty_text(name) for name in required)
@@ -145,7 +206,22 @@ def adversarial_validation(payload: dict[str, Any]) -> dict[str, Any]:
         if complete:
             status = "fail" if any(check["returncode"] != 0 for check in checks) else "pass"
             reason = "All required supplied observations accounted for; no commands executed by this skill"
-    return {"status": status, "reason": reason, "checks": checks, "approval_authority": False}
+            if retained is not None:
+                reason = "All required retained local process observations accounted for; observer labels are unauthenticated"
+                if not _retained_observations(retained, checks):
+                    status = "unknown"
+                    reason = "observations do not identify distinct retained gates"
+    return {
+        "status": status,
+        "reason": reason,
+        "checks": checks,
+        "approval_authority": False,
+        "authenticated_review": False,
+        "production_proof": False,
+        "retained_execution_verified": retained is not None and status == "pass",
+        "evidence_scope": "local-retained-execution" if retained else "supplied-observations-only",
+        **({"retained_evidence": retained} if retained is not None else {}),
+    }
 
 
 def evidence_to_improvement_brief(payload: dict[str, Any]) -> dict[str, Any]:
@@ -221,6 +297,8 @@ def evidence_to_improvement_brief(payload: dict[str, Any]) -> dict[str, Any]:
         "proposal_id": hashlib.sha256(canonical.encode()).hexdigest(),
         "brief": brief,
         "execution_authorized": False,
+        "authenticated_review": False,
+        "production_proof": False,
         "max_correction_cycles": 3,
         "approvals_required": [
             "Authorized implementation",
@@ -274,17 +352,23 @@ def lane_contract_and_handoff(payload: dict[str, Any]) -> dict[str, Any]:
                 and validation.get("required_checks") != contract["required_checks"]
             ):
                 raise ValueError("validation must account for contract required checks")
+            assessed = adversarial_validation(validation)
             if (
                 not handoff["artifact_refs"]
                 or not all(_nonempty_text(ref) for ref in handoff["artifact_refs"])
-                or adversarial_validation(validation)["status"] != "pass"
+                or assessed["status"] != "pass"
             ):
                 raise ValueError("passed handoff requires complete independent evidence")
+            retained = assessed.get("retained_evidence")
+            if retained is not None and set(handoff["changed_paths"]) != set(retained["files"]):
+                raise ValueError("handoff scope must match the retained patch")
     return {
         "status": "contract-valid",
         "contract": contract,
         "handoff": handoff,
         "execution": "human-mediated",
+        "authenticated_review": False,
+        "production_proof": False,
     }
 
 
@@ -303,6 +387,18 @@ def agent_regression_evaluation(payload: dict[str, Any]) -> dict[str, Any]:
         return {"status": "unknown", "reason": "replay case identity required"}
     if len({case["id"] for case in cases}) != len(cases):
         raise ValueError("replay case IDs must be unique")
+    retained = _retained(payload)
+    if retained is not None and (
+        retained["status"] != "pass" or not _retained_observations(retained, cases, replay=True)
+    ):
+        return {
+            "status": "unknown",
+            "reason": "disjoint retained baseline and holdout replay evidence required",
+            "retained_evidence": retained,
+            "execution_authorized": False,
+            "authenticated_review": False,
+            "production_proof": False,
+        }
     metrics: dict[str, Any] = {
         "correct": 0,
         "regressions": 0,
@@ -362,6 +458,10 @@ def agent_regression_evaluation(payload: dict[str, Any]) -> dict[str, Any]:
         "case_count": len(cases),
         "cases": cases,
         "execution_authorized": False,
+        "authenticated_review": False,
+        "production_proof": False,
+        "evidence_scope": "local-retained-execution" if retained else "supplied-observations-only",
+        **({"retained_evidence": retained} if retained is not None else {}),
     }
 
 

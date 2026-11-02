@@ -170,11 +170,132 @@ distinct identities. A pending cross-file learning intent requires
 reconciliation: evidence JSONL and the brain JSON file are not one atomic
 transaction, and their EMA is not a calibrated success probability.
 
+### Explicit learning-intent reconciliation
+
+`EvidenceStore.inspect_learning(snapshot_reader)` exposes pending consumption
+and consumption completed before its separate qualification append. Inspection
+does not create missing journals, lock files or directories; corrupt or
+unterminated evidence remains an error with original bytes preserved.
+The returned `LearningRecovery` binds the persisted observation/event/pattern,
+patch and merge identities, any actually recorded attempts, the journal digest
+and the external-store snapshot identity. Missing attempt IDs remain absent.
+
+The injected snapshot context must yield an `ExternalSnapshot(identity, recheck)`
+for a present, readable external store and exclude **all** external writers
+until it exits. `recheck` freshly reads the same store identity under the held
+boundary and must raise if that store disappears or becomes unreadable; it must
+not return a cached digest. Acquire this external boundary before the evidence
+transaction, in the same order as the tracker. Its tracker lock alone does not
+exclude arbitrary SDK writers.
+The API does not discover credentials, infer consumption from an EMA value,
+or supply a production authorization/receipt provider.
+
+`MaintainedWriterRecovery` supplies a snapshot adapter for cooperating maintained
+`AgentBrainInterface` writers: `submit_pattern`,
+`submit_learning`/`_update_pattern_stats`, and `_save_patterns`. Their common
+protocol locks the existing parent directory across replacement and reloads
+persisted patterns before mutations; direct stale-cache saves are rejected.
+The directory-level POSIX lock creates no sidecar and serializes stores sharing
+that directory. Unsupported locking platforms fail closed.
+
+This advisory protocol cannot exclude filesystem edits, older SDK processes or
+other nonparticipating writers. Recovery stays unavailable by default unless the
+caller explicitly limits coverage to participating writers. That scope assertion
+is **not** policy authorization or proof of consumption. Inject actual owner
+policy, observation-specific consumption receipts and measurement verification
+separately; none is derived from an application count, EMA, actor label or hash.
+Acquire this external exclusion before any journal transaction. Missing,
+unreadable or malformed external stores remain explicit failures; inspection
+does not create them. Atomic replacement visibility and confirmed durability are
+distinct: a post-replace failure must not invite replay of a learning update.
+
+`EvidenceStore.reconcile_learning` defaults to dry-run and denies decisions
+without an explicitly injected trusted policy verifier. A supplied identity,
+actor string or digest is not authorization. A real decision rechecks exact
+journal/observation/external identities under the transaction boundary:
+
+- `already_applied` additionally requires independent observation-specific
+  consumption proof and the existing trusted measurement contract. It never
+  invokes the learner again.
+- `abandoned` permanently consumes only that learning identity, creates no
+  qualification or success, and does not reset a breaker. Unknown eligibility
+  stays unknown; later observations need their own identities and proof.
+- Ambiguous external writes remain unresolved. Completed consumption without
+  qualification is not silently qualified during load.
+
+Recovery is append-only, with restart validation and no cross-file atomic
+exactly-once guarantee. It cannot reset or reuse cancelled/interrupted execution
+claims. Implementing this API does not authorize applying it to live journals
+or brain files; use new disposable copies unless the relevant owners separately
+authorize a specific recovery.
+
+### SQLite session pattern identities
+
+The maintained `SessionDatabase` and `SessionDB` adapters store session pattern
+IDs as opaque `TEXT`. Their insertion and `PatternEventRecorder` paths preserve
+nonnumeric and leading-zero strings across reopen and propagate SQLite write
+failures. Existing numeric inputs use SQLite text affinity; this is not a
+reason to normalize `"0012"` into `"12"`. CI issue-pattern integer identifiers
+in the cognitive app are a separate domain and must not be blanket-migrated.
+These scoped round-trip checks do not establish compatibility of untraced stores.
+Database construction initializes/optimizes schemas and may handle corruption;
+never open a live database merely to inspect its schema.
+
+The separate `scripts/ci/pattern_recorder.py` CLI accepts `--pattern-id` as an
+integer and binds it into the cognitive app's `patterns.pattern_id INTEGER`.
+Its query/export paths preserve that numeric domain: `"0012"` and `"12"` both
+mean integer 12 here, while the session filter is still opaque bound text.
+Opaque IDs such as `RP-019` are rejected by this CLI before database creation,
+not silently converted into session IDs. Disposable tests exercise close/reopen,
+export/query and trigger-denied writes with existing rows preserved. This trace
+does not authorize a migration or turn recorded CI repair labels into qualified
+learning measurements.
+
 Shared skill handlers reject nonfinite measurements, empty references,
 holdout-only replay and mismatched handoff/validation SHAs. Supplied
 observations still do not authenticate their observer. Production outcomes
 require a trusted measured-merge verifier; labelled synthetic fixtures cannot
 establish production success.
+
+### Separate post-attempt handoff
+
+`improvement_loop_runner.compose_post_attempt_handoff` explicitly joins persisted
+event/proposal and available execution identity to scanner observation and exact
+pattern calibration diagnostics. It is not invoked by
+`compose_local_improvement`; local preparation remains read-only by default and
+does not acquire a network or learning dependency.
+
+The handoff rejects contradictory identities instead of inventing PR/attempt
+associations. Its default observation is unavailable: no bounded live transport
+is supplied by this integration. `RecordedFixtureReader` accepts only bounded
+offline JSON bytes for allowlisted repository paths, with aggregate/per-response
+limits and a read/deadline budget. It cannot turn a historical PR/run fixture
+into fresh live evidence. Arbitrary callbacks and caller-supplied live labels
+cannot establish a hard transport deadline or authenticated origin.
+
+Scanner observations remain `compliance-scanners`, never learning-eligible;
+calibration remains diagnostic-only, with insufficient/expired/disabled/unknown
+states preserved rather than replaced by the public EMA. Source identities are
+retained without remote headers or credentials. Neither this stage nor its
+runner wrapper claims observations, completes consumption, reconciles learning,
+or invokes `submit_learning`. Its output is a human handoff, not authority to
+execute, learn, merge, or recover an ambiguous write.
+
+### Retained execution evidence in skills
+
+The optional `retained_evidence` input uses `repo_path` and the existing executor
+outcome to validate retained canonical patch/base/scope/attempt, manifest and gate
+output identities before relevant deterministic handlers use command/replay
+observations. An arbitrary `evidence_ref` is not a retained artifact identity.
+Missing, tampered, denied or cancelled evidence cannot become passing replay.
+
+This adapter reads artifacts; it never runs commands. Real-process disposable
+fixtures use `IsolatedExecutor`, not a second skill-layer runner. A coherent
+local artifact collection is not authenticated independent review or production
+measurement, and the adapter cannot authenticate an entirely fabricated local
+collection. Author/observer labels do not resolve that limitation. Package
+promotion, absent permitted profile mappings and genuine reviewer evidence
+remain separate handoffs; no packaging matrix is rebuilt by this stage.
 
 PDA summaries preserve mixed legacy raw records and distinguish caller-labelled
 repair rates from uniquely attempt-linked verified-result rates. With no

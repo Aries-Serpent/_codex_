@@ -11,7 +11,8 @@ Proposals are applied and verified in a disposable private Git snapshot with:
 
 Landlock ABI 4+ on supported Linux architectures is required. This is not a
 full sandbox: UDP/Unix sockets, process-count and escaped-session lifecycle
-containment remain unsupported. Restricted profiles are not exported.
+containment remain unsupported. Cancellation cleans up the process group, not
+all possible descendants. Restricted profiles are not exported.
 
 Any gate failure discards the environment and leaves the source tree
 untouched. Nothing here merges or pushes; the output is a verified
@@ -29,11 +30,13 @@ import os
 import platform
 import re
 import shutil
+import signal
 import stat
 import subprocess
 import sys
 import tarfile
 import tempfile
+import threading
 import time
 import uuid
 from contextlib import contextmanager
@@ -71,6 +74,10 @@ _GATE_NAMES = frozenset(
 )
 
 _SECRET_ENV = re.compile(r"(TOKEN|SECRET|PASSWORD|API_?KEY|PRIVATE_?KEY)", re.IGNORECASE)
+
+
+class _ExecutionCancelled(Exception):
+    """Cooperative stop; the durable execution claim must never be released."""
 
 
 def _restrict_process_filesystem(
@@ -157,7 +164,7 @@ class ExecutionOutcome:
     """Result of executing a proposal in isolation."""
 
     event_id: str
-    status: str  # verified | rejected | duplicate | error
+    status: str  # verified | rejected | duplicate | error | cancelled
     gate_logs: Tuple[GateLog, ...] = ()
     artifact_hash: Optional[str] = None
     authority: Optional[AuthorityDecision] = None
@@ -214,7 +221,8 @@ class IdempotencyLedger:
             or not isinstance(record.get("event_id"), str)
             or not 0 < len(record["event_id"]) <= 256
             or not record["event_id"].strip()
-            or record.get("status") not in {"claimed", "verified", "rejected", "error", "duplicate"}
+            or record.get("status")
+            not in {"claimed", "verified", "rejected", "error", "duplicate", "cancelled"}
         ):
             raise ValueError("invalid execution identity or state")
         if record["status"] == "claimed":
@@ -308,8 +316,9 @@ class IsolatedExecutor:
         human_approved: bool = False,
         base_sha: Optional[str] = None,
         patch_hash: Optional[str] = None,
+        cancellation_event: Optional[threading.Event] = None,
     ) -> ExecutionOutcome:
-        """Authorize, apply, and gate a proposal. Fails closed throughout."""
+        """Authorize, apply, and gate a proposal; cancellation consumes its identity."""
 
         if not isinstance(event_id, str) or not event_id.strip():
             raise ValueError("event identity is required")
@@ -412,6 +421,8 @@ class IsolatedExecutor:
                 event_id, "duplicate", reason="event claimed; recovery required if interrupted"
             )
 
+        if cancellation_event is not None and cancellation_event.is_set():
+            return self._cancel(event_id, decision, actual_hash, resolved_base, attempt_id)
         work_dir = Path(
             tempfile.mkdtemp(
                 prefix="improvement-", dir=str(self.work_root) if self.work_root else None
@@ -428,6 +439,7 @@ class IsolatedExecutor:
                 diff_lines,
                 actual_hash,
                 attempt_id,
+                cancellation_event,
             )
         finally:
             shutil.rmtree(work_dir, ignore_errors=True)
@@ -447,11 +459,31 @@ class IsolatedExecutor:
         declared_lines: int,
         patch_hash: str,
         attempt_id: str,
+        cancellation_event: Optional[threading.Event] = None,
     ) -> ExecutionOutcome:
         env = scrub_environment()
         deadline = time.monotonic() + self.authority.limits.timeout_seconds
+        baseline_logs: list[GateLog] = []
+        gate_logs: list[GateLog] = []
+
+        def check_cancelled() -> None:
+            if cancellation_event is not None and cancellation_event.is_set():
+                raise _ExecutionCancelled
+
+        def cancelled() -> ExecutionOutcome:
+            return self._cancel(
+                event_id,
+                decision,
+                patch_hash,
+                base_sha,
+                attempt_id,
+                baseline_gate_logs=tuple(baseline_logs),
+                gate_logs=tuple(gate_logs),
+                artifact_path=str(artifact_dir),
+            )
 
         def run(command: Sequence[str], **kwargs: Any) -> subprocess.CompletedProcess:
+            check_cancelled()
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 raise subprocess.TimeoutExpired(command, self.authority.limits.timeout_seconds)
@@ -486,6 +518,7 @@ class IsolatedExecutor:
         )
         checkout = work_dir / "tree"
         try:
+            check_cancelled()
             run(
                 [
                     "git",
@@ -528,6 +561,8 @@ class IsolatedExecutor:
                 env=env,
                 check=True,
             )
+        except _ExecutionCancelled:
+            return cancelled()
         except (
             subprocess.CalledProcessError,
             subprocess.TimeoutExpired,
@@ -596,13 +631,24 @@ class IsolatedExecutor:
                 timeout=30,
                 check=True,
             )
-            baseline_logs = tuple(
-                self._run_gate(
-                    name, command, checkout, env, deadline=deadline, log_dir=artifact_dir
+            for name, command in self.gates:
+                check_cancelled()
+                if name not in {"behavior", "tests", "regression"}:
+                    continue
+                baseline_logs.append(
+                    self._run_gate(
+                        name,
+                        command,
+                        checkout,
+                        env,
+                        deadline=deadline,
+                        log_dir=artifact_dir,
+                        cancellation_event=cancellation_event,
+                    )
                 )
-                for name, command in self.gates
-                if name in {"behavior", "tests", "regression"}
-            )
+                if baseline_logs[-1].status == "cancelled":
+                    return cancelled()
+                check_cancelled()
             run(
                 ["git", "add", "--all"],
                 cwd=checkout,
@@ -627,9 +673,9 @@ class IsolatedExecutor:
                         if changed.returncode != 0
                         else "no demonstrated failing baseline behavior"
                     ),
-                    baseline_gate_logs=baseline_logs,
+                    baseline_gate_logs=tuple(baseline_logs),
                     gate_logs=(
-                        baseline_logs
+                        tuple(baseline_logs)
                         if any(log.status != "passed" for log in baseline_logs)
                         else ()
                     ),
@@ -680,13 +726,22 @@ class IsolatedExecutor:
             if staged_files != actual_files or staged_lines != actual_lines:
                 return self._reject(event_id, decision, "applied patch inventory mismatch")
             candidate_filesystem = self._filesystem_inventory(checkout, deadline)
-            gate_logs: list[GateLog] = []
             for name, command in self.gates:
+                check_cancelled()
                 gate_logs.append(
                     self._run_gate(
-                        name, command, checkout, env, deadline=deadline, log_dir=artifact_dir
+                        name,
+                        command,
+                        checkout,
+                        env,
+                        deadline=deadline,
+                        log_dir=artifact_dir,
+                        cancellation_event=cancellation_event,
                     )
                 )
+                if gate_logs[-1].status == "cancelled":
+                    return cancelled()
+                check_cancelled()
                 if gate_logs[-1].returncode != 0:
                     break
             failing = [log for log in gate_logs if log.returncode != 0]
@@ -697,7 +752,7 @@ class IsolatedExecutor:
                     gate_logs=tuple(gate_logs),
                     authority=decision,
                     reason=f"gates failed: {', '.join(log.name for log in failing)}",
-                    baseline_gate_logs=baseline_logs,
+                    baseline_gate_logs=tuple(baseline_logs),
                     patch_hash=patch_hash,
                     base_sha=base_sha,
                     attempt_id=attempt_id,
@@ -709,6 +764,7 @@ class IsolatedExecutor:
             if self._filesystem_inventory(checkout, deadline) != candidate_filesystem:
                 return self._reject(event_id, decision, "gate changed the authorized candidate")
             artifact_hash = self._hash_paths(checkout, files)
+            check_cancelled()
             outcome = ExecutionOutcome(
                 event_id=event_id,
                 status="verified",
@@ -720,7 +776,7 @@ class IsolatedExecutor:
                 base_sha=base_sha,
                 attempt_id=attempt_id,
                 artifact_path=str(artifact_dir),
-                baseline_gate_logs=baseline_logs,
+                baseline_gate_logs=tuple(baseline_logs),
                 required_gates=tuple(name for name, _ in self.gates),
                 candidate_tree_hash=candidate_tree,
             )
@@ -729,6 +785,8 @@ class IsolatedExecutor:
             )
             self.ledger.record(outcome)
             return outcome
+        except _ExecutionCancelled:
+            return cancelled()
         except subprocess.TimeoutExpired:
             outcome = ExecutionOutcome(
                 event_id=event_id,
@@ -748,6 +806,33 @@ class IsolatedExecutor:
             self.ledger.record(outcome)
             return outcome
 
+    def _cancel(
+        self,
+        event_id: str,
+        decision: AuthorityDecision,
+        patch_hash: str,
+        base_sha: str,
+        attempt_id: str,
+        *,
+        baseline_gate_logs: tuple[GateLog, ...] = (),
+        gate_logs: tuple[GateLog, ...] = (),
+        artifact_path: Optional[str] = None,
+    ) -> ExecutionOutcome:
+        outcome = ExecutionOutcome(
+            event_id=event_id,
+            status="cancelled",
+            authority=decision,
+            reason="execution cancelled; identity consumed, no automatic retry",
+            patch_hash=patch_hash,
+            base_sha=base_sha,
+            attempt_id=attempt_id,
+            baseline_gate_logs=baseline_gate_logs,
+            gate_logs=gate_logs,
+            artifact_path=artifact_path,
+        )
+        self.ledger.record(outcome)
+        return outcome
+
     def _reject(self, event_id: str, decision: AuthorityDecision, reason: str) -> ExecutionOutcome:
         outcome = ExecutionOutcome(
             event_id=event_id, status="rejected", authority=decision, reason=reason
@@ -764,6 +849,7 @@ class IsolatedExecutor:
         *,
         deadline: Optional[float] = None,
         log_dir: Optional[Path] = None,
+        cancellation_event: Optional[threading.Event] = None,
     ) -> GateLog:
         start = time.monotonic()
         command = tuple(command)
@@ -784,6 +870,10 @@ class IsolatedExecutor:
                         roots.append(Path(env["HOME"]))
                     _restrict_process_filesystem(roots, (cwd,))
 
+                if cancellation_event is not None and cancellation_event.is_set():
+                    return GateLog(
+                        name, command, 130, 0, hashlib.sha256(b"").hexdigest(), "cancelled"
+                    )
                 proc = subprocess.Popen(
                     list(command),
                     cwd=cwd,
@@ -796,21 +886,38 @@ class IsolatedExecutor:
                 )
                 status = "passed"
                 try:
-                    proc.wait(timeout=max(0, deadline - time.monotonic()))
-                    code = proc.returncode
-                    if code:
-                        status = "failed"
-                except subprocess.TimeoutExpired:
-                    code, status = 124, "timeout"
+                    while True:
+                        if cancellation_event is not None and cancellation_event.is_set():
+                            code, status = 130, "cancelled"
+                            try:
+                                os.killpg(proc.pid, signal.SIGTERM)
+                            except ProcessLookupError:
+                                pass
+                            try:
+                                proc.wait(timeout=0.2)
+                            except subprocess.TimeoutExpired:
+                                pass
+                            break
+                        remaining = deadline - time.monotonic()
+                        if remaining <= 0:
+                            code, status = 124, "timeout"
+                            break
+                        try:
+                            code = proc.wait(timeout=min(0.05, remaining))
+                        except subprocess.TimeoutExpired:
+                            continue
+                        if code:
+                            status = "failed"
+                        break
                 finally:
                     try:
-                        os.killpg(proc.pid, 9)
+                        os.killpg(proc.pid, signal.SIGKILL)
                     except ProcessLookupError:
                         pass
                     proc.wait(timeout=2)
                 output.seek(0)
                 data = output.read(1024 * 1024 + 1)
-                if len(data) > 1024 * 1024:
+                if len(data) > 1024 * 1024 and status != "cancelled":
                     code, status = 125, "output_limit"
                 output_hash = hashlib.sha256(data).hexdigest()
                 output_path = None
