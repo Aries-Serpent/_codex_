@@ -2,6 +2,84 @@
   "schema_version": "1.0.0",
   "task_id": "AGENT-SELF-IMPROVEMENT-001",
   "status": "scoped_continuation_verified_with_open_gaps",
+  "writer_handoff_skill_continuation": {
+    "reviewed_head": "36944aee2b4f047a3d3e69334798cf0f2eb744fc",
+    "immutable_base": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",
+    "reviewed_checkpoint_sha256": "1457702155be7a318135989a45d88a7966e2a839fd53f140bf1dcce02dbcc2cb",
+    "orientation": "HEAD matched reviewed commit; one status inspection showed only automatic startup-packet dirty work. No completed lanes or historical baselines repeated.",
+    "authority": "Related source/tests/docs/ledger normal progress commits on authorized branch only; disposable writes, no live recovery/learning/migration or PR/workflow/settings/merge/publishing operations.",
+    "agents": ["writer-recovery-integration", "post-attempt-handoff", "retained-skill-evidence", "integration-interface-review", "runner-focused-validation", "three-slice-combined-review", "three-slice-validation"],
+    "ownership": "Three disjoint implementation lanes; parent alone owns runner/shared task records/documentation. No nested agents or restricted profiles.",
+    "interface_review": "One bounded review highlighted missing writer exclusion/fresh reload, unauthenticated observer/agent labels, external-before-journal ordering and artifact TOCTOU. Constraints sent to all lanes; no reviewer identity is authentication.",
+    "sqlite_trace": {
+      "path": "scripts/ci/pattern_recorder.py main:584-607 -> CLI --pattern-id type=int:515 -> _open_db INTEGER pattern_id:63-95 -> _insert_pattern bound parameters:98-135 -> query/export:253,428-456,611-639",
+      "domain": "Numeric CI issue-pattern IDs; 0012 and12 both intentionally become integer12, unlike opaque session TEXT IDs. Session filter remains bound opaque text. Server patterns endpoints share this integer schema; no server or schema migration.",
+      "tests": "tests/self_improvement/test_ci_pattern_sqlite_domain.py",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest tests/self_improvement/test_ci_pattern_sqlite_domain.py -o addopts='' -p no:cacheprovider --basetemp=/tmp/codex-ci-pattern-domain-final -q",
+      "result": "3 passed in4.45s: actual CLI close/reopen/export/query, opaque ID rejected before DB creation, trigger-denied write explicit with raw rows preserved. Initial test expectation used wrong export key; corrected to documented occurrences, not a production defect.",
+      "quality": "Ruff/Black/isort/mypy passed; unused torch/omegaconf mypy sections only. No source defect reproduced or migration warranted.",
+      "remaining": "G16 partial; ThreadSafeSessionDB has TEXT schema but no pattern insertion/retrieval API, so no claimed pattern round-trip coverage there. Other untraced stores remain open."
+    },
+    "initial_progress_commit": "500767308d4c97bd5ed1d6cb94b1406188da7be9",
+    "startup_packet": "Not intentionally edited, staged or reverted; normal initial progress tool included existing automatic timestamp work. Not implementation evidence.",
+    "handoff_lane": {
+      "api": "post_attempt_handoff.compose_post_attempt_handoff and RecordedFixtureReader; explicit runner wrapper, compose_local_improvement unchanged",
+      "delivery": "Persisted event/pattern/patch/attempt/PR/merge/run/window joins; contradictory states rejected, absent associations partial. Default live transport unavailable. Offline bytes bounded per-response/aggregate/path/read/deadline. Scanner-only, learning-ineligible, diagnostic calibration with explicit unauthenticated origin.",
+      "snapshot": "Final journal digest recheck detects intervening writes and invalidates observer/calibration result; snapshot.atomic=False, no cross-file/point-in-time transaction claim.",
+      "command": "python -m pytest -q tests/self_improvement/test_post_attempt_handoff.py --basetemp=.pytest-post-attempt-handoff -o addopts=''",
+      "result": "27 passed in2.05s reported by lane; Black/Ruff/isort/mypy(helper)/compileall/diff checks passed; no network or commits by lane",
+      "parent_wrapper": "Explicit matching typed wrapper plus tests/self_improvement/test_post_attempt_runner.py; delegated focused run2passed in1.35s. Parent Ruff/Black/isort/mypy passed after isort normalized import layout.",
+      "limits": "Recorded fixtures are not live GitHub observations or causal improvement. Reader labels do not authenticate origin; no supported live transport implemented."
+    },
+    "writer_lane": {
+      "api": "learning_reconciliation.pattern_store_lock and writer_recovery.MaintainedWriterRecovery(snapshot/inspect/reconcile); explicit policy/consumption/measurement provider injection and participating_writers_only=False default",
+      "writers": "AgentBrainInterface.submit_pattern, submit_learning/_update_pattern_stats and _save_patterns share existing-parent POSIX directory flock plus process/thread reentrant exclusion. Semantic updates reload disk; direct stale-cache saves reject.",
+      "failure_semantics": "Atomic replace/fsync retained. Pre-replace failures roll back cache; post-replace errors report replaced=True and do not roll back visible persisted state or confirm durability. No learning replay. Existing pathless nonpersistent injected EMA consumers remain compatible.",
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -m pytest -q -o addopts='' --basetemp=.codex/lane_a_test_runtime tests/self_improvement/test_writer_recovery_integration.py",
+      "result": "41 passed in9.17s; Ruff/Black/isort/mypy(four files)/compileall/diff checks passed",
+      "compatibility_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -m pytest -q -o addopts='' --basetemp=.codex/lane_a_compat_runtime tests/self_improvement/test_pattern_calibration.py::test_legacy_ema_formula_remains_unchanged tests/self_improvement/test_legacy_pattern_persistence.py",
+      "compatibility_result": "50 passed in1.38s; initial sibling calibration run exposed missing pattern_store_path on pathless injected EMA fixtures, corrected without weakening real writer reload. Overlaps other selections.",
+      "coverage": "Spawned separate-process writers, paused replacement, fresh reload/no lost updates, missing/malformed/unreadable states, lock release, pre/post replacement failure, Windows persistence mocks/unsupported lock denial, zero-write denied/dryrun and actual OutcomeTracker concurrent inspection lock-order fixture",
+      "limits": "Cannot exclude scripts/cognitive/session_manager.py::_save_patterns or src/aries_serpent_core/campaigns/orchestrator.py::_update_pattern_store, older SDKs or manual edits. Explicit deployment coverage assertion is not authorization. Default recovery unavailable; genuine policy and independent observation-specific receipts not supplied."
+    },
+    "skill_lane": {
+      "api": "aries_serpent_core.skills.retained_evidence.read_retained_execution(repo_path,outcome); optional retained_evidence in relevant existing assurance consumers",
+      "command": "PYTHONPATH=src python -m pytest -q -o addopts='' --basetemp=.pytest-lane-c-retained tests/self_improvement/test_retained_skill_evidence.py tests/skills/test_assurance_skills.py tests/skills/test_assurance_invariants.py",
+      "delivery": "Canonical patch/base/scope/attempt, retained artifact/outcome and gate-output hashes validated with bounded no-link reads and final inode/content/mtime/ctime reread. Substantive negative/boundary/regression and distinct command/gate holdout evidence; denied/cancelled preserved.",
+      "result": "148 focused new/existing tests passed in2.32s; Ruff/Black/isort/mypy(three files)/compile/diff checks passed",
+      "limits": "Local retained consistency only: authenticated_review=False, production_proof=False, execution_authorized=False, retained authority explicitly not rederived. Coherently fabricated collections cannot be authenticated. Supplied-observation mode stays compatible and explicitly unverified/nonproduction. Profile mapping absent; no packaging rebuild or profile reads."
+    },
+    "combined_review": "One bounded combined-diff code-review agent found no significant issues. No repeated review loop or authenticated reviewer claim.",
+    "combined_validation": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest -o addopts='' -p no:cacheprovider --basetemp=/tmp/codex-three-integration-final tests/self_improvement/test_learning_reconciliation.py tests/self_improvement/test_legacy_pattern_persistence.py tests/self_improvement/test_outcome_tracking.py tests/self_improvement/test_local_composition.py tests/self_improvement/test_merged_observation.py tests/self_improvement/test_pattern_calibration.py tests/self_improvement/test_writer_recovery_integration.py tests/self_improvement/test_post_attempt_handoff.py tests/self_improvement/test_retained_skill_evidence.py tests/self_improvement/test_ci_pattern_sqlite_domain.py tests/self_improvement/test_post_attempt_runner.py -v",
+      "result": "375 passed in34.49s; all eleven specified test files, final frozen source. Overlaps lane selections and must not be summed.",
+      "quality": "Delegated Ruff/Black/isort/compile on all12 changed Python paths passed; mypy seven changed source modules passed; git diff --check passed. Lane/parent checks cover new tests separately.",
+      "scope": "Local disposable fixtures only; not hosted CI, authenticated review, calibrated production improvement or live recovery.",
+      "preservation": "Exact40 acceptance strings/14 negative mappings/10 B placeholders, checkpoints0-7 and three dependency-source hashes verified unchanged against orientation capture.",
+      "security": "All16 scoped changed paths passed precommit secret scan; postcommit CodeQL pending. Historical oversized database skips are not passes."
+    },
+    "source_binding": {
+      "parent_sha": "500767308d4c97bd5ed1d6cb94b1406188da7be9",
+      "patch_sha256": "c69ad42bc489b293ca43b4a2d397f072d713515087f4bb4fd8812806216aa367",
+      "method": "git diff --cached --binary against parent SHA restricted to twelve Python paths below; docs/ledger excluded to avoid self-reference. Immutable historical base retained above.",
+      "sha256": {
+        "src/aries_serpent_core/cognitive/brain_interface.py": "2ffd111d43ed7ed28138a90a5178bc84d6aed6eb116884148e70bfff4525b021",
+        "src/aries_serpent_core/skills/assurance.py": "317296071ac631b83774d7eec6e64f87791b8b93efa1d9d955fd37a2eafc13f4",
+        "src/aries_serpent_core/skills/retained_evidence.py": "9c3edfbb12ef2647867eed46a5f107cf42ebfe23dff69f7af3bb5eeacee9fb1c",
+        "src/codex/cognitive_brain/improvement_loop_runner.py": "5c22d9b0d32545f3c14433887ff9a6045434d041bcc4dc5d142d524724d75e5e",
+        "src/codex/cognitive_brain/learning_reconciliation.py": "a6d6ee6068e267276dc60eebc0d9cc8a1db7d8e8cca0da36312ec8d225bc2989",
+        "src/codex/cognitive_brain/post_attempt_handoff.py": "efcd66a7fdf24561b9c6cea54cd182b2f40fc6d96e2821cf4345be8fb545b4b3",
+        "src/codex/cognitive_brain/writer_recovery.py": "9487a85599c7f776d7867099809921f0852040d4ea7909ad5f5ab0fa29562482",
+        "tests/self_improvement/test_ci_pattern_sqlite_domain.py": "d1d95723302c60f5ce76ab3118e3c0eef6f2e07c679076714d4c8c17eed2794a",
+        "tests/self_improvement/test_post_attempt_handoff.py": "cb5904b95fe629e2e71e39b8b138cb6c846782fa5fc21bcc96df644dd0775edb",
+        "tests/self_improvement/test_post_attempt_runner.py": "08f7691691df53a74d47b8ec98741b121af9c896c2c45de565bb31ff50e75375",
+        "tests/self_improvement/test_retained_skill_evidence.py": "f003db4f2972c42856848f4a9b6be1fcd7662c21ac5dda4ad84a896a003fd38a",
+        "tests/self_improvement/test_writer_recovery_integration.py": "2aac906af4bb1b65cf4905e9eb8b0de675b55abc515af3d2628e1845b7f5e3c7"
+      }
+    },
+    "next_action": "Owner review of participating-writer deployment map and genuine policy/receipts; independently authorized bounded live transport and permitted profile mappings remain separate gates. Do not apply recovery to live stores under this task.",
+    "status": "scoped_implementation_verified_with_open_gates"
+  },
   "reconciliation_continuation": {
     "reviewed_head": "831b60da86a6307674798a5d1dcd86b2a4358651",
     "base_sha": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",

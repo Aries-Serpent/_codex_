@@ -316,3 +316,61 @@ exactly-once across files. No live reconciliation or SQLite experiment, executio
 replay, PR mutation, workflow operation, merge or publication was performed.
 Security scan results and persistence identities belong in the continuation
 checkpoint; a skipped Python analysis is not a pass.
+
+## Writer / handoff / skill integration — 2026-11-02
+
+### Context and dependencies
+
+Resumed reviewed `36944aee2b4f047a3d3e69334798cf0f2eb744fc` once, with
+only automatic startup timestamp work present. Three independent implementation
+lanes own disjoint persistence, observer/calibration and skill adapters; parent
+owns the explicit runner wrapper, documentation and ledger. Prior slices,
+packaging evidence and exact acceptance text are preserved. No historical
+baseline, distribution rebuild or Chronicle ceremony was repeated.
+
+### Implementation
+
+- **T02/T03:** Maintained brain writers share an existing-directory POSIX
+  exclusion protocol across atomic replacement, reload persisted state before
+  mutations and reject stale direct saves. `MaintainedWriterRecovery` integrates
+  fresh snapshot checks with explicit policy/receipt/measurement callbacks.
+  Missing coverage or callbacks fail closed. It does not exclude old/manual or
+  other nonparticipating writers; no live deployment coverage is asserted.
+- **T07:** Separate `compose_post_attempt_handoff` in the maintained runner joins
+  persisted attempt/PR/run identities to scanner observation and exact-pattern
+  calibration. Default observation is unavailable, offline fixtures are bounded
+  and origins unauthenticated. Local preparation is unchanged. Intervening
+  journal changes invalidate diagnostics; no atomic snapshot claim is made.
+- **T06:** Read-only retained executor adapter binds actual canonical patch,
+  immutable base, scope, attempt, manifest and gate-output identities. Relevant
+  existing handlers consume negative/boundary/regression/disjoint-holdout
+  evidence without command execution authority. Real disposable process tests
+  use the existing executor, preserving denied/cancelled outcomes. Retained
+  consistency cannot authenticate a fabricated artifact collection or reviewer.
+- **SQLite:** Newly traced numeric CI recorder CLI intentionally normalizes
+  numeric issue IDs, unlike session opaque TEXT IDs. Three actual disposable
+  CLI tests cover reopen/export/query, early opaque rejection and explicit
+  failed writes. No source defect or migration was manufactured.
+
+### Verification and handoff
+
+One short interface review identified writer exclusion/staleness, lock ordering,
+unauthenticated labels and mutable artifact risks. Implementations address those
+contracts and retain explicit limits; one bounded combined review found no
+significant issues. Lane commands, overlapping results, source bindings and
+parent combined validation are recorded under
+`checkpoint.json.writer_handoff_skill_continuation`; do not sum overlapping
+selections or treat local tests as hosted CI.
+
+Final combined eleven-file changed-seam selection: **375 passed in 34.49s**.
+Ruff/Black/isort/compilation passed on twelve changed Python paths; mypy passed
+on seven source modules with lane/parent checks covering new tests separately.
+Secret scan found no secrets in sixteen scoped paths. Security-analysis outcome
+and immutable source binding are recorded in the continuation checkpoint.
+
+G07/G08/G11/G12/G13/G16/G27/G28/G29 remain partial. Genuine owner policy and
+observation-specific receipts, complete deployment writer coverage, supported
+bounded live observation, authenticated independent review, package promotion
+and permitted profile mappings remain independent gates. No live recovery,
+learning, execution reset, database migration, PR/workflow operation or publication
+was performed. Continue through explicit owner handoffs, not fabricated evidence.
