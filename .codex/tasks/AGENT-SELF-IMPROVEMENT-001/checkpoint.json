@@ -5,6 +5,8 @@
   "post_merge_continuation": {
     "orientation_source_sha": "406ab5e805f736b0b73630a91336d4e0feabfea8",
     "base_sha": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",
+    "delivered_source_sha": "6b48e75d7d16acc45ecc64071f86e8df9639e22b",
+    "progress_commits": ["7d66bf14a64dee601d66f69fe733d64523306af0", "6b48e75d7d16acc45ecc64071f86e8df9639e22b"],
     "orientation": "git status and git diff f48fb7a3..HEAD showed startup timestamp changes only; no uncommitted implementation to recover",
     "startup_packet": "Not intentionally edited, staged or reverted. Initial progress tool included existing timestamp work in 7d66bf14; recorded once under explicit owner exception.",
     "superseded_hosted_observations": {
@@ -83,8 +85,27 @@
       "traceability": "Exact40acceptance strings,14negative mappings and10B placeholders preserved; numbered checkpoints untouched; initial local tuple/list comparison assertion corrected before passing normalized JSON comparison",
       "source_changes": "Only6 lane source/test files and3 task ledger files intentionally changed; no package rebuild, dependency or unrelated transport/persistence changes"
     },
+    "final_verification": {
+      "source_sha": "6b48e75d7d16acc45ecc64071f86e8df9639e22b",
+      "codeql": "Python analysis skipped because database size too large; NOT a passing current Python scan. Earlier hosted Python analysis success on merged base is separately scoped historical metadata.",
+      "compile": "All6 changed Python source/test files compiled in memory with supported .venv_ci Python3.12; no bytecode writes",
+      "identities": "All6 current SHA256 values verified, using final_cancellation_correction overrides for C;40 exact acceptance strings,14negatives,10B placeholders preserved",
+      "diff": "git diff --check passed; clean worktree after source commit before this evidence-only checkpoint",
+      "reviews": "One design and one combined delivery rubber-duck review; independent adversarial test selection applied; concrete observed-exit race fixed without repeated review loops",
+      "gaps": "G13/G28 confirmed_open to partially_resolved; G04/G06 remain partially_resolved. No acceptance criterion marked resolved.",
+      "scoped_patch": {
+        "base_sha": "f48fb7a36eb31fd1ff518c186e54ec212c0d8366",
+        "source_sha": "6b48e75d7d16acc45ecc64071f86e8df9639e22b",
+        "scope": "Six files named in lane_source_sha256; task ledgers and startup excluded",
+        "path": "/tmp/codex-three-lane-final.patch",
+        "bytes": 83382,
+        "sha256": "d8c39a70c4eccd9a004aa639fa91a17efd47a33cdde07faabe6af4f6e5256243",
+        "recreate": "git diff f48fb7a36eb31fd1ff518c186e54ec212c0d8366 6b48e75d7d16acc45ecc64071f86e8df9639e22b -- <six lane_source_sha256 paths>",
+        "retention": "Session-local /tmp only; source/tests and recorded identities are committed, not hosted test artifacts"
+      }
+    },
     "next_command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest tests/self_improvement/test_durable_integrity.py tests/self_improvement/test_outcome_tracking.py --override-ini=addopts='' -p no:cacheprovider --basetemp=/tmp/codex-t02-reconciliation-next -q",
-    "remaining": "Security checker and final source checkpoint pending; next deliverable T02 pending-intent inspection/authorized append-only reconciliation, followed by domain-specific T03 SQLite tracing. No automatic replay.",
+    "remaining": "Next deliverable T02 pending-intent inspection/authorized append-only reconciliation, followed by domain-specific T03 SQLite tracing. Qualified production calibration/observer integration, unsupported runtime containment, restricted inventory, B01-B10 and publisher settings remain owner-gated; current Python CodeQL unavailable. No automatic replay.",
     "authority": "Only normal progress-tool commits/pushes on the authorized working branch; no PR edits, workflows, merge, publishing, settings or live healing"
   },
   "repository_root": "/home/runner/work/_codex_/_codex_",

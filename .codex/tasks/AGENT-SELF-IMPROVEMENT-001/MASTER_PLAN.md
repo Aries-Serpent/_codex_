@@ -20,6 +20,22 @@ The existing monitor transport and JSON atomic persistence are not replaced.
 Independent interface and adversarial reviews guide focused validation;
 reviewer names or supplied observations do not authenticate production review.
 
+Delivered source: `6b48e75d7d16acc45ecc64071f86e8df9639e22b`.
+The bounded seven-file test selection passed **240 tests in 30.50s**.
+One subsequent cancellation race correction preserves the real gate exit
+when cancellation arrives after `wait()` completes; **11 affected tests
+passed, 11 deselected**. Changed-file formatting/type checks, in-memory
+compilation and secret scanning passed. Current Python CodeQL was skipped
+for database size, not passed. Exact commands, per-file hashes, patch identity,
+recorded fixture provenance and limits are in `checkpoint.json`.
+
+G13 and G28 advance only to **partially resolved**: calibration is a
+receipt-backed diagnostic with synthetic behavioral fixtures, not independently
+measured production calibration; the observer has a maintained explicit-reader
+interface and recorded merge/run fixture, not a new authenticated live-reader
+execution or composer integration. G04/G06 remain partial despite the new
+durable cancellation evidence and supported process-group termination tests.
+
 Only the authorized working-branch progress-tool commits/pushes are permitted.
 No PR mutation, workflow operation, merge, publishing, settings change or live
 healing is authorized. The initial progress operation included the existing
