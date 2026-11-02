@@ -30,6 +30,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterator, List, Mapping, Optional
 
+from codex.cognitive_brain.learning_reconciliation import (
+    DecisionVerifier,
+    ExternalSnapshot,
+    LearningRecovery,
+    SnapshotReader,
+)
+
 logger = logging.getLogger(__name__)
 
 EVIDENCE_STORE_SCHEMA_VERSION = "1.0.0"
@@ -118,6 +125,8 @@ class EvidenceStore:
     _consumption: Dict[str, str] = field(default_factory=dict)
     _qualifications: Dict[str, str] = field(default_factory=dict)
     _unknown_patterns: set[str] = field(default_factory=set)
+    _reconciliations: Dict[str, Mapping[str, Any]] = field(default_factory=dict)
+    _journal_sha256: str = ""
 
     def __post_init__(self) -> None:
         if type(self.allow_synthetic) is not bool:
@@ -139,6 +148,8 @@ class EvidenceStore:
         self._consumption.clear()
         self._qualifications.clear()
         self._unknown_patterns.clear()
+        self._reconciliations.clear()
+        self._journal_sha256 = hashlib.sha256(b"").hexdigest()
         if not self.path.exists():
             return
         with open(self.path, "rb") as handle:
@@ -147,15 +158,19 @@ class EvidenceStore:
                 contents = handle.read()
             finally:
                 fcntl.flock(handle, fcntl.LOCK_UN)
+        self._journal_sha256 = hashlib.sha256(contents).hexdigest()
         if contents and not contents.endswith(b"\n"):
             raise EvidenceIntegrityError("unterminated evidence tail; original bytes preserved")
         try:
-            lines = contents.decode("utf-8").splitlines()
+            lines = contents.decode("utf-8").splitlines(keepends=True)
         except UnicodeError as exc:
             raise EvidenceIntegrityError(
                 "invalid evidence encoding; original bytes preserved"
             ) from exc
+        prefix = hashlib.sha256()
         for number, line in enumerate(lines, 1):
+            previous_digest = prefix.hexdigest()
+            prefix.update(line.encode("utf-8"))
             if not line.strip():
                 continue
             try:
@@ -190,32 +205,41 @@ class EvidenceStore:
                 payload = record["payload"]
                 key, state = payload["observation_key"], payload["state"]
                 previous = self._consumption.get(key)
-                if key not in self._observations or (
-                    (state == "pending" and previous is not None)
-                    or (state == "complete" and previous != "pending")
+                if (
+                    key not in self._observations
+                    or payload["event_id"] != self._observations[key]["event_id"]
+                    or (
+                        (state == "pending" and previous is not None)
+                        or (state == "complete" and previous != "pending")
+                    )
                 ):
                     raise EvidenceIntegrityError(f"invalid consumption at line {number}")
                 self._consumption[key] = state
             elif record["kind"] == "qualification":
+                self._accept_qualification(record["payload"])
+            elif record["kind"] == "learning_reconciliation":
                 payload = record["payload"]
-                key = payload["observation_key"]
-                observation = self._observations.get(key)
+                identity = payload["identity"]
+                key = identity["observation_key"]
                 if (
-                    observation is None
-                    or self._consumption.get(key) != "complete"
+                    key not in self._observations
                     or key in self._qualifications
-                    or payload["event_id"] != observation["event_id"]
-                    or payload["pattern_id"] != observation.get("pattern_id")
-                    or payload["patch_hash"] != observation.get("patch_hash")
-                    or payload["merged_sha"] != observation.get("merged_sha")
-                    or payload["outcome"] != observation["outcome"]
-                    or observation["merged"] is not True
-                    or payload["observation_hash"] != self._observation_hash(observation)
-                    or payload["mode"]
-                    != ("synthetic" if observation.get("synthetic") is True else "production")
+                    or key in self._reconciliations
+                    or identity["journal_sha256"] != previous_digest
+                    or payload["event_id"] != self._observations[key]["event_id"]
+                    or self._consumption.get(key) not in ("pending", "complete")
+                    or identity
+                    != self._learning_identity(
+                        key, identity["external_snapshot"], identity["journal_sha256"]
+                    ).as_dict()
                 ):
-                    raise EvidenceIntegrityError(f"invalid qualification at line {number}")
-                self._qualifications[key] = payload["mode"]
+                    raise EvidenceIntegrityError(f"invalid reconciliation at line {number}")
+                self._reconciliations[key] = payload
+                if payload["disposition"] == "already_applied":
+                    self._consumption[key] = "complete"
+                    self._accept_qualification(payload["qualification"])
+                else:
+                    self._consumption[key] = "abandoned"
         events = {
             r["payload"]["event_id"]: r["payload"] for r in self._records if r["kind"] == "event"
         }
@@ -249,6 +273,32 @@ class EvidenceStore:
                     and self._qualifications.get(key) != "production"
                 ):
                     self._unknown_patterns.add(payload["pattern_id"])
+
+    def _accept_qualification(self, payload: Mapping[str, Any]) -> None:
+        key = payload["observation_key"]
+        observation = self._observations.get(key)
+        if (
+            observation is None
+            or self._consumption.get(key) != "complete"
+            or key in self._qualifications
+            or observation["merged"] is not True
+            or dict(payload) != self._qualification_payload(observation)
+        ):
+            raise EvidenceIntegrityError("invalid qualification identity or ordering")
+        self._qualifications[key] = payload["mode"]
+
+    def _qualification_payload(self, payload: Mapping[str, Any]) -> Dict[str, Any]:
+        return {
+            "event_id": payload["event_id"],
+            "observation_key": self.observation_key(payload),
+            "proof_kind": "trusted_measurement_consumption",
+            "mode": "synthetic" if payload.get("synthetic") is True else "production",
+            "pattern_id": payload.get("pattern_id"),
+            "patch_hash": payload.get("patch_hash"),
+            "merged_sha": payload.get("merged_sha"),
+            "outcome": payload["outcome"],
+            "observation_hash": self._observation_hash(payload),
+        }
 
     def _qualified_observation(
         self,
@@ -369,6 +419,48 @@ class EvidenceStore:
                 or re.fullmatch(r"[0-9a-f]{40}", payload["merged_sha"]) is None
             ):
                 raise EvidenceIntegrityError("invalid production qualification identity")
+        elif record["kind"] == "learning_reconciliation":
+            identity = payload.get("identity")
+            if (
+                set(payload) != {"event_id", "identity", "disposition", "qualification"}
+                or not isinstance(identity, dict)
+                or set(identity) != set(LearningRecovery.__dataclass_fields__)
+                or payload.get("disposition") not in ("already_applied", "abandoned")
+                or identity.get("state") not in ("pending", "complete")
+                or not isinstance(identity.get("external_snapshot"), str)
+                or not identity["external_snapshot"]
+                or not isinstance(identity.get("attempt_ids"), list)
+            ):
+                raise EvidenceIntegrityError("invalid learning reconciliation")
+            for name in ("observation_key", "event_id", "outcome"):
+                if not isinstance(identity.get(name), str) or not identity[name]:
+                    raise EvidenceIntegrityError("invalid reconciliation identity")
+            for name in (
+                "observation_id",
+                "pattern_id",
+                "patch_hash",
+                "merged_sha",
+                "attempt_id",
+            ):
+                if identity[name] is not None and (
+                    not isinstance(identity[name], str) or not identity[name]
+                ):
+                    raise EvidenceIntegrityError("invalid optional reconciliation identity")
+            if any(not isinstance(value, str) or not value for value in identity["attempt_ids"]):
+                raise EvidenceIntegrityError("invalid reconciliation attempts")
+            for name in ("journal_sha256", "observation_hash"):
+                if (
+                    not isinstance(identity.get(name), str)
+                    or re.fullmatch(r"[0-9a-f]{64}", identity[name]) is None
+                ):
+                    raise EvidenceIntegrityError("invalid reconciliation digest")
+            if payload["disposition"] == "abandoned":
+                if payload["qualification"] is not None:
+                    raise EvidenceIntegrityError("abandonment cannot qualify learning")
+            else:
+                EvidenceStore._validate_record(
+                    {**record, "kind": "qualification", "payload": payload["qualification"]}
+                )
         elif record["kind"] == "execution":
             if not isinstance(payload.get("gate_logs", []), list):
                 raise EvidenceIntegrityError("invalid gate logs")
@@ -584,18 +676,184 @@ class EvidenceStore:
             )
             self._append(
                 "qualification",
-                {
-                    "event_id": payload["event_id"],
-                    "observation_key": key,
-                    "proof_kind": "trusted_measurement_consumption",
-                    "mode": "synthetic" if payload.get("synthetic") is True else "production",
-                    "pattern_id": payload.get("pattern_id"),
-                    "patch_hash": payload.get("patch_hash"),
-                    "merged_sha": payload.get("merged_sha"),
-                    "outcome": payload["outcome"],
-                    "observation_hash": self._observation_hash(payload),
-                },
+                self._qualification_payload(payload),
             )
+
+    def _learning_identity(
+        self, key: str, external_snapshot: str, journal_sha256: str
+    ) -> LearningRecovery:
+        observation = self._observations[key]
+        attempts = {
+            body["attempt_id"]
+            for body in [
+                observation.get("provenance", {}),
+                *[
+                    record["payload"]
+                    for record in self._records
+                    if record["kind"] in ("event", "execution")
+                    and record["payload"]["event_id"] == observation["event_id"]
+                    and observation.get("patch_hash")
+                    and (
+                        record["payload"].get("patch_hash")
+                        if record["kind"] == "execution"
+                        else (record["payload"].get("proposal") or {}).get("patch_hash")
+                    )
+                    == observation.get("patch_hash")
+                ],
+            ]
+            if isinstance(body.get("attempt_id"), str) and body["attempt_id"]
+        }
+        return LearningRecovery(
+            observation_key=key,
+            observation_id=observation.get("observation_id"),
+            event_id=observation["event_id"],
+            pattern_id=observation.get("pattern_id"),
+            patch_hash=observation.get("patch_hash"),
+            merged_sha=observation.get("merged_sha"),
+            outcome=observation["outcome"],
+            attempt_id=next(iter(attempts)) if len(attempts) == 1 else None,
+            attempt_ids=tuple(sorted(attempts)),
+            observation_hash=self._observation_hash(observation),
+            state=self._consumption[key],
+            journal_sha256=journal_sha256,
+            external_snapshot=external_snapshot,
+        )
+
+    def inspect_learning(self, snapshot_reader: SnapshotReader) -> List[LearningRecovery]:
+        """Inspect pending and complete-without-receipt windows without creating files.
+
+        The reader supplies a non-secret consistent external snapshot identity;
+        its context must exclude all writers, including non-tracker SDK writers.
+        No external data or verifier is inferred from actor flags or digests.
+        """
+        with snapshot_reader() as snapshot:
+            with self._transaction(write=False):
+                external_snapshot = self._recheck_external_snapshot(snapshot)
+                return [
+                    self._learning_identity(key, external_snapshot, self._journal_sha256)
+                    for key, state in self._consumption.items()
+                    if state in ("pending", "complete") and key not in self._qualifications
+                ]
+
+    def reconcile_learning(
+        self,
+        identity: LearningRecovery,
+        disposition: str,
+        *,
+        snapshot_reader: SnapshotReader,
+        policy_verifier: Optional[DecisionVerifier] = None,
+        consumption_verifier: Optional[DecisionVerifier] = None,
+        measurement_verifier: Optional[Callable[[Mapping[str, Any]], bool]] = None,
+        dry_run: bool = True,
+    ) -> bool:
+        """Resolve without invoking a learner; return False for an identical decision.
+
+        Policy authorization is injected and denied by default. Already-applied
+        requires an independent observation-specific consumption receipt as well
+        as the existing measurement verifier. Ambiguous writes stay unresolved.
+        Dry runs validate identically but never create/append a file or sidecar;
+        existing shared read locks are used, not new lock files.
+        A single resolving append atomically carries the qualification, if any.
+        Execution ledgers are neither read nor changed by this operation.
+        """
+        if disposition not in ("already_applied", "abandoned") or type(dry_run) is not bool:
+            raise EvidenceIntegrityError("invalid reconciliation decision")
+        request = {"identity": identity.as_dict(), "disposition": disposition}
+        with snapshot_reader() as snapshot:
+            # Preflight read-only: denied, missing and stale requests create nothing.
+            with self._transaction(write=False):
+                self._check_reconciliation(
+                    identity,
+                    request,
+                    snapshot,
+                    policy_verifier,
+                    consumption_verifier,
+                    measurement_verifier,
+                )
+                previous = self._reconciliations.get(identity.observation_key)
+                if previous is not None:
+                    return False
+                if dry_run:
+                    return True
+            with self._transaction():
+                self._check_reconciliation(
+                    identity,
+                    request,
+                    snapshot,
+                    policy_verifier,
+                    consumption_verifier,
+                    measurement_verifier,
+                )
+                if identity.observation_key in self._reconciliations:
+                    return False
+                observation = self._observations[identity.observation_key]
+                self._append(
+                    "learning_reconciliation",
+                    {
+                        "event_id": identity.event_id,
+                        **request,
+                        "qualification": (
+                            self._qualification_payload(observation)
+                            if disposition == "already_applied"
+                            else None
+                        ),
+                    },
+                )
+                return True
+
+    def _check_reconciliation(
+        self,
+        identity: LearningRecovery,
+        request: Mapping[str, Any],
+        snapshot: ExternalSnapshot,
+        policy_verifier: Optional[DecisionVerifier],
+        consumption_verifier: Optional[DecisionVerifier],
+        measurement_verifier: Optional[Callable[[Mapping[str, Any]], bool]],
+    ) -> None:
+        external_snapshot = self._recheck_external_snapshot(snapshot)
+        if policy_verifier is None or policy_verifier(deepcopy(request)) is not True:
+            raise EvidenceIntegrityError("reconciliation denied by trusted policy")
+        key = identity.observation_key
+        if identity.external_snapshot != external_snapshot or key not in self._observations:
+            raise EvidenceIntegrityError("stale or unknown recovery identity")
+        previous = self._reconciliations.get(key)
+        if previous is not None:
+            if (
+                previous["identity"] != request["identity"]
+                or previous["disposition"] != request["disposition"]
+            ):
+                raise EvidenceIntegrityError("conflicting reconciliation decision")
+            self._recheck_external_snapshot(snapshot)
+            return
+        if (
+            key in self._qualifications
+            or self._consumption.get(key) not in ("pending", "complete")
+            or identity != self._learning_identity(key, external_snapshot, self._journal_sha256)
+        ):
+            raise EvidenceIntegrityError("stale or mismatched recovery identity")
+        if request["disposition"] == "already_applied" and (
+            consumption_verifier is None
+            or consumption_verifier(deepcopy(request)) is not True
+            or not self._qualified_observation(self._observations[key], measurement_verifier)
+        ):
+            raise EvidenceIntegrityError("independent consumption and measurement proof required")
+        self._recheck_external_snapshot(snapshot)
+
+    @staticmethod
+    def _recheck_external_snapshot(snapshot: ExternalSnapshot) -> str:
+        if (
+            not isinstance(snapshot, ExternalSnapshot)
+            or not isinstance(snapshot.identity, str)
+            or not snapshot.identity
+        ):
+            raise EvidenceIntegrityError("readable external snapshot identity required")
+        try:
+            current = snapshot.recheck()
+        except (OSError, ValueError, TypeError) as exc:
+            raise EvidenceIntegrityError("external snapshot unavailable") from exc
+        if not isinstance(current, str) or current != snapshot.identity:
+            raise EvidenceIntegrityError("external snapshot changed")
+        return current
 
     def outcome_for(self, event_id: str) -> Optional[Mapping[str, Any]]:
         """Return the recorded outcome for an event (read-only)."""
@@ -618,7 +876,7 @@ class EvidenceStore:
 
         if not event_id:
             raise ValueError("evidence record requires an event_id")
-        if kind in ("event", "outcome", "consumption", "qualification"):
+        if kind in ("event", "outcome", "consumption", "qualification", "learning_reconciliation"):
             raise EvidenceIntegrityError("use the dedicated record API")
         if "event_id" in payload and payload["event_id"] != event_id:
             raise EvidenceIntegrityError("payload cannot override event identity")

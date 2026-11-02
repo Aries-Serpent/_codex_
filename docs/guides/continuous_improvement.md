@@ -170,6 +170,58 @@ distinct identities. A pending cross-file learning intent requires
 reconciliation: evidence JSONL and the brain JSON file are not one atomic
 transaction, and their EMA is not a calibrated success probability.
 
+### Explicit learning-intent reconciliation
+
+`EvidenceStore.inspect_learning(snapshot_reader)` exposes pending consumption
+and consumption completed before its separate qualification append. Inspection
+does not create missing journals, lock files or directories; corrupt or
+unterminated evidence remains an error with original bytes preserved.
+The returned `LearningRecovery` binds the persisted observation/event/pattern,
+patch and merge identities, any actually recorded attempts, the journal digest
+and the external-store snapshot identity. Missing attempt IDs remain absent.
+
+The injected snapshot context must yield an `ExternalSnapshot(identity, recheck)`
+for a present, readable external store and exclude **all** external writers
+until it exits. `recheck` freshly reads the same store identity under the held
+boundary and must raise if that store disappears or becomes unreadable; it must
+not return a cached digest. Acquire this external boundary before the evidence
+transaction, in the same order as the tracker. Its tracker lock alone does not
+exclude arbitrary SDK writers.
+The API does not discover credentials, infer consumption from an EMA value,
+or supply a production snapshot/authorization implementation.
+
+`EvidenceStore.reconcile_learning` defaults to dry-run and denies decisions
+without an explicitly injected trusted policy verifier. A supplied identity,
+actor string or digest is not authorization. A real decision rechecks exact
+journal/observation/external identities under the transaction boundary:
+
+- `already_applied` additionally requires independent observation-specific
+  consumption proof and the existing trusted measurement contract. It never
+  invokes the learner again.
+- `abandoned` permanently consumes only that learning identity, creates no
+  qualification or success, and does not reset a breaker. Unknown eligibility
+  stays unknown; later observations need their own identities and proof.
+- Ambiguous external writes remain unresolved. Completed consumption without
+  qualification is not silently qualified during load.
+
+Recovery is append-only, with restart validation and no cross-file atomic
+exactly-once guarantee. It cannot reset or reuse cancelled/interrupted execution
+claims. Implementing this API does not authorize applying it to live journals
+or brain files; use new disposable copies unless the relevant owners separately
+authorize a specific recovery.
+
+### SQLite session pattern identities
+
+The maintained `SessionDatabase` and `SessionDB` adapters store session pattern
+IDs as opaque `TEXT`. Their insertion and `PatternEventRecorder` paths preserve
+nonnumeric and leading-zero strings across reopen and propagate SQLite write
+failures. Existing numeric inputs use SQLite text affinity; this is not a
+reason to normalize `"0012"` into `"12"`. CI issue-pattern integer identifiers
+in the cognitive app are a separate domain and must not be blanket-migrated.
+These scoped round-trip checks do not establish compatibility of untraced stores.
+Database construction initializes/optimizes schemas and may handle corruption;
+never open a live database merely to inspect its schema.
+
 Shared skill handlers reject nonfinite measurements, empty references,
 holdout-only replay and mismatched handoff/validation SHAs. Supplied
 observations still do not authenticate their observer. Production outcomes

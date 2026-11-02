@@ -263,3 +263,56 @@ re-enable breakers or retry unresolved claims/learning intents. An authorized
 recovery must reconcile the exact attempt/observation and append evidence.
 For code rollback, the owner may revert the scoped implementation commit
 after reviewing compatibility; do not reset, stash, rebase or delete ledgers.
+
+## Reconciliation continuation — 2026-11-02
+
+### Scope and implementation
+
+Resumed reviewed `831b60da86a6307674798a5d1dcd86b2a4358651` without
+repeating the prior observation/calibration/cancellation lanes. Parent integrated
+disjoint reconciliation and SQLite lanes, an interface review, adversarial case
+selection and one combined-diff review; actual agents and source digests are in
+`checkpoint.json.reconciliation_continuation`.
+
+`EvidenceStore.inspect_learning` is read-only. Explicit `reconcile_learning`
+defaults denied/dry-run and binds persisted observation, patch, merge, available
+attempts, journal bytes and a consistent external snapshot. `already_applied`
+requires independent consumption proof and the existing measurement verifier.
+`abandoned` permanently prevents replay without qualification. One append
+reconstructs the disposition and any qualified receipt; neither path invokes a
+learner, resets breakers or releases execution claims. Corrupt bytes stay errors.
+The external snapshot/recheck provider must exclude **all** writers, including
+non-tracker SDK writers. No production provider or cross-file atomic transaction
+is claimed.
+
+The maintained CLI → SessionDatabase / SessionDB → PatternEventRecorder paths
+already preserve TEXT IDs. Twelve disposable tests verify opaque IDs, leading
+zeros, numeric compatibility, restart/raw rows and explicit failed writes.
+No demonstrated adapter defect or migration was manufactured; CI issue-pattern
+integer IDs remain a separate domain. G16 remains partial for untraced stores.
+
+### Verification and review
+
+Combined durable/outcome/cancellation/calibration/reconciliation/SQLite selection:
+**219 passed in 9.19s**. The combined reviewer found no blocking defect; a
+precision lead prompted exact top-level execution / nested event patch matching
+before attempt attribution. The affected post-correction selection passed
+**17 tests, 56 deselected in 1.93s**; the broad selection was not rerun. These
+overlapping selections are not additive. Configured changed-file Ruff, Black,
+isort, mypy, compilation and whitespace checks passed. Synthetic fixture proof
+callbacks are not genuine production approval or measurement.
+
+Exact G01–G40 acceptance strings, fourteen negative mappings, B01–B10,
+checkpoints 0–7 and MCP/pyasn1 source hashes remain unchanged. Startup packet was
+not intentionally edited/staged/reverted; the initial normal progress operation
+included its existing automatic timestamp, recorded once in the checkpoint.
+
+### Stop and resume
+
+G07/G08/G11/G12/G16 stay partial. Owner-supplied policy, observation-specific
+consumption receipts and real all-writer snapshot integration remain required.
+Ambiguous external writes remain blocked; at-most-once learning is not atomic
+exactly-once across files. No live reconciliation or SQLite experiment, execution
+replay, PR mutation, workflow operation, merge or publication was performed.
+Security scan results and persistence identities belong in the continuation
+checkpoint; a skipped Python analysis is not a pass.
