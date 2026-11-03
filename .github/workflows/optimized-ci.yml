@@ -7,8 +7,12 @@ name: "CI \u2014 Optimized with Caching"
     paths:
     - src/**
     - tests/**
+    - packages/**
     - pyproject.toml
+    - requirements/**
     - uv.lock
+    - .github/actions/setup-python-cached/**
+    - .github/workflows/optimized-ci.yml
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
@@ -16,8 +20,8 @@ permissions:
   contents: read
 env:
   CODEX_FORCE_CPU: '1'
-  UV_CACHE_DIR: /tmp/.uv-cache
-  PIP_CACHE_DIR: /tmp/.pip-cache
+  UV_CACHE_DIR: ~/.cache/uv
+  PIP_CACHE_DIR: ~/.cache/pip
 jobs:
   cache-dependencies:
     name: Cache Dependencies
@@ -32,7 +36,7 @@ jobs:
       id: cache
       uses: ./.github/actions/setup-python-cached
       with:
-        python-version: 3.12.13
+        python-version: '3.12'
         cache-tier: live
     - name: Cache health report
       if: always()

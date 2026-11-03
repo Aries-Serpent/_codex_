@@ -1,207 +1,44 @@
-name: "Token Probe \u2014 CODEX_MASTER_KEY & CODEX_BACKUP_KEY Validation"
-'on':
+name: "Token Probe — CODEX Master and Backup Key Health"
+
+"on":
   workflow_dispatch:
     inputs:
       pr_number:
-        description: PR number to post validation results on
-        required: true
-        type: number
-      require_both_keys:
-        description: 'Fail if CODEX_BACKUP_KEY is also non-functional (default: true)'
+        description: Ignored legacy input; results are available in the Actions job summary
         required: false
-        default: 'true'
-        type: choice
-        options:
-        - 'true'
-        - 'false'
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
-permissions:
-  pull-requests: write
-  issues: write
-  contents: read
-jobs:
-  probe-master-key:
-    if: ${{ github.event.pull_request.number != 5328 }}
-    name: "\U0001F511 Probe CODEX_MASTER_KEY"
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    outputs:
-      functional: ${{ steps.probe.outputs.functional }}
-      read_status: ${{ steps.probe.outputs.read_status }}
-      write_status: ${{ steps.probe.outputs.write_status }}
-      comment_url: ${{ steps.probe.outputs.comment_url }}
-    steps:
-    - name: Mask secrets
-      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+        type: string
+      require_both_keys:
+        description: Fail unless both configured keys can read this repository
+        required: false
+        type: boolean
+        default: true
 
-        '
-    - name: "\xA73a \u2014 Read + write probe"
-      id: probe
-      env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
-          }}
-        PR_NUMBER: ${{ github.event.inputs.pr_number }}
-        REPO: ${{ github.repository }}
-      run: "echo \"## \U0001F511 CODEX_MASTER_KEY Probe\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho \"| Test | Result |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"|------|--------|\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\n\nif [ -z \"${CODEX_MASTER_KEY}\" ]; then\n\
-        \  echo \"| Key present | \u274C Secret not found in runner env |\" >> \"\
-        $GITHUB_STEP_SUMMARY\"\n  echo \"functional=false\" >> \"$GITHUB_OUTPUT\"\n\
-        \  echo \"read_status=missing\" >> \"$GITHUB_OUTPUT\"\n  echo \"write_status=missing\"\
-        \ >> \"$GITHUB_OUTPUT\"\n  exit 1\nfi\n\n# \u2500\u2500 Probe 1: read \u2500\
-        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
-        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
-        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
-        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nREAD_STATUS=$(curl\
-        \ -s -o /tmp/master_read.json -w \"%{http_code}\" \\\n  -H \"Authorization:\
-        \ Bearer ${CODEX_MASTER_KEY}\" \\\n  -H \"Accept: application/vnd.github+json\"\
-        \ \\\n  \"https://api.github.com/repos/${REPO}\" 2>/dev/null)\necho \"read_status=${READ_STATUS}\"\
-        \ >> \"$GITHUB_OUTPUT\"\n\nif [ \"$READ_STATUS\" = \"200\" ]; then\n  REPO_NAME=$(python3\
-        \ -c \"import json; d=json.load(open('/tmp/master_read.json')); print(d.get('full_name','?'))\"\
-        \ 2>/dev/null || echo \"?\")\n  echo \"| Read (GET /repo) | \u2705 HTTP 200\
-        \ \u2014 \\`${REPO_NAME}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  echo\
-        \ \"| Read (GET /repo) | \u274C HTTP ${READ_STATUS} \u2014 token invalid or\
-        \ expired |\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"functional=false\" >>\
-        \ \"$GITHUB_OUTPUT\"\n  echo \"write_status=skipped\" >> \"$GITHUB_OUTPUT\"\
-        \n  exit 1\nfi\n\n# \u2500\u2500 Probe 2: write \u2014 POST comment \u2500\
-        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
-        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
-        \u2500\u2500\u2500\u2500\u2500\u2500\nWRITE_STATUS=$(curl -s -o /tmp/master_write.json\
-        \ -w \"%{http_code}\" \\\n  -X POST \\\n  -H \"Authorization: Bearer ${CODEX_MASTER_KEY}\"\
-        \ \\\n  -H \"Accept: application/vnd.github+json\" \\\n  -H \"X-GitHub-Api-Version:\
-        \ 2022-11-28\" \\\n  -d \"{\\\"body\\\":\\\"\U0001F511 **[CODEX_MASTER_KEY\
-        \ probe \u2014 S117]** Read \u2705 HTTP ${READ_STATUS} \xB7 Write probe in\
-        \ progress \u2014 token-probe.yml validation run\\\"}\" \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
-        \ 2>/dev/null)\necho \"write_status=${WRITE_STATUS}\" >> \"$GITHUB_OUTPUT\"\
-        \n\nif [ \"$WRITE_STATUS\" = \"201\" ]; then\n  COMMENT_URL=$(python3 -c \"\
-        import json; d=json.load(open('/tmp/master_write.json')); print(d.get('html_url','?'))\"\
-        \ 2>/dev/null || echo \"?\")\n  echo \"| Write (POST comment) | \u2705 HTTP\
-        \ 201 \u2014 [View probe comment](${COMMENT_URL}) |\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  echo \"functional=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"comment_url=${COMMENT_URL}\"\
-        \ >> \"$GITHUB_OUTPUT\"\nelse\n  WRITE_MSG=$(python3 -c \"import json; d=json.load(open('/tmp/master_write.json'));\
-        \ print(d.get('message','?'))\" 2>/dev/null || echo \"?\")\n  echo \"| Write\
-        \ (POST comment) | \u274C HTTP ${WRITE_STATUS}: \\`${WRITE_MSG}\\` |\" >>\
-        \ \"$GITHUB_STEP_SUMMARY\"\n  echo \"functional=false\" >> \"$GITHUB_OUTPUT\"\
-        \n  exit 1\nfi\n"
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-  probe-backup-key:
-    name: "\U0001F511 Probe CODEX_BACKUP_KEY"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.run_id }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  probe-tokens:
+    name: Probe configured credentials
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/0D_base_'
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    outputs:
-      functional: ${{ steps.probe.outputs.functional }}
-      read_status: ${{ steps.probe.outputs.read_status }}
-      write_status: ${{ steps.probe.outputs.write_status }}
-      comment_url: ${{ steps.probe.outputs.comment_url }}
     steps:
-    - name: "\xA73b \u2014 Read + write probe"
-      id: probe
-      env:
-        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-        PR_NUMBER: ${{ github.event.inputs.pr_number }}
-        REPO: ${{ github.repository }}
-      run: "echo \"## \U0001F511 CODEX_BACKUP_KEY Probe\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho \"| Test | Result |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"|------|--------|\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\n\nif [ -z \"${CODEX_BACKUP_KEY}\" ]; then\n\
-        \  echo \"| Key present | \u274C Secret not found in runner env |\" >> \"\
-        $GITHUB_STEP_SUMMARY\"\n  echo \"functional=false\" >> \"$GITHUB_OUTPUT\"\n\
-        \  echo \"read_status=missing\" >> \"$GITHUB_OUTPUT\"\n  echo \"write_status=missing\"\
-        \ >> \"$GITHUB_OUTPUT\"\n  # BACKUP_KEY failure is non-blocking unless require_both_keys=true\n\
-        \  exit 0\nfi\n\n# \u2500\u2500 Probe 1: read \u2500\u2500\u2500\u2500\u2500\
-        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
-        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
-        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
-        \u2500\u2500\u2500\u2500\u2500\u2500\nREAD_STATUS=$(curl -s -o /tmp/backup_read.json\
-        \ -w \"%{http_code}\" \\\n  -H \"Authorization: Bearer ${CODEX_BACKUP_KEY}\"\
-        \ \\\n  -H \"Accept: application/vnd.github+json\" \\\n  \"https://api.github.com/repos/${REPO}\"\
-        \ 2>/dev/null)\necho \"read_status=${READ_STATUS}\" >> \"$GITHUB_OUTPUT\"\n\
-        \nif [ \"$READ_STATUS\" = \"200\" ]; then\n  echo \"| Read (GET /repo) | \u2705\
-        \ HTTP 200 |\" >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  echo \"| Read (GET /repo)\
-        \ | \u274C HTTP ${READ_STATUS} \u2014 token invalid or expired |\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  echo \"functional=false\" >> \"$GITHUB_OUTPUT\"\n  echo \"write_status=skipped\"\
-        \ >> \"$GITHUB_OUTPUT\"\n  exit 0\nfi\n\n# \u2500\u2500 Probe 2: write \u2014\
-        \ POST comment \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
-        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
-        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nWRITE_STATUS=$(curl\
-        \ -s -o /tmp/backup_write.json -w \"%{http_code}\" \\\n  -X POST \\\n  -H\
-        \ \"Authorization: Bearer ${CODEX_BACKUP_KEY}\" \\\n  -H \"Accept: application/vnd.github+json\"\
-        \ \\\n  -H \"X-GitHub-Api-Version: 2022-11-28\" \\\n  -d \"{\\\"body\\\":\\\
-        \"\U0001F511 **[CODEX_BACKUP_KEY probe \u2014 S117]** Read \u2705 HTTP ${READ_STATUS}\
-        \ \xB7 Write probe in progress \u2014 token-probe.yml validation run\\\"}\"\
-        \ \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
-        \ 2>/dev/null)\necho \"write_status=${WRITE_STATUS}\" >> \"$GITHUB_OUTPUT\"\
-        \n\nif [ \"$WRITE_STATUS\" = \"201\" ]; then\n  COMMENT_URL=$(python3 -c \"\
-        import json; d=json.load(open('/tmp/backup_write.json')); print(d.get('html_url','?'))\"\
-        \ 2>/dev/null || echo \"?\")\n  echo \"| Write (POST comment) | \u2705 HTTP\
-        \ 201 \u2014 [View probe comment](${COMMENT_URL}) |\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  echo \"functional=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"comment_url=${COMMENT_URL}\"\
-        \ >> \"$GITHUB_OUTPUT\"\nelse\n  WRITE_MSG=$(python3 -c \"import json; d=json.load(open('/tmp/backup_write.json'));\
-        \ print(d.get('message','?'))\" 2>/dev/null || echo \"?\")\n  echo \"| Write\
-        \ (POST comment) | \u274C HTTP ${WRITE_STATUS}: \\`${WRITE_MSG}\\` |\" >>\
-        \ \"$GITHUB_STEP_SUMMARY\"\n  echo \"functional=false\" >> \"$GITHUB_OUTPUT\"\
-        \nfi\n"
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-  summary:
-    name: "\U0001F4CB Post Validation Summary"
-    needs:
-    - probe-master-key
-    - probe-backup-key
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-    - name: Post consolidated result to PR
-      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
-      env:
-        MASTER_FUNCTIONAL: ${{ needs.probe-master-key.outputs.functional }}
-        MASTER_READ: ${{ needs.probe-master-key.outputs.read_status }}
-        MASTER_WRITE: ${{ needs.probe-master-key.outputs.write_status }}
-        BACKUP_FUNCTIONAL: ${{ needs.probe-backup-key.outputs.functional }}
-        BACKUP_READ: ${{ needs.probe-backup-key.outputs.read_status }}
-        BACKUP_WRITE: ${{ needs.probe-backup-key.outputs.write_status }}
-        REQUIRE_BOTH: ${{ github.event.inputs.require_both_keys }}
-      with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        script: "const prNumber = parseInt('${{ github.event.inputs.pr_number }}',\
-          \ 10);\nconst runUrl   = `${{ github.server_url }}/${{ github.repository\
-          \ }}/actions/runs/${{ github.run_id }}`;\nconst requireBoth = process.env.REQUIRE_BOTH\
-          \ === 'true';\n\nconst mFn = process.env.MASTER_FUNCTIONAL === 'true';\n\
-          const bFn = process.env.BACKUP_FUNCTIONAL === 'true';\nconst bothFn = mFn\
-          \ && bFn;\n\nconst mRow = `| \\`CODEX_MASTER_KEY\\` | Read: HTTP ${process.env.MASTER_READ}\
-          \ | Write: HTTP ${process.env.MASTER_WRITE} | ${mFn ? '\u2705 FUNCTIONAL'\
-          \ : '\u274C NON-FUNCTIONAL'} |`;\nconst bRow = `| \\`CODEX_BACKUP_KEY\\\
-          `  | Read: HTTP ${process.env.BACKUP_READ}  | Write: HTTP ${process.env.BACKUP_WRITE}\
-          \  | ${bFn ? '\u2705 FUNCTIONAL' : '\u274C NON-FUNCTIONAL'} |`;\n\nlet overall;\n\
-          if (bothFn) {\n  overall = '\U0001F7E2 BOTH KEYS OPERATIONAL (100% coverage)';\n\
-          } else if (mFn && !bFn) {\n  overall = '\U0001F7E1 PRIMARY KEY ONLY \u2014\
-          \ backup key non-functional (50% coverage)';\n} else if (!mFn && bFn) {\n\
-          \  overall = '\U0001F7E1 BACKUP KEY ONLY \u2014 primary key non-functional\
-          \ (50% coverage)';\n} else {\n  overall = '\U0001F534 BOTH KEYS FAILED \u2014\
-          \ REQUIRES IMMEDIATE ACTION';\n}\n\nconst body = [\n  `## \U0001F511 Token\
-          \ Probe Result \u2014 S117`,\n  '',\n  `| Secret | Read Probe | Write Probe\
-          \ | Status |`,\n  `|--------|-----------|------------|--------|`,\n  mRow,\n\
-          \  bRow,\n  '',\n  `**Overall:** ${overall}`,\n  `**Require both keys:**\
-          \ ${requireBoth ? 'YES' : 'NO'}`,\n  '',\n  `**Tested at:** ${new Date().toISOString()}`,\n\
-          \  `**Run:** [${process.env.GITHUB_RUN_NUMBER || '?'}](${runUrl})`,\n  '',\n\
-          \  bothFn\n    ? '\u2705 Both `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY`\
-          \ validated. `@copilot continue` automation is **fully operational**.'\n\
-          \    : mFn\n      ? '\u26A0\uFE0F `CODEX_MASTER_KEY` works but `CODEX_BACKUP_KEY`\
-          \ is non-functional. Sessions can activate but failover is unavailable.'\n\
-          \      : '\u26D4 Fix `CODEX_MASTER_KEY` before activating any agent session.\
-          \ See repo Settings \u2192 Secrets.',\n  '',\n  '_token-probe.yml | S117\
-          \ | admin_setup_verification.yml \xA73a/\xA73b_',\n].join('\\n');\n\nawait\
-          \ github.rest.issues.createComment({\n  owner: context.repo.owner,\n  repo:\
-          \ context.repo.repo,\n  issue_number: prNumber,\n  body,\n});\n\n// Also\
-          \ write to job summary\nconst fs = require('fs');\nfs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,\
-          \ `\\n${body}\\n`);\n\n// Fail conditions:\n// 1. Always fail if master\
-          \ key is broken\n// 2. Fail if require_both_keys=true and backup key is\
-          \ also broken\nif (!mFn) {\n  core.setFailed('CODEX_MASTER_KEY is non-functional.\
-          \ Agent sessions cannot activate.');\n} else if (requireBoth && !bFn) {\n\
-          \  core.setFailed('CODEX_BACKUP_KEY is non-functional and require_both_keys=true.\
-          \ Both keys must pass.');\n}\n"
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-    timeout-minutes: 30
+      - name: Checkout trusted default-branch probe implementation
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+          sparse-checkout: .github/scripts/token_probe.py
+          sparse-checkout-cone-mode: false
+
+      - name: Probe each configured key without writing to GitHub
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          REQUIRE_BOTH_KEYS: ${{ inputs.require_both_keys }}
+        run: python3 .github/scripts/token_probe.py

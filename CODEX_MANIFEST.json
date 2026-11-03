@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-11-03T02:12:03Z",
+  "generated_at": "2026-11-03T08:02:52Z",
   "agents": [
     {
       "name": "deep-research-analysis-agent",
@@ -956,7 +956,7 @@
     },
     {
       "name": "token-probe",
-      "enforcement_tier": "GROUNDED",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1375,5 +1375,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "bca4332d2f751da53f648bf70f541754c20daf6a9609dc8ff367b05f1cae4b0c"
+  "integrity_sha256": "4ee13dac8fca6a0751feb27bf1b4dc0f4e223cfffe41f945e5bc9b4dd9940cd3"
 }

@@ -1,3 +1,56 @@
+## Session: PR #5755 workflow-index CI follow-up — 2026-11-03
+
+### Agents Used
+
+- None — direct execution (no delegated agents).
+
+### Evidence and outcome
+
+- Fast Validation run `41607840287` reported six broken references in
+  `.github/workflows/INDEX.md`: an active `ml-tests.yml` was documented as a
+  disabled `.yml.disabled` file, and four archived workflows were presented as
+  active. Updated the index links, statuses and run instructions to reflect the
+  checked-in files.
+- `scripts/run_validation.sh --fast` passed locally: all pre-commit checks
+  passed and all six selected pytest cases passed. The two focused internal-link
+  checks also passed.
+- The No-deferral / owner-reason retry (`41680015455`, attempt 2) completed
+  successfully. A duplicate strict-gate run (`41680415032`) remained
+  `action_required` without jobs; no approval or dispatch was performed.
+- The base-branch ML Components run `41565889613` failed because
+  `tests/integration/test_agent_recovery.py::TestHealthCheckWorkflow::test_health_check_workflow_exists`
+  expects missing `.github/workflows/agent-health-check.yml`. This is separate
+  from the PR's documentation-link failure; the workflow/test owner should
+  decide whether to restore the workflow or update the stale test in a scoped
+  follow-up.
+
+---
+
+## Session: PR #5755 token probe review follow-up — 2026-11-03
+
+### Agents Used
+
+- None — direct execution (no delegated agents).
+
+### Evidence and outcome
+
+- Parse GitHub token expiration headers with a trailing ` UTC` as UTC, and cover
+  the within-24-hour status with a focused regression test.
+- Retain `pr_number` as an ignored optional workflow-dispatch input for existing
+  runbooks. Update the runbooks to explain that results appear in the read-only
+  Actions job summary, and correct broken links and estimated inventory counts
+  found by fast validation.
+- The focused token-probe tests, Ruff, Python compilation, workflow YAML checks
+  and whitespace checks pass. The repository fast-validation gate still reports
+  an unquoted `on` key in the untouched
+  `.github/workflows/e-to-d-transition-gate.yml`; this pre-existing workflow
+  contract issue is outside this token-probe fix.
+- The hosted preflight's auto-fix job attempted to push an accountability update
+  and received HTTP 403. This entry records the local resolution; no claim is
+  made that hosted CI has rerun or passed.
+
+---
+
 ## Session: PR #5752 MCP dependency compatibility — 2026-11-03
 
 ### Agents Used

@@ -16,6 +16,9 @@
 - Add explicit human-mediated approval and handoff controls, assurance skill contracts, and release-validation coverage while keeping production readiness and publication gates explicit.
 
 ### Fixed (SN)
+- Repair workflow-index links and status labels for active and archived workflows, clearing the six broken references reported by Fast Validation.
+- Parse GitHub token expiration headers ending in ` UTC` as UTC and preserve the ignored legacy `pr_number` dispatch input; document the read-only Actions job-summary result.
+- Correct broken local references in the affected token review runbook and refresh the estimated test-inventory counts.
 - Skip the optional Phase 7A test file only when FastAPI is unavailable, avoiding a zero-tests pytest failure; quote the Bandit version constraint so the shell does not treat it as redirection.
 - Restore the requested LFS asset fetch/verification path in Copilot setup and align embedded Python output lines with the setup validator's indentation checks.
 

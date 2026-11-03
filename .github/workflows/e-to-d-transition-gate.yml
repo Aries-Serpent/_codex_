@@ -1,7 +1,7 @@
 # Prepared, inactive until maintainer commits/merges/pushes to main.
 name: Read-only E to D transition assessment
-on:
-  workflow_dispatch:
+'on':
+  workflow_dispatch: {}
 permissions:
   contents: read
 concurrency:
