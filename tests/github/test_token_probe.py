@@ -120,9 +120,11 @@ def test_expired_and_expiring_tokens_are_distinguished() -> None:
 
     expired = run("2026-11-03T05:59:59Z")
     expiring = run("2026-11-04T05:00:00Z")
+    expiring_utc = run("2026-11-04 05:00:00 UTC")
 
     assert (expired.status, expired.usable_now) == ("expired", False)
     assert (expiring.status, expiring.usable_now) == ("expiring-soon", True)
+    assert (expiring_utc.status, expiring_utc.usable_now) == ("expiring-soon", True)
 
 
 def test_zero_rate_limit_blocks_current_usability() -> None:
@@ -222,6 +224,7 @@ def test_workflow_is_read_only_and_limited_to_trusted_branches() -> None:
 
     assert set(workflow["on"]) == {"workflow_dispatch"}
     assert workflow["permissions"] == {"contents": "read"}
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["pr_number"]["required"] is False
     assert job["if"] == ("github.ref == 'refs/heads/main' || github.ref == 'refs/heads/0D_base_'")
     assert checkout["with"]["ref"] == "${{ github.ref }}"
     assert checkout["with"]["persist-credentials"] is False

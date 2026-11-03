@@ -42,7 +42,9 @@ Navigate to: https://github.com/organizations/Aries-Serpent/settings/secrets/act
 - Click **Save**
 
 #### 4. Verification
-Run the token probe workflow to verify the fix:
+Run the token probe workflow to verify the fix. Review the pass/fail result in the
+Actions job summary; the probe does not post a PR comment. The legacy `pr_number`
+input remains accepted but is ignored:
 ```bash
 gh workflow run token-probe.yml \
   --repo Aries-Serpent/_codex_ \

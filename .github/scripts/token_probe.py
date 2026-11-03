@@ -54,7 +54,7 @@ def _token_type(token: str) -> str:
 def _parse_expiration(value: str | None) -> datetime | None:
     if not value:
         return None
-    normalized = value.strip()
+    normalized = re.sub(r"\s+UTC$", "+00:00", value.strip())
     try:
         parsed = datetime.fromisoformat(normalized.replace("Z", "+00:00"))
     except ValueError:

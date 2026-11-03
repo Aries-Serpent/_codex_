@@ -3,6 +3,10 @@ name: "Token Probe — CODEX Master and Backup Key Health"
 "on":
   workflow_dispatch:
     inputs:
+      pr_number:
+        description: Ignored legacy input; results are available in the Actions job summary
+        required: false
+        type: string
       require_both_keys:
         description: Fail unless both configured keys can read this repository
         required: false

@@ -1,3 +1,28 @@
+## Session: PR #5755 token probe review follow-up — 2026-11-03
+
+### Agents Used
+
+- None — direct execution (no delegated agents).
+
+### Evidence and outcome
+
+- Parse GitHub token expiration headers with a trailing ` UTC` as UTC, and cover
+  the within-24-hour status with a focused regression test.
+- Retain `pr_number` as an ignored optional workflow-dispatch input for existing
+  runbooks. Update the runbooks to explain that results appear in the read-only
+  Actions job summary, and correct broken links and estimated inventory counts
+  found by fast validation.
+- The focused token-probe tests, Ruff, Python compilation, workflow YAML checks
+  and whitespace checks pass. The repository fast-validation gate still reports
+  an unquoted `on` key in the untouched
+  `.github/workflows/e-to-d-transition-gate.yml`; this pre-existing workflow
+  contract issue is outside this token-probe fix.
+- The hosted preflight's auto-fix job attempted to push an accountability update
+  and received HTTP 403. This entry records the local resolution; no claim is
+  made that hosted CI has rerun or passed.
+
+---
+
 ## Session: PR #5752 MCP dependency compatibility — 2026-11-03
 
 ### Agents Used
