@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — MCP dependency compatibility review (2026-11-03)
+- Restore the dev lock's MCP pin to 1.29.0, required exactly by Semgrep 1.175.0; MCP 2.3.0 cannot be safely substituted even with its missing transitive dependencies added.
+- Record PR #5752's verified artifact hashes, isolated compatibility checks, current PDA/accountability evidence and explicit full-lock, setup and hosted-CI continuation checkpoints.
+
 ### Changed — Evidence-gated recovery draft continuation (2026-11-02)
 - Add read-only merged observations and calibration diagnostics, durable cancellation, explicit append-only learning reconciliation, cooperating-writer snapshots and separate retained-evidence human handoffs; default live transport/recovery and genuine owner evidence remain gated.
 - Retain Enterprise CodeQL SARIF and analyzed-source/run metadata, expose informational scanner exits and report actual job outcomes without implying a clean scan from job success.
