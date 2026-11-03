@@ -1,3 +1,68 @@
+## Session: PR #5752 MCP dependency compatibility — 2026-11-03
+
+### Agents Used
+
+- `mcp-lock-review` (read-only explore agent): published dependency metadata and
+  artifact-hash investigation. Parent performed edits and validation.
+
+### Evidence and outcome
+
+- Reviewed the last three commits and the net diff against `0D_base_`
+  (`173563b5`): only the MCP pin and hashes changed in the dev lock.
+- Both MCP 2.3.0 hashes match PyPI, but Semgrep 1.175.0 requires exactly
+  `mcp==1.29.0`. Latest Semgrep 1.183.0 retains that requirement. MCP 2.3.0
+  additionally requires absent `httpx2>=2.10.0` and `mcp-types==2.3.0`;
+  adding them cannot resolve the exact-version conflict. Restored MCP 1.29.0
+  with its published hashes rather than claim this incompatible bump is safe.
+  Sources: PyPI JSON metadata for `semgrep/1.175.0`, `semgrep/1.183.0`,
+  `mcp/2.3.0` and `mcp/1.29.0`.
+- Verified both MCP hashes and all eight Semgrep hashes against PyPI; downloaded
+  wheel digests also match the lock. A hash-enforced, no-dependencies install of
+  the two packages passed, but the sandbox lacked `anyio` and had inconsistent
+  OpenTelemetry dependencies. A separate clean Python 3.12.10 environment with
+  normally resolved dependencies passed `pip check`, SDK/Semgrep import smoke
+  checks outside the repository, and `semgrep --version` (1.175.0). This is not
+  a complete hash-locked dev install.
+- Existing dependency-management, PDA-integrity and session-wrapup tests passed
+  (102 passed, one skipped). PDA JSON parsing, whitespace and secret checks
+  passed. Local readiness at 2026-11-03T01:38:27Z is **85/100** with both
+  today's PDA and accountability dimensions green; auto-fix remains failing.
+  No production Python or workflow was changed.
+  The existing dirty startup packet was preserved and excluded from this patch.
+- Clean full-lock resolution with `pip install --dry-run --ignore-installed
+  --require-hashes -r requirements/lock-dev.txt` failed: inherited
+  `aiohttp==3.14.4` requires `multidict<7`, while the lock pins `multidict==7.1.0`.
+  This prevents a full functional/merge-readiness claim.
+- Hosted run `41556662537` failed setup because Python 3.12.10 was unavailable
+  on Ubuntu 26.04. Latest inspected PR checks had no failures, but Python
+  Enterprise CodeQL run `41559258905` remained running; skipped quality jobs
+  are not passes. No workflow activation, approval, retrigger or merge performed.
+
+### Checkpoints and continuation plan
+
+1. **Dependency owner:** keep MCP at Semgrep's supported pin. Before retrying
+   2.3.0, require a published compatible Semgrep release or an explicitly
+   approved isolated SDK environment; verify metadata, advisories, all transitive
+   hashes, imports and actual scanner execution. Do not override resolver checks.
+2. **Dev-lock owner:** in a separate scoped repair, regenerate from
+   `requirements/dev.txt` using the documented `uv pip compile` command on
+   Python 3.12. Diagnose the demonstrated aiohttp/multidict conflict and any
+   subsequent resolver conflicts; inspect the complete diff, advisory-check
+   changed versions, then require a clean full `--require-hashes` install,
+   `pip check` and focused tooling tests. Do not mark this checkpoint complete
+   from the isolated two-package smoke check.
+3. **Setup owner:** explicitly authorize a runner/Python-build compatibility
+   repair, verify the Actions Python manifest for the chosen runner, validate
+   setup YAML/actionlint and permissions, then obtain a fresh review. The older
+   setup failure alone does not authorize configuration changes.
+4. **PR owner:** review fresh post-push CI for this exact head and retained
+   scanner results. The local auto-fix check reports 5,146 repository-wide
+   issues (894 auto-fixable); broad unrelated sweeps and gate weakening are not
+   part of this dependency patch. Today's PDA/report freshness and a refreshed
+   local score do not establish green CI or authorize merging.
+
+---
+
 ## Session: PR #5747 evidence-gated draft continuation — 2026-11-02
 
 - Opened a draft into `0D_base_` at base `f48fb7a36eb31fd1ff518c186e54ec212c0d8366`,
