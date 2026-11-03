@@ -4,11 +4,12 @@
 
 ## Purpose
 
-[Automated workflow - purpose to be documented]
+Caches Python dependencies for the repository's optimized CI setup.
 
 ## Triggers
 
-[No triggers configured]
+Manual dispatch and pushes to `main` when source, package, dependency, cache-action,
+or workflow files change.
 
 ## Permissions Required
 
@@ -17,8 +18,8 @@
 ## Environment Variables
 
 - **CODEX_FORCE_CPU**: 1
-- **UV_CACHE_DIR**: /tmp/.uv-cache
-- **PIP_CACHE_DIR**: /tmp/.pip-cache
+- **UV_CACHE_DIR**: `~/.cache/uv`
+- **PIP_CACHE_DIR**: `~/.cache/pip`
 
 ## Jobs
 
@@ -26,11 +27,12 @@
 
 **Runner**: `ubuntu-latest`
 
-**Steps**: 2
+**Steps**: 3
 
 **Key Steps**:
-1. actions/checkout@v4
-2. Setup Python
+1. Checkout with the repository-pinned `actions/checkout` revision
+2. Set up Python through `.github/actions/setup-python-cached`
+3. Generate a best-effort cache health report
 
 
 ## Secrets Used

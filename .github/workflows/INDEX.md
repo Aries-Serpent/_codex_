@@ -171,7 +171,7 @@ Authentication, secrets, and token management:
 |----------|-------------|---------|--------|
 | [agent-auth-delegation.yml](agent-auth-delegation.yml) | 🆕 Agent session auth with cognitive pre-flight gate (REQ-1–5) | PR, Manual | ✅ Active |
 | [session-watchdog.yml](session-watchdog.yml) | 🆕 Timebox, exploration session & continuity enforcement | PR comment | ✅ Active |
-| [token-probe.yml](token-probe.yml) | 🆕 On-demand CODEX_MASTER_KEY + CODEX_BACKUP_KEY read/write validation | Manual | ✅ Active |
+| [token-probe.yml](token-probe.yml) | 🆕 Read-only CODEX key repository-access and expiration health probe | Manual | ✅ Active |
 | [auth-tests.yml](auth-tests.yml) | Authentication testing | PR, Push | ✅ Active |
 
 **Cognitive Pre-flight Gate** (`cognitive-preflight` job inside `agent-auth-delegation.yml`):
