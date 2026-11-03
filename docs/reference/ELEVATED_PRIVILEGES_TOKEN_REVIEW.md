@@ -194,7 +194,7 @@
 **Last Updated: 2026-06-22
 > **Session:** S859 | **Date:2026-07-13
 > **Author:** copilot-swe-agent[bot]
-> **Policy anchor:** [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../GITHUB_API_COPILOT_AGENT_REFERENCE.md) · [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md)
+> **Policy anchor:** [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) · [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md)
 > **AAIS relevance:** Security gate + Reliability gate — token health directly impacts both
 
 ---
@@ -420,7 +420,7 @@ grep -rl "github\.token" .github/workflows/ | xargs grep -L "CODEX_MASTER_KEY" 2
 Current result: `consolidated-pr-status.yml` (reusable workflow — posts PR status comments only; `issues:write` via `github.token` is sufficient for this read-adjacent operation)
 
 **Step 2:** Open the file:
-> [.github/workflows/workflow-link-validation.yml](../.github/workflows/workflow-link-validation.yml)
+> [archived .github/workflows/workflow-link-validation.yml](../../.github/workflow-archive/backups/2026-02-06-235731-artifact-prefix/workflow-link-validation.yml)
 
 **Step 3:** Find lines using `${{ github.token }}` for write operations (PR comments, variable sets, approvals).
 
@@ -839,7 +839,7 @@ xychart-beta
 | GitHub App settings (org) | [/organizations/Aries-Serpent/settings/apps](https://github.com/organizations/Aries-Serpent/settings/apps) |
 | Personal Access Tokens (create/rotate) | [/settings/tokens](https://github.com/settings/tokens) <!-- pragma: allowlist secret --> |
 | Admin Setup Verification (run test) | [actions/workflows/admin_setup_verification.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml) |
-| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../GITHUB_API_COPILOT_AGENT_REFERENCE.md) <!-- pragma: allowlist secret --> |
+| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) <!-- pragma: allowlist secret --> |
 | Variables & Secrets Full Reference | [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md) <!-- pragma: allowlist secret --> |
 | MCP Tool Reference | [.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md](../../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md) |
 | Agentic Repo State (auth confirmed) | [.codex/AGENTIC_REPO_STATE.md](../../.codex/AGENTIC_REPO_STATE.md) |
@@ -1148,9 +1148,9 @@ stateDiagram-v2
 
  SecretsBaselineOK --> LastVerifiedUpdated : PATCH CODEX_MASTER_KEY_LAST_VERIFIED
 
- LastVerifiedUpdated --> LiveTestPassed : admin_setup_verification.yml 
+ LastVerifiedUpdated --> LiveTestPassed : admin_setup_verification.yml
 
- LiveTestPassed --> TokenValid : Rotation complete 
+ LiveTestPassed --> TokenValid : Rotation complete
 
  LiveTestPassed --> RotationTriggered : Test fails re-rotate
 
@@ -1286,12 +1286,12 @@ Use it to prioritise which rotation to complete first in an emergency.
 | Personal Access Tokens (create/rotate) | [/settings/tokens](https://github.com/settings/tokens) <!-- pragma: allowlist secret --> |
 | Repo Variables (view/edit) | [/settings/variables/actions](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) |
 | Admin Setup Verification (run test) | [actions/workflows/admin_setup_verification.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml) |
-| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../GITHUB_API_COPILOT_AGENT_REFERENCE.md) <!-- pragma: allowlist secret --> |
+| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md) <!-- pragma: allowlist secret --> |
 | Variables & Secrets Full Reference | [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md) <!-- pragma: allowlist secret --> |
 | MCP Tool Reference | [.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md](../../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md) |
 | Agentic Repo State (auth confirmed) | [.codex/AGENTIC_REPO_STATE.md](../../.codex/AGENTIC_REPO_STATE.md) |
 | Rate Limit Awareness | [.codex/docs/RATE_LIMIT_AWARENESS.md](../../.codex/docs/RATE_LIMIT_AWARENESS.md) |
-| Post-Rotation Verify Script | [scripts/ci/post_rotation_verify.sh](../scripts/ci/post_rotation_verify.sh) |
+| Post-Rotation Verify Script | [scripts/ci/post_rotation_verify.sh](../../scripts/ci/post_rotation_verify.sh) |
 
 ---
 
@@ -1757,12 +1757,12 @@ Reference guide for how to read variables and secrets in GitHub Actions YAML:
 jobs:
  example:
  env:
- # Repo Variables (plain text, visible in logs) 
+ # Repo Variables (plain text, visible in logs)
  PYTHON_VER: ${{ vars.CODEX_ENV_PYTHON_VERSION }}
  LLM_MODEL: ${{ vars.CODEX_LLM_MODEL }}
  CI_FAILURE_RATE: ${{ vars.CODEX_CI_FAILURE_RATE }}
 
- # Repo/Org Secrets (masked in logs) 
+ # Repo/Org Secrets (masked in logs)
  # ALWAYS use the fallback chain for token operations:
  GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
@@ -1772,7 +1772,7 @@ jobs:
  # For GitHub App short-lived token (preferred for write ops):
  # Use actions/create-github-app-token@v1 — see §5.3
 
- # Environment Variables (set via env: at job/step level) 
+ # Environment Variables (set via env: at job/step level)
  # Environment variables from the named environment are automatically
  # injected when the job targets that environment:
  # environment: Aries_Serpent_codex_
@@ -1836,12 +1836,12 @@ Cross-reference: for each token rotation scenario, which variables and secrets n
 ### 11.1 Workflow Overview Map
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Diagram showing "scan-secrets-variables.yml\nDiscovers all variables & secrets\nPosts inventory to PR", "token-probe.yml\nValidates MASTER_KEY + BACKUP_KEY\nPosts pass/fail to PR"'}}%%
+%%{init: {'accessibility': {'title': 'Diagram showing "scan-secrets-variables.yml\nDiscovers all variables & secrets\nPosts inventory to PR", "token-probe.yml\nValidates MASTER_KEY + BACKUP_KEY\nWrites pass/fail to Actions job summary"'}}%%
 
 graph TB
  subgraph " Audit & Scan"
  W1["scan-secrets-variables.yml\nDiscovers all variables & secrets\nPosts inventory to PR"]
- W2["token-probe.yml\nValidates MASTER_KEY + BACKUP_KEY\nPosts pass/fail to PR"]
+ W2["token-probe.yml\nValidates MASTER_KEY + BACKUP_KEY\nWrites pass/fail to Actions job summary"]
  W3["admin_setup_verification.yml\nVerifies all admin setup items\n§2 vars · §3 secrets · §6 perms"]
  W4["test-variables-api.yml\nLive CRUD test for vars API\nCREATE GET UPDATE DELETE"]
  end
@@ -1908,10 +1908,10 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run scan-secrets-variables.yml \
 | Field | Value |
 |-------|-------|
 | **Trigger** | `workflow_dispatch` only |
-| **Inputs** | `pr_number` (required), `require_both_keys` (default `true`) |
+| **Inputs** | `pr_number` (optional, ignored legacy compatibility input), `require_both_keys` (default `true`) |
 | **Token needed** | `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY` <!-- pragma: allowlist secret --> |
-| **Permissions** | `contents: read`, `pull-requests: write` |
-| **Output** | Pass/fail summary comment on the target PR |
+| **Permissions** | `contents: read` |
+| **Output** | Pass/fail summary in the Actions job summary; no PR comment is posted |
 | **§10 addresses** | §10.2 org secrets — validates MASTER_KEY + BACKUP_KEY are functional <!-- pragma: allowlist secret --> |
 | **Run after** | Every token rotation (§9.2, §10.11) <!-- pragma: allowlist secret --> |
 
@@ -2211,9 +2211,9 @@ sequenceDiagram
  participant Copilot as Copilot Agent
 
  Note over Admin,Copilot: Phase A — Validate current state
- Admin->>GH: 1. Run token-probe.yml (pr=4346)
+ Admin->>GH: 1. Run token-probe.yml
 
- GH-->>Admin: MASTER_KEY BACKUP_KEY 
+ GH-->>Admin: Review MASTER_KEY and BACKUP_KEY status in the Actions job summary
  Admin->>GH: 2. Run scan-secrets-variables.yml
 
  GH-->>Admin: Full inventory snapshot
@@ -2226,25 +2226,25 @@ sequenceDiagram
  Admin->>GH: 5. Rotate CODEX_BACKUP_KEY
  Admin->>GH: 6. Re-run token-probe.yml (verify new tokens work)
 
- GH-->>Admin: New tokens 
+ GH-->>Admin: Review new token status in the Actions job summary
  Admin->>GH: 7. Run post_rotation_verify.sh (or scripts/ci/post_rotation_verify.sh)
 
  Note over Admin,Copilot: Phase C — Implement §10.9.1 new variables
  Admin->>Copilot: 8. @copilot implement variable governance plan
  Copilot->>GH: 9. Write intent files process-variable-intents.yml
 
- GH-->>Copilot: Variables created 
+ GH-->>Copilot: Variables created
  Copilot->>GH: 10. Run vars-guide-sync.yml (layers=all)
 
- GH-->>Copilot: Reference doc updated 
+ GH-->>Copilot: Reference doc updated
 
  Note over Admin,Copilot: Phase D — Verify final state
  Admin->>GH: 11. Run admin_setup_verification.yml
 
- GH-->>Admin: All §2/§3/§6 checks 
+ GH-->>Admin: All §2/§3/§6 checks
  Admin->>GH: 12. Run repo-var-sync-schedule.yml
 
- GH-->>Admin: agent_context.json synced 
+ GH-->>Admin: agent_context.json synced
  Admin->>GH: 13. Run validate.yml
 
  GH-->>Admin: secrets baseline ruff sync_tracked
