@@ -106,7 +106,7 @@ Active workflows for running tests and collecting coverage:
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
 | [auth-tests.yml](auth-tests.yml) | Authentication testing | PR, Push | ✅ Active |
-| [ml-tests.yml.disabled](ml-tests.yml.disabled) | ML model testing | Manual | ⏸️ Disabled |
+| [ml-tests.yml](ml-tests.yml) | ML model testing | PR, Push, Schedule | ✅ Active |
 | [optimized-ci.yml](optimized-ci.yml) | Optimized CI pipeline | PR, Push | ✅ Active |
 | [rust_swarm_ci.yml](rust_swarm_ci.yml) | Rust swarm testing | PR, Push | ✅ Active |
 | [test-rag.yml](test-rag.yml) | RAG model testing | Manual | ✅ Active |
@@ -132,8 +132,8 @@ Pipeline health monitoring and diagnostics:
 |----------|-------------|---------|--------|
 | [artifact-monitoring.yml](artifact-monitoring.yml) | Artifact monitoring and tracking | Schedule | ✅ Active |
 | [batch-ci-triage.yml](batch-ci-triage.yml) | Batch CI issue triage | Schedule | ✅ Active |
-| [ci-health-monitor.yml](ci-health-monitor.yml) | CI/CD health monitoring | Schedule | ✅ Active |
-| [repository-health-monitoring.yml](repository-health-monitoring.yml) | Repository health checks | Schedule | ✅ Active |
+| [ci-health-monitor.yml (archived)](_archived/ci-health-monitor.yml.archived) | CI/CD health monitoring | N/A | ⏸️ Archived |
+| [repository-health-monitoring.yml (archived)](_archived/repository-health-monitoring.yml.archived) | Repository health checks | N/A | ⏸️ Archived |
 
 ### Cache Management Workflows
 
@@ -149,7 +149,7 @@ Documentation building, validation, and deployment:
 
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
-| [documentation-link-checker.yml](documentation-link-checker.yml) | Documentation link validation | PR, Schedule | ✅ Active |
+| [documentation-link-checker.yml (archived)](_archived/documentation-link-checker.yml.archived) | Documentation link validation | N/A | ⏸️ Archived |
 | [pages-mkdocs.yml](pages-mkdocs.yml) | MkDocs documentation build | Push to main | ✅ Active |
 | [api-documentation.yml](api-documentation.yml) | API documentation generation | Push, Manual | ✅ Active |
 
@@ -170,7 +170,7 @@ Authentication, secrets, and token management:
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
 | [agent-auth-delegation.yml](agent-auth-delegation.yml) | 🆕 Agent session auth with cognitive pre-flight gate (REQ-1–5) | PR, Manual | ✅ Active |
-| [session-watchdog.yml](session-watchdog.yml) | 🆕 Timebox, exploration session & continuity enforcement | PR comment | ✅ Active |
+| [session-watchdog.yml (archived)](_archived/session-watchdog.yml.archived) | Timebox, exploration session & continuity enforcement | N/A | ⏸️ Archived |
 | [token-probe.yml](token-probe.yml) | 🆕 Read-only CODEX key repository-access and expiration health probe | Manual | ✅ Active |
 | [auth-tests.yml](auth-tests.yml) | Authentication testing | PR, Push | ✅ Active |
 
@@ -181,7 +181,7 @@ Authentication, secrets, and token management:
 - REQ-4: Verifies `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was touched in last commit
 - REQ-5 (WF-002): Reads `SESSION_TIMEBOX_START`/`SESSION_TYPE_EXPLORATION` markers → injects enforcement items
 
-**Session Watchdog** (`session-watchdog.yml`):
+**Archived Session Watchdog** (`_archived/session-watchdog.yml.archived`):
 - Detects `~N minutes` in any PR comment → posts `SESSION_TIMEBOX_START` with expiry timestamp
 - Detects `exploration session`/`capability discussion` → posts `SESSION_TYPE_EXPLORATION` + continuity rules
 - Detects `Do NOT auto-proceed` → flags mandatory stop-gate in exploration comment
@@ -280,8 +280,7 @@ gh workflow run unified-deployment.yml -f mode=cognitive-app
 ### Managing Documentation
 
 ```bash
-# Check documentation links
-gh workflow run documentation-link-checker.yml
+# Documentation link checker workflow is archived; run repository link validation instead.
 
 # Build MkDocs
 gh workflow run pages-mkdocs.yml
@@ -296,8 +295,7 @@ gh workflow run api-documentation.yml
 # Run workflow analytics
 gh workflow run workflow-analytics-unified.yml -f mode=scheduled
 
-# Monitor CI health
-gh workflow run ci-health-monitor.yml
+# CI health monitor workflow is archived; review GitHub Actions run logs.
 
 # Check artifact status
 gh workflow run artifact-monitoring.yml
@@ -315,7 +313,7 @@ gh workflow run artifact-monitoring.yml
 ## 📞 Support
 
 For issues or questions about workflows:
-1. Check [CI Health Monitor](ci-health-monitor.yml) for automated diagnostics
+1. Review the [archived CI Health Monitor](_archived/ci-health-monitor.yml.archived) specification; automated diagnostics are no longer active
 2. Review workflow run logs in GitHub Actions
 3. Check [Phase 2 Completion Report](../../.github/workflow-archive/phase2-consolidation/PHASE2_FINAL_COMPLETION_REPORT.md) for consolidation details
 4. Create an issue with `ci-health` or `workflow-consolidation` label
