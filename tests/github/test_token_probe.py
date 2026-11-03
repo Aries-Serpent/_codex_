@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import sys
 from datetime import datetime, timezone
+from http.client import IncompleteRead
 from pathlib import Path
 from urllib.error import URLError
 
@@ -170,6 +171,62 @@ def test_network_failure_is_not_misreported_as_invalid_token() -> None:
 
     assert result.status == "probe-error"
     assert result.usable_now is False
+
+
+@pytest.mark.parametrize(
+    ("require_both", "backup_usable", "expected_exit"),
+    [
+        (False, True, 0),
+        (True, True, 1),
+        (False, False, 1),
+        (True, False, 1),
+    ],
+)
+def test_truncated_master_response_still_probes_backup_and_writes_summary(
+    monkeypatch, tmp_path, require_both: bool, backup_usable: bool, expected_exit: int
+) -> None:
+    class TruncatedResponse(FakeResponse):
+        def read(self) -> bytes:
+            raise IncompleteRead(b"partial-body-marker", 100)
+
+    master_response = TruncatedResponse(200, b"", {})
+    backup_response = (
+        FakeResponse(200, b'{"permissions":{"pull":true}}', {})
+        if backup_usable
+        else TruncatedResponse(200, b"", {})
+    )
+    responses = {
+        "master-test-token": master_response,
+        "backup-test-token": backup_response,
+    }
+    probed_tokens: list[str] = []
+
+    class FakeOpener:
+        def open(self, request, *, timeout):
+            assert timeout == 10
+            token = request.get_header("Authorization").removeprefix("Bearer ")
+            probed_tokens.append(token)
+            return responses[token]
+
+    monkeypatch.setattr(token_probe, "build_opener", lambda *_args: FakeOpener())
+    summary_path = tmp_path / "summary.md"
+    monkeypatch.setenv("GITHUB_REPOSITORY", "Aries-Serpent/_codex_")
+    monkeypatch.setenv("REQUIRE_BOTH_KEYS", str(require_both).lower())
+    monkeypatch.setenv("CODEX_MASTER_KEY", "master-test-token")
+    monkeypatch.setenv("CODEX_BACKUP_KEY", "backup-test-token")
+    monkeypatch.setenv("GITHUB_STEP_SUMMARY", str(summary_path))
+
+    assert token_probe.main() == expected_exit
+
+    summary = summary_path.read_text(encoding="utf-8")
+    assert probed_tokens == ["master-test-token", "backup-test-token"]
+    assert "CODEX\\_MASTER\\_KEY" in summary
+    assert "CODEX\\_BACKUP\\_KEY" in summary
+    assert "probe-error" in summary
+    assert ("repository-readable" in summary) is backup_usable
+    assert "partial-body-marker" not in summary
+    assert master_response.closed is True
+    assert backup_response.closed is True
 
 
 def test_api_redirects_are_never_followed_with_credentials() -> None:

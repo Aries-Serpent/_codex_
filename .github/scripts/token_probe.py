@@ -11,6 +11,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
+from http.client import HTTPException
 from pathlib import Path
 from typing import Any, Callable
 from urllib.error import HTTPError, URLError
@@ -115,7 +116,7 @@ def probe_token(
         headers = exc.headers or {}
         body = b""
         response = exc
-    except (URLError, TimeoutError, OSError, ValueError):
+    except (HTTPException, URLError, TimeoutError, OSError, ValueError):
         return ProbeResult(
             "probe-error",
             False,
