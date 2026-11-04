@@ -28,6 +28,10 @@ MANIFEST
 /wheelhouse_*.tar.gz
 /*.whl
 
+# Regenerable SQLite archive artifacts
+*.cdx.sqlite
+.*.cdx.sqlite.*.tmp
+
 # Virtual environments
 venv/
 ENV/
