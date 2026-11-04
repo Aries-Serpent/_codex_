@@ -9,6 +9,7 @@
     "gitleaks": {
       "version": "8.30.1",
       "distribution": "official release asset; checksum verified before use",
+      "exit_code": 1,
       "finding_count": 85,
       "files_with_findings": 32,
       "rule_counts": {
@@ -23,6 +24,7 @@
     },
     "detect-secrets": {
       "version": "1.5.0",
+      "exit_code": 0,
       "finding_count": 318,
       "files_with_findings": 158,
       "plugin_counts": {
@@ -47,7 +49,8 @@
   },
   "archive": {
     "generated": false,
-    "pack_attempts": 0,
+    "pack_attempts": 1,
+    "successful_pack_attempts": 0,
     "archive_size_bytes": null,
     "compression_ratio": null,
     "pack_duration_seconds": null,

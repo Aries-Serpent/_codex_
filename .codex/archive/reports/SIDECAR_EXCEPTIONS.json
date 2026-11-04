@@ -3,7 +3,17 @@
   "observed_revision": "5e0e0fa1d3a0a51c1a84eba803f294b47aedec68",
   "archive_root": ".codex/archive",
   "sidecars_checked": 3060,
-  "verified": 3051,
+  "verified": 3052,
+  "resolved_by_authoritative_manifest": [
+    {
+      "sidecar": ".codex/archive/legacy-root/checksums/PHASE_8_3_PERFORMANCE_DASHBOARD.md.sha256",
+      "declared_target": "PHASE_8_3_PERFORMANCE_DASHBOARD.md",
+      "authoritative_target": ".codex/archive/legacy-root/PHASE_8_3_PERFORMANCE_DASHBOARD.md",
+      "manifest": ".codex/archive/legacy-root/manifest.json",
+      "duplicate_basename_elsewhere": ".codex/archive/phase-reports/phase-1-10/PHASE_8_3_PERFORMANCE_DASHBOARD.md",
+      "status": "resolved_to_manifest_archive_path"
+    }
+  ],
   "exceptions": [
     {
       "class": "missing_target",
@@ -55,17 +65,6 @@
       "status": "unresolved_target_absent"
     },
     {
-      "class": "ambiguous_target",
-      "sidecar": ".codex/archive/legacy-root/checksums/PHASE_8_3_PERFORMANCE_DASHBOARD.md.sha256",
-      "declared_target": "PHASE_8_3_PERFORMANCE_DASHBOARD.md",
-      "expected_sha256": "61baf4e086d8b63686a9d6e3cf589bb1a6ae685e13e34eb95987fd8f40afd6af",
-      "matching_candidates": [
-        ".codex/archive/legacy-root/PHASE_8_3_PERFORMANCE_DASHBOARD.md",
-        ".codex/archive/phase-reports/phase-1-10/PHASE_8_3_PERFORMANCE_DASHBOARD.md"
-      ],
-      "status": "ambiguous_both_candidates_match"
-    },
-    {
       "class": "digest_mismatch",
       "sidecar": ".codex/archive/legacy-root/checksums/DEPENDABOT_CONSOLIDATION_REPORT.md.sha256",
       "declared_target": "DEPENDABOT_CONSOLIDATION_REPORT.md",
@@ -76,5 +75,5 @@
       "status": "preexisting_mismatch_unresolved"
     }
   ],
-  "policy": "No sidecar or target was removed or rewritten. Resolve provenance and consumer expectations before any consolidation."
+  "policy": "For sidecars under legacy-root/checksums/, resolve the basename to the exact archive_path in legacy-root/manifest.json. No sidecar or target was removed or rewritten. Resolve the mismatch and missing targets before any consolidation."
 }
