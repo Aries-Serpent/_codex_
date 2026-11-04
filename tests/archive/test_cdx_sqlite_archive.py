@@ -5,10 +5,10 @@ import json
 import os
 import sqlite3
 import stat
-import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import pytest
+from defusedxml import ElementTree as ET
 
 from scripts.archive import cdx_common, codex_packer
 from scripts.archive.cdx_common import compute_merkle_root
@@ -35,7 +35,7 @@ def packed_tree(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[Path, 
         b"    def greet(self, name: str) -> str:\r\n"
         b'        return "hello " + name\r\n'
     )
-    os.chmod(python_file, 0o755)
+    os.chmod(python_file, 0o644)
     (source / "copy.txt").write_bytes(python_file.read_bytes())
     (source / "binary.dat").write_bytes(b"\x00\xff\x10")
     (source / "utf16.txt").write_bytes("text\r\n".encode("utf-16"))
