@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
-  "observed_revision": "5e0e0fa1d3a0a51c1a84eba803f294b47aedec68",
+  "observed_revision": "3a4c22a1acf94ae9f4c5af7c481607aa3671c38d",
+  "rechecked_revision": "3a4c22a1acf94ae9f4c5af7c481607aa3671c38d",
   "archive_root": ".codex/archive",
   "sidecars_checked": 3060,
   "verified": 3052,

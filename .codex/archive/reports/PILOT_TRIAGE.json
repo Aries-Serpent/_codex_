@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "source_revision": "3a4c22a1acf94ae9f4c5af7c481607aa3671c38d",
+  "source_path": ".codex/archive/root-consolidation/temp-outputs/mutants/",
+  "scanner_runs": {
+    "gitleaks": {
+      "version": "8.30.1",
+      "finding_records": 85,
+      "unique_files": 32,
+      "context_with_placeholder_marker": 14,
+      "without_placeholder_marker": 71
+    },
+    "detect-secrets": {
+      "version": "1.5.0",
+      "finding_records": 318,
+      "unique_files": 158,
+      "context_with_placeholder_marker": 63,
+      "without_placeholder_marker": 255
+    }
+  },
+  "combined_review": {
+    "finding_records_reviewed_individually": 403,
+    "unique_path_line_pairs": 380,
+    "unique_files": 167,
+    "records_with_placeholder_marker_nearby": 77,
+    "records_without_placeholder_marker": 326,
+    "confirmed_false_positives": 0,
+    "confirmed_secrets": null,
+    "unresolved_records": 403,
+    "allowlisted_paths": [],
+    "decision": "No scanner record was conclusively proven false-positive using redacted evidence. Nearby test/example/placeholder context is only a review clue and does not establish that the matched value is non-sensitive. Keep all records unresolved and fail closed."
+  },
+  "review_method": {
+    "fields_examined": [
+      "scanner",
+      "rule_or_plugin",
+      "source-relative path",
+      "line number",
+      "whether nearby context contains an example/test/placeholder marker"
+    ],
+    "matched_values_or_source_lines_recorded": false,
+    "allowlist_rule": "Add no allowlist unless the exact finding is affirmatively verified as a non-secret; a path with mixed or unresolved findings remains blocked."
+  },
+  "archive": {
+    "generated": false,
+    "pack_attempts_after_triage": 0,
+    "reason": "Both scanners still have unresolved findings."
+  }
+}

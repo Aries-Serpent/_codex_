@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "blocked_secret_findings_unreviewed",
-  "source_revision": "5e0e0fa1d3a0a51c1a84eba803f294b47aedec68",
+  "source_revision": "3a4c22a1acf94ae9f4c5af7c481607aa3671c38d",
   "source_path": ".codex/archive/root-consolidation/temp-outputs/mutants/",
   "source_file_count": 4597,
   "source_raw_bytes": 31979791,
@@ -42,10 +42,15 @@
   "triage": {
     "confirmed_false_positives_allowlisted": 0,
     "confirmed_secrets": null,
+    "scanner_detection_records_reviewed_individually": 403,
+    "unique_path_line_pairs": 380,
+    "unique_files": 167,
+    "records_with_placeholder_marker_nearby": 77,
+    "records_without_placeholder_marker": 326,
     "unresolved_scanner_detections": 403,
-    "deduplicated_finding_total": null,
-    "finding_review_status": "not_individually_triaged",
-    "decision": "Fail closed; do not allowlist or pack until findings are reviewed individually."
+    "finding_review_status": "individually_reviewed_using_redacted_metadata; all remain unresolved",
+    "triage_report": ".codex/archive/reports/PILOT_TRIAGE.json",
+    "decision": "No finding was proven false-positive from redacted evidence. Do not allowlist or pack while any finding remains unresolved."
   },
   "archive": {
     "generated": false,
