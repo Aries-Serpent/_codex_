@@ -238,6 +238,8 @@ def test_secret_scanner_findings_require_an_exact_allowlist(
 
     def fake_run(command, **_kwargs):
         if command[0] == "gitleaks":
+            assert command[1] == "dir"
+            assert "--no-git" not in command
             report = Path(command[command.index("--report-path") + 1])
             report.write_text('[{"File":"secret.txt"}]', encoding="utf-8")
             return cdx_common.subprocess.CompletedProcess(command, 1, "", "")

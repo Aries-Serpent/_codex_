@@ -246,7 +246,6 @@ def run_secret_scanners(root: Path, allowed_paths: set[str] | None = None) -> No
                 [
                     gitleaks,
                     "dir",
-                    "--no-git",
                     "--report-format",
                     "json",
                     "--report-path",

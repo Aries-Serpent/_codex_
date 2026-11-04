@@ -7,7 +7,8 @@ The source directory is never modified by packing.
 
 ## Pack
 
-Packing requires both `gitleaks` and `detect-secrets` on `PATH`. Both scan the
+Packing requires `gitleaks` with the `dir` command and `detect-secrets` on
+`PATH`. Both scan the
 source tree before any archive data is written. A scanner failure blocks
 creation. A finding also blocks creation unless its exact source-relative path
 is explicitly allow-listed; allow-list only reviewed false positives.

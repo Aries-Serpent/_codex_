@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "observed_revision": "5e0e0fa1d3a0a51c1a84eba803f294b47aedec68",
+  "archive_root": ".codex/archive",
+  "sidecars_checked": 3060,
+  "verified": 3051,
+  "exceptions": [
+    {
+      "class": "missing_target",
+      "sidecar": ".codex/archive/root-consolidation/temp-outputs/runs/c4_test_e2e/epoch-1/state.sha256",
+      "declared_target": "state",
+      "expected_sha256": "0cdb31c6f238ced7cfebdee3852ed02b6a77e06a4b1736d99046b7988b41d049",
+      "status": "unresolved_target_absent"
+    },
+    {
+      "class": "missing_target",
+      "sidecar": ".codex/archive/root-consolidation/temp-outputs/runs/c4_test_e2e/epoch-1/ckpt-20260719-133857-061800-0000.pt.sha256",
+      "declared_target": "ckpt-20260719-133857-061800-0000.pt",
+      "expected_sha256": "3c7971ceff2a586747bce290f1a9c19b707c5b59596c45f1933da06d3d7d6398",
+      "status": "unresolved_target_absent"
+    },
+    {
+      "class": "missing_target",
+      "sidecar": ".codex/archive/root-consolidation/temp-outputs/runs/c4_test_e2e/epoch-1/ckpt-20260719-134050-526589-0000.pt.sha256",
+      "declared_target": "ckpt-20260719-134050-526589-0000.pt",
+      "expected_sha256": "0cdb31c6f238ced7cfebdee3852ed02b6a77e06a4b1736d99046b7988b41d049",
+      "status": "unresolved_target_absent"
+    },
+    {
+      "class": "missing_target",
+      "sidecar": ".codex/archive/root-consolidation/temp-outputs/runs/c4_perf_unified/epoch-1/state.sha256",
+      "declared_target": "state",
+      "expected_sha256": "a2a68535448bf7b8b578d924c71f6c76c6b9e8b8eceba86107517cae3d55b59a",
+      "status": "unresolved_target_absent"
+    },
+    {
+      "class": "missing_target",
+      "sidecar": ".codex/archive/root-consolidation/temp-outputs/runs/c4_perf_unified/epoch-1/ckpt-20260719-134051-815442-0001.pt.sha256",
+      "declared_target": "ckpt-20260719-134051-815442-0001.pt",
+      "expected_sha256": "a2a68535448bf7b8b578d924c71f6c76c6b9e8b8eceba86107517cae3d55b59a",
+      "status": "unresolved_target_absent"
+    },
+    {
+      "class": "missing_target",
+      "sidecar": ".codex/archive/root-consolidation/temp-outputs/runs/c4_perf_unified/epoch-1/ckpt-20260719-133859-001131-0001.pt.sha256",
+      "declared_target": "ckpt-20260719-133859-001131-0001.pt",
+      "expected_sha256": "1c0c406542374a6f992b85f839df82d32b66a18855cf1a7f1fcf67b820b3fe13",
+      "status": "unresolved_target_absent"
+    },
+    {
+      "class": "missing_target",
+      "sidecar": ".codex/archive/legacy-root/checksums/phase_10_3_context_scorer.log.sha256",
+      "declared_target": "phase_10_3_context_scorer.log",
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "unresolved_target_absent"
+    },
+    {
+      "class": "ambiguous_target",
+      "sidecar": ".codex/archive/legacy-root/checksums/PHASE_8_3_PERFORMANCE_DASHBOARD.md.sha256",
+      "declared_target": "PHASE_8_3_PERFORMANCE_DASHBOARD.md",
+      "expected_sha256": "61baf4e086d8b63686a9d6e3cf589bb1a6ae685e13e34eb95987fd8f40afd6af",
+      "matching_candidates": [
+        ".codex/archive/legacy-root/PHASE_8_3_PERFORMANCE_DASHBOARD.md",
+        ".codex/archive/phase-reports/phase-1-10/PHASE_8_3_PERFORMANCE_DASHBOARD.md"
+      ],
+      "status": "ambiguous_both_candidates_match"
+    },
+    {
+      "class": "digest_mismatch",
+      "sidecar": ".codex/archive/legacy-root/checksums/DEPENDABOT_CONSOLIDATION_REPORT.md.sha256",
+      "declared_target": "DEPENDABOT_CONSOLIDATION_REPORT.md",
+      "expected_sha256": "c20b115b81ae2352c0e66ddf655aee54dd1c3e5dc136ea66ec01c3d33cc913e0",
+      "exact_target": ".codex/archive/legacy-root/DEPENDABOT_CONSOLIDATION_REPORT.md",
+      "actual_sha256": "1d47ff7e41a0a2db56c4d8290114c78603f59a8763a163a025b3c2f0bf7b44b6",
+      "baseline_observation": "The sidecar and target at base revision 5b97187185ecc991c949de94b624d5f74cc41d5b have the same mismatch.",
+      "status": "preexisting_mismatch_unresolved"
+    }
+  ],
+  "policy": "No sidecar or target was removed or rewritten. Resolve provenance and consumer expectations before any consolidation."
+}

@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "status": "blocked_secret_findings_unreviewed",
+  "source_revision": "5e0e0fa1d3a0a51c1a84eba803f294b47aedec68",
+  "source_path": ".codex/archive/root-consolidation/temp-outputs/mutants/",
+  "source_file_count": 4597,
+  "source_raw_bytes": 31979791,
+  "scanners": {
+    "gitleaks": {
+      "version": "8.30.1",
+      "distribution": "official release asset; checksum verified before use",
+      "finding_count": 85,
+      "files_with_findings": 32,
+      "rule_counts": {
+        "generic-api-key": 63,
+        "stripe-access-token": 10,
+        "aws-access-token": 4,
+        "github-pat": 4,
+        "private-key": 2,
+        "github-oauth": 1,
+        "jwt": 1
+      }
+    },
+    "detect-secrets": {
+      "version": "1.5.0",
+      "finding_count": 318,
+      "files_with_findings": 158,
+      "plugin_counts": {
+        "Secret Keyword": 216,
+        "Hex High Entropy String": 56,
+        "Base64 High Entropy String": 15,
+        "AWS Access Key": 12,
+        "Private Key": 8,
+        "JSON Web Token": 5,
+        "Basic Auth Credentials": 3,
+        "GitHub Token": 3
+      }
+    }
+  },
+  "triage": {
+    "confirmed_false_positives_allowlisted": 0,
+    "confirmed_secrets": null,
+    "unresolved_scanner_detections": 403,
+    "deduplicated_finding_total": null,
+    "finding_review_status": "not_individually_triaged",
+    "decision": "Fail closed; do not allowlist or pack until findings are reviewed individually."
+  },
+  "archive": {
+    "generated": false,
+    "pack_attempts": 0,
+    "archive_size_bytes": null,
+    "compression_ratio": null,
+    "pack_duration_seconds": null,
+    "query_latency_ms": null,
+    "integrity_result": "not_run_no_archive",
+    "merkle_root_sha256": null,
+    "reproducibility": "not_run_no_archive"
+  },
+  "note": "Scanner reports may contain sensitive match material and are intentionally not included in this repository report."
+}
