@@ -1,14 +1,18 @@
 {
   "schema_version": 1,
-  "status": "blocked_secret_findings_unreviewed",
-  "source_revision": "3a4c22a1acf94ae9f4c5af7c481607aa3671c38d",
+  "status": "blocked_secret_findings_unresolved",
+  "source_revision_short": "c0c8b0e5",
   "source_path": ".codex/archive/root-consolidation/temp-outputs/mutants/",
   "source_file_count": 4597,
   "source_raw_bytes": 31979791,
   "scanners": {
     "gitleaks": {
       "version": "8.30.1",
-      "distribution": "official release asset; checksum verified before use",
+      "options": [
+        "dir",
+        "--redact=100",
+        "--report-format=json"
+      ],
       "exit_code": 1,
       "finding_count": 85,
       "files_with_findings": 32,
@@ -24,37 +28,45 @@
     },
     "detect-secrets": {
       "version": "1.5.0",
+      "options": [
+        "scan",
+        "--no-verify",
+        "--all-files"
+      ],
       "exit_code": 0,
-      "finding_count": 318,
-      "files_with_findings": 158,
+      "finding_count": 323,
+      "files_with_findings": 159,
+      "previously_recorded_finding_count": 318,
+      "previous_count_difference": 5,
+      "previous_count_difference_cause": "not established; the fresh pinned scan count is authoritative for this source fingerprint",
       "plugin_counts": {
         "Secret Keyword": 216,
         "Hex High Entropy String": 56,
         "Base64 High Entropy String": 15,
-        "AWS Access Key": 12,
+        "AWS Access Key": 13,
         "Private Key": 8,
         "JSON Web Token": 5,
         "Basic Auth Credentials": 3,
-        "GitHub Token": 3
+        "GitHub Token": 3,
+        "Slack Token": 4
       }
     }
   },
   "triage": {
-    "confirmed_false_positives_allowlisted": 0,
-    "confirmed_secrets": null,
-    "scanner_detection_records_reviewed_individually": 403,
-    "unique_path_line_pairs": 380,
+    "scanner_detection_records": 408,
+    "unique_path_line_pairs": 383,
     "unique_files": 167,
-    "records_with_placeholder_marker_nearby": 77,
-    "records_without_placeholder_marker": 326,
-    "unresolved_scanner_detections": 403,
-    "finding_review_status": "individually_reviewed_using_redacted_metadata; all remain unresolved",
+    "affirmative_false_positive_dispositions": 0,
+    "confirmed_secrets": null,
+    "unresolved_scanner_detections": 408,
+    "allowlisted_paths": [],
+    "finding_review_status": "Redacted per-finding inventory created; all findings remain unresolved.",
     "triage_report": ".codex/archive/reports/PILOT_TRIAGE.json",
-    "decision": "No finding was proven false-positive from redacted evidence. Do not allowlist or pack while any finding remains unresolved."
+    "decision": "No scanner finding is allowlisted. Do not pack while any finding remains unresolved."
   },
   "archive": {
     "generated": false,
-    "pack_attempts": 1,
+    "pack_attempts_after_scan": 0,
     "successful_pack_attempts": 0,
     "archive_size_bytes": null,
     "compression_ratio": null,
@@ -64,5 +76,5 @@
     "merkle_root_sha256": null,
     "reproducibility": "not_run_no_archive"
   },
-  "note": "Scanner reports may contain sensitive match material and are intentionally not included in this repository report."
+  "note": "Raw scanner reports and the HMAC key are temporary/private and are not included in this repository report."
 }

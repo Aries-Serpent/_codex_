@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import hmac
 import json
 import os
 import shutil
@@ -15,6 +16,7 @@ from typing import Any, Iterator
 SCHEMA_VERSION = 1
 DEFAULT_MAX_BLOB_BYTES = 512 * 1024 * 1024
 DEFAULT_MAX_TEXT_BYTES = 64 * 1024 * 1024
+SECRET_SCANNER_VERSIONS = {"gitleaks": "8.30.1", "detect-secrets": "1.5.0"}
 DEFAULT_DENIED_COMPONENTS = {
     ".git",
     ".mypy_cache",
@@ -232,20 +234,54 @@ def compute_merkle_root(connection: Any) -> str:
     return digest.hexdigest()
 
 
-def run_secret_scanners(root: Path, allowed_paths: set[str] | None = None) -> None:
-    """Fail closed unless both secret scanners run clean or report allowlisted paths."""
+def run_secret_scanners(
+    root: Path,
+    dispositions_path: Path | None = None,
+    inventory_path: Path | None = None,
+    source_root: Path | None = None,
+) -> None:
+    """Fail closed unless every exact scanner finding has an active disposition."""
+    if dispositions_path is not None and not isinstance(dispositions_path, Path):
+        raise RuntimeError("path-wide secret allowlists are not supported")
+    roots = [root]
+    if source_root is not None:
+        roots.append(source_root)
+    if dispositions_path is not None:
+        dispositions_path = _validate_external_path(roots, dispositions_path, must_exist=True)
+    if inventory_path is not None:
+        inventory_path = _validate_external_path(roots, inventory_path, must_exist=False)
     gitleaks = shutil.which("gitleaks")
     detect_secrets = shutil.which("detect-secrets")
     if not gitleaks or not detect_secrets:
         raise RuntimeError("gitleaks and detect-secrets are required before packing")
-    allowed = allowed_paths or set()
     with tempfile.TemporaryDirectory(prefix="cdx-scan-") as temp_dir:
         report = Path(temp_dir) / "gitleaks.json"
         try:
+            gitleaks_version = subprocess.run(
+                [gitleaks, "version"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            detect_version = subprocess.run(
+                [detect_secrets, "--version"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if gitleaks_version.returncode != 0 or detect_version.returncode != 0:
+                raise RuntimeError("secret scanner version could not be determined")
+            versions = {
+                "gitleaks": _scanner_version(gitleaks_version.stdout),
+                "detect-secrets": _scanner_version(detect_version.stdout),
+            }
+            if versions != SECRET_SCANNER_VERSIONS:
+                raise RuntimeError("secret scanner version does not match the pinned version")
             gitleaks_result = subprocess.run(
                 [
                     gitleaks,
                     "dir",
+                    "--redact=100",
                     "--report-format",
                     "json",
                     "--report-path",
@@ -259,8 +295,12 @@ def run_secret_scanners(root: Path, allowed_paths: set[str] | None = None) -> No
             if gitleaks_result.returncode not in (0, 1) or not report.exists():
                 raise RuntimeError("gitleaks scan failed")
             gitleaks_findings = json.loads(report.read_text(encoding="utf-8"))
+            if not isinstance(gitleaks_findings, list) or any(
+                not isinstance(finding, dict) for finding in gitleaks_findings
+            ):
+                raise RuntimeError("gitleaks returned an invalid report")
             detect_result = subprocess.run(
-                [detect_secrets, "scan", "--all-files", str(root)],
+                [detect_secrets, "scan", "--no-verify", "--all-files", str(root)],
                 capture_output=True,
                 text=True,
                 check=False,
@@ -268,26 +308,278 @@ def run_secret_scanners(root: Path, allowed_paths: set[str] | None = None) -> No
             if detect_result.returncode != 0:
                 raise RuntimeError("detect-secrets scan failed")
             detect_findings = json.loads(detect_result.stdout)
+            if not isinstance(detect_findings, dict):
+                raise RuntimeError("detect-secrets returned an invalid report")
         except (OSError, ValueError, json.JSONDecodeError) as exc:
             raise RuntimeError("secret scan could not be completed") from exc
-    flagged: set[str] = set()
+
+    findings: list[dict[str, Any]] = []
     for finding in gitleaks_findings:
-        file_path = finding.get("File")
-        if file_path:
-            flagged.add(_scanner_relative_path(root, file_path))
-    for file_path, findings in detect_findings.get("results", {}).items():
-        if findings:
-            flagged.add(_scanner_relative_path(root, file_path))
-    if flagged - allowed:
-        raise RuntimeError("secret scan flagged files; archive creation blocked")
+        findings.append(_scanner_finding(root, "gitleaks", versions["gitleaks"], finding))
+    detect_results = detect_findings.get("results")
+    if not isinstance(detect_results, dict):
+        raise RuntimeError("detect-secrets returned an invalid report")
+    for file_path, records in detect_results.items():
+        if not isinstance(records, list):
+            raise RuntimeError("detect-secrets returned an invalid report")
+        for finding in records:
+            if not isinstance(finding, dict):
+                raise RuntimeError("detect-secrets returned an invalid finding")
+            record = dict(finding)
+            record["File"] = file_path
+            findings.append(
+                _scanner_finding(root, "detect-secrets", versions["detect-secrets"], record)
+            )
+
+    dispositions = (
+        _load_finding_dispositions(dispositions_path) if dispositions_path is not None else []
+    )
+    if not findings:
+        if dispositions:
+            raise RuntimeError("secret finding dispositions are stale")
+        if inventory_path is not None:
+            _write_finding_inventory(inventory_path, [], roots)
+        return
+
+    key_text = os.environ.get("CDX_FINDING_HMAC_KEY", "")
+    if len(key_text.encode("utf-8")) < 32:
+        raise RuntimeError(
+            "secret scan found unresolved findings; a private finding HMAC key is required"
+        )
+    key = key_text.encode("utf-8")
+    for finding in findings:
+        finding["finding_id"] = _finding_id(key, finding)
+    identities = [finding["finding_id"] for finding in findings]
+    if len(set(identities)) != len(identities):
+        raise RuntimeError("secret scanner returned ambiguous duplicate findings")
+
+    if inventory_path is not None:
+        _write_finding_inventory(inventory_path, findings, roots)
+    disposition_by_id: dict[str, dict[str, Any]] = {}
+    for disposition in dispositions:
+        finding_id = disposition["finding_id"]
+        if finding_id in disposition_by_id:
+            raise RuntimeError("finding disposition contains duplicate identities")
+        disposition_by_id[finding_id] = disposition
+
+    observed = {finding["finding_id"]: finding for finding in findings}
+    if set(disposition_by_id) != set(observed):
+        raise RuntimeError("secret scan findings are unresolved or dispositions are stale")
+    for finding_id, disposition in disposition_by_id.items():
+        finding = observed[finding_id]
+        for field in (
+            "scanner",
+            "scanner_version",
+            "path",
+            "file_sha256",
+            "rule",
+            "start_line",
+            "end_line",
+        ):
+            if disposition[field] != finding[field]:
+                raise RuntimeError("secret scan disposition does not match the current finding")
+        if disposition["disposition"] != "false_positive":
+            raise RuntimeError("secret scan finding is not affirmatively cleared")
+        if not disposition["evidence_ref"].strip() or not disposition["reviewed_by"].strip():
+            raise RuntimeError("secret scan disposition lacks review evidence")
+        evidence_path = _validate_external_path(
+            roots, Path(disposition["evidence_ref"]), must_exist=True
+        )
+        try:
+            evidence_digest = hashlib.sha256()
+            with evidence_path.open("rb") as evidence_file:
+                for chunk in iter(lambda: evidence_file.read(1024 * 1024), b""):
+                    evidence_digest.update(chunk)
+        except OSError as exc:
+            raise RuntimeError("secret scan review evidence could not be verified") from exc
+        if evidence_digest.hexdigest() != disposition["evidence_sha256"]:
+            raise RuntimeError("secret scan review evidence digest does not match")
 
 
-def _scanner_relative_path(root: Path, reported_path: str) -> str:
+def _scanner_relative_path(root: Path, reported_path: Any) -> str:
+    if not isinstance(reported_path, str) or not reported_path:
+        raise RuntimeError("secret scanner returned an invalid file path")
     path = Path(reported_path)
+    root_path = Path(os.path.abspath(root))
+    candidates = [path] if path.is_absolute() else [Path.cwd() / path, root_path / path]
+    for candidate in candidates:
+        try:
+            relative = Path(os.path.abspath(candidate)).relative_to(root_path).as_posix()
+        except (OSError, ValueError):
+            continue
+        if relative and relative != "." and ".." not in Path(relative).parts:
+            return relative
+    raise RuntimeError("secret scanner returned an out-of-root path")
+
+
+def _scanner_version(output: str) -> str:
+    version = output.strip()
+    if not version or len(version) > 128 or "\n" in version:
+        raise RuntimeError("secret scanner returned an invalid version")
+    return version.removeprefix("v")
+
+
+def _scanner_finding(
+    root: Path, scanner: str, version: str, record: dict[str, Any]
+) -> dict[str, Any]:
+    path_value = record.get("File")
+    path = _scanner_relative_path(root, path_value)
+    file_path = root / path
     try:
-        return path.resolve().relative_to(root.resolve()).as_posix()
-    except (OSError, ValueError):
-        normalized = reported_path.replace("\\", "/").removeprefix("./")
-        if normalized.startswith("/") or ".." in Path(normalized).parts:
-            raise RuntimeError("secret scanner returned an out-of-root path")
-        return normalized
+        file_info = file_path.lstat()
+        if not stat.S_ISREG(file_info.st_mode):
+            raise RuntimeError("secret scanner finding is not a regular file")
+        file_digest = hashlib.sha256(file_path.read_bytes()).hexdigest()
+    except OSError as exc:
+        raise RuntimeError("secret scanner finding file could not be verified") from exc
+
+    if scanner == "gitleaks":
+        rule = record.get("RuleID")
+        start = record.get("StartLine")
+        end = record.get("EndLine", start)
+    else:
+        rule = record.get("type")
+        start = record.get("line_number")
+        end = start
+    if (
+        not isinstance(rule, str)
+        or not rule
+        or not isinstance(start, int)
+        or isinstance(start, bool)
+        or start < 1
+        or not isinstance(end, int)
+        or isinstance(end, bool)
+        or end < start
+    ):
+        raise RuntimeError("secret scanner returned incomplete finding metadata")
+    return {
+        "scanner": scanner,
+        "scanner_version": version,
+        "path": path,
+        "file_sha256": file_digest,
+        "rule": rule,
+        "start_line": start,
+        "end_line": end,
+        "_record": record,
+    }
+
+
+def _finding_id(key: bytes, finding: dict[str, Any]) -> str:
+    identity = {field: value for field, value in finding.items() if field != "finding_id"}
+    payload = json.dumps(
+        identity,
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hmac.new(key, payload, hashlib.sha256).hexdigest()
+
+
+def _write_finding_inventory(
+    path: Path, findings: list[dict[str, Any]], source_roots: list[Path]
+) -> None:
+    destination = _validate_external_path(source_roots, path, must_exist=False)
+    safe_findings = [
+        {field: value for field, value in finding.items() if field != "_record"}
+        for finding in findings
+    ]
+    document = {"schema_version": 1, "findings": safe_findings}
+    try:
+        with destination.open("x", encoding="utf-8") as stream:
+            json.dump(document, stream, indent=2, sort_keys=True)
+            stream.write("\n")
+    except (OSError, UnicodeError) as exc:
+        raise RuntimeError("redacted finding inventory could not be written") from exc
+
+
+def _validate_external_path(source_roots: list[Path], path: Path, *, must_exist: bool) -> Path:
+    if path.is_symlink():
+        raise RuntimeError("secret finding files must not be symlinks")
+    try:
+        parent = path.parent.resolve(strict=True)
+        destination = parent / path.name
+        if must_exist:
+            info = path.lstat()
+            if not stat.S_ISREG(info.st_mode):
+                raise RuntimeError("secret finding dispositions must be a regular file")
+            destination = path.resolve(strict=True)
+        elif path.exists():
+            raise RuntimeError("secret finding inventory must not overwrite an existing file")
+        for source_root in source_roots:
+            source = source_root.resolve(strict=True)
+            if destination == source or source in destination.parents:
+                raise RuntimeError("secret finding files must be outside the source tree")
+    except OSError as exc:
+        raise RuntimeError("secret finding file path could not be verified") from exc
+    return destination
+
+
+def _load_finding_dispositions(path: Path) -> list[dict[str, Any]]:
+    fields = {
+        "scanner",
+        "scanner_version",
+        "finding_id",
+        "path",
+        "file_sha256",
+        "rule",
+        "start_line",
+        "end_line",
+        "disposition",
+        "evidence_ref",
+        "evidence_sha256",
+        "reviewed_by",
+    }
+
+    def reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("duplicate JSON key")
+            result[key] = value
+        return result
+
+    try:
+        document = json.loads(
+            path.read_text(encoding="utf-8"), object_pairs_hook=reject_duplicate_keys
+        )
+    except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
+        raise RuntimeError("secret finding dispositions could not be read") from exc
+    if (
+        not isinstance(document, dict)
+        or set(document) != {"schema_version", "dispositions"}
+        or not isinstance(document.get("schema_version"), int)
+        or isinstance(document.get("schema_version"), bool)
+        or document.get("schema_version") != 1
+        or not isinstance(document.get("dispositions"), list)
+    ):
+        raise RuntimeError("secret finding dispositions have an unsupported schema")
+
+    result = document["dispositions"]
+    for disposition in result:
+        if not isinstance(disposition, dict) or set(disposition) != fields:
+            raise RuntimeError("secret finding disposition has invalid fields")
+        if (
+            not isinstance(disposition["scanner"], str)
+            or disposition["scanner"] not in {"gitleaks", "detect-secrets"}
+            or not isinstance(disposition["scanner_version"], str)
+            or not isinstance(disposition["finding_id"], str)
+            or len(disposition["finding_id"]) != 64
+            or any(char not in "0123456789abcdef" for char in disposition["finding_id"])
+            or not isinstance(disposition["path"], str)
+            or not isinstance(disposition["file_sha256"], str)
+            or len(disposition["file_sha256"]) != 64
+            or any(char not in "0123456789abcdef" for char in disposition["file_sha256"])
+            or not isinstance(disposition["rule"], str)
+            or not isinstance(disposition["start_line"], int)
+            or isinstance(disposition["start_line"], bool)
+            or not isinstance(disposition["end_line"], int)
+            or isinstance(disposition["end_line"], bool)
+            or not isinstance(disposition["disposition"], str)
+            or not isinstance(disposition["evidence_ref"], str)
+            or not isinstance(disposition["evidence_sha256"], str)
+            or len(disposition["evidence_sha256"]) != 64
+            or any(char not in "0123456789abcdef" for char in disposition["evidence_sha256"])
+            or not isinstance(disposition["reviewed_by"], str)
+        ):
+            raise RuntimeError("secret finding disposition has invalid values")
+    return result

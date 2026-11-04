@@ -7,24 +7,54 @@ The source directory is never modified by packing.
 
 ## Pack
 
-Packing requires `gitleaks` with the `dir` command and `detect-secrets` on
-`PATH`. Both scan the
+Packing requires pinned `gitleaks` 8.30.1 with the `dir` command and
+`detect-secrets` 1.5.0 on `PATH`. Other versions are rejected. Both scan the
 source tree before any archive data is written. A scanner failure blocks
-creation. A finding also blocks creation unless its exact source-relative path
-is explicitly allow-listed; allow-list only reviewed false positives.
+creation. Every finding blocks creation unless it has an exact, current
+false-positive disposition bound to the scanner/version, source-relative path,
+source-file SHA-256, rule, line range, and keyed finding identity. Path, glob,
+rule, and directory allowlists are not supported.
+Gitleaks runs with JSON output and `--redact=100`; detect-secrets runs with
+`scan --all-files` and network verification disabled.
 
 ```bash
 python -m scripts.archive.codex_packer \
   .codex/archive /tmp/codex-archive.cdx.sqlite
 ```
 
+For a tree with findings, the packer can write a redacted inventory outside the
+scanned tree and will still fail without approved dispositions:
+
+```bash
+CDX_FINDING_HMAC_KEY="$PRIVATE_FINDING_KEY" \
+  python -m scripts.archive.codex_packer \
+  .codex/archive /tmp/codex-archive.cdx.sqlite \
+  --finding-inventory /tmp/codex-findings.json
+```
+
+The key must be at least 32 UTF-8 bytes and must be retained in an approved
+secret store; never put it in the repository or command history. The inventory
+contains opaque HMAC identities and finding metadata, not matched values or
+source lines. A disposition JSON has `schema_version: 1` and a `dispositions`
+array copied from the inventory. Each item must retain its exact scanner,
+version, finding ID, path, source digest, rule, and line range, and set
+`disposition` to `false_positive` with `evidence_ref` naming an accessible
+review-evidence file outside the source tree and `reviewed_by` naming the
+reviewer. `evidence_sha256` must match that evidence file's SHA-256 digest.
+Review evidence must be stored separately and must affirmatively establish
+that the exact finding is harmless. Never infer that from nearby test/example
+markers. Supply the reviewed file using
+`--finding-dispositions /secure/path/dispositions.json` and the same private
+`CDX_FINDING_HMAC_KEY`. Missing, stale, duplicate, malformed, or mismatched
+dispositions block packing; scanner versions, source digests, and locations
+are rechecked on every run.
+
 By default, `.git`, `.worktrees`, virtual environments, caches, `node_modules`,
 SQLite/database files, and Python bytecode are excluded. Individual files larger
 than 8 MiB are skipped; adjust `--max-file-bytes` or use `--allow-large
 RELATIVE_GLOB` when a reviewed file should be included. Blobs over the independent
 512 MiB ceiling are rejected; `--max-blob-bytes` adjusts that limit explicitly.
-`--exclude GLOB` adds a deny rule. `--allow-secret RELATIVE_PATH` is an explicit
-exception to the scanner gate and should be used sparingly.
+`--exclude GLOB` adds a deny rule. No secret allowlist option exists.
 
 The packer first copies the selected tree into a private temporary snapshot,
 scans that snapshot, and verifies its recorded metadata and content hashes again

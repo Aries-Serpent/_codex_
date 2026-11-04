@@ -311,7 +311,8 @@ def pack_archive(
     max_blob_bytes: int = DEFAULT_MAX_BLOB_BYTES,
     exclude: tuple[str, ...] = (),
     allow_large: tuple[str, ...] = (),
-    allow_secret: tuple[str, ...] = (),
+    finding_dispositions: Path | None = None,
+    finding_inventory: Path | None = None,
 ) -> dict[str, Any]:
     root = source.resolve(strict=True)
     if not root.is_dir():
@@ -340,7 +341,12 @@ def pack_archive(
             exclude=exclude,
             allow_large=allow_large,
         )
-        run_secret_scanners(snapshot, set(allow_secret))
+        run_secret_scanners(
+            snapshot,
+            finding_dispositions,
+            finding_inventory,
+            root,
+        )
         fd, temp_name = tempfile.mkstemp(
             prefix=f".{destination.name}.", suffix=".tmp", dir=destination.parent
         )
@@ -495,7 +501,8 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-blob-bytes", type=int, default=DEFAULT_MAX_BLOB_BYTES)
     parser.add_argument("--exclude", action="append", default=[])
     parser.add_argument("--allow-large", action="append", default=[])
-    parser.add_argument("--allow-secret", action="append", default=[])
+    parser.add_argument("--finding-dispositions", type=Path)
+    parser.add_argument("--finding-inventory", type=Path)
     return parser
 
 
@@ -509,7 +516,8 @@ def main(argv: list[str] | None = None) -> int:
             max_blob_bytes=args.max_blob_bytes,
             exclude=tuple(args.exclude),
             allow_large=tuple(args.allow_large),
-            allow_secret=tuple(args.allow_secret),
+            finding_dispositions=args.finding_dispositions,
+            finding_inventory=args.finding_inventory,
         )
     except (OSError, RuntimeError, sqlite3.Error, ValueError) as exc:
         print(f"archive pack failed: {exc}", file=sys.stderr)

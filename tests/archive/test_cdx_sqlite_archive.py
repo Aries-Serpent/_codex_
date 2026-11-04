@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import sqlite3
 import stat
@@ -229,7 +230,180 @@ def test_packer_rejects_snapshot_changes_after_scanning(
     assert not output.exists()
 
 
-def test_secret_scanner_findings_require_an_exact_allowlist(
+def test_secret_scanner_requires_exact_dispositions_and_emits_redacted_inventory(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    root = tmp_path / "source"
+    root.mkdir()
+    (root / "secret.txt").write_text("synthetic fixture\n", encoding="utf-8")
+    monkeypatch.setattr(cdx_common.shutil, "which", lambda name: name)
+    monkeypatch.setenv("CDX_FINDING_HMAC_KEY", "local-test-key-" * 3)
+
+    def fake_run(command, **_kwargs):
+        if command[0] == "gitleaks" and command[1] == "version":
+            return cdx_common.subprocess.CompletedProcess(command, 0, "8.30.1\n", "")
+        if command[0] == "detect-secrets" and command[1] == "--version":
+            return cdx_common.subprocess.CompletedProcess(command, 0, "1.5.0\n", "")
+        if command[0] == "gitleaks":
+            assert command[1] == "dir"
+            assert "--redact=100" in command
+            assert "--no-git" not in command
+            report = Path(command[command.index("--report-path") + 1])
+            report.write_text(
+                json.dumps(
+                    [
+                        {
+                            "File": str(root / "secret.txt"),
+                            "RuleID": "generic-api-key",
+                            "StartLine": 1,
+                            "EndLine": 1,
+                            "Fingerprint": "opaque-gitleaks-fingerprint",
+                            "Secret": "REDACTED",
+                        }
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            return cdx_common.subprocess.CompletedProcess(command, 1, "", "")
+        if command[1] == "scan":
+            assert command[2:4] == ["--no-verify", "--all-files"]
+        return cdx_common.subprocess.CompletedProcess(
+            command,
+            0,
+            json.dumps(
+                {
+                    "results": {
+                        os.path.relpath(root / "secret.txt", Path.cwd()): [
+                            {
+                                "type": "Secret Keyword",
+                                "line_number": 1,
+                                "hashed_secret": "opaque-detect-secrets-hash",
+                            }
+                        ]
+                    }
+                },
+            ),
+            "",
+        )
+
+    monkeypatch.setattr(cdx_common.subprocess, "run", fake_run)
+    inventory = tmp_path / "findings.json"
+    with pytest.raises(RuntimeError, match="unresolved"):
+        cdx_common.run_secret_scanners(root, inventory_path=inventory)
+    inventory_document = json.loads(inventory.read_text(encoding="utf-8"))
+    assert len(inventory_document["findings"]) == 2
+    assert "REDACTED" not in inventory.read_text(encoding="utf-8")
+    dispositions = tmp_path / "dispositions.json"
+    evidence = tmp_path / "review-evidence.txt"
+    evidence.write_text("synthetic fixture verified as harmless\n", encoding="utf-8")
+    evidence_sha256 = hashlib.sha256(evidence.read_bytes()).hexdigest()
+    rows = []
+    for finding in inventory_document["findings"]:
+        rows.append(
+            {
+                field: finding[field]
+                for field in (
+                    "scanner",
+                    "scanner_version",
+                    "finding_id",
+                    "path",
+                    "file_sha256",
+                    "rule",
+                    "start_line",
+                    "end_line",
+                )
+            }
+            | {
+                "disposition": "false_positive",
+                "evidence_ref": str(evidence),
+                "evidence_sha256": evidence_sha256,
+                "reviewed_by": "test-reviewer",
+            }
+        )
+    dispositions.write_text(
+        json.dumps({"schema_version": 1, "dispositions": rows}),
+        encoding="utf-8",
+    )
+    cdx_common.run_secret_scanners(root, dispositions_path=dispositions)
+
+
+@pytest.mark.parametrize("change", ("digest", "version", "location"))
+def test_secret_scanner_dispositions_expire_when_finding_changes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, change: str
+):
+    root = tmp_path / "source"
+    root.mkdir()
+    source_file = root / "secret.txt"
+    source_file.write_text("synthetic fixture\n", encoding="utf-8")
+    monkeypatch.setattr(cdx_common.shutil, "which", lambda name: name)
+    monkeypatch.setenv("CDX_FINDING_HMAC_KEY", "local-test-key-" * 3)
+    state = {"version": "8.30.1", "line": 1}
+
+    def fake_run(command, **_kwargs):
+        if command[0] == "gitleaks" and command[1] == "version":
+            return cdx_common.subprocess.CompletedProcess(command, 0, state["version"], "")
+        if command[0] == "detect-secrets" and command[1] == "--version":
+            return cdx_common.subprocess.CompletedProcess(command, 0, "1.5.0", "")
+        if command[0] == "gitleaks":
+            report = Path(command[command.index("--report-path") + 1])
+            report.write_text(
+                json.dumps(
+                    [
+                        {
+                            "File": str(source_file),
+                            "RuleID": "generic-api-key",
+                            "StartLine": state["line"],
+                            "EndLine": state["line"],
+                            "Fingerprint": "opaque-fingerprint",
+                        }
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            return cdx_common.subprocess.CompletedProcess(command, 1, "", "")
+        return cdx_common.subprocess.CompletedProcess(command, 0, '{"results": {}}', "")
+
+    monkeypatch.setattr(cdx_common.subprocess, "run", fake_run)
+    inventory = tmp_path / "findings.json"
+    with pytest.raises(RuntimeError, match="unresolved"):
+        cdx_common.run_secret_scanners(root, inventory_path=inventory)
+    finding = json.loads(inventory.read_text(encoding="utf-8"))["findings"][0]
+    row = {
+        field: finding[field]
+        for field in (
+            "scanner",
+            "scanner_version",
+            "finding_id",
+            "path",
+            "file_sha256",
+            "rule",
+            "start_line",
+            "end_line",
+        )
+    }
+    evidence = tmp_path / "review-evidence.txt"
+    evidence.write_text("synthetic fixture review\n", encoding="utf-8")
+    row.update(
+        disposition="false_positive",
+        evidence_ref=str(evidence),
+        evidence_sha256=hashlib.sha256(evidence.read_bytes()).hexdigest(),
+        reviewed_by="test-reviewer",
+    )
+    dispositions = tmp_path / "dispositions.json"
+    dispositions.write_text(
+        json.dumps({"schema_version": 1, "dispositions": [row]}), encoding="utf-8"
+    )
+    if change == "digest":
+        source_file.write_text("changed fixture\n", encoding="utf-8")
+    elif change == "version":
+        state["version"] = "8.30.2"
+    else:
+        state["line"] = 2
+    with pytest.raises(RuntimeError, match="unresolved|stale|pinned"):
+        cdx_common.run_secret_scanners(root, dispositions_path=dispositions)
+
+
+def test_secret_scanner_rejects_malformed_reports_and_path_allowlists(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     root = tmp_path / "source"
@@ -237,18 +411,56 @@ def test_secret_scanner_findings_require_an_exact_allowlist(
     monkeypatch.setattr(cdx_common.shutil, "which", lambda name: name)
 
     def fake_run(command, **_kwargs):
+        if command[0] == "gitleaks" and command[1] == "version":
+            return cdx_common.subprocess.CompletedProcess(command, 0, "8.30.1", "")
+        if command[0] == "detect-secrets" and command[1] == "--version":
+            return cdx_common.subprocess.CompletedProcess(command, 0, "1.5.0", "")
         if command[0] == "gitleaks":
-            assert command[1] == "dir"
-            assert "--no-git" not in command
             report = Path(command[command.index("--report-path") + 1])
-            report.write_text('[{"File":"secret.txt"}]', encoding="utf-8")
+            report.write_text("{", encoding="utf-8")
             return cdx_common.subprocess.CompletedProcess(command, 1, "", "")
         return cdx_common.subprocess.CompletedProcess(command, 0, '{"results": {}}', "")
 
     monkeypatch.setattr(cdx_common.subprocess, "run", fake_run)
-    with pytest.raises(RuntimeError, match="blocked"):
+    with pytest.raises(RuntimeError, match="not supported"):
+        cdx_common.run_secret_scanners(root, {"secret.txt"})
+    with pytest.raises(RuntimeError, match="could not be completed"):
         cdx_common.run_secret_scanners(root)
-    cdx_common.run_secret_scanners(root, {"secret.txt"})
+
+
+def test_secret_scanner_rejects_malformed_detect_secrets_report(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    root = tmp_path / "source"
+    root.mkdir()
+    monkeypatch.setattr(cdx_common.shutil, "which", lambda name: name)
+
+    def fake_run(command, **_kwargs):
+        if command[0] == "gitleaks" and command[1] == "version":
+            return cdx_common.subprocess.CompletedProcess(command, 0, "8.30.1", "")
+        if command[0] == "detect-secrets" and command[1] == "--version":
+            return cdx_common.subprocess.CompletedProcess(command, 0, "1.5.0", "")
+        if command[0] == "gitleaks":
+            report = Path(command[command.index("--report-path") + 1])
+            report.write_text("[]", encoding="utf-8")
+            return cdx_common.subprocess.CompletedProcess(command, 0, "", "")
+        return cdx_common.subprocess.CompletedProcess(command, 0, "{", "")
+
+    monkeypatch.setattr(cdx_common.subprocess, "run", fake_run)
+    with pytest.raises(RuntimeError, match="could not be completed"):
+        cdx_common.run_secret_scanners(root)
+
+
+def test_secret_scanner_disposition_and_inventory_files_must_be_external(tmp_path: Path):
+    root = tmp_path / "source"
+    root.mkdir()
+    with pytest.raises(RuntimeError, match="outside the source tree"):
+        cdx_common.run_secret_scanners(root, inventory_path=root / "inventory.json")
+
+    dispositions = root / "dispositions.json"
+    dispositions.write_text('{"schema_version": 1, "dispositions": []}', encoding="utf-8")
+    with pytest.raises(RuntimeError, match="outside the source tree"):
+        cdx_common.run_secret_scanners(root, dispositions_path=dispositions)
 
 
 def test_secret_scanner_missing_dependency_fails_closed(
