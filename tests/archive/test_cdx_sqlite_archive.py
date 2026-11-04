@@ -258,7 +258,7 @@ def test_secret_scanner_requires_exact_dispositions_and_emits_redacted_inventory
                             "StartLine": 1,
                             "EndLine": 1,
                             "Fingerprint": "opaque-gitleaks-fingerprint",
-                            "Secret": "REDACTED",
+                            "Secret": "REDACTED",  # pragma: allowlist secret
                         }
                     ]
                 ),
@@ -277,7 +277,7 @@ def test_secret_scanner_requires_exact_dispositions_and_emits_redacted_inventory
                             {
                                 "type": "Secret Keyword",
                                 "line_number": 1,
-                                "hashed_secret": "opaque-detect-secrets-hash",
+                                "hashed_secret": "opaque-detect-secrets-hash",  # pragma: allowlist secret
                             }
                         ]
                     }
