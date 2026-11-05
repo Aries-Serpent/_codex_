@@ -21,15 +21,18 @@ This directory persists its execution sequence; it does not establish clearance.
 | 001 — next session | [Preparation and continuity](001_next_session.md) | Start here; remeasure current state |
 | 002 — repeatable sessions | [Exact semantic evidence batches](002_semantic_review.md) | Current complete inventory and safe private handling established |
 | 003 — conditional session | [Final revalidation or precise blocked conclusion](003_clearance_revalidation.md) | Coverage/evidence ready, or a decisive infeasibility finding |
-| 004 — current continuation | [Real scanner diagnostics](004_scanner_diagnostics.md) | Preparation tooling exists, but the single real attempt failed before inventory publication |
+| 004 — diagnostic recovery | [Real scanner diagnostics](004_scanner_diagnostics.md) | Executed in checkpoint 004; cwd mapping defect diagnosed and fixed, not a complete baseline |
+| 005 — current continuation | [Corrected baseline and gated semantic review](005_corrected_baseline.md) | Verify corrected preparation with a new complete run before entering 002 |
 
 These are planned work packages, not completed milestones or authorization to
 pack. Do not execute 003 merely because 002 has started.
 
-Latest execution: checkpoint 003 records a failed single real preflight, unknown
-current finding counts and no semantic batch. Source remained unchanged; private
-failed context was removed. Private failure/report retention was then corrected
-and verified only synthetically. Continue at 004, not at semantic acceptance.
+Latest execution: checkpoint 004 records one diagnostic attempt with both scanner
+reports, followed by a detect-secrets relative-path mapping failure before inventory.
+The scanner-cwd defect is fixed; all retained records remapped offline and 110
+focused tests passed. No real rerun, completed baseline, semantic batch or clearance
+is claimed. Failed diagnostics alone remain session-private; the provisional key,
+snapshot and temporary tools were removed. Continue at 005, not at acceptance.
 
 ## Historical baseline, never a current measurement
 
