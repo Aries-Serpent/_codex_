@@ -349,3 +349,110 @@ def test_offline_exact_detector_replay_never_verifies_credentials(produced, monk
     assert row["state"] == "indeterminate"
     assert result["semantic_false_positive_proofs"] == 0
     assert "synthetic-only-password" not in json.dumps(batch)
+
+
+@pytest.mark.parametrize("scanner", ["gitleaks", "detect-secrets"])
+def test_scanner_relative_paths_use_child_cwd_not_parent_cwd(tmp_path, monkeypatch, scanner):
+    private = tmp_path / "private"
+    private.mkdir(mode=0o700)
+    root = private / "snapshot"
+    root.mkdir()
+    (root / "fixture").write_text("exact synthetic source\n")
+    unrelated = tmp_path / "parent"
+    unrelated.mkdir()
+    (unrelated / "snapshot").mkdir()
+    (unrelated / "snapshot" / "fixture").write_text("unrelated synthetic source\n")
+    # Neither a parent-cwd lookalike nor a root-relative lookalike may be selected.
+    (root / "snapshot").mkdir()
+    (root / "snapshot" / "fixture").write_text("wrong root-relative synthetic source\n")
+    monkeypatch.chdir(unrelated)
+    monkeypatch.setattr(common.shutil, "which", lambda name: name)
+    monkeypatch.setenv("CDX_FINDING_HMAC_KEY", "synthetic-only-key" * 3)
+    captured = []
+
+    def run(command, **options):
+        assert options["cwd"] == private
+        if command[1] == "version":
+            return subprocess.CompletedProcess(command, 0, "8.30.1", "")
+        if command[1] == "--version":
+            return subprocess.CompletedProcess(command, 0, "1.5.0", "")
+        if command[1] == "dir":
+            report = (
+                [{"File": "snapshot/fixture", "RuleID": "synthetic", "StartLine": 1}]
+                if scanner == "gitleaks"
+                else []
+            )
+            Path(command[command.index("--report-path") + 1]).write_text(json.dumps(report))
+            return subprocess.CompletedProcess(command, 2 if report else 0, "", "")
+        return subprocess.CompletedProcess(
+            command,
+            0,
+            json.dumps(
+                {
+                    "results": (
+                        {
+                            "snapshot/fixture": [
+                                {
+                                    "type": "synthetic",
+                                    "line_number": 1,
+                                    "hashed_secret": "synthetic",
+                                }
+                            ]
+                        }
+                        if scanner == "detect-secrets"
+                        else {}
+                    )
+                }
+            ),
+            "",
+        )
+
+    monkeypatch.setattr(common.subprocess, "run", run)
+    with pytest.raises(RuntimeError, match="unresolved"):
+        common.run_secret_scanners(
+            root,
+            scanner_directory=private,
+            observation_sink=lambda findings, _report: captured.extend(findings),
+        )
+    finding = captured[0]
+    assert finding["path"] == "fixture"
+    assert finding["file_sha256"] == hashlib.sha256((root / "fixture").read_bytes()).hexdigest()
+    absolute = common._scanner_finding(
+        root,
+        scanner,
+        common.SECRET_SCANNER_VERSIONS[scanner],
+        dict(finding["_record"], File=str(root / "fixture")),
+    )
+    assert common._finding_id(b"synthetic-key", absolute) == common._finding_id(
+        b"synthetic-key", {key: value for key, value in finding.items() if key != "finding_id"}
+    )
+
+
+@pytest.mark.parametrize("reference", ["../outside", "/etc/passwd", "fixture"])
+def test_explicit_report_cwd_cannot_fallback_into_source(tmp_path, reference):
+    private = tmp_path / "private"
+    private.mkdir()
+    root = private / "snapshot"
+    root.mkdir()
+    (root / "fixture").write_text("synthetic only\n")
+    with pytest.raises(RuntimeError, match="out-of-root"):
+        common._scanner_relative_path(root, reference, report_directory=private)
+
+
+def test_failed_mapping_retains_exact_preparation_and_sanitized_reason(produced, monkeypatch):
+    source, private, _ = produced
+
+    def reject(_root, **_options):
+        raise RuntimeError("secret scanner finding file could not be verified")
+
+    monkeypatch.setattr(common, "run_secret_scanners", reject)
+    with pytest.raises(RuntimeError):
+        preflight.run_preflight(source, private)
+    preparation, _ = review.read_private_json(private / "preparation.json")
+    assert preparation["source"] == preflight.measure_tree(source)
+    assert preparation["selection"] == preflight.FULL_SELECTION
+    assert preparation["toolchain"] == {"synthetic": "test_only"}
+    assert preparation["purpose"] == "pre_scan_measurements_not_completed_baseline"
+    failure, _ = review.read_private_json(private / "failure.json")
+    assert failure["reason_code"] == "observation_source_read_failure"
+    assert not (private / "complete.json").exists()

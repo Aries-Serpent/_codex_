@@ -387,7 +387,15 @@ def run_secret_scanners(
 
     findings: list[dict[str, Any]] = []
     for finding in gitleaks_findings:
-        findings.append(_scanner_finding(root, "gitleaks", versions["gitleaks"], finding))
+        findings.append(
+            _scanner_finding(
+                root,
+                "gitleaks",
+                versions["gitleaks"],
+                finding,
+                report_directory=scanner_directory,
+            )
+        )
     detect_results = detect_findings.get("results")
     if not isinstance(detect_results, dict):
         raise RuntimeError("detect-secrets returned an invalid report")
@@ -400,7 +408,13 @@ def run_secret_scanners(
             record = dict(finding)
             record["File"] = file_path
             findings.append(
-                _scanner_finding(root, "detect-secrets", versions["detect-secrets"], record)
+                _scanner_finding(
+                    root,
+                    "detect-secrets",
+                    versions["detect-secrets"],
+                    record,
+                    report_directory=scanner_directory,
+                )
             )
 
     dispositions = (
@@ -472,12 +486,19 @@ def run_secret_scanners(
             raise RuntimeError("secret scan review evidence digest does not match")
 
 
-def _scanner_relative_path(root: Path, reported_path: Any) -> str:
+def _scanner_relative_path(
+    root: Path, reported_path: Any, *, report_directory: Path | None = None
+) -> str:
     if not isinstance(reported_path, str) or not reported_path:
         raise RuntimeError("secret scanner returned an invalid file path")
     path = Path(reported_path)
     root_path = Path(os.path.abspath(root))
-    candidates = [path] if path.is_absolute() else [Path.cwd() / path, root_path / path]
+    if path.is_absolute():
+        candidates = [path]
+    elif report_directory is not None:
+        candidates = [report_directory / path]
+    else:
+        candidates = [Path.cwd() / path, root_path / path]
     for candidate in candidates:
         try:
             relative = Path(os.path.abspath(candidate)).relative_to(root_path).as_posix()
@@ -496,10 +517,15 @@ def _scanner_version(output: str) -> str:
 
 
 def _scanner_finding(
-    root: Path, scanner: str, version: str, record: dict[str, Any]
+    root: Path,
+    scanner: str,
+    version: str,
+    record: dict[str, Any],
+    *,
+    report_directory: Path | None = None,
 ) -> dict[str, Any]:
     path_value = record.get("File")
-    path = _scanner_relative_path(root, path_value)
+    path = _scanner_relative_path(root, path_value, report_directory=report_directory)
     file_path = root / path
     try:
         file_info = file_path.lstat()

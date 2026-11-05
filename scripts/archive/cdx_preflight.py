@@ -231,6 +231,17 @@ def _produce_preflight(source: Path, private: Path) -> dict[str, Any]:
         "detect-secrets": ["scan", "--no-verify", "--all-files"],
         "environment": "isolated_home_cwd_no_pythonpath_no_user_site_no_inherited_credentials",
     }
+    review.write_checkpoint(
+        private / "preparation.json",
+        {
+            "purpose": "pre_scan_measurements_not_completed_baseline",
+            "source": source_before,
+            "selection": FULL_SELECTION,
+            "toolchain": before_tools,
+            "configuration": configuration,
+            "report_path_policy": "relative_paths_bound_to_explicit_scanner_directory",
+        },
+    )
     environment = {
         "PATH": os.environ["PATH"],
         "HOME": str(private),
@@ -359,6 +370,10 @@ def run_preflight(source: Path, private: Path) -> dict[str, Any]:
             "secret scanner returned ambiguous duplicate findings": "ambiguous_duplicate_findings",
             "secret scanner finding is not a regular file": "nonregular_observation",
             "secret scanner returned incomplete finding metadata": "incomplete_finding_metadata",
+            "secret scanner finding file could not be verified": "observation_source_read_failure",
+            "secret scanner returned an out-of-root path": "observation_out_of_root",
+            "secret scanner returned an invalid file path": "observation_invalid_path",
+            "gitleaks returned invalid finding tags": "gitleaks_invalid_tags",
         }
         reports = [
             stage

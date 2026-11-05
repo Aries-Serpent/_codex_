@@ -142,6 +142,12 @@ Available subprocess reports are retained before interpreting status or parsing.
 A sanitized `failure.json` records known failure codes and retained stages without
 copying diagnostics into public output; timeout/interruption can still leave no
 complete report. Never reinterpret a failed directory as a successful baseline.
+`preparation.json` retains measured source/selection/configuration/tool inputs
+before subprocess execution, but does not establish a completed baseline.
+Relative observation paths are resolved against the explicit scanner working
+directory, not the producer's parent cwd; absolute paths must still be in-root.
+When an explicit cwd is supplied, out-of-root paths cannot fall back to a
+lookalike source-relative path.
 
 `--assess-first-batch` privately assesses at most 16 observations per scanner.
 The loader rechecks actual current source/snapshot/tools/configuration, artifact
