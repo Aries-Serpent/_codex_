@@ -142,6 +142,7 @@ Creation commits are appended after the plan bodies have actually been committed
 | 006_semantic_gaps.md | `40692d5628e302e5eefdb16e6e7b11ea30636ed0` |
 | 007_private_context_recovery.md | `202d6677bc2b812653ffa910a840137ce0b4757f` |
 | 008_live_epoch_evidence.md | `28be57909189368c4f5f6d3faf53cd78a2327701` |
+| 009_restore_private_inputs.md | `0908ddba7234c3d7d553b9f4f4b80321fbffbe10` |
 
 ## Commit provenance
 

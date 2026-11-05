@@ -84,3 +84,6 @@ Record actual status/HEAD; preserve existing dirty work.
 
 The actual introducing commit SHA will be appended after this body is committed,
 in a separate metadata commit; it is not a self-referential SHA.
+
+Plan-body introducing commit: `0908ddba7234c3d7d553b9f4f4b80321fbffbe10`.
+This footer is appended afterward in a separate metadata commit.
