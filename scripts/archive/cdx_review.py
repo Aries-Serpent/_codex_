@@ -245,6 +245,31 @@ def queue_summary(queue: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def schedule_batch(
+    inventory: dict[str, Any],
+    inventory_sha256: str,
+    bindings: dict[str, Any],
+    *,
+    previous: dict[str, Any] | None = None,
+    source_kind: str = "real",
+) -> list[dict[str, Any]]:
+    """Select the next up-to-16 unreviewed rows per scanner, never accept claims."""
+    queue = build_queue(
+        inventory, inventory_sha256, bindings, previous=previous, source_kind=source_kind
+    )
+    states = {row["finding_id"]: row["state"] for row in queue["observations"]}
+    selected = []
+    for scanner in SECRET_SCANNER_VERSIONS:
+        selected.extend(
+            [
+                dict(row)
+                for row in inventory["findings"]
+                if row["scanner"] == scanner and states[row["finding_id"]] == "unreviewed"
+            ][:16]
+        )
+    return selected
+
+
 def write_checkpoint(path: Path, document: dict[str, Any], *, private: bool = True) -> str:
     """Publish a complete new checkpoint atomically; never overwrite history."""
     raw = (json.dumps(document, sort_keys=True, indent=2, allow_nan=False) + "\n").encode()

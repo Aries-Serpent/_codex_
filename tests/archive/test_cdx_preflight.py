@@ -456,3 +456,274 @@ def test_failed_mapping_retains_exact_preparation_and_sanitized_reason(produced,
     failure, _ = review.read_private_json(private / "failure.json")
     assert failure["reason_code"] == "observation_source_read_failure"
     assert not (private / "complete.json").exists()
+
+
+@pytest.mark.parametrize("newline", [b"\n", b"\r\n"])
+@pytest.mark.parametrize("terminated", [False, True])
+def test_gitleaks_private_span_uses_pinned_byte_columns(newline, terminated):
+    # v8.30.1 location.go measures later-line columns from the preceding LF,
+    # not from the byte after it. EndColumn is the inclusive byte column.
+    raw = "é head".encode() + newline + "αVALUEω".encode()
+    if terminated:
+        raw += newline
+    record = {
+        "StartLine": 1,
+        "EndLine": 2,
+        "StartColumn": 4,
+        "EndColumn": 8,
+        "Secret": "REDACTED",
+        "Match": "head" + newline.decode() + "αREDACTED",
+    }
+    span, status = common._gitleaks_private_span(raw, record, version="8.30.1")
+    if terminated:
+        assert span == b"head" + newline + "αVALUE".encode()
+        assert status == "mapped_reported_match_not_secret"
+    else:
+        # The pinned implementation cannot emit usable multi-line end columns
+        # beyond its final LF; do not extend its semantics.
+        assert span is None
+        assert status == "unsupported_unterminated_multiline"
+    record.update(StartLine=2, StartColumn=4)
+    span, status = common._gitleaks_private_span(raw, record, version="8.30.1")
+    assert span == b"VALUE"
+    assert status == "mapped_reported_match_not_secret"
+
+
+@pytest.mark.parametrize(
+    "raw,record,version",
+    [
+        (b"VALUE", {"StartColumn": 0}, "8.30.1"),
+        (b"VALUE", {"EndColumn": 6}, "8.30.1"),
+        (b"VALUE", {"StartColumn": True}, "8.30.1"),
+        (b"VALUE", {"StartLine": 0}, "8.30.1"),
+        (b"VALUE", {"EndLine": 2}, "8.30.1"),
+        (b"VALUE", {"StartLine": 2, "EndLine": 1}, "8.30.1"),
+        ("éVALUE".encode(), {"StartColumn": 2}, "8.30.1"),
+        ("VALUEé".encode(), {"EndColumn": 6}, "8.30.1"),
+        (b"VALUE", {"Tags": ["decoded:base64", "decode-depth:2"]}, "8.30.1"),
+        (b"VALUE", {"Tags": ["Encoded"]}, "8.30.1"),
+        (b"VALUE", {"Tags": ["Decoded"]}, "8.30.1"),
+        (b"VALUE", {"Tags": ["decode-depth:1"]}, "8.30.1"),
+        (b"VALUE", {"Tags": "plain"}, "8.30.1"),
+        (b"VALUE", {"Encoded": False}, "8.30.1"),
+        (b"VALUE", {"Decoded": "VALUE"}, "8.30.1"),
+        (b"VALUE", {"Fragment": {"Raw": "VALUE"}}, "8.30.1"),
+        (b"VALUE", {"File": "outer!inner"}, "8.30.1"),
+        (b"VALUE\rnext", {}, "8.30.1"),
+        (b"VALUE\x00", {}, "8.30.1"),
+        (b"VALUE\xff", {}, "8.30.1"),
+        (b"VALUE" + b"x" * 100_000, {}, "8.30.1"),
+        (b"VALUE", {}, "8.30.2"),
+        (b"VALUE", {"EndColumn": None}, "8.30.1"),
+        (b"VALUE", {"StartColumn": 4, "EndColumn": 2}, "8.30.1"),
+        (b"VALUE\r\n", {"EndColumn": 6}, "8.30.1"),
+        (b"VALUE\n", {"EndColumn": 6}, "8.30.1"),
+        (b"VALUE", {"Commit": "synthetic-commit"}, "8.30.1"),
+        (b"VALUE", {"SymlinkFile": "synthetic-link"}, "8.30.1"),
+        (b"VALUE" + b"x" * 99_995, {}, "8.30.1"),
+    ],
+)
+def test_gitleaks_private_span_fails_closed(raw, record, version):
+    coordinates = dict(StartLine=1, EndLine=1, StartColumn=1, EndColumn=5)
+    coordinates.update(record)
+    span, status = common._gitleaks_private_span(raw, coordinates, version=version)
+    assert span is None
+    assert status.startswith("unsupported_")
+
+
+def test_gitleaks_lf_origin_is_not_a_character_column():
+    raw = "é\nαVALUE\n".encode()
+    record = dict(StartLine=2, EndLine=2, StartColumn=4, EndColumn=8)
+    assert common._gitleaks_private_span(raw, record, version="8.30.1")[0] == b"VALUE"
+    # Ordinary one-based character columns would point elsewhere; do not guess.
+    record["StartColumn"] = 3
+    assert common._gitleaks_private_span(raw, record, version="8.30.1")[0] is None
+
+
+@pytest.mark.parametrize("newline", [b"", b"\n", b"\r\n"])
+def test_gitleaks_first_line_inclusive_bytes_do_not_depend_on_masked_payload(newline):
+    raw = "é = VALUEω".encode() + newline
+    record = dict(
+        StartLine=1,
+        EndLine=1,
+        StartColumn=6,
+        EndColumn=10,
+        Secret="REDACTED",
+        Match="entirely different masked payload",
+    )
+    span, status = common._gitleaks_private_span(raw, record, version="8.30.1")
+    assert span == b"VALUE"
+    assert status == "mapped_reported_match_not_secret"
+
+
+@pytest.mark.parametrize("decoded", [False, True])
+def test_masked_report_mapping_is_never_secret_recovery(produced, monkeypatch, decoded):
+    source, private, _ = produced
+    (source / "fixture").write_bytes(b'password = "SYNTHETIC_VALUE"\n')
+
+    def scan(root, **options):
+        record = dict(
+            File=str(root / "fixture"),
+            RuleID="synthetic-only",
+            StartLine=1,
+            EndLine=1,
+            StartColumn=1,
+            EndColumn=28,
+            Secret="REDACTED",
+            Match='password = "REDACTED"',
+            Tags=["decoded:base64", "decode-depth:2"] if decoded else [],
+        )
+        finding = common._scanner_finding(root, "gitleaks", "8.30.1", record)
+        finding["finding_id"] = common._finding_id(
+            os.environ["CDX_FINDING_HMAC_KEY"].encode(), finding
+        )
+        common._write_finding_inventory(options["inventory_path"], [finding], [root])
+        options["observation_sink"](
+            [finding],
+            {
+                "version": "1.5.0",
+                "results": {},
+                "plugins_used": [{"name": "KeywordDetector"}],
+                "filters_used": [],
+            },
+        )
+        raise RuntimeError("secret scan findings are unresolved or dispositions are stale")
+
+    monkeypatch.setattr(common, "run_secret_scanners", scan)
+    preflight.run_preflight(source, private)
+    result = preflight.assess_batch(source, private)
+    batch, _ = review.read_private_json(private / "batch-001.json")
+    row = batch["assessments"][0]
+    assert row["predicates"]["reported_match_span_available"] is (not decoded)
+    assert row["predicates"]["report_payload_redaction_marker_present"]
+    assert row["predicates"]["exact_secret_recovered"] is False
+    assert row["candidate_origin_proof"] == row["candidate_use_proof"] == "unavailable"
+    assert row["state"] == "indeterminate"
+    assert result["accepted"] == result["semantic_false_positive_proofs"] == 0
+    assert "SYNTHETIC_VALUE" not in json.dumps(batch)
+    assert "password = " not in json.dumps(batch)
+
+
+def test_numbered_assessments_resume_without_overwriting(produced):
+    source, private, _ = produced
+    preflight.run_preflight(source, private)
+    preflight.assess_batch(source, private)
+    first = (private / "batch-001.json").read_bytes()
+    assert preflight.assess_batch(source, private, batch_index=2)["assigned"] == 0
+    assert (private / "batch-001.json").read_bytes() == first
+    queue, _ = review.read_private_json(private / "queue-002.json")
+    assert review.queue_summary(queue)["by_state"]["indeterminate"] == 2
+    with pytest.raises(FileExistsError):
+        preflight.assess_batch(source, private, batch_index=2)
+
+
+@pytest.mark.parametrize("index", [0, -1, True, 1.5, 1000])
+def test_numbered_assessments_reject_invalid_index(produced, index):
+    source, private, _ = produced
+    preflight.run_preflight(source, private)
+    with pytest.raises(ValueError):
+        preflight.assess_batch(source, private, batch_index=index)
+    assert not list(private.glob("batch-*.json"))
+
+
+def test_numbered_assessments_require_previous_checkpoint(produced):
+    source, private, _ = produced
+    preflight.run_preflight(source, private)
+    with pytest.raises(FileNotFoundError):
+        preflight.assess_batch(source, private, batch_index=2)
+    assert not (private / "batch-002.json").exists()
+
+
+@pytest.mark.parametrize("attack", ["stale", "duplicate", "accepted", "evidence"])
+def test_numbered_assessments_reject_untrusted_resume_before_publication(produced, attack):
+    source, private, _ = produced
+    preflight.run_preflight(source, private)
+    preflight.assess_batch(source, private)
+    path = private / "queue-001.json"
+    queue, _ = review.read_private_json(path)
+    if attack == "stale":
+        queue["bindings"]["source_sha256"] = "f" * 64
+    elif attack == "duplicate":
+        queue["observations"].append(dict(queue["observations"][0]))
+    elif attack == "accepted":
+        queue["observations"][0]["state"] = "accepted_exact_false_positive"
+    else:
+        queue["observations"][0]["evidence_sha256"] = "f" * 64
+    path.write_text(json.dumps(queue))
+    with pytest.raises(ValueError):
+        preflight.assess_batch(source, private, batch_index=2)
+    assert not (private / "batch-002.json").exists()
+    assert not (private / "queue-002.json").exists()
+
+
+def test_numbered_batches_exhaust_exact_inventory_once(produced, monkeypatch):
+    source, private, _ = produced
+    (source / "fixture").write_text("synthetic-only " * 50 + "\n")
+
+    def scan(root, **options):
+        findings = []
+        for index in range(35):
+            for scanner, record in (
+                (
+                    "gitleaks",
+                    dict(
+                        RuleID="synthetic-only",
+                        StartLine=1,
+                        EndLine=1,
+                        StartColumn=index + 1,
+                        EndColumn=index + 1,
+                        Secret="REDACTED",
+                    ),
+                ),
+                (
+                    "detect-secrets",
+                    dict(type="synthetic-only", line_number=1, hashed_secret=f"synthetic-{index}"),
+                ),
+            ):
+                finding = common._scanner_finding(
+                    root,
+                    scanner,
+                    common.SECRET_SCANNER_VERSIONS[scanner],
+                    dict(record, File=str(root / "fixture")),
+                )
+                finding["finding_id"] = common._finding_id(
+                    os.environ["CDX_FINDING_HMAC_KEY"].encode(), finding
+                )
+                findings.append(finding)
+        common._write_finding_inventory(options["inventory_path"], findings, [root])
+        options["observation_sink"](
+            findings,
+            {
+                "version": "1.5.0",
+                "results": {},
+                "plugins_used": [{"name": "KeywordDetector"}],
+                "filters_used": [],
+            },
+        )
+        raise RuntimeError("secret scan findings are unresolved or dispositions are stale")
+
+    monkeypatch.setattr(common, "run_secret_scanners", scan)
+    preflight.run_preflight(source, private)
+    seen = set()
+    for index, expected in enumerate((32, 32, 6, 0), 1):
+        result = preflight.assess_batch(source, private, batch_index=index)
+        assert result["assigned"] == result["assessed"] == expected
+        assert result["accepted"] == result["semantic_false_positive_proofs"] == 0
+        batch, _ = review.read_private_json(private / f"batch-{index:03d}.json")
+        identities = {row["finding_id"] for row in batch["assessments"]}
+        assert not identities.intersection(seen)
+        assert all(row["state"] == "indeterminate" for row in batch["assessments"])
+        seen.update(identities)
+    assert len(seen) == 70
+    assert result["counts"]["by_state"]["indeterminate"] == 70
+
+
+def test_existing_queue_destination_never_publishes_partial_batch(produced):
+    source, private, _ = produced
+    preflight.run_preflight(source, private)
+    review.write_checkpoint(private / "queue-001.json", {"synthetic": "existing"})
+    before = (private / "queue-001.json").read_bytes()
+    with pytest.raises(FileExistsError):
+        preflight.assess_batch(source, private)
+    assert (private / "queue-001.json").read_bytes() == before
+    assert not (private / "batch-001.json").exists()

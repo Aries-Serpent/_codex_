@@ -438,3 +438,58 @@ def test_gitleaks_tag_order_is_not_observation_order(tmp_path):
     assert cdx_common._finding_id(key, first) != cdx_common._finding_id(key, third)
     with pytest.raises(RuntimeError, match="invalid finding tags"):
         cdx_common._scanner_finding(tmp_path, "gitleaks", "8.30.1", dict(record, Tags=["a", 1]))
+
+
+def test_next_batch_is_bounded_and_in_inventory_not_checkpoint_order(inventory, bindings):
+    template = inventory["findings"][0]
+    inventory["findings"] = [
+        dict(
+            template,
+            scanner=scanner,
+            scanner_version=cdx_common.SECRET_SCANNER_VERSIONS[scanner],
+            finding_id=f"{index + offset:064x}",
+        )
+        for index in range(35)
+        for scanner, offset in (("gitleaks", 1), ("detect-secrets", 101))
+    ]
+    queue = cdx_review.build_queue(inventory, "e" * 64, bindings)
+    first = cdx_review.schedule_batch(inventory, "e" * 64, bindings, previous=queue)
+    assert len(first) == 32
+    for scanner in cdx_common.SECRET_SCANNER_VERSIONS:
+        assert [row["finding_id"] for row in first if row["scanner"] == scanner] == [
+            row["finding_id"] for row in inventory["findings"] if row["scanner"] == scanner
+        ][:16]
+    assigned = {row["finding_id"] for row in first}
+    for row in queue["observations"]:
+        if row["finding_id"] in assigned:
+            row["state"] = "indeterminate"
+    queue["observations"].reverse()
+    second = cdx_review.schedule_batch(inventory, "e" * 64, bindings, previous=queue)
+    assert len(second) == 32
+    assert not assigned.intersection(row["finding_id"] for row in second)
+    for scanner in cdx_common.SECRET_SCANNER_VERSIONS:
+        assert [row["finding_id"] for row in second if row["scanner"] == scanner] == [
+            row["finding_id"] for row in inventory["findings"] if row["scanner"] == scanner
+        ][16:32]
+
+
+@pytest.mark.parametrize("state", ["suspected_sensitive", "indeterminate", "stale_or_unmatched"])
+def test_scheduling_skips_all_non_unreviewed_states(inventory, bindings, state):
+    queue = cdx_review.build_queue(inventory, "e" * 64, bindings)
+    queue["observations"][0]["state"] = state
+    assert cdx_review.schedule_batch(inventory, "e" * 64, bindings, previous=queue) == []
+
+
+@pytest.mark.parametrize("attack", ["stale", "duplicate", "accepted", "evidence"])
+def test_scheduling_validates_checkpoint_before_selection(inventory, bindings, attack):
+    queue = cdx_review.build_queue(inventory, "e" * 64, bindings)
+    if attack == "stale":
+        queue["bindings"]["source_sha256"] = "f" * 64
+    elif attack == "duplicate":
+        queue["observations"].append(dict(queue["observations"][0]))
+    elif attack == "accepted":
+        queue["observations"][0]["state"] = "accepted_exact_false_positive"
+    else:
+        queue["observations"][0]["evidence_sha256"] = "f" * 64
+    with pytest.raises(ValueError):
+        cdx_review.schedule_batch(inventory, "e" * 64, bindings, previous=queue)

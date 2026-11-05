@@ -456,21 +456,37 @@ def load_preflight(source: Path, private: Path) -> tuple[dict[str, Any], dict[st
     return complete, observations
 
 
-def assess_batch(source: Path, private: Path) -> dict[str, Any]:
+def assess_batch(source: Path, private: Path, *, batch_index: int = 1) -> dict[str, Any]:
     """Inspect at most 16 observations per scanner offline; never assert harmlessness."""
+    if type(batch_index) is not int or not 1 <= batch_index <= 999:
+        raise ValueError("invalid batch index")
+    for name in (f"batch-{batch_index:03d}.json", f"queue-{batch_index:03d}.json"):
+        try:
+            (private / name).lstat()
+        except FileNotFoundError:
+            continue
+        raise FileExistsError("assessment checkpoint already exists")
     # Imports are lazy so preparation does not require optional scanner dependencies.
     from detect_secrets.settings import get_plugins, transient_settings
 
     complete, observations = load_preflight(source, private)
-    selected = []
-    for scanner in common.SECRET_SCANNER_VERSIONS:
-        selected.extend([row for row in observations["findings"] if row["scanner"] == scanner][:16])
+    inventory, inventory_digest = review.read_private_json(private / "inventory.json")
+    previous_path = private / (
+        "queue.json" if batch_index == 1 else f"queue-{batch_index - 1:03d}.json"
+    )
+    queue, previous_digest = review.read_private_json(previous_path)
+    selected_rows = review.schedule_batch(
+        inventory, inventory_digest, complete["bindings"], previous=queue
+    )
+    by_id = {row["finding_id"]: row for row in observations["findings"]}
+    selected = [by_id[row["finding_id"]] for row in selected_rows]
     assessments = []
     for finding in selected:
         raw = read_source_file(private / "snapshot", finding["path"])
         if hashlib.sha256(raw).hexdigest() != finding["file_sha256"]:
             raise ValueError("observation source changed")
-        lines = raw.splitlines()
+        # Scanner locations count LF only; preserve other bytes in context.
+        lines = raw.split(b"\n")
         start, end = finding["start_line"], finding["end_line"]
         if end > len(lines) or end - start > 100:
             raise ValueError("unavailable or oversized observation context")
@@ -512,17 +528,22 @@ def assess_batch(source: Path, private: Path) -> dict[str, Any]:
                     gap = "exact_detector_replay_unmatched_no_harmlessness_proof"
         else:
             record = finding["_record"]
-            left, right = record.get("StartColumn"), record.get("EndColumn")
-            supported = (
-                start == end
-                and type(left) is int
-                and type(right) is int
-                and 1 <= left <= right <= len(lines[start - 1])
-                and lines[start - 1].isascii()
+            span, mapping_status = common._gitleaks_private_span(
+                raw, record, version=finding["scanner_version"]
             )
-            predicates["ascii_single_line_span_available"] = supported
-            if not supported:
-                gap = "redacted_or_multiline_span_requires_exact_private_detector_context"
+            predicates.update(
+                reported_match_mapping_status=mapping_status,
+                reported_match_span_available=span is not None,
+                report_payload_redaction_marker_present=(
+                    record.get("Secret") == "REDACTED"
+                    or (isinstance(record.get("Match"), str) and "REDACTED" in record["Match"])
+                ),
+                exact_secret_recovered=False,
+            )
+            if span is None:
+                gap = "unsupported_reported_match_mapping_no_secret_or_harmlessness_proof"
+            else:
+                gap = "match_localized_not_secret_origin_use_or_harmlessness_proof"
         assessments.append(
             {
                 "finding_id": finding["finding_id"],
@@ -532,26 +553,30 @@ def assess_batch(source: Path, private: Path) -> dict[str, Any]:
                 "evidence_gap": gap,
                 "raw_context_status": "inspected_privately_not_exported",
                 "exact_false_positive_evidence": "insufficient",
+                "candidate_origin_proof": "unavailable",
+                "candidate_use_proof": "unavailable",
             }
         )
     # Revalidate after inspection, before recording any advisory state transition.
     load_preflight(source, private)
+    if review.read_private_json(previous_path)[1] != previous_digest:
+        raise ValueError("previous scheduling checkpoint changed")
     batch = {
         "bindings": complete["bindings"],
         "inventory_sha256": complete["inventory_sha256"],
         "purpose": "private_assessment_not_approval",
-        "selection": "first_16_per_scanner_in_bound_inventory_order",
+        "selection": "next_unreviewed_16_per_scanner_in_bound_inventory_order",
+        "batch_index": batch_index,
+        "previous_queue_sha256": previous_digest,
         "assessments": assessments,
     }
-    batch_digest = review.write_checkpoint(private / "batch-001.json", batch)
-    queue, _ = review.read_private_json(private / "queue.json")
+    batch_digest = review.write_checkpoint(private / f"batch-{batch_index:03d}.json", batch)
     assigned = {row["finding_id"] for row in assessments}
     for row in queue["observations"]:
         if row["finding_id"] in assigned:
             row["state"] = "indeterminate"
-    inventory, inventory_digest = review.read_private_json(private / "inventory.json")
     queue = review.build_queue(inventory, inventory_digest, complete["bindings"], previous=queue)
-    review.write_checkpoint(private / "queue-001.json", queue)
+    review.write_checkpoint(private / f"queue-{batch_index:03d}.json", queue)
     return {
         "assigned": len(assessments),
         "assessed": len(assessments),

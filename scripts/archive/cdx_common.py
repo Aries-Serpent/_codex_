@@ -7,12 +7,13 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import shutil
 import stat
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any, Iterator, cast
 
 SCHEMA_VERSION = 1
 DEFAULT_MAX_BLOB_BYTES = 512 * 1024 * 1024
@@ -575,6 +576,83 @@ def _scanner_finding(
         "end_line": end,
         "_record": canonical_record,
     }
+
+
+def _gitleaks_private_span(
+    raw: bytes, record: dict[str, Any], *, version: str
+) -> tuple[bytes | None, str]:
+    """Map a bounded v8.30.1 file Match privately, never recover its Secret.
+
+    location.go uses byte offsets and the preceding LF index as the column
+    origin on later lines. Only small, unfragmented UTF-8 files are supported.
+    """
+    if version != "8.30.1":
+        return None, "unsupported_scanner_version"
+    tags = record.get("Tags")
+    if tags is not None and (
+        not isinstance(tags, list) or any(not isinstance(tag, str) for tag in tags)
+    ):
+        return None, "unsupported_tags"
+    if any(re.search(r"encoded|decoded|decode-depth", tag, re.I) for tag in tags or []) or any(
+        re.search(r"encoded|decoded|decode.depth", field, re.I) for field in record
+    ):
+        return None, "unsupported_decoding"
+    if (
+        record.get("Fragment") is not None
+        or record.get("Commit")
+        or record.get("SymlinkFile")
+        or "!" in str(record.get("File", ""))
+    ):
+        return None, "unsupported_fragment_or_nested_source"
+    # sources/file.go uses a 100,000-byte default buffer. Do not extrapolate
+    # whole-file coordinates to chunked sources or other encodings.
+    if len(raw) >= 100_000 or b"\x00" in raw or b"\r" in raw.replace(b"\r\n", b""):
+        return None, "unsupported_source_encoding_or_size"
+    try:
+        raw.decode("utf-8")
+    except UnicodeError:
+        return None, "unsupported_source_encoding_or_size"
+    coordinates = [
+        record.get(field) for field in ("StartLine", "EndLine", "StartColumn", "EndColumn")
+    ]
+    if any(type(value) is not int or value < 1 for value in coordinates):
+        return None, "unsupported_coordinates"
+    start, end, left, right = (cast(int, value) for value in coordinates)
+    newlines = [index for index, value in enumerate(raw) if value == 10]
+    origins = [0] + newlines
+    if not (1 <= start <= end <= len(origins)) or end - start > 100:
+        return None, "unsupported_coordinates"
+    # location.go does not set a usable end column for a multi-line match
+    # ending beyond the final LF when its start was already found.
+    if end > start and end > len(newlines):
+        return None, "unsupported_unterminated_multiline"
+    begin = origins[start - 1] + left - 1
+    finish = origins[end - 1] + right
+
+    def content_bounds(line: int) -> tuple[int, int]:
+        lower = origins[line - 1] + (line > 1)
+        upper = newlines[line - 1] if line <= len(newlines) else len(raw)
+        if upper > lower and raw[upper - 1 : upper] == b"\r":
+            upper -= 1
+        return lower, upper
+
+    first_lower, first_upper = content_bounds(start)
+    last_lower, last_upper = content_bounds(end)
+    if not (
+        first_lower <= begin < first_upper
+        and last_lower < finish <= last_upper
+        and 0 < finish - begin <= 65536
+    ):
+        return None, "unsupported_coordinates"
+    # Byte columns must land on complete UTF-8 code points, not character
+    # indexes or the interior of a multi-byte sequence.
+    try:
+        raw[:begin].decode("utf-8")
+        span = raw[begin:finish]
+        span.decode("utf-8")
+    except UnicodeError:
+        return None, "unsupported_utf8_boundary"
+    return span, "mapped_reported_match_not_secret"
 
 
 def _finding_id(key: bytes, finding: dict[str, Any]) -> str:

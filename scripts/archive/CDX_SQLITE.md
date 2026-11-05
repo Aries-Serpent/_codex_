@@ -150,6 +150,17 @@ When an explicit cwd is supplied, out-of-root paths cannot fall back to a
 lookalike source-relative path.
 
 `--assess-first-batch` privately assesses at most 16 observations per scanner.
+The Python API `assess_batch(source, private, batch_index=N)` supports batches
+1–999 (default 1). Batch 1 resumes `queue.json`; subsequent batches require the
+immediately preceding `queue-NNN.json` in the same bound inventory/run. Scheduling
+revalidates that checkpoint through `build_queue`, rejecting stale bindings,
+duplicate observations and evidence/approval claims. It selects only `unreviewed`
+observations, in bound inventory order within each scanner, at most 16 per
+scanner / 32 total. Previously assessed or otherwise non-unreviewed rows are not
+reselected. `batch-NNN.json` and `queue-NNN.json` are create-only: existing
+destinations, including interrupted history, must not be overwritten. Publication
+of the pair is not transactional; interruption can leave a batch without its
+queue, which must not be treated as a completed checkpoint.
 The loader rechecks actual current source/snapshot/tools/configuration, artifact
 digests and every canonical observation's keyed identity. Offline detector replay
 has verification filters disabled; bounded context predicates are recorded
@@ -158,6 +169,47 @@ without exporting values or lines. Every assigned observation remains advisory
 zero approvals. Context predicates are investigation aids, not harmlessness proof.
 The existing advisory CLI still accepts structurally valid supplied bindings;
 only the measured producer/loader makes these additional local provenance checks.
+
+### Supported private Gitleaks coordinate contract
+
+The shared private span helper is pinned to **Gitleaks 8.30.1**, based on official
+[`detect/location.go`](https://github.com/gitleaks/gitleaks/blob/v8.30.1/detect/location.go),
+[`detect/detect.go`](https://github.com/gitleaks/gitleaks/blob/v8.30.1/detect/detect.go),
+[`sources/file.go`](https://github.com/gitleaks/gitleaks/blob/v8.30.1/sources/file.go)
+and [`report/finding.go`](https://github.com/gitleaks/gitleaks/blob/v8.30.1/report/finding.go).
+It does not emulate Go regular expressions or infer secret capture groups.
+
+- `StartLine`/`EndLine` and byte columns are positive integers (not booleans).
+  `EndColumn` is inclusive. Columns count **bytes, not Unicode characters**.
+  Importantly, the pinned implementation measures subsequent-line columns from
+  the preceding **LF byte index**, not the byte after LF; the first content byte
+  on such a line is column 2. First-line columns start at 1.
+- Only strict UTF-8 regular-file content smaller than the pinned 100,000-byte
+  default fragment buffer is supported, with LF or CRLF (including mixed LF/CRLF).
+  No NUL, lone CR, split UTF-8 code points, archive-member paths, commit/symlink
+  source metadata or non-null `Fragment` metadata is supported. A span is limited
+  to 65,536 bytes and a line-number difference of at most 100. Endpoints must be
+  inside content, not line terminators; intervening LF/CRLF bytes are preserved.
+- Single-line spans may end on an unterminated final line. Multi-line spans
+  ending on that line are unsupported: the pinned location implementation does
+  not produce a usable end column in that case. Missing/malformed coordinates,
+  large/chunked files and other versions/encodings remain explicitly unsupported,
+  not guessed or converted through character indexes.
+- Decoding is unsupported, including `Encoded`/`Decoded` metadata or tags and
+  native `decoded:<kind>` / `decode-depth:N` tags (including nested decoding).
+  See [`detect/codec/segment.go`](https://github.com/gitleaks/gitleaks/blob/v8.30.1/detect/codec/segment.go).
+  Encoded-source coordinates cannot establish a decoded secret's exact bytes.
+
+Coordinates locate the reported **Match**, not necessarily **Secret**. At 100%
+redaction the scanner replaces Secret with `REDACTED` and replaces occurrences
+of Secret inside Match; the remaining Match can still include sensitive context.
+A redaction marker is only a payload predicate, never proof that a secret was
+recovered, harmless, or entirely removed from every report field. Even a mapped
+Match leaves `exact_secret_recovered` false and candidate origin/use proofs
+`unavailable`. Only safe mapping/redaction predicates are persisted by assessment;
+private span bytes and source lines/values are never exported in its results.
+Every row remains `indeterminate`, with zero semantic false-positive proofs or
+approvals. No disposition/evidence acceptance rules are changed.
 
 **Review trust limitation:** the maintained disposition validator checks exact
 metadata, a nonblank reviewer label, external evidence accessibility and digest.
