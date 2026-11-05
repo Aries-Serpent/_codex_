@@ -361,3 +361,80 @@ def test_queue_cli_outputs_only_aggregates(tmp_path, inventory, bindings, capsys
     arguments[-1] = str(source / "inside.json")
     assert cdx_review.main(arguments) == 2
     assert not (source / "inside.json").exists()
+
+
+@pytest.mark.parametrize("evidence_change", ("tampered", "missing", "internal"))
+def test_scanner_rejects_unavailable_or_tampered_exact_evidence(
+    tmp_path, monkeypatch, evidence_change
+):
+    root = tmp_path / "source"
+    root.mkdir()
+    (root / "fixture.txt").write_text("synthetic fixture only\n")
+    monkeypatch.setattr(cdx_common.shutil, "which", lambda name: name)
+    monkeypatch.setenv("CDX_FINDING_HMAC_KEY", "synthetic-only-test-key" * 2)
+
+    def fake_run(command, **_kwargs):
+        if command[1] == "version":
+            return subprocess.CompletedProcess(command, 0, "8.30.1", "")
+        if command[1] == "--version":
+            return subprocess.CompletedProcess(command, 0, "1.5.0", "")
+        if command[0] == "gitleaks":
+            record = {
+                "File": str(root / "fixture.txt"),
+                "RuleID": "synthetic-rule",
+                "StartLine": 1,
+                "EndLine": 1,
+            }
+            Path(command[command.index("--report-path") + 1]).write_text(json.dumps([record]))
+            return subprocess.CompletedProcess(command, 1, "", "")
+        return subprocess.CompletedProcess(command, 0, '{"results": {}}', "")
+
+    monkeypatch.setattr(cdx_common.subprocess, "run", fake_run)
+    inventory = tmp_path / "inventory.json"
+    with pytest.raises(RuntimeError, match="unresolved"):
+        cdx_common.run_secret_scanners(root, inventory_path=inventory)
+    row = json.loads(inventory.read_text())["findings"][0]
+    evidence = tmp_path / "evidence.txt"
+    evidence.write_text("synthetic exact-evidence fixture only\n")
+    row.update(
+        disposition="false_positive",
+        evidence_ref=str(evidence),
+        evidence_sha256=hashlib.sha256(evidence.read_bytes()).hexdigest(),
+        reviewed_by="synthetic fixture label, not authentication",
+    )
+    if evidence_change == "tampered":
+        evidence.write_text("changed bytes\n")
+    elif evidence_change == "missing":
+        evidence.unlink()
+    else:
+        internal = root / "internal.txt"
+        internal.write_text("synthetic internal evidence\n")
+        row["evidence_ref"] = str(internal)
+        row["evidence_sha256"] = hashlib.sha256(internal.read_bytes()).hexdigest()
+    dispositions = tmp_path / "dispositions.json"
+    dispositions.write_text(json.dumps({"schema_version": 1, "dispositions": [row]}))
+    with pytest.raises(RuntimeError):
+        cdx_common.run_secret_scanners(root, dispositions_path=dispositions)
+
+
+def test_gitleaks_tag_order_is_not_observation_order(tmp_path):
+    (tmp_path / "fixture.txt").write_text("synthetic\n")
+    record = {
+        "File": str(tmp_path / "fixture.txt"),
+        "RuleID": "synthetic-rule",
+        "StartLine": 1,
+        "EndLine": 1,
+        "Tags": ["b", "a", "a"],
+    }
+    first = cdx_common._scanner_finding(tmp_path, "gitleaks", "8.30.1", record)
+    second = cdx_common._scanner_finding(
+        tmp_path, "gitleaks", "8.30.1", dict(record, Tags=["a", "b", "a"])
+    )
+    key = b"synthetic-only-test-key" * 2
+    assert cdx_common._finding_id(key, first) == cdx_common._finding_id(key, second)
+    third = cdx_common._scanner_finding(
+        tmp_path, "gitleaks", "8.30.1", dict(record, Tags=["a", "b"])
+    )
+    assert cdx_common._finding_id(key, first) != cdx_common._finding_id(key, third)
+    with pytest.raises(RuntimeError, match="invalid finding tags"):
+        cdx_common._scanner_finding(tmp_path, "gitleaks", "8.30.1", dict(record, Tags=["a", 1]))
