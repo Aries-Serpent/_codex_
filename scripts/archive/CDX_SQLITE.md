@@ -49,6 +49,67 @@ markers. Supply the reviewed file using
 dispositions block packing; scanner versions, source digests, and locations
 are rechecked on every run.
 
+### Exact-finding recovery (no packing)
+
+`scripts.archive.cdx_review` prepares private **advisory-only** observation queues.
+It never invokes scanners, writes dispositions, authenticates reviewers, or
+authorizes packing. Inventory counts are scanner observations, not unique secrets.
+Every observation initially remains `unreviewed`; cross-scanner overlaps remain
+separate. Resume preserves only conservative scheduling states, requires identical
+run/source/selection/toolchain/configuration/inventory and identity-version
+bindings, and rejects approval or evidence claims. The reserved evidence/accepted
+states are always zero in this tool: supporting them requires a separate actual
+review trust contract, not another agent label.
+
+Use owner-only files in an owner-only private directory outside the source.
+The inventory must be complete schema version 1 output from the maintained scanner
+contract; loading it establishes structure and byte identity, not authenticity.
+Bindings are a JSON object with `identity_version: 2`, a fresh 32-character
+hexadecimal `run_namespace`, and 64-character hexadecimal `source_sha256`,
+`selection_sha256`, `toolchain_sha256`, and `config_sha256`. Record how those
+digests were independently measured in a separate sanitized checkpoint; labels
+alone do not prove that scanners ran or configurations are trustworthy.
+
+Invoke `python -m scripts.archive.cdx_review` with absolute `--source`,
+`--inventory`, `--bindings`, and a new numbered `--output` path. Add `--resume`
+with the previous private queue to preserve conservative scheduling. Output is
+aggregate counts and checkpoint digest only. Reads reject duplicate keys,
+nonfinite JSON, oversized documents, symlinks (including ancestors), hardlinks,
+nonregular files, and permissive modes. Checkpoints use descriptor-relative,
+create-only atomic publication and fsync; existing history is never overwritten.
+An interrupted run must resume from the last complete checkpoint, not a temporary
+file. Publication fsyncs the directory again after removing the temporary link.
+A crash between linking and unlinking can leave a two-link checkpoint: private
+loading rejects it. Resume from the preceding complete checkpoint or regenerate
+a new numbered queue from the bound inventory; do not promote the interrupted
+file or remove unknown temporary files automatically. No key, raw report,
+inventory, or private queue belongs in Git.
+
+Finding identity algorithm **2** canonicalizes scanner `File` to the validated
+source-relative path. For Gitleaks `dir` observations it also canonicalizes the
+exact `File:RuleID:StartLine` fingerprint form and sorts string tags without
+deduplicating them. Other record fields, including columns and opaque secret
+identifiers, remain identity-bound. Unknown fingerprint forms remain verbatim
+and may therefore remain snapshot-dependent; git-history scans are not supported
+by the packer. All algorithm-1 identities are historical and intentionally fail
+new disposition matching. Never migrate an approval solely by matching exported
+metadata. A discarded HMAC key or omitted raw record cannot be reconstructed
+from a redacted inventory.
+
+The scanner contract bounds each subprocess to 600 seconds, rejects ambiguous
+JSON and Gitleaks status/report disagreement, and writes inventories mode 0600.
+Gitleaks exit 1 denotes observations, not scanner clearance; unresolved
+observations still block before any archive database is created.
+
+**Review trust limitation:** the maintained disposition validator checks exact
+metadata, a nonblank reviewer label, external evidence accessibility and digest.
+It does not authenticate that label or decide whether evidence is relevant.
+A valid digest for irrelevant evidence is not affirmative proof. These review
+obligations remain blocking until fulfilled by a genuine authorized review
+process. Revoked, archived or duplicated real secrets are not false positives.
+Session-private `/tmp` files are not durable escrow; cross-session reuse needs an
+actually approved private retention mechanism for the key and relevant evidence.
+
 By default, `.git`, `.worktrees`, virtual environments, caches, `node_modules`,
 SQLite/database files, and Python bytecode are excluded. Individual files larger
 than 8 MiB are skipped; adjust `--max-file-bytes` or use `--allow-large

@@ -17,6 +17,8 @@ SCHEMA_VERSION = 1
 DEFAULT_MAX_BLOB_BYTES = 512 * 1024 * 1024
 DEFAULT_MAX_TEXT_BYTES = 64 * 1024 * 1024
 SECRET_SCANNER_VERSIONS = {"gitleaks": "8.30.1", "detect-secrets": "1.5.0"}
+SECRET_SCANNER_TIMEOUT_SECONDS = 600
+FINDING_IDENTITY_VERSION = 2
 DEFAULT_DENIED_COMPONENTS = {
     ".git",
     ".mypy_cache",
@@ -234,6 +236,21 @@ def compute_merkle_root(connection: Any) -> str:
     return digest.hexdigest()
 
 
+def _scanner_json(raw: str) -> Any:
+    def unique_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("duplicate scanner report key")
+            result[key] = value
+        return result
+
+    def reject_constant(_value: str) -> Any:
+        raise ValueError("invalid scanner JSON constant")
+
+    return json.loads(raw, object_pairs_hook=unique_keys, parse_constant=reject_constant)
+
+
 def run_secret_scanners(
     root: Path,
     dispositions_path: Path | None = None,
@@ -262,12 +279,14 @@ def run_secret_scanners(
                 capture_output=True,
                 text=True,
                 check=False,
+                timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
             )
             detect_version = subprocess.run(
                 [detect_secrets, "--version"],
                 capture_output=True,
                 text=True,
                 check=False,
+                timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
             )
             if gitleaks_version.returncode != 0 or detect_version.returncode != 0:
                 raise RuntimeError("secret scanner version could not be determined")
@@ -291,26 +310,30 @@ def run_secret_scanners(
                 capture_output=True,
                 text=True,
                 check=False,
+                timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
             )
             if gitleaks_result.returncode not in (0, 1) or not report.exists():
                 raise RuntimeError("gitleaks scan failed")
-            gitleaks_findings = json.loads(report.read_text(encoding="utf-8"))
+            gitleaks_findings = _scanner_json(report.read_text(encoding="utf-8"))
             if not isinstance(gitleaks_findings, list) or any(
                 not isinstance(finding, dict) for finding in gitleaks_findings
             ):
                 raise RuntimeError("gitleaks returned an invalid report")
+            if (gitleaks_result.returncode == 1) != bool(gitleaks_findings):
+                raise RuntimeError("gitleaks status and report disagree")
             detect_result = subprocess.run(
                 [detect_secrets, "scan", "--no-verify", "--all-files", str(root)],
                 capture_output=True,
                 text=True,
                 check=False,
+                timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
             )
             if detect_result.returncode != 0:
                 raise RuntimeError("detect-secrets scan failed")
-            detect_findings = json.loads(detect_result.stdout)
+            detect_findings = _scanner_json(detect_result.stdout)
             if not isinstance(detect_findings, dict):
                 raise RuntimeError("detect-secrets returned an invalid report")
-        except (OSError, ValueError, json.JSONDecodeError) as exc:
+        except (OSError, ValueError, RecursionError, subprocess.TimeoutExpired) as exc:
             raise RuntimeError("secret scan could not be completed") from exc
 
     findings: list[dict[str, Any]] = []
@@ -452,6 +475,17 @@ def _scanner_finding(
         or end < start
     ):
         raise RuntimeError("secret scanner returned incomplete finding metadata")
+    canonical_record = dict(record)
+    canonical_record["File"] = path
+    if scanner == "gitleaks":
+        fingerprint = record.get("Fingerprint")
+        if fingerprint == f"{path_value}:{rule}:{start}":
+            canonical_record["Fingerprint"] = f"{path}:{rule}:{start}"
+        if "Tags" in record:
+            tags = record["Tags"]
+            if not isinstance(tags, list) or any(not isinstance(tag, str) for tag in tags):
+                raise RuntimeError("gitleaks returned invalid finding tags")
+            canonical_record["Tags"] = sorted(tags)
     return {
         "scanner": scanner,
         "scanner_version": version,
@@ -460,12 +494,13 @@ def _scanner_finding(
         "rule": rule,
         "start_line": start,
         "end_line": end,
-        "_record": record,
+        "_record": canonical_record,
     }
 
 
 def _finding_id(key: bytes, finding: dict[str, Any]) -> str:
     identity = {field: value for field, value in finding.items() if field != "finding_id"}
+    identity["identity_version"] = FINDING_IDENTITY_VERSION
     payload = json.dumps(
         identity,
         ensure_ascii=True,
@@ -485,7 +520,8 @@ def _write_finding_inventory(
     ]
     document = {"schema_version": 1, "findings": safe_findings}
     try:
-        with destination.open("x", encoding="utf-8") as stream:
+        fd = os.open(destination, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
             json.dump(document, stream, indent=2, sort_keys=True)
             stream.write("\n")
     except (OSError, UnicodeError) as exc:
