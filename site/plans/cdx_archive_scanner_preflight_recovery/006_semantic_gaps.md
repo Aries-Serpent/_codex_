@@ -120,3 +120,6 @@ rotation, workflow actions, deployment or clearance claim is authorized.
 
 The actual plan-body creation SHA will be appended after its introducing commit,
 in a separate metadata commit; no self-referential SHA is claimed here.
+
+Plan-body creation commit SHA: `40692d5628e302e5eefdb16e6e7b11ea30636ed0`.
+This footer is appended afterward in a separate metadata commit.

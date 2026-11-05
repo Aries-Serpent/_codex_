@@ -122,6 +122,7 @@ Creation commits are appended after the plan bodies have actually been committed
 | 003_clearance_revalidation.md | `816abf71fcf1868c18b91b063ac84a669d8dd9b8` |
 | 004_scanner_diagnostics.md | `5e435f28c3120e190d51af1f8930943471acc3fc` |
 | 005_corrected_baseline.md | `0f727b3fa0e2c41b459efa995daa55a51e34c341` |
+| 006_semantic_gaps.md | `40692d5628e302e5eefdb16e6e7b11ea30636ed0` |
 
 ## Commit provenance
 
