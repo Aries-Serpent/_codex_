@@ -98,8 +98,55 @@ from a redacted inventory.
 
 The scanner contract bounds each subprocess to 600 seconds, rejects ambiguous
 JSON and Gitleaks status/report disagreement, and writes inventories mode 0600.
-Gitleaks exit 1 denotes observations, not scanner clearance; unresolved
-observations still block before any archive database is created.
+Gitleaks is invoked with `--exit-code 2`: exit 2 denotes observations, while exit 1
+is rejected even with findings because it can indicate partial execution.
+Unresolved observations still block before any archive database is created.
+
+### Measured private preflight producer
+
+`python -m scripts.archive.cdx_preflight --source ABSOLUTE_SOURCE
+--private-directory NEW_EMPTY_OWNER_ONLY_DIRECTORY` performs preparation only.
+It calls the existing scanner contract, never the packer. Verify both pinned tools
+and their upstream provenance before invoking it; measured byte identity is not
+upstream authentication. The detect-secrets launcher must use the invoking Python
+environment. No packages are installed or modified.
+
+The producer copies every entry without packer exclusions or large-file skips,
+using bounded no-follow reads. Resource limits (100,000 entries, 512 MiB per file,
+4 GiB total), unsupported types and external symlinks block instead of narrowing
+selection. Fingerprints preserve the checkpoint format: sorted directory walk,
+sorted immediate children, compact ASCII JSON arrays of relative path/type/mode/
+mtime-nanoseconds/size/payload, newline-delimited and SHA-256 hashed. Payload is a
+file SHA-256, symlink target or null. Directories have size zero.
+
+Source and snapshot fingerprints, executable bytes, interpreter, installed
+distribution files, implementation bytes and explicit configuration are measured
+before and after scanning. Full-tree selection and packer-default selection have
+separate descriptors; this producer never claims to have scanned the latter.
+An external Gitleaks default-extension configuration, empty external ignore file,
+`--ignore-gitleaks-allow`, neutral cwd and allowlisted child environment prevent
+inherited credentials/configuration and project suppression overrides. Built-in
+scanner heuristics, detect-secrets default filters, binary/decoding limitations
+and Gitleaks default nested-archive limits remain scanner coverage limitations;
+exact tree identity does not mean every byte was semantically analyzed.
+
+Owner-only private artifacts include the session key, redacted inventory, complete
+canonical scanner observations, detector report/settings, measured provenance and
+advisory queue. These contain sensitive private metadata and must never enter Git,
+public reports or prompts. `complete.json` is created last; partial directories
+are not completed runs. The producer's endpoint/per-read checks do not establish
+OS-level isolation from another same-user writer or authenticate a reviewer.
+Owner-only session retention is **nondurable**, not approved escrow.
+
+`--assess-first-batch` privately assesses at most 16 observations per scanner.
+The loader rechecks actual current source/snapshot/tools/configuration, artifact
+digests and every canonical observation's keyed identity. Offline detector replay
+has verification filters disabled; bounded context predicates are recorded
+without exporting values or lines. Every assigned observation remains advisory
+`indeterminate`, with an explicit evidence gap, zero false-positive proofs and
+zero approvals. Context predicates are investigation aids, not harmlessness proof.
+The existing advisory CLI still accepts structurally valid supplied bindings;
+only the measured producer/loader makes these additional local provenance checks.
 
 **Review trust limitation:** the maintained disposition validator checks exact
 metadata, a nonblank reviewer label, external evidence accessibility and digest.

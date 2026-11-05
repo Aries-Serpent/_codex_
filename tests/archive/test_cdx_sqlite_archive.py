@@ -264,7 +264,7 @@ def test_secret_scanner_requires_exact_dispositions_and_emits_redacted_inventory
                 ),
                 encoding="utf-8",
             )
-            return cdx_common.subprocess.CompletedProcess(command, 1, "", "")
+            return cdx_common.subprocess.CompletedProcess(command, 2, "", "")
         if command[1] == "scan":
             assert command[2:4] == ["--no-verify", "--all-files"]
         return cdx_common.subprocess.CompletedProcess(
@@ -360,7 +360,7 @@ def test_secret_scanner_dispositions_expire_when_finding_changes(
                 ),
                 encoding="utf-8",
             )
-            return cdx_common.subprocess.CompletedProcess(command, 1, "", "")
+            return cdx_common.subprocess.CompletedProcess(command, 2, "", "")
         return cdx_common.subprocess.CompletedProcess(command, 0, '{"results": {}}', "")
 
     monkeypatch.setattr(cdx_common.subprocess, "run", fake_run)
@@ -418,7 +418,7 @@ def test_secret_scanner_rejects_malformed_reports_and_path_allowlists(
         if command[0] == "gitleaks":
             report = Path(command[command.index("--report-path") + 1])
             report.write_text("{", encoding="utf-8")
-            return cdx_common.subprocess.CompletedProcess(command, 1, "", "")
+            return cdx_common.subprocess.CompletedProcess(command, 2, "", "")
         return cdx_common.subprocess.CompletedProcess(command, 0, '{"results": {}}', "")
 
     monkeypatch.setattr(cdx_common.subprocess, "run", fake_run)

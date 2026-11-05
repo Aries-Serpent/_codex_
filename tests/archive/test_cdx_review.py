@@ -318,7 +318,7 @@ def test_scanner_failures_leave_database_absent(tmp_path, monkeypatch, failure):
             elif failure == "duplicate_json":
                 raw = '[{"File":"first","File":"second"}]'
             Path(command[command.index("--report-path") + 1]).write_text(raw)
-            return subprocess.CompletedProcess(command, 1, "", "")
+            return subprocess.CompletedProcess(command, 2, "", "")
         assert command[1:4] == ["scan", "--no-verify", "--all-files"]
         return subprocess.CompletedProcess(
             command,
@@ -386,7 +386,7 @@ def test_scanner_rejects_unavailable_or_tampered_exact_evidence(
                 "EndLine": 1,
             }
             Path(command[command.index("--report-path") + 1]).write_text(json.dumps([record]))
-            return subprocess.CompletedProcess(command, 1, "", "")
+            return subprocess.CompletedProcess(command, 2, "", "")
         return subprocess.CompletedProcess(command, 0, '{"results": {}}', "")
 
     monkeypatch.setattr(cdx_common.subprocess, "run", fake_run)

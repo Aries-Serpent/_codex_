@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import hmac
 import json
@@ -256,6 +257,12 @@ def run_secret_scanners(
     dispositions_path: Path | None = None,
     inventory_path: Path | None = None,
     source_root: Path | None = None,
+    *,
+    observation_sink: Any = None,
+    scanner_environment: dict[str, str] | None = None,
+    scanner_directory: Path | None = None,
+    gitleaks_config: Path | None = None,
+    gitleaks_ignore: Path | None = None,
 ) -> None:
     """Fail closed unless every exact scanner finding has an active disposition."""
     if dispositions_path is not None and not isinstance(dispositions_path, Path):
@@ -271,6 +278,19 @@ def run_secret_scanners(
     detect_secrets = shutil.which("detect-secrets")
     if not gitleaks or not detect_secrets:
         raise RuntimeError("gitleaks and detect-secrets are required before packing")
+    execution: dict[str, Any] = {}
+    if scanner_environment is not None:
+        execution["env"] = scanner_environment
+    if scanner_directory is not None:
+        execution["cwd"] = scanner_directory
+    configuration = []
+    if gitleaks_config is not None:
+        configuration.extend(["--config", str(gitleaks_config), "--ignore-gitleaks-allow"])
+    if gitleaks_ignore is not None:
+        configuration.extend(["--gitleaks-ignore-path", str(gitleaks_ignore)])
+    # Exit 1 can mean partial failure, even when a report contains findings.
+    finding_exit = 2
+    configuration.extend(["--exit-code", str(finding_exit)])
     with tempfile.TemporaryDirectory(prefix="cdx-scan-") as temp_dir:
         report = Path(temp_dir) / "gitleaks.json"
         try:
@@ -280,6 +300,7 @@ def run_secret_scanners(
                 text=True,
                 check=False,
                 timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
+                **execution,
             )
             detect_version = subprocess.run(
                 [detect_secrets, "--version"],
@@ -287,6 +308,7 @@ def run_secret_scanners(
                 text=True,
                 check=False,
                 timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
+                **execution,
             )
             if gitleaks_version.returncode != 0 or detect_version.returncode != 0:
                 raise RuntimeError("secret scanner version could not be determined")
@@ -305,21 +327,23 @@ def run_secret_scanners(
                     "json",
                     "--report-path",
                     str(report),
+                    *configuration,
                     str(root),
                 ],
                 capture_output=True,
                 text=True,
                 check=False,
                 timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
+                **execution,
             )
-            if gitleaks_result.returncode not in (0, 1) or not report.exists():
+            if gitleaks_result.returncode not in (0, finding_exit) or not report.exists():
                 raise RuntimeError("gitleaks scan failed")
             gitleaks_findings = _scanner_json(report.read_text(encoding="utf-8"))
             if not isinstance(gitleaks_findings, list) or any(
                 not isinstance(finding, dict) for finding in gitleaks_findings
             ):
                 raise RuntimeError("gitleaks returned an invalid report")
-            if (gitleaks_result.returncode == 1) != bool(gitleaks_findings):
+            if (gitleaks_result.returncode == finding_exit) != bool(gitleaks_findings):
                 raise RuntimeError("gitleaks status and report disagree")
             detect_result = subprocess.run(
                 [detect_secrets, "scan", "--no-verify", "--all-files", str(root)],
@@ -327,6 +351,7 @@ def run_secret_scanners(
                 text=True,
                 check=False,
                 timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
+                **execution,
             )
             if detect_result.returncode != 0:
                 raise RuntimeError("detect-secrets scan failed")
@@ -362,6 +387,8 @@ def run_secret_scanners(
             raise RuntimeError("secret finding dispositions are stale")
         if inventory_path is not None:
             _write_finding_inventory(inventory_path, [], roots)
+        if observation_sink is not None:
+            observation_sink([], copy.deepcopy(detect_findings))
         return
 
     key_text = os.environ.get("CDX_FINDING_HMAC_KEY", "")
@@ -378,6 +405,8 @@ def run_secret_scanners(
 
     if inventory_path is not None:
         _write_finding_inventory(inventory_path, findings, roots)
+    if observation_sink is not None:
+        observation_sink(copy.deepcopy(findings), copy.deepcopy(detect_findings))
     disposition_by_id: dict[str, dict[str, Any]] = {}
     for disposition in dispositions:
         finding_id = disposition["finding_id"]
