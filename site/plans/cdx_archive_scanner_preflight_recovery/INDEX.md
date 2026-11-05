@@ -24,17 +24,20 @@ This directory persists its execution sequence; it does not establish clearance.
 | 004 — diagnostic recovery | [Real scanner diagnostics](004_scanner_diagnostics.md) | Executed in checkpoint 004; cwd mapping defect diagnosed and fixed, not a complete baseline |
 | 005 — corrected baseline | [Corrected baseline and gated semantic review](005_corrected_baseline.md) | Executed in checkpoint 005: complete current inventory and first bounded investigation |
 | 006 — entry conditions blocked | [Exact semantic gaps](006_semantic_gaps.md) | Checkpoint 006: private baseline unavailable and source/tool binding drift; no semantic batch or scan |
-| 007 — current continuation | [Private context recovery](007_private_context_recovery.md) | Actual authorized private recovery/retention context before a useful next epoch |
+| 007 — executed recovery epoch | [Private context recovery](007_private_context_recovery.md) | Checkpoint 007: tested mapping fixes, one authenticated epoch and four bounded investigations |
+| 008 — current continuation | [Live epoch evidence gaps](008_live_epoch_evidence.md) | Actual retained bindings, exact evidence, fragment scope and genuine independent review |
 
 These are planned work packages, not completed milestones or authorization to
 pack. Do not execute 003 merely because 002 has started.
 
-Latest execution: checkpoint 006 verified checkpoint 005's public digest, but found
-no private baseline candidate in the known task retention prefix and no prior
-verified tool context. The newly measured source fingerprint differs. Current
-inventory/counts are unavailable, not zero. No real scan, semantic batch, approval
-or archive creation occurred; 110 existing focused tests passed. Continue at 007's
-actual private recovery/retention dependency, not an orientation rescan.
+Latest execution: checkpoint 007 records one newly authenticated producer epoch,
+6,737 observations at 6,699 distinct path/line-range locations, and four bounded
+32-observation investigations. Exclusive states: 128 indeterminate, 6,609
+unreviewed; zero approvals or affirmative noncredential proofs. Mapping/replay
+predicates passed through batch 3; batch 4 contains one unsupported large-file
+mapping, so batch 5 was not run. Active private retention exists but is nondurable.
+170 focused tests passed before and after the epoch. No archive was created.
+Continue at 008 with actual recovered context, never assumed keyed continuity.
 
 Checkpoint 005 remains historical: its complete inventory held 6,737 observations,
 with 32 indeterminate and 6,705 unreviewed, zero approvals or false-positive proofs.
