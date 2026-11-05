@@ -23,17 +23,22 @@ This directory persists its execution sequence; it does not establish clearance.
 | 003 — conditional session | [Final revalidation or precise blocked conclusion](003_clearance_revalidation.md) | Coverage/evidence ready, or a decisive infeasibility finding |
 | 004 — diagnostic recovery | [Real scanner diagnostics](004_scanner_diagnostics.md) | Executed in checkpoint 004; cwd mapping defect diagnosed and fixed, not a complete baseline |
 | 005 — corrected baseline | [Corrected baseline and gated semantic review](005_corrected_baseline.md) | Executed in checkpoint 005: complete current inventory and first bounded investigation |
-| 006 — current continuation | [Exact semantic gaps](006_semantic_gaps.md) | Revalidate retained private baseline, resolve assigned gaps and continue bounded review |
+| 006 — entry conditions blocked | [Exact semantic gaps](006_semantic_gaps.md) | Checkpoint 006: private baseline unavailable and source/tool binding drift; no semantic batch or scan |
+| 007 — current continuation | [Private context recovery](007_private_context_recovery.md) | Actual authorized private recovery/retention context before a useful next epoch |
 
 These are planned work packages, not completed milestones or authorization to
 pack. Do not execute 003 merely because 002 has started.
 
-Latest execution: checkpoint 005 records one corrected real preflight, a complete
-independently revalidated current inventory of 6,737 observations and a bounded
-32-observation private investigation. Exclusive states: 32 indeterminate and
-6,705 unreviewed, with zero approvals or false-positive proofs. Current private
-bundle/key/snapshot/tool context is retained owner-only but nondurably. No clearance
-or archive creation is claimed. Continue at 006, not at acceptance.
+Latest execution: checkpoint 006 verified checkpoint 005's public digest, but found
+no private baseline candidate in the known task retention prefix and no prior
+verified tool context. The newly measured source fingerprint differs. Current
+inventory/counts are unavailable, not zero. No real scan, semantic batch, approval
+or archive creation occurred; 110 existing focused tests passed. Continue at 007's
+actual private recovery/retention dependency, not an orientation rescan.
+
+Checkpoint 005 remains historical: its complete inventory held 6,737 observations,
+with 32 indeterminate and 6,705 unreviewed, zero approvals or false-positive proofs.
+Its session-local private retention did not establish current continuity.
 
 ## Historical baseline, never a current measurement
 
