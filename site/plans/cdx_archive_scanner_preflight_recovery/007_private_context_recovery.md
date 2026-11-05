@@ -100,3 +100,6 @@ security result. These are local results, not live CI or hosted approval.
 
 The actual plan-body introducing SHA will be appended after committing this body,
 in a separate metadata commit. No self-referential SHA is claimed.
+
+Plan-body creation commit SHA: `202d6677bc2b812653ffa910a840137ce0b4757f`.
+This footer is appended afterward in a separate metadata commit.
