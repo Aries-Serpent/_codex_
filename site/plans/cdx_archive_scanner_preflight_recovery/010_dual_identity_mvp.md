@@ -97,3 +97,8 @@ Record actual HEAD/status and preserve dirty work.
 
 Append the actual introducing commit and checkpoint digest after publication,
 in a separate metadata commit; neither is self-referential.
+
+Introducing commit: `11217b8185cd029c6c76bcaec2e5d490cc6b84c5`.
+Checkpoint008 SHA-256:
+`e18fbc51bbc3ff5fcd7f7439067eed17502e2d0dd4423ab1492cc5617c9b65cd`.
+This footer is published in a subsequent metadata commit.
