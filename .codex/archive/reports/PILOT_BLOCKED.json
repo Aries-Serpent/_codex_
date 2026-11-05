@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "status": "blocked_secret_findings_unresolved",
+  "source_revision_short": "c0c8b0e5",
+  "source_path": ".codex/archive/root-consolidation/temp-outputs/mutants/",
+  "source_file_count": 4597,
+  "source_raw_bytes": 31979791,
+  "scanners": {
+    "gitleaks": {
+      "version": "8.30.1",
+      "options": [
+        "dir",
+        "--redact=100",
+        "--report-format=json"
+      ],
+      "exit_code": 1,
+      "finding_count": 85,
+      "files_with_findings": 32,
+      "rule_counts": {
+        "generic-api-key": 63,
+        "stripe-access-token": 10,
+        "aws-access-token": 4,
+        "github-pat": 4,
+        "private-key": 2,
+        "github-oauth": 1,
+        "jwt": 1
+      }
+    },
+    "detect-secrets": {
+      "version": "1.5.0",
+      "options": [
+        "scan",
+        "--no-verify",
+        "--all-files"
+      ],
+      "exit_code": 0,
+      "finding_count": 323,
+      "files_with_findings": 159,
+      "previously_recorded_finding_count": 318,
+      "previous_count_difference": 5,
+      "previous_count_difference_cause": "not established; the fresh pinned scan count is authoritative for this source fingerprint",
+      "plugin_counts": {
+        "Secret Keyword": 216,
+        "Hex High Entropy String": 56,
+        "Base64 High Entropy String": 15,
+        "AWS Access Key": 13,
+        "Private Key": 8,
+        "JSON Web Token": 5,
+        "Basic Auth Credentials": 3,
+        "GitHub Token": 3,
+        "Slack Token": 4
+      }
+    }
+  },
+  "triage": {
+    "scanner_detection_records": 408,
+    "unique_path_line_pairs": 383,
+    "unique_files": 167,
+    "affirmative_false_positive_dispositions": 0,
+    "confirmed_secrets": null,
+    "unresolved_scanner_detections": 408,
+    "allowlisted_paths": [],
+    "finding_review_status": "Redacted per-finding inventory created; all findings remain unresolved.",
+    "triage_report": ".codex/archive/reports/PILOT_TRIAGE.json",
+    "decision": "No scanner finding is allowlisted. Do not pack while any finding remains unresolved."
+  },
+  "archive": {
+    "generated": false,
+    "pack_attempts_after_scan": 0,
+    "successful_pack_attempts": 0,
+    "archive_size_bytes": null,
+    "compression_ratio": null,
+    "pack_duration_seconds": null,
+    "query_latency_ms": null,
+    "integrity_result": "not_run_no_archive",
+    "merkle_root_sha256": null,
+    "reproducibility": "not_run_no_archive"
+  },
+  "note": "Raw scanner reports and the HMAC key are temporary/private and are not included in this repository report."
+}

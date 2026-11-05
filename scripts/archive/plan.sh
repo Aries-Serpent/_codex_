@@ -26,12 +26,10 @@ PY
 
 if [ "$can_import" = "yes" ]; then
   echo "-> using codex.cli_archive plan"
-  python3 -m codex.cli_archive plan --output "$out" || {
-    echo "WARN: codex.cli_archive plan failed; wrote no report" >&2
-  }
+  python3 -m codex.cli_archive plan --output "$out"
 else
-  echo "WARN: codex.cli_archive not found; writing placeholder plan" >&2
-  echo '{"status":"noop","reason":"codex.cli_archive not importable","candidates":[]}' > "$out"
+  echo "ERROR: codex.cli_archive is unavailable; refusing to write a placeholder plan" >&2
+  exit 1
 fi
 
 echo "==> plan written: $out"

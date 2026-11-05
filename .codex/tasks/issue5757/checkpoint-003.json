@@ -1,0 +1,238 @@
+{
+  "ancestry_limit": "shallow checkout has no merge base; endpoint tree diff inspected, not ahead/behind proof",
+  "archive_created": false,
+  "base_endpoint": "c8093f60c429ecd7e61bd50408c7ab8745980ce3",
+  "bindings": null,
+  "blockers": [
+    {
+      "evidence": "one real attempt raised RuntimeError before any inventory; complete.json absent",
+      "id": "CURRENT_BASELINE",
+      "next_action": "verify new private failure/report capture, then one justified diagnostic preflight under fresh verified tool/key context; never reuse historical counts",
+      "owner": "next preparation execution"
+    },
+    {
+      "evidence": "first attempt did not retain scanner-stage diagnostics; source and snapshot match does not identify error",
+      "id": "ORIGINATING_DIAGNOSTIC",
+      "next_action": "use new private per-stage reports and sanitized failure.json to establish actual failing stage/reason; do not repeat this session",
+      "owner": "maintained preflight producer and next authorized execution"
+    },
+    {
+      "evidence": "no actual independent authority/relevant evidence trust contract discovered",
+      "id": "REVIEW_TRUST",
+      "next_action": "establish attributable authorized exact-evidence review before any acceptance support",
+      "owner": "authorized archive review process"
+    },
+    {
+      "evidence": "no approved durable private mechanism established; failed task-owned context removed",
+      "id": "RETENTION",
+      "next_action": "establish actual retention or explicitly provision a fresh nondurable session context; never infer keyed continuity",
+      "owner": "authorized private retention provider"
+    },
+    {
+      "evidence": "CodeQL skipped due database size",
+      "id": "SECURITY_ANALYSIS",
+      "next_action": "provide suitably scoped available analysis; retain explicit limitation",
+      "owner": "repository security analysis environment"
+    }
+  ],
+  "branch": "copilot/resume-cdx-archive-scanner-preflight-recovery",
+  "checkpoint": 3,
+  "clearance": "BLOCKED_NO_CURRENT_BASELINE",
+  "continuation": "site/plans/cdx_archive_scanner_preflight_recovery/004_scanner_diagnostics.md",
+  "created_at": "2026-11-05T03:30:26Z",
+  "current_counts": null,
+  "decisions": [
+    {
+      "adversarial_check": "matching historical counts or filenames cannot restore a lost key",
+      "options": [
+        "recover independently bound artifacts",
+        "new provisional session epoch",
+        "orientation rescans"
+      ],
+      "question": "reuse historical identities or new epoch",
+      "residual": "no current baseline",
+      "selected": "new provisional session context; old artifacts absent; no completed namespace/inventory established",
+      "verification": "bounded availability checks and fresh source fingerprint"
+    },
+    {
+      "adversarial_check": "compare payload with independently fetched official API digest and release checksums; owner-only extraction of exact regular binary; process-local PATH; remove afterward",
+      "question": "verified existing pinned binary, official local fallback, or block",
+      "residual": "upstream trust not independent signing authority",
+      "selected": "official session-only matching Linux x64 8.30.1 fallback",
+      "verification": "both exact versions, dir help, official wheel package comparison and unchanged final binary digests"
+    },
+    {
+      "adversarial_check": "a clean synthetic tree and equal source/snapshot do not establish an archive baseline",
+      "question": "retry real scan after failure or stop",
+      "residual": "originating real failure cause not retained; current counts unknown",
+      "selected": "stop current real scan budget; fix private failure capture synthetically",
+      "verification": "104 focused tests and real pinned-tool harmless synthetic smoke"
+    },
+    {
+      "adversarial_check": "reviewer labels, HMAC possession, arbitrary evidence digests and another persona are not authorization",
+      "question": "review authority",
+      "residual": "genuine authenticated relevant independent review remains missing",
+      "selected": "no acceptance integration or dispositions",
+      "verification": "trust lane and advisory queue rejection tests"
+    }
+  ],
+  "historical_counts_reused": false,
+  "implementation_head": "8097abbff4b0277992c69fee5a0e44a82e3d3fd8",
+  "initial_head": "f5878d18dcccfee77a6c3253f0b9a60b781497d5",
+  "initial_status": [
+    "## copilot/resume-cdx-archive-scanner-preflight-recovery...origin/copilot/resume-cdx-archive-scanner-preflight-recovery",
+    " M .codex/session_startup_packet.json"
+  ],
+  "lanes": [
+    {
+      "agent_id": "recovery-provenance",
+      "lane": "A",
+      "mode": "read_only",
+      "type": "code-analysis-agent"
+    },
+    {
+      "agent_id": "recovery-trust",
+      "lane": "B",
+      "mode": "read_only",
+      "type": "tracking-document-qa-agent"
+    },
+    {
+      "agent_id": "recovery-tooling",
+      "lane": "C",
+      "mode": "read_only",
+      "type": "test-enhancement-agent"
+    },
+    {
+      "agent_id": "preflight-adversary",
+      "lane": "adversarial_join",
+      "mode": "read_only",
+      "type": "rubber-duck"
+    },
+    {
+      "agent_id": "producer-review",
+      "lane": "implementation_review",
+      "mode": "read_only_two_bounded_turns",
+      "type": "code-review"
+    }
+  ],
+  "maintained_increment": {
+    "acceptance_support_added": false,
+    "advisory_assessment_only": true,
+    "bounded_nofollow_snapshot_and_context": true,
+    "explicit_full_tree_and_packer_default_selection": true,
+    "identity_version": 2,
+    "local_provenance_not_external_authentication": true,
+    "partial_scan_handling": "Gitleaks --exit-code 2; exit 1 rejected even with findings",
+    "post_failure_fix": "private per-subprocess report capture before status/parsing plus sanitized failure.json; no real source retry",
+    "private_canonical_observation_HMAC_revalidation": true,
+    "producer": "scripts/archive/cdx_preflight.py",
+    "source_snapshot_configuration_tool_endpoint_checks": true
+  },
+  "next_batch": "preparation/diagnostics only; semantic review cannot start until complete verified current inventory, exact contexts and matching key exist",
+  "packer_selection_not_scanned": {
+    "denied_components": [
+      ".git",
+      ".mypy_cache",
+      ".pytest_cache",
+      ".ruff_cache",
+      ".venv",
+      ".worktrees",
+      "__pycache__",
+      "node_modules",
+      "venv"
+    ],
+    "denied_globs": [
+      "*.db",
+      "*.pyc",
+      "*.pyo",
+      "*.sqlite",
+      "*.sqlite3"
+    ],
+    "kind": "packer_defaults_not_scanned_by_this_producer",
+    "max_blob_bytes": 536870912,
+    "max_file_bytes": 8388608
+  },
+  "preservation": {
+    "archive_bytes_and_recorded_metadata_unchanged": true,
+    "preexisting_dirty_metadata": "bytes preserved; initial required progress helper committed existing startup metadata at 09adf8d76237d1ecd96ebb202f737a1658267b12; dirty status was not preserved",
+    "reset_stash_clean_or_rewrite_used": false
+  },
+  "private_lifecycle": {
+    "after_failed_attempt": "no inventory or complete baseline; task-owned failed snapshot, provisional key and session tool directory removed",
+    "approved_durable_retention": "not_established",
+    "before_attempt": "owner-only session retention provisioned; nondurable",
+    "historical_artifacts": "both documented retention directories absent",
+    "raw_current_reports_available": false,
+    "removed_task_owned_directories": 2
+  },
+  "run_namespace": null,
+  "scanner_execution": {
+    "both_scanners_completed": "not_established",
+    "exact_scanner_stage_and_reason": "unavailable: first implementation captured observations only after both reports; originating error/report not retained",
+    "inventory_available": false,
+    "observed_error_type": "RuntimeError",
+    "real_source_attempts": 1,
+    "semantic_batch_assigned": 0,
+    "semantic_batch_completed": 0,
+    "status": "BLOCKED_BEFORE_INVENTORY"
+  },
+  "source": {
+    "before_after_and_failed_snapshot_equal": true,
+    "entries": 16533,
+    "file_bytes": 124233523,
+    "root": "/home/runner/work/_codex_/_codex_/.codex/archive",
+    "selection": {
+      "exclusions": [],
+      "kind": "full_tree_preflight",
+      "oversized_files": "block_not_skip",
+      "symlinks": "record_internal_relative_links_never_follow",
+      "version": 1
+    },
+    "selection_sha256": "112fd528379cd83e1200680cbeb9b8f59269ae1262c7b87e6067138753a3cacb",
+    "sha256": "d12f54c089876c1ef65fa2ea3f182a2d093d26448bdb3e419309c8a85cddc5cf"
+  },
+  "tool_verification": {
+    "architecture": "x86_64",
+    "binary_digests_unchanged_after_attempt": true,
+    "detect_secrets_executable": "/home/runner/work/_codex_/_codex_/.venv_ci/bin/detect-secrets",
+    "detect_secrets_launcher_sha256": "3e421536128c447eda32346c10ddcc316b185e90b9170308b1b96a35e6690e05",
+    "detect_secrets_official_wheel_sha256": "e24e7b9b5a35048c313e983f76c4bd09dad89f045ff059e354f9943bf45aa060",
+    "detect_secrets_package_files_compared": 89,
+    "gitleaks_artifact_sha256": "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb",
+    "gitleaks_checksum_file_sha256": "061476c21adaf5441516f96f185c1a4706a83cd6329b9b38762271b3d4a52fae",
+    "gitleaks_dir_help_exit": 0,
+    "gitleaks_executable_sha256": "88f91962aa2f93ac6ab281d553b9e125f5197bbbce38f9f2437f7299c32e5509",
+    "gitleaks_independent_metadata": "official release API asset digest and separately downloaded official checksums; both matched artifact",
+    "gitleaks_initial_path_resolution": "absent",
+    "gitleaks_source": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz",
+    "installed_or_modified_dependencies": false,
+    "python": "3.12.10",
+    "runner_os": "Linux",
+    "tool_authentication_limit": "HTTPS official checksum/API metadata verification, not an independently verified signature or compromise-resistant trust root",
+    "versions": {
+      "detect-secrets": "1.5.0",
+      "gitleaks": "8.30.1"
+    }
+  },
+  "validation": {
+    "black": "passed five changed Python files",
+    "codeql": "two attempts; analysis skipped because database too large; NOT a successful security analysis",
+    "focused_tests": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv_ci/bin/python -m pytest -q -o addopts='' -p no:cacheprovider tests/archive/test_cdx_preflight.py tests/archive/test_cdx_review.py tests/archive/test_cdx_sqlite_archive.py",
+      "passed": 104
+    },
+    "git_diff_check": "passed",
+    "in_memory_compilation": "passed five changed Python files",
+    "isort": "passed five changed Python files",
+    "mypy": "passed three production modules; existing unused-section notes",
+    "read_only_code_review": "no significant issues on original implementation and localized failure-retention followup",
+    "real_pinned_tool_synthetic_smoke": {
+      "archive_created": false,
+      "both_completed": true,
+      "findings": 0,
+      "selection": "one ordinary synthetic fixture only; not archive source"
+    },
+    "ruff": "passed five changed Python files",
+    "secret_scan": "passed changed maintained files"
+  }
+}

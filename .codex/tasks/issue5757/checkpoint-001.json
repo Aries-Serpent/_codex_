@@ -1,0 +1,161 @@
+{
+  "archive_created": false,
+  "blockers": [
+    {
+      "completion_predicate": "Recover original artifact through an authorized private source and verify supplied digest; never infer empty.",
+      "id": "B01",
+      "next_step": "Recover original artifact through an authorized private source and verify supplied digest; never infer empty.",
+      "status": "unavailable",
+      "subject": "historical inventory"
+    },
+    {
+      "completion_predicate": "New key epoch; do not transfer historical identities or approvals.",
+      "id": "B02",
+      "next_step": "New key epoch; do not transfer historical identities or approvals.",
+      "status": "irrecoverable in supplied context",
+      "subject": "historical HMAC key"
+    },
+    {
+      "completion_predicate": "Snapshot all 16533 entries without exclusions; verify source and snapshot before/after scan.",
+      "id": "B03",
+      "next_step": "Snapshot all 16533 entries without exclusions; verify source and snapshot before/after scan.",
+      "status": "measured",
+      "subject": "source identity and selection"
+    },
+    {
+      "completion_predicate": "Verify official pinned binary, installed package tree, effective config and executable identities.",
+      "id": "B04",
+      "next_step": "Verify official pinned binary, installed package tree, effective config and executable identities.",
+      "status": "in_progress",
+      "subject": "tool and configuration provenance"
+    },
+    {
+      "completion_predicate": "Verify synthetic moved-root identities; algorithm 2 invalidates all historical IDs.",
+      "id": "B05",
+      "next_step": "Verify synthetic moved-root identities; algorithm 2 invalidates all historical IDs.",
+      "status": "implemented_pending_validation",
+      "subject": "snapshot identity reproducibility"
+    },
+    {
+      "completion_predicate": "Generate current inventory, inspect exact observations privately; maintain one exclusive state each.",
+      "id": "B06",
+      "next_step": "Generate current inventory, inspect exact observations privately; maintain one exclusive state each.",
+      "status": "blocked_no_current_inventory",
+      "subject": "affirmative finding proof"
+    },
+    {
+      "completion_predicate": "Define actual authenticated independent review; label/digest alone never suffice; validate accessible exact relevant evidence.",
+      "id": "B07",
+      "next_step": "Define actual authenticated independent review; label/digest alone never suffice; validate accessible exact relevant evidence.",
+      "status": "blocked",
+      "subject": "reviewer trust and references"
+    },
+    {
+      "completion_predicate": "Keep each blocked pending exact classification; do not test, rotate or reclassify genuine secrets as false positives.",
+      "id": "B08",
+      "next_step": "Keep each blocked pending exact classification; do not test, rotate or reclassify genuine secrets as false positives.",
+      "status": "unknown",
+      "subject": "sensitive or indeterminate observations"
+    },
+    {
+      "completion_predicate": "No approved durable store established. Keep key separate from evidence in owner-only session storage; regenerate if lost.",
+      "id": "B09",
+      "next_step": "No approved durable store established. Keep key separate from evidence in owner-only session storage; regenerate if lost.",
+      "status": "session_only",
+      "subject": "private retention"
+    },
+    {
+      "completion_predicate": "Only a full current run_secret_scanners acceptance plus genuine evidence review satisfies clearance; no packing this iteration.",
+      "id": "B10",
+      "next_step": "Only a full current run_secret_scanners acceptance plus genuine evidence review satisfies clearance; no packing this iteration.",
+      "status": "blocked",
+      "subject": "final clearance gate"
+    }
+  ],
+  "checkpoint": 1,
+  "clearance": "BLOCKED",
+  "current_counts": null,
+  "current_head": "a7b41a7aaa2046a0539847732253218c8b1ec70f",
+  "decisions": [
+    {
+      "adversarial": "old/revoked/example-looking content is not proof",
+      "implementation": "no source edits; exact private snapshot",
+      "options": [
+        "preserve and investigate",
+        "separate derivative",
+        "exclude or mass baseline"
+      ],
+      "question": "original source",
+      "residual": "all exact evidence remains required",
+      "rubber_duck": "Only exact source answers objective",
+      "selected": "preserve and investigate",
+      "verification": "before/after full-tree fingerprints"
+    },
+    {
+      "adversarial": "public metadata loses column/opaque-record distinctions",
+      "implementation": "canonical File and exact dir Fingerprint, preserve other record fields, sort tags",
+      "options": [
+        "keep unstable historical algorithm",
+        "canonicalize known pinned dir fields with version bump",
+        "hash public metadata only"
+      ],
+      "question": "HMAC reproducibility",
+      "residual": "unknown fingerprint forms remain verbatim; no legacy migration",
+      "rubber_duck": "synthetic moved-root test demonstrated different identities",
+      "selected": "canonicalize known fields; identity version 2",
+      "verification": "synthetic roots and distinct observations"
+    },
+    {
+      "adversarial": "forged reviewer and irrelevant evidence must never upgrade state",
+      "implementation": "bounded private IO, exact bindings, conservative states, atomic numbered history",
+      "options": [
+        "manual unaudited spreadsheets",
+        "strict advisory conservative queue",
+        "automatically approve matching digest/label"
+      ],
+      "question": "evidence queue trust",
+      "residual": "actual relevance and reviewer authentication require a genuine review process",
+      "rubber_duck": "structure is not approval",
+      "selected": "advisory queue without disposition generation",
+      "verification": "synthetic adversarial tests"
+    },
+    {
+      "adversarial": "do not download unverified binaries or assume persistent private escrow",
+      "implementation": "official release checksum/API validation; fresh session key; scanner contract only",
+      "options": [
+        "reuse verified current inventory",
+        "one new epoch scan",
+        "repeat scans for orientation"
+      ],
+      "question": "fresh scan",
+      "residual": "session storage is not durable escrow",
+      "rubber_duck": "historical inventory and binary absent; key lost",
+      "selected": "one justified fresh scan after focused validation",
+      "verification": "tool/config/source identities before and after"
+    }
+  ],
+  "design_review": "bounded-design-review",
+  "entry_count": 16533,
+  "fingerprint_method": "sorted os.walk directories; per-directory sorted dirs+files; JSON [relative path,type,mode,mtime_ns,size or zero for dirs,file SHA256 or link target]; newline SHA256",
+  "historical_supplied_only": {
+    "detect-secrets": 6614,
+    "gitleaks": 123,
+    "inventory_available": false,
+    "key_available": false,
+    "total": 6737
+  },
+  "lanes": [
+    "lane-a-identity",
+    "lane-b-proof",
+    "lane-c-recovery"
+  ],
+  "next_batch": "Validate changed tooling, then one current new-epoch scan and all-unreviewed private queue.",
+  "publication_incident": "Initial required progress tool automatically committed/pushed pre-existing startup metadata as a7b41a7a. Bytes preserved; no reset/rewrite attempted. This was not authorization inferred from evidence.",
+  "reviewed_head": "82243f3408cfa1d5665e12cdff26399a8e1b76e2",
+  "scanner_execution_completed": false,
+  "schema_version": 1,
+  "selection": "entire tree, no exclusions; not the default packer selection",
+  "source": "/home/runner/work/_codex_/_codex_/.codex/archive",
+  "source_sha256": "f2f6bd8c0f6c2b4b08b4b0663bd50857a6e6b5f9263a8e44f528abc7ddfdf7f3",
+  "task": "issue5757"
+}
