@@ -678,6 +678,85 @@ def test_gitleaks_private_span_fails_closed(raw, record, version):
     assert status.startswith("unsupported_")
 
 
+@pytest.mark.parametrize("size", [99_999, 100_000, 100_001])
+@pytest.mark.parametrize("malformed", [b"", b"\x00", b"\r", b"\xff"])
+def test_gitleaks_fragment_threshold_and_encoding_diagnostics(size, malformed):
+    raw = b"VALUE" + malformed + b"x" * (size - 5 - len(malformed))
+    record = dict(StartLine=1, EndLine=1, StartColumn=1, EndColumn=5)
+    span, status = common._gitleaks_private_span(raw, record, version="8.30.1")
+    if size >= 100_000:
+        assert span is None
+        assert status == "unsupported_fragment_origin"
+    elif malformed:
+        assert span is None
+        assert status == "unsupported_source_encoding_or_size"
+    else:
+        assert span == b"VALUE"
+        assert status == "mapped_reported_match_not_secret"
+
+
+@pytest.mark.parametrize("newline", [b"\n", b"\r\n"])
+def test_gitleaks_later_fragment_first_line_is_one_byte_off_in_whole_file(newline):
+    # sources/file.go can stop at a blank line after its 100,000-byte read.
+    prefix = b"x" * (100_000 - 2 * len(newline)) + newline * 2
+    fragment = "é headVALUEω".encode() + newline
+    local = dict(StartLine=1, EndLine=1, StartColumn=8, EndColumn=12)
+    span, status = common._gitleaks_private_span(fragment, local, version="8.30.1")
+    assert span == b"VALUE"
+    assert status == "mapped_reported_match_not_secret"
+    raw = prefix + fragment
+    reported = dict(local, StartLine=3, EndLine=3)
+    actual_begin = len(prefix) + 7
+    # Adding only StartLine to fragment-local coordinates loses the distinction
+    # between fragment offset zero and a whole-file preceding-LF origin.
+    guessed_begin = prefix.rfind(b"\n") + reported["StartColumn"] - 1
+    assert guessed_begin == actual_begin - 1
+    assert raw[guessed_begin : guessed_begin + 5] != span
+    assert raw[actual_begin : actual_begin + 5] == span
+    assert common._gitleaks_private_span(raw, reported, version="8.30.1") == (
+        None,
+        "unsupported_fragment_origin",
+    )
+
+
+@pytest.mark.parametrize("newline", [b"\n", b"\r\n"])
+def test_gitleaks_midline_fragments_can_alias_report_coordinates(newline):
+    # The first read plus lookahead consumes 125,000 bytes. Go's 4,096-byte
+    # buffered reader then has 3,672 bytes left; its next read plus lookahead
+    # consumes 28,672 more. Neither fragment advances the LF count.
+    fragments = ["é headSYNTHETIC_Aω".encode(), "é headSYNTHETIC_Bω".encode()]
+    origins = (125_000, 153_672)
+    raw = (
+        b"x" * origins[0]
+        + fragments[0].ljust(origins[1] - origins[0], b"x")
+        + fragments[1]
+        + newline
+    )
+    record = dict(
+        StartLine=1,
+        EndLine=1,
+        StartColumn=8,
+        EndColumn=18,
+        Secret="REDACTED",
+        Match="REDACTED",
+    )
+    spans = []
+    for fragment, origin in zip(fragments, origins, strict=True):
+        # These explicitly known small synthetic windows are local-coordinate
+        # oracles only, not a reconstruction of an authenticated scanner input.
+        assert raw[origin : origin + len(fragment)] == fragment
+        span, status = common._gitleaks_private_span(fragment, record, version="8.30.1")
+        assert status == "mapped_reported_match_not_secret"
+        assert span == raw[origin + 7 : origin + 18]
+        spans.append(span)
+    assert spans[0] != spans[1]
+    assert origins[0] + 7 != origins[1] + 7
+    assert common._gitleaks_private_span(raw, record, version="8.30.1") == (
+        None,
+        "unsupported_fragment_origin",
+    )
+
+
 def test_gitleaks_lf_origin_is_not_a_character_column():
     raw = "é\nαVALUE\n".encode()
     record = dict(StartLine=2, EndLine=2, StartColumn=4, EndColumn=8)
@@ -703,10 +782,13 @@ def test_gitleaks_first_line_inclusive_bytes_do_not_depend_on_masked_payload(new
     assert status == "mapped_reported_match_not_secret"
 
 
-@pytest.mark.parametrize("decoded", [False, True])
-def test_masked_report_mapping_is_never_secret_recovery(produced, monkeypatch, decoded):
+@pytest.mark.parametrize("mode", ["small", "decoded", "large"])
+def test_masked_report_mapping_is_never_secret_recovery(produced, monkeypatch, mode):
     source, private, _ = produced
-    (source / "fixture").write_bytes(b'password = "SYNTHETIC_VALUE"\n')
+    raw = b'password = "SYNTHETIC_VALUE"\n'
+    if mode == "large":
+        raw += b"\n" * (100_000 - len(raw))
+    (source / "fixture").write_bytes(raw)
 
     def scan(root, **options):
         record = dict(
@@ -718,7 +800,7 @@ def test_masked_report_mapping_is_never_secret_recovery(produced, monkeypatch, d
             EndColumn=28,
             Secret="REDACTED",
             Match='password = "REDACTED"',
-            Tags=["decoded:base64", "decode-depth:2"] if decoded else [],
+            Tags=["decoded:base64", "decode-depth:2"] if mode == "decoded" else [],
         )
         finding = common._scanner_finding(root, "gitleaks", "8.30.1", record)
         finding["finding_id"] = common._finding_id(
@@ -741,12 +823,22 @@ def test_masked_report_mapping_is_never_secret_recovery(produced, monkeypatch, d
     result = preflight.assess_batch(source, private)
     batch, _ = review.read_private_json(private / "batch-001.json")
     row = batch["assessments"][0]
-    assert row["predicates"]["reported_match_span_available"] is (not decoded)
+    assert row["predicates"]["reported_match_span_available"] is (mode == "small")
+    assert (
+        row["predicates"]["reported_match_mapping_status"]
+        == {
+            "small": "mapped_reported_match_not_secret",
+            "decoded": "unsupported_decoding",
+            "large": "unsupported_fragment_origin",
+        }[mode]
+    )
     assert row["predicates"]["report_payload_redaction_marker_present"]
     assert row["predicates"]["exact_secret_recovered"] is False
     assert row["candidate_origin_proof"] == row["candidate_use_proof"] == "unavailable"
     assert row["state"] == "indeterminate"
     assert result["accepted"] == result["semantic_false_positive_proofs"] == 0
+    queue, _ = review.read_private_json(private / "queue-001.json")
+    assert review.queue_summary(queue)["by_state"]["accepted_exact_false_positive"] == 0
     assert "SYNTHETIC_VALUE" not in json.dumps(batch)
     assert "password = " not in json.dumps(batch)
 

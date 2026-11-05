@@ -190,7 +190,8 @@ only the measured producer/loader makes these additional local provenance checks
 The shared private span helper is pinned to **Gitleaks 8.30.1**, based on official
 [`detect/location.go`](https://github.com/gitleaks/gitleaks/blob/v8.30.1/detect/location.go),
 [`detect/detect.go`](https://github.com/gitleaks/gitleaks/blob/v8.30.1/detect/detect.go),
-[`sources/file.go`](https://github.com/gitleaks/gitleaks/blob/v8.30.1/sources/file.go)
+[`sources/file.go`](https://github.com/gitleaks/gitleaks/blob/v8.30.1/sources/file.go),
+[`sources/common.go`](https://github.com/gitleaks/gitleaks/blob/v8.30.1/sources/common.go),
 and [`report/finding.go`](https://github.com/gitleaks/gitleaks/blob/v8.30.1/report/finding.go).
 It does not emulate Go regular expressions or infer secret capture groups.
 
@@ -210,6 +211,12 @@ It does not emulate Go regular expressions or infer secret capture groups.
   not produce a usable end column in that case. Missing/malformed coordinates,
   large/chunked files and other versions/encodings remain explicitly unsupported,
   not guessed or converted through character indexes.
+- At **100,000 bytes inclusive**, mapping returns `unsupported_fragment_origin`,
+  including when the file also has malformed encoding. Below that threshold,
+  NUL, lone CR and invalid UTF-8 retain `unsupported_source_encoding_or_size`.
+  This is a conservative origin guard, not a claim that every file at the
+  threshold was split: the pinned reader can extend its buffer by up to 25,000
+  bytes looking for a blank-line boundary.
 - Decoding is unsupported, including `Encoded`/`Decoded` metadata or tags and
   native `decoded:<kind>` / `decode-depth:N` tags (including nested decoding).
   See [`detect/codec/segment.go`](https://github.com/gitleaks/gitleaks/blob/v8.30.1/detect/codec/segment.go).
@@ -225,6 +232,57 @@ Match leaves `exact_secret_recovered` false and candidate origin/use proofs
 private span bytes and source lines/values are never exported in its results.
 Every row remains `indeterminate`, with zero semantic false-positive proofs or
 approvals. No disposition/evidence acceptance rules are changed.
+
+#### Why large-file coordinates remain unsupported
+
+Stock v8.30.1 reports omit the actual observed fragment's byte interval.
+The reader accumulates LF counts into `Fragment.StartLine`; `DetectContext` adds
+that line offset to local finding lines but preserves fragment-local columns.
+A later fragment beginning immediately after LF measures its
+first content byte from local offset zero (column 1); a whole-file interpretation
+of that same line measures from the preceding LF (column 2). Merely applying the
+reported global line therefore produces a one-byte error on that fragment's
+first line. CRLF and preceding multi-byte Unicode do not remove this mismatch.
+
+Without a blank-line boundary, successive fragments can begin midline without
+increasing the accumulated line number. Buffered reads can be shorter than
+100,000 bytes; the default buffer plus lookahead is not a fixed chunk stride.
+Distinct global byte intervals, even containing different bytes, can then have
+identical reported line/column coordinates and identical redacted payloads.
+The synthetic regressions use explicitly known small fragments/windows as local
+mapping oracles and reject the corresponding complete large files.
+They are negative demonstrations, **not**
+a fragment-origin producer or semantic origin/use proof. Searching for matching
+text, guessing chunk boundaries or hashing the report cannot resolve this
+missing provenance.
+
+Any future producer-bound fragment contract must retain at acquisition the
+**actual observed** half-open byte interval in the exact measured file, its raw
+bytes/encoding and local coordinate basis (including the starting line and preceding-LF convention),
+and link each scanner observation to that interval and the exact file identity,
+complete report, run namespace, selection, configuration and pinned toolchain.
+It must preserve every observation, validate interval bounds and byte consistency,
+handle transformation/nested-source limitations explicitly, and fail closed on
+missing, stale or ambiguous associations. Digest agreement establishes byte
+consistency, not authentic origin: an execution-bound producer must actually
+observe and bind scanner input to output. Even authentic fragment provenance
+would locate a reported Match, not establish Secret recovery or harmlessness.
+
+An explicit **full-file pinned-library adapter** could pass one measured file as
+one detector fragment and retain its actual origin at acquisition, binding every
+observation privately to that input/output for each detector invocation, subject
+to resource, UTF-8, coordinate and transformation limits. A digest alone would
+establish neither authentic origin nor semantic origin/use proof.
+That would be a distinct scan mode,
+requiring its own measured producer, configuration/tool bindings and compatibility
+validation; it cannot relabel observations from an earlier stock `dir` scan.
+A wrapper replaying CLI slices, even overlapping ones, instead changes the
+detector's context, anchors and fragment boundaries. Arbitrary regex rules can
+span multiple lines or require unbounded context, so **no universal finite
+overlap guarantees completeness** or equivalence. Such replay must never silently
+replace the original directory scan, infer its fragment origins, or deduplicate
+scanner observations. Neither approach is implemented by this diagnostic change;
+the strict size guard and all acceptance rules remain intact.
 
 **Review trust limitation:** the maintained disposition validator checks exact
 metadata, a nonblank reviewer label, external evidence accessibility and digest.

@@ -604,9 +604,11 @@ def _gitleaks_private_span(
         or "!" in str(record.get("File", ""))
     ):
         return None, "unsupported_fragment_or_nested_source"
-    # sources/file.go uses a 100,000-byte default buffer. Do not extrapolate
-    # whole-file coordinates to chunked sources or other encodings.
-    if len(raw) >= 100_000 or b"\x00" in raw or b"\r" in raw.replace(b"\r\n", b""):
+    # Stock reports omit the observed fragment's byte origin. Even line-aligned
+    # later fragments use a different first-line column origin from the file.
+    if len(raw) >= 100_000:
+        return None, "unsupported_fragment_origin"
+    if b"\x00" in raw or b"\r" in raw.replace(b"\r\n", b""):
         return None, "unsupported_source_encoding_or_size"
     try:
         raw.decode("utf-8")
