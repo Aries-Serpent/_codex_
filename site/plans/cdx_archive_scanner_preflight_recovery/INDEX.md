@@ -22,17 +22,18 @@ This directory persists its execution sequence; it does not establish clearance.
 | 002 — repeatable sessions | [Exact semantic evidence batches](002_semantic_review.md) | Current complete inventory and safe private handling established |
 | 003 — conditional session | [Final revalidation or precise blocked conclusion](003_clearance_revalidation.md) | Coverage/evidence ready, or a decisive infeasibility finding |
 | 004 — diagnostic recovery | [Real scanner diagnostics](004_scanner_diagnostics.md) | Executed in checkpoint 004; cwd mapping defect diagnosed and fixed, not a complete baseline |
-| 005 — current continuation | [Corrected baseline and gated semantic review](005_corrected_baseline.md) | Verify corrected preparation with a new complete run before entering 002 |
+| 005 — corrected baseline | [Corrected baseline and gated semantic review](005_corrected_baseline.md) | Executed in checkpoint 005: complete current inventory and first bounded investigation |
+| 006 — current continuation | [Exact semantic gaps](006_semantic_gaps.md) | Revalidate retained private baseline, resolve assigned gaps and continue bounded review |
 
 These are planned work packages, not completed milestones or authorization to
 pack. Do not execute 003 merely because 002 has started.
 
-Latest execution: checkpoint 004 records one diagnostic attempt with both scanner
-reports, followed by a detect-secrets relative-path mapping failure before inventory.
-The scanner-cwd defect is fixed; all retained records remapped offline and 110
-focused tests passed. No real rerun, completed baseline, semantic batch or clearance
-is claimed. Failed diagnostics alone remain session-private; the provisional key,
-snapshot and temporary tools were removed. Continue at 005, not at acceptance.
+Latest execution: checkpoint 005 records one corrected real preflight, a complete
+independently revalidated current inventory of 6,737 observations and a bounded
+32-observation private investigation. Exclusive states: 32 indeterminate and
+6,705 unreviewed, with zero approvals or false-positive proofs. Current private
+bundle/key/snapshot/tool context is retained owner-only but nondurably. No clearance
+or archive creation is claimed. Continue at 006, not at acceptance.
 
 ## Historical baseline, never a current measurement
 
