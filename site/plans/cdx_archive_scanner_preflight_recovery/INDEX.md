@@ -21,9 +21,15 @@ This directory persists its execution sequence; it does not establish clearance.
 | 001 — next session | [Preparation and continuity](001_next_session.md) | Start here; remeasure current state |
 | 002 — repeatable sessions | [Exact semantic evidence batches](002_semantic_review.md) | Current complete inventory and safe private handling established |
 | 003 — conditional session | [Final revalidation or precise blocked conclusion](003_clearance_revalidation.md) | Coverage/evidence ready, or a decisive infeasibility finding |
+| 004 — current continuation | [Real scanner diagnostics](004_scanner_diagnostics.md) | Preparation tooling exists, but the single real attempt failed before inventory publication |
 
 These are planned work packages, not completed milestones or authorization to
 pack. Do not execute 003 merely because 002 has started.
+
+Latest execution: checkpoint 003 records a failed single real preflight, unknown
+current finding counts and no semantic batch. Source remained unchanged; private
+failed context was removed. Private failure/report retention was then corrected
+and verified only synthetically. Continue at 004, not at semantic acceptance.
 
 ## Historical baseline, never a current measurement
 
