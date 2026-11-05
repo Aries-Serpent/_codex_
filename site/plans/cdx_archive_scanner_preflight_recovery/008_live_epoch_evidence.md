@@ -133,3 +133,7 @@ escrow or a guarantee of availability after VM reset.
 
 The actual introducing SHA will be appended after this plan-body/checkpoint
 commit, in a separate metadata commit. No self-referential SHA is claimed.
+
+Plan-body/checkpoint creation commit SHA:
+`28be57909189368c4f5f6d3faf53cd78a2327701`.
+This footer is appended afterward in a separate metadata commit.
