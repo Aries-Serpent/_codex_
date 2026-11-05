@@ -98,5 +98,5 @@ testing, issuer contact, workflow actions, deployment or finding approvals.
 
 ## Commit provenance
 
-The actual plan-body creation SHA will be appended after its introducing commit,
-in a separate metadata commit; no self-referential SHA is claimed here.
+Plan-body creation commit SHA: `5e435f28c3120e190d51af1f8930943471acc3fc`.
+Appended afterward in a separate metadata commit; not a self-referential SHA.
