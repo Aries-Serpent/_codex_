@@ -26,17 +26,26 @@ This directory persists its execution sequence; it does not establish clearance.
 | 006 — entry conditions blocked | [Exact semantic gaps](006_semantic_gaps.md) | Checkpoint 006: private baseline unavailable and source/tool binding drift; no semantic batch or scan |
 | 007 — executed recovery epoch | [Private context recovery](007_private_context_recovery.md) | Checkpoint 007: tested mapping fixes, one authenticated epoch and four bounded investigations |
 | 008 — blocked on recovery | [Live epoch evidence gaps](008_live_epoch_evidence.md) | Retained context absent at next entry; no further semantic work |
-| 009 — current continuation | [Restore private inputs](009_restore_private_inputs.md) | Actual authorized private recovery and live source/tool bindings required |
+| 009 — historical recovery dependency | [Restore private inputs](009_restore_private_inputs.md) | Actual authorized private recovery and live source/tool bindings required |
+| 010 — current MVP continuation | [Dual identity and fragment-origin proof](010_dual_identity_mvp.md) | Tested measurement and synthetic smoke complete; exact large-file report contract still required |
 
 These are planned work packages, not completed milestones or authorization to
 pack. Do not execute 003 merely because 002 has started.
 
-Latest entry verified checkpoint007's digest but found no complete private bundle
+Latest iteration: checkpoint008 records a tested dual-identity measurement MVP,
+officially verified pinned tools and a clean synthetic two-scanner smoke.
+Applied read-only to the historical archive: 16,533 entries, 124,233,523 bytes;
+content digest `2698b3c9f06c38d2bc87497ac149c251f969a0db6fb7c1c35ab1f2e281cd83f7`,
+live digest `6877f93c0d084ee8110e5811e8ca68bf4016fd88e7cca92c9fa46ceca14cf2da`.
+191 focused tests passed. Large-file exact mapping remains blocked pending
+actual fragment-origin proof; no epoch008 or archive was created. Follow 010.
+
+Previous entry verified checkpoint007's digest but found no complete private bundle
 in the authorized prefixes. Fresh source SHA-256:
 `101076e86063d19274e771039f76679480f586bdf03309ecb72d80253baeee5c`
 (16,533 entries, 124,233,523 bytes). Current inventory/counts are unavailable,
 not zero. No new checkpoint, scan, semantic batch or archive was created.
-Continue at 009's actual recovery dependency.
+This remains historical evidence, not a recovered live inventory.
 
 Historical execution: checkpoint 007 records one newly authenticated producer epoch,
 6,737 observations at 6,699 distinct path/line-range locations, and four bounded
