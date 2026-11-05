@@ -25,19 +25,28 @@ This directory persists its execution sequence; it does not establish clearance.
 | 005 — corrected baseline | [Corrected baseline and gated semantic review](005_corrected_baseline.md) | Executed in checkpoint 005: complete current inventory and first bounded investigation |
 | 006 — entry conditions blocked | [Exact semantic gaps](006_semantic_gaps.md) | Checkpoint 006: private baseline unavailable and source/tool binding drift; no semantic batch or scan |
 | 007 — executed recovery epoch | [Private context recovery](007_private_context_recovery.md) | Checkpoint 007: tested mapping fixes, one authenticated epoch and four bounded investigations |
-| 008 — current continuation | [Live epoch evidence gaps](008_live_epoch_evidence.md) | Actual retained bindings, exact evidence, fragment scope and genuine independent review |
+| 008 — blocked on recovery | [Live epoch evidence gaps](008_live_epoch_evidence.md) | Retained context absent at next entry; no further semantic work |
+| 009 — current continuation | [Restore private inputs](009_restore_private_inputs.md) | Actual authorized private recovery and live source/tool bindings required |
 
 These are planned work packages, not completed milestones or authorization to
 pack. Do not execute 003 merely because 002 has started.
 
-Latest execution: checkpoint 007 records one newly authenticated producer epoch,
+Latest entry verified checkpoint007's digest but found no complete private bundle
+in the authorized prefixes. Fresh source SHA-256:
+`101076e86063d19274e771039f76679480f586bdf03309ecb72d80253baeee5c`
+(16,533 entries, 124,233,523 bytes). Current inventory/counts are unavailable,
+not zero. No new checkpoint, scan, semantic batch or archive was created.
+Continue at 009's actual recovery dependency.
+
+Historical execution: checkpoint 007 records one newly authenticated producer epoch,
 6,737 observations at 6,699 distinct path/line-range locations, and four bounded
 32-observation investigations. Exclusive states: 128 indeterminate, 6,609
 unreviewed; zero approvals or affirmative noncredential proofs. Mapping/replay
 predicates passed through batch 3; batch 4 contains one unsupported large-file
-mapping, so batch 5 was not run. Active private retention exists but is nondurable.
+mapping, so batch 5 was not run. Its private retention was nondurable and is not
+available at the latest bounded entry check.
 170 focused tests passed before and after the epoch. No archive was created.
-Continue at 008 with actual recovered context, never assumed keyed continuity.
+These counts and checks are historical, not current live keyed continuity.
 
 Checkpoint 005 remains historical: its complete inventory held 6,737 observations,
 with 32 indeterminate and 6,705 unreviewed, zero approvals or false-positive proofs.
