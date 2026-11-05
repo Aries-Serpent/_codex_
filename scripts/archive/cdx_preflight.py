@@ -21,6 +21,7 @@ from . import cdx_review as review
 MAX_FILE_BYTES = 512 * 1024 * 1024
 MAX_TREE_BYTES = 4 * 1024 * 1024 * 1024
 MAX_ENTRIES = 100_000
+CONTENT_IDENTITY_VERSION = 1
 FULL_SELECTION = {
     "kind": "full_tree_preflight",
     "version": 1,
@@ -81,8 +82,9 @@ def read_source_file(root: Path, relative: str, *, limit: int = MAX_FILE_BYTES) 
 
 
 def measure_tree(root: Path, *, snapshot: Path | None = None) -> dict[str, Any]:
-    """Fingerprint every entry using the checkpoint record format; optionally copy."""
+    """Measure live metadata and deterministic content identity; optionally copy."""
     fingerprint = hashlib.sha256()
+    content_fingerprint = hashlib.sha256()
     count = 0
     total = 0
     root_fd = review._directory(root, private=False)
@@ -146,6 +148,10 @@ def measure_tree(root: Path, *, snapshot: Path | None = None) -> dict[str, Any]:
             fingerprint.update(
                 json.dumps(row, ensure_ascii=True, separators=(",", ":")).encode() + b"\n"
             )
+            content_fingerprint.update(
+                json.dumps(row[:3] + row[4:], ensure_ascii=True, separators=(",", ":")).encode()
+                + b"\n"
+            )
         for name, relative, info, target in descend:
             child = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=directory)
             try:
@@ -164,7 +170,13 @@ def measure_tree(root: Path, *, snapshot: Path | None = None) -> dict[str, Any]:
         walk(root_fd, "")
     finally:
         os.close(root_fd)
-    return {"sha256": fingerprint.hexdigest(), "entries": count, "file_bytes": total}
+    return {
+        "sha256": fingerprint.hexdigest(),
+        "content_sha256": content_fingerprint.hexdigest(),
+        "content_identity_version": CONTENT_IDENTITY_VERSION,
+        "entries": count,
+        "file_bytes": total,
+    }
 
 
 def measure_toolchain() -> dict[str, Any]:

@@ -119,6 +119,21 @@ sorted immediate children, compact ASCII JSON arrays of relative path/type/mode/
 mtime-nanoseconds/size/payload, newline-delimited and SHA-256 hashed. Payload is a
 file SHA-256, symlink target or null. Directories have size zero.
 
+`measure_tree` retains that live filesystem fingerprint as `sha256` and adds
+`content_sha256` with `content_identity_version: 1`. The deterministic content
+digest hashes the same ordered, newline-delimited compact ASCII JSON rows with
+only mtime-nanoseconds omitted: `[relative_path, type, mode, size, payload]`.
+It includes empty directories and internal symlink targets, excludes the root
+directory's own metadata, and applies the same safety and resource limits.
+Timestamp-only drift changes the live digest but not the content digest; bytes,
+paths, types, permission modes, sizes and link targets remain content-bound.
+An exact snapshot preserves both digests. This additional identity is descriptive,
+not a clearance, finding-identity version or reusable epoch authorization.
+Producer and loader comparisons retain the complete measurement, including the
+live `sha256`; `source_sha256` bindings still use that live digest. Matching content
+never permits metadata drift to load an old run. Older measurements without the
+explicit content fields are not upgraded implicitly and fail current comparisons.
+
 Source and snapshot fingerprints, executable bytes, interpreter, installed
 distribution files, implementation bytes and explicit configuration are measured
 before and after scanning. Full-tree selection and packer-default selection have

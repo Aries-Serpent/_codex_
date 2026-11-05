@@ -27,6 +27,8 @@ def test_full_tree_snapshot_includes_packer_exclusions(tmp_path):
     assert preflight.measure_tree(source, snapshot=snapshot) == before
     assert preflight.measure_tree(snapshot) == before
     assert before["entries"] == 5
+    assert before["content_identity_version"] == 1
+    assert len(before["content_sha256"]) == 64
     assert preflight.FULL_SELECTION["exclusions"] == []
     assert preflight.digest_document(preflight.FULL_SELECTION) != preflight.digest_document(
         preflight.PACKER_SELECTION
@@ -34,6 +36,78 @@ def test_full_tree_snapshot_includes_packer_exclusions(tmp_path):
     (source / "large.sqlite").write_bytes(b"changed-content")
     assert preflight.measure_tree(source) != before
     assert preflight.measure_tree(snapshot) == before
+
+
+@pytest.mark.parametrize("kind", ["file", "dir", "symlink"])
+def test_timestamp_drift_changes_only_live_digest(tmp_path, kind):
+    entry = tmp_path / "entry"
+    if kind == "file":
+        entry.write_bytes(b"synthetic-only")
+    elif kind == "dir":
+        entry.mkdir()
+    else:
+        entry.symlink_to("missing-internal-target")
+    before = preflight.measure_tree(tmp_path)
+    info = entry.lstat()
+    os.utime(entry, ns=(info.st_atime_ns, info.st_mtime_ns + 1_000_000_000), follow_symlinks=False)
+    after = preflight.measure_tree(tmp_path)
+    assert after["sha256"] != before["sha256"]
+    assert after["content_sha256"] == before["content_sha256"]
+    assert after["content_identity_version"] == before["content_identity_version"] == 1
+
+
+@pytest.mark.parametrize(
+    "change", ["bytes", "size", "path", "mode", "dir_mode", "symlink_target", "empty_dir", "type"]
+)
+def test_content_digest_binds_tree_content_and_structure(tmp_path, change):
+    entry = tmp_path / "entry"
+    entry.write_bytes(b"synthetic-one")
+    entry.chmod(0o600)
+    directory = tmp_path / "empty"
+    directory.mkdir(mode=0o700)
+    link = tmp_path / "link"
+    link.symlink_to("entry")
+    before = preflight.measure_tree(tmp_path)
+    if change == "bytes":
+        entry.write_bytes(b"synthetic-two")
+    elif change == "size":
+        entry.write_bytes(b"synthetic-one-more")
+    elif change == "path":
+        entry.rename(tmp_path / "renamed")
+    elif change == "mode":
+        entry.chmod(0o700)
+    elif change == "dir_mode":
+        directory.chmod(0o755)
+    elif change == "symlink_target":
+        link.unlink()
+        link.symlink_to("empty")
+    elif change == "empty_dir":
+        directory.rmdir()
+    else:
+        entry.unlink()
+        entry.mkdir(mode=0o600)
+    assert preflight.measure_tree(tmp_path)["content_sha256"] != before["content_sha256"]
+
+
+def test_content_digest_is_independent_of_creation_order_and_timestamps(tmp_path):
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    for root, names, timestamp in (
+        (first, ["z", "a"], 1_000_000_000),
+        (second, ["a", "z"], 2_000_000_000),
+    ):
+        root.mkdir()
+        for name in names:
+            directory = root / name
+            directory.mkdir(mode=0o700)
+            (directory / "file").write_bytes(name.encode())
+            (directory / "file").chmod(0o600)
+            os.utime(directory / "file", ns=(timestamp, timestamp))
+            os.utime(directory, ns=(timestamp, timestamp))
+    before = preflight.measure_tree(first)
+    after = preflight.measure_tree(second)
+    assert before["sha256"] != after["sha256"]
+    assert before["content_sha256"] == after["content_sha256"]
 
 
 @pytest.mark.parametrize("kind", ["leaf", "ancestor", "fifo", "directory", "traversal", "size"])
@@ -61,12 +135,21 @@ def test_bounded_source_reads_reject_unsafe_references(tmp_path, kind):
         preflight.read_source_file(tmp_path, relative, limit=limit)
 
 
-@pytest.mark.parametrize("kind", ["external_link", "fifo", "entry_budget", "byte_budget"])
+@pytest.mark.parametrize(
+    "kind",
+    ["external_link", "fifo", "privileged_file", "privileged_dir", "entry_budget", "byte_budget"],
+)
 def test_tree_measurement_blocks_instead_of_skipping(tmp_path, monkeypatch, kind):
     if kind == "external_link":
         (tmp_path / "link").symlink_to("/etc/passwd")
     elif kind == "fifo":
         os.mkfifo(tmp_path / "fifo")
+    elif kind == "privileged_file":
+        (tmp_path / "file").write_bytes(b"synthetic-only")
+        (tmp_path / "file").chmod(0o4600)
+    elif kind == "privileged_dir":
+        (tmp_path / "dir").mkdir()
+        (tmp_path / "dir").chmod(0o2700)
     else:
         (tmp_path / "file").write_bytes(b"synthetic-only")
         monkeypatch.setattr(
@@ -136,6 +219,7 @@ def test_measured_producer_retains_distinct_observations_without_acceptance(prod
     assert result["clearance"] == "BLOCKED_FINDINGS"
     assert not result["archive_created"]
     assert result["bindings"]["source_sha256"] == preflight.measure_tree(source)["sha256"]
+    assert result["source"] == preflight.measure_tree(source)
     inventory, _ = review.read_private_json(private / "inventory.json")
     observations, _ = review.read_private_json(private / "observations.json")
     assert len({row["finding_id"] for row in inventory["findings"]}) == 2
@@ -149,7 +233,19 @@ def test_measured_producer_retains_distinct_observations_without_acceptance(prod
         preflight.run_preflight(source, private)
 
 
-@pytest.mark.parametrize("drift", ["source", "snapshot", "config", "ignore", "tool", "partial"])
+@pytest.mark.parametrize(
+    "drift",
+    [
+        "source",
+        "snapshot",
+        "source_timestamp",
+        "snapshot_timestamp",
+        "config",
+        "ignore",
+        "tool",
+        "partial",
+    ],
+)
 def test_drift_or_partial_run_never_publishes_completion(produced, monkeypatch, drift):
     source, private, scan = produced
     calls = 0
@@ -167,6 +263,13 @@ def test_drift_or_partial_run_never_publishes_completion(produced, monkeypatch, 
         finally:
             if drift in {"source", "snapshot"}:
                 ((source if drift == "source" else root) / "fixture").write_text("changed")
+            elif drift in {"source_timestamp", "snapshot_timestamp"}:
+                tree = source if drift == "source_timestamp" else root
+                before = preflight.measure_tree(tree)
+                path = tree / "fixture"
+                info = path.stat()
+                os.utime(path, ns=(info.st_atime_ns, info.st_mtime_ns + 1_000_000_000))
+                assert preflight.measure_tree(tree)["content_sha256"] == before["content_sha256"]
             elif drift in {"config", "ignore"}:
                 options["gitleaks_config" if drift == "config" else "gitleaks_ignore"].write_text(
                     "changed"
@@ -239,10 +342,29 @@ def test_fingerprint_matches_documented_record_bytes(tmp_path):
     expected = hashlib.sha256(
         json.dumps(row, ensure_ascii=True, separators=(",", ":")).encode() + b"\n"
     ).hexdigest()
-    assert preflight.measure_tree(tmp_path)["sha256"] == expected
+    measurement = preflight.measure_tree(tmp_path)
+    assert measurement["sha256"] == expected
+    content_row = row[:3] + row[4:]
+    content_expected = hashlib.sha256(
+        json.dumps(content_row, ensure_ascii=True, separators=(",", ":")).encode() + b"\n"
+    ).hexdigest()
+    assert measurement["content_sha256"] == content_expected
+    assert measurement["content_identity_version"] == 1
 
 
-@pytest.mark.parametrize("change", ["record", "key", "source", "config", "tool", "inventory"])
+@pytest.mark.parametrize(
+    "change",
+    [
+        "record",
+        "key",
+        "source",
+        "source_timestamp",
+        "snapshot_timestamp",
+        "config",
+        "tool",
+        "inventory",
+    ],
+)
 def test_current_bundle_rejects_stale_context(produced, monkeypatch, change):
     source, private, _ = produced
     preflight.run_preflight(source, private)
@@ -250,6 +372,13 @@ def test_current_bundle_rejects_stale_context(produced, monkeypatch, change):
         monkeypatch.setattr(preflight, "measure_toolchain", lambda: {"changed": True})
     elif change == "source":
         (source / "fixture").write_text("different")
+    elif change in {"source_timestamp", "snapshot_timestamp"}:
+        tree = source if change == "source_timestamp" else private / "snapshot"
+        before = preflight.measure_tree(tree)
+        path = tree / "fixture"
+        info = path.stat()
+        os.utime(path, ns=(info.st_atime_ns, info.st_mtime_ns + 1_000_000_000))
+        assert preflight.measure_tree(tree)["content_sha256"] == before["content_sha256"]
     elif change == "config":
         (private / "gitleaks.toml").write_text("different")
     else:
@@ -265,6 +394,24 @@ def test_current_bundle_rejects_stale_context(produced, monkeypatch, change):
             document["findings"].pop()
         (private / name).write_text(json.dumps(document))
     with pytest.raises(ValueError):
+        preflight.load_preflight(source, private)
+
+
+@pytest.mark.parametrize("change", ["legacy", "content_digest", "content_version"])
+def test_loader_rejects_missing_or_changed_content_identity(produced, change):
+    source, private, _ = produced
+    complete = preflight.run_preflight(source, private)
+    original_live_digest = complete["source"]["sha256"]
+    if change == "legacy":
+        del complete["source"]["content_sha256"]
+        del complete["source"]["content_identity_version"]
+    elif change == "content_digest":
+        complete["source"]["content_sha256"] = "0" * 64
+    else:
+        complete["source"]["content_identity_version"] += 1
+    (private / "complete.json").write_text(json.dumps(complete))
+    assert preflight.measure_tree(source)["sha256"] == original_live_digest
+    with pytest.raises(ValueError, match="current private run binding mismatch"):
         preflight.load_preflight(source, private)
 
 
