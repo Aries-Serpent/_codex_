@@ -108,3 +108,8 @@ Record actual HEAD/status; preserve dirty work and historical archive bytes.
 
 The actual introducing commit and checkpoint009 digest will be appended after
 the first publication, in a separate metadata commit.
+
+Introducing commit: `5e0430d643f42f9ad1c753e77e9d2f0fd2fe7c28`.
+Checkpoint009 SHA-256:
+`384db3a1f9e077187a02d00432b8b6f4c1b4a762b7f2af628b1d06142eea3310`.
+This footer is appended afterward in a separate metadata commit.

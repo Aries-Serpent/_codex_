@@ -163,6 +163,7 @@ Creation commits are appended after the plan bodies have actually been committed
 | 008_live_epoch_evidence.md | `28be57909189368c4f5f6d3faf53cd78a2327701` |
 | 009_restore_private_inputs.md | `0908ddba7234c3d7d553b9f4f4b80321fbffbe10` |
 | 010_dual_identity_mvp.md | `11217b8185cd029c6c76bcaec2e5d490cc6b84c5` |
+| 011_fragment_origin_contract.md | `5e0430d643f42f9ad1c753e77e9d2f0fd2fe7c28` |
 
 ## Commit provenance
 
