@@ -27,12 +27,22 @@ This directory persists its execution sequence; it does not establish clearance.
 | 007 — executed recovery epoch | [Private context recovery](007_private_context_recovery.md) | Checkpoint 007: tested mapping fixes, one authenticated epoch and four bounded investigations |
 | 008 — blocked on recovery | [Live epoch evidence gaps](008_live_epoch_evidence.md) | Retained context absent at next entry; no further semantic work |
 | 009 — historical recovery dependency | [Restore private inputs](009_restore_private_inputs.md) | Actual authorized private recovery and live source/tool bindings required |
-| 010 — current MVP continuation | [Dual identity and fragment-origin proof](010_dual_identity_mvp.md) | Tested measurement and synthetic smoke complete; exact large-file report contract still required |
+| 010 — completed MVP preparation | [Dual identity and fragment-origin proof](010_dual_identity_mvp.md) | Tested measurement and synthetic smoke complete; exact large-file report contract still required |
+| 011 — current report-contract dependency | [Negative fragment proof](011_fragment_origin_contract.md) | 208 tests and actual pinned synthetic ambiguity checks; execution-bound report adapter still needed |
 
 These are planned work packages, not completed milestones or authorization to
 pack. Do not execute 003 merely because 002 has started.
 
-Latest iteration: checkpoint008 records a tested dual-identity measurement MVP,
+Latest iteration: checkpoint009 records explicit missing-origin rejection and
+negative fragmentation proof, not successful large-file mapping. 208 focused tests
+passed; four pinned-binary synthetic checks confirmed the ambiguity. No real-source
+scan or epoch008 ran. Current inventory/counts remain unavailable, not zero.
+Content identity matches checkpoint008; live source digest is now
+`ef7a1bdb43b224995d99de2699074a622867ef9fa67b73e7390aa52b036b0d19`.
+Follow 011's concrete acquisition-bound report-adapter authorization/development
+dependency; do not loop through real scans without the prerequisite.
+
+Previous iteration: checkpoint008 records a tested dual-identity measurement MVP,
 officially verified pinned tools and a clean synthetic two-scanner smoke.
 Applied read-only to the historical archive: 16,533 entries, 124,233,523 bytes;
 content digest `2698b3c9f06c38d2bc87497ac149c251f969a0db6fb7c1c35ab1f2e281cd83f7`,
