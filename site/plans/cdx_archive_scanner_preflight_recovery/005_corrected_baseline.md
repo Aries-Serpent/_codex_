@@ -110,5 +110,5 @@ inventory or keyed continuity survives. Ordinary deletion is not secure erasure.
 
 ## Commit provenance
 
-The actual plan-body creation SHA will be appended after its introducing commit,
-in a separate metadata commit; no self-referential SHA is claimed here.
+Plan-body creation commit SHA: `0f727b3fa0e2c41b459efa995daa55a51e34c341`.
+Appended afterward in a separate metadata commit; not a self-referential SHA.
