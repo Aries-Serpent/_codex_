@@ -103,3 +103,15 @@ and the existing packer's independent snapshot/rescan.
 ## Creation-commit ledger
 
 Creation commits are appended after the plan bodies have actually been committed.
+
+| Document | Actual introducing commit SHA |
+| --- | --- |
+| INDEX.md | `816abf71fcf1868c18b91b063ac84a669d8dd9b8` |
+| 001_next_session.md | `816abf71fcf1868c18b91b063ac84a669d8dd9b8` |
+| 002_semantic_review.md | `816abf71fcf1868c18b91b063ac84a669d8dd9b8` |
+| 003_clearance_revalidation.md | `816abf71fcf1868c18b91b063ac84a669d8dd9b8` |
+
+## Commit provenance
+
+Plan-body creation commit SHA: `816abf71fcf1868c18b91b063ac84a669d8dd9b8`.
+This footer and ledger are appended afterward in a separate metadata commit.

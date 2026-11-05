@@ -94,3 +94,8 @@ genuinely complete, or a decisive sensitive-content/authority/evidence constrain
 requires an explicit blocked/infeasible conclusion. Otherwise create a new
 numbered batch continuation in this directory, update the index, and append its
 actual introducing commit SHA using the index protocol.
+
+## Commit provenance
+
+Plan-body creation commit SHA: `816abf71fcf1868c18b91b063ac84a669d8dd9b8`.
+Appended after creation in a separate metadata commit; not a self-referential SHA.

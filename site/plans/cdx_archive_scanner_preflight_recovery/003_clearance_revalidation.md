@@ -72,3 +72,8 @@ the index. If completion is accepted, the next prompt must state the terminal
 result and any separately authorized lifecycle step; if blocked, name the exact
 unfinished work. Append the actual introducing commit SHA using the index
 protocol, preserving all earlier plans and their provenance.
+
+## Commit provenance
+
+Plan-body creation commit SHA: `816abf71fcf1868c18b91b063ac84a669d8dd9b8`.
+Appended after creation in a separate metadata commit; not a self-referential SHA.

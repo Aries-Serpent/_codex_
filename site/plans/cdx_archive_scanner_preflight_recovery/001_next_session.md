@@ -116,3 +116,8 @@ If scanning is blocked, continue independent producer/trust/synthetic-test work.
 Before ending, create the next unused numbered continuation prompt in this
 directory, describing the actual unfinished increment rather than copying this
 entire prompt. Follow the index's introducing-commit SHA footer protocol.
+
+## Commit provenance
+
+Plan-body creation commit SHA: `816abf71fcf1868c18b91b063ac84a669d8dd9b8`.
+Appended after creation in a separate metadata commit; not a self-referential SHA.
