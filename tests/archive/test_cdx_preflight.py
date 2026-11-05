@@ -188,6 +188,7 @@ def test_observation_sink_is_private_copy_and_rejects_partial_exit(tmp_path, mon
     monkeypatch.setenv("CDX_FINDING_HMAC_KEY", "synthetic-only-key" * 3)
     code = 1
     captured = []
+    reports = {}
 
     def run(command, **_kwargs):
         if command[1] == "version":
@@ -208,8 +209,15 @@ def test_observation_sink_is_private_copy_and_rejects_partial_exit(tmp_path, mon
         findings.clear()
 
     with pytest.raises(RuntimeError, match="gitleaks scan failed"):
-        common.run_secret_scanners(root, observation_sink=sink)
+        common.run_secret_scanners(
+            root,
+            observation_sink=sink,
+            report_sink=lambda stage, report: reports.update({stage: report}),
+        )
     assert not captured
+    assert reports["gitleaks"]["exit_code"] == 1
+    assert reports["gitleaks"]["stderr"] == "PRIVATE_DIAGNOSTIC"
+    assert reports["gitleaks"]["report"]
     code = 2
     with pytest.raises(RuntimeError, match="unresolved"):
         common.run_secret_scanners(root, observation_sink=sink)
@@ -288,6 +296,9 @@ def test_interrupted_publication_has_no_completion(produced, monkeypatch):
     with pytest.raises(OSError):
         preflight.run_preflight(source, private)
     assert not (private / "complete.json").exists()
+    failure, _ = review.read_private_json(private / "failure.json")
+    assert failure["status"] == "BLOCKED"
+    assert failure["exception_type"] == "OSError"
 
 
 def test_offline_exact_detector_replay_never_verifies_credentials(produced, monkeypatch):

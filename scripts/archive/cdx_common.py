@@ -259,6 +259,7 @@ def run_secret_scanners(
     source_root: Path | None = None,
     *,
     observation_sink: Any = None,
+    report_sink: Any = None,
     scanner_environment: dict[str, str] | None = None,
     scanner_directory: Path | None = None,
     gitleaks_config: Path | None = None,
@@ -291,6 +292,19 @@ def run_secret_scanners(
     # Exit 1 can mean partial failure, even when a report contains findings.
     finding_exit = 2
     configuration.extend(["--exit-code", str(finding_exit)])
+
+    def retain(stage: str, result: Any, raw_report: str | None = None) -> None:
+        if report_sink is not None:
+            report_sink(
+                stage,
+                {
+                    "exit_code": result.returncode,
+                    "stdout": result.stdout,
+                    "stderr": result.stderr,
+                    "report": raw_report,
+                },
+            )
+
     with tempfile.TemporaryDirectory(prefix="cdx-scan-") as temp_dir:
         report = Path(temp_dir) / "gitleaks.json"
         try:
@@ -310,6 +324,8 @@ def run_secret_scanners(
                 timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
                 **execution,
             )
+            retain("gitleaks-version", gitleaks_version)
+            retain("detect-secrets-version", detect_version)
             if gitleaks_version.returncode != 0 or detect_version.returncode != 0:
                 raise RuntimeError("secret scanner version could not be determined")
             versions = {
@@ -336,9 +352,16 @@ def run_secret_scanners(
                 timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
                 **execution,
             )
+            raw_report = None
+            if report.exists():
+                with report.open(encoding="utf-8") as stream:
+                    raw_report = stream.read(16 * 1024 * 1024 + 1)
+                if len(raw_report.encode("utf-8")) > 16 * 1024 * 1024:
+                    raise RuntimeError("gitleaks report exceeds the retention limit")
+            retain("gitleaks", gitleaks_result, raw_report)
             if gitleaks_result.returncode not in (0, finding_exit) or not report.exists():
                 raise RuntimeError("gitleaks scan failed")
-            gitleaks_findings = _scanner_json(report.read_text(encoding="utf-8"))
+            gitleaks_findings = _scanner_json(raw_report or "")
             if not isinstance(gitleaks_findings, list) or any(
                 not isinstance(finding, dict) for finding in gitleaks_findings
             ):
@@ -353,6 +376,7 @@ def run_secret_scanners(
                 timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
                 **execution,
             )
+            retain("detect-secrets", detect_result)
             if detect_result.returncode != 0:
                 raise RuntimeError("detect-secrets scan failed")
             detect_findings = _scanner_json(detect_result.stdout)

@@ -205,7 +205,7 @@ def measure_toolchain() -> dict[str, Any]:
     }
 
 
-def run_preflight(source: Path, private: Path) -> dict[str, Any]:
+def _produce_preflight(source: Path, private: Path) -> dict[str, Any]:
     """Produce one measured run, with completion published last and no approval."""
     directory = review._directory(private, private=True)
     os.close(directory)
@@ -254,6 +254,9 @@ def run_preflight(source: Path, private: Path) -> dict[str, Any]:
             raise ValueError("detector effective configuration is incomplete")
         captured.update(findings=findings, detector_report=detector_report)
 
+    def retain(stage: str, report: dict[str, Any]) -> None:
+        review.write_checkpoint(private / f"scanner-report-{stage}.json", report)
+
     old_key = os.environ.get("CDX_FINDING_HMAC_KEY")
     os.environ["CDX_FINDING_HMAC_KEY"] = key
     try:
@@ -263,6 +266,7 @@ def run_preflight(source: Path, private: Path) -> dict[str, Any]:
                 inventory_path=private / "inventory.json",
                 source_root=source,
                 observation_sink=capture,
+                report_sink=retain,
                 scanner_environment=environment,
                 scanner_directory=private,
                 gitleaks_config=config,
@@ -318,6 +322,10 @@ def run_preflight(source: Path, private: Path) -> dict[str, Any]:
         ("queue.json", queue),
     ):
         artifacts[name] = review.write_checkpoint(private / name, document)
+    for stage in ("gitleaks-version", "detect-secrets-version", "gitleaks", "detect-secrets"):
+        name = f"scanner-report-{stage}.json"
+        if (private / name).exists():
+            artifacts[name] = review.read_private_json(private / name)[1]
     complete = {
         "bindings": bindings,
         "source": source_before,
@@ -332,6 +340,51 @@ def run_preflight(source: Path, private: Path) -> dict[str, Any]:
     return complete
 
 
+def run_preflight(source: Path, private: Path) -> dict[str, Any]:
+    """Retain a sanitized failure stage as well as private available scanner reports."""
+    fd = review._directory(private, private=True)
+    os.close(fd)
+    common._validate_external_path([source], private / "failure.json", must_exist=False)
+    if any(private.iterdir()):
+        raise ValueError("preflight requires a new empty private directory")
+    try:
+        return _produce_preflight(source, private)
+    except Exception as exc:
+        known = {
+            "gitleaks scan failed": "gitleaks_unsuccessful",
+            "detect-secrets scan failed": "detect_secrets_unsuccessful",
+            "secret scan could not be completed": "scanner_io_parse_or_timeout",
+            "gitleaks returned an invalid report": "gitleaks_malformed",
+            "detect-secrets returned an invalid report": "detect_secrets_malformed",
+            "secret scanner returned ambiguous duplicate findings": "ambiguous_duplicate_findings",
+            "secret scanner finding is not a regular file": "nonregular_observation",
+            "secret scanner returned incomplete finding metadata": "incomplete_finding_metadata",
+        }
+        reports = [
+            stage
+            for stage in (
+                "gitleaks-version",
+                "detect-secrets-version",
+                "gitleaks",
+                "detect-secrets",
+            )
+            if (private / f"scanner-report-{stage}.json").exists()
+        ]
+        review.write_checkpoint(
+            private / "failure.json",
+            {
+                "status": "BLOCKED",
+                "reason_code": known.get(str(exc), "preparation_or_binding_failure"),
+                "exception_type": type(exc).__name__,
+                "cause_type": type(exc.__cause__).__name__ if exc.__cause__ else None,
+                "retained_report_stages": reports,
+                "inventory_published": (private / "inventory.json").exists(),
+                "archive_created": False,
+            },
+        )
+        raise
+
+
 def load_preflight(source: Path, private: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     """Recheck a locally produced bundle; integrity never implies reviewer authority."""
     complete, _ = review.read_private_json(private / "complete.json")
@@ -341,6 +394,11 @@ def load_preflight(source: Path, private: Path) -> tuple[dict[str, Any], dict[st
         if digest != complete["artifacts"][name]:
             raise ValueError("private artifact changed")
         documents[name] = document
+    for stage in ("gitleaks-version", "detect-secrets-version", "gitleaks", "detect-secrets"):
+        name = f"scanner-report-{stage}.json"
+        if name in complete["artifacts"]:
+            if review.read_private_json(private / name)[1] != complete["artifacts"][name]:
+                raise ValueError("private scanner report changed")
     inventory, inventory_digest = review.read_private_json(private / "inventory.json")
     observations = documents["observations.json"]
     bindings = documents["bindings.json"]

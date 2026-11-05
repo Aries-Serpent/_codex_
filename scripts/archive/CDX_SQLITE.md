@@ -131,12 +131,17 @@ and Gitleaks default nested-archive limits remain scanner coverage limitations;
 exact tree identity does not mean every byte was semantically analyzed.
 
 Owner-only private artifacts include the session key, redacted inventory, complete
-canonical scanner observations, detector report/settings, measured provenance and
-advisory queue. These contain sensitive private metadata and must never enter Git,
+canonical scanner observations, raw subprocess reports/diagnostics, detector
+report/settings, measured provenance and advisory queue. These contain sensitive
+private metadata and must never enter Git,
 public reports or prompts. `complete.json` is created last; partial directories
 are not completed runs. The producer's endpoint/per-read checks do not establish
 OS-level isolation from another same-user writer or authenticate a reviewer.
 Owner-only session retention is **nondurable**, not approved escrow.
+Available subprocess reports are retained before interpreting status or parsing.
+A sanitized `failure.json` records known failure codes and retained stages without
+copying diagnostics into public output; timeout/interruption can still leave no
+complete report. Never reinterpret a failed directory as a successful baseline.
 
 `--assess-first-batch` privately assesses at most 16 observations per scanner.
 The loader rechecks actual current source/snapshot/tools/configuration, artifact
