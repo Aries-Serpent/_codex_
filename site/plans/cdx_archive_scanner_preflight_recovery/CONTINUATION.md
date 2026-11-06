@@ -36,7 +36,7 @@ deletion during later site generation.
 | Packer-clearance compatibility | False |
 | Durable private retention | Owner authorization received; actual store, access identity, lifetime/cleanup policy and verified custody not supplied |
 | Required external security-service analysis | Incomplete; timed-out CodeQL must **not** be retried |
-| Worktree at assessment entry | HEAD `2ddbbdd717fbe5c3cacf8eb8f6ae711d2938f0dc`; preexisting modified startup packet preserved byte-for-byte, captured by required initial publisher |
+| Worktree at latest PR-comment assessment entry | HEAD `1ac31687108990e99c721d3a1b272b703f18f65e`; preexisting modified startup packet preserved byte-for-byte, captured by required initial publisher |
 | Execution | Direct bounded input assessment, no delegated agents; historical agent results remain historical |
 
 Checkpoint012 is an audit anchor, **not a runtime dependency at a deleted path**:
@@ -87,6 +87,49 @@ credentials, evidence contents or sensitive storage references in this document
 or public chat. Separately, P/C owners must supply the route acceptance and exact
 stock-compatibility decision described below. Until then, stop E/F operational
 work rather than repeat completed provenance, rebuild the adapter or scan again.
+
+### Live PR5761 delegation evidence — 2026-11-06
+
+The owner continuation comment `6679518370` was checked against live GitHub
+Actions state rather than treating its activation text as clearance. Run
+[`42179791295`](https://github.com/Aries-Serpent/_codex_/actions/runs/42179791295),
+attempt 2, binds to `cafc76782fcd084cb074fa9c9529c124d1100b88`:
+
+- `Activate token delegation`, job `127767707876`, completed successfully,
+  including its variable-update step. This supports historical activation at that
+  run, not an independent current variable read, credential-scope test, durable
+  storage facility, source containment or exact-finding review.
+- The overall run concluded **failure**. `Cognitive Pre-flight Check`, job
+  `127766637231`, failed its accountability-report check and self-healing step.
+  Its logs also report 44 workflow YAML parse errors and three self-review pass
+  failures; the self-review step itself is marked successful in the job metadata.
+  These are reported CI diagnostics, not independently reproduced YAML defects.
+- Base-branch runs were inspected first. An older ML integration failure
+  (`41720939362`, SHA `46fdc9aae55feb49c98bda762262a0db83bb7541`)
+  was found; its retrieved tail did not establish the failure's root cause.
+  It does not demonstrate a CDX regression or justify unrelated remediation.
+- Branch run `42179832364` (Strict No-Deferral Security Gate, attempt 2) succeeded
+  at the earlier `cafc7678` revision. Another run `42179982308` was
+  `action_required`. Neither establishes applicable completed CDX code analysis.
+  At observation time the current PR head's returned check list contained only
+  the in-progress `copilot` check at `1ac31687`; no green current-head CI or
+  mergeability claim is made.
+
+Selected action: record successful activation and failed preflight separately;
+retain all S/D/R/P/C operational predicates. Rejected alternatives are to equate
+activation with security/retention clearance, or mutate/retry workflows under a
+generic continuation request. Governance/workflow owners can investigate the
+identified jobs within a separately authorized remediation scope; this session
+does not modify workflows, accountability files, PR checkboxes or settings.
+No new private facility, runtime control evidence, applicable security-analysis
+result or exact compatibility evidence was provided by the comment.
+
+The fresh clone's 57-entry history was inspected. The previous session's reported
+local-only decision commit `dbd363ed...` is not present in that listed history or
+this entry artifact. Its unshipped contents are not silently treated as published
+policy; the actual current artifact and the owner's supplied requirements govern.
+This assessment changes documentation only; there is no real-source execution,
+temporary-directory write, credential operation or CodeQL retry.
 
 ## Completed work and superseded blockers
 
@@ -309,6 +352,14 @@ rerun, so 248 Python / four Go results remain historical. Precommit secret check
 and whitespace/publication-scope checks apply to this update. No CodeQL retry or
 temporary-directory writes were performed.
 
+Latest PR-comment assessment: entry artifact SHA-256 matched
+`1ed341a1b0dbca4079d4219e603f7a45be11ef13d1eab2b13dae394d5260f772`.
+Live GitHub run/job/check metadata and failed-job logs were retrieved read-only.
+The prior absent audit-object checks remain historical; they were not repeated or
+reported as newly successful. Historical manifest bytes and the original artifact
+introduction are preserved. No source tests were rerun for this documentation-only
+update. Secret, fence, whitespace and preserved-startup-byte checks apply.
+
 ## Original-path / SHA-256 / commit provenance manifest
 
 All original paths below are repository-relative to the absolute root above.
@@ -367,6 +418,12 @@ Latest status: OWNER_AUTHORIZATION_RECORDED_BLOCKED_ACTUAL_OPERATIONAL_INPUTS.
 Current source/inventory/mapping/review counts are unavailable, not zero.
 Historical checkpoint012: 248 Python / 4 Go tests passed, five synthetic
 integrations (3 equal / 2 divergent), not real-source clearance.
+
+Latest live comment verification: delegation run42179791295 attempt2 had a
+successful activation job but overall failure in cognitive preflight. Do not
+equate token activation or a wording-gate pass with CDX security completion.
+Current-head returned check was still in progress at observation time.
+Do not silently recover unshipped prior-session decisions as published policy.
 
 Owner authorization for storage/retention, containment/quiescence and security
 completion has been received; do not ask for that generic approval again.
