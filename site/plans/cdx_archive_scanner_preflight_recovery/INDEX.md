@@ -31,11 +31,26 @@ This directory persists its execution sequence; it does not establish clearance.
 | 011 — current report-contract dependency | [Negative fragment proof](011_fragment_origin_contract.md) | 208 tests and actual pinned synthetic ambiguity checks; execution-bound report adapter still needed |
 | 012 — functional adapter PoC | [Acquisition-bound report adapter](continuation012_acquisition_bound_report_adapter.md) | 226 Python tests and 4 Go tests passed; actual synthetic integration, independent stock divergence and clearance limits assessed |
 | 013 — exact-record reconciliation | [Descriptive divergence accounting](continuation013_exact_record_reconciliation.md) | 248 Python tests and 4 Go tests passed; distinct occurrence groups and missing/extra/duplicate counts verified; security service and retention still block real epoch |
+| 014 — authenticated module, retention gate | [Official module origin and exact remaining owners](continuation014_authenticated_module_retention_gate.md) | Actual module ZIP/signed sumdb/go.sum and 450 origin blobs/122 Git trees verified; fresh 248 Python/4 Go tests; no approved durable retention or completed external security gate |
 
 These are planned work packages, not completed milestones or authorization to
 pack. Do not execute 003 merely because 002 has started.
 
-Latest iteration: checkpoint011 adds reviewed exact-record/file-identity
+Latest iteration: checkpoint012 authenticates the complete pinned Go module ZIP
+against signed sumdb, repository go.sum and its official origin commit (450 file
+blobs and 122 recursive Git trees). The current upstream tag is a different commit;
+same-version release/library equivalence is not claimed. An independently
+authenticated official Go toolchain module enabled fresh synthetic validation:
+248 Python tests, including five maintained integrations (three equal/two divergent),
+and four Go test functions passed. Direct Go tar download still failed DNS, not a
+tar-verification pass. Bounded specialist security analysis found no high-confidence
+vulnerability, but is not CodeQL; the mandatory external gate remains incomplete
+and the timed-out tool was not retried. No owner-approved durable private store was
+supplied, so real-source operations stopped before scanning/retention. Current
+counts remain unavailable, not zero. Follow 014's concrete security/data/runtime/
+provenance owner dependencies; no new behavior, approvals or archive were created.
+
+Previous iteration: checkpoint011 adds reviewed exact-record/file-identity
 relationships with distinct occurrence namespaces, explicit duplicate ambiguity,
 missing/extra counts and a reverified private stock-relationship API. Five actual
 synthetic integrations produced three equal and two divergent cases (matched 3,
