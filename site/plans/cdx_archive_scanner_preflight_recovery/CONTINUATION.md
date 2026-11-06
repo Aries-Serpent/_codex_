@@ -353,3 +353,11 @@ artifact's introducing SHA and final SHA-256 externally after its last write,
 current-vs-historical counts and remaining concrete owners. No fabricated progress
 or endless self-chaining rescans.
 ```
+
+## Consolidated artifact provenance
+
+Actual introducing commit: `181f2be7a2d84f554d3d7133cdb37b9780267ae0`.
+This footer is added afterward in a separate metadata commit; it is not a
+self-referential commit claim. Final HEAD and final artifact SHA-256 are reported
+externally, not embedded as their own identity. Future edits retain this same
+artifact and its Git history.
