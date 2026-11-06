@@ -157,3 +157,12 @@ and verified. Never publish raw reports, source lines, matches, keys or run refs
 
 The actual introducing commit and checkpoint012 digest are appended after first
 publication in a separate metadata commit, not guessed in this creation body.
+
+Actual introducing commit: `fbe6a65678bfc2c9232eba826183fa6231bb5ab6`.
+Checkpoint012 SHA-256:
+`1ba9c40350d75410005b32729e96ebd3861b3848b22e95c99fea136184499ec9`.
+Checkpoint path:
+`/home/runner/work/_codex_/_codex_/.codex/tasks/issue5757/checkpoint-012.json`.
+Checkpoint status:
+**PINNED_MODULE_ORIGIN_AUTHENTICATED_SYNTHETIC_VERIFIED_REAL_EPOCH_BLOCKED**.
+This footer was appended afterward; its commit is not the introducing commit.
