@@ -147,3 +147,11 @@ Never read `.github/agents/`. Preserve dirty work and the original archive.
 
 The actual introducing commit and checkpoint011 digest are appended only after
 first publication, in a separate metadata commit.
+
+Actual introducing commit: `af50862ac8dfb83e6fcd0c099fb55b2df18dbf32`.
+Checkpoint011 SHA-256:
+`933156ffcb83c0ea8cf92e4fa2178d449bba158379c0258908b34c8f8879375a`.
+Checkpoint path:
+`/home/runner/work/_codex_/_codex_/.codex/tasks/issue5757/checkpoint-011.json`.
+Checkpoint status: **EXACT_RECORD_RECONCILIATION_SYNTHETIC_VERIFIED_REAL_EPOCH_BLOCKED**.
+This footer was appended afterward; its commit is not the introducing commit.
