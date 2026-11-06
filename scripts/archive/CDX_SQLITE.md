@@ -104,6 +104,79 @@ Unresolved observations still block before any archive database is created.
 
 ### Measured private preflight producer
 
+#### Optional acquisition-bound report adapter (functional PoC)
+
+`scripts/archive/gitleaks_adapter` is a **locally built adapter**, not an
+official Gitleaks release executable. Its Go module pins
+`github.com/zricethezav/gitleaks/v8 v8.30.1` and verifies the module version,
+checksum and absence of replacement in executable build information.
+`go.sum` preserves the ecosystem-verified closure. Advisory remediation raises
+only transitive `golang.org/x/crypto` to 0.52.0 and
+`github.com/klauspost/compress` to 1.18.7; this requires Go >=1.25.
+The scanner pins remain Gitleaks 8.30.1 and detect-secrets 1.5.0.
+
+Build with the standard Go toolchain in
+`/home/runner/work/_codex_/_codex_/scripts/archive/gitleaks_adapter` using
+`go mod verify`, `go test ./...`, and `go build -o "$CDX_ADAPTER_EXECUTABLE" .`.
+Set Go caches/build scratch directories to task-owned directories outside the
+source selection. The current adapter targets Linux. Absolute executable and
+private-directory paths are required; never place binaries/private reports in
+the scanned source or commit them.
+
+The maintained preflight CLI accepts `--gitleaks-adapter "$CDX_ADAPTER_EXECUTABLE"`.
+It first performs the existing two-scanner preflight, then invokes the adapter
+as a **separate advisory supplement** on that exact private snapshot.
+`cdx_adapter.run_adapter` also supports a completed maintained preflight.
+The producer generates the request, fresh namespace/key and complete sorted
+regular-file manifest, measures executable/consumer/configuration bytes, and
+retains owner-only request/report/completion artifacts. Adapter failures have a
+separate `adapter-failure.json`; an existing stock `complete.json` does not imply
+adapter completion. Existing histories, including interrupted ones, are never
+overwritten.
+
+Each regular file is read through no-follow ancestor descriptors and checked
+against the expected size/digest. **Those exact acquired bytes**, without slices
+or overlaps, become one full-file `DetectContext` call with line origin 1.
+The adapter records observed input interval `[0, file_size)`, invocation bindings
+and every library-returned observation, without adapter deduplication. Before
+redaction it checks the reported Match against its exact acquired byte interval
+and retains a private keyed Match binding. The loader rechecks the actual current
+stock bundle, complete manifest, report/request digests, measured adapter,
+consumer/configuration and source; `acquired_span` accepts an observation ID from
+that reverified run, **not caller-selected origin metadata**. Match localization
+does not recover the captured Secret or prove its origin, consumer use or
+harmlessness. Unsupported library match coordinates remain explicitly unmapped.
+
+Limits block instead of skipping: 8 MiB/file, 256 MiB/tree, 10,000 regular files,
+100,000 entries, 50,000 findings, 16 MiB request/report and 256 MiB total mapped
+Match bytes. The library deadline/CPU limit is 120 seconds, the subprocess timeout
+150 seconds; address space is limited to 4 GiB with a 512 MiB soft Go memory limit.
+The consumer indexes newlines and checks UTF-8 once per acquisition, with a total
+mapped-byte budget. Non-UTF-8, NUL and bare CR block. LF/CRLF/UTF-8 byte columns are
+supported; nested archives, decoding and git-history modes are not. Internal
+symlinks remain recorded by the maintained snapshot, never followed by the
+adapter. Embedded default rules, built-in allowlists and rule precedence remain
+scanner coverage limitations; source `gitleaks:allow` comments are ignored.
+
+**Compatibility is measured, never presumed:** the producer compares complete
+canonical Gitleaks record multisets against the independent stock report, without
+deduplication. Equal records mean equality only on that snapshot; divergence is
+`BLOCKED_CONTEXT_OR_COVERAGE_DIVERGENCE`. Whole-file context can change detection
+and columns. The adapter always reports `packer_clearance_compatible: false`:
+its fresh advisory identities cannot authorize the packer's later independent
+stock snapshot/rescan, and the packer/scanner/disposition gate is unchanged.
+No report-mode bypass, approval migration or historical-count reconciliation is
+provided. Real-source use remains gated on synthetic proof, review and explicit
+independent-scan compatibility assessment; an unresolved divergence cannot clear
+stock observations.
+
+Remaining components for actual clearance are not supplied by this PoC:
+exact-observation origin/use/harmlessness evidence, independently authenticated
+reviewer authority, approved durable private retention, and a reviewed mechanism
+for stock/adapter divergence if those records are ever proposed for clearance.
+Same-user endpoint/HMAC integrity is neither OS snapshot isolation nor external
+authentication. No archive operation is authorized by adapter development.
+
 `python -m scripts.archive.cdx_preflight --source ABSOLUTE_SOURCE
 --private-directory NEW_EMPTY_OWNER_ONLY_DIRECTORY` performs preparation only.
 It calls the existing scanner contract, never the packer. Verify both pinned tools

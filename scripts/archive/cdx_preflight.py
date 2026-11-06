@@ -604,9 +604,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--source", required=True, type=Path)
     parser.add_argument("--private-directory", required=True, type=Path)
     parser.add_argument("--assess-first-batch", action="store_true")
+    parser.add_argument(
+        "--gitleaks-adapter",
+        type=Path,
+        help="Absolute locally built pinned-library adapter; advisory supplement only",
+    )
     args = parser.parse_args(argv)
     try:
         result = run_preflight(args.source, args.private_directory)
+        if args.gitleaks_adapter is not None:
+            from . import cdx_adapter
+
+            result["adapter"] = cdx_adapter.run_adapter(
+                args.source, args.private_directory, args.gitleaks_adapter
+            )
         if args.assess_first_batch:
             result["batch"] = assess_batch(args.source, args.private_directory)
     except Exception:

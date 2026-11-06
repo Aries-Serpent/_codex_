@@ -536,6 +536,14 @@ def _scanner_finding(
     except OSError as exc:
         raise RuntimeError("secret scanner finding file could not be verified") from exc
 
+    return _canonical_scanner_finding(scanner, version, path, file_digest, record)
+
+
+def _canonical_scanner_finding(
+    scanner: str, version: str, path: str, file_digest: str, record: dict[str, Any]
+) -> dict[str, Any]:
+    """Canonicalize metadata over bytes already acquired by the calling producer."""
+    path_value = record.get("File")
     if scanner == "gitleaks":
         rule = record.get("RuleID")
         start = record.get("StartLine")
