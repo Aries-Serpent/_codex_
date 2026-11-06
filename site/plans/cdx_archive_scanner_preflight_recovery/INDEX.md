@@ -30,11 +30,25 @@ This directory persists its execution sequence; it does not establish clearance.
 | 010 — completed MVP preparation | [Dual identity and fragment-origin proof](010_dual_identity_mvp.md) | Tested measurement and synthetic smoke complete; exact large-file report contract still required |
 | 011 — current report-contract dependency | [Negative fragment proof](011_fragment_origin_contract.md) | 208 tests and actual pinned synthetic ambiguity checks; execution-bound report adapter still needed |
 | 012 — functional adapter PoC | [Acquisition-bound report adapter](continuation012_acquisition_bound_report_adapter.md) | 226 Python tests and 4 Go tests passed; actual synthetic integration, independent stock divergence and clearance limits assessed |
+| 013 — exact-record reconciliation | [Descriptive divergence accounting](continuation013_exact_record_reconciliation.md) | 248 Python tests and 4 Go tests passed; distinct occurrence groups and missing/extra/duplicate counts verified; security service and retention still block real epoch |
 
 These are planned work packages, not completed milestones or authorization to
 pack. Do not execute 003 merely because 002 has started.
 
-Latest iteration: checkpoint010 implements and synthetically uses the pinned-library
+Latest iteration: checkpoint011 adds reviewed exact-record/file-identity
+relationships with distinct occurrence namespaces, explicit duplicate ambiguity,
+missing/extra counts and a reverified private stock-relationship API. Five actual
+synthetic integrations produced three equal and two divergent cases (matched 3,
+missing 2, extra 2). 248 Python tests and four Go tests passed in corrected
+dedicated validation; an initial validation scope incident was remediated and its
+claims rejected. Read-only security/code reviews found no significant issue, but
+post-commit CodeQL timed out and prohibits retry. Direct official Go archive
+verification also remains incomplete. No authorized real-source epoch or archive
+ran; current source/inventory/review counts remain unavailable, not zero.
+Follow 013 for security, provenance, retention and independently authenticated
+review gates. Exact-record equality is not stock byte origin or clearance.
+
+Previous iteration: checkpoint010 implements and synthetically uses the pinned-library
 full-file acquisition/report adapter and maintained advisory integration. Five final
 synthetic preflights/adapter scans produced five mapped observations; three canonical
 stock comparisons matched and two forced LF/CRLF fragment-boundary cases diverged.
