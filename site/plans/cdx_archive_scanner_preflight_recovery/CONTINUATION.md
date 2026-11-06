@@ -36,8 +36,8 @@ deletion during later site generation.
 | Packer-clearance compatibility | False |
 | Durable private retention | Owner authorization received; actual store, access identity, lifetime/cleanup policy and verified custody not supplied |
 | Required external security-service analysis | Incomplete; timed-out CodeQL must **not** be retried |
-| Worktree at latest PR-comment assessment entry | HEAD `1ac31687108990e99c721d3a1b272b703f18f65e`; preexisting modified startup packet preserved byte-for-byte, captured by required initial publisher |
-| Execution | Direct bounded input assessment, no delegated agents; historical agent results remain historical |
+| Worktree at latest decision assessment entry | HEAD `98390f89f62740199cd2cd1875a00e657252c29c`; preexisting modified startup packet preserved byte-for-byte, captured by required initial publisher |
+| Execution | Direct documentation integration plus read-only `rubber-duck` review of all fifteen decision alternatives; not independent finding approval or external security-service analysis |
 
 Checkpoint012 is an audit anchor, **not a runtime dependency at a deleted path**:
 revision `fbe6a65678bfc2c9232eba826183fa6231bb5ab6`, Git blob
@@ -84,8 +84,9 @@ The concrete next input is an authorized private handoff containing the actual
 store/access mechanism and retention policy, runtime/source-writer controls, and
 security-service result reference bound to revision/scope/result. Do not put
 credentials, evidence contents or sensitive storage references in this document
-or public chat. Separately, P/C owners must supply the route acceptance and exact
-stock-compatibility decision described below. Until then, stop E/F operational
+or public chat. The later executed decision settles P1 route acceptance and C1
+advisory scope; current authentication and exact stock compatibility remain
+unestablished. Until the actual predicates hold, stop E/F operational
 work rather than repeat completed provenance, rebuild the adapter or scan again.
 
 ### Live PR5761 delegation evidence — 2026-11-06
@@ -228,8 +229,8 @@ same redacted record or a local HMAC proves neither byte origin nor reviewer tru
 | S — security-service owner | Supply actual required external security-service analysis in an authorized environment, identifying revision, scope and result. **Do not retry the timed-out CodeQL tool**, including under another nominal iteration. | Actual applicable service gate completed; bounded specialist review is not substitution or waiver. |
 | D — data/retention owner | Authorization received. Supply the actual durable private store and trusted access mechanism, concrete retention lifetime/cleanup policy and custody evidence. For restore, supply complete matching key, inventory/canonical observations, reports, snapshot, effective config, provenance, completion marker, queues/semantic ledgers and measured tool context. Otherwise evaluate a justified fresh epoch only after the remaining predicates hold. | Actual safe access/restore and custody evidence, not general authorization, owner-only local modes, session survival, an invented flag or purported escrow. Lost historical inventory/key recovery is optional historical accounting, never a current-scan prerequisite substitute. |
 | R — runtime/recovery owner | Authorization received. Supply or expose verifiable containment/access controls and source-writer exclusion for a quiescent exact source/snapshot. | Genuine runtime controls; endpoint digests, same-user HMAC and no-follow reads are not OS isolation or atomic snapshots. D + R precede real-source evidence acquisition/retention. |
-| P — toolchain/provenance owner | Assess module-origin/current-tag/release distinction; resolve any explicit policy requiring direct Go tar verification by genuinely verifying it or obtaining actual owner acceptance of authenticated module route. Reauthenticate pinned current tools/packages/config/consumer before use. | Documented accepted route and measured executable/module provenance; never infer equivalence or change pins to conceal divergence. |
-| C — maintained scanner/packer integration owner | Resolve actual stock-byte-origin and clearance compatibility requirements, including divergent, unmatched, missing/extra and ambiguous duplicate records. Reconciliation already exists; preserve descriptive relationships without approval transfer. | Reviewed execution-bound exact stock evidence/compatibility contract plus synthetic adversarial tests **before** dependent real epoch. Stock >=100,000-byte rejection remains intact until legitimately replaced by a complete supported contract. |
+| P — toolchain/provenance execution | P1 route decision executed below under current user delegation: accept the authenticated official module route for this task, with module/current-tag/release identities distinct. Reauthenticate pinned current tools/packages/config/consumer before use. | Route-choice question settled, not current-byte authentication or acceptance on behalf of an external policy owner; never infer equivalence or migrate pins. |
+| C — maintained scanner/packer integration | C1 scope decision executed below: stock remains authoritative and adapter advisory only, with no transfer of dispositions. Exact stock evidence/clearance compatibility remains unestablished. | Reviewed execution-bound exact stock evidence/compatibility contract plus synthetic adversarial tests **before** dependent real epoch. Stock >=100,000-byte rejection remains intact until legitimately replaced by a complete supported contract. |
 | E — authorized provenance operator | Only after S/D/R/P/C and actual operational authorization, validate recovered complete bundle with maintained live loader; otherwise select at most one justified fresh full-tree producer epoch using fresh key/namespace. | Both pinned scanners complete, before/after source/snapshot/selection/config/tool/implementation bindings hold, complete-last marker and private HMAC/artifact checks pass. No orientation scans or retroactive provenance; failures stop that attempt budget. |
 | F — exact-finding investigator | From a genuinely live inventory, resolve existing exact detector/context/origin/consumer/harmlessness gaps before advancing dependency-blocked observations; investigate bounded new batches <=16 per scanner, <=32 total. | Each assigned occurrence has exact private evidence or named hypothesis/contrary evidence/gap/owner; reconcile exclusive states without subtracting overlaps. No blind historical batch5 scheduling or cross-epoch IDs. |
 | A — authorized independent review owner | Establish attributable independent reviewer identity/authority through an actual owner-approved external trust mechanism and authorized exact-evidence access; review relevance, authenticity, accessibility, digests and complete current bindings. | Genuine independently authenticated exact decisions, not second persona, label, self-selected key, HMAC possession or irrelevant digest. Any acceptance integration needs grounded rejection tests through maintained scanner gate, never a parallel weaker validator. |
@@ -237,8 +238,9 @@ same redacted record or a local HMAC proves neither byte origin nor reviewer tru
 
 Security-service work is authorized, but no completed result or service reference
 was supplied. Do not equate approval of completion with actual completion of S.
-P's route acceptance must address the recorded module/release distinction; C needs
-an exact evidence contract, not another blanket approval or equal-record label.
+P1 now addresses the task's route choice and recorded module/release distinction;
+current authentication remains required. C1 settles the advisory scope, not the
+missing exact stock evidence contract or a clearance decision.
 
 All historical blockers map here: unavailable inventory/key, source/tool drift and
 unfinished scan -> D/P/E; large-file spans/report adapter -> completed adapter plus
@@ -247,6 +249,60 @@ nondurable custody -> D; CodeQL -> S; final clearance -> C/E/F/A/G.
 Do not repeatedly regenerate nondurable epochs merely to show progress. If owner
 inputs remain absent, stop operational work and report these precise dependencies;
 continue only independently justified safe work supported by new evidence.
+
+### Executed aggregate decision — 2026-11-06
+
+The current user delegates reasonable technical choices to the active agent and
+requires multiple-choice assessment, rubber-duck/adversarial challenge and actual
+execution. This supersedes waiting for a maintainer to select among safe technical
+alternatives. It does not manufacture an external result, private storage endpoint,
+runtime control, stock byte origin, reviewer identity or packing authorization.
+
+All fifteen alternatives below were reviewed by an actual read-only `rubber-duck`
+agent against this handoff and the maintained compatibility contract. Its review
+challenged the proposed selection and identified wording safeguards incorporated
+here: absence of supplied evidence is not proof no facility exists anywhere;
+historical provenance is not current executable authentication; advisory scope is
+not exact-finding clearance. Its suggestion that security work needed fresh generic
+authorization was not adopted: authorization is already recorded; the missing
+items are an accessible applicable service route/result and actual execution proof.
+The reviewer did not edit files, run scanners or act as an authenticated finding
+reviewer. This review supplies decision critique, not security-service completion.
+
+| Choice | Logical and adversarial assessment | Disposition |
+| --- | --- | --- |
+| S1: validate a completed external analysis | Viable only with authenticated revision, scope, coverage, analysis identity and result; a stale green check or unrelated wording gate fails. No such input is established here. | Conditional future route, not a current pass |
+| S2: execute an available authorized non-CodeQL external analysis | Authorization exists, but an actual suitable accessible service route and analysis coverage must exist; renaming/retrying timed-out CodeQL or a local persona review fails. No suitable route is established by supplied inputs. | Conditional future route, no launch claim |
+| S3: keep security completion blocked | Truthful when S1/S2 inputs are unavailable; prevents a fabricated pass without reopening the approval question. | **Selected and applied** |
+| D1: restore a complete live private bundle | Valid only with actual trusted durable access and complete matching epoch bindings; sanitized Git records or a historical key alone cannot restore continuity. No complete accessible bundle is established here. | Conditional future route |
+| D2: acquire one fresh epoch into verified durable custody | Valid only after actual facility/access/lifetime/cleanup and other gates hold; session-local modes or a claimed escrow label fail durability. No such facility is established here. | Conditional future route |
+| D3: do not generate private findings without custody | Avoids another nondurable epoch and loss of sensitive artifacts; does not assert storage is absent everywhere. | **Selected and applied** |
+| R1: use verified containment and writer exclusion | Requires actual control evidence for exact source acquisition and snapshot, not an isolation label or before/after digest alone. No applicable controls are established here. | Conditional future route |
+| R2: replace containment with modes/digests/HMAC | Same-user writers and intermediate mutations defeat the substitution. These remain useful defense-in-depth, never sufficient isolation proof. | Rejected as substitute |
+| R3: stop real-source work without control evidence | Preserves originals and avoids asserting a snapshot guarantee not established for this environment. | **Selected and applied** |
+| P1: accept authenticated official module/toolchain distribution | Historical official proxy/signed-sumdb and origin evidence supports this task's route choice. Preserve module-origin/current-tag/release distinction and pins; reauthenticate actual bytes before any execution. A substituted cache or moving tag cannot inherit acceptance. | **Selected and recorded as task policy** |
+| P2: require only the direct Go tar route | Could satisfy an actual external tar-only requirement, but none is established for this task; known failed download does not justify repeated acquisition or treating the tar as verified. | Not selected; no external policy overridden |
+| P3: migrate pins to the current tag | Would obscure the recorded origin distinction and invalidate prior bindings without proving stock equivalence. | Rejected |
+| C1: independent stock authority, adapter advisory only | Matches maintained behavior; retain raw multisets, missing/extra occurrences and duplicate ambiguity. Equal redacted records cannot grant stock spans or approve findings. | **Selected and applied to scope** |
+| C2: promote matching records into stock-origin/clearance proof | Fragment-local coordinates, changed context and duplicate pairing break the inference, even for equal records. | Rejected |
+| C3: build new stock-origin/clearance integration now | Requires a separately scoped supported execution-bound contract and rejection tests; a choice of architecture alone supplies neither observed origin nor exact approval evidence. Existing acquisition/reconciliation must not be rebuilt as a substitute. | Not selected |
+
+**Aggregate selection: S3 + D3 + R3 + P1 + C1.** Execution consists of recording
+P1 task-route acceptance, applying C1 to the existing advisory-only scope, and
+not invoking real-source production under S3/D3/R3. No new code is needed to
+duplicate existing fail-closed behavior. This is a completed decision action,
+not a completed scan or a generic request for maintainer selection.
+
+Remaining work is concrete capability/evidence acquisition: S needs an actual
+applicable external-service route/result; D an accessible durable private custody
+facility and retention/cleanup proof; R verifiable containment/writer controls;
+P fresh byte authentication before execution; C exact stock-origin/clearance
+evidence and a supported contract before any dependent real epoch. These are not
+left as undecided multiple-choice questions. Retain the accountable S/D/R/P/C
+roles above without implying this task has provisioned their facilities.
+No archive, finding disposition, workflow operation or independent review is
+authorized by these decisions. Current source/inventory/review counts remain
+unavailable, not zero; historical test totals remain historical.
 
 ## Durable semantic, execution and preservation constraints
 
@@ -360,6 +416,16 @@ reported as newly successful. Historical manifest bytes and the original artifac
 introduction are preserved. No source tests were rerun for this documentation-only
 update. Secret, fence, whitespace and preserved-startup-byte checks apply.
 
+Latest decision assessment: entry HEAD was
+`98390f89f62740199cd2cd1875a00e657252c29c`; the sole artifact matched
+`ac67cae7b1c66c5eb4c709e918a530dff34fa9192460d3ca4a2066dac1bdc084`.
+The required initial publisher captured preexisting dirty startup metadata; its
+bytes were not changed, but its dirty status was not preserved. No other user
+work was reset, stashed or discarded. This update changes only decision
+documentation after that publisher; no production code, scanner pins, archived
+bytes, exact dispositions or runtime facilities were changed. No source tests,
+acquisitions, security-service analysis or CodeQL retry were performed.
+
 ## Original-path / SHA-256 / commit provenance manifest
 
 All original paths below are repository-relative to the absolute root above.
@@ -429,7 +495,8 @@ Owner authorization for storage/retention, containment/quiescence and security
 completion has been received; do not ask for that generic approval again.
 Actual store/access/policy, runtime evidence and revision-bound security result
 are still missing. Supply these through an authorized private channel, not public
-chat/Git. P/C acceptance and exact compatibility evidence also remain required.
+chat/Git. P1's task route choice and C1's advisory-only scope are now decided above;
+current tool authentication and exact stock compatibility evidence remain required.
 Historical Git blob/introduction/snapshot anchors were absent in the latest
 fresh clone. Verify authorized recovered bytes against recorded hashes if needed;
 do not claim a missing object was verified or recreate deleted runtime files.
@@ -437,8 +504,10 @@ do not claim a missing object was verified or recreate deleted runtime files.
 First resolve actual S/D/R/P/C owner dependencies in the table: authorized
 external security-service result WITHOUT retrying timed-out CodeQL; approved
 durable private custody/access/cleanup and restore/new-epoch authority; trusted
-containment/quiescent source; accepted authenticated toolchain route and
-module/release-origin distinction; exact stock evidence/clearance compatibility.
+containment/quiescent source; fresh authentication under the selected P1 module
+route with module/release-origin distinction; exact stock evidence/clearance
+compatibility under C1's independent-stock/advisory-adapter scope. Do not reopen
+the selected technical choices as generic maintainer-approval questions.
 If inputs remain absent, stop real-source work and name the precise owner/gap.
 Do not replace missing authority with local modes, HMAC, persona or flags.
 
