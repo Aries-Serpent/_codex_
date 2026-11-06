@@ -29,11 +29,22 @@ This directory persists its execution sequence; it does not establish clearance.
 | 009 — historical recovery dependency | [Restore private inputs](009_restore_private_inputs.md) | Actual authorized private recovery and live source/tool bindings required |
 | 010 — completed MVP preparation | [Dual identity and fragment-origin proof](010_dual_identity_mvp.md) | Tested measurement and synthetic smoke complete; exact large-file report contract still required |
 | 011 — current report-contract dependency | [Negative fragment proof](011_fragment_origin_contract.md) | 208 tests and actual pinned synthetic ambiguity checks; execution-bound report adapter still needed |
+| 012 — functional adapter PoC | [Acquisition-bound report adapter](continuation012_acquisition_bound_report_adapter.md) | 226 Python tests and 4 Go tests passed; actual synthetic integration, independent stock divergence and clearance limits assessed |
 
 These are planned work packages, not completed milestones or authorization to
 pack. Do not execute 003 merely because 002 has started.
 
-Latest iteration: checkpoint009 records explicit missing-origin rejection and
+Latest iteration: checkpoint010 implements and synthetically uses the pinned-library
+full-file acquisition/report adapter and maintained advisory integration. Five final
+synthetic preflights/adapter scans produced five mapped observations; three canonical
+stock comparisons matched and two forced LF/CRLF fragment-boundary cases diverged.
+226 Python tests and four Go tests passed. Code-review findings were remediated.
+Post-commit CodeQL timed out, not passed. No real source scan, new real epoch,
+evidence approval or archive ran; current real counts remain unavailable, not zero.
+Follow 012 for exact remaining stock-clearance compatibility, review and retention
+gates. Adapter localization is not origin/use/harmlessness proof or pack authorization.
+
+Previous iteration: checkpoint009 records explicit missing-origin rejection and
 negative fragmentation proof, not successful large-file mapping. 208 focused tests
 passed; four pinned-binary synthetic checks confirmed the ambiguity. No real-source
 scan or epoch008 ran. Current inventory/counts remain unavailable, not zero.
