@@ -22,22 +22,22 @@ deletion during later site generation.
 
 ## Consolidated checkpoint
 
-| Field | Verified state at consolidation |
+| Field | Latest verified state (2026-11-06 owner-authorized input assessment) |
 | --- | --- |
 | Latest operational checkpoint | 012, recorded 2026-11-06T06:44:07Z |
-| Status | `PINNED_MODULE_ORIGIN_AUTHENTICATED_SYNTHETIC_VERIFIED_REAL_EPOCH_BLOCKED` |
+| Status | `OWNER_AUTHORIZATION_RECORDED_BLOCKED_ACTUAL_OPERATIONAL_INPUTS`; prior checkpoint012 status remains historical |
 | Checkpoint012 introduction | `fbe6a65678bfc2c9232eba826183fa6231bb5ab6` |
 | Historical implementation | `696244f97c4e4ca468e5df324b01d8ef645cbcea`; object unavailable in this shallow clone, not independently compared |
-| New production behavior this consolidation | None; documentation-only |
+| New production behavior | None; documentation-only |
 | Current source measurement / complete inventory | Unavailable, not remeasured; **not zero** |
 | Current mapping / reconciliation / review counts | Unavailable, **not zero** |
-| Real epoch / real-source scan this consolidation | Not activated / not performed |
+| Real epoch / real-source scan this assessment | Not activated / not performed |
 | Finding approvals / archive | None created; `archive_created: false` |
 | Packer-clearance compatibility | False |
-| Approved durable private retention | Not supplied or established in authorized inputs |
+| Durable private retention | Owner authorization received; actual store, access identity, lifetime/cleanup policy and verified custody not supplied |
 | Required external security-service analysis | Incomplete; timed-out CodeQL must **not** be retried |
-| Worktree at consolidation entry | Clean; no preexisting dirty bytes to alter |
-| Execution | Direct consolidation, no nested agents; historical agent results remain historical |
+| Worktree at assessment entry | HEAD `2ddbbdd717fbe5c3cacf8eb8f6ae711d2938f0dc`; preexisting modified startup packet preserved byte-for-byte, captured by required initial publisher |
+| Execution | Direct bounded input assessment, no delegated agents; historical agent results remain historical |
 
 Checkpoint012 is an audit anchor, **not a runtime dependency at a deleted path**:
 revision `fbe6a65678bfc2c9232eba826183fa6231bb5ab6`, Git blob
@@ -52,6 +52,41 @@ git -C /home/runner/work/_codex_/_codex_ show fbe6a65678bfc2c9232eba826183fa6231
 Git recovery is for sanitized historical records only; it cannot recover private
 keys, observations, source snapshots or approval authority. Do not write to
 temporary directories or recreate the obsolete runtime file chain.
+
+### Current authorization and actual input assessment
+
+The current user explicitly authorized durable private storage, access/retention/
+cleanup, trusted containment, source quiescence and external security completion.
+That authorization is recorded and need not be requested again in generic terms.
+It does not identify a storage facility or security result, establish credentials,
+prove a runtime is isolated, or attest that the source is already quiescent.
+The user's additional requirement retains all actual S/D/R/P/C predicates and
+explicitly prohibits real-source work while their inputs remain absent.
+
+At this assessment's entry, this artifact's SHA-256 matched the supplied
+`53c1aed2ff943bbc240782f6cfccae8ccaae3e7acaa5611089650d7e8e2d2e81`.
+Bounded no-follow checks found both authorized source-private and session-task
+prefixes absent. This is not a search of unrelated stores or evidence that no
+storage exists anywhere. No private storage endpoint, service-result reference,
+runtime control evidence or new exact stock-compatibility evidence was supplied.
+No temporary writes, scanner/tool builds, security-service retry, real-source
+measurement, scan, semantic batch, finding approval or archive operation occurred.
+
+The historical checkpoint012 blob `2098d5d9224d5f5849ddae6c8c09e997f874a5be`,
+its introduction `fbe6a65678bfc2c9232eba826183fa6231bb5ab6` and recovery snapshot
+`6ac13cb98af69d667f4809708748a498181ce513` are **unavailable in this fresh clone**.
+Their recorded hashes remain historical anchors, not freshly reverified objects.
+Do not recreate deleted files or claim successful Git recovery. If those exact
+bytes are needed, obtain authorized Git history or owner-supplied sanitized bytes
+and verify the recorded digest in memory; no temporary-directory writes.
+
+The concrete next input is an authorized private handoff containing the actual
+store/access mechanism and retention policy, runtime/source-writer controls, and
+security-service result reference bound to revision/scope/result. Do not put
+credentials, evidence contents or sensitive storage references in this document
+or public chat. Separately, P/C owners must supply the route acceptance and exact
+stock-compatibility decision described below. Until then, stop E/F operational
+work rather than repeat completed provenance, rebuild the adapter or scan again.
 
 ## Completed work and superseded blockers
 
@@ -148,14 +183,19 @@ same redacted record or a local HMAC proves neither byte origin nor reviewer tru
 | ID / accountable owner | Exact next action | Completion predicate / dependent work |
 | --- | --- | --- |
 | S — security-service owner | Supply actual required external security-service analysis in an authorized environment, identifying revision, scope and result. **Do not retry the timed-out CodeQL tool**, including under another nominal iteration. | Actual applicable service gate completed; bounded specialist review is not substitution or waiver. |
-| D — data/retention owner | Supply explicitly approved durable private store, trusted access identity, retention lifetime/cleanup rules and restore/new-epoch authority. Restore complete matching key, inventory/canonical observations, reports, snapshot, effective config, provenance, completion marker, queues/semantic ledgers and measured tool context, or authorize a fresh useful epoch. | Actual safe access/restore and custody evidence, not owner-only local modes, session survival, an invented flag or purported escrow. Lost historical inventory/key recovery is optional historical accounting, never a current-scan prerequisite substitute. |
-| R — runtime/recovery owner | Establish trusted containment, controlled access and a quiescent exact source/snapshot. | Genuine runtime controls; endpoint digests, same-user HMAC and no-follow reads are not OS isolation or atomic snapshots. D + R precede real-source evidence acquisition/retention. |
+| D — data/retention owner | Authorization received. Supply the actual durable private store and trusted access mechanism, concrete retention lifetime/cleanup policy and custody evidence. For restore, supply complete matching key, inventory/canonical observations, reports, snapshot, effective config, provenance, completion marker, queues/semantic ledgers and measured tool context. Otherwise evaluate a justified fresh epoch only after the remaining predicates hold. | Actual safe access/restore and custody evidence, not general authorization, owner-only local modes, session survival, an invented flag or purported escrow. Lost historical inventory/key recovery is optional historical accounting, never a current-scan prerequisite substitute. |
+| R — runtime/recovery owner | Authorization received. Supply or expose verifiable containment/access controls and source-writer exclusion for a quiescent exact source/snapshot. | Genuine runtime controls; endpoint digests, same-user HMAC and no-follow reads are not OS isolation or atomic snapshots. D + R precede real-source evidence acquisition/retention. |
 | P — toolchain/provenance owner | Assess module-origin/current-tag/release distinction; resolve any explicit policy requiring direct Go tar verification by genuinely verifying it or obtaining actual owner acceptance of authenticated module route. Reauthenticate pinned current tools/packages/config/consumer before use. | Documented accepted route and measured executable/module provenance; never infer equivalence or change pins to conceal divergence. |
 | C — maintained scanner/packer integration owner | Resolve actual stock-byte-origin and clearance compatibility requirements, including divergent, unmatched, missing/extra and ambiguous duplicate records. Reconciliation already exists; preserve descriptive relationships without approval transfer. | Reviewed execution-bound exact stock evidence/compatibility contract plus synthetic adversarial tests **before** dependent real epoch. Stock >=100,000-byte rejection remains intact until legitimately replaced by a complete supported contract. |
 | E — authorized provenance operator | Only after S/D/R/P/C and actual operational authorization, validate recovered complete bundle with maintained live loader; otherwise select at most one justified fresh full-tree producer epoch using fresh key/namespace. | Both pinned scanners complete, before/after source/snapshot/selection/config/tool/implementation bindings hold, complete-last marker and private HMAC/artifact checks pass. No orientation scans or retroactive provenance; failures stop that attempt budget. |
 | F — exact-finding investigator | From a genuinely live inventory, resolve existing exact detector/context/origin/consumer/harmlessness gaps before advancing dependency-blocked observations; investigate bounded new batches <=16 per scanner, <=32 total. | Each assigned occurrence has exact private evidence or named hypothesis/contrary evidence/gap/owner; reconcile exclusive states without subtracting overlaps. No blind historical batch5 scheduling or cross-epoch IDs. |
 | A — authorized independent review owner | Establish attributable independent reviewer identity/authority through an actual owner-approved external trust mechanism and authorized exact-evidence access; review relevance, authenticity, accessibility, digests and complete current bindings. | Genuine independently authenticated exact decisions, not second persona, label, self-selected key, HMAC possession or irrelevant digest. Any acceptance integration needs grounded rejection tests through maintained scanner gate, never a parallel weaker validator. |
 | G — archive owner | Only after complete genuine clearance, separately authorize existing packer operation. | Independent stock snapshot/rescan, exact complete dispositions with no missing/extra/duplicate/stale rows, SQLite integrity/byte/Merkle checks; only actual verified creation permits `archive_created: true`. No pack authorization currently exists. |
+
+Security-service work is authorized, but no completed result or service reference
+was supplied. Do not equate approval of completion with actual completion of S.
+P's route acceptance must address the recorded module/release distinction; C needs
+an exact evidence contract, not another blanket approval or equal-record label.
 
 All historical blockers map here: unavailable inventory/key, source/tool drift and
 unfinished scan -> D/P/E; large-file spans/report adapter -> completed adapter plus
@@ -262,6 +302,13 @@ passed; the sole new file's secret scan detected no secrets. No separate JSON is
 produced. Repeat final diff/secret checks after any metadata edit; final file
 digest/HEAD are reported externally after the final write.
 
+Current assessment validation is documentation-only: the supplied entry artifact
+digest matched; Git audit-anchor lookups were unavailable as disclosed above;
+bounded authorized-prefix checks found no retained bundle. No source tests were
+rerun, so 248 Python / four Go results remain historical. Precommit secret checks
+and whitespace/publication-scope checks apply to this update. No CodeQL retry or
+temporary-directory writes were performed.
+
 ## Original-path / SHA-256 / commit provenance manifest
 
 All original paths below are repository-relative to the absolute root above.
@@ -316,10 +363,19 @@ HEAD/status, current agency policy, relevant directory instructions and the sole
 Never read .github/agents/. Preserve dirty work and original archive bytes.
 Use this file's Git snapshot/blob/hash audit anchors, not deleted checkpoint files.
 
-Latest status: PINNED_MODULE_ORIGIN_AUTHENTICATED_SYNTHETIC_VERIFIED_REAL_EPOCH_BLOCKED.
+Latest status: OWNER_AUTHORIZATION_RECORDED_BLOCKED_ACTUAL_OPERATIONAL_INPUTS.
 Current source/inventory/mapping/review counts are unavailable, not zero.
 Historical checkpoint012: 248 Python / 4 Go tests passed, five synthetic
 integrations (3 equal / 2 divergent), not real-source clearance.
+
+Owner authorization for storage/retention, containment/quiescence and security
+completion has been received; do not ask for that generic approval again.
+Actual store/access/policy, runtime evidence and revision-bound security result
+are still missing. Supply these through an authorized private channel, not public
+chat/Git. P/C acceptance and exact compatibility evidence also remain required.
+Historical Git blob/introduction/snapshot anchors were absent in the latest
+fresh clone. Verify authorized recovered bytes against recorded hashes if needed;
+do not claim a missing object was verified or recreate deleted runtime files.
 
 First resolve actual S/D/R/P/C owner dependencies in the table: authorized
 external security-service result WITHOUT retrying timed-out CodeQL; approved
