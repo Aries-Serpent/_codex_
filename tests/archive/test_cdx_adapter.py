@@ -128,6 +128,108 @@ def test_compatibility_is_multiset_not_deduplicated(bound_report):
     assert not adapter._compatibility(rows, rows)["packer_clearance_compatible"]
 
 
+@pytest.mark.parametrize(
+    "stock_count,adapter_count",
+    [(0, 0), (1, 1), (2, 1), (1, 2), (2, 2), (1, 0), (0, 1)],
+)
+def test_reconciliation_retains_each_occurrence(bound_report, stock_count, adapter_count):
+    snapshot, request, report, identity = bound_report
+    rows = adapter._validate_report(snapshot, request, "e" * 64, report, identity)
+    result = adapter._compatibility(rows * stock_count, rows * adapter_count)
+    assert result["matched_observations"] == min(stock_count, adapter_count)
+    assert result["missing_adapter_observations"] == max(0, stock_count - adapter_count)
+    assert result["extra_adapter_observations"] == max(0, adapter_count - stock_count)
+    assert result["stock_duplicate_observations"] == max(0, stock_count - 1)
+    assert result["adapter_duplicate_observations"] == max(0, adapter_count - 1)
+    assert result["unique_exact_associations"] == int(stock_count == adapter_count == 1)
+    assert result["exact_record_multiset_equal"] == (stock_count == adapter_count)
+    assert not result["packer_clearance_compatible"]
+    if stock_count or adapter_count:
+        group = result["groups"][0]
+        assert group["stock_ordinals"] == list(range(stock_count))
+        assert group["adapter_ordinals"] == list(range(adapter_count))
+        if stock_count > 1 or adapter_count > 1:
+            assert group["association"] == "ambiguous_duplicates"
+    else:
+        assert result["groups"] == []
+
+
+@pytest.mark.parametrize("difference", ["context", "file_digest", "path"])
+def test_reconciliation_does_not_guess_divergent_associations(bound_report, difference):
+    snapshot, request, report, identity = bound_report
+    stock = adapter._validate_report(snapshot, request, "e" * 64, report, identity)
+    acquired = copy.deepcopy(stock)
+    if difference == "context":
+        acquired[0]["_record"]["StartColumn"] += 1
+    elif difference == "file_digest":
+        acquired[0]["file_sha256"] = "f" * 64
+    else:
+        acquired[0]["path"] = "different.txt"
+        acquired[0]["_record"]["File"] = "different.txt"
+    result = adapter._compatibility(stock, acquired)
+    assert result["matched_observations"] == 0
+    assert result["missing_adapter_observations"] == 1
+    assert result["extra_adapter_observations"] == 1
+    assert {group["association"] for group in result["groups"]} == {"stock_only", "adapter_only"}
+
+
+@pytest.mark.parametrize("mutation", ["version", "digest", "path", "metadata", "tags"])
+def test_reconciliation_rejects_invalid_observations(bound_report, mutation):
+    snapshot, request, report, identity = bound_report
+    rows = adapter._validate_report(snapshot, request, "e" * 64, report, identity)
+    if mutation == "version":
+        rows[0]["scanner_version"] = "8.0.0"
+    elif mutation == "digest":
+        rows[0]["file_sha256"] = "invalid"
+    elif mutation == "path":
+        rows[0]["_record"]["File"] = "different.txt"
+    elif mutation == "metadata":
+        rows[0]["start_line"] = 2
+    else:
+        rows[0]["_record"]["Tags"] = ["z", "a"]
+    with pytest.raises(ValueError, match="invalid reconciliation observation"):
+        adapter._compatibility(rows, rows)
+
+
+def test_reconciliation_ordinals_preserve_other_scanner_positions(bound_report):
+    snapshot, request, report, identity = bound_report
+    rows = adapter._validate_report(snapshot, request, "e" * 64, report, identity)
+    result = adapter._compatibility([{"scanner": "detect-secrets"}, *rows], rows)
+    assert result["groups"][0]["stock_ordinals"] == [1]
+    assert result["groups"][0]["adapter_ordinals"] == [0]
+
+
+@pytest.mark.parametrize("ordinal", [True, -1, 1.0, "0", None])
+def test_stock_relationship_rejects_invalid_ordinal(ordinal):
+    with pytest.raises(ValueError, match="invalid stock observation ordinal"):
+        adapter.stock_relationship(Path("/unused"), Path("/unused"), Path("/unused"), ordinal)
+
+
+def test_stock_relationship_revalidates_and_preserves_ambiguity(bound_report, monkeypatch):
+    snapshot, request, report, identity = bound_report
+    rows = adapter._validate_report(snapshot, request, "e" * 64, report, identity)
+    complete = {
+        "bindings": {"run_namespace": "adapter-synthetic"},
+        "stock_bindings": {"run_namespace": "stock-synthetic"},
+        "compatibility": adapter._compatibility(rows * 2, rows),
+    }
+    calls = []
+
+    def load(*args):
+        calls.append(args)
+        return complete, rows
+
+    monkeypatch.setattr(adapter, "load_adapter", load)
+    result = adapter.stock_relationship(snapshot, snapshot, snapshot / "tool", 1)
+    assert len(calls) == 1
+    assert result["relationship"]["association"] == "ambiguous_duplicates"
+    assert result["relationship"]["stock_ordinals"] == [0, 1]
+    assert result["stock_bindings"] != result["adapter_bindings"]
+    assert not result["packer_clearance_compatible"]
+    with pytest.raises(ValueError, match="unmatched stock observation ordinal"):
+        adapter.stock_relationship(snapshot, snapshot, snapshot / "tool", 2)
+
+
 def test_acquired_mapper_requires_current_run_not_origin_dict(tmp_path, monkeypatch):
     def missing(*_args):
         raise ValueError("no completed adapter run")
@@ -175,6 +277,26 @@ def test_actual_maintained_adapter_end_to_end(tmp_path, prefix, newline, fragmen
     assert status == "mapped_acquired_full_file"
     assert value.encode() in span
     assert not result["archive_created"]
+    compatibility = result["compatibility"]
+    assert compatibility["stock_observations"] == (
+        compatibility["matched_observations"] + compatibility["missing_adapter_observations"]
+    )
+    assert compatibility["adapter_observations"] == (
+        compatibility["matched_observations"] + compatibility["extra_adapter_observations"]
+    )
+    for group in compatibility["groups"]:
+        for ordinal in group["stock_ordinals"]:
+            relationship = adapter.stock_relationship(source, private, Path(executable), ordinal)
+            assert relationship["relationship"] == group
+            assert not relationship["packer_clearance_compatible"]
+    # Forged association metadata is rejected even with unchanged reports.
+    complete, _ = review.read_private_json(private / "adapter-complete.json")
+    original_complete = copy.deepcopy(complete)
+    complete["compatibility"]["groups"][0]["association"] = "forged_origin_proof"
+    (private / "adapter-complete.json").write_text(json.dumps(complete))
+    with pytest.raises(ValueError, match="adapter compatibility evidence changed"):
+        adapter.load_adapter(source, private, Path(executable))
+    (private / "adapter-complete.json").write_text(json.dumps(original_complete))
     # Corrupting even one retained byte fails before any mapping is returned.
     request, _ = review.read_private_json(private / "adapter-request.json")
     request["bindings"]["run_namespace"] = "0" * 32

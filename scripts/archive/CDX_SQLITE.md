@@ -166,14 +166,30 @@ and columns. The adapter always reports `packer_clearance_compatible: false`:
 its fresh advisory identities cannot authorize the packer's later independent
 stock snapshot/rescan, and the packer/scanner/disposition gate is unchanged.
 No report-mode bypass, approval migration or historical-count reconciliation is
-provided. Real-source use remains gated on synthetic proof, review and explicit
+provided. Private reconciliation version 1 now retains every occurrence in
+separate zero-based stock/adapter ordinal lists, grouped by pinned version, exact
+file path/digest and complete canonical record digest. Matched, missing-from-
+adapter, extra-in-adapter and duplicate multiplicities are explicit; duplicates
+remain ambiguous even when multisets agree. Unique exact-record associations
+are descriptive only. Unmatched changed-context records remain separate, without
+guessed fragment columns, redacted-text joins or arbitrary duplicate pairing.
+Raw reports and canonical records remain retained in their original namespaces.
+
+`cdx_adapter.stock_relationship(source, private, executable, stock_ordinal)`
+revalidates the complete current run and returns that stock occurrence's private
+relationship with both namespaces/bindings. Non-Gitleaks, invalid or absent
+ordinals fail closed. It returns no stock byte span or semantic evidence.
+The loader recomputes all groups/counts, rejecting altered association metadata.
+Consumer changes invalidate historical runs; reconciliation cannot upgrade them.
+Real-source use remains gated on synthetic proof, review and explicit
 independent-scan compatibility assessment; an unresolved divergence cannot clear
 stock observations.
 
 Remaining components for actual clearance are not supplied by this PoC:
 exact-observation origin/use/harmlessness evidence, independently authenticated
-reviewer authority, approved durable private retention, and a reviewed mechanism
-for stock/adapter divergence if those records are ever proposed for clearance.
+reviewer authority, approved durable private retention, and a separately reviewed
+clearance mechanism if descriptive stock/adapter associations are proposed as
+evidence. Exact redacted-record equality cannot supply missing stock byte origin.
 Same-user endpoint/HMAC integrity is neither OS snapshot isolation nor external
 authentication. No archive operation is authorized by adapter development.
 

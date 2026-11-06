@@ -9,7 +9,7 @@ import os
 import secrets
 import stat
 import subprocess
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -120,24 +120,91 @@ def _toolchain_binding(stock: str, identity: dict[str, Any]) -> str:
 
 
 def _compatibility(stock: list[dict[str, Any]], acquired: list[dict[str, Any]]) -> dict[str, Any]:
-    def records(findings: list[dict[str, Any]]) -> Counter[str]:
-        return Counter(
-            preflight.digest_document(finding["_record"])
-            for finding in findings
-            if finding["scanner"] == "gitleaks"
-        )
+    """Account for every occurrence; record equality never establishes byte origin."""
 
-    stock_records, acquired_records = records(stock), records(acquired)
+    def records(
+        findings: list[dict[str, Any]],
+    ) -> tuple[Counter[str], dict[str, list[int]], dict[str, str]]:
+        counts: Counter[str] = Counter()
+        ordinals: dict[str, list[int]] = defaultdict(list)
+        digests = {}
+        for ordinal, finding in enumerate(findings):
+            if finding["scanner"] != "gitleaks":
+                continue
+            record = finding["_record"]
+            canonical = common._canonical_scanner_finding(
+                "gitleaks",
+                finding["scanner_version"],
+                finding["path"],
+                finding["file_sha256"],
+                record,
+            )
+            if (
+                finding["scanner_version"] != common.SECRET_SCANNER_VERSIONS["gitleaks"]
+                or not review._digest(finding["file_sha256"])
+                or any(finding[field] != value for field, value in canonical.items())
+                or record.get("File") != finding["path"]
+            ):
+                raise ValueError("invalid reconciliation observation")
+            record_digest = preflight.digest_document(record)
+            identity = preflight.digest_document(
+                {
+                    "scanner_version": finding["scanner_version"],
+                    "path": finding["path"],
+                    "file_sha256": finding["file_sha256"],
+                    "record_sha256": record_digest,
+                }
+            )
+            counts[identity] += 1
+            ordinals[identity].append(ordinal)
+            digests[identity] = record_digest
+        return counts, ordinals, digests
+
+    stock_records, stock_ordinals, stock_digests = records(stock)
+    acquired_records, acquired_ordinals, acquired_digests = records(acquired)
     equal = stock_records == acquired_records
+    groups = []
+    for identity in sorted(stock_records.keys() | acquired_records.keys()):
+        left, right = stock_ordinals.get(identity, []), acquired_ordinals.get(identity, [])
+        association = (
+            "ambiguous_duplicates"
+            if len(left) > 1 or len(right) > 1
+            else (
+                "unique_exact_record"
+                if left and right
+                else "stock_only" if left else "adapter_only"
+            )
+        )
+        groups.append(
+            {
+                "identity_sha256": identity,
+                "record_sha256": stock_digests.get(identity) or acquired_digests[identity],
+                "stock_ordinals": left,
+                "adapter_ordinals": right,
+                "association": association,
+            }
+        )
     return {
+        "reconciliation_version": 1,
+        "ordinal_basis": "separate_loaded_stock_and_adapter_finding_lists_zero_based",
         "stock_observations": sum(stock_records.values()),
         "adapter_observations": sum(acquired_records.values()),
+        "matched_observations": sum((stock_records & acquired_records).values()),
+        "missing_adapter_observations": sum((stock_records - acquired_records).values()),
+        "extra_adapter_observations": sum((acquired_records - stock_records).values()),
+        "stock_duplicate_observations": sum(count - 1 for count in stock_records.values()),
+        "adapter_duplicate_observations": sum(count - 1 for count in acquired_records.values()),
+        "unique_exact_associations": sum(
+            group["association"] == "unique_exact_record" for group in groups
+        ),
+        "groups": groups,
         "exact_record_multiset_equal": equal,
         "assessment": (
             "equal_this_snapshot_only" if equal else "BLOCKED_CONTEXT_OR_COVERAGE_DIVERGENCE"
         ),
         "packer_clearance_compatible": False,
         "reason": "adapter_namespace_never_authorizes_stock_independent_snapshot_rescan",
+        "proof": "record_association_only_not_stock_fragment_origin_use_or_harmlessness",
     }
 
 
@@ -391,6 +458,29 @@ def load_adapter(
     ):
         raise ValueError("adapter compatibility evidence changed")
     return complete, findings
+
+
+def stock_relationship(
+    source: Path, private: Path, executable: Path, stock_ordinal: int
+) -> dict[str, Any]:
+    """Return a private, freshly reverified relationship, never a stock byte span."""
+    if type(stock_ordinal) is not int or stock_ordinal < 0:
+        raise ValueError("invalid stock observation ordinal")
+    complete, _ = load_adapter(source, private, executable)
+    selected = [
+        group
+        for group in complete["compatibility"]["groups"]
+        if stock_ordinal in group["stock_ordinals"]
+    ]
+    if len(selected) != 1:
+        raise ValueError("unmatched stock observation ordinal")
+    return {
+        "stock_bindings": complete["stock_bindings"],
+        "adapter_bindings": complete["bindings"],
+        "relationship": selected[0],
+        "proof": complete["compatibility"]["proof"],
+        "packer_clearance_compatible": False,
+    }
 
 
 def acquired_span(
