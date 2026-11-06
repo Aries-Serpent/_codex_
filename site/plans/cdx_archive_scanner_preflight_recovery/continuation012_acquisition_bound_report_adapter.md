@@ -122,3 +122,10 @@ Recheck HEAD/status and checkpoint digest; preserve original archive and dirty w
 
 The actual introducing commit and checkpoint010 digest will be appended after
 first publication, in a separate metadata commit.
+
+Actual introducing commit: `ad2526e5bddb2508c5c4fc8ec22cd89416a5eb6c`.
+Checkpoint010 SHA-256:
+`60686658f7db03ad477d6c139557f4425ab0de453d1ece2b03e563fb1ef037fd`.
+Checkpoint path:
+`/home/runner/work/_codex_/_codex_/.codex/tasks/issue5757/checkpoint-010.json`.
+This footer was appended afterward, separately from the introducing commit.
