@@ -35,7 +35,7 @@ def packed_tree(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[Path, 
         b"    def greet(self, name: str) -> str:\r\n"
         b'        return "hello " + name\r\n'
     )
-    os.chmod(python_file, 0o644)
+    os.chmod(python_file, 0o600)
     (source / "copy.txt").write_bytes(python_file.read_bytes())
     (source / "binary.dat").write_bytes(b"\x00\xff\x10")
     (source / "utf16.txt").write_bytes("text\r\n".encode("utf-16"))
@@ -54,6 +54,7 @@ def packed_tree(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[Path, 
         )
         symlink_mtime_supported = (source / "pkg" / "copy-link").lstat().st_mtime_ns == timestamp
     except (NotImplementedError, OSError):
+        # Some platforms do not support symlink creation or timestamp updates.
         pass
     for path in (source / "pkg", source / "empty", source):
         os.utime(path, ns=(timestamp, timestamp))

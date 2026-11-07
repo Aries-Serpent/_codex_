@@ -156,7 +156,7 @@ def _ast_symbols(
                 )
                 import_start = int(getattr(child, "lineno", 1))
                 import_end = int(getattr(child, "end_lineno", import_start))
-                import_cursor = connection.execute(
+                connection.execute(
                     """
                     INSERT INTO ast_symbols(
                         entry_id, parent_symbol_id, symbol_kind, symbol_name,
@@ -265,6 +265,7 @@ def _create_scanned_snapshot(
                     follow_symlinks=False,
                 )
             except (NotImplementedError, OSError):
+                # Preserve the snapshot when symlink timestamp updates are unsupported.
                 pass
             entry["entry_type"] = "symlink"
             entry["symlink_target"] = link_target

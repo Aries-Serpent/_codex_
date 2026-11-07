@@ -407,6 +407,7 @@ def rehydrate_archive(
                     follow_symlinks=False,
                 )
             except (NotImplementedError, OSError):
+                # Rehydration still succeeds when symlink timestamp updates are unsupported.
                 pass
 
         for item in sorted(

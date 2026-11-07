@@ -624,7 +624,7 @@ def main(argv: list[str] | None = None) -> int:
         # Scanner diagnostics, private paths and parsed values must not escape.
         print("BLOCKED: private preparation, scanner execution or binding verification failed")
         return 2
-    print(json.dumps(result, sort_keys=True))
+    print(f"CDX preflight: {result['clearance']}")
     return 2 if result["clearance"] == "BLOCKED_FINDINGS" else 0
 
 

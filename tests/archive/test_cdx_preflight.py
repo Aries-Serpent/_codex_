@@ -233,6 +233,26 @@ def test_measured_producer_retains_distinct_observations_without_acceptance(prod
         preflight.run_preflight(source, private)
 
 
+def test_cli_prints_only_preflight_clearance(monkeypatch, tmp_path, capsys):
+    monkeypatch.setattr(
+        preflight,
+        "run_preflight",
+        lambda *_args: {"clearance": "BLOCKED_FINDINGS", "secret": "PRIVATE_CANARY"},
+    )
+
+    result = preflight.main(
+        [
+            "--source",
+            str(tmp_path / "source"),
+            "--private-directory",
+            str(tmp_path / "private"),
+        ]
+    )
+
+    assert result == 2
+    assert capsys.readouterr().out == "CDX preflight: BLOCKED_FINDINGS\n"
+
+
 @pytest.mark.parametrize(
     "drift",
     [

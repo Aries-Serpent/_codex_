@@ -76,7 +76,8 @@ def test_snapshot_identity_is_root_independent_and_observation_specific(tmp_path
             if name == "first":
                 results.append(identity)
             else:
-                assert identity == results.pop(0)
+                expected_identity = results.pop(0)
+                assert identity == expected_identity
             assert identity != cdx_common._finding_id(key + b"changed", finding)
             changed = copy.deepcopy(finding)
             changed["_record"]["distinct_observation"] = 2
