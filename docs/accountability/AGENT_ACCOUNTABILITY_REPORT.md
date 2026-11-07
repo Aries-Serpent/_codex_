@@ -10,6 +10,7 @@
 - Replaced the runtime SHA-1 call in the synthetic detect-secrets replay fixture with its equivalent precomputed fixture digest, preserving the expected detector input without invoking a weak hash primitive.
 - Restored `.codex/session_startup_packet.json` to its tracked baseline because the only prior difference was generated timestamp churn.
 - Focused archive adapter and preflight tests, Ruff, Black, isort, Python compilation, and `git diff --check` passed. No hosted CI result is claimed.
+- CodeQL reported no Go alerts; Python analysis was skipped because its database exceeded the available size limit, so no clean Python CodeQL result is claimed.
 
 ---
 
