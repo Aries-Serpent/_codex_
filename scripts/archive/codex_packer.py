@@ -28,6 +28,7 @@ from scripts.archive.cdx_common import (
     iter_deterministic_tree,
     run_secret_scanners,
 )
+from scripts.archive.cdx_preflight import read_source_file
 
 
 def _insert_fts_document(
@@ -52,6 +53,8 @@ def _ast_symbols(
     entry_id: int,
     path: str,
     text: str,
+    *,
+    include_fts: bool = True,
 ) -> None:
     try:
         module = ast.parse(text, filename=path)
@@ -139,7 +142,8 @@ def _ast_symbols(
             raise sqlite3.DatabaseError("failed to insert AST symbol")
         symbol_id = cursor.lastrowid
         source_slice = "\n".join(lines[start - 1 : end])
-        _insert_fts_document(connection, entry_id, "symbol", qualified_name, path, source_slice)
+        if include_fts:
+            _insert_fts_document(connection, entry_id, "symbol", qualified_name, path, source_slice)
         for child in getattr(node, "body", []):
             if isinstance(child, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
                 save_symbol(
@@ -173,14 +177,15 @@ def _ast_symbols(
                         import_end,
                     ),
                 )
-                _insert_fts_document(
-                    connection,
-                    entry_id,
-                    "symbol",
-                    import_name,
-                    path,
-                    "\n".join(lines[import_start - 1 : import_end]),
-                )
+                if include_fts:
+                    _insert_fts_document(
+                        connection,
+                        entry_id,
+                        "symbol",
+                        import_name,
+                        path,
+                        "\n".join(lines[import_start - 1 : import_end]),
+                    )
         return symbol_id
 
     for node in module.body:
@@ -204,14 +209,15 @@ def _ast_symbols(
                 """,
                 (entry_id, module_id, import_name, f"{module_name}.{import_name}", start, end),
             )
-            _insert_fts_document(
-                connection,
-                entry_id,
-                "symbol",
-                import_name,
-                path,
-                "\n".join(lines[start - 1 : end]),
-            )
+            if include_fts:
+                _insert_fts_document(
+                    connection,
+                    entry_id,
+                    "symbol",
+                    import_name,
+                    path,
+                    "\n".join(lines[start - 1 : end]),
+                )
 
 
 def _create_scanned_snapshot(
@@ -278,14 +284,16 @@ def _create_scanned_snapshot(
                 continue
             target.parent.mkdir(parents=True, exist_ok=True)
             digest = hashlib.sha256()
-            size = 0
-            with path.open("rb") as source_file, target.open("xb") as target_file:
-                for chunk in iter(lambda: source_file.read(1024 * 1024), b""):
-                    size += len(chunk)
-                    if size > max_blob_bytes:
-                        raise ValueError("file exceeds the configured blob size ceiling")
-                    digest.update(chunk)
-                    target_file.write(chunk)
+            raw = read_source_file(
+                source,
+                relative,
+                limit=max_blob_bytes,
+                expected_info=info,
+            )
+            size = len(raw)
+            digest.update(raw)
+            with target.open("xb") as target_file:
+                target_file.write(raw)
             os.chmod(target, mode)
             os.utime(target, ns=(info.st_mtime_ns, info.st_mtime_ns))
             entry["entry_type"] = "file"
@@ -342,11 +350,19 @@ def pack_archive(
             exclude=exclude,
             allow_large=allow_large,
         )
+        scanner_environment = {
+            "PATH": os.environ.get("PATH", ""),
+            "HOME": work_dir,
+            "LC_ALL": "C.UTF-8",
+            "PYTHONNOUSERSITE": "1",
+            "PYTHONDONTWRITEBYTECODE": "1",
+        }
         run_secret_scanners(
             snapshot,
             finding_dispositions,
             finding_inventory,
             root,
+            scanner_environment=scanner_environment,
         )
         fd, temp_name = tempfile.mkstemp(
             prefix=f".{destination.name}.", suffix=".tmp", dir=destination.parent

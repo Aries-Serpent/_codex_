@@ -25,7 +25,7 @@ from scripts.archive.codex_rehydrate import (
 
 @pytest.fixture
 def packed_tree(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[Path, Path, bool]:
-    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args: None)
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
     source = tmp_path / "source"
     (source / "empty").mkdir(parents=True)
     (source / "pkg").mkdir()
@@ -34,6 +34,9 @@ def packed_tree(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[Path, 
         b"class Greeter:\r\n"
         b"    def greet(self, name: str) -> str:\r\n"
         b'        return "hello " + name\r\n'
+        b"\r\n"
+        b"def call_greeter(greeter):\r\n"
+        b'    return greeter.greet("sample")\r\n'
     )
     os.chmod(python_file, 0o600)
     (source / "copy.txt").write_bytes(python_file.read_bytes())
@@ -76,6 +79,10 @@ def test_pack_indexes_text_ast_and_deduplicates_content(packed_tree):
         assert entries["pkg/sample.py"]["line_endings"] == "CRLF"
         assert entries["utf16.txt"]["text_encoding"] == "utf-16"
         assert query.query_symbols("greet")[0]["qualified_name"].endswith("Greeter.greet")
+        graph = query.query_call_graph("greet")
+        assert graph["callers"] == [
+            {"path": "pkg/sample.py", "qualified_name": "sample.call_greeter"}
+        ]
         assert query.search_fts("hello")[0]["path"] in {"pkg/sample.py", "copy.txt"}
         context = query.build_llm_context(symbols=("greet",), budget_tokens=200)
         assert "<codex_context>" in context["content"]
@@ -106,7 +113,7 @@ def test_archive_rehydrates_byte_and_metadata_exactly(packed_tree, tmp_path: Pat
 def test_pack_is_reproducible_and_excludes_large_files(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
-    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args: None)
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
     source = tmp_path / "source"
     source.mkdir()
     (source / "small.txt").write_text("ok\n", encoding="utf-8")
@@ -129,7 +136,7 @@ def test_pack_is_reproducible_and_excludes_large_files(
 def test_prefix_listing_includes_supplementary_unicode_names(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
-    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args: None)
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
     source = tmp_path / "source"
     (source / "pkg").mkdir(parents=True)
     (source / "pkg" / "a.py").write_text("a\n", encoding="utf-8")
@@ -147,7 +154,7 @@ def test_prefix_listing_includes_supplementary_unicode_names(
 def test_context_output_is_well_formed_xml_for_control_characters(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
-    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args: None)
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
     source = tmp_path / "source"
     source.mkdir()
     (source / 'quote"name.txt').write_bytes(b"<tag>&\x01\n")
@@ -162,7 +169,7 @@ def test_context_output_is_well_formed_xml_for_control_characters(
 def test_markdown_context_cannot_be_escaped_by_archive_text_or_paths(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
-    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args: None)
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
     source = tmp_path / "source"
     source.mkdir()
     (source / "`\n## injected heading").write_text(
@@ -188,7 +195,7 @@ def test_scanner_failure_never_replaces_archive(tmp_path: Path, monkeypatch: pyt
     output = tmp_path / "existing.cdx.sqlite"
     output.write_bytes(b"existing")
 
-    def reject_scan(*_args):
+    def reject_scan(*_args, **_kwargs):
         raise RuntimeError("secret scan flagged files; archive creation blocked")
 
     monkeypatch.setattr(codex_packer, "run_secret_scanners", reject_scan)
@@ -204,7 +211,7 @@ def test_packer_scans_and_packs_the_same_snapshot(tmp_path: Path, monkeypatch: p
     original.write_text("scanned bytes\n", encoding="utf-8")
     output = tmp_path / "snapshot.cdx.sqlite"
 
-    def mutate_original_after_scan(snapshot: Path, *_args):
+    def mutate_original_after_scan(snapshot: Path, *_args, **_kwargs):
         assert snapshot != source
         original.write_text("changed after snapshot\n", encoding="utf-8")
 
@@ -222,13 +229,82 @@ def test_packer_rejects_snapshot_changes_after_scanning(
     (source / "data.txt").write_text("before scan\n", encoding="utf-8")
     output = tmp_path / "snapshot.cdx.sqlite"
 
-    def mutate_snapshot_after_scan(snapshot: Path, *_args):
+    def mutate_snapshot_after_scan(snapshot: Path, *_args, **_kwargs):
         (snapshot / "data.txt").write_text("changed during scan\n", encoding="utf-8")
 
     monkeypatch.setattr(codex_packer, "run_secret_scanners", mutate_snapshot_after_scan)
     with pytest.raises(RuntimeError, match="scanned snapshot"):
         codex_packer.pack_archive(source, output)
     assert not output.exists()
+
+
+def test_packer_rejects_replacement_symlink_during_snapshot_copy(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    source = tmp_path / "source"
+    source.mkdir()
+    selected = source / "data.txt"
+    selected.write_text("inside\n", encoding="utf-8")
+    outside = tmp_path / "outside.txt"
+    outside.write_text("outside\n", encoding="utf-8")
+    output = tmp_path / "snapshot.cdx.sqlite"
+    original_iter = codex_packer.iter_deterministic_tree
+
+    def replace_before_read(root, *args, **kwargs):
+        for path, relative, info in original_iter(root, *args, **kwargs):
+            if relative == "data.txt":
+                path.unlink()
+                path.symlink_to(outside)
+            yield path, relative, info
+
+    monkeypatch.setattr(codex_packer, "iter_deterministic_tree", replace_before_read)
+    monkeypatch.setattr(
+        codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: pytest.fail("scanner ran")
+    )
+    with pytest.raises((OSError, ValueError)):
+        codex_packer.pack_archive(source, output)
+    assert not output.exists()
+
+
+def test_packer_scanners_receive_only_allowlisted_environment(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    source = tmp_path / "source"
+    source.mkdir()
+    monkeypatch.setenv("CDX_FINDING_HMAC_KEY", "synthetic-test-secret")
+    captured = {}
+
+    def capture_environment(*_args, **kwargs):
+        captured.update(kwargs["scanner_environment"])
+
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", capture_environment)
+    codex_packer.pack_archive(source, tmp_path / "snapshot.cdx.sqlite")
+    assert set(captured) == {
+        "PATH",
+        "HOME",
+        "LC_ALL",
+        "PYTHONNOUSERSITE",
+        "PYTHONDONTWRITEBYTECODE",
+    }
+    assert captured["PATH"] == os.environ.get("PATH", "")
+    assert captured["HOME"] != str(Path.home())
+    assert "CDX_FINDING_HMAC_KEY" not in captured
+
+
+def test_query_call_graph_joins_symbol_entries(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "graph.py").write_text(
+        "def callee():\n    return None\n\ndef caller():\n    return callee()\n",
+        encoding="utf-8",
+    )
+    archive = tmp_path / "snapshot.cdx.sqlite"
+    codex_packer.pack_archive(source, archive)
+    with CodexArchiveQuery(archive) as query:
+        assert query.query_call_graph("callee")["callers"] == [
+            {"path": "graph.py", "qualified_name": "graph.caller"}
+        ]
 
 
 def test_secret_scanner_requires_exact_dispositions_and_emits_redacted_inventory(
@@ -546,6 +622,29 @@ def test_text_index_is_bound_to_the_raw_blob_and_merkle_metadata(packed_tree):
         verify_archive(archive)
 
 
+def test_ast_index_is_validated_against_archived_source(packed_tree):
+    _, archive, _ = packed_tree
+    with sqlite3.connect(archive) as connection:
+        connection.execute(
+            "UPDATE ast_symbols SET qualified_name = 'forged.name' WHERE symbol_name = 'greet'"
+        )
+    with pytest.raises(ValueError, match="AST index"):
+        verify_archive(archive)
+
+
+def test_ast_index_verification_handles_multiple_python_files(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "first.py").write_text("class First:\n    def run(self):\n        return 1\n")
+    (source / "second.py").write_text("def invoke():\n    return 2\n")
+    archive = tmp_path / "snapshot.cdx.sqlite"
+    codex_packer.pack_archive(source, archive)
+    assert verify_archive(archive)["integrity_check"] == "ok"
+
+
 def test_fts_external_content_is_validated(packed_tree):
     _, archive, _ = packed_tree
     with sqlite3.connect(archive) as connection:
@@ -581,4 +680,17 @@ def test_rehydration_blocks_external_symlink_targets():
             "link",
             "dir/../outside",
             archive_symlinks={"dir"},
+        )
+
+
+def test_external_symlink_option_still_validates_relative_targets():
+    validate_symlink_target("nested/link", "../sibling", allow_external=True)
+    with pytest.raises(ValueError, match="escapes"):
+        validate_symlink_target("nested/link", "../../outside", allow_external=True)
+    with pytest.raises(ValueError, match="another archived symlink"):
+        validate_symlink_target(
+            "nested/link",
+            "sibling",
+            allow_external=True,
+            archive_symlinks={"nested/sibling"},
         )

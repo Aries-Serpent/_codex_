@@ -55,7 +55,13 @@ def _stable(info: os.stat_result) -> tuple[int, ...]:
     )
 
 
-def read_source_file(root: Path, relative: str, *, limit: int = MAX_FILE_BYTES) -> bytes:
+def read_source_file(
+    root: Path,
+    relative: str,
+    *,
+    limit: int = MAX_FILE_BYTES,
+    expected_info: os.stat_result | None = None,
+) -> bytes:
     """Bound a regular-file read through pinned no-follow ancestor descriptors."""
     parts = relative.split("/")
     if not parts or any(part in {"", ".", ".."} for part in parts):
@@ -75,6 +81,8 @@ def read_source_file(root: Path, relative: str, *, limit: int = MAX_FILE_BYTES) 
         before = os.fstat(stream.fileno())
         if not stat.S_ISREG(before.st_mode) or before.st_size > limit:
             raise ValueError("unsupported or oversized source file")
+        if expected_info is not None and _stable(before) != _stable(expected_info):
+            raise ValueError("source entry changed before read")
         raw = stream.read(limit + 1)
         if len(raw) > limit or _stable(before) != _stable(os.fstat(stream.fileno())):
             raise ValueError("source changed during read")

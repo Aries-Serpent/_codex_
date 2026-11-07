@@ -334,9 +334,11 @@ class CodexArchiveQuery:
                     }
                 )
         callers: list[dict[str, str]] = []
-        for row in self.connection.execute(
-            "SELECT path, qualified_name, call_targets_json FROM ast_symbols"
-        ):
+        for row in self.connection.execute("""
+            SELECT t.path, s.qualified_name, s.call_targets_json
+            FROM ast_symbols AS s
+            JOIN tree_entries AS t USING (entry_id)
+            """):
             targets = json.loads(row["call_targets_json"])
             if any(target == symbol or target.endswith(f".{symbol}") for target in targets):
                 callers.append({"path": row["path"], "qualified_name": row["qualified_name"]})

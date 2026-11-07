@@ -21,10 +21,12 @@ from urllib.parse import quote
 from scripts.archive.cdx_common import (
     DEFAULT_MAX_BLOB_BYTES,
     DEFAULT_MAX_TEXT_BYTES,
+    SCHEMA_SQL,
     SCHEMA_VERSION,
     compute_merkle_root,
     inspect_text,
 )
+from scripts.archive.codex_packer import _ast_symbols
 
 
 def _connect_readonly(archive: Path) -> sqlite3.Connection:
@@ -96,6 +98,93 @@ def _verify_fts_postings(connection: sqlite3.Connection) -> None:
         connection.execute("DROP TABLE IF EXISTS temp.cdx_expected_vocab")
         connection.execute("DROP TABLE IF EXISTS temp.cdx_expected_fts")
         connection.execute("PRAGMA query_only = ON")
+
+
+def _verify_ast_symbols(connection: sqlite3.Connection) -> None:
+    columns = (
+        "symbol_id",
+        "entry_id",
+        "parent_symbol_id",
+        "symbol_kind",
+        "symbol_name",
+        "qualified_name",
+        "signature",
+        "line_start",
+        "line_end",
+        "decorators_json",
+        "bases_json",
+        "call_targets_json",
+    )
+    expected_connection = sqlite3.connect(":memory:")
+    expected_connection.row_factory = sqlite3.Row
+
+    def normalized(rows: list[sqlite3.Row]) -> list[tuple[Any, ...]]:
+        symbol_indexes = {row["symbol_id"]: index for index, row in enumerate(rows)}
+        return [
+            (
+                row["entry_id"],
+                row["symbol_kind"],
+                row["symbol_name"],
+                row["qualified_name"],
+                row["signature"],
+                row["line_start"],
+                row["line_end"],
+                row["decorators_json"],
+                row["bases_json"],
+                row["call_targets_json"],
+                (
+                    symbol_indexes[row["parent_symbol_id"]]
+                    if row["parent_symbol_id"] is not None
+                    else None
+                ),
+            )
+            for row in rows
+        ]
+
+    try:
+        expected_connection.executescript(SCHEMA_SQL)
+        for entry in connection.execute("""
+            SELECT t.entry_id, t.path, d.utf8_text
+            FROM tree_entries AS t
+            JOIN text_documents AS d USING (entry_id)
+            WHERE t.entry_type = 'file' AND lower(t.path) LIKE '%.py'
+            ORDER BY t.entry_id
+            """):
+            expected_connection.execute("DELETE FROM ast_symbols")
+            _ast_symbols(
+                expected_connection,
+                entry["entry_id"],
+                entry["path"],
+                entry["utf8_text"],
+                include_fts=False,
+            )
+            expected_rows = list(
+                expected_connection.execute(
+                    "SELECT " + ", ".join(columns) + " FROM ast_symbols ORDER BY symbol_id"
+                )
+            )
+            actual_rows = list(
+                connection.execute(
+                    "SELECT " + ", ".join(columns) + " FROM ast_symbols "
+                    "WHERE entry_id = ? ORDER BY symbol_id",
+                    (entry["entry_id"],),
+                )
+            )
+            if normalized(actual_rows) != normalized(expected_rows):
+                raise ValueError("archive AST index is inconsistent")
+        unsupported_ast = connection.execute("""
+            SELECT 1
+            FROM ast_symbols AS s
+            LEFT JOIN tree_entries AS t USING (entry_id)
+            LEFT JOIN text_documents AS d USING (entry_id)
+            WHERE t.entry_id IS NULL OR t.entry_type != 'file'
+                OR lower(t.path) NOT LIKE '%.py' OR d.entry_id IS NULL
+            LIMIT 1
+            """).fetchone()
+        if unsupported_ast is not None:
+            raise ValueError("archive AST index is inconsistent")
+    finally:
+        expected_connection.close()
 
 
 def verify_archive_connection(
@@ -202,6 +291,7 @@ def verify_archive_connection(
         ).fetchone()[0]
         if hashlib.sha256(text.encode("utf-8")).hexdigest() != expected_hash:
             raise ValueError("archive text index is inconsistent")
+    _verify_ast_symbols(connection)
     for entry in connection.execute("SELECT entry_id, path, entry_type FROM tree_entries"):
         expected_fts: Counter[tuple[str, str, str, str]] = Counter()
         document = connection.execute(
@@ -294,8 +384,6 @@ def validate_symlink_target(
     if os.path.isabs(target) or re.match(r"^[A-Za-z]:", target):
         if not allow_external:
             raise ValueError("external symlink target is not allowed")
-        return
-    if allow_external:
         return
     symlink_paths = archive_symlinks or set()
     components = [part for part in PurePosixPath(link_path).parent.parts if part not in {"", "."}]
