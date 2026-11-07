@@ -16,7 +16,7 @@ from scripts.archive import cdx_review as review
 
 @pytest.fixture
 def bound_report(tmp_path):
-    raw = b"synthetic-match\n"
+    raw = b"prefix\nsynthetic-match\n"
     (tmp_path / "fixture.txt").write_bytes(raw)
     identity = {
         "mode": adapter.MODE,
@@ -51,19 +51,19 @@ def bound_report(tmp_path):
                         "record": {
                             "File": "fixture.txt",
                             "RuleID": "synthetic-only",
-                            "StartLine": 1,
-                            "EndLine": 1,
-                            "StartColumn": 1,
-                            "EndColumn": 15,
+                            "StartLine": 2,
+                            "EndLine": 2,
+                            "StartColumn": 2,
+                            "EndColumn": 16,
                             "Tags": [],
                             "Secret": "REDACTED",
-                            "Match": "REDACTED",
+                            "Match": "synthetic-match",
                         },
-                        "start": 0,
-                        "end": 15,
+                        "start": 7,
+                        "end": 22,
                         "mapping_status": "mapped_acquired_full_file",
                         "match_hmac": hmac.new(
-                            bytes.fromhex(request["key"]), raw[:15], hashlib.sha256
+                            bytes.fromhex(request["key"]), raw[7:22], hashlib.sha256
                         ).hexdigest(),
                     }
                 ],
@@ -85,6 +85,9 @@ def bound_report(tmp_path):
         "span",
         "hmac",
         "column",
+        "end_line",
+        "end_column",
+        "match",
         "calls",
         "missing",
     ],
@@ -111,7 +114,13 @@ def test_bound_report_rejects_mismatch(bound_report, mutation):
     elif mutation == "hmac":
         observation["match_hmac"] = "f" * 64
     elif mutation == "column":
-        observation["record"]["StartColumn"] = 2
+        observation["record"]["StartColumn"] = 3
+    elif mutation == "end_line":
+        observation["record"]["EndLine"] = 1
+    elif mutation == "end_column":
+        observation["record"]["EndColumn"] += 1
+    elif mutation == "match":
+        observation["record"]["Match"] = "different synthetic match"
     elif mutation == "calls":
         acquired["detector_calls"] = 2
     else:
@@ -184,7 +193,7 @@ def test_reconciliation_rejects_invalid_observations(bound_report, mutation):
     elif mutation == "path":
         rows[0]["_record"]["File"] = "different.txt"
     elif mutation == "metadata":
-        rows[0]["start_line"] = 2
+        rows[0]["start_line"] = 3
     else:
         rows[0]["_record"]["Tags"] = ["z", "a"]
     with pytest.raises(ValueError, match="invalid reconciliation observation"):

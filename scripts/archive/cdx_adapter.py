@@ -275,6 +275,8 @@ def _validate_report(
             status = observation["mapping_status"]
             if status == "mapped_acquired_full_file":
                 line, column = record.get("StartLine"), record.get("StartColumn")
+                end_line, end_column = record.get("EndLine"), record.get("EndColumn")
+                match = record.get("Match")
                 if type(start) is int and type(end) is int:
                     mapped_bytes += end - start
                 if (
@@ -286,6 +288,13 @@ def _validate_report(
                     or not 1 <= line <= len(origins)
                     or column < 1
                     or start != origins[line - 1] + column - 1
+                    or type(end_line) is not int
+                    or type(end_column) is not int
+                    or not line <= end_line <= len(origins)
+                    or end_column < 1
+                    or end != origins[end_line - 1] + end_column
+                    or not isinstance(match, str)
+                    or ("REDACTED" not in match and raw[start:end] != match.encode("utf-8"))
                     or mapped_bytes > LIMITS["tree_bytes"]
                     or not isinstance(observation["match_hmac"], str)
                     or not hmac.compare_digest(
@@ -294,6 +303,18 @@ def _validate_report(
                     )
                 ):
                     raise ValueError("adapter observed span mismatch")
+
+                def content_bounds(number: int) -> tuple[int, int]:
+                    lower = origins[number - 1] + (number > 1)
+                    upper = origins[number] if number < len(origins) else len(raw)
+                    if upper > lower and raw[upper - 1 : upper] == b"\r":
+                        upper -= 1
+                    return lower, upper
+
+                start_lower, start_upper = content_bounds(line)
+                end_lower, end_upper = content_bounds(end_line)
+                if not (start_lower <= start < start_upper and end_lower < end <= end_upper):
+                    raise ValueError("adapter coordinates leave reported lines")
                 # The whole acquisition was decoded once; boundaries cannot split a rune.
                 if raw[start] & 0xC0 == 0x80 or (end < len(raw) and raw[end] & 0xC0 == 0x80):
                     raise ValueError("adapter span splits UTF-8 code point")

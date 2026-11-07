@@ -468,7 +468,7 @@ def test_offline_exact_detector_replay_never_verifies_credentials(produced, monk
                 "File": str(root / "fixture"),
                 "type": "Secret Keyword",
                 "line_number": 1,
-                "hashed_secret": hashlib.sha1(b"synthetic-only-password").hexdigest(),
+                "hashed_secret": "39d1ef2e9f7565fab033cdd1e5b961122601a5a6",
             },
         )
         finding["finding_id"] = common._finding_id(

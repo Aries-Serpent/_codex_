@@ -1,3 +1,18 @@
+## Session: PR #5761 review-thread follow-up — 2026-11-07
+
+### Agents Used
+
+- None — direct execution (no delegated agents).
+
+### Evidence and outcome
+
+- Addressed the PR #5761 review requests by validating both Gitleaks byte-coordinate endpoints, including the pinned preceding-LF origin and source-line bounds. The adapter verifies unredacted `Match` bytes when available; the pinned Go producer checks the exact source `Match` before redacting persisted output.
+- Replaced the runtime SHA-1 call in the synthetic detect-secrets replay fixture with its equivalent precomputed fixture digest, preserving the expected detector input without invoking a weak hash primitive.
+- Restored `.codex/session_startup_packet.json` to its tracked baseline because the only prior difference was generated timestamp churn.
+- Focused archive adapter and preflight tests, Ruff, Black, isort, Python compilation, and `git diff --check` passed. No hosted CI result is claimed.
+
+---
+
 ## Session: PR #5758 Cognitive Pre-flight follow-up — 2026-11-04
 
 ### Agents Used
