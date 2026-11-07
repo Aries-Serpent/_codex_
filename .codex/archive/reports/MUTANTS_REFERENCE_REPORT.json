@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "observed_revision": "5e0e0fa1d3a0a51c1a84eba803f294b47aedec68",
+  "candidate_root": ".codex/archive/root-consolidation/temp-outputs/mutants/",
+  "candidate_files": 4597,
+  "candidate_bytes": 31979791,
+  "literal_candidate_root_references": {
+    "src": 0,
+    "tests": 0,
+    ".github/workflows": 0,
+    "docs": 0
+  },
+  "generated_inventory_references": [
+    {
+      "file": "docs-data/generated/candidate-inventory.json",
+      "matching_entries": 98,
+      "unique_entries": 98
+    },
+    {
+      "file": "docs-data/generated/codebase-discovery-report.json",
+      "matching_entries": 159,
+      "unique_entries": 75
+    },
+    {
+      "file": "docs-data/generated/deletion-candidates.json",
+      "matching_entries": 53,
+      "unique_entries": 53
+    },
+    {
+      "file": "docs-data/generated/machine-readable-coverage-report.json",
+      "matching_entries": 151,
+      "unique_entries": 98
+    },
+    {
+      "file": "docs-data/generated/markdown-inventory.json",
+      "matching_entries": 53,
+      "unique_entries": 53
+    },
+    {
+      "file": "docs-data/generated/unmanaged-candidates-report.json",
+      "matching_entries": 53,
+      "unique_entries": 53
+    }
+  ],
+  "other_known_reference": {
+    "file": ".codex/reports/security/lane-p1/lane-p1-remediation-report.md",
+    "line": 50,
+    "note": "The candidate path is described as archived mutant copies of tests."
+  },
+  "decision": "Retain in place. Generated inventories and the security report are consumers; no move or tombstone is authorized by this report."
+}

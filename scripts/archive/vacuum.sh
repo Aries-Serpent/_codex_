@@ -29,13 +29,11 @@ if [ "$can_import" = "yes" ]; then
   # Prefer summary if present; fall back to vacuum
   python3 -m codex.cli_archive summary --output "$sum" 2>/dev/null || {
     echo "summary failed or unavailable; trying vacuum" >&2
-    python3 -m codex.cli_archive vacuum --output "$sum" || {
-      echo "WARN: codex.cli_archive summary/vacuum failed; wrote no summary" >&2
-    }
+    python3 -m codex.cli_archive vacuum --output "$sum" || exit $?
   }
 else
-  echo "WARN: codex.cli_archive not found; writing placeholder summary" >&2
-  echo '{"status":"noop","reason":"codex.cli_archive not importable","summary":[]}' > "$sum"
+  echo "ERROR: codex.cli_archive is unavailable; refusing to write a placeholder summary" >&2
+  exit 1
 fi
 
 echo "==> summary written: $sum"
