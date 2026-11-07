@@ -2,21 +2,25 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import hmac
 import json
 import os
+import re
 import shutil
 import stat
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any, Iterator, cast
 
 SCHEMA_VERSION = 1
 DEFAULT_MAX_BLOB_BYTES = 512 * 1024 * 1024
 DEFAULT_MAX_TEXT_BYTES = 64 * 1024 * 1024
 SECRET_SCANNER_VERSIONS = {"gitleaks": "8.30.1", "detect-secrets": "1.5.0"}
+SECRET_SCANNER_TIMEOUT_SECONDS = 600
+FINDING_IDENTITY_VERSION = 2
 DEFAULT_DENIED_COMPONENTS = {
     ".git",
     ".mypy_cache",
@@ -234,11 +238,33 @@ def compute_merkle_root(connection: Any) -> str:
     return digest.hexdigest()
 
 
+def _scanner_json(raw: str) -> Any:
+    def unique_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("duplicate scanner report key")
+            result[key] = value
+        return result
+
+    def reject_constant(_value: str) -> Any:
+        raise ValueError("invalid scanner JSON constant")
+
+    return json.loads(raw, object_pairs_hook=unique_keys, parse_constant=reject_constant)
+
+
 def run_secret_scanners(
     root: Path,
     dispositions_path: Path | None = None,
     inventory_path: Path | None = None,
     source_root: Path | None = None,
+    *,
+    observation_sink: Any = None,
+    report_sink: Any = None,
+    scanner_environment: dict[str, str] | None = None,
+    scanner_directory: Path | None = None,
+    gitleaks_config: Path | None = None,
+    gitleaks_ignore: Path | None = None,
 ) -> None:
     """Fail closed unless every exact scanner finding has an active disposition."""
     if dispositions_path is not None and not isinstance(dispositions_path, Path):
@@ -254,6 +280,32 @@ def run_secret_scanners(
     detect_secrets = shutil.which("detect-secrets")
     if not gitleaks or not detect_secrets:
         raise RuntimeError("gitleaks and detect-secrets are required before packing")
+    execution: dict[str, Any] = {}
+    if scanner_environment is not None:
+        execution["env"] = scanner_environment
+    if scanner_directory is not None:
+        execution["cwd"] = scanner_directory
+    configuration = []
+    if gitleaks_config is not None:
+        configuration.extend(["--config", str(gitleaks_config), "--ignore-gitleaks-allow"])
+    if gitleaks_ignore is not None:
+        configuration.extend(["--gitleaks-ignore-path", str(gitleaks_ignore)])
+    # Exit 1 can mean partial failure, even when a report contains findings.
+    finding_exit = 2
+    configuration.extend(["--exit-code", str(finding_exit)])
+
+    def retain(stage: str, result: Any, raw_report: str | None = None) -> None:
+        if report_sink is not None:
+            report_sink(
+                stage,
+                {
+                    "exit_code": result.returncode,
+                    "stdout": result.stdout,
+                    "stderr": result.stderr,
+                    "report": raw_report,
+                },
+            )
+
     with tempfile.TemporaryDirectory(prefix="cdx-scan-") as temp_dir:
         report = Path(temp_dir) / "gitleaks.json"
         try:
@@ -262,13 +314,19 @@ def run_secret_scanners(
                 capture_output=True,
                 text=True,
                 check=False,
+                timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
+                **execution,
             )
             detect_version = subprocess.run(
                 [detect_secrets, "--version"],
                 capture_output=True,
                 text=True,
                 check=False,
+                timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
+                **execution,
             )
+            retain("gitleaks-version", gitleaks_version)
+            retain("detect-secrets-version", detect_version)
             if gitleaks_version.returncode != 0 or detect_version.returncode != 0:
                 raise RuntimeError("secret scanner version could not be determined")
             versions = {
@@ -286,36 +344,59 @@ def run_secret_scanners(
                     "json",
                     "--report-path",
                     str(report),
+                    *configuration,
                     str(root),
                 ],
                 capture_output=True,
                 text=True,
                 check=False,
+                timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
+                **execution,
             )
-            if gitleaks_result.returncode not in (0, 1) or not report.exists():
+            raw_report = None
+            if report.exists():
+                with report.open(encoding="utf-8") as stream:
+                    raw_report = stream.read(16 * 1024 * 1024 + 1)
+                if len(raw_report.encode("utf-8")) > 16 * 1024 * 1024:
+                    raise RuntimeError("gitleaks report exceeds the retention limit")
+            retain("gitleaks", gitleaks_result, raw_report)
+            if gitleaks_result.returncode not in (0, finding_exit) or not report.exists():
                 raise RuntimeError("gitleaks scan failed")
-            gitleaks_findings = json.loads(report.read_text(encoding="utf-8"))
+            gitleaks_findings = _scanner_json(raw_report or "")
             if not isinstance(gitleaks_findings, list) or any(
                 not isinstance(finding, dict) for finding in gitleaks_findings
             ):
                 raise RuntimeError("gitleaks returned an invalid report")
+            if (gitleaks_result.returncode == finding_exit) != bool(gitleaks_findings):
+                raise RuntimeError("gitleaks status and report disagree")
             detect_result = subprocess.run(
                 [detect_secrets, "scan", "--no-verify", "--all-files", str(root)],
                 capture_output=True,
                 text=True,
                 check=False,
+                timeout=SECRET_SCANNER_TIMEOUT_SECONDS,
+                **execution,
             )
+            retain("detect-secrets", detect_result)
             if detect_result.returncode != 0:
                 raise RuntimeError("detect-secrets scan failed")
-            detect_findings = json.loads(detect_result.stdout)
+            detect_findings = _scanner_json(detect_result.stdout)
             if not isinstance(detect_findings, dict):
                 raise RuntimeError("detect-secrets returned an invalid report")
-        except (OSError, ValueError, json.JSONDecodeError) as exc:
+        except (OSError, ValueError, RecursionError, subprocess.TimeoutExpired) as exc:
             raise RuntimeError("secret scan could not be completed") from exc
 
     findings: list[dict[str, Any]] = []
     for finding in gitleaks_findings:
-        findings.append(_scanner_finding(root, "gitleaks", versions["gitleaks"], finding))
+        findings.append(
+            _scanner_finding(
+                root,
+                "gitleaks",
+                versions["gitleaks"],
+                finding,
+                report_directory=scanner_directory,
+            )
+        )
     detect_results = detect_findings.get("results")
     if not isinstance(detect_results, dict):
         raise RuntimeError("detect-secrets returned an invalid report")
@@ -328,7 +409,13 @@ def run_secret_scanners(
             record = dict(finding)
             record["File"] = file_path
             findings.append(
-                _scanner_finding(root, "detect-secrets", versions["detect-secrets"], record)
+                _scanner_finding(
+                    root,
+                    "detect-secrets",
+                    versions["detect-secrets"],
+                    record,
+                    report_directory=scanner_directory,
+                )
             )
 
     dispositions = (
@@ -339,6 +426,8 @@ def run_secret_scanners(
             raise RuntimeError("secret finding dispositions are stale")
         if inventory_path is not None:
             _write_finding_inventory(inventory_path, [], roots)
+        if observation_sink is not None:
+            observation_sink([], copy.deepcopy(detect_findings))
         return
 
     key_text = os.environ.get("CDX_FINDING_HMAC_KEY", "")
@@ -355,6 +444,8 @@ def run_secret_scanners(
 
     if inventory_path is not None:
         _write_finding_inventory(inventory_path, findings, roots)
+    if observation_sink is not None:
+        observation_sink(copy.deepcopy(findings), copy.deepcopy(detect_findings))
     disposition_by_id: dict[str, dict[str, Any]] = {}
     for disposition in dispositions:
         finding_id = disposition["finding_id"]
@@ -396,12 +487,19 @@ def run_secret_scanners(
             raise RuntimeError("secret scan review evidence digest does not match")
 
 
-def _scanner_relative_path(root: Path, reported_path: Any) -> str:
+def _scanner_relative_path(
+    root: Path, reported_path: Any, *, report_directory: Path | None = None
+) -> str:
     if not isinstance(reported_path, str) or not reported_path:
         raise RuntimeError("secret scanner returned an invalid file path")
     path = Path(reported_path)
     root_path = Path(os.path.abspath(root))
-    candidates = [path] if path.is_absolute() else [Path.cwd() / path, root_path / path]
+    if path.is_absolute():
+        candidates = [path]
+    elif report_directory is not None:
+        candidates = [report_directory / path]
+    else:
+        candidates = [Path.cwd() / path, root_path / path]
     for candidate in candidates:
         try:
             relative = Path(os.path.abspath(candidate)).relative_to(root_path).as_posix()
@@ -420,10 +518,15 @@ def _scanner_version(output: str) -> str:
 
 
 def _scanner_finding(
-    root: Path, scanner: str, version: str, record: dict[str, Any]
+    root: Path,
+    scanner: str,
+    version: str,
+    record: dict[str, Any],
+    *,
+    report_directory: Path | None = None,
 ) -> dict[str, Any]:
     path_value = record.get("File")
-    path = _scanner_relative_path(root, path_value)
+    path = _scanner_relative_path(root, path_value, report_directory=report_directory)
     file_path = root / path
     try:
         file_info = file_path.lstat()
@@ -433,6 +536,14 @@ def _scanner_finding(
     except OSError as exc:
         raise RuntimeError("secret scanner finding file could not be verified") from exc
 
+    return _canonical_scanner_finding(scanner, version, path, file_digest, record)
+
+
+def _canonical_scanner_finding(
+    scanner: str, version: str, path: str, file_digest: str, record: dict[str, Any]
+) -> dict[str, Any]:
+    """Canonicalize metadata over bytes already acquired by the calling producer."""
+    path_value = record.get("File")
     if scanner == "gitleaks":
         rule = record.get("RuleID")
         start = record.get("StartLine")
@@ -452,6 +563,17 @@ def _scanner_finding(
         or end < start
     ):
         raise RuntimeError("secret scanner returned incomplete finding metadata")
+    canonical_record = dict(record)
+    canonical_record["File"] = path
+    if scanner == "gitleaks":
+        fingerprint = record.get("Fingerprint")
+        if fingerprint == f"{path_value}:{rule}:{start}":
+            canonical_record["Fingerprint"] = f"{path}:{rule}:{start}"
+        if "Tags" in record:
+            tags = record["Tags"]
+            if not isinstance(tags, list) or any(not isinstance(tag, str) for tag in tags):
+                raise RuntimeError("gitleaks returned invalid finding tags")
+            canonical_record["Tags"] = sorted(tags)
     return {
         "scanner": scanner,
         "scanner_version": version,
@@ -460,12 +582,92 @@ def _scanner_finding(
         "rule": rule,
         "start_line": start,
         "end_line": end,
-        "_record": record,
+        "_record": canonical_record,
     }
+
+
+def _gitleaks_private_span(
+    raw: bytes, record: dict[str, Any], *, version: str
+) -> tuple[bytes | None, str]:
+    """Map a bounded v8.30.1 file Match privately, never recover its Secret.
+
+    location.go uses byte offsets and the preceding LF index as the column
+    origin on later lines. Only small, unfragmented UTF-8 files are supported.
+    """
+    if version != "8.30.1":
+        return None, "unsupported_scanner_version"
+    tags = record.get("Tags")
+    if tags is not None and (
+        not isinstance(tags, list) or any(not isinstance(tag, str) for tag in tags)
+    ):
+        return None, "unsupported_tags"
+    if any(re.search(r"encoded|decoded|decode-depth", tag, re.I) for tag in tags or []) or any(
+        re.search(r"encoded|decoded|decode.depth", field, re.I) for field in record
+    ):
+        return None, "unsupported_decoding"
+    if (
+        record.get("Fragment") is not None
+        or record.get("Commit")
+        or record.get("SymlinkFile")
+        or "!" in str(record.get("File", ""))
+    ):
+        return None, "unsupported_fragment_or_nested_source"
+    # Stock reports omit the observed fragment's byte origin. Even line-aligned
+    # later fragments use a different first-line column origin from the file.
+    if len(raw) >= 100_000:
+        return None, "unsupported_fragment_origin"
+    if b"\x00" in raw or b"\r" in raw.replace(b"\r\n", b""):
+        return None, "unsupported_source_encoding_or_size"
+    try:
+        raw.decode("utf-8")
+    except UnicodeError:
+        return None, "unsupported_source_encoding_or_size"
+    coordinates = [
+        record.get(field) for field in ("StartLine", "EndLine", "StartColumn", "EndColumn")
+    ]
+    if any(type(value) is not int or value < 1 for value in coordinates):
+        return None, "unsupported_coordinates"
+    start, end, left, right = (cast(int, value) for value in coordinates)
+    newlines = [index for index, value in enumerate(raw) if value == 10]
+    origins = [0] + newlines
+    if not (1 <= start <= end <= len(origins)) or end - start > 100:
+        return None, "unsupported_coordinates"
+    # location.go does not set a usable end column for a multi-line match
+    # ending beyond the final LF when its start was already found.
+    if end > start and end > len(newlines):
+        return None, "unsupported_unterminated_multiline"
+    begin = origins[start - 1] + left - 1
+    finish = origins[end - 1] + right
+
+    def content_bounds(line: int) -> tuple[int, int]:
+        lower = origins[line - 1] + (line > 1)
+        upper = newlines[line - 1] if line <= len(newlines) else len(raw)
+        if upper > lower and raw[upper - 1 : upper] == b"\r":
+            upper -= 1
+        return lower, upper
+
+    first_lower, first_upper = content_bounds(start)
+    last_lower, last_upper = content_bounds(end)
+    if not (
+        first_lower <= begin < first_upper
+        and last_lower < finish <= last_upper
+        and 0 < finish - begin <= 65536
+    ):
+        return None, "unsupported_coordinates"
+    # Byte columns must land on complete UTF-8 code points, not character
+    # indexes or the interior of a multi-byte sequence.
+    try:
+        raw[:begin].decode("utf-8")
+        span = raw[begin:finish]
+        span.decode("utf-8")
+    except UnicodeError:
+        return None, "unsupported_utf8_boundary"
+    return span, "mapped_reported_match_not_secret"
 
 
 def _finding_id(key: bytes, finding: dict[str, Any]) -> str:
     identity = {field: value for field, value in finding.items() if field != "finding_id"}
+    identity["identity_version"] = FINDING_IDENTITY_VERSION
     payload = json.dumps(
         identity,
         ensure_ascii=True,
@@ -485,7 +687,8 @@ def _write_finding_inventory(
     ]
     document = {"schema_version": 1, "findings": safe_findings}
     try:
-        with destination.open("x", encoding="utf-8") as stream:
+        fd = os.open(destination, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
             json.dump(document, stream, indent=2, sort_keys=True)
             stream.write("\n")
     except (OSError, UnicodeError) as exc:
