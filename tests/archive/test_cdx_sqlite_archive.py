@@ -35,8 +35,8 @@ def packed_tree(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[Path, 
         b"    def greet(self, name: str) -> str:\r\n"
         b'        return "hello " + name\r\n'
         b"\r\n"
-        b"def call_greeter(greeter):\r\n"
-        b'    return greeter.greet("sample")\r\n'
+        b"    def call_greeter(self):\r\n"
+        b'        return self.greet("sample")\r\n'
     )
     os.chmod(python_file, 0o600)
     (source / "copy.txt").write_bytes(python_file.read_bytes())
@@ -81,7 +81,7 @@ def test_pack_indexes_text_ast_and_deduplicates_content(packed_tree):
         assert query.query_symbols("greet")[0]["qualified_name"].endswith("Greeter.greet")
         graph = query.query_call_graph("greet")
         assert graph["callers"] == [
-            {"path": "pkg/sample.py", "qualified_name": "sample.call_greeter"}
+            {"path": "pkg/sample.py", "qualified_name": "sample.Greeter.call_greeter"}
         ]
         assert query.search_fts("hello")[0]["path"] in {"pkg/sample.py", "copy.txt"}
         context = query.build_llm_context(symbols=("greet",), budget_tokens=200)
@@ -333,6 +333,83 @@ def test_ast_call_targets_exclude_nested_function_and_lambda_bodies(
         assert query.query_call_graph("callee")["callers"] == [
             {"path": "graph.py", "qualified_name": "graph.outer.inner"}
         ]
+
+
+def test_nested_function_inside_method_is_not_classified_as_method(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "nested.py").write_text(
+        "class Greeter:\n"
+        "    def outer(self):\n"
+        "        def inner():\n"
+        "            return None\n"
+        "        return inner\n",
+        encoding="utf-8",
+    )
+    archive = tmp_path / "snapshot.cdx.sqlite"
+    codex_packer.pack_archive(source, archive)
+    with CodexArchiveQuery(archive) as query:
+        symbols = {item["qualified_name"]: item for item in query.query_symbols(path="nested.py")}
+        assert symbols["nested.Greeter.outer"]["symbol_kind"] == "method"
+        assert symbols["nested.Greeter.outer.inner"]["symbol_kind"] == "function"
+
+
+@pytest.mark.parametrize("filename", ("a\\b", "C:notes.txt"))
+def test_packer_rejects_paths_the_rehydrator_cannot_restore(
+    filename: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    if os.name == "nt":
+        pytest.skip("these filenames are not representable on Windows")
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / filename).write_text("content", encoding="utf-8")
+    archive = tmp_path / "snapshot.cdx.sqlite"
+
+    with pytest.raises(ValueError):
+        codex_packer.pack_archive(source, archive)
+
+    assert not archive.exists()
+
+
+def test_query_call_graph_preserves_qualified_call_targets(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "a.py").write_text("def run():\n    return None\n", encoding="utf-8")
+    (source / "b.py").write_text("def run():\n    return None\n", encoding="utf-8")
+    (source / "caller.py").write_text(
+        "import a\n\ndef caller():\n    return a.run()\n",
+        encoding="utf-8",
+    )
+    archive = tmp_path / "snapshot.cdx.sqlite"
+    codex_packer.pack_archive(source, archive)
+    with CodexArchiveQuery(archive) as query:
+        expected = [{"path": "caller.py", "qualified_name": "caller.caller"}]
+        assert query.query_call_graph("a.run")["callers"] == expected
+        assert query.query_call_graph("b.run")["callers"] == []
+
+
+def test_query_call_graph_does_not_guess_unresolved_qualified_targets(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "other.py").write_text("def run():\n    return None\n", encoding="utf-8")
+    (source / "caller.py").write_text(
+        "def caller(external):\n    return external.run()\n",
+        encoding="utf-8",
+    )
+    archive = tmp_path / "snapshot.cdx.sqlite"
+    codex_packer.pack_archive(source, archive)
+    with CodexArchiveQuery(archive) as query:
+        assert query.query_call_graph("other.run")["callers"] == []
 
 
 def test_symbol_lookup_uses_literal_and_glob_qualified_suffixes(

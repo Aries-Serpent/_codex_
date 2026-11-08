@@ -26,6 +26,7 @@ from scripts.archive.cdx_common import (
     inspect_and_pack_blob,
     iter_deterministic_tree,
     run_secret_scanners,
+    validate_safe_rel_path,
 )
 from scripts.archive.cdx_preflight import read_source_file
 
@@ -185,7 +186,7 @@ def _ast_symbols(
                     child,
                     symbol_id,
                     qualified_name,
-                    inside_class or isinstance(node, ast.ClassDef),
+                    isinstance(node, ast.ClassDef),
                 )
             elif isinstance(child, (ast.Import, ast.ImportFrom)):
                 import_name = (
@@ -273,6 +274,7 @@ def _create_scanned_snapshot(
             relative.encode("utf-8")
         except UnicodeEncodeError as exc:
             raise ValueError("archive paths must be valid UTF-8") from exc
+        validate_safe_rel_path(relative)
         if any(fnmatch.fnmatchcase(relative, pattern) for pattern in exclude):
             continue
         target = snapshot / relative

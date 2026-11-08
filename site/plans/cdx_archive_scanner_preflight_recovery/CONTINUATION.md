@@ -595,3 +595,81 @@ or claim that security alerts, CI, comments, or agent integration are complete.
 Do not delete or reclassify any prior unfinished scanner/custody/review/archive
 work. Keep this continuation as the single handoff and append verified updates
 as work proceeds.
+
+## PR #5763 review follow-up — 2026-11-08T08:08Z
+
+This append-only update preserves every earlier dependency, owner, limitation,
+and unfinished action above. It records new evidence and a bounded execution
+plan; it does not mark the PR mergeable, CodeQL alerts resolved, or the staged
+agent active.
+
+### New review items and resolution plan
+
+| Review item / owner | Required action | Acceptance / current state |
+|---|---|---|
+| `4505503531`, workflow proposal — implementation owner | Guard both scanner invocations with `if/else` so Bash `-e` captures nonzero findings/errors and still writes redacted evidence. Treat missing, empty, malformed, or wrong-shaped JSON as invalid reports and include that state in the blocking decision. | Implemented; invalid-output harness passed under `bash -e`, and YAML/shell validation passed. Awaiting publication/reply. |
+| `4505503534`, AST symbol kind — implementation owner | Propagate class context only from an immediate class body, not through method/function bodies. | Implemented; regression proves an immediate method remains `method` and its nested function is `function`; focused CDX suite passes. Awaiting publication/reply. |
+| `4505503505`, pack/restore path agreement — implementation owner | Validate source-relative paths with the same safe-path contract used by rehydration before snapshot insertion. | Implemented; POSIX backslash and drive-prefix fixtures fail packing before archive creation, and valid round-trip tests pass. Awaiting publication/reply. |
+| `4505503517`, qualified call graph — implementation owner | Resolve stored qualified call targets without stripping their qualifier; retain simple-target compatibility and only infer `self`/`cls` calls within the selected method's class. Never basename-fallback an unresolved arbitrary receiver. | Implemented; `a.run()` does not attribute callers to `b.run`, unresolved `external.run()` does not match `other.run`, and simple/class-receiver regressions pass. Independent review's fallback concern was fixed; awaiting publication/reply. |
+| Staged CDX agent — authorized profile maintainer / permitted Cloud Agent session | Candidate logic is reviewed below. In an environment permitted to access `.github/agents`, inspect current active profile and registry conventions, then transfer/adapt this candidate and validate registry/catalog/profile checks. Do not copy it into the active directory from this restricted session. | Still blocked by this session's `.github/agents` access boundary. Transfer/registry/profile validation remains assigned to a permitted profile-maintenance session; no hosted activation is claimed. |
+| CodeQL alerts 25452/25453 — security owner | Review both alerts in the authorized Code Scanning UI and provide a platform disposition or actionable dataflow. | List and detail requests returned HTTP 403. Still unresolved/unverified; no dismissal or false-positive disposition is claimed. |
+| PR publication/review — implementation owner | Publish only tested fixes on the current PR head; then reply once to the four review IDs above with the actual pushed resolving SHA. | Pending the verified implementation commit. Replies must cite a commit present on PR #5763; do not cite local-only hashes. |
+| Historical Validation Pipeline failure — CI owner | The run `42460654922` failed its `detect-secrets` pre-commit hook on `6f76961b`; its log reports findings in the startup packet, archive tests, and PDA JSONL. Inspect the current-head run and classify each finding with evidence without printing matched values or adding broad allowlists. | Historical failure cause identified. The required local secret scan found no secrets in the changed files; current-head run must still be checked after publishing, with real findings fixed and synthetic/digest hits reviewed rather than broadly suppressed. |
+
+### Candidate logic: rubber-duck and adversarial review
+
+The staged profile in `.github/agents-holding/cdx-archive-lifecycle.agent.md`
+already routes pack/query/verify/extract through the existing lifecycle tools,
+requires scanner and integrity gates, keeps query access read-only, rejects
+unsafe restore defaults, and authorizes same-scope code fixes only when the
+task permits edits. Its adversarial cases include path/symlink replacement,
+traversal, archive replacement, forged metadata, oversized input, ambiguous
+symbols, and output-budget boundaries. This addresses the requested diagnostic
+and bounded remediation behavior without granting workflow, PR, approval, or
+security-disposition authority.
+
+Adversarial challenge: an instruction to “immediately fix” could be mistaken
+for blanket write authority; the candidate's task-authorization condition and
+explicit operation boundaries prevent that. A profile copied from the holding
+directory could still be incompatible with the active profile schema or
+registry; this session cannot inspect `.github/agents`, so transfer and hosted
+activation remain unverified and assigned to a permitted profile-maintenance
+session. Do not bypass this path restriction.
+
+### Execution evidence and next sequence
+
+- The local checkout was fast-forwarded to the live PR head before edits. The
+  progress commit `ed439c69` contains the already-dirty, validated CDX startup
+  catalog update; it is not a resolution commit for any review thread.
+- The four review fixes and their focused regressions are implemented. The
+  focused CDX-context/preflight/archive suites passed: 249 tests. Ruff, Black,
+  isort, mypy (two changed modules), Python compilation, YAML parsing, scanner
+  step `bash -n`, startup-catalog validation, `git diff --check`, and secret
+  scanning of all changed files passed. The secret scanner reported no secrets.
+  An invalid-report integration harness also proved that both scanners'
+  failures still produce blocked evidence under `bash -e`. `actionlint` is
+  unavailable in this environment.
+- A broader `pytest -q tests/archive` run exposed four failures outside the
+  edited CDX files: an `ArchiveDAL` test calls a missing `_transaction` method,
+  and three retry tests cannot resolve `codex.archive.retry.time`. The one
+  startup-catalog failure in that run was caused by the source edits and was
+  corrected by refreshing/validating the catalog; the focused 249-test rerun
+  passed. Do not mix the unrelated failures into this fix without a separate
+  owner/scope.
+- At 08:11Z on head `ed439c69`, the latest ten observed Actions runs reported
+  `action_required`; no workflow approval or dispatch was performed. Recheck
+  after publishing the implementation commit and request an authorized owner
+  decision if checks remain gated.
+- The prior CodeQL check `128651662846` and its two high-severity alerts remain
+  unverified at platform level here. The current alert list and both alert
+  detail requests returned 403. A neutral CodeQL check is not an alert
+  disposition; do not retry CodeQL or dismiss alerts without authorization.
+- The review-reply sequence is strictly after publication: verify the current
+  PR head contains the resolution commit, reply once to each of
+  `4505503531`, `4505503534`, `4505503505`, and `4505503517`, then record the
+  resulting head and check states. Existing resolved/replied threads remain
+  resolved; do not duplicate replies.
+- Preserve the earlier S/D/R/P/C/E/F/A/G work and all custody, source, scanner,
+  independent-review, and operational gates. If platform access remains
+  blocked, report the exact denied operation, its owner, and the next allowed
+  decision rather than claiming completion.

@@ -342,11 +342,21 @@ class CodexArchiveQuery:
             JOIN tree_entries AS t USING (entry_id)
             """):
             targets = json.loads(row["call_targets_json"])
-            if any(
+            direct_match = any(
                 candidate["symbol_id"] == selected["symbol_id"]
                 for target in targets
-                for candidate in self.query_symbols(target.rsplit(".", 1)[-1])
-            ):
+                for candidate in self.query_symbols(target)
+            )
+            owner = selected["qualified_name"].rsplit(".", 1)[0]
+            receiver_match = (
+                selected["symbol_kind"] in {"method", "async_method"}
+                and row["qualified_name"].startswith(f"{owner}.")
+                and any(
+                    target in {f"self.{selected['symbol_name']}", f"cls.{selected['symbol_name']}"}
+                    for target in targets
+                )
+            )
+            if direct_match or receiver_match:
                 callers.append({"path": row["path"], "qualified_name": row["qualified_name"]})
         return {
             "symbol": selected["qualified_name"],

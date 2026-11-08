@@ -46,13 +46,19 @@ jobs:
         shell: bash
         run: |
           set -u
-          "$PILOT_OUTPUT/gitleaks" dir --no-banner --redact \
+          if "$PILOT_OUTPUT/gitleaks" dir --no-banner --redact \
             --report-format json --report-path "$PILOT_OUTPUT/gitleaks.json" \
-            "$PILOT_SOURCE"
-          gitleaks_status=$?
-          "$PILOT_OUTPUT/venv/bin/detect-secrets" scan --all-files "$PILOT_SOURCE" \
-            > "$PILOT_OUTPUT/detect-secrets.json"
-          detect_status=$?
+            "$PILOT_SOURCE"; then
+            gitleaks_status=0
+          else
+            gitleaks_status=$?
+          fi
+          if "$PILOT_OUTPUT/venv/bin/detect-secrets" scan --all-files "$PILOT_SOURCE" \
+            > "$PILOT_OUTPUT/detect-secrets.json"; then
+            detect_status=0
+          else
+            detect_status=$?
+          fi
           python3 - "$PILOT_OUTPUT" "$GITHUB_SHA" "$gitleaks_status" "$detect_status" <<'PY'
           import json
           import os
@@ -61,12 +67,32 @@ jobs:
           from collections import Counter
           from pathlib import Path
 
+          def load_report(path, default, validate):
+              try:
+                  value = json.loads(path.read_text(encoding="utf-8"))
+              except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+                  return default, False
+              return (value, True) if validate(value) else (default, False)
+
+          def valid_gitleaks(value):
+              return isinstance(value, list) and all(isinstance(hit, dict) for hit in value)
+
+          def valid_detect_secrets(value):
+              if not isinstance(value, dict) or not isinstance(value.get("results"), dict):
+                  return False
+              return all(
+                  isinstance(hits, list) and all(isinstance(hit, dict) for hit in hits)
+                  for hits in value["results"].values()
+              )
+
           out = Path(sys.argv[1])
           gitleaks_status, detect_status = map(int, sys.argv[3:5])
           gitleaks_path = out / "gitleaks.json"
           detect_path = out / "detect-secrets.json"
-          gitleaks = json.loads(gitleaks_path.read_text()) if gitleaks_path.exists() else []
-          detect = json.loads(detect_path.read_text()) if detect_path.exists() else {}
+          gitleaks, gitleaks_report_valid = load_report(gitleaks_path, [], valid_gitleaks)
+          detect, detect_report_valid = load_report(
+              detect_path, {"results": {}}, valid_detect_secrets
+          )
           source_root = Path(os.environ["GITHUB_WORKSPACE"]) / os.environ["PILOT_SOURCE"]
           source_files = [
               path for path in source_root.rglob("*")
@@ -81,6 +107,8 @@ jobs:
           clean = (
               gitleaks_status == 0
               and detect_status == 0
+              and gitleaks_report_valid
+              and detect_report_valid
               and not gitleaks
               and not detect.get("results")
           )
@@ -95,9 +123,11 @@ jobs:
               "status": "scanners_passed" if clean else "blocked_or_scanner_error",
               "gitleaks_version": version,
               "gitleaks_exit_code": gitleaks_status,
+              "gitleaks_report_valid": gitleaks_report_valid,
               "gitleaks_findings": len(gitleaks),
               "gitleaks_rule_counts": dict(rule_counts),
               "detect_secrets_exit_code": detect_status,
+              "detect_secrets_report_valid": detect_report_valid,
               "detect_secrets_version": "1.5.0",
               "detect_secrets_findings": sum(plugins.values()),
               "detect_secrets_plugin_counts": dict(plugins),

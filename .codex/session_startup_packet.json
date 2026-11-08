@@ -865,26 +865,26 @@
       "functions": {
         "pack_archive": {
           "path": "scripts/archive/codex_packer.py",
-          "line": 350,
-          "location": "scripts/archive/codex_packer.py:350",
+          "line": 352,
+          "location": "scripts/archive/codex_packer.py:352",
           "signature": "def pack_archive(source: Path, output: Path, *, max_file_bytes: int=8 * 1024 * 1024, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, exclude: tuple[str, ...]=(), allow_large: tuple[str, ...]=(), finding_dispositions: Path | None=None, finding_inventory: Path | None=None) -> dict[str, Any]"
         },
         "main": {
           "path": "scripts/archive/codex_packer.py",
-          "line": 563,
-          "location": "scripts/archive/codex_packer.py:563",
+          "line": 565,
+          "location": "scripts/archive/codex_packer.py:565",
           "signature": "def main(argv: list[str] | None=None) -> int"
         }
       },
       "exported_signatures": {
         "pack_archive": {
           "path": "scripts/archive/codex_packer.py",
-          "line": 350,
+          "line": 352,
           "signature": "def pack_archive(source: Path, output: Path, *, max_file_bytes: int=8 * 1024 * 1024, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, exclude: tuple[str, ...]=(), allow_large: tuple[str, ...]=(), finding_dispositions: Path | None=None, finding_inventory: Path | None=None) -> dict[str, Any]"
         },
         "main": {
           "path": "scripts/archive/codex_packer.py",
-          "line": 563,
+          "line": 565,
           "signature": "def main(argv: list[str] | None=None) -> int"
         }
       },
@@ -897,51 +897,51 @@
               "names": [
                 "source"
               ],
-              "line": 552
+              "line": 554
             },
             {
               "names": [
                 "output"
               ],
-              "line": 553
+              "line": 555
             },
             {
               "names": [
                 "--max-file-bytes"
               ],
-              "line": 554
+              "line": 556
             },
             {
               "names": [
                 "--max-blob-bytes"
               ],
-              "line": 555
+              "line": 557
             },
             {
               "names": [
                 "--exclude"
               ],
-              "line": 556,
+              "line": 558,
               "action": "append"
             },
             {
               "names": [
                 "--allow-large"
               ],
-              "line": 557,
+              "line": 559,
               "action": "append"
             },
             {
               "names": [
                 "--finding-dispositions"
               ],
-              "line": 558
+              "line": 560
             },
             {
               "names": [
                 "--finding-inventory"
               ],
-              "line": 559
+              "line": 561
             }
           ]
         },
@@ -999,14 +999,14 @@
         },
         "CodexArchiveQuery.build_llm_context": {
           "path": "scripts/archive/codex_query.py",
-          "line": 357,
-          "location": "scripts/archive/codex_query.py:357",
+          "line": 367,
+          "location": "scripts/archive/codex_query.py:367",
           "signature": "def build_llm_context(self, *, query: str | None=None, paths: tuple[str, ...]=(), symbols: tuple[str, ...]=(), budget_tokens: int=4000, output_format: str='xml') -> dict[str, Any]"
         },
         "main": {
           "path": "scripts/archive/codex_query.py",
-          "line": 512,
-          "location": "scripts/archive/codex_query.py:512",
+          "line": 522,
+          "location": "scripts/archive/codex_query.py:522",
           "signature": "def main(argv: list[str] | None=None) -> int"
         }
       },
@@ -1078,12 +1078,12 @@
         },
         "CodexArchiveQuery.build_llm_context": {
           "path": "scripts/archive/codex_query.py",
-          "line": 357,
+          "line": 367,
           "signature": "def build_llm_context(self, *, query: str | None=None, paths: tuple[str, ...]=(), symbols: tuple[str, ...]=(), budget_tokens: int=4000, output_format: str='xml') -> dict[str, Any]"
         },
         "main": {
           "path": "scripts/archive/codex_query.py",
-          "line": 512,
+          "line": 522,
           "signature": "def main(argv: list[str] | None=None) -> int"
         }
       },
@@ -1096,19 +1096,19 @@
               "names": [
                 "archive"
               ],
-              "line": 476
+              "line": 486
             },
             {
               "names": [
                 "--max-blob-bytes"
               ],
-              "line": 477
+              "line": 487
             },
             {
               "names": [
                 "--max-text-bytes"
               ],
-              "line": 478
+              "line": 488
             }
           ]
         },
@@ -1122,19 +1122,19 @@
                 "names": [
                   "--prefix"
                 ],
-                "line": 482
+                "line": 492
               },
               {
                 "names": [
                   "--glob"
                 ],
-                "line": 483
+                "line": 493
               },
               {
                 "names": [
                   "--type"
                 ],
-                "line": 484,
+                "line": 494,
                 "choices": [
                   "file",
                   "dir",
@@ -1145,7 +1145,7 @@
                 "names": [
                   "--language"
                 ],
-                "line": 485
+                "line": 495
               }
             ]
           },
@@ -1155,25 +1155,25 @@
                 "names": [
                   "path"
                 ],
-                "line": 487
+                "line": 497
               },
               {
                 "names": [
                   "--start-line"
                 ],
-                "line": 488
+                "line": 498
               },
               {
                 "names": [
                   "--end-line"
                 ],
-                "line": 489
+                "line": 499
               },
               {
                 "names": [
                   "--bytes"
                 ],
-                "line": 490,
+                "line": 500,
                 "action": "store_true"
               }
             ]
@@ -1184,13 +1184,13 @@
                 "names": [
                   "query"
                 ],
-                "line": 492
+                "line": 502
               },
               {
                 "names": [
                   "--limit"
                 ],
-                "line": 493
+                "line": 503
               }
             ]
           },
@@ -1200,38 +1200,38 @@
                 "names": [
                   "name"
                 ],
-                "line": 495,
+                "line": 505,
                 "nargs": "?"
               },
               {
                 "names": [
                   "--kind"
                 ],
-                "line": 496
+                "line": 506
               },
               {
                 "names": [
                   "--path"
                 ],
-                "line": 497
+                "line": 507
               },
               {
                 "names": [
                   "--decorator"
                 ],
-                "line": 498
+                "line": 508
               },
               {
                 "names": [
                   "--base"
                 ],
-                "line": 499
+                "line": 509
               },
               {
                 "names": [
                   "--glob"
                 ],
-                "line": 500,
+                "line": 510,
                 "action": "store_true"
               }
             ]
@@ -1242,7 +1242,7 @@
                 "names": [
                   "symbol"
                 ],
-                "line": 502
+                "line": 512
               }
             ]
           },
@@ -1252,33 +1252,33 @@
                 "names": [
                   "--query"
                 ],
-                "line": 504
+                "line": 514
               },
               {
                 "names": [
                   "--path"
                 ],
-                "line": 505,
+                "line": 515,
                 "action": "append"
               },
               {
                 "names": [
                   "--symbol"
                 ],
-                "line": 506,
+                "line": 516,
                 "action": "append"
               },
               {
                 "names": [
                   "--budget-tokens"
                 ],
-                "line": 507
+                "line": 517
               },
               {
                 "names": [
                   "--format"
                 ],
-                "line": 508,
+                "line": 518,
                 "choices": [
                   "xml",
                   "markdown"
@@ -1707,8 +1707,8 @@
       },
       "pack_archive": {
         "path": "scripts/archive/codex_packer.py",
-        "line": 350,
-        "location": "scripts/archive/codex_packer.py:350",
+        "line": 352,
+        "location": "scripts/archive/codex_packer.py:352",
         "signature": "def pack_archive(source: Path, output: Path, *, max_file_bytes: int=8 * 1024 * 1024, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, exclude: tuple[str, ...]=(), allow_large: tuple[str, ...]=(), finding_dispositions: Path | None=None, finding_inventory: Path | None=None) -> dict[str, Any]"
       },
       "CodexArchiveQuery": {
