@@ -24587,10 +24587,16 @@ execution context with scoped access to the active agent path:
 The repository maintainer or a session provisioned with the required active-path
 scope must perform steps 1–3; the GitHub organization owner should verify the
 content-exclusion endpoint/access independently. No secrets were requested or
-disclosed, and no manual workflow dispatch or retry was requested. The automatic
-pull-request runs at head `d2a0dd46` for Copilot Setup Steps Validation
-(`42452080211`) and Workflow Execution Gate (`42452080214`) ended
-`action_required` with zero jobs, so they provide no live setup result.
+disclosed. At head `d2a0dd46`, the initial attempts for Copilot Setup Steps
+Validation (`42452080211`) and Workflow Execution Gate (`42452080214`) ended
+`action_required` with zero jobs. The maintainer then reran both: attempt 2 of
+each completed successfully; Setup Validation passed Python setup, dependency
+installation, core, integration, and security steps. This was the general setup
+validation workflow, not a Copilot code-review run. At the newer head
+`2aa6c49f`, many pull-request workflows again showed `action_required` with zero
+jobs while CodeQL analyses were in progress; approval of all current-head runs is
+not confirmed. The Actions API returned 404 for the `copilot-code-review.yml`
+workflow lookup, and no code-review-specific run was visible.
 
 ### Review-thread follow-up
 
