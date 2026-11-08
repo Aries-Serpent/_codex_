@@ -13,7 +13,8 @@ import stat
 import sys
 import zlib
 from collections import Counter
-from contextlib import closing
+from collections.abc import Iterator
+from contextlib import ExitStack, closing, contextmanager
 from pathlib import Path, PurePosixPath
 from typing import Any
 from urllib.parse import quote
@@ -410,25 +411,26 @@ def _directory_open_flags() -> int:
     return os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
 
 
-def _open_destination_directory(destination: Path) -> tuple[int, list[int], Path]:
+@contextmanager
+def _open_destination_directory(destination: Path) -> Iterator[tuple[int, Path]]:
     requested = Path(destination)
     if ".." in requested.parts:
         raise ValueError("destination path must not contain parent traversal")
     root = requested if requested.is_absolute() else Path.cwd() / requested
     flags = _directory_open_flags()
-    descriptors = [os.open(root.anchor, os.O_RDONLY | os.O_DIRECTORY)]
-    try:
+    with ExitStack() as stack:
+        descriptors = [os.open(root.anchor, os.O_RDONLY | os.O_DIRECTORY)]
+        stack.callback(os.close, descriptors[-1])
         for component in root.parts[1:]:
             try:
                 os.mkdir(component, dir_fd=descriptors[-1])
             except FileExistsError:
+                # The no-follow open below validates the existing entry as a directory.
                 pass
-            descriptors.append(os.open(component, flags, dir_fd=descriptors[-1]))
-    except Exception:
-        for descriptor in reversed(descriptors):
-            os.close(descriptor)
-        raise
-    return descriptors[-1], descriptors, root
+            descriptor = os.open(component, flags, dir_fd=descriptors[-1])
+            stack.callback(os.close, descriptor)
+            descriptors.append(descriptor)
+        yield descriptors[-1], root
 
 
 def _open_extraction_directory(root_fd: int, components: tuple[str, ...]) -> int:
@@ -439,6 +441,7 @@ def _open_extraction_directory(root_fd: int, components: tuple[str, ...]) -> int
             try:
                 os.mkdir(component, dir_fd=current)
             except FileExistsError:
+                # The no-follow open below validates the existing entry as a directory.
                 pass
             child = os.open(component, flags, dir_fd=current)
             os.close(current)
@@ -482,8 +485,7 @@ def rehydrate_archive(
                     allow_external=allow_external_symlinks,
                     archive_symlinks=symlink_paths,
                 )
-        root_fd, ancestor_fds, root = _open_destination_directory(destination)
-        try:
+        with _open_destination_directory(destination) as (root_fd, root):
             if os.listdir(root_fd):
                 raise FileExistsError("destination must be empty")
             directories = [item for item in entries if item["entry_type"] == "dir"]
@@ -565,9 +567,6 @@ def rehydrate_archive(
                     )
                 finally:
                     os.close(directory_fd)
-        finally:
-            for descriptor in reversed(ancestor_fds):
-                os.close(descriptor)
     return {"destination": str(root), **verification}
 
 

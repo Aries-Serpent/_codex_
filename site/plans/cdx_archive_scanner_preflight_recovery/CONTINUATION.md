@@ -543,3 +543,55 @@ This footer is added afterward in a separate metadata commit; it is not a
 self-referential commit claim. Final HEAD and final artifact SHA-256 are reported
 externally, not embedded as their own identity. Future edits retain this same
 artifact and its Git history.
+
+## PR #5763 follow-up execution — 2026-11-08T07:20Z
+
+This addendum preserves the earlier S/D/R/P/C/E/F/A/G dependency table and all
+unresolved operational predicates. It records work on the current hosted PR head
+`521ba0f94a7672e08287546eaa5ac13d89e23324`; it does not mark the PR mergeable
+or claim that security alerts, CI, comments, or agent integration are complete.
+
+### Issue ledger, owners, and acceptance
+
+| Issue / owner | Action taken or required | Acceptance / current status |
+|---|---|---|
+| Four archive review findings — implementation owner | Convert destination-root/ancestor FD ownership to an `ExitStack`-managed context; preserve descriptor-relative no-follow behavior; add success and exception closure tests; document that `FileExistsError` only ignores the mkdir race before no-follow directory validation. | Local patch applied. Focused archive suite, Python quality checks and adversarial review must pass; then publish to PR and reply once to each review ID with the actual pushed SHA. |
+| Manual workflow setup finding — workflow owner | Checkout the repository before the local setup action with `contents: read`, the approved pinned checkout action, `persist-credentials: false`, and shallow fetch. | Local YAML/order assertions pass. The fix is pending publication and a fresh hosted run. |
+| CodeQL 25453 — security owner | Review `cdx_common.py:192` in the authorized Code Scanning UI. Source inspection confirms the bytes are the fixed public config constant or empty, in a temporary directory, followed by mode `0600`; caller configuration is compared against those fixed bytes. Do not add a suppression or alter scanner configuration solely to hide the alert. If owner agrees it is a false positive, dismiss it with the platform's required reason; otherwise provide the full dataflow so implementation can be corrected. | Integration read/list access returned 403; no dismissal or resolution is claimed. This is the explicit blocker for the prior failing CodeQL check. |
+| CodeQL 25452 — security owner | Review `cdx_review.py:402` in the authorized Code Scanning UI. The printed projection contains fixed labels, aggregate counts/indexes and optionally a digest of the serialized checkpoint, but no finding paths/IDs, per-finding source-file digests, or source text. Existing tests assert the projection. Do not suppress the alert or remove useful output without evidence of actual disclosure. | Integration read/list access returned 403; no dismissal or resolution is claimed. Owner must dismiss as false positive with rationale or provide dataflow for a code fix. |
+| Staged CDX agent — authorized profile maintainer / agent environment operator | @mbaetiong explicitly authorized `.github/agents/` access in the 2026-11-08 follow-up. This execution environment still forbids accessing files in that directory. A compatible authorized session must inspect current profile and registry conventions, then transfer/update the candidate only if those conventions support activation; validate registry/catalog/tests and adversarial cases. | Authorization is recorded; execution is not performed here due to the hard path boundary. Do not describe the candidate as active or hosted. Do not ask the owner to repeat the authorization; arrange an allowed execution environment/session. |
+| Rust CI dependency gate — Rust dependency maintainer | Investigate `RUSTSEC-2026-0441` for `pin-utils 0.1.0` from `futures-util 0.3.31 -> pyo3-async-runtimes 0.29.0 -> codex-swarm-engine 0.1.0`. `cargo audit` found zero vulnerabilities, but `cargo deny check advisories` failed because the crate is unmaintained; its log says no safe upgrade is available. Evaluate a compatible dependency upgrade or policy exception in a separately scoped change. | Current evidence ties this failure to the repository's Rust dependency graph, not the CDX patch. Do not change unrelated Cargo dependencies in this archive follow-up. |
+| PR publication/review — implementation owner | Push code/test/workflow changes to the current PR head through the authorized progress mechanism, verify the resulting head, then reply exactly once to `4505239732`, `4505239736`, `4505239735`, `4505239738`, and `4505273350`, each with the actual pushed resolving SHA. | The plan-only commit is on the PR; archive/workflow code changes are still local until separately published. No resolving replies may cite a local-only SHA. |
+
+### Current execution evidence and next sequence
+
+- The plan-only progress commit `521ba0f94a7672e08287546eaa5ac13d89e23324`
+  is on PR #5763. It contains only the generated startup-packet update; it did
+  not resolve source review comments or the CodeQL alerts.
+- Local changes now implement the four extraction findings and workflow setup
+  finding. The focused archive test file passed (48 tests); Ruff, Black, isort,
+  compilation, scoped mypy, and workflow YAML/order assertions passed.
+  `actionlint` is unavailable. The CDX startup context was refreshed and
+  validated offline. Run the combined archive/context regression suite and
+  secret scan again before publication.
+- At 07:20Z on head `521ba0f9`, `Workflow Execution Gate` and Template Lint
+  passed; Rust-Python Hybrid Swarm failed as described above; several other
+  workflows were still running. The `CodeQL` check run `128662140753` was
+  `neutral`, not a confirmed alert resolution. Earlier exact check
+  `128651662846` failed with the two high alerts. The associated CodeQL Actions
+  analysis run completed, but its result did not dismiss those alerts.
+- After publishing the code changes, inspect the new head's actual check runs,
+  wait for CodeQL analysis and all relevant jobs to finish, retrieve failed-job
+  logs, and compare the alert set. Do not retry failed workflows without
+  examining the new run and an authorized bounded retry need.
+- Obtain owner-side disposition of both CodeQL alerts; a local security review
+  is evidence, not a platform resolution. Continue the archive review replies
+  only after the actual code commit is present on the PR.
+- Profile relocation remains a separate explicit task for a session whose
+  tools permit `.github/agents/` access. Owner authorization is no longer
+  missing, but the current path prohibition cannot be overridden by that
+  authorization.
+
+Do not delete or reclassify any prior unfinished scanner/custody/review/archive
+work. Keep this continuation as the single handoff and append verified updates
+as work proceeds.

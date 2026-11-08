@@ -717,6 +717,36 @@ def test_rehydrate_does_not_follow_destination_root_replacement(
     assert list(outside.iterdir()) == []
 
 
+@pytest.mark.parametrize("raise_inside", (False, True))
+def test_destination_directory_closes_all_descriptors(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, raise_inside: bool
+):
+    destination = tmp_path / "restore"
+    opened = []
+    original_open = os.open
+
+    def track_open(*args, **kwargs):
+        descriptor = original_open(*args, **kwargs)
+        opened.append(descriptor)
+        return descriptor
+
+    monkeypatch.setattr(codex_rehydrate.os, "open", track_open)
+    if raise_inside:
+        with pytest.raises(RuntimeError, match="test failure"):
+            with codex_rehydrate._open_destination_directory(destination):
+                raise RuntimeError("test failure")
+    else:
+        with codex_rehydrate._open_destination_directory(destination) as (root_fd, root):
+            assert root_fd in opened
+            assert root == destination
+            assert os.fstat(root_fd)
+
+    assert opened
+    for descriptor in opened:
+        with pytest.raises(OSError):
+            os.fstat(descriptor)
+
+
 def test_rehydrate_rejects_subdirectory_symlink_replacement(
     packed_tree, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):

@@ -1298,81 +1298,81 @@
       "functions": {
         "verify_archive_connection": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 190,
-          "location": "scripts/archive/codex_rehydrate.py:190",
+          "line": 191,
+          "location": "scripts/archive/codex_rehydrate.py:191",
           "signature": "def verify_archive_connection(connection: sqlite3.Connection, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
         },
         "verify_archive": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 350,
-          "location": "scripts/archive/codex_rehydrate.py:350",
+          "line": 351,
+          "location": "scripts/archive/codex_rehydrate.py:351",
           "signature": "def verify_archive(archive: Path, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
         },
         "validate_safe_rel_path": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 364,
-          "location": "scripts/archive/codex_rehydrate.py:364",
+          "line": 365,
+          "location": "scripts/archive/codex_rehydrate.py:365",
           "signature": "def validate_safe_rel_path(path: str) -> PurePosixPath"
         },
         "validate_symlink_target": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 375,
-          "location": "scripts/archive/codex_rehydrate.py:375",
+          "line": 376,
+          "location": "scripts/archive/codex_rehydrate.py:376",
           "signature": "def validate_symlink_target(link_path: str, target: str, *, allow_external: bool=False, archive_symlinks: set[str] | None=None) -> None"
         },
         "rehydrate_archive": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 452,
-          "location": "scripts/archive/codex_rehydrate.py:452",
+          "line": 455,
+          "location": "scripts/archive/codex_rehydrate.py:455",
           "signature": "def rehydrate_archive(archive: Path, destination: Path, *, allow_external_symlinks: bool=False, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
         },
         "compare_trees": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 574,
-          "location": "scripts/archive/codex_rehydrate.py:574",
+          "line": 573,
+          "location": "scripts/archive/codex_rehydrate.py:573",
           "signature": "def compare_trees(left: Path, right: Path, *, check_mtime: bool=True) -> dict[str, Any]"
         },
         "main": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 644,
-          "location": "scripts/archive/codex_rehydrate.py:644",
+          "line": 643,
+          "location": "scripts/archive/codex_rehydrate.py:643",
           "signature": "def main(argv: list[str] | None=None) -> int"
         }
       },
       "exported_signatures": {
         "verify_archive_connection": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 190,
+          "line": 191,
           "signature": "def verify_archive_connection(connection: sqlite3.Connection, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
         },
         "verify_archive": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 350,
+          "line": 351,
           "signature": "def verify_archive(archive: Path, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
         },
         "validate_safe_rel_path": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 364,
+          "line": 365,
           "signature": "def validate_safe_rel_path(path: str) -> PurePosixPath"
         },
         "validate_symlink_target": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 375,
+          "line": 376,
           "signature": "def validate_symlink_target(link_path: str, target: str, *, allow_external: bool=False, archive_symlinks: set[str] | None=None) -> None"
         },
         "rehydrate_archive": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 452,
+          "line": 455,
           "signature": "def rehydrate_archive(archive: Path, destination: Path, *, allow_external_symlinks: bool=False, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
         },
         "compare_trees": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 574,
+          "line": 573,
           "signature": "def compare_trees(left: Path, right: Path, *, check_mtime: bool=True) -> dict[str, Any]"
         },
         "main": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 644,
+          "line": 643,
           "signature": "def main(argv: list[str] | None=None) -> int"
         }
       },
@@ -1389,19 +1389,19 @@
                 "names": [
                   "archive"
                 ],
-                "line": 629
+                "line": 628
               },
               {
                 "names": [
                   "--max-blob-bytes"
                 ],
-                "line": 630
+                "line": 629
               },
               {
                 "names": [
                   "--max-text-bytes"
                 ],
-                "line": 631
+                "line": 630
               }
             ]
           },
@@ -1411,32 +1411,32 @@
                 "names": [
                   "archive"
                 ],
-                "line": 633
+                "line": 632
               },
               {
                 "names": [
                   "destination"
                 ],
-                "line": 634
+                "line": 633
               },
               {
                 "names": [
                   "--allow-external-symlinks"
                 ],
-                "line": 635,
+                "line": 634,
                 "action": "store_true"
               },
               {
                 "names": [
                   "--max-blob-bytes"
                 ],
-                "line": 636
+                "line": 635
               },
               {
                 "names": [
                   "--max-text-bytes"
                 ],
-                "line": 637
+                "line": 636
               }
             ]
           },
@@ -1446,13 +1446,13 @@
                 "names": [
                   "left"
                 ],
-                "line": 639
+                "line": 638
               },
               {
                 "names": [
                   "right"
                 ],
-                "line": 640
+                "line": 639
               }
             ]
           }
@@ -1683,8 +1683,8 @@
       },
       "verify_archive": {
         "path": "scripts/archive/codex_rehydrate.py",
-        "line": 350,
-        "location": "scripts/archive/codex_rehydrate.py:350",
+        "line": 351,
+        "location": "scripts/archive/codex_rehydrate.py:351",
         "signature": "def verify_archive(archive: Path, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
       },
       "validate_inventory": {
@@ -1719,8 +1719,8 @@
       },
       "rehydrate_archive": {
         "path": "scripts/archive/codex_rehydrate.py",
-        "line": 452,
-        "location": "scripts/archive/codex_rehydrate.py:452",
+        "line": 455,
+        "location": "scripts/archive/codex_rehydrate.py:455",
         "signature": "def rehydrate_archive(archive: Path, destination: Path, *, allow_external_symlinks: bool=False, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
       },
       "common.verify_archive": {
