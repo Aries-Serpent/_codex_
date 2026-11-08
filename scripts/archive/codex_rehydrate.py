@@ -14,7 +14,7 @@ import sys
 import zlib
 from collections import Counter
 from collections.abc import Iterator
-from contextlib import ExitStack, closing, contextmanager
+from contextlib import closing, contextmanager
 from pathlib import Path, PurePosixPath
 from typing import Any
 from urllib.parse import quote
@@ -418,19 +418,21 @@ def _open_destination_directory(destination: Path) -> Iterator[tuple[int, Path]]
         raise ValueError("destination path must not contain parent traversal")
     root = requested if requested.is_absolute() else Path.cwd() / requested
     flags = _directory_open_flags()
-    with ExitStack() as stack:
-        descriptors = [os.open(root.anchor, os.O_RDONLY | os.O_DIRECTORY)]
-        stack.callback(os.close, descriptors[-1])
+    current_fd = os.open(root.anchor, os.O_RDONLY | os.O_DIRECTORY)
+    try:
         for component in root.parts[1:]:
             try:
-                os.mkdir(component, dir_fd=descriptors[-1])
+                os.mkdir(component, dir_fd=current_fd)
             except FileExistsError:
                 # The no-follow open below validates the existing entry as a directory.
                 pass
-            descriptor = os.open(component, flags, dir_fd=descriptors[-1])
-            stack.callback(os.close, descriptor)
-            descriptors.append(descriptor)
-        yield descriptors[-1], root
+            child_fd = os.open(component, flags, dir_fd=current_fd)
+            parent_fd = current_fd
+            current_fd = child_fd
+            os.close(parent_fd)
+        yield current_fd, root
+    finally:
+        os.close(current_fd)
 
 
 def _open_extraction_directory(root_fd: int, components: tuple[str, ...]) -> int:
