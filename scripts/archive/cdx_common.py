@@ -189,7 +189,7 @@ def _scanner_workspace(
                     raise RuntimeError("untrusted secret scanner configuration")
             # Pin private copies, not mutable caller-owned files.
             pinned = workspace / name
-            pinned.write_bytes(payload)
+            pinned.write_bytes(TRUSTED_GITLEAKS_CONFIG if name == "gitleaks.toml" else b"")
             pinned.chmod(0o600)
             effective.append(pinned)
         yield workspace, workspace, effective[0], effective[1]

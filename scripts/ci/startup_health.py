@@ -12,11 +12,7 @@ from pathlib import Path
 if __package__:
     from scripts.ci.cdx_context import CANDIDATE, build_cdx_context, refresh_cdx_context
 else:
-    import cdx_context
-
-    build_cdx_context = cdx_context.build_cdx_context
-    refresh_cdx_context = cdx_context.refresh_cdx_context
-    CANDIDATE = cdx_context.CANDIDATE
+    from cdx_context import CANDIDATE, build_cdx_context, refresh_cdx_context
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / ".codex" / "session_access_manifest.json"

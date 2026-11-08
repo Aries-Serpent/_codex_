@@ -398,6 +398,7 @@ def main(argv: list[str] | None = None) -> int:
     except (OSError, ValueError, TypeError, RecursionError, RuntimeError):
         print("BLOCKED: private queue input, binding or checkpoint validation failed")
         return 2
+    # Public projection only: fixed labels, integer counts/indexes and checkpoint digest.
     print(json.dumps(summary, sort_keys=True))
     return 0
 

@@ -627,6 +627,7 @@ def test_list_batches_cli_indexes_multiple_batches_without_disclosing_findings(
     assert cdx_review.main(arguments + ["--output", str(checkpoint)]) == 0
     saved, saved_digest = cdx_review.read_private_json(checkpoint)
     result_with_checkpoint = json.loads(capsys.readouterr().out)
-    assert result_with_checkpoint.pop("checkpoint_sha256") == saved_digest
+    checkpoint_digest = result_with_checkpoint.pop("checkpoint_sha256")
+    assert checkpoint_digest == saved_digest
     assert result_with_checkpoint == result
     assert saved == queue

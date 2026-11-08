@@ -6,12 +6,41 @@ import copy
 import json
 import socket
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
 
 from scripts.archive import cdx_common as common
 from scripts.ci import cdx_context, startup_health
+
+
+@pytest.mark.parametrize("package_mode", [False, True])
+def test_startup_health_import_modes(tmp_path, package_mode):
+    root = Path(startup_health.__file__).resolve().parents[2]
+    packet = tmp_path / "packet.json"
+    packet.write_text("{}")
+    entrypoint = (
+        ["-m", "scripts.ci.startup_health"]
+        if package_mode
+        else [str(Path(startup_health.__file__))]
+    )
+    refreshed = subprocess.run(
+        [sys.executable, *entrypoint, "--refresh-context", "--output", str(packet)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert refreshed.returncode == 0
+    validated = subprocess.run(
+        [sys.executable, *entrypoint, "--validate", "--output", str(packet)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert "validated (offline)" in validated.stdout
 
 
 def test_catalog_is_complete_deterministic_and_offline(monkeypatch):
