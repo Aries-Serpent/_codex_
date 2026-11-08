@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "source_revision_short": "c0c8b0e5",
+  "source_path": ".codex/archive/root-consolidation/temp-outputs/mutants/",
+  "source_file_count": 4597,
+  "source_raw_bytes": 31979791,
+  "scanner_runs": {
+    "gitleaks": {
+      "version": "8.30.1",
+      "options": [
+        "dir",
+        "--redact=100",
+        "--report-format=json"
+      ],
+      "finding_records": 85,
+      "unique_files": 32,
+      "exit_code": 1
+    },
+    "detect-secrets": {
+      "version": "1.5.0",
+      "options": [
+        "scan",
+        "--no-verify",
+        "--all-files"
+      ],
+      "finding_records": 323,
+      "unique_files": 159,
+      "previously_recorded_finding_records": 318,
+      "previous_count_difference": 5,
+      "previous_count_difference_cause": "not established; the fresh pinned scan count is authoritative for this source fingerprint",
+      "exit_code": 0
+    }
+  },
+  "combined_review": {
+    "finding_records_inventoried": 408,
+    "unique_path_line_pairs": 383,
+    "unique_files": 167,
+    "affirmative_false_positive_dispositions": 0,
+    "confirmed_secrets": null,
+    "unresolved_records": 408,
+    "allowlisted_paths": [],
+    "review_status": "All findings remain unresolved; no finding was affirmatively cleared.",
+    "decision": "Keep packing blocked until both pinned scanners pass and every exact finding is either absent after remediation or affirmatively cleared with current evidence."
+  },
+  "review_method": {
+    "matched_values_or_source_lines_recorded": false,
+    "source_fingerprint_identical_before_and_after_scan": true,
+    "source_fingerprint_evidence": "kept in non-committed temporary evidence"
+  },
+  "archive": {
+    "generated": false,
+    "pack_attempts_after_scan": 0,
+    "reason": "Both scanners reported findings and none has an affirmative exact disposition."
+  }
+}

@@ -1,0 +1,633 @@
+from __future__ import annotations
+
+import copy
+import hashlib
+import hmac
+import json
+import os
+import subprocess
+from pathlib import Path
+
+import pytest
+
+from scripts.archive import cdx_common, cdx_review, codex_packer
+
+
+@pytest.fixture
+def inventory():
+    return {
+        "schema_version": 1,
+        "findings": [
+            {
+                "scanner": "gitleaks",
+                "scanner_version": "8.30.1",
+                "finding_id": "a" * 64,
+                "file_sha256": "b" * 64,
+                "path": "fixture.txt",
+                "rule": "synthetic-rule",
+                "start_line": 1,
+                "end_line": 1,
+            }
+        ],
+    }
+
+
+@pytest.fixture
+def bindings():
+    return {
+        field: "c" * (32 if field == "run_namespace" else 64) for field in cdx_review.BINDING_FIELDS
+    } | {"identity_version": cdx_common.FINDING_IDENTITY_VERSION}
+
+
+def test_snapshot_identity_is_root_independent_and_observation_specific(tmp_path):
+    results = []
+    for name in ("first", "second"):
+        root = tmp_path / name
+        root.mkdir()
+        path = root / "fixture.txt"
+        path.write_text("synthetic fixture only\n")
+        for scanner, record in (
+            (
+                "gitleaks",
+                {
+                    "File": str(path),
+                    "RuleID": "synthetic-rule",
+                    "StartLine": 1,
+                    "EndLine": 1,
+                    "StartColumn": 1,
+                    "Fingerprint": f"{path}:synthetic-rule:1",
+                },
+            ),
+            (
+                "detect-secrets",
+                {
+                    "File": str(path),
+                    "type": "synthetic-rule",
+                    "line_number": 1,
+                    "hashed_secret": "synthetic-opaque-identifier",  # pragma: allowlist secret
+                },
+            ),
+        ):
+            finding = cdx_common._scanner_finding(
+                root, scanner, cdx_common.SECRET_SCANNER_VERSIONS[scanner], record
+            )
+            key = b"synthetic fixture key only" * 2
+            identity = cdx_common._finding_id(key, finding)
+            if name == "first":
+                results.append(identity)
+            else:
+                expected_identity = results.pop(0)
+                assert identity == expected_identity
+            assert identity != cdx_common._finding_id(key + b"changed", finding)
+            changed = copy.deepcopy(finding)
+            changed["_record"]["distinct_observation"] = 2
+            assert identity != cdx_common._finding_id(key, changed)
+            reversed_finding = dict(reversed(list(finding.items())))
+            assert identity == cdx_common._finding_id(key, reversed_finding)
+            legacy = hmac.new(
+                key,
+                json.dumps(
+                    finding, ensure_ascii=True, sort_keys=True, separators=(",", ":")
+                ).encode(),
+                hashlib.sha256,
+            ).hexdigest()
+            assert identity != legacy
+
+
+@pytest.mark.parametrize("raw", ('{"x":1,"x":2}', '{"x":NaN}', '{"x":Infinity}'))
+def test_scanner_json_rejects_ambiguous_reports(raw):
+    with pytest.raises(ValueError):
+        cdx_common._scanner_json(raw)
+
+
+@pytest.mark.parametrize(
+    "change",
+    (
+        "duplicate",
+        "version",
+        "digest",
+        "boolean",
+        "traversal",
+        "extra",
+        "schema",
+    ),
+)
+def test_inventory_rejects_invalid_exact_bindings(inventory, change):
+    row = inventory["findings"][0]
+    if change == "duplicate":
+        inventory["findings"].append(dict(row))
+    elif change == "version":
+        row["scanner_version"] = "0.0.0"
+    elif change == "digest":
+        row["finding_id"] = "invalid"
+    elif change == "boolean":
+        row["start_line"] = True
+    elif change == "traversal":
+        row["path"] = "../outside"
+    elif change == "extra":
+        row["source_line"] = "must never enter queue"
+    else:
+        inventory["schema_version"] = True
+    with pytest.raises(ValueError):
+        cdx_review.validate_inventory(inventory)
+
+
+def test_resume_preserves_conservative_states_and_overlap(inventory, bindings):
+    second = dict(
+        inventory["findings"][0],
+        scanner="detect-secrets",
+        scanner_version="1.5.0",
+        finding_id="d" * 64,
+    )
+    inventory["findings"].append(second)
+    queue = cdx_review.build_queue(inventory, "e" * 64, bindings)
+    queue["observations"][0]["state"] = "suspected_sensitive"
+    resumed = cdx_review.build_queue(inventory, "e" * 64, bindings, previous=queue)
+    summary = cdx_review.queue_summary(resumed)
+    assert summary["observed_total"] == 2
+    assert summary["by_scanner"] == {"gitleaks": 1, "detect-secrets": 1}
+    assert sum(summary["by_state"].values()) == 2
+    assert summary["by_state"]["suspected_sensitive"] == 1
+    assert summary["by_state"]["accepted_exact_false_positive"] == 0
+    assert summary["clearance"] == "not_evaluated"
+
+
+@pytest.mark.parametrize(
+    "attack",
+    (
+        "forged_reviewer",
+        "irrelevant_evidence",
+        "accepted",
+        "awaiting_review",
+        "missing",
+        "extra",
+        "duplicate",
+        "stale_id",
+        "source",
+        "version",
+        "synthetic",
+    ),
+)
+def test_resume_never_treats_claims_as_approval(inventory, bindings, attack):
+    queue = cdx_review.build_queue(inventory, "e" * 64, bindings)
+    row = queue["observations"][0]
+    if attack == "forged_reviewer":
+        row["reviewed_by"] = "fabricated-label"
+    elif attack == "irrelevant_evidence":
+        row["evidence_sha256"] = hashlib.sha256(b"irrelevant fixture").hexdigest()
+    elif attack == "accepted":
+        row["state"] = "accepted_exact_false_positive"
+    elif attack == "awaiting_review":
+        row["state"] = "evidenced_false_positive_awaiting_review"
+    elif attack == "missing":
+        queue["observations"] = []
+    elif attack in {"extra", "duplicate"}:
+        queue["observations"].append(dict(row))
+    elif attack == "stale_id":
+        row["finding_id"] = "f" * 64
+    elif attack == "source":
+        queue["bindings"]["source_sha256"] = "f" * 64
+    elif attack == "version":
+        row["scanner_version"] = "0.0.0"
+    else:
+        queue["source_kind"] = "synthetic"
+    with pytest.raises(ValueError):
+        cdx_review.build_queue(inventory, "e" * 64, bindings, previous=queue)
+
+
+def test_private_io_and_atomic_history(tmp_path, inventory, monkeypatch):
+    tmp_path.chmod(0o700)
+    path = tmp_path / "001.json"
+    digest = cdx_review.write_checkpoint(path, inventory)
+    assert path.stat().st_mode & 0o777 == 0o600
+    assert cdx_review.read_private_json(path) == (inventory, digest)
+    with pytest.raises(FileExistsError):
+        cdx_review.write_checkpoint(path, {"replacement": True})
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == digest
+
+    def interrupt(_fd):
+        raise OSError("synthetic interruption")
+
+    monkeypatch.setattr(cdx_review.os, "fsync", interrupt)
+    with pytest.raises(OSError):
+        cdx_review.write_checkpoint(tmp_path / "002.json", inventory)
+    assert not (tmp_path / "002.json").exists()
+    assert not list(tmp_path.glob(".cdx-checkpoint-*"))
+
+
+def test_interrupted_two_link_checkpoint_requires_regeneration(tmp_path, inventory):
+    tmp_path.chmod(0o700)
+    original = tmp_path / "001.json"
+    cdx_review.write_checkpoint(original, inventory)
+    os.link(original, tmp_path / ".cdx-checkpoint-interrupted")
+    with pytest.raises(ValueError):
+        cdx_review.read_private_json(original)
+    regenerated = tmp_path / "002.json"
+    cdx_review.write_checkpoint(regenerated, inventory)
+    assert cdx_review.read_private_json(regenerated)[0] == inventory
+    assert original.exists()
+
+
+@pytest.mark.parametrize("unsafe", ("symlink", "ancestor", "hardlink", "fifo", "mode", "size"))
+def test_private_reads_reject_unsafe_files(tmp_path, unsafe, monkeypatch):
+    tmp_path.chmod(0o700)
+    original = tmp_path / "original.json"
+    original.write_text("{}")
+    original.chmod(0o600)
+    target = tmp_path / "input.json"
+    if unsafe == "symlink":
+        target.symlink_to(original)
+    elif unsafe == "ancestor":
+        link = tmp_path / "alias"
+        link.symlink_to(tmp_path, target_is_directory=True)
+        target = link / original.name
+    elif unsafe == "hardlink":
+        os.link(original, target)
+    elif unsafe == "fifo":
+        os.mkfifo(target, 0o600)
+    elif unsafe == "mode":
+        target = original
+        target.chmod(0o644)
+    else:
+        target = original
+        monkeypatch.setattr(cdx_review, "MAX_DOCUMENT_BYTES", 1)
+    with pytest.raises((OSError, ValueError)):
+        cdx_review.read_private_json(target)
+
+
+@pytest.mark.parametrize("operation", ("read", "write"))
+def test_private_io_rejects_parent_traversal_before_hiding_symlink(tmp_path, operation):
+    tmp_path.chmod(0o700)
+    nested = tmp_path / "elsewhere" / "nested"
+    nested.mkdir(parents=True)
+    alias = tmp_path / "alias"
+    alias.symlink_to(nested, target_is_directory=True)
+    original = tmp_path / "original.json"
+    cdx_review.write_checkpoint(original, {"synthetic": True})
+    target = alias / ".." / ("original.json" if operation == "read" else "new.json")
+    with pytest.raises(ValueError, match="parent traversal"):
+        if operation == "read":
+            cdx_review.read_private_json(target)
+        else:
+            cdx_review.write_checkpoint(target, {"synthetic": True})
+    assert not (tmp_path / "new.json").exists()
+    assert cdx_review.read_private_json(original)[0] == {"synthetic": True}
+
+
+def test_unresolved_scan_does_not_create_database(tmp_path, monkeypatch):
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "fixture.txt").write_text("synthetic\n")
+    output = tmp_path / "never.cdx.sqlite"
+
+    def reject(*_args, **_kwargs):
+        raise RuntimeError("unresolved synthetic observations")
+
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", reject)
+    with pytest.raises(RuntimeError, match="unresolved"):
+        codex_packer.pack_archive(source, output)
+    assert not output.exists()
+
+
+@pytest.mark.parametrize(
+    "failure",
+    (
+        "status",
+        "duplicate_json",
+        "timeout",
+        "detect_failure",
+        "detect_partial",
+        "missing_key",
+        "wrong_version",
+        "ambiguous_duplicate",
+    ),
+)
+def test_scanner_failures_leave_database_absent(tmp_path, monkeypatch, failure):
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "fixture.txt").write_text("synthetic fixture only\n")
+    output = tmp_path / "never.cdx.sqlite"
+    monkeypatch.setattr(cdx_common.shutil, "which", lambda name: name)
+    monkeypatch.setattr(codex_packer, "git_blob_oids", lambda _root: {})
+    if failure == "missing_key":
+        monkeypatch.delenv("CDX_FINDING_HMAC_KEY", raising=False)
+    else:
+        monkeypatch.setenv("CDX_FINDING_HMAC_KEY", "synthetic-only-test-key" * 2)
+
+    def fake_run(command, **kwargs):
+        assert kwargs["timeout"] == cdx_common.SECRET_SCANNER_TIMEOUT_SECONDS
+        if command[1] == "version":
+            version = "8.30.2" if failure == "wrong_version" else "8.30.1"
+            return subprocess.CompletedProcess(command, 0, version, "")
+        if command[1] == "--version":
+            return subprocess.CompletedProcess(command, 0, "1.5.0", "")
+        if failure == "timeout":
+            raise subprocess.TimeoutExpired(command, 1, output="must remain private")
+        if command[0] == "gitleaks":
+            root = Path(command[-1])
+            record = {
+                "File": str(root / "fixture.txt"),
+                "RuleID": "synthetic-rule",
+                "StartLine": 1,
+                "EndLine": 1,
+            }
+            records = [record, record] if failure == "ambiguous_duplicate" else [record]
+            raw = json.dumps(records)
+            if failure == "status":
+                raw = "[]"
+            elif failure == "duplicate_json":
+                raw = '[{"File":"first","File":"second"}]'
+            Path(command[command.index("--report-path") + 1]).write_text(raw)
+            return subprocess.CompletedProcess(command, 2, "", "")
+        assert command[1:4] == ["scan", "--no-verify", "--all-files"]
+        return subprocess.CompletedProcess(
+            command,
+            2 if failure == "detect_failure" else 0,
+            "{}" if failure == "detect_partial" else '{"results": {}}',
+            "",
+        )
+
+    monkeypatch.setattr(cdx_common.subprocess, "run", fake_run)
+    with pytest.raises(RuntimeError):
+        codex_packer.pack_archive(source, output)
+    assert not output.exists()
+
+
+def test_queue_cli_outputs_only_aggregates(tmp_path, inventory, bindings, capsys):
+    tmp_path.chmod(0o700)
+    source = tmp_path / "source"
+    source.mkdir()
+    inventory_path = tmp_path / "inventory.json"
+    binding_path = tmp_path / "bindings.json"
+    cdx_review.write_checkpoint(inventory_path, inventory)
+    cdx_review.write_checkpoint(binding_path, bindings)
+    arguments = [
+        "--source",
+        str(source),
+        "--inventory",
+        str(inventory_path),
+        "--bindings",
+        str(binding_path),
+        "--output",
+        str(tmp_path / "001.json"),
+    ]
+    assert cdx_review.main(arguments) == 0
+    printed = capsys.readouterr().out
+    assert "fixture.txt" not in printed
+    assert "a" * 64 not in printed
+    assert json.loads(printed)["observed_total"] == 1
+    assert cdx_review.main(arguments) == 2
+    assert "BLOCKED" in capsys.readouterr().out
+    arguments[-1] = str(source / "inside.json")
+    assert cdx_review.main(arguments) == 2
+    assert not (source / "inside.json").exists()
+
+
+@pytest.mark.parametrize("evidence_change", ("tampered", "missing", "internal"))
+def test_scanner_rejects_unavailable_or_tampered_exact_evidence(
+    tmp_path, monkeypatch, evidence_change
+):
+    root = tmp_path / "source"
+    root.mkdir()
+    (root / "fixture.txt").write_text("synthetic fixture only\n")
+    monkeypatch.setattr(cdx_common.shutil, "which", lambda name: name)
+    monkeypatch.setenv("CDX_FINDING_HMAC_KEY", "synthetic-only-test-key" * 2)
+
+    def fake_run(command, **_kwargs):
+        if command[1] == "version":
+            return subprocess.CompletedProcess(command, 0, "8.30.1", "")
+        if command[1] == "--version":
+            return subprocess.CompletedProcess(command, 0, "1.5.0", "")
+        if command[0] == "gitleaks":
+            record = {
+                "File": str(root / "fixture.txt"),
+                "RuleID": "synthetic-rule",
+                "StartLine": 1,
+                "EndLine": 1,
+            }
+            Path(command[command.index("--report-path") + 1]).write_text(json.dumps([record]))
+            return subprocess.CompletedProcess(command, 2, "", "")
+        return subprocess.CompletedProcess(command, 0, '{"results": {}}', "")
+
+    monkeypatch.setattr(cdx_common.subprocess, "run", fake_run)
+    inventory = tmp_path / "inventory.json"
+    with pytest.raises(RuntimeError, match="unresolved"):
+        cdx_common.run_secret_scanners(root, inventory_path=inventory)
+    row = json.loads(inventory.read_text())["findings"][0]
+    evidence = tmp_path / "evidence.txt"
+    evidence.write_text("synthetic exact-evidence fixture only\n")
+    row.update(
+        disposition="false_positive",
+        evidence_ref=str(evidence),
+        evidence_sha256=hashlib.sha256(evidence.read_bytes()).hexdigest(),
+        reviewed_by="synthetic fixture label, not authentication",
+    )
+    if evidence_change == "tampered":
+        evidence.write_text("changed bytes\n")
+    elif evidence_change == "missing":
+        evidence.unlink()
+    else:
+        internal = root / "internal.txt"
+        internal.write_text("synthetic internal evidence\n")
+        row["evidence_ref"] = str(internal)
+        row["evidence_sha256"] = hashlib.sha256(internal.read_bytes()).hexdigest()
+    dispositions = tmp_path / "dispositions.json"
+    dispositions.write_text(json.dumps({"schema_version": 1, "dispositions": [row]}))
+    with pytest.raises(RuntimeError):
+        cdx_common.run_secret_scanners(root, dispositions_path=dispositions)
+
+
+def test_gitleaks_tag_order_is_not_observation_order(tmp_path):
+    (tmp_path / "fixture.txt").write_text("synthetic\n")
+    record = {
+        "File": str(tmp_path / "fixture.txt"),
+        "RuleID": "synthetic-rule",
+        "StartLine": 1,
+        "EndLine": 1,
+        "Tags": ["b", "a", "a"],
+    }
+    first = cdx_common._scanner_finding(tmp_path, "gitleaks", "8.30.1", record)
+    second = cdx_common._scanner_finding(
+        tmp_path, "gitleaks", "8.30.1", dict(record, Tags=["a", "b", "a"])
+    )
+    key = b"synthetic-only-test-key" * 2
+    assert cdx_common._finding_id(key, first) == cdx_common._finding_id(key, second)
+    third = cdx_common._scanner_finding(
+        tmp_path, "gitleaks", "8.30.1", dict(record, Tags=["a", "b"])
+    )
+    assert cdx_common._finding_id(key, first) != cdx_common._finding_id(key, third)
+    with pytest.raises(RuntimeError, match="invalid finding tags"):
+        cdx_common._scanner_finding(tmp_path, "gitleaks", "8.30.1", dict(record, Tags=["a", 1]))
+
+
+def test_next_batch_is_bounded_and_in_inventory_not_checkpoint_order(inventory, bindings):
+    template = inventory["findings"][0]
+    inventory["findings"] = [
+        dict(
+            template,
+            scanner=scanner,
+            scanner_version=cdx_common.SECRET_SCANNER_VERSIONS[scanner],
+            finding_id=f"{index + offset:064x}",
+        )
+        for index in range(35)
+        for scanner, offset in (("gitleaks", 1), ("detect-secrets", 101))
+    ]
+    queue = cdx_review.build_queue(inventory, "e" * 64, bindings)
+    first = cdx_review.schedule_batch(inventory, "e" * 64, bindings, previous=queue)
+    assert len(first) == 32
+    for scanner in cdx_common.SECRET_SCANNER_VERSIONS:
+        assert [row["finding_id"] for row in first if row["scanner"] == scanner] == [
+            row["finding_id"] for row in inventory["findings"] if row["scanner"] == scanner
+        ][:16]
+    assigned = {row["finding_id"] for row in first}
+    for row in queue["observations"]:
+        if row["finding_id"] in assigned:
+            row["state"] = "indeterminate"
+    queue["observations"].reverse()
+    second = cdx_review.schedule_batch(inventory, "e" * 64, bindings, previous=queue)
+    assert len(second) == 32
+    assert not assigned.intersection(row["finding_id"] for row in second)
+    for scanner in cdx_common.SECRET_SCANNER_VERSIONS:
+        assert [row["finding_id"] for row in second if row["scanner"] == scanner] == [
+            row["finding_id"] for row in inventory["findings"] if row["scanner"] == scanner
+        ][16:32]
+
+
+@pytest.mark.parametrize("state", ["suspected_sensitive", "indeterminate", "stale_or_unmatched"])
+@pytest.mark.parametrize("operation", (cdx_review.schedule_batch, cdx_review.list_batches))
+def test_scheduling_skips_all_non_unreviewed_states(inventory, bindings, state, operation):
+    queue = cdx_review.build_queue(inventory, "e" * 64, bindings)
+    queue["observations"][0]["state"] = state
+    assert operation(inventory, "e" * 64, bindings, previous=queue) == []
+
+
+@pytest.mark.parametrize("attack", ["stale", "duplicate", "accepted", "evidence"])
+@pytest.mark.parametrize("operation", (cdx_review.schedule_batch, cdx_review.list_batches))
+def test_scheduling_validates_checkpoint_before_selection(inventory, bindings, attack, operation):
+    queue = cdx_review.build_queue(inventory, "e" * 64, bindings)
+    if attack == "stale":
+        queue["bindings"]["source_sha256"] = "f" * 64
+    elif attack == "duplicate":
+        queue["observations"].append(dict(queue["observations"][0]))
+    elif attack == "accepted":
+        queue["observations"][0]["state"] = "accepted_exact_false_positive"
+    else:
+        queue["observations"][0]["evidence_sha256"] = "f" * 64
+    with pytest.raises(ValueError):
+        operation(inventory, "e" * 64, bindings, previous=queue)
+
+
+@pytest.mark.parametrize("scanner_counts", ((0, 0), (1, 0), (0, 33), (16, 16), (35, 35), (65, 2)))
+def test_batch_index_covers_all_unreviewed_observations_deterministically(
+    inventory, bindings, scanner_counts
+):
+    template = inventory["findings"][0]
+    inventory["findings"] = [
+        dict(
+            template,
+            scanner=scanner,
+            scanner_version=cdx_common.SECRET_SCANNER_VERSIONS[scanner],
+            finding_id=f"{index + offset:064x}",
+        )
+        for index in range(max(scanner_counts))
+        for (scanner, offset), count in zip(
+            (("gitleaks", 1), ("detect-secrets", 101)), scanner_counts, strict=True
+        )
+        if index < count
+    ]
+    queue = cdx_review.build_queue(inventory, "e" * 64, bindings)
+    batches = cdx_review.list_batches(inventory, "e" * 64, bindings, previous=queue)
+    assert [batch["batch_index"] for batch in batches] == list(range(len(batches)))
+    indexes = [index for batch in batches for index in batch["observation_indexes"]]
+    assert sorted(indexes) == list(range(len(inventory["findings"])))
+    for batch in batches:
+        assert 0 < batch["observed_total"] <= 32
+        assert batch["observed_total"] == len(batch["observation_indexes"])
+        assert sum(batch["by_scanner"].values()) == batch["observed_total"]
+        assert all(count <= 16 for count in batch["by_scanner"].values())
+    for scanner in cdx_common.SECRET_SCANNER_VERSIONS:
+        assert [
+            index for index in indexes if inventory["findings"][index]["scanner"] == scanner
+        ] == [index for index, row in enumerate(inventory["findings"]) if row["scanner"] == scanner]
+    first = cdx_review.schedule_batch(inventory, "e" * 64, bindings, previous=queue)
+    assert first == (
+        [inventory["findings"][index] for index in batches[0]["observation_indexes"]]
+        if batches
+        else []
+    )
+    if scanner_counts == (35, 35):
+        assert [batch["observed_total"] for batch in batches] == [32, 32, 6]
+    queue["observations"].reverse()
+    assert cdx_review.list_batches(inventory, "e" * 64, bindings, previous=queue) == batches
+    skipped = set(indexes[::3])
+    for index, row in enumerate(inventory["findings"]):
+        if index in skipped:
+            observation = next(
+                item for item in queue["observations"] if item["finding_id"] == row["finding_id"]
+            )
+            observation["state"] = "indeterminate"
+    resumed = cdx_review.list_batches(inventory, "e" * 64, bindings, previous=queue)
+    remaining = [index for batch in resumed for index in batch["observation_indexes"]]
+    assert sorted(remaining) == sorted(set(indexes) - skipped)
+    assert all(0 < batch["observed_total"] <= 32 for batch in resumed)
+
+
+def test_list_batches_cli_indexes_multiple_batches_without_disclosing_findings(
+    tmp_path, inventory, bindings, capsys
+):
+    tmp_path.chmod(0o700)
+    source = tmp_path / "source"
+    source.mkdir()
+    template = inventory["findings"][0]
+    inventory["findings"] = [
+        dict(
+            template,
+            scanner=scanner,
+            scanner_version=cdx_common.SECRET_SCANNER_VERSIONS[scanner],
+            finding_id=f"{index + offset:064x}",
+        )
+        for index in range(35)
+        for scanner, offset in (("gitleaks", 1), ("detect-secrets", 101))
+    ]
+    inventory_path = tmp_path / "inventory.json"
+    binding_path = tmp_path / "bindings.json"
+    digest = cdx_review.write_checkpoint(inventory_path, inventory)
+    cdx_review.write_checkpoint(binding_path, bindings)
+    queue = cdx_review.build_queue(inventory, digest, bindings)
+    queue["observations"][0]["state"] = "suspected_sensitive"
+    queue["observations"].reverse()
+    resume_path = tmp_path / "resume.json"
+    cdx_review.write_checkpoint(resume_path, queue)
+    arguments = [
+        "--source",
+        str(source),
+        "--inventory",
+        str(inventory_path),
+        "--bindings",
+        str(binding_path),
+        "--resume",
+        str(resume_path),
+        "--list-batches",
+    ]
+    before = set(tmp_path.iterdir())
+    assert cdx_review.main(arguments) == 0
+    printed = capsys.readouterr().out
+    result = json.loads(printed)
+    assert "fixture.txt" not in printed
+    assert template["file_sha256"] not in printed
+    assert all(row["finding_id"] not in printed for row in inventory["findings"])
+    assert result["clearance"] == "not_evaluated"
+    assert result["index_base"] == 0
+    assert [batch["observed_total"] for batch in result["batches"]] == [32, 32, 5]
+    assert result["batches"] == cdx_review.list_batches(inventory, digest, bindings, previous=queue)
+    assert set(tmp_path.iterdir()) == before
+    assert cdx_review.main(arguments) == 0
+    assert capsys.readouterr().out == printed
+    checkpoint = tmp_path / "001.json"
+    assert cdx_review.main(arguments + ["--output", str(checkpoint)]) == 0
+    saved, saved_digest = cdx_review.read_private_json(checkpoint)
+    result_with_checkpoint = json.loads(capsys.readouterr().out)
+    checkpoint_digest = result_with_checkpoint.pop("checkpoint_sha256")
+    assert checkpoint_digest == saved_digest
+    assert result_with_checkpoint == result
+    assert saved == queue

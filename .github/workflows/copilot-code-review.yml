@@ -1,0 +1,24 @@
+name: Copilot Code Review Setup
+
+'on':
+  workflow_dispatch: {}
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      # Keep code review independent from the cloud-agent dependency/cache bootstrap.
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Set up Python runtime
+        uses: ./.github/actions/setup-python-runtime
+        with:
+          python-version: "3.12"
+      - name: Verify Python
+        run: python --version
