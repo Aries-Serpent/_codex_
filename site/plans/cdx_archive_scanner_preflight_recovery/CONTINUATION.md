@@ -778,3 +778,24 @@ immutable audit evidence, while their still-open dependencies stay actionable.
 If the next session lacks branch, profile, security-service, or owner access, it
 must stop at that boundary, preserve evidence, and request the correct decision
 rather than manufacturing a pass or taking an alternate route.
+
+## Post-publication check snapshot — 2026-11-08T11:53Z
+
+- The preceding false-positive remediation and post-merge resumption plan were
+  published in commit `44a5c2e894f509facf6c68d137622225fffa59d2`. The PR API
+  subsequently showed that SHA as the open PR head; no merge was recorded.
+- Runs created for that head at 11:52:58Z were still active or queued at the
+  latest read: Validation Pipeline `42477674420` and CodeQL GA
+  `42477674408` were in progress; Enterprise Compliance & CodeQL
+  `42477674474` and Rust-Python Hybrid `42477674434` were queued; Data Quality
+  `42477674479` again ended `startup_failure`. Audit & QA, Template Lint, ML
+  Components, Code Quality, Workflow Execution, and other listed runs were
+  still in progress. This is not a green-check claim.
+- The previous CodeQL GA run `42467117990` later completed successfully on the
+  older `1f4410dc` head. That result does not substitute for analysis of the
+  published head or resolve the separate CodeQL alert-disposition blockers.
+- On resumption, re-read the PR state and every required check by exact current
+  SHA. Treat the above statuses as historical run evidence, not the status of
+  any later commit or the merge commit. The first priority remains the
+  narrowly scoped Fast Validation fix, followed by owner-directed resolution
+  of the independent blockers in the preceding table.
