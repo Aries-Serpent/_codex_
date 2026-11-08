@@ -702,3 +702,79 @@ session. Do not bypass this path restriction.
   results, and (3) profile integration in a session with permitted directory
   access. Keep the existing S/D/R/P/C/E/F/A/G and archive custody/review
   dependencies above open; the code-comment replies do not satisfy them.
+
+## PR #5763 live CI and post-merge hotfix resumption — 2026-11-08T11:45Z
+
+This append-only checkpoint records the live state observed for PR #5763 at
+head `1f4410dc1fdeb9f4e0edae5324879cfaab902cc3`. The owner expects the PR to
+merge immediately after this session; that expectation is not evidence that a
+merge occurred. The next session must verify the live PR state, merge commit,
+and `main` SHA before describing the branch as merged or starting a main-based
+hotfix. This section extends, and does not replace or close, any existing
+checkpoint, continuation, S/D/R/P/C/E/F/A/G dependency, or owner handoff.
+
+### Current Actions evidence and ownership
+
+| Priority / item | Evidence at 11:45Z | Required resumption and acceptance |
+|---|---|---|
+| **P0 — Validation Pipeline / Fast Validation** | Run `42467117919` attempt 2 failed only in Fast Validation. Its `detect-secrets` hook reported `Secret Keyword` at `tests/archive/test_cdx_preflight.py:491,567,643,810`, `scripts/ci/cdx_context.py:354`, `tests/archive/test_cdx_review.py:67`, and `scripts/archive/gitleaks_adapter/main_test.go:66`. These are synthetic finding metadata, a redacted test value, the documented scanner compatibility alias, or a redaction assertion—not credential values. | Use narrow line-scoped `pragma: allowlist secret` annotations for these known false positives only; preserve all fixture/runtime values and scanner behavior. Run the same hook on changed files and the focused regressions. On the actual post-merge `main` head, verify Fast Validation succeeds; if a real finding appears, remove/rotate it and do not widen the allowlist. |
+| **P0 — post-merge source/branch baseline** | Local `HEAD` and `origin/0D_base_` both matched `1f4410dc1fdeb9f4e0edae5324879cfaab902cc3`; PR #5763 was open at last API read. `.codex/session_startup_packet.json` has a preserved local timestamp-only modification. | Verify the actual merge commit and resulting `main` head first. Fetch/compare without resetting, stashing, or discarding local work. Keep the generated timestamp-only edit out of the hotfix. Re-run relevant checks against the merged `main` snapshot, not an assumed PR SHA. |
+| **P1 — CodeQL** | Current `Art_CodeQL GA Security Gate` run `42467117990`, job `128718599129`, attempt 2 was still in progress at last observation; its `Perform CodeQL Analysis` step was in progress. Prior platform alerts 25452/25453 and check `128651662846` remain without a confirmed owner disposition in this environment. | Read the completed current-head result and alert set. Obtain the security owner's actual platform disposition or actionable dataflow for each unresolved alert. Do not equate an in-progress/neutral job, local scan, or 403 response with clearance; do not suppress findings or claim dismissal without the platform record. |
+| **P1 — Rust dependency gate** | Rust-Python Hybrid run `42467118349` attempt 2 failed `cargo deny check advisories` on unmaintained `pin-utils 0.1.0` (`RUSTSEC-2026-0441`). The audit log reported no vulnerabilities; the audit-check action also could not publish its check because GitHub App authentication was unavailable. | Assign the advisory to the Rust dependency maintainer. Trace the dependency path and evaluate a compatible upgrade or owner-approved policy disposition in a separately scoped change. Do not change unrelated Rust dependencies or suppress the advisory merely to turn the aggregate status green. |
+| **P1 — ML integration baseline** | ML Components run `42467118031` attempt 2 failed its integration shard; training, metrics, checkpointing, callbacks, and data shards passed. The log shows failures across unrelated trainer, token, CLI, RAG, pandas/data-gate, workflow-presence, inline-script, mock/import, and genesis tests. | Triage against the current merged `main`; assign each confirmed defect to its owning area and a separate scoped change. Do not expand the CDX archive hotfix into a repo-wide integration rewrite. Preserve the exact test names/errors from the run artifact and rerun only the affected shards after an authorized fix. |
+| **P2 — Data Quality startup** | Data Quality run `42467118076` attempt 2 ended `startup_failure` with zero jobs; no job log exists to identify a source-level failure. | Workflow/runner owner investigates startup diagnostics in Actions. Retry only when an authorized owner determines it is useful. Treat this as unknown infrastructure status, not a passing test or established code defect. |
+| **P2 — remaining visible checks** | For head `1f4410dc`, Code Quality & Coverage `42467117952`, Status Gate `42467118403`, Deferral Language Gate `42467117965`, Workflow Execution Gate `42467117989`, Enterprise Compliance & CodeQL `42467117904`, and Strict No-Deferral Gate `42476574932` were successful in the observed runs. The screenshot's Ruff/Bandit failures are therefore not the latest observed Code Quality run. | Reconcile all required checks by exact head/run after merge. Do not infer overall green status from selected successes; record queued, in-progress, skipped, startup-failure, and failed checks distinctly. |
+
+### Complete resumption contract for the next Copilot Cloud Agent
+
+1. **Start with the hotfix, not the historical archive backlog.** Confirm the
+   current live PR/merge state and `main` SHA, preserve the pre-existing local
+   startup-packet change, and establish which PR checks are required on that
+   exact SHA. If the merge has not occurred, do not claim a post-merge state or
+   switch branches as a workaround; request the authorized branch decision.
+2. Verify the narrowly scoped synthetic-only `detect-secrets` annotations and
+   run the configured detect-secrets hook, relevant archive/CDX tests, Ruff,
+   formatting/type checks applicable to the changed modules, and Go adapter
+   tests. Run a fresh secret scan on the changed files. Fix actual findings;
+   never add a broad exclusion, regenerate a repository-wide baseline, or
+   expose matched credential material in reports.
+3. Inspect the latest Fast Validation, Code Quality, Rust-Python Hybrid,
+   Data Quality, ML Components, and CodeQL runs for the actual merged head.
+   Retrieve failed-job logs before classifying a failure. Resolve source-owned
+   failures in narrow changes; route `pin-utils`, CodeQL platform disposition,
+   and zero-job startup failures to their owners. No check is complete until
+   its relevant run is complete and its required result is recorded.
+4. Continue every still-open item in the original consolidated dependency table
+   in its existing order and with its original acceptance criteria: scanner
+   provenance/evidence; private custody and source acquisition; bounded finding
+   assessment and exact-record reconciliation; CDX implementation/security
+   gates; final clearance; and archive/evidence preservation. This addendum
+   does not supersede any S/D/R/P/C/E/F/A/G predicate or historical owner
+   assignment.
+5. Preserve the historical checkpoint and prompt chain. The consolidated
+   handoff represents checkpoints 001–012 and the recorded 14 continuation
+   prompts; their provenance/hash manifest and original introducing commits
+   remain the audit anchors. Do not rewrite/delete checkpoint evidence, invent
+   checkpoint 013 or continuation 015, create a second index, or treat a
+   historical measurement as current. Update this sole handoff only after
+   verifying the corresponding Git objects and evidence.
+6. The staged CDX lifecycle-agent profile remains unintegrated until a permitted
+   session can inspect `.github/agents/`, validate the active profile and
+   registry contracts, run catalog/adversarial checks, and verify actual
+   platform activation. The existing path restriction remains binding.
+7. After each authorized change, validate the exact changed scope, inspect the
+   diff, scan changed files for secrets before commit, and report actual check
+   states. Do not approve, dispatch, retry, merge, deploy, dismiss CodeQL alerts,
+   or claim completion without the necessary separate authority/evidence.
+
+### Rubber-duck and adversarial check
+
+The first action is a live merge/head verification, so a future merge expectation
+cannot silently become a false completion claim. The hotfix addresses the
+specific secret-hook failure without weakening detection or changing runtime
+values. Independent Rust, ML, Data Quality, and CodeQL failures retain distinct
+owners and are not hidden by a passing subset. Historical checkpoints remain
+immutable audit evidence, while their still-open dependencies stay actionable.
+If the next session lacks branch, profile, security-service, or owner access, it
+must stop at that boundary, preserve evidence, and request the correct decision
+rather than manufacturing a pass or taking an alternate route.

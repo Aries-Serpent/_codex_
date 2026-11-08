@@ -191,7 +191,7 @@ def produced(tmp_path, monkeypatch):
                     "RuleID": "synthetic-only",
                     "StartLine": 1,
                     "StartColumn": column,
-                    "Secret": "PRIVATE_CANARY",
+                    "Secret": "PRIVATE_CANARY",  # pragma: allowlist secret
                 },
             )
             finding["finding_id"] = common._finding_id(key, finding)
@@ -237,7 +237,10 @@ def test_cli_prints_only_preflight_clearance(monkeypatch, tmp_path, capsys):
     monkeypatch.setattr(
         preflight,
         "run_preflight",
-        lambda *_args: {"clearance": "BLOCKED_FINDINGS", "secret": "PRIVATE_CANARY"},
+        lambda *_args: {
+            "clearance": "BLOCKED_FINDINGS",
+            "secret": "PRIVATE_CANARY",  # pragma: allowlist secret
+        },
     )
 
     result = preflight.main(
@@ -472,7 +475,9 @@ def test_offline_exact_detector_replay_never_verifies_credentials(produced, monk
     import requests
 
     source, private, _ = produced
-    (source / "fixture").write_text('password = "synthetic-only-password"\n')
+    (source / "fixture").write_text(
+        'password = "synthetic-only-password"\n'  # pragma: allowlist secret
+    )
 
     def forbid_network(*_args, **_kwargs):
         raise AssertionError("credential verification is forbidden")
@@ -488,7 +493,9 @@ def test_offline_exact_detector_replay_never_verifies_credentials(produced, monk
                 "File": str(root / "fixture"),
                 "type": "Secret Keyword",
                 "line_number": 1,
-                "hashed_secret": "39d1ef2e9f7565fab033cdd1e5b961122601a5a6",
+                "hashed_secret": (  # pragma: allowlist secret
+                    "39d1ef2e9f7565fab033cdd1e5b961122601a5a6"  # pragma: allowlist secret
+                ),
             },
         )
         finding["finding_id"] = common._finding_id(
@@ -564,7 +571,7 @@ def test_scanner_relative_paths_use_child_cwd_not_parent_cwd(tmp_path, monkeypat
                                 {
                                     "type": "synthetic",
                                     "line_number": 1,
-                                    "hashed_secret": "synthetic",
+                                    "hashed_secret": "synthetic",  # pragma: allowlist secret
                                 }
                             ]
                         }
@@ -640,7 +647,7 @@ def test_gitleaks_private_span_uses_pinned_byte_columns(newline, terminated):
         "EndLine": 2,
         "StartColumn": 4,
         "EndColumn": 8,
-        "Secret": "REDACTED",
+        "Secret": "REDACTED",  # pragma: allowlist secret
         "Match": "head" + newline.decode() + "αREDACTED",
     }
     span, status = common._gitleaks_private_span(raw, record, version="8.30.1")
@@ -759,7 +766,7 @@ def test_gitleaks_midline_fragments_can_alias_report_coordinates(newline):
         EndLine=1,
         StartColumn=8,
         EndColumn=18,
-        Secret="REDACTED",
+        Secret="REDACTED",  # pragma: allowlist secret
         Match="REDACTED",
     )
     spans = []
@@ -796,7 +803,7 @@ def test_gitleaks_first_line_inclusive_bytes_do_not_depend_on_masked_payload(new
         EndLine=1,
         StartColumn=6,
         EndColumn=10,
-        Secret="REDACTED",
+        Secret="REDACTED",  # pragma: allowlist secret
         Match="entirely different masked payload",
     )
     span, status = common._gitleaks_private_span(raw, record, version="8.30.1")
@@ -807,7 +814,7 @@ def test_gitleaks_first_line_inclusive_bytes_do_not_depend_on_masked_payload(new
 @pytest.mark.parametrize("mode", ["small", "decoded", "large"])
 def test_masked_report_mapping_is_never_secret_recovery(produced, monkeypatch, mode):
     source, private, _ = produced
-    raw = b'password = "SYNTHETIC_VALUE"\n'
+    raw = b'password = "SYNTHETIC_VALUE"\n'  # pragma: allowlist secret
     if mode == "large":
         raw += b"\n" * (100_000 - len(raw))
     (source / "fixture").write_bytes(raw)
@@ -820,8 +827,8 @@ def test_masked_report_mapping_is_never_secret_recovery(produced, monkeypatch, m
             EndLine=1,
             StartColumn=1,
             EndColumn=28,
-            Secret="REDACTED",
-            Match='password = "REDACTED"',
+            Secret="REDACTED",  # pragma: allowlist secret
+            Match='password = "REDACTED"',  # pragma: allowlist secret
             Tags=["decoded:base64", "decode-depth:2"] if mode == "decoded" else [],
         )
         finding = common._scanner_finding(root, "gitleaks", "8.30.1", record)
@@ -933,12 +940,16 @@ def test_numbered_batches_exhaust_exact_inventory_once(produced, monkeypatch):
                         EndLine=1,
                         StartColumn=index + 1,
                         EndColumn=index + 1,
-                        Secret="REDACTED",
+                        Secret="REDACTED",  # pragma: allowlist secret
                     ),
                 ),
                 (
                     "detect-secrets",
-                    dict(type="synthetic-only", line_number=1, hashed_secret=f"synthetic-{index}"),
+                    dict(
+                        type="synthetic-only",
+                        line_number=1,
+                        hashed_secret=f"synthetic-{index}",  # pragma: allowlist secret
+                    ),
                 ),
             ):
                 finding = common._scanner_finding(
@@ -1004,7 +1015,7 @@ def test_large_unfragmented_match_coordinates_are_lf_byte_origins(newline, line,
         StartColumn=len(prefix) - origin + 1,
         EndColumn=len(prefix) - origin + len(match),
         Match=match.decode(),
-        Secret="REDACTED",
+        Secret="REDACTED",  # pragma: allowlist secret
     )
     assert common._gitleaks_private_span(raw, record, version="8.30.1") == (
         None,
@@ -1033,7 +1044,7 @@ def test_exact_large_source_window_maps_actual_match_not_guessed_file_columns(
         StartColumn=len(leading) - local_origin + 1,
         EndColumn=len(leading) - local_origin + len(match),
         Match=match.decode(),
-        Secret="REDACTED",
+        Secret="REDACTED",  # pragma: allowlist secret
     )
     span, status = common._gitleaks_private_span(
         raw, record, version="8.30.1", source_window=(len(prefix), len(prefix) + len(fragment))
@@ -1377,7 +1388,7 @@ def acquired_produced(tmp_path, monkeypatch):
                             "StartColumn": 2,
                             "EndColumn": len(match) + 1,
                             "Tags": [],
-                            "Secret": "REDACTED",
+                            "Secret": "REDACTED",  # pragma: allowlist secret
                             "Match": match.decode(),
                         },
                         "start": 7,

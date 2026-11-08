@@ -63,7 +63,7 @@ func TestAcquiredLargeFullFile(t *testing.T) {
 			for _, observation := range acquired.Observations {
 				if observation.MappingStatus != "mapped_acquired_full_file" || observation.Start < size ||
 					observation.End > len(raw) || strings.Contains(observation.Record.Match, token) ||
-					observation.Record.Secret != "REDACTED" {
+					observation.Record.Secret != "REDACTED" { // pragma: allowlist secret
 					t.Fatal("unsafe or unmapped observation")
 				}
 			}

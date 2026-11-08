@@ -64,7 +64,7 @@ def test_snapshot_identity_is_root_independent_and_observation_specific(tmp_path
                     "File": str(path),
                     "type": "synthetic-rule",
                     "line_number": 1,
-                    "hashed_secret": "synthetic-opaque-identifier",
+                    "hashed_secret": "synthetic-opaque-identifier",  # pragma: allowlist secret
                 },
             ),
         ):

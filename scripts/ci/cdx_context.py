@@ -351,7 +351,7 @@ def build_cdx_context(root: Path = ROOT) -> dict[str, Any]:
             },
             "name_clarifications": {
                 "pack_directory": "does_not_exist_use_pack_archive",
-                "run_secret_scanner": "compatibility_alias_of_run_secret_scanners",
+                "run_secret_scanner": "compatibility_alias_of_run_secret_scanners",  # pragma: allowlist secret
             },
             "cli": index["common"]["cli"],
             "tests": index["common"]["tests"],
