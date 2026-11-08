@@ -673,3 +673,32 @@ session. Do not bypass this path restriction.
   independent-review, and operational gates. If platform access remains
   blocked, report the exact denied operation, its owner, and the next allowed
   decision rather than claiming completion.
+
+## Post-publication status — 2026-11-08T08:20Z
+
+- The four review fixes are present on PR #5763 in commit
+  `2a5db3688f687e8d12e08896e6663713aac2078f`. Replies containing this full
+  resolving SHA were posted once to review comments `4505503531`,
+  `4505503534`, `4505503505`, and `4505503517`. Earlier resolved threads from
+  the prior review lists already had replies and were not duplicated.
+- The post-commit CodeQL checker reported zero alerts but skipped Python
+  analysis because the database is too large. This is not a successful Python
+  CodeQL result and does not clear check `128651662846` or the two hosted
+  alerts. Alert-list and detail APIs for 25452/25453 still return HTTP 403.
+- At 08:20Z, the latest observed PR-triggered Actions runs, including CodeQL
+  gate, Validation Pipeline, and Code Quality, report `action_required` on
+  `2a5db368`. No approval, dispatch, retry, or workflow activation was
+  performed. The repository owner must decide/perform any required run
+  approval; after that, inspect the resulting run logs and final checks.
+- Agent integration is still incomplete: the candidate remains in
+  `.github/agents-holding`, and this session is explicitly prohibited from
+  accessing `.github/agents`. The next permitted Copilot Cloud Agent/profile
+  maintainer must inspect active profile conventions and the registry, adapt
+  or move the candidate only if it conforms, run catalog/profile and
+  adversarial checks, and verify activation from platform evidence. Do not
+  present the staged candidate as integrated or hosted.
+- Completion remains blocked on (1) authorized CodeQL alert disposition or
+  actionable source dataflow, (2) owner-approved/current-head CI execution and
+  results, and (3) profile integration in a session with permitted directory
+  access. Keep the existing S/D/R/P/C/E/F/A/G and archive custody/review
+  dependencies above open; the code-comment replies do not satisfy them.
