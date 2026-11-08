@@ -1,0 +1,143 @@
+{
+  "version": "2.0.0",
+  "options": {
+    "cwd": "${workspaceFolder}"
+  },
+  "tasks": [
+    {
+      "label": "Codex: inspect worktree",
+      "type": "process",
+      "command": "git",
+      "args": ["--no-pager", "status", "--short"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: native runtime diagnostics",
+      "type": "process",
+      "command": "python3.12",
+      "args": [
+        "-c",
+        "import json, os, shutil, sys; print(json.dumps({'python_version': list(sys.version_info[:3]), 'workspace': os.getcwd(), 'native_terminal_ipc_present': bool(os.environ.get('VSCODE_IPC_HOOK_CLI')), 'git_ipc_present': bool(os.environ.get('VSCODE_GIT_IPC_HANDLE')), 'tools_on_path': {name: shutil.which(name) is not None for name in ('git', 'code', 'go', 'cargo', 'npm')}}, indent=2))"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: native VS Code version",
+      "type": "process",
+      "command": "code",
+      "args": ["--version"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: validate CDX catalog",
+      "type": "process",
+      "command": "${input:codexPython}",
+      "args": ["-m", "scripts.ci.startup_health", "--validate"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: CDX focused tests",
+      "type": "process",
+      "command": "${input:codexPython}",
+      "args": [
+        "-m",
+        "pytest",
+        "--confcutdir=tests/archive",
+        "-o",
+        "addopts=--strict-markers --import-mode=importlib",
+        "-q",
+        "tests/archive/test_cdx_context.py",
+        "tests/archive/test_cdx_preflight.py",
+        "tests/archive/test_cdx_review.py",
+        "tests/archive/test_cdx_adapter.py",
+        "tests/archive/test_cdx_sqlite_archive.py"
+      ],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: CDX tests with real adapter",
+      "type": "process",
+      "command": "${input:codexPython}",
+      "args": [
+        "-m",
+        "pytest",
+        "--confcutdir=tests/archive",
+        "-o",
+        "addopts=--strict-markers --import-mode=importlib",
+        "-q",
+        "tests/archive/test_cdx_context.py",
+        "tests/archive/test_cdx_preflight.py",
+        "tests/archive/test_cdx_review.py",
+        "tests/archive/test_cdx_adapter.py",
+        "tests/archive/test_cdx_sqlite_archive.py"
+      ],
+      "options": {
+        "env": {
+          "CDX_TEST_ADAPTER_EXECUTABLE": "${input:cdxAdapterExecutable}",
+          "PATH": "${input:cdxToolPath}:${env:PATH}"
+        }
+      },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: offline Go adapter tests",
+      "type": "process",
+      "command": "${input:codexGoExecutable}",
+      "args": ["test", "./..."],
+      "options": {
+        "cwd": "${workspaceFolder}/scripts/archive/gitleaks_adapter",
+        "env": {
+          "GOPROXY": "off",
+          "GOSUMDB": "off",
+          "GOTOOLCHAIN": "local"
+        }
+      },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: Rust advisory check",
+      "type": "process",
+      "command": "cargo",
+      "args": ["deny", "check", "advisories"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: frontend typecheck",
+      "type": "process",
+      "command": "npm",
+      "args": ["exec", "--", "tsc", "--noEmit"],
+      "options": {
+        "cwd": "${workspaceFolder}/cognitive_app"
+      },
+      "problemMatcher": ["$tsc"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "codexPython",
+      "type": "promptString",
+      "description": "Python 3.12 executable in your existing supported validation environment",
+      "default": "python3.12"
+    },
+    {
+      "id": "cdxAdapterExecutable",
+      "type": "promptString",
+      "description": "Absolute path to the authenticated, built CDX Gitleaks adapter"
+    },
+    {
+      "id": "cdxToolPath",
+      "type": "promptString",
+      "description": "Authenticated validation/scanner executable directories for Linux PATH, separated by colons",
+      "default": ".venv/bin"
+    },
+    {
+      "id": "codexGoExecutable",
+      "type": "promptString",
+      "description": "Authenticated Go executable with an already verified module cache",
+      "default": "go"
+    }
+  ]
+}

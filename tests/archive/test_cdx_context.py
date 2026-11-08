@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import socket
 import subprocess
@@ -10,6 +11,8 @@ import sys
 from pathlib import Path
 
 import pytest
+import yaml
+from detect_secrets.plugins.keyword import KeywordDetector
 
 from scripts.archive import cdx_common as common
 from scripts.ci import cdx_context, startup_health
@@ -73,7 +76,8 @@ def test_catalog_is_complete_deterministic_and_offline(monkeypatch):
             assert location["signature"]
     candidate = catalog["skills_registry"]["agent_candidates"][0]
     assert candidate["discoverable"]
-    assert candidate["status"] == "staged_candidate"
+    assert candidate["status"] == "local_profile"
+    assert candidate["path"] == ".github/agents/cdx-archive-lifecycle.agent.md"
     assert candidate["hosted_activation"] == "not_established"
     assert candidate["authorization"] == "none_granted"
     assert candidate["id"] == "cdx-archive-lifecycle"
@@ -82,8 +86,86 @@ def test_catalog_is_complete_deterministic_and_offline(monkeypatch):
         for skill in catalog["skills_registry"]["skills"]
         if skill["id"] == "cdx-archive-lifecycle"
     )
-    assert candidate_skill["availability"] == "staged_candidate"
+    assert candidate_skill["kind"] == "agent_profile"
+    assert candidate_skill["availability"] == "local_profile"
     assert candidate_skill["hosted_activation"] == "not_established"
+
+
+def test_registered_profile_and_catalog_contracts():
+    root = cdx_context.ROOT
+    text = (root / cdx_context.CANDIDATE).read_text()
+    _, header, body = text.split("---", 2)
+    profile = yaml.safe_load(header)
+    assert profile["name"] == "CDX Archive Lifecycle"
+    assert isinstance(profile["description"], str) and profile["description"].strip()
+    assert profile["tools"] == ["read", "search", "execute", "edit"]
+    assert "model" not in profile
+    assert "target" not in profile
+    assert len(body) <= 30_000
+    assert not (root / cdx_context.LEGACY_CANDIDATE).exists()
+    registry = yaml.safe_load((root / ".github/agents/AGENT_REGISTRY.yaml").read_text())
+    entries = [row for row in registry["agents"] if row["id"] == cdx_context.CANDIDATE_ID]
+    assert len(entries) == 1
+    assert entries[0]["name"] == profile["name"]
+    assert entries[0]["file"] == cdx_context.CANDIDATE
+    assert entries[0]["directory"] == ".github/agents"
+    assert entries[0]["status"] == "active"
+    assert registry["total_agents"] == len(registry["agents"])
+    assert registry["active_agents"] == sum(row["status"] == "active" for row in registry["agents"])
+    assert registry["archived_agents"] == sum(
+        row["status"] == "archived" for row in registry["agents"]
+    )
+
+
+def test_missing_explicit_profile_rejects_decoy(tmp_path, monkeypatch):
+    original_is_file = Path.is_file
+
+    def missing_profile(path):
+        if path == cdx_context.ROOT / cdx_context.CANDIDATE:
+            return False
+        return original_is_file(path)
+
+    decoy = tmp_path / Path(cdx_context.CANDIDATE).name
+    decoy.write_text("---\nname: CDX Archive Lifecycle\ndescription: decoy\n---\n")
+    monkeypatch.setattr(Path, "is_file", missing_profile)
+    with pytest.raises(ValueError, match="CDX local profile missing"):
+        cdx_context.build_cdx_context()
+
+
+def test_refresh_removes_stale_cdx_candidate_identity():
+    packet = startup_health.build_packet({}, {})
+    stale = [
+        {"id": cdx_context.CANDIDATE_ID, "path": "other/location.agent.md"},
+        {"path": cdx_context.LEGACY_CANDIDATE, "status": "staged_candidate"},
+    ]
+    packet["skills_registry"]["agent_candidates"].extend(stale)
+    cdx_context.refresh_cdx_context(packet)
+    startup_health.validate_packet(packet)
+    candidates = packet["skills_registry"]["agent_candidates"]
+    assert len(candidates) == 1
+    assert candidates[0]["path"] == cdx_context.CANDIDATE
+    assert candidates[0]["hosted_activation"] == "not_established"
+    assert candidates[0]["authorization"] == "none_granted"
+
+
+def test_generated_alias_baseline_is_exact_and_not_an_archive_approval():
+    alias = cdx_context.build_cdx_context()["cdx_common_preflight"]["name_clarifications"][
+        "run_secret_scanner"
+    ]
+    baseline = json.loads((cdx_context.ROOT / ".secrets.baseline").read_text())
+    rows = baseline["results"][".codex/session_startup_packet.json"]
+    assert len(rows) == 1
+    assert rows[0]["type"] == "Secret Keyword"
+    assert (
+        rows[0]["hashed_secret"] == hashlib.sha1(alias.encode(), usedforsecurity=False).hexdigest()
+    )
+    assert rows[0]["is_secret"] is False
+    assert rows[0]["is_verified"] is False
+    changed = KeywordDetector().analyze_line(
+        ".codex/session_startup_packet.json", f'"run_secret_scanner": "{alias}_changed"'
+    )
+    assert changed
+    assert all(finding.secret_hash != rows[0]["hashed_secret"] for finding in changed)
 
 
 def test_common_preflight_maps_requested_functions_and_nonexistent_names():
