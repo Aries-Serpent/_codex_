@@ -30,6 +30,41 @@ from scripts.archive.cdx_common import (
 from scripts.archive.cdx_preflight import read_source_file
 
 
+class _CallTargetVisitor(ast.NodeVisitor):
+    def __init__(self) -> None:
+        self.targets: set[str] = set()
+
+    def visit_Call(self, node: ast.Call) -> None:
+        self.targets.add(ast.unparse(node.func))
+        self.generic_visit(node)
+
+    def visit_Lambda(self, node: ast.Lambda) -> None:
+        self.visit(node.args)
+
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        self._visit_function_definition(node)
+
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+        self._visit_function_definition(node)
+
+    def _visit_function_definition(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+        for decorator in node.decorator_list:
+            self.visit(decorator)
+        self.visit(node.args)
+        if node.returns is not None:
+            self.visit(node.returns)
+
+    def visit_ClassDef(self, node: ast.ClassDef) -> None:
+        for decorator in node.decorator_list:
+            self.visit(decorator)
+        for base in node.bases:
+            self.visit(base)
+        for keyword in node.keywords:
+            self.visit(keyword)
+        for child in node.body:
+            self.visit(child)
+
+
 def _insert_fts_document(
     connection: sqlite3.Connection,
     entry_id: int,
@@ -110,9 +145,10 @@ def _ast_symbols(
             return parent_id
 
         qualified_name = f"{parent_name}.{name}" if parent_name else name
-        calls = sorted(
-            {ast.unparse(call.func) for call in ast.walk(node) if isinstance(call, ast.Call)}
-        )
+        call_visitor = _CallTargetVisitor()
+        for child in node.body:
+            call_visitor.visit(child)
+        calls = sorted(call_visitor.targets)
         start = int(getattr(node, "lineno", 1))
         end = int(getattr(node, "end_lineno", start))
         cursor = connection.execute(

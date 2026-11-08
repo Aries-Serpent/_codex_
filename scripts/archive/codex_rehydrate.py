@@ -404,15 +404,49 @@ def validate_symlink_target(
             raise ValueError("symlink target traverses another archived symlink")
 
 
-def _destination_path(root: Path, relative: str) -> Path:
-    safe = validate_safe_rel_path(relative)
-    target = root.joinpath(*safe.parts)
-    if (
-        root.resolve() not in target.parent.resolve().parents
-        and target.parent.resolve() != root.resolve()
-    ):
-        raise ValueError("archive path escapes the destination")
-    return target
+def _directory_open_flags() -> int:
+    if not hasattr(os, "O_DIRECTORY") or not hasattr(os, "O_NOFOLLOW"):
+        raise OSError("descriptor-relative extraction is not supported on this platform")
+    return os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+
+
+def _open_destination_directory(destination: Path) -> tuple[int, list[int], Path]:
+    requested = Path(destination)
+    if ".." in requested.parts:
+        raise ValueError("destination path must not contain parent traversal")
+    root = requested if requested.is_absolute() else Path.cwd() / requested
+    flags = _directory_open_flags()
+    descriptors = [os.open(root.anchor, os.O_RDONLY | os.O_DIRECTORY)]
+    try:
+        for component in root.parts[1:]:
+            try:
+                os.mkdir(component, dir_fd=descriptors[-1])
+            except FileExistsError:
+                pass
+            descriptors.append(os.open(component, flags, dir_fd=descriptors[-1]))
+    except Exception:
+        for descriptor in reversed(descriptors):
+            os.close(descriptor)
+        raise
+    return descriptors[-1], descriptors, root
+
+
+def _open_extraction_directory(root_fd: int, components: tuple[str, ...]) -> int:
+    current = os.dup(root_fd)
+    flags = _directory_open_flags()
+    try:
+        for component in components:
+            try:
+                os.mkdir(component, dir_fd=current)
+            except FileExistsError:
+                pass
+            child = os.open(component, flags, dir_fd=current)
+            os.close(current)
+            current = child
+        return current
+    except Exception:
+        os.close(current)
+        raise
 
 
 def rehydrate_archive(
@@ -423,11 +457,6 @@ def rehydrate_archive(
     max_blob_bytes: int = DEFAULT_MAX_BLOB_BYTES,
     max_text_bytes: int = DEFAULT_MAX_TEXT_BYTES,
 ) -> dict[str, Any]:
-    if destination.is_symlink():
-        raise ValueError("destination must not be a symlink")
-    root = destination.resolve()
-    if root.exists() and any(root.iterdir()):
-        raise FileExistsError("destination must be empty")
     with closing(_connect_readonly(archive)) as connection:
         verification = verify_archive_connection(
             connection,
@@ -453,65 +482,111 @@ def rehydrate_archive(
                     allow_external=allow_external_symlinks,
                     archive_symlinks=symlink_paths,
                 )
-        root.mkdir(parents=True, exist_ok=True)
-        directories = [item for item in entries if item["entry_type"] == "dir"]
-        files = [item for item in entries if item["entry_type"] == "file"]
-        symlinks = [item for item in entries if item["entry_type"] == "symlink"]
+        root_fd, ancestor_fds, root = _open_destination_directory(destination)
+        try:
+            if os.listdir(root_fd):
+                raise FileExistsError("destination must be empty")
+            directories = [item for item in entries if item["entry_type"] == "dir"]
+            files = [item for item in entries if item["entry_type"] == "file"]
+            symlinks = [item for item in entries if item["entry_type"] == "symlink"]
 
-        for item in sorted(
-            directories, key=lambda value: (value["path"].count("/"), value["path"])
-        ):
-            path = _destination_path(root, item["path"])
-            path.mkdir(parents=True, exist_ok=True)
-
-        for item in files:
-            path = _destination_path(root, item["path"])
-            path.parent.mkdir(parents=True, exist_ok=True)
-            blob = connection.execute(
-                "SELECT codec, raw_size, raw_payload FROM content_blobs WHERE blob_sha256 = ?",
-                (item["blob_sha256"],),
-            ).fetchone()
-            if blob is None:
-                raise ValueError(f"missing content blob for {item['path']}")
-            content = _decompress(blob["codec"], blob["raw_payload"], blob["raw_size"])
-            if (
-                len(content) != blob["raw_size"]
-                or hashlib.sha256(content).hexdigest() != item["blob_sha256"]
+            for item in sorted(
+                directories, key=lambda value: (value["path"].count("/"), value["path"])
             ):
-                raise ValueError(f"content verification failed for {item['path']}")
-            with path.open("xb") as file_handle:
-                file_handle.write(content)
-            os.chmod(path, item["mode"])
-            os.utime(path, ns=(item["mtime_ns"], item["mtime_ns"]))
-
-        for item in symlinks:
-            path = _destination_path(root, item["path"])
-            path.parent.mkdir(parents=True, exist_ok=True)
-            os.symlink(item["symlink_target"], path)
-            try:
-                os.utime(
-                    path,
-                    ns=(item["mtime_ns"], item["mtime_ns"]),
-                    follow_symlinks=False,
+                directory_fd = _open_extraction_directory(
+                    root_fd, tuple(PurePosixPath(item["path"]).parts)
                 )
-            except (NotImplementedError, OSError):
-                # Rehydration still succeeds when symlink timestamp updates are unsupported.
-                pass
+                os.close(directory_fd)
 
-        for item in sorted(
-            directories,
-            key=lambda value: (-value["path"].count("/"), value["path"]),
-        ):
-            path = _destination_path(root, item["path"])
-            os.chmod(path, item["mode"])
-            os.utime(path, ns=(item["mtime_ns"], item["mtime_ns"]))
+            for item in files:
+                parts = tuple(PurePosixPath(item["path"]).parts)
+                parent_fd = _open_extraction_directory(root_fd, parts[:-1])
+                try:
+                    blob = connection.execute(
+                        "SELECT codec, raw_size, raw_payload FROM content_blobs "
+                        "WHERE blob_sha256 = ?",
+                        (item["blob_sha256"],),
+                    ).fetchone()
+                    if blob is None:
+                        raise ValueError(f"missing content blob for {item['path']}")
+                    content = _decompress(blob["codec"], blob["raw_payload"], blob["raw_size"])
+                    if (
+                        len(content) != blob["raw_size"]
+                        or hashlib.sha256(content).hexdigest() != item["blob_sha256"]
+                    ):
+                        raise ValueError(f"content verification failed for {item['path']}")
+                    fd = os.open(
+                        parts[-1],
+                        os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                        0o600,
+                        dir_fd=parent_fd,
+                    )
+                    with os.fdopen(fd, "wb") as file_handle:
+                        file_handle.write(content)
+                        file_handle.flush()
+                        os.fchmod(file_handle.fileno(), item["mode"])
+                        os.utime(
+                            file_handle.fileno(),
+                            ns=(item["mtime_ns"], item["mtime_ns"]),
+                        )
+                finally:
+                    os.close(parent_fd)
+
+            for item in symlinks:
+                parts = tuple(PurePosixPath(item["path"]).parts)
+                parent_fd = _open_extraction_directory(root_fd, parts[:-1])
+                try:
+                    os.symlink(item["symlink_target"], parts[-1], dir_fd=parent_fd)
+                    try:
+                        os.utime(
+                            parts[-1],
+                            ns=(item["mtime_ns"], item["mtime_ns"]),
+                            dir_fd=parent_fd,
+                            follow_symlinks=False,
+                        )
+                    except (NotImplementedError, OSError):
+                        # Rehydration still succeeds when symlink timestamp updates are unsupported.
+                        pass
+                finally:
+                    os.close(parent_fd)
+
+            for item in sorted(
+                directories,
+                key=lambda value: (-value["path"].count("/"), value["path"]),
+            ):
+                directory_fd = _open_extraction_directory(
+                    root_fd, tuple(PurePosixPath(item["path"]).parts)
+                )
+                try:
+                    os.fchmod(directory_fd, item["mode"])
+                    os.utime(
+                        directory_fd,
+                        ns=(item["mtime_ns"], item["mtime_ns"]),
+                    )
+                finally:
+                    os.close(directory_fd)
+        finally:
+            for descriptor in reversed(ancestor_fds):
+                os.close(descriptor)
     return {"destination": str(root), **verification}
 
 
 def compare_trees(left: Path, right: Path, *, check_mtime: bool = True) -> dict[str, Any]:
     def inventory(root: Path) -> dict[str, tuple[str, int, int | None, str]]:
+        root_info = root.lstat()
+        if not stat.S_ISDIR(root_info.st_mode):
+            raise NotADirectoryError(f"tree root is not a directory: {root}")
         result: dict[str, tuple[str, int, int | None, str]] = {}
-        for current, dirs, files in os.walk(root, topdown=True, followlinks=False):
+
+        def raise_walk_error(error: OSError) -> None:
+            raise error
+
+        for current, dirs, files in os.walk(
+            root,
+            topdown=True,
+            followlinks=False,
+            onerror=raise_walk_error,
+        ):
             current_path = Path(current)
             dirs.sort()
             files.sort()

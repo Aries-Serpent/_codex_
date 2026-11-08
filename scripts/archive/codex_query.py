@@ -279,14 +279,16 @@ class CodexArchiveQuery:
         if name:
             if glob:
                 conditions.append(
-                    "(symbol_name GLOB ? OR qualified_name GLOB ? OR qualified_name LIKE ?)"
+                    "(symbol_name GLOB ? OR qualified_name GLOB ? OR qualified_name GLOB ?)"
                 )
-                values.extend((name, name, f"%.{name}"))
+                values.extend((name, name, f"*.{name}"))
             else:
                 conditions.append(
-                    "(symbol_name = ? OR qualified_name = ? OR qualified_name LIKE ?)"
+                    "(symbol_name = ? OR qualified_name = ? OR "
+                    "substr(qualified_name, -length(?)) = ?)"
                 )
-                values.extend((name, name, f"%.{name}"))
+                suffix = f".{name}"
+                values.extend((name, name, suffix, suffix))
         if kind:
             conditions.append("symbol_kind = ?")
             values.append(kind)
@@ -340,7 +342,11 @@ class CodexArchiveQuery:
             JOIN tree_entries AS t USING (entry_id)
             """):
             targets = json.loads(row["call_targets_json"])
-            if any(target == symbol or target.endswith(f".{symbol}") for target in targets):
+            if any(
+                candidate["symbol_id"] == selected["symbol_id"]
+                for target in targets
+                for candidate in self.query_symbols(target.rsplit(".", 1)[-1])
+            ):
                 callers.append({"path": row["path"], "qualified_name": row["qualified_name"]})
         return {
             "symbol": selected["qualified_name"],
@@ -365,64 +371,38 @@ class CodexArchiveQuery:
         empty_xml = "<codex_context>\n\n</codex_context>"
         if output_format == "xml" and len(empty_xml) > budget_tokens * 4:
             raise ValueError("budget is too small for the XML context wrapper")
-        candidates: list[tuple[str, str, str]] = []
-        for symbol in symbols:
-            for result in self.query_symbols(symbol):
-                start = result["line_start"]
-                end = result["line_end"]
-                content = self.read_file_text(result["path"], start, end)
-                candidates.append((result["path"], result["qualified_name"], content))
-        if query:
-            for result in self.search_fts(query, limit=min(budget_tokens, 100)):
-                if result["document_type"] == "symbol":
-                    symbol_rows = self.query_symbols(result["symbol_name"], path=result["path"])
-                    for symbol_row in symbol_rows:
-                        content = self.read_file_text(
-                            result["path"],
-                            symbol_row["line_start"],
-                            symbol_row["line_end"],
-                        )
-                        candidates.append(
-                            (
-                                result["path"],
-                                symbol_row["qualified_name"],
-                                content,
-                            )
-                        )
-                else:
-                    candidates.append(
-                        (
-                            result["path"],
-                            "",
-                            self.read_file_text(result["path"]),
-                        )
-                    )
+        char_budget = budget_tokens * 4
+        entry_sizes = {entry["path"]: entry["size"] for entry in self.list_tree(entry_type="file")}
         omitted: list[str] = []
-        if paths:
-            path_candidates = 0
-            for entry in self.list_tree():
-                if entry["entry_type"] == "file" and any(
-                    fnmatch.fnmatchcase(entry["path"], pattern) for pattern in paths
-                ):
-                    if entry["size"] > budget_tokens * 4 or path_candidates >= 500:
-                        omitted.append(entry["path"])
-                        continue
-                    try:
-                        content = self.read_file_text(entry["path"])
-                    except ValueError:
-                        continue
-                    candidates.append((entry["path"], "", content))
-                    path_candidates += 1
         included: list[dict[str, str]] = []
         seen: set[tuple[str, str]] = set()
         blocks: list[str] = []
+        separator = "\n" if output_format == "xml" else "\n\n"
         rendered_chars = len(empty_xml) if output_format == "xml" else 0
-        char_budget = budget_tokens * 4
-        for path, symbol, content in candidates:
+
+        def append_candidate(
+            path: str,
+            symbol: str,
+            *,
+            start_line: int | None = None,
+            end_line: int | None = None,
+            skip_unreadable: bool = False,
+        ) -> None:
+            nonlocal rendered_chars
             key = (path, symbol)
             if key in seen:
-                continue
+                return
             seen.add(key)
+            omitted_name = f"{path}:{symbol}" if symbol else path
+            if entry_sizes.get(path, 0) > char_budget:
+                omitted.append(omitted_name)
+                return
+            try:
+                content = self.read_file_text(path, start_line, end_line)
+            except ValueError:
+                if skip_unreadable:
+                    return
+                raise
             if output_format == "xml":
                 block = (
                     f'<file path="{escape(_xml_safe(path), {chr(34): "&quot;"})}"'
@@ -438,12 +418,46 @@ class CodexArchiveQuery:
                 block = (
                     f"### {_markdown_code_span(metadata)}\n\n" f"{_markdown_fenced_block(content)}"
                 )
-            if rendered_chars + len(block) + 1 > char_budget:
-                omitted.append(f"{path}:{symbol}" if symbol else path)
-                continue
+            added_chars = len(block) + (len(separator) if blocks else 0)
+            if rendered_chars + added_chars > char_budget:
+                omitted.append(omitted_name)
+                return
             included.append({"path": path, "symbol": symbol, "content": content})
             blocks.append(block)
-            rendered_chars += len(block) + 1
+            rendered_chars += added_chars
+
+        for symbol in symbols:
+            for result in self.query_symbols(symbol):
+                append_candidate(
+                    result["path"],
+                    result["qualified_name"],
+                    start_line=result["line_start"],
+                    end_line=result["line_end"],
+                )
+        if query:
+            for result in self.search_fts(query, limit=min(budget_tokens, 100)):
+                if result["document_type"] == "symbol":
+                    symbol_rows = self.query_symbols(result["symbol_name"], path=result["path"])
+                    for symbol_row in symbol_rows:
+                        append_candidate(
+                            result["path"],
+                            symbol_row["qualified_name"],
+                            start_line=symbol_row["line_start"],
+                            end_line=symbol_row["line_end"],
+                        )
+                else:
+                    append_candidate(result["path"], "")
+        if paths:
+            path_candidates = 0
+            for entry in self.list_tree():
+                if entry["entry_type"] == "file" and any(
+                    fnmatch.fnmatchcase(entry["path"], pattern) for pattern in paths
+                ):
+                    if entry["size"] > budget_tokens * 4 or path_candidates >= 500:
+                        omitted.append(entry["path"])
+                        continue
+                    append_candidate(entry["path"], "", skip_unreadable=True)
+                    path_candidates += 1
         if output_format == "xml":
             rendered = "<codex_context>\n" + "\n".join(blocks) + "\n</codex_context>"
         else:

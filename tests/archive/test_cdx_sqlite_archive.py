@@ -302,9 +302,118 @@ def test_query_call_graph_joins_symbol_entries(tmp_path: Path, monkeypatch: pyte
     archive = tmp_path / "snapshot.cdx.sqlite"
     codex_packer.pack_archive(source, archive)
     with CodexArchiveQuery(archive) as query:
+        expected = [{"path": "graph.py", "qualified_name": "graph.caller"}]
+        assert query.query_call_graph("callee")["callers"] == expected
+        assert query.query_call_graph("graph.callee")["callers"] == expected
+
+
+def test_ast_call_targets_exclude_nested_function_and_lambda_bodies(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "graph.py").write_text(
+        "def callee():\n"
+        "    return None\n"
+        "\n"
+        "def outer():\n"
+        "    def inner():\n"
+        "        callee()\n"
+        "    callback = lambda: callee()\n"
+        "    return callback\n",
+        encoding="utf-8",
+    )
+    archive = tmp_path / "snapshot.cdx.sqlite"
+    codex_packer.pack_archive(source, archive)
+    with CodexArchiveQuery(archive) as query:
+        symbols = {item["symbol_name"]: item for item in query.query_symbols(path="graph.py")}
+        assert "callee" not in symbols["outer"]["call_targets"]
+        assert symbols["inner"]["call_targets"] == ["callee"]
         assert query.query_call_graph("callee")["callers"] == [
-            {"path": "graph.py", "qualified_name": "graph.caller"}
+            {"path": "graph.py", "qualified_name": "graph.outer.inner"}
         ]
+
+
+def test_symbol_lookup_uses_literal_and_glob_qualified_suffixes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "sample.py").write_text(
+        "class Greeter:\n"
+        "    def greet(self):\n"
+        "        return None\n"
+        "\n"
+        "def do_work():\n"
+        "    return None\n"
+        "\n"
+        "def doXwork():\n"
+        "    return None\n",
+        encoding="utf-8",
+    )
+    archive = tmp_path / "snapshot.cdx.sqlite"
+    codex_packer.pack_archive(source, archive)
+    with CodexArchiveQuery(archive) as query:
+        exact = query.query_symbols("do_work")
+        assert [item["symbol_name"] for item in exact] == ["do_work"]
+        assert query.query_symbols("Do_work") == []
+        globbed = query.query_symbols("Greeter.*", glob=True)
+        assert [item["qualified_name"] for item in globbed] == ["sample.Greeter.greet"]
+
+
+def test_context_skips_oversized_search_and_symbol_candidates_before_read(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "large.py").write_text(
+        "def target():\n    return None\n# " + ("x" * (1024 * 1024)),
+        encoding="utf-8",
+    )
+    archive = tmp_path / "snapshot.cdx.sqlite"
+    codex_packer.pack_archive(source, archive)
+    with CodexArchiveQuery(archive) as query:
+        original_read_file_text = query.read_file_text
+        read_paths = []
+
+        def guarded_read(path, *args, **kwargs):
+            read_paths.append(path)
+            if path == "large.py":
+                raise AssertionError("oversized candidate was read")
+            return original_read_file_text(path, *args, **kwargs)
+
+        monkeypatch.setattr(query, "read_file_text", guarded_read)
+        context = query.build_llm_context(
+            query="target",
+            symbols=("target",),
+            budget_tokens=64,
+        )
+    assert read_paths == []
+    assert context["included_items"] == 0
+    assert set(context["omitted_items"]) == {"large.py:large.target", "large.py"}
+
+
+def test_markdown_context_budget_counts_double_newline_separators(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(codex_packer, "run_secret_scanners", lambda *_args, **_kwargs: None)
+    source = tmp_path / "source"
+    source.mkdir()
+    for index in range(4):
+        (source / f"{index}.txt").write_text(f"content {index}\n", encoding="utf-8")
+    archive = tmp_path / "snapshot.cdx.sqlite"
+    codex_packer.pack_archive(source, archive)
+    with CodexArchiveQuery(archive) as query:
+        context = query.build_llm_context(
+            paths=("*.txt",),
+            budget_tokens=57,
+            output_format="markdown",
+        )
+    assert context["included_items"] == 3
+    assert context["estimated_tokens"] <= 57
 
 
 def test_secret_scanner_requires_exact_dispositions_and_emits_redacted_inventory(
@@ -579,6 +688,93 @@ def test_rehydrate_rejects_privileged_modes_before_writing(packed_tree, tmp_path
     with pytest.raises(ValueError, match="setuid/setgid"):
         rehydrate_archive(archive, destination)
     assert not destination.exists()
+
+
+def test_rehydrate_does_not_follow_destination_root_replacement(
+    packed_tree, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    _, archive, _ = packed_tree
+    destination = tmp_path / "restore"
+    destination.mkdir()
+    pinned_destination = tmp_path / "pinned-restore"
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    original_listdir = os.listdir
+    replaced = False
+
+    def replace_after_open(path):
+        nonlocal replaced
+        if isinstance(path, int) and not replaced:
+            destination.rename(pinned_destination)
+            destination.symlink_to(outside, target_is_directory=True)
+            replaced = True
+        return original_listdir(path)
+
+    monkeypatch.setattr(codex_rehydrate.os, "listdir", replace_after_open)
+    rehydrate_archive(archive, destination)
+    assert replaced
+    assert (pinned_destination / "copy.txt").is_file()
+    assert list(outside.iterdir()) == []
+
+
+def test_rehydrate_rejects_subdirectory_symlink_replacement(
+    packed_tree, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    _, archive, _ = packed_tree
+    destination = tmp_path / "restore"
+    moved_directory = tmp_path / "pinned-pkg"
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    original_open_directory = codex_rehydrate._open_extraction_directory
+    replaced = False
+
+    def replace_after_open(root_fd, components):
+        nonlocal replaced
+        directory_fd = original_open_directory(root_fd, components)
+        if components == ("pkg",) and not replaced:
+            (destination / "pkg").rename(moved_directory)
+            (destination / "pkg").symlink_to(outside, target_is_directory=True)
+            replaced = True
+        return directory_fd
+
+    monkeypatch.setattr(
+        codex_rehydrate,
+        "_open_extraction_directory",
+        replace_after_open,
+    )
+    with pytest.raises(OSError):
+        rehydrate_archive(archive, destination)
+    assert replaced
+    assert list(outside.iterdir()) == []
+
+
+@pytest.mark.parametrize("root_type", ("missing", "file"))
+def test_compare_trees_requires_existing_directory_roots(tmp_path: Path, root_type: str):
+    left = tmp_path / "left"
+    right = tmp_path / "right"
+    left.mkdir()
+    if root_type == "file":
+        right.write_text("not a directory", encoding="utf-8")
+        error = NotADirectoryError
+    else:
+        error = FileNotFoundError
+    with pytest.raises(error):
+        compare_trees(left, right)
+
+
+def test_compare_trees_propagates_walk_errors(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    root = tmp_path / "tree"
+    root.mkdir()
+
+    def fail_walk(_root, *, topdown, followlinks, onerror):
+        assert topdown
+        assert not followlinks
+        onerror(PermissionError("tree access denied"))
+        yield
+
+    monkeypatch.setattr(codex_rehydrate.os, "walk", fail_walk)
+    with pytest.raises(PermissionError, match="tree access denied"):
+        compare_trees(root, root)
 
 
 def test_rehydrate_uses_verified_connection_after_atomic_archive_replacement(

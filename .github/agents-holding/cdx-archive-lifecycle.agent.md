@@ -127,6 +127,24 @@ semantic false-positive proofs and stock fragment-origin proofs.
 4. Compare the rehydrated tree with the source when requested, and report
    filesystem limitations (for example symlink timestamp support) accurately.
 
+## Same-scope issue remediation
+
+When an explicitly requested archive-lifecycle task exposes a defect in the
+packer, query, verification, extraction, or comparison path, diagnose the source
+and make the smallest code-and-test fix when the task authorizes edits. Do not
+stop at a diagnosis or defer a routine, reproducible fix. Run the focused
+regressions and review the result adversarially before reporting it. Preserve
+source/archive integrity gates, existing work, and the selected destination;
+never expand into unrelated cleanup, scanner-disposition changes, workflow
+activation, or permission changes.
+
+Challenge each fix against the closest abuse case: source/destination symlink
+replacement, path traversal, archive replacement, forged metadata, oversized
+inputs, ambiguous symbol names, and output-budget boundaries. If the defect
+depends on unavailable platform behavior or authority, stop only that operation,
+complete independent safe work, and state the exact evidence and next authorized
+decision.
+
 ## Decision and escalation behavior
 
 For routine technical ambiguity, enumerate viable options, test each against
