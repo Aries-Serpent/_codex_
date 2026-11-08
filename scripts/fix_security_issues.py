@@ -262,7 +262,7 @@ def main() -> int:
 
     print("🔒 Starting automated security fixes for PR #3133")
     print(f"Working directory: {Path.cwd()}")
-    print(f"Mode: {'DRY RUN (no changes)' if args.dry_run else 'LIVE (will modify files)'}")
+    print("Mode configured.")
     print()
 
     total_fixes = 0
