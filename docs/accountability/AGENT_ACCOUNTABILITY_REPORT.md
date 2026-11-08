@@ -24587,7 +24587,10 @@ execution context with scoped access to the active agent path:
 The repository maintainer or a session provisioned with the required active-path
 scope must perform steps 1–3; the GitHub organization owner should verify the
 content-exclusion endpoint/access independently. No secrets were requested or
-disclosed, no workflow was dispatched, and no review thread was dismissed.
+disclosed, and no manual workflow dispatch or retry was requested. The automatic
+pull-request runs at head `d2a0dd46` for Copilot Setup Steps Validation
+(`42452080211`) and Workflow Execution Gate (`42452080214`) ended
+`action_required` with zero jobs, so they provide no live setup result.
 
 ### Review-thread follow-up
 
