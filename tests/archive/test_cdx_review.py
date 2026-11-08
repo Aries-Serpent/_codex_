@@ -255,13 +255,32 @@ def test_private_reads_reject_unsafe_files(tmp_path, unsafe, monkeypatch):
         cdx_review.read_private_json(target)
 
 
+@pytest.mark.parametrize("operation", ("read", "write"))
+def test_private_io_rejects_parent_traversal_before_hiding_symlink(tmp_path, operation):
+    tmp_path.chmod(0o700)
+    nested = tmp_path / "elsewhere" / "nested"
+    nested.mkdir(parents=True)
+    alias = tmp_path / "alias"
+    alias.symlink_to(nested, target_is_directory=True)
+    original = tmp_path / "original.json"
+    cdx_review.write_checkpoint(original, {"synthetic": True})
+    target = alias / ".." / ("original.json" if operation == "read" else "new.json")
+    with pytest.raises(ValueError, match="parent traversal"):
+        if operation == "read":
+            cdx_review.read_private_json(target)
+        else:
+            cdx_review.write_checkpoint(target, {"synthetic": True})
+    assert not (tmp_path / "new.json").exists()
+    assert cdx_review.read_private_json(original)[0] == {"synthetic": True}
+
+
 def test_unresolved_scan_does_not_create_database(tmp_path, monkeypatch):
     source = tmp_path / "source"
     source.mkdir()
     (source / "fixture.txt").write_text("synthetic\n")
     output = tmp_path / "never.cdx.sqlite"
 
-    def reject(*_args):
+    def reject(*_args, **_kwargs):
         raise RuntimeError("unresolved synthetic observations")
 
     monkeypatch.setattr(codex_packer, "run_secret_scanners", reject)
@@ -475,14 +494,16 @@ def test_next_batch_is_bounded_and_in_inventory_not_checkpoint_order(inventory, 
 
 
 @pytest.mark.parametrize("state", ["suspected_sensitive", "indeterminate", "stale_or_unmatched"])
-def test_scheduling_skips_all_non_unreviewed_states(inventory, bindings, state):
+@pytest.mark.parametrize("operation", (cdx_review.schedule_batch, cdx_review.list_batches))
+def test_scheduling_skips_all_non_unreviewed_states(inventory, bindings, state, operation):
     queue = cdx_review.build_queue(inventory, "e" * 64, bindings)
     queue["observations"][0]["state"] = state
-    assert cdx_review.schedule_batch(inventory, "e" * 64, bindings, previous=queue) == []
+    assert operation(inventory, "e" * 64, bindings, previous=queue) == []
 
 
 @pytest.mark.parametrize("attack", ["stale", "duplicate", "accepted", "evidence"])
-def test_scheduling_validates_checkpoint_before_selection(inventory, bindings, attack):
+@pytest.mark.parametrize("operation", (cdx_review.schedule_batch, cdx_review.list_batches))
+def test_scheduling_validates_checkpoint_before_selection(inventory, bindings, attack, operation):
     queue = cdx_review.build_queue(inventory, "e" * 64, bindings)
     if attack == "stale":
         queue["bindings"]["source_sha256"] = "f" * 64
@@ -493,4 +514,119 @@ def test_scheduling_validates_checkpoint_before_selection(inventory, bindings, a
     else:
         queue["observations"][0]["evidence_sha256"] = "f" * 64
     with pytest.raises(ValueError):
-        cdx_review.schedule_batch(inventory, "e" * 64, bindings, previous=queue)
+        operation(inventory, "e" * 64, bindings, previous=queue)
+
+
+@pytest.mark.parametrize("scanner_counts", ((0, 0), (1, 0), (0, 33), (16, 16), (35, 35), (65, 2)))
+def test_batch_index_covers_all_unreviewed_observations_deterministically(
+    inventory, bindings, scanner_counts
+):
+    template = inventory["findings"][0]
+    inventory["findings"] = [
+        dict(
+            template,
+            scanner=scanner,
+            scanner_version=cdx_common.SECRET_SCANNER_VERSIONS[scanner],
+            finding_id=f"{index + offset:064x}",
+        )
+        for index in range(max(scanner_counts))
+        for (scanner, offset), count in zip(
+            (("gitleaks", 1), ("detect-secrets", 101)), scanner_counts, strict=True
+        )
+        if index < count
+    ]
+    queue = cdx_review.build_queue(inventory, "e" * 64, bindings)
+    batches = cdx_review.list_batches(inventory, "e" * 64, bindings, previous=queue)
+    assert [batch["batch_index"] for batch in batches] == list(range(len(batches)))
+    indexes = [index for batch in batches for index in batch["observation_indexes"]]
+    assert sorted(indexes) == list(range(len(inventory["findings"])))
+    for batch in batches:
+        assert 0 < batch["observed_total"] <= 32
+        assert batch["observed_total"] == len(batch["observation_indexes"])
+        assert sum(batch["by_scanner"].values()) == batch["observed_total"]
+        assert all(count <= 16 for count in batch["by_scanner"].values())
+    for scanner in cdx_common.SECRET_SCANNER_VERSIONS:
+        assert [
+            index for index in indexes if inventory["findings"][index]["scanner"] == scanner
+        ] == [index for index, row in enumerate(inventory["findings"]) if row["scanner"] == scanner]
+    first = cdx_review.schedule_batch(inventory, "e" * 64, bindings, previous=queue)
+    assert first == (
+        [inventory["findings"][index] for index in batches[0]["observation_indexes"]]
+        if batches
+        else []
+    )
+    if scanner_counts == (35, 35):
+        assert [batch["observed_total"] for batch in batches] == [32, 32, 6]
+    queue["observations"].reverse()
+    assert cdx_review.list_batches(inventory, "e" * 64, bindings, previous=queue) == batches
+    skipped = set(indexes[::3])
+    for index, row in enumerate(inventory["findings"]):
+        if index in skipped:
+            observation = next(
+                item for item in queue["observations"] if item["finding_id"] == row["finding_id"]
+            )
+            observation["state"] = "indeterminate"
+    resumed = cdx_review.list_batches(inventory, "e" * 64, bindings, previous=queue)
+    remaining = [index for batch in resumed for index in batch["observation_indexes"]]
+    assert sorted(remaining) == sorted(set(indexes) - skipped)
+    assert all(0 < batch["observed_total"] <= 32 for batch in resumed)
+
+
+def test_list_batches_cli_indexes_multiple_batches_without_disclosing_findings(
+    tmp_path, inventory, bindings, capsys
+):
+    tmp_path.chmod(0o700)
+    source = tmp_path / "source"
+    source.mkdir()
+    template = inventory["findings"][0]
+    inventory["findings"] = [
+        dict(
+            template,
+            scanner=scanner,
+            scanner_version=cdx_common.SECRET_SCANNER_VERSIONS[scanner],
+            finding_id=f"{index + offset:064x}",
+        )
+        for index in range(35)
+        for scanner, offset in (("gitleaks", 1), ("detect-secrets", 101))
+    ]
+    inventory_path = tmp_path / "inventory.json"
+    binding_path = tmp_path / "bindings.json"
+    digest = cdx_review.write_checkpoint(inventory_path, inventory)
+    cdx_review.write_checkpoint(binding_path, bindings)
+    queue = cdx_review.build_queue(inventory, digest, bindings)
+    queue["observations"][0]["state"] = "suspected_sensitive"
+    queue["observations"].reverse()
+    resume_path = tmp_path / "resume.json"
+    cdx_review.write_checkpoint(resume_path, queue)
+    arguments = [
+        "--source",
+        str(source),
+        "--inventory",
+        str(inventory_path),
+        "--bindings",
+        str(binding_path),
+        "--resume",
+        str(resume_path),
+        "--list-batches",
+    ]
+    before = set(tmp_path.iterdir())
+    assert cdx_review.main(arguments) == 0
+    printed = capsys.readouterr().out
+    result = json.loads(printed)
+    assert "fixture.txt" not in printed
+    assert template["file_sha256"] not in printed
+    assert all(row["finding_id"] not in printed for row in inventory["findings"])
+    assert result["clearance"] == "not_evaluated"
+    assert result["index_base"] == 0
+    assert [batch["observed_total"] for batch in result["batches"]] == [32, 32, 5]
+    assert result["batches"] == cdx_review.list_batches(inventory, digest, bindings, previous=queue)
+    assert set(tmp_path.iterdir()) == before
+    assert cdx_review.main(arguments) == 0
+    assert capsys.readouterr().out == printed
+    checkpoint = tmp_path / "001.json"
+    assert cdx_review.main(arguments + ["--output", str(checkpoint)]) == 0
+    saved, saved_digest = cdx_review.read_private_json(checkpoint)
+    result_with_checkpoint = json.loads(capsys.readouterr().out)
+    assert result_with_checkpoint.pop("checkpoint_sha256") == saved_digest
+    assert result_with_checkpoint == result
+    assert saved == queue

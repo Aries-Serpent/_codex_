@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import hmac
 import json
@@ -528,3 +529,45 @@ def acquired_span(
     ):
         raise ValueError("adapter source changed before returning span")
     return raw[origin["start"] : origin["end"]], origin["mapping_status"]
+
+
+def list_batches(source: Path, private: Path, executable: Path) -> dict[str, Any]:
+    """Index all reverified adapter observations without reading or exposing spans."""
+    complete, findings = load_adapter(source, private, executable)
+    return {
+        "observations": len(findings),
+        "batch_size": 32,
+        "index_base": 0,
+        "batches": [
+            {
+                "batch_index": start // 32,
+                "start_ordinal": start,
+                "end_ordinal_exclusive": min(start + 32, len(findings)),
+                "observations": min(32, len(findings) - start),
+            }
+            for start in range(0, len(findings), 32)
+        ],
+        "adapter_bindings": complete["bindings"],
+        "purpose": "advisory_observation_index_not_review_or_clearance",
+        "packer_clearance_compatible": False,
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--list-batches", action="store_true", required=True)
+    parser.add_argument("--source", type=Path, required=True)
+    parser.add_argument("--private-directory", type=Path, required=True)
+    parser.add_argument("--gitleaks-adapter", type=Path, required=True)
+    args = parser.parse_args(argv)
+    try:
+        result = list_batches(args.source, args.private_directory, args.gitleaks_adapter)
+    except (OSError, ValueError, TypeError, KeyError, RuntimeError, subprocess.SubprocessError):
+        print("BLOCKED: current adapter batch bindings could not be validated")
+        return 2
+    print(json.dumps(result, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

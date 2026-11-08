@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 from defusedxml import ElementTree as ET
 
-from scripts.archive import cdx_common, codex_packer
+from scripts.archive import cdx_common, codex_packer, codex_rehydrate
 from scripts.archive.cdx_common import compute_merkle_root
 from scripts.archive.codex_query import CodexArchiveQuery
 from scripts.archive.codex_rehydrate import (
@@ -350,7 +350,7 @@ def test_secret_scanner_requires_exact_dispositions_and_emits_redacted_inventory
             json.dumps(
                 {
                     "results": {
-                        os.path.relpath(root / "secret.txt", Path.cwd()): [
+                        os.path.relpath(root / "secret.txt", _kwargs["cwd"]): [
                             {
                                 "type": "Secret Keyword",
                                 "line_number": 1,
@@ -579,6 +579,54 @@ def test_rehydrate_rejects_privileged_modes_before_writing(packed_tree, tmp_path
     with pytest.raises(ValueError, match="setuid/setgid"):
         rehydrate_archive(archive, destination)
     assert not destination.exists()
+
+
+def test_rehydrate_uses_verified_connection_after_atomic_archive_replacement(
+    packed_tree, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    source, archive, _ = packed_tree
+    replacement = tmp_path / "replacement.cdx.sqlite"
+    replacement.write_bytes(archive.read_bytes())
+    with sqlite3.connect(replacement) as connection:
+        connection.execute(
+            "UPDATE tree_entries SET mode = mode | 2048 WHERE path = 'pkg/sample.py'"
+        )
+        connection.execute(
+            "UPDATE archive_manifest SET merkle_root_sha256 = ? WHERE id = 1",
+            (compute_merkle_root(connection),),
+        )
+    with pytest.raises(ValueError, match="setuid/setgid"):
+        verify_archive(replacement)
+
+    opened = []
+    verified = []
+    connect = codex_rehydrate._connect_readonly
+    verify = codex_rehydrate.verify_archive_connection
+
+    def track_connection(path):
+        connection = connect(path)
+        assert connection.execute("PRAGMA query_only").fetchone()[0] == 1
+        opened.append(connection)
+        return connection
+
+    def replace_after_verification(connection, **kwargs):
+        result = verify(connection, **kwargs)
+        verified.append(connection)
+        os.replace(replacement, archive)
+        return result
+
+    monkeypatch.setattr(codex_rehydrate, "_connect_readonly", track_connection)
+    monkeypatch.setattr(codex_rehydrate, "verify_archive_connection", replace_after_verification)
+    destination = tmp_path / "verified-restore"
+    result = rehydrate_archive(archive, destination)
+    assert result["integrity_check"] == "ok"
+    assert len(opened) == 1
+    assert verified == opened
+    assert compare_trees(source, destination, check_mtime=False)["identical"]
+    restored = destination / "pkg" / "sample.py"
+    assert stat.S_IMODE(restored.stat().st_mode) == 0o600
+    with pytest.raises(sqlite3.ProgrammingError, match="closed"):
+        opened[0].execute("SELECT 1")
 
 
 def test_blob_readers_enforce_the_configured_size_ceiling(packed_tree):

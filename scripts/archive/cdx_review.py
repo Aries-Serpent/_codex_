@@ -10,6 +10,7 @@ import re
 import secrets
 import stat
 from collections import Counter
+from collections.abc import Iterator
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -21,6 +22,8 @@ from .cdx_common import (
 
 MAX_DOCUMENT_BYTES = 16 * 1024 * 1024
 MAX_FINDINGS = 50_000
+MAX_BATCH_OBSERVATIONS = 32
+MAX_SCANNER_BATCH_OBSERVATIONS = 16
 FINDING_FIELDS = {
     "scanner",
     "scanner_version",
@@ -61,6 +64,8 @@ def _digest(value: Any) -> bool:
 
 def _directory(path: Path, *, private: bool) -> int:
     """Open each directory without following symlinks, including ancestors."""
+    if ".." in path.parts:
+        raise ValueError("artifact directory contains parent traversal")
     absolute = Path(os.path.abspath(path))
     fd = os.open("/", os.O_RDONLY | os.O_DIRECTORY)
     try:
@@ -257,17 +262,64 @@ def schedule_batch(
     queue = build_queue(
         inventory, inventory_sha256, bindings, previous=previous, source_kind=source_kind
     )
+    return next(_scheduled_batches(inventory, queue), [])
+
+
+def _scheduled_batches(
+    inventory: dict[str, Any], queue: dict[str, Any]
+) -> Iterator[list[dict[str, Any]]]:
     states = {row["finding_id"]: row["state"] for row in queue["observations"]}
-    selected = []
-    for scanner in SECRET_SCANNER_VERSIONS:
-        selected.extend(
-            [
-                dict(row)
-                for row in inventory["findings"]
-                if row["scanner"] == scanner and states[row["finding_id"]] == "unreviewed"
-            ][:16]
-        )
-    return selected
+    groups = [
+        [
+            row
+            for row in inventory["findings"]
+            if row["scanner"] == scanner and states[row["finding_id"]] == "unreviewed"
+        ]
+        for scanner in SECRET_SCANNER_VERSIONS
+    ]
+    for offset in range(0, max(map(len, groups), default=0), MAX_SCANNER_BATCH_OBSERVATIONS):
+        selected = [
+            dict(row)
+            for group in groups
+            for row in group[offset : offset + MAX_SCANNER_BATCH_OBSERVATIONS]
+        ]
+        for start in range(0, len(selected), MAX_BATCH_OBSERVATIONS):
+            yield selected[start : start + MAX_BATCH_OBSERVATIONS]
+
+
+def _batch_indexes(inventory: dict[str, Any], queue: dict[str, Any]) -> list[dict[str, Any]]:
+    indexes = {row["finding_id"]: index for index, row in enumerate(inventory["findings"])}
+    return [
+        {
+            "batch_index": index,
+            "observation_indexes": [indexes[row["finding_id"]] for row in batch],
+            "observed_total": len(batch),
+            "by_scanner": {
+                scanner: sum(row["scanner"] == scanner for row in batch)
+                for scanner in SECRET_SCANNER_VERSIONS
+            },
+        }
+        for index, batch in enumerate(_scheduled_batches(inventory, queue))
+    ]
+
+
+def list_batches(
+    inventory: dict[str, Any],
+    inventory_sha256: str,
+    bindings: dict[str, Any],
+    *,
+    previous: dict[str, Any] | None = None,
+    source_kind: str = "real",
+) -> list[dict[str, Any]]:
+    """Index every unreviewed batch (<=32 rows) by zero-based inventory position.
+
+    Ordering matches schedule_batch: scanner order, then inventory order, with
+    at most 16 observations per scanner. Indexes convey scheduling, not approval.
+    """
+    queue = build_queue(
+        inventory, inventory_sha256, bindings, previous=previous, source_kind=source_kind
+    )
+    return _batch_indexes(inventory, queue)
 
 
 def write_checkpoint(path: Path, document: dict[str, Any], *, private: bool = True) -> str:
@@ -314,9 +366,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--source", required=True, type=Path)
     parser.add_argument("--inventory", required=True, type=Path)
     parser.add_argument("--bindings", required=True, type=Path)
-    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--output", type=Path, help="new private queue checkpoint")
     parser.add_argument("--resume", type=Path)
+    parser.add_argument(
+        "--list-batches",
+        action="store_true",
+        help="list all <=32-observation batches using zero-based inventory indexes; "
+        "--output is optional in this read-only mode",
+    )
     args = parser.parse_args(argv)
+    if args.output is None and not args.list_batches:
+        parser.error("--output is required unless --list-batches is supplied")
     try:
         source = args.source.resolve(strict=True)
         if not source.is_dir():
@@ -324,18 +384,21 @@ def main(argv: list[str] | None = None) -> int:
         for path in (args.inventory, args.bindings, args.resume):
             if path is not None:
                 _validate_external_path([source], path, must_exist=True)
-        _validate_external_path([source], args.output, must_exist=False)
+        if args.output is not None:
+            _validate_external_path([source], args.output, must_exist=False)
         inventory, digest = read_private_json(args.inventory)
         bindings, _ = read_private_json(args.bindings)
         previous = read_private_json(args.resume)[0] if args.resume else None
         queue = build_queue(inventory, digest, bindings, previous=previous)
-        checkpoint_digest = write_checkpoint(args.output, queue)
+        summary = queue_summary(queue)
+        if args.list_batches:
+            summary.update(index_base=0, batches=_batch_indexes(inventory, queue))
+        if args.output is not None:
+            summary["checkpoint_sha256"] = write_checkpoint(args.output, queue)
     except (OSError, ValueError, TypeError, RecursionError, RuntimeError):
         print("BLOCKED: private queue input, binding or checkpoint validation failed")
         return 2
-    print(
-        json.dumps(queue_summary(queue) | {"checkpoint_sha256": checkpoint_digest}, sort_keys=True)
-    )
+    print(json.dumps(summary, sort_keys=True))
     return 0
 
 

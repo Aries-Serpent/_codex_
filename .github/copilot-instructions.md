@@ -88,3 +88,47 @@ declaration here pins or grants control of the hosted Copilot service.
 For API work, consult the relevant current API/tool reference, verify
 operation-specific access, protect credentials and report denied sources.
 Historical token names or cached booleans are not proof of scope.
+
+## Offline CDX skills discovery
+
+The startup packet `.codex/session_startup_packet.json` includes a structured
+`skills_registry`, `cdx_module_index` (exact source lines, CLI and test entrypoints),
+and `cdx_common_preflight`. `scripts/ci/cdx_context.py` builds these from explicit
+local source/test paths without network discovery or browsing agent directories.
+`python -m scripts.ci.startup_health --refresh-context` updates only catalog fields;
+`--validate` rejects omitted or stale mappings. Normal packet generation also
+persists the catalog. Validation allows unrelated non-CDX skills/candidates and
+context refresh preserves them. Context discovery is not scanner execution or
+authorization.
+`python -m scripts.archive.cdx_preflight --preflight-summary --json` provides
+the shared read-only context alias. The module index also maps common's public
+validation/verification/blob-inspection wrappers and `assess_acquired_batch`.
+The candidate ID `cdx-archive-lifecycle` appears in skills as `staged_candidate`.
+Each module's `cli_contract` records actual parser subcommands/options.
+Query supports `info/list/read/search/symbols/callgraph/context`; rehydrate requires
+`verify`, `extract`, or `compare` (for example `codex_rehydrate extract ARCHIVE DESTINATION`).
+`pack_directory` is absent: use `pack_archive`; canonical scanner API
+`run_secret_scanners` also exports the compatibility alias `run_secret_scanner`.
+The common-preflight function map includes text inspection,
+Merkle computation, canonical findings, external-path validation and lifecycle
+entrypoints with exact source locations.
+Preflight `--gitleaks-adapter EXECUTABLE --assess-acquired-batch` independently
+assesses at most 32 validated acquisition findings in namespace
+`acquired_full_file_adapter_not_stock`; `--assess-first-batch` is stock-only.
+Acquired assessment checkpoints are one-based; discovery indices are zero-based.
+Neither assessment transfers stock fragment provenance or grants clearance.
+
+| Module | Key callable(s) | CLI / tests |
+| --- | --- | --- |
+| `scripts.archive.cdx_common` | `run_cdx_common_preflight`, `run_secret_scanners` | `python -m scripts.archive.cdx_common --preflight-context --json`; `tests/archive/test_cdx_context.py`, `test_cdx_sqlite_archive.py` |
+| `scripts.archive.cdx_preflight` | `run_preflight`, `load_preflight`, `assess_batch` | `python -m scripts.archive.cdx_preflight --help`; `tests/archive/test_cdx_preflight.py` |
+| `scripts.archive.cdx_review` | `build_queue`, `schedule_batch`, `write_checkpoint` | `python -m scripts.archive.cdx_review --help`; `tests/archive/test_cdx_review.py` |
+| `scripts.archive.cdx_adapter` | `run_adapter`, `load_adapter`, `acquired_span`, `list_batches` | `python -m scripts.archive.cdx_adapter --list-batches --source SOURCE --private-directory PRIVATE --gitleaks-adapter EXECUTABLE`; `tests/archive/test_cdx_adapter.py` |
+| `scripts.archive.codex_packer` | `pack_archive` | `python -m scripts.archive.codex_packer --help`; `tests/archive/test_cdx_sqlite_archive.py` |
+| `scripts.archive.codex_query` | `CodexArchiveQuery`, `build_llm_context` (method) | `python -m scripts.archive.codex_query --help`; `tests/archive/test_cdx_sqlite_archive.py` |
+| `scripts.archive.codex_rehydrate` | `verify_archive`, `rehydrate_archive`, `compare_trees` | `python -m scripts.archive.codex_rehydrate --help`; `tests/archive/test_cdx_sqlite_archive.py` |
+| `scripts/archive/gitleaks_adapter/main.go` | `provenance`, `scan`, `localize` | `EXECUTABLE identity` / private request on stdin; `cd scripts/archive/gitleaks_adapter && GOPROXY=off GOSUMDB=off go test ./...` |
+
+`.github/agents-holding/cdx-archive-lifecycle.agent.md` is a discoverable staged
+candidate only. Its listing does not establish hosted activation, selection,
+credentials, reviewer authority, or permission to pack or publish.

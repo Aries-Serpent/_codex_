@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-08T01:17:40Z",
+  "generated_at": "2026-11-07T16:08:36Z",
   "branch_drift_severity": "UNKNOWN",
   "main_commits_ahead": 0,
   "ci_failure_rate": 7.3,
@@ -8,5 +8,1737 @@
   "token_contract": "pass",
   "bootstrap_health_score": 100,
   "status": "GREEN",
-  "must_fix_before_editing": []
+  "must_fix_before_editing": [],
+  "skills_registry": {
+    "schema_version": 1,
+    "discovery": "offline_explicit_paths_no_network",
+    "skills": [
+      {
+        "id": "cdx_common",
+        "module_index_key": "common",
+        "entrypoints": [
+          "iter_deterministic_tree",
+          "inspect_text",
+          "compute_merkle_root",
+          "run_secret_scanners",
+          "run_secret_scanner",
+          "_scanner_finding",
+          "_canonical_scanner_finding",
+          "_gitleaks_private_span",
+          "_finding_id",
+          "_validate_external_path",
+          "inspect_and_pack_blob",
+          "validate_safe_rel_path",
+          "validate_symlink_target",
+          "verify_archive_connection",
+          "verify_archive",
+          "validate_inventory",
+          "run_cdx_common_preflight",
+          "main"
+        ],
+        "cli": "python -m scripts.archive.cdx_common --preflight-context --json",
+        "test_command": "python -m pytest tests/archive/test_cdx_sqlite_archive.py tests/archive/test_cdx_context.py",
+        "availability": "local_source"
+      },
+      {
+        "id": "cdx_preflight",
+        "module_index_key": "preflight",
+        "entrypoints": [
+          "digest_document",
+          "read_source_file",
+          "measure_tree",
+          "measure_toolchain",
+          "run_preflight",
+          "load_preflight",
+          "assess_batch",
+          "assess_acquired_batch",
+          "main"
+        ],
+        "cli": "python -m scripts.archive.cdx_preflight --source SOURCE --private-directory PRIVATE",
+        "test_command": "python -m pytest tests/archive/test_cdx_preflight.py tests/archive/test_cdx_context.py",
+        "availability": "local_source",
+        "context_cli": "python -m scripts.archive.cdx_preflight --preflight-summary --json"
+      },
+      {
+        "id": "cdx_review",
+        "module_index_key": "review",
+        "entrypoints": [
+          "read_private_json",
+          "validate_inventory",
+          "build_queue",
+          "schedule_batch",
+          "list_batches",
+          "write_checkpoint",
+          "main"
+        ],
+        "cli": "python -m scripts.archive.cdx_review --source SOURCE --inventory INVENTORY --bindings BINDINGS --output OUTPUT",
+        "test_command": "python -m pytest tests/archive/test_cdx_review.py",
+        "availability": "local_source"
+      },
+      {
+        "id": "cdx_adapter",
+        "module_index_key": "adapter",
+        "entrypoints": [
+          "measure_adapter",
+          "run_adapter",
+          "load_adapter",
+          "stock_relationship",
+          "acquired_span",
+          "list_batches",
+          "main"
+        ],
+        "cli": "python -m scripts.archive.cdx_adapter --list-batches --source SOURCE --private-directory PRIVATE --gitleaks-adapter EXECUTABLE",
+        "test_command": "python -m pytest tests/archive/test_cdx_adapter.py",
+        "availability": "local_source"
+      },
+      {
+        "id": "cdx_packer",
+        "module_index_key": "packer",
+        "entrypoints": [
+          "pack_archive",
+          "main"
+        ],
+        "cli": "python -m scripts.archive.codex_packer SOURCE OUTPUT.cdx.sqlite",
+        "test_command": "python -m pytest tests/archive/test_cdx_sqlite_archive.py",
+        "availability": "local_source"
+      },
+      {
+        "id": "cdx_query",
+        "module_index_key": "query",
+        "entrypoints": [
+          "CodexArchiveQuery",
+          "CodexArchiveQuery.list_tree",
+          "CodexArchiveQuery.read_file_bytes",
+          "CodexArchiveQuery.read_file_text",
+          "CodexArchiveQuery.search_fts",
+          "CodexArchiveQuery.query_symbols",
+          "CodexArchiveQuery.query_call_graph",
+          "CodexArchiveQuery.build_llm_context",
+          "main"
+        ],
+        "cli": "python -m scripts.archive.codex_query ARCHIVE.cdx.sqlite info",
+        "test_command": "python -m pytest tests/archive/test_cdx_sqlite_archive.py",
+        "availability": "local_source"
+      },
+      {
+        "id": "cdx_rehydrate",
+        "module_index_key": "rehydrate",
+        "entrypoints": [
+          "verify_archive_connection",
+          "verify_archive",
+          "validate_safe_rel_path",
+          "validate_symlink_target",
+          "rehydrate_archive",
+          "compare_trees",
+          "main"
+        ],
+        "cli": "python -m scripts.archive.codex_rehydrate extract ARCHIVE.cdx.sqlite DESTINATION",
+        "test_command": "python -m pytest tests/archive/test_cdx_sqlite_archive.py",
+        "availability": "local_source"
+      },
+      {
+        "id": "cdx_gitleaks_adapter",
+        "module_index_key": "gitleaks_adapter",
+        "entrypoints": [
+          "provenance",
+          "readFile",
+          "selectedFiles",
+          "localize",
+          "scan",
+          "main"
+        ],
+        "cli": "EXECUTABLE identity; EXECUTABLE < OWNER_ONLY_REQUEST.json",
+        "test_command": "cd scripts/archive/gitleaks_adapter && GOPROXY=off GOSUMDB=off go test ./...",
+        "availability": "local_source"
+      },
+      {
+        "id": "cdx-archive-lifecycle",
+        "name": "CDX Archive Lifecycle",
+        "path": ".github/agents-holding/cdx-archive-lifecycle.agent.md",
+        "status": "staged_candidate",
+        "discoverable": true,
+        "hosted_activation": "not_established",
+        "authorization": "none_granted",
+        "kind": "agent_candidate",
+        "availability": "staged_candidate",
+        "module_index_keys": [
+          "common",
+          "preflight",
+          "review",
+          "adapter",
+          "packer",
+          "query",
+          "rehydrate",
+          "gitleaks_adapter"
+        ]
+      }
+    ],
+    "agent_candidates": [
+      {
+        "id": "cdx-archive-lifecycle",
+        "name": "CDX Archive Lifecycle",
+        "path": ".github/agents-holding/cdx-archive-lifecycle.agent.md",
+        "status": "staged_candidate",
+        "discoverable": true,
+        "hosted_activation": "not_established",
+        "authorization": "none_granted"
+      }
+    ]
+  },
+  "cdx_module_index": {
+    "common": {
+      "path": "scripts/archive/cdx_common.py",
+      "functions": {
+        "iter_deterministic_tree": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 198,
+          "location": "scripts/archive/cdx_common.py:198",
+          "signature": "def iter_deterministic_tree(root: Path, denied_components: set[str] | None=None, denied_globs: set[str] | None=None) -> Iterator[tuple[Path, str, os.stat_result]]"
+        },
+        "inspect_text": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 227,
+          "location": "scripts/archive/cdx_common.py:227",
+          "signature": "def inspect_text(raw: bytes) -> tuple[str | None, str | None, str | None]"
+        },
+        "compute_merkle_root": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 315,
+          "location": "scripts/archive/cdx_common.py:315",
+          "signature": "def compute_merkle_root(connection: Any) -> str"
+        },
+        "run_secret_scanners": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 358,
+          "location": "scripts/archive/cdx_common.py:358",
+          "signature": "def run_secret_scanners(root: Path, dispositions_path: Path | None=None, inventory_path: Path | None=None, source_root: Path | None=None, *, observation_sink: Any=None, report_sink: Any=None, scanner_environment: dict[str, str] | None=None, scanner_directory: Path | None=None, gitleaks_config: Path | None=None, gitleaks_ignore: Path | None=None) -> None"
+        },
+        "run_secret_scanner": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 607,
+          "location": "scripts/archive/cdx_common.py:607",
+          "signature": "def run_secret_scanners(root: Path, dispositions_path: Path | None=None, inventory_path: Path | None=None, source_root: Path | None=None, *, observation_sink: Any=None, report_sink: Any=None, scanner_environment: dict[str, str] | None=None, scanner_directory: Path | None=None, gitleaks_config: Path | None=None, gitleaks_ignore: Path | None=None) -> None"
+        },
+        "_scanner_finding": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 640,
+          "location": "scripts/archive/cdx_common.py:640",
+          "signature": "def _scanner_finding(root: Path, scanner: str, version: str, record: dict[str, Any], *, report_directory: Path | None=None) -> dict[str, Any]"
+        },
+        "_canonical_scanner_finding": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 662,
+          "location": "scripts/archive/cdx_common.py:662",
+          "signature": "def _canonical_scanner_finding(scanner: str, version: str, path: str, file_digest: str, record: dict[str, Any]) -> dict[str, Any]"
+        },
+        "_gitleaks_private_span": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 709,
+          "location": "scripts/archive/cdx_common.py:709",
+          "signature": "def _gitleaks_private_span(raw: bytes, record: dict[str, Any], *, version: str, unfragmented: bool=False, source_window: tuple[int, int] | None=None) -> tuple[bytes | None, str]"
+        },
+        "_finding_id": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 821,
+          "location": "scripts/archive/cdx_common.py:821",
+          "signature": "def _finding_id(key: bytes, finding: dict[str, Any]) -> str"
+        },
+        "_validate_external_path": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 851,
+          "location": "scripts/archive/cdx_common.py:851",
+          "signature": "def _validate_external_path(source_roots: list[Path], path: Path, *, must_exist: bool) -> Path"
+        },
+        "inspect_and_pack_blob": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 262,
+          "location": "scripts/archive/cdx_common.py:262",
+          "signature": "def inspect_and_pack_blob(raw: bytes, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES) -> dict[str, Any]"
+        },
+        "validate_safe_rel_path": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 944,
+          "location": "scripts/archive/cdx_common.py:944",
+          "signature": "def validate_safe_rel_path(path: str) -> PurePosixPath"
+        },
+        "validate_symlink_target": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 950,
+          "location": "scripts/archive/cdx_common.py:950",
+          "signature": "def validate_symlink_target(link_path: str, target: str, *, allow_external: bool=False, archive_symlinks: set[str] | None=None) -> None"
+        },
+        "verify_archive_connection": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 964,
+          "location": "scripts/archive/cdx_common.py:964",
+          "signature": "def verify_archive_connection(connection: Any, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
+        },
+        "verify_archive": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 975,
+          "location": "scripts/archive/cdx_common.py:975",
+          "signature": "def verify_archive(archive: Path, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
+        },
+        "validate_inventory": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 986,
+          "location": "scripts/archive/cdx_common.py:986",
+          "signature": "def validate_inventory(document: dict[str, Any]) -> list[dict[str, Any]]"
+        },
+        "run_cdx_common_preflight": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 1092,
+          "location": "scripts/archive/cdx_common.py:1092",
+          "signature": "def run_cdx_common_preflight(repository_root: Path | None=None) -> dict[str, Any]"
+        },
+        "main": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 1186,
+          "location": "scripts/archive/cdx_common.py:1186",
+          "signature": "def main(argv: list[str] | None=None) -> int"
+        }
+      },
+      "exported_signatures": {
+        "iter_deterministic_tree": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 198,
+          "signature": "def iter_deterministic_tree(root: Path, denied_components: set[str] | None=None, denied_globs: set[str] | None=None) -> Iterator[tuple[Path, str, os.stat_result]]"
+        },
+        "inspect_text": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 227,
+          "signature": "def inspect_text(raw: bytes) -> tuple[str | None, str | None, str | None]"
+        },
+        "inspect_and_pack_blob": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 262,
+          "signature": "def inspect_and_pack_blob(raw: bytes, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES) -> dict[str, Any]"
+        },
+        "git_blob_oids": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 283,
+          "signature": "def git_blob_oids(root: Path) -> dict[str, str]"
+        },
+        "compute_merkle_root": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 315,
+          "signature": "def compute_merkle_root(connection: Any) -> str"
+        },
+        "run_secret_scanners": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 358,
+          "signature": "def run_secret_scanners(root: Path, dispositions_path: Path | None=None, inventory_path: Path | None=None, source_root: Path | None=None, *, observation_sink: Any=None, report_sink: Any=None, scanner_environment: dict[str, str] | None=None, scanner_directory: Path | None=None, gitleaks_config: Path | None=None, gitleaks_ignore: Path | None=None) -> None"
+        },
+        "_scanner_finding": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 640,
+          "signature": "def _scanner_finding(root: Path, scanner: str, version: str, record: dict[str, Any], *, report_directory: Path | None=None) -> dict[str, Any]"
+        },
+        "_canonical_scanner_finding": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 662,
+          "signature": "def _canonical_scanner_finding(scanner: str, version: str, path: str, file_digest: str, record: dict[str, Any]) -> dict[str, Any]"
+        },
+        "_gitleaks_private_span": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 709,
+          "signature": "def _gitleaks_private_span(raw: bytes, record: dict[str, Any], *, version: str, unfragmented: bool=False, source_window: tuple[int, int] | None=None) -> tuple[bytes | None, str]"
+        },
+        "_finding_id": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 821,
+          "signature": "def _finding_id(key: bytes, finding: dict[str, Any]) -> str"
+        },
+        "_validate_external_path": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 851,
+          "signature": "def _validate_external_path(source_roots: list[Path], path: Path, *, must_exist: bool) -> Path"
+        },
+        "validate_safe_rel_path": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 944,
+          "signature": "def validate_safe_rel_path(path: str) -> PurePosixPath"
+        },
+        "validate_symlink_target": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 950,
+          "signature": "def validate_symlink_target(link_path: str, target: str, *, allow_external: bool=False, archive_symlinks: set[str] | None=None) -> None"
+        },
+        "verify_archive_connection": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 964,
+          "signature": "def verify_archive_connection(connection: Any, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
+        },
+        "verify_archive": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 975,
+          "signature": "def verify_archive(archive: Path, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
+        },
+        "validate_inventory": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 986,
+          "signature": "def validate_inventory(document: dict[str, Any]) -> list[dict[str, Any]]"
+        },
+        "run_cdx_common_preflight": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 1092,
+          "signature": "def run_cdx_common_preflight(repository_root: Path | None=None) -> dict[str, Any]"
+        },
+        "main": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 1186,
+          "signature": "def main(argv: list[str] | None=None) -> int"
+        },
+        "run_secret_scanner": {
+          "path": "scripts/archive/cdx_common.py",
+          "line": 607,
+          "signature": "def run_secret_scanners(root: Path, dispositions_path: Path | None=None, inventory_path: Path | None=None, source_root: Path | None=None, *, observation_sink: Any=None, report_sink: Any=None, scanner_environment: dict[str, str] | None=None, scanner_directory: Path | None=None, gitleaks_config: Path | None=None, gitleaks_ignore: Path | None=None) -> None"
+        }
+      },
+      "cli": "python -m scripts.archive.cdx_common --preflight-context --json",
+      "cli_contract": {
+        "source": "parser_ast",
+        "root": {
+          "arguments": [
+            {
+              "names": [
+                "--preflight-context"
+              ],
+              "line": 1188,
+              "action": "store_true",
+              "required": true
+            },
+            {
+              "names": [
+                "--json"
+              ],
+              "line": 1189,
+              "action": "store_true"
+            }
+          ]
+        },
+        "subcommands": {}
+      },
+      "tests": [
+        "tests/archive/test_cdx_sqlite_archive.py",
+        "tests/archive/test_cdx_context.py"
+      ],
+      "test_command": "python -m pytest tests/archive/test_cdx_sqlite_archive.py tests/archive/test_cdx_context.py"
+    },
+    "preflight": {
+      "path": "scripts/archive/cdx_preflight.py",
+      "functions": {
+        "digest_document": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 41,
+          "location": "scripts/archive/cdx_preflight.py:41",
+          "signature": "def digest_document(value: Any) -> str"
+        },
+        "read_source_file": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 58,
+          "location": "scripts/archive/cdx_preflight.py:58",
+          "signature": "def read_source_file(root: Path, relative: str, *, limit: int=MAX_FILE_BYTES, expected_info: os.stat_result | None=None) -> bytes"
+        },
+        "measure_tree": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 92,
+          "location": "scripts/archive/cdx_preflight.py:92",
+          "signature": "def measure_tree(root: Path, *, snapshot: Path | None=None) -> dict[str, Any]"
+        },
+        "measure_toolchain": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 190,
+          "location": "scripts/archive/cdx_preflight.py:190",
+          "signature": "def measure_toolchain() -> dict[str, Any]"
+        },
+        "run_preflight": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 375,
+          "location": "scripts/archive/cdx_preflight.py:375",
+          "signature": "def run_preflight(source: Path, private: Path) -> dict[str, Any]"
+        },
+        "load_preflight": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 428,
+          "location": "scripts/archive/cdx_preflight.py:428",
+          "signature": "def load_preflight(source: Path, private: Path) -> tuple[dict[str, Any], dict[str, Any]]"
+        },
+        "assess_batch": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 484,
+          "location": "scripts/archive/cdx_preflight.py:484",
+          "signature": "def assess_batch(source: Path, private: Path, *, batch_index: int=1) -> dict[str, Any]"
+        },
+        "assess_acquired_batch": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 615,
+          "location": "scripts/archive/cdx_preflight.py:615",
+          "signature": "def assess_acquired_batch(source: Path, private: Path, executable: Path, *, batch_index: int=1) -> dict[str, Any]"
+        },
+        "main": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 695,
+          "location": "scripts/archive/cdx_preflight.py:695",
+          "signature": "def main(argv: list[str] | None=None) -> int"
+        }
+      },
+      "exported_signatures": {
+        "digest_document": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 41,
+          "signature": "def digest_document(value: Any) -> str"
+        },
+        "read_source_file": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 58,
+          "signature": "def read_source_file(root: Path, relative: str, *, limit: int=MAX_FILE_BYTES, expected_info: os.stat_result | None=None) -> bytes"
+        },
+        "measure_tree": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 92,
+          "signature": "def measure_tree(root: Path, *, snapshot: Path | None=None) -> dict[str, Any]"
+        },
+        "measure_toolchain": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 190,
+          "signature": "def measure_toolchain() -> dict[str, Any]"
+        },
+        "run_preflight": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 375,
+          "signature": "def run_preflight(source: Path, private: Path) -> dict[str, Any]"
+        },
+        "load_preflight": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 428,
+          "signature": "def load_preflight(source: Path, private: Path) -> tuple[dict[str, Any], dict[str, Any]]"
+        },
+        "assess_batch": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 484,
+          "signature": "def assess_batch(source: Path, private: Path, *, batch_index: int=1) -> dict[str, Any]"
+        },
+        "assess_acquired_batch": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 615,
+          "signature": "def assess_acquired_batch(source: Path, private: Path, executable: Path, *, batch_index: int=1) -> dict[str, Any]"
+        },
+        "main": {
+          "path": "scripts/archive/cdx_preflight.py",
+          "line": 695,
+          "signature": "def main(argv: list[str] | None=None) -> int"
+        }
+      },
+      "cli": "python -m scripts.archive.cdx_preflight --source SOURCE --private-directory PRIVATE",
+      "cli_contract": {
+        "source": "parser_ast",
+        "root": {
+          "arguments": [
+            {
+              "names": [
+                "--source"
+              ],
+              "line": 697
+            },
+            {
+              "names": [
+                "--private-directory"
+              ],
+              "line": 698
+            },
+            {
+              "names": [
+                "--preflight-summary"
+              ],
+              "line": 699,
+              "action": "store_true"
+            },
+            {
+              "names": [
+                "--json"
+              ],
+              "line": 700,
+              "action": "store_true"
+            },
+            {
+              "names": [
+                "--assess-first-batch"
+              ],
+              "line": 701,
+              "action": "store_true"
+            },
+            {
+              "names": [
+                "--assess-acquired-batch"
+              ],
+              "line": 702,
+              "action": "store_true"
+            },
+            {
+              "names": [
+                "--gitleaks-adapter"
+              ],
+              "line": 707
+            }
+          ]
+        },
+        "subcommands": {}
+      },
+      "tests": [
+        "tests/archive/test_cdx_preflight.py",
+        "tests/archive/test_cdx_context.py"
+      ],
+      "test_command": "python -m pytest tests/archive/test_cdx_preflight.py tests/archive/test_cdx_context.py",
+      "context_cli": "python -m scripts.archive.cdx_preflight --preflight-summary --json"
+    },
+    "review": {
+      "path": "scripts/archive/cdx_review.py",
+      "functions": {
+        "read_private_json": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 98,
+          "location": "scripts/archive/cdx_review.py:98",
+          "signature": "def read_private_json(path: Path) -> tuple[dict[str, Any], str]"
+        },
+        "validate_inventory": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 132,
+          "location": "scripts/archive/cdx_review.py:132",
+          "signature": "def validate_inventory(document: dict[str, Any]) -> list[dict[str, Any]]"
+        },
+        "build_queue": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 182,
+          "location": "scripts/archive/cdx_review.py:182",
+          "signature": "def build_queue(inventory: dict[str, Any], inventory_sha256: str, bindings: dict[str, Any], *, previous: dict[str, Any] | None=None, source_kind: str='real') -> dict[str, Any]"
+        },
+        "schedule_batch": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 253,
+          "location": "scripts/archive/cdx_review.py:253",
+          "signature": "def schedule_batch(inventory: dict[str, Any], inventory_sha256: str, bindings: dict[str, Any], *, previous: dict[str, Any] | None=None, source_kind: str='real') -> list[dict[str, Any]]"
+        },
+        "list_batches": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 306,
+          "location": "scripts/archive/cdx_review.py:306",
+          "signature": "def list_batches(inventory: dict[str, Any], inventory_sha256: str, bindings: dict[str, Any], *, previous: dict[str, Any] | None=None, source_kind: str='real') -> list[dict[str, Any]]"
+        },
+        "write_checkpoint": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 325,
+          "location": "scripts/archive/cdx_review.py:325",
+          "signature": "def write_checkpoint(path: Path, document: dict[str, Any], *, private: bool=True) -> str"
+        },
+        "main": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 364,
+          "location": "scripts/archive/cdx_review.py:364",
+          "signature": "def main(argv: list[str] | None=None) -> int"
+        }
+      },
+      "exported_signatures": {
+        "read_private_json": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 98,
+          "signature": "def read_private_json(path: Path) -> tuple[dict[str, Any], str]"
+        },
+        "validate_inventory": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 132,
+          "signature": "def validate_inventory(document: dict[str, Any]) -> list[dict[str, Any]]"
+        },
+        "build_queue": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 182,
+          "signature": "def build_queue(inventory: dict[str, Any], inventory_sha256: str, bindings: dict[str, Any], *, previous: dict[str, Any] | None=None, source_kind: str='real') -> dict[str, Any]"
+        },
+        "queue_summary": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 241,
+          "signature": "def queue_summary(queue: dict[str, Any]) -> dict[str, Any]"
+        },
+        "schedule_batch": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 253,
+          "signature": "def schedule_batch(inventory: dict[str, Any], inventory_sha256: str, bindings: dict[str, Any], *, previous: dict[str, Any] | None=None, source_kind: str='real') -> list[dict[str, Any]]"
+        },
+        "list_batches": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 306,
+          "signature": "def list_batches(inventory: dict[str, Any], inventory_sha256: str, bindings: dict[str, Any], *, previous: dict[str, Any] | None=None, source_kind: str='real') -> list[dict[str, Any]]"
+        },
+        "write_checkpoint": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 325,
+          "signature": "def write_checkpoint(path: Path, document: dict[str, Any], *, private: bool=True) -> str"
+        },
+        "main": {
+          "path": "scripts/archive/cdx_review.py",
+          "line": 364,
+          "signature": "def main(argv: list[str] | None=None) -> int"
+        }
+      },
+      "cli": "python -m scripts.archive.cdx_review --source SOURCE --inventory INVENTORY --bindings BINDINGS --output OUTPUT",
+      "cli_contract": {
+        "source": "parser_ast",
+        "root": {
+          "arguments": [
+            {
+              "names": [
+                "--source"
+              ],
+              "line": 366,
+              "required": true
+            },
+            {
+              "names": [
+                "--inventory"
+              ],
+              "line": 367,
+              "required": true
+            },
+            {
+              "names": [
+                "--bindings"
+              ],
+              "line": 368,
+              "required": true
+            },
+            {
+              "names": [
+                "--output"
+              ],
+              "line": 369
+            },
+            {
+              "names": [
+                "--resume"
+              ],
+              "line": 370
+            },
+            {
+              "names": [
+                "--list-batches"
+              ],
+              "line": 371,
+              "action": "store_true"
+            }
+          ]
+        },
+        "subcommands": {}
+      },
+      "tests": [
+        "tests/archive/test_cdx_review.py"
+      ],
+      "test_command": "python -m pytest tests/archive/test_cdx_review.py"
+    },
+    "adapter": {
+      "path": "scripts/archive/cdx_adapter.py",
+      "functions": {
+        "measure_adapter": {
+          "path": "scripts/archive/cdx_adapter.py",
+          "line": 73,
+          "location": "scripts/archive/cdx_adapter.py:73",
+          "signature": "def measure_adapter(executable: Path, private: Path) -> dict[str, Any]"
+        },
+        "run_adapter": {
+          "path": "scripts/archive/cdx_adapter.py",
+          "line": 354,
+          "location": "scripts/archive/cdx_adapter.py:354",
+          "signature": "def run_adapter(source: Path, private: Path, executable: Path) -> dict[str, Any]"
+        },
+        "load_adapter": {
+          "path": "scripts/archive/cdx_adapter.py",
+          "line": 443,
+          "location": "scripts/archive/cdx_adapter.py:443",
+          "signature": "def load_adapter(source: Path, private: Path, executable: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]"
+        },
+        "stock_relationship": {
+          "path": "scripts/archive/cdx_adapter.py",
+          "line": 485,
+          "location": "scripts/archive/cdx_adapter.py:485",
+          "signature": "def stock_relationship(source: Path, private: Path, executable: Path, stock_ordinal: int) -> dict[str, Any]"
+        },
+        "acquired_span": {
+          "path": "scripts/archive/cdx_adapter.py",
+          "line": 508,
+          "location": "scripts/archive/cdx_adapter.py:508",
+          "signature": "def acquired_span(source: Path, private: Path, executable: Path, finding_id: str) -> tuple[bytes | None, str]"
+        },
+        "list_batches": {
+          "path": "scripts/archive/cdx_adapter.py",
+          "line": 534,
+          "location": "scripts/archive/cdx_adapter.py:534",
+          "signature": "def list_batches(source: Path, private: Path, executable: Path) -> dict[str, Any]"
+        },
+        "main": {
+          "path": "scripts/archive/cdx_adapter.py",
+          "line": 556,
+          "location": "scripts/archive/cdx_adapter.py:556",
+          "signature": "def main(argv: list[str] | None=None) -> int"
+        }
+      },
+      "exported_signatures": {
+        "measure_adapter": {
+          "path": "scripts/archive/cdx_adapter.py",
+          "line": 73,
+          "signature": "def measure_adapter(executable: Path, private: Path) -> dict[str, Any]"
+        },
+        "run_adapter": {
+          "path": "scripts/archive/cdx_adapter.py",
+          "line": 354,
+          "signature": "def run_adapter(source: Path, private: Path, executable: Path) -> dict[str, Any]"
+        },
+        "load_adapter": {
+          "path": "scripts/archive/cdx_adapter.py",
+          "line": 443,
+          "signature": "def load_adapter(source: Path, private: Path, executable: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]"
+        },
+        "stock_relationship": {
+          "path": "scripts/archive/cdx_adapter.py",
+          "line": 485,
+          "signature": "def stock_relationship(source: Path, private: Path, executable: Path, stock_ordinal: int) -> dict[str, Any]"
+        },
+        "acquired_span": {
+          "path": "scripts/archive/cdx_adapter.py",
+          "line": 508,
+          "signature": "def acquired_span(source: Path, private: Path, executable: Path, finding_id: str) -> tuple[bytes | None, str]"
+        },
+        "list_batches": {
+          "path": "scripts/archive/cdx_adapter.py",
+          "line": 534,
+          "signature": "def list_batches(source: Path, private: Path, executable: Path) -> dict[str, Any]"
+        },
+        "main": {
+          "path": "scripts/archive/cdx_adapter.py",
+          "line": 556,
+          "signature": "def main(argv: list[str] | None=None) -> int"
+        }
+      },
+      "cli": "python -m scripts.archive.cdx_adapter --list-batches --source SOURCE --private-directory PRIVATE --gitleaks-adapter EXECUTABLE",
+      "cli_contract": {
+        "source": "parser_ast",
+        "root": {
+          "arguments": [
+            {
+              "names": [
+                "--list-batches"
+              ],
+              "line": 558,
+              "action": "store_true",
+              "required": true
+            },
+            {
+              "names": [
+                "--source"
+              ],
+              "line": 559,
+              "required": true
+            },
+            {
+              "names": [
+                "--private-directory"
+              ],
+              "line": 560,
+              "required": true
+            },
+            {
+              "names": [
+                "--gitleaks-adapter"
+              ],
+              "line": 561,
+              "required": true
+            }
+          ]
+        },
+        "subcommands": {}
+      },
+      "tests": [
+        "tests/archive/test_cdx_adapter.py"
+      ],
+      "test_command": "python -m pytest tests/archive/test_cdx_adapter.py"
+    },
+    "packer": {
+      "path": "scripts/archive/codex_packer.py",
+      "functions": {
+        "pack_archive": {
+          "path": "scripts/archive/codex_packer.py",
+          "line": 314,
+          "location": "scripts/archive/codex_packer.py:314",
+          "signature": "def pack_archive(source: Path, output: Path, *, max_file_bytes: int=8 * 1024 * 1024, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, exclude: tuple[str, ...]=(), allow_large: tuple[str, ...]=(), finding_dispositions: Path | None=None, finding_inventory: Path | None=None) -> dict[str, Any]"
+        },
+        "main": {
+          "path": "scripts/archive/codex_packer.py",
+          "line": 527,
+          "location": "scripts/archive/codex_packer.py:527",
+          "signature": "def main(argv: list[str] | None=None) -> int"
+        }
+      },
+      "exported_signatures": {
+        "pack_archive": {
+          "path": "scripts/archive/codex_packer.py",
+          "line": 314,
+          "signature": "def pack_archive(source: Path, output: Path, *, max_file_bytes: int=8 * 1024 * 1024, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, exclude: tuple[str, ...]=(), allow_large: tuple[str, ...]=(), finding_dispositions: Path | None=None, finding_inventory: Path | None=None) -> dict[str, Any]"
+        },
+        "main": {
+          "path": "scripts/archive/codex_packer.py",
+          "line": 527,
+          "signature": "def main(argv: list[str] | None=None) -> int"
+        }
+      },
+      "cli": "python -m scripts.archive.codex_packer SOURCE OUTPUT.cdx.sqlite",
+      "cli_contract": {
+        "source": "parser_ast",
+        "root": {
+          "arguments": [
+            {
+              "names": [
+                "source"
+              ],
+              "line": 516
+            },
+            {
+              "names": [
+                "output"
+              ],
+              "line": 517
+            },
+            {
+              "names": [
+                "--max-file-bytes"
+              ],
+              "line": 518
+            },
+            {
+              "names": [
+                "--max-blob-bytes"
+              ],
+              "line": 519
+            },
+            {
+              "names": [
+                "--exclude"
+              ],
+              "line": 520,
+              "action": "append"
+            },
+            {
+              "names": [
+                "--allow-large"
+              ],
+              "line": 521,
+              "action": "append"
+            },
+            {
+              "names": [
+                "--finding-dispositions"
+              ],
+              "line": 522
+            },
+            {
+              "names": [
+                "--finding-inventory"
+              ],
+              "line": 523
+            }
+          ]
+        },
+        "subcommands": {}
+      },
+      "tests": [
+        "tests/archive/test_cdx_sqlite_archive.py"
+      ],
+      "test_command": "python -m pytest tests/archive/test_cdx_sqlite_archive.py"
+    },
+    "query": {
+      "path": "scripts/archive/codex_query.py",
+      "functions": {
+        "CodexArchiveQuery": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 54,
+          "location": "scripts/archive/codex_query.py:54",
+          "signature": "class CodexArchiveQuery"
+        },
+        "CodexArchiveQuery.list_tree": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 122,
+          "location": "scripts/archive/codex_query.py:122",
+          "signature": "def list_tree(self, prefix: str='', *, glob: str | None=None, entry_type: str | None=None, language: str | None=None) -> list[dict[str, Any]]"
+        },
+        "CodexArchiveQuery.read_file_bytes": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 160,
+          "location": "scripts/archive/codex_query.py:160",
+          "signature": "def read_file_bytes(self, path: str) -> bytes"
+        },
+        "CodexArchiveQuery.read_file_text": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 206,
+          "location": "scripts/archive/codex_query.py:206",
+          "signature": "def read_file_text(self, path: str, start_line: int | None=None, end_line: int | None=None) -> str"
+        },
+        "CodexArchiveQuery.search_fts": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 250,
+          "location": "scripts/archive/codex_query.py:250",
+          "signature": "def search_fts(self, query: str, limit: int=20) -> list[dict[str, Any]]"
+        },
+        "CodexArchiveQuery.query_symbols": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 267,
+          "location": "scripts/archive/codex_query.py:267",
+          "signature": "def query_symbols(self, name: str | None=None, *, kind: str | None=None, path: str | None=None, decorator: str | None=None, base: str | None=None, glob: bool=False) -> list[dict[str, Any]]"
+        },
+        "CodexArchiveQuery.query_call_graph": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 321,
+          "location": "scripts/archive/codex_query.py:321",
+          "signature": "def query_call_graph(self, symbol: str) -> dict[str, Any]"
+        },
+        "CodexArchiveQuery.build_llm_context": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 351,
+          "location": "scripts/archive/codex_query.py:351",
+          "signature": "def build_llm_context(self, *, query: str | None=None, paths: tuple[str, ...]=(), symbols: tuple[str, ...]=(), budget_tokens: int=4000, output_format: str='xml') -> dict[str, Any]"
+        },
+        "main": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 498,
+          "location": "scripts/archive/codex_query.py:498",
+          "signature": "def main(argv: list[str] | None=None) -> int"
+        }
+      },
+      "exported_signatures": {
+        "CodexArchiveQuery": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 54,
+          "signature": "class CodexArchiveQuery"
+        },
+        "CodexArchiveQuery.__init__": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 57,
+          "signature": "def __init__(self, archive: Path, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES)"
+        },
+        "CodexArchiveQuery.close": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 82,
+          "signature": "def close(self) -> None"
+        },
+        "CodexArchiveQuery.__enter__": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 85,
+          "signature": "def __enter__(self) -> CodexArchiveQuery"
+        },
+        "CodexArchiveQuery.__exit__": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 88,
+          "signature": "def __exit__(self, *_: object) -> None"
+        },
+        "CodexArchiveQuery.get_archive_info": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 91,
+          "signature": "def get_archive_info(self) -> dict[str, Any]"
+        },
+        "CodexArchiveQuery._language_counts": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 113,
+          "signature": "def _language_counts(self) -> dict[str, int]"
+        },
+        "CodexArchiveQuery.list_tree": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 122,
+          "signature": "def list_tree(self, prefix: str='', *, glob: str | None=None, entry_type: str | None=None, language: str | None=None) -> list[dict[str, Any]]"
+        },
+        "CodexArchiveQuery.read_file_bytes": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 160,
+          "signature": "def read_file_bytes(self, path: str) -> bytes"
+        },
+        "CodexArchiveQuery.read_file_text": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 206,
+          "signature": "def read_file_text(self, path: str, start_line: int | None=None, end_line: int | None=None) -> str"
+        },
+        "CodexArchiveQuery.search_fts": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 250,
+          "signature": "def search_fts(self, query: str, limit: int=20) -> list[dict[str, Any]]"
+        },
+        "CodexArchiveQuery.query_symbols": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 267,
+          "signature": "def query_symbols(self, name: str | None=None, *, kind: str | None=None, path: str | None=None, decorator: str | None=None, base: str | None=None, glob: bool=False) -> list[dict[str, Any]]"
+        },
+        "CodexArchiveQuery.query_call_graph": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 321,
+          "signature": "def query_call_graph(self, symbol: str) -> dict[str, Any]"
+        },
+        "CodexArchiveQuery.build_llm_context": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 351,
+          "signature": "def build_llm_context(self, *, query: str | None=None, paths: tuple[str, ...]=(), symbols: tuple[str, ...]=(), budget_tokens: int=4000, output_format: str='xml') -> dict[str, Any]"
+        },
+        "main": {
+          "path": "scripts/archive/codex_query.py",
+          "line": 498,
+          "signature": "def main(argv: list[str] | None=None) -> int"
+        }
+      },
+      "cli": "python -m scripts.archive.codex_query ARCHIVE.cdx.sqlite info",
+      "cli_contract": {
+        "source": "parser_ast",
+        "root": {
+          "arguments": [
+            {
+              "names": [
+                "archive"
+              ],
+              "line": 462
+            },
+            {
+              "names": [
+                "--max-blob-bytes"
+              ],
+              "line": 463
+            },
+            {
+              "names": [
+                "--max-text-bytes"
+              ],
+              "line": 464
+            }
+          ]
+        },
+        "subcommands": {
+          "info": {
+            "arguments": []
+          },
+          "list": {
+            "arguments": [
+              {
+                "names": [
+                  "--prefix"
+                ],
+                "line": 468
+              },
+              {
+                "names": [
+                  "--glob"
+                ],
+                "line": 469
+              },
+              {
+                "names": [
+                  "--type"
+                ],
+                "line": 470,
+                "choices": [
+                  "file",
+                  "dir",
+                  "symlink"
+                ]
+              },
+              {
+                "names": [
+                  "--language"
+                ],
+                "line": 471
+              }
+            ]
+          },
+          "read": {
+            "arguments": [
+              {
+                "names": [
+                  "path"
+                ],
+                "line": 473
+              },
+              {
+                "names": [
+                  "--start-line"
+                ],
+                "line": 474
+              },
+              {
+                "names": [
+                  "--end-line"
+                ],
+                "line": 475
+              },
+              {
+                "names": [
+                  "--bytes"
+                ],
+                "line": 476,
+                "action": "store_true"
+              }
+            ]
+          },
+          "search": {
+            "arguments": [
+              {
+                "names": [
+                  "query"
+                ],
+                "line": 478
+              },
+              {
+                "names": [
+                  "--limit"
+                ],
+                "line": 479
+              }
+            ]
+          },
+          "symbols": {
+            "arguments": [
+              {
+                "names": [
+                  "name"
+                ],
+                "line": 481,
+                "nargs": "?"
+              },
+              {
+                "names": [
+                  "--kind"
+                ],
+                "line": 482
+              },
+              {
+                "names": [
+                  "--path"
+                ],
+                "line": 483
+              },
+              {
+                "names": [
+                  "--decorator"
+                ],
+                "line": 484
+              },
+              {
+                "names": [
+                  "--base"
+                ],
+                "line": 485
+              },
+              {
+                "names": [
+                  "--glob"
+                ],
+                "line": 486,
+                "action": "store_true"
+              }
+            ]
+          },
+          "callgraph": {
+            "arguments": [
+              {
+                "names": [
+                  "symbol"
+                ],
+                "line": 488
+              }
+            ]
+          },
+          "context": {
+            "arguments": [
+              {
+                "names": [
+                  "--query"
+                ],
+                "line": 490
+              },
+              {
+                "names": [
+                  "--path"
+                ],
+                "line": 491,
+                "action": "append"
+              },
+              {
+                "names": [
+                  "--symbol"
+                ],
+                "line": 492,
+                "action": "append"
+              },
+              {
+                "names": [
+                  "--budget-tokens"
+                ],
+                "line": 493
+              },
+              {
+                "names": [
+                  "--format"
+                ],
+                "line": 494,
+                "choices": [
+                  "xml",
+                  "markdown"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "tests": [
+        "tests/archive/test_cdx_sqlite_archive.py"
+      ],
+      "test_command": "python -m pytest tests/archive/test_cdx_sqlite_archive.py"
+    },
+    "rehydrate": {
+      "path": "scripts/archive/codex_rehydrate.py",
+      "functions": {
+        "verify_archive_connection": {
+          "path": "scripts/archive/codex_rehydrate.py",
+          "line": 190,
+          "location": "scripts/archive/codex_rehydrate.py:190",
+          "signature": "def verify_archive_connection(connection: sqlite3.Connection, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
+        },
+        "verify_archive": {
+          "path": "scripts/archive/codex_rehydrate.py",
+          "line": 350,
+          "location": "scripts/archive/codex_rehydrate.py:350",
+          "signature": "def verify_archive(archive: Path, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
+        },
+        "validate_safe_rel_path": {
+          "path": "scripts/archive/codex_rehydrate.py",
+          "line": 364,
+          "location": "scripts/archive/codex_rehydrate.py:364",
+          "signature": "def validate_safe_rel_path(path: str) -> PurePosixPath"
+        },
+        "validate_symlink_target": {
+          "path": "scripts/archive/codex_rehydrate.py",
+          "line": 375,
+          "location": "scripts/archive/codex_rehydrate.py:375",
+          "signature": "def validate_symlink_target(link_path: str, target: str, *, allow_external: bool=False, archive_symlinks: set[str] | None=None) -> None"
+        },
+        "rehydrate_archive": {
+          "path": "scripts/archive/codex_rehydrate.py",
+          "line": 418,
+          "location": "scripts/archive/codex_rehydrate.py:418",
+          "signature": "def rehydrate_archive(archive: Path, destination: Path, *, allow_external_symlinks: bool=False, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
+        },
+        "compare_trees": {
+          "path": "scripts/archive/codex_rehydrate.py",
+          "line": 511,
+          "location": "scripts/archive/codex_rehydrate.py:511",
+          "signature": "def compare_trees(left: Path, right: Path, *, check_mtime: bool=True) -> dict[str, Any]"
+        },
+        "main": {
+          "path": "scripts/archive/codex_rehydrate.py",
+          "line": 569,
+          "location": "scripts/archive/codex_rehydrate.py:569",
+          "signature": "def main(argv: list[str] | None=None) -> int"
+        }
+      },
+      "exported_signatures": {
+        "verify_archive_connection": {
+          "path": "scripts/archive/codex_rehydrate.py",
+          "line": 190,
+          "signature": "def verify_archive_connection(connection: sqlite3.Connection, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
+        },
+        "verify_archive": {
+          "path": "scripts/archive/codex_rehydrate.py",
+          "line": 350,
+          "signature": "def verify_archive(archive: Path, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
+        },
+        "validate_safe_rel_path": {
+          "path": "scripts/archive/codex_rehydrate.py",
+          "line": 364,
+          "signature": "def validate_safe_rel_path(path: str) -> PurePosixPath"
+        },
+        "validate_symlink_target": {
+          "path": "scripts/archive/codex_rehydrate.py",
+          "line": 375,
+          "signature": "def validate_symlink_target(link_path: str, target: str, *, allow_external: bool=False, archive_symlinks: set[str] | None=None) -> None"
+        },
+        "rehydrate_archive": {
+          "path": "scripts/archive/codex_rehydrate.py",
+          "line": 418,
+          "signature": "def rehydrate_archive(archive: Path, destination: Path, *, allow_external_symlinks: bool=False, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
+        },
+        "compare_trees": {
+          "path": "scripts/archive/codex_rehydrate.py",
+          "line": 511,
+          "signature": "def compare_trees(left: Path, right: Path, *, check_mtime: bool=True) -> dict[str, Any]"
+        },
+        "main": {
+          "path": "scripts/archive/codex_rehydrate.py",
+          "line": 569,
+          "signature": "def main(argv: list[str] | None=None) -> int"
+        }
+      },
+      "cli": "python -m scripts.archive.codex_rehydrate extract ARCHIVE.cdx.sqlite DESTINATION",
+      "cli_contract": {
+        "source": "parser_ast",
+        "root": {
+          "arguments": []
+        },
+        "subcommands": {
+          "verify": {
+            "arguments": [
+              {
+                "names": [
+                  "archive"
+                ],
+                "line": 554
+              },
+              {
+                "names": [
+                  "--max-blob-bytes"
+                ],
+                "line": 555
+              },
+              {
+                "names": [
+                  "--max-text-bytes"
+                ],
+                "line": 556
+              }
+            ]
+          },
+          "extract": {
+            "arguments": [
+              {
+                "names": [
+                  "archive"
+                ],
+                "line": 558
+              },
+              {
+                "names": [
+                  "destination"
+                ],
+                "line": 559
+              },
+              {
+                "names": [
+                  "--allow-external-symlinks"
+                ],
+                "line": 560,
+                "action": "store_true"
+              },
+              {
+                "names": [
+                  "--max-blob-bytes"
+                ],
+                "line": 561
+              },
+              {
+                "names": [
+                  "--max-text-bytes"
+                ],
+                "line": 562
+              }
+            ]
+          },
+          "compare": {
+            "arguments": [
+              {
+                "names": [
+                  "left"
+                ],
+                "line": 564
+              },
+              {
+                "names": [
+                  "right"
+                ],
+                "line": 565
+              }
+            ]
+          }
+        }
+      },
+      "tests": [
+        "tests/archive/test_cdx_sqlite_archive.py"
+      ],
+      "test_command": "python -m pytest tests/archive/test_cdx_sqlite_archive.py"
+    },
+    "gitleaks_adapter": {
+      "path": "scripts/archive/gitleaks_adapter/main.go",
+      "functions": {
+        "provenance": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 96,
+          "location": "scripts/archive/gitleaks_adapter/main.go:96",
+          "signature": "func provenance() (string, error)"
+        },
+        "readFile": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 152,
+          "location": "scripts/archive/gitleaks_adapter/main.go:152",
+          "signature": "func readFile(root int, relative string, size int64) ([]byte, error)"
+        },
+        "selectedFiles": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 201,
+          "location": "scripts/archive/gitleaks_adapter/main.go:201",
+          "signature": "func selectedFiles(root int) ([]string, error)"
+        },
+        "localize": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 261,
+          "location": "scripts/archive/gitleaks_adapter/main.go:261",
+          "signature": "func localize(raw []byte, origins []int, finding report.Finding, key []byte) (int, int, string, string)"
+        },
+        "scan": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 278,
+          "location": "scripts/archive/gitleaks_adapter/main.go:278",
+          "signature": "func scan(ctx context.Context, input request, rawRequest []byte, executable string) (result, error)"
+        },
+        "main": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 416,
+          "location": "scripts/archive/gitleaks_adapter/main.go:416",
+          "signature": "func main()"
+        }
+      },
+      "exported_signatures": {
+        "digest": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 86,
+          "signature": "func digest(raw []byte) string"
+        },
+        "validDigest": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 91,
+          "signature": "func validDigest(value string, size int) bool"
+        },
+        "provenance": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 96,
+          "signature": "func provenance() (string, error)"
+        },
+        "openDirectory": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 124,
+          "signature": "func openDirectory(absolute string) (int, error)"
+        },
+        "safeRelative": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 146,
+          "signature": "func safeRelative(relative string) bool"
+        },
+        "readFile": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 152,
+          "signature": "func readFile(root int, relative string, size int64) ([]byte, error)"
+        },
+        "stableFile": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 193,
+          "signature": "func stableFile(before, after syscall.Stat_t) bool"
+        },
+        "selectedFiles": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 201,
+          "signature": "func selectedFiles(root int) ([]string, error)"
+        },
+        "localize": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 261,
+          "signature": "func localize(raw []byte, origins []int, finding report.Finding, key []byte) (int, int, string, string)"
+        },
+        "scan": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 278,
+          "signature": "func scan(ctx context.Context, input request, rawRequest []byte, executable string) (result, error)"
+        },
+        "unambiguous": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 366,
+          "signature": "func unambiguous(raw []byte) bool"
+        },
+        "main": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 416,
+          "signature": "func main()"
+        },
+        "fail": {
+          "path": "scripts/archive/gitleaks_adapter/main.go",
+          "line": 466,
+          "signature": "func fail()"
+        }
+      },
+      "cli": "EXECUTABLE identity; EXECUTABLE < OWNER_ONLY_REQUEST.json",
+      "cli_contract": {
+        "source": "explicit_go_argument_checks",
+        "subcommands": {
+          "identity": {
+            "arguments": []
+          }
+        },
+        "root": {
+          "arguments": [],
+          "stdin": "owner_only_request_json"
+        }
+      },
+      "tests": [
+        "scripts/archive/gitleaks_adapter/main_test.go"
+      ],
+      "test_command": "cd scripts/archive/gitleaks_adapter && GOPROXY=off GOSUMDB=off go test ./..."
+    }
+  },
+  "cdx_common_preflight": {
+    "function": {
+      "path": "scripts/archive/cdx_common.py",
+      "line": 1092,
+      "location": "scripts/archive/cdx_common.py:1092",
+      "signature": "def run_cdx_common_preflight(repository_root: Path | None=None) -> dict[str, Any]"
+    },
+    "functions": {
+      "iter_deterministic_tree": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 198,
+        "location": "scripts/archive/cdx_common.py:198",
+        "signature": "def iter_deterministic_tree(root: Path, denied_components: set[str] | None=None, denied_globs: set[str] | None=None) -> Iterator[tuple[Path, str, os.stat_result]]"
+      },
+      "inspect_text": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 227,
+        "location": "scripts/archive/cdx_common.py:227",
+        "signature": "def inspect_text(raw: bytes) -> tuple[str | None, str | None, str | None]"
+      },
+      "compute_merkle_root": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 315,
+        "location": "scripts/archive/cdx_common.py:315",
+        "signature": "def compute_merkle_root(connection: Any) -> str"
+      },
+      "run_secret_scanners": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 358,
+        "location": "scripts/archive/cdx_common.py:358",
+        "signature": "def run_secret_scanners(root: Path, dispositions_path: Path | None=None, inventory_path: Path | None=None, source_root: Path | None=None, *, observation_sink: Any=None, report_sink: Any=None, scanner_environment: dict[str, str] | None=None, scanner_directory: Path | None=None, gitleaks_config: Path | None=None, gitleaks_ignore: Path | None=None) -> None"
+      },
+      "run_secret_scanner": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 607,
+        "location": "scripts/archive/cdx_common.py:607",
+        "signature": "def run_secret_scanners(root: Path, dispositions_path: Path | None=None, inventory_path: Path | None=None, source_root: Path | None=None, *, observation_sink: Any=None, report_sink: Any=None, scanner_environment: dict[str, str] | None=None, scanner_directory: Path | None=None, gitleaks_config: Path | None=None, gitleaks_ignore: Path | None=None) -> None"
+      },
+      "_scanner_finding": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 640,
+        "location": "scripts/archive/cdx_common.py:640",
+        "signature": "def _scanner_finding(root: Path, scanner: str, version: str, record: dict[str, Any], *, report_directory: Path | None=None) -> dict[str, Any]"
+      },
+      "_canonical_scanner_finding": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 662,
+        "location": "scripts/archive/cdx_common.py:662",
+        "signature": "def _canonical_scanner_finding(scanner: str, version: str, path: str, file_digest: str, record: dict[str, Any]) -> dict[str, Any]"
+      },
+      "_gitleaks_private_span": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 709,
+        "location": "scripts/archive/cdx_common.py:709",
+        "signature": "def _gitleaks_private_span(raw: bytes, record: dict[str, Any], *, version: str, unfragmented: bool=False, source_window: tuple[int, int] | None=None) -> tuple[bytes | None, str]"
+      },
+      "_finding_id": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 821,
+        "location": "scripts/archive/cdx_common.py:821",
+        "signature": "def _finding_id(key: bytes, finding: dict[str, Any]) -> str"
+      },
+      "_validate_external_path": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 851,
+        "location": "scripts/archive/cdx_common.py:851",
+        "signature": "def _validate_external_path(source_roots: list[Path], path: Path, *, must_exist: bool) -> Path"
+      },
+      "inspect_and_pack_blob": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 262,
+        "location": "scripts/archive/cdx_common.py:262",
+        "signature": "def inspect_and_pack_blob(raw: bytes, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES) -> dict[str, Any]"
+      },
+      "validate_safe_rel_path": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 944,
+        "location": "scripts/archive/cdx_common.py:944",
+        "signature": "def validate_safe_rel_path(path: str) -> PurePosixPath"
+      },
+      "validate_symlink_target": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 950,
+        "location": "scripts/archive/cdx_common.py:950",
+        "signature": "def validate_symlink_target(link_path: str, target: str, *, allow_external: bool=False, archive_symlinks: set[str] | None=None) -> None"
+      },
+      "verify_archive_connection": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 964,
+        "location": "scripts/archive/cdx_common.py:964",
+        "signature": "def verify_archive_connection(connection: Any, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
+      },
+      "verify_archive": {
+        "path": "scripts/archive/codex_rehydrate.py",
+        "line": 350,
+        "location": "scripts/archive/codex_rehydrate.py:350",
+        "signature": "def verify_archive(archive: Path, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
+      },
+      "validate_inventory": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 986,
+        "location": "scripts/archive/cdx_common.py:986",
+        "signature": "def validate_inventory(document: dict[str, Any]) -> list[dict[str, Any]]"
+      },
+      "run_cdx_common_preflight": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 1092,
+        "location": "scripts/archive/cdx_common.py:1092",
+        "signature": "def run_cdx_common_preflight(repository_root: Path | None=None) -> dict[str, Any]"
+      },
+      "main": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 1186,
+        "location": "scripts/archive/cdx_common.py:1186",
+        "signature": "def main(argv: list[str] | None=None) -> int"
+      },
+      "pack_archive": {
+        "path": "scripts/archive/codex_packer.py",
+        "line": 314,
+        "location": "scripts/archive/codex_packer.py:314",
+        "signature": "def pack_archive(source: Path, output: Path, *, max_file_bytes: int=8 * 1024 * 1024, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, exclude: tuple[str, ...]=(), allow_large: tuple[str, ...]=(), finding_dispositions: Path | None=None, finding_inventory: Path | None=None) -> dict[str, Any]"
+      },
+      "CodexArchiveQuery": {
+        "path": "scripts/archive/codex_query.py",
+        "line": 54,
+        "location": "scripts/archive/codex_query.py:54",
+        "signature": "class CodexArchiveQuery"
+      },
+      "rehydrate_archive": {
+        "path": "scripts/archive/codex_rehydrate.py",
+        "line": 418,
+        "location": "scripts/archive/codex_rehydrate.py:418",
+        "signature": "def rehydrate_archive(archive: Path, destination: Path, *, allow_external_symlinks: bool=False, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
+      },
+      "common.verify_archive": {
+        "path": "scripts/archive/cdx_common.py",
+        "line": 975,
+        "location": "scripts/archive/cdx_common.py:975",
+        "signature": "def verify_archive(archive: Path, *, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
+      }
+    },
+    "name_clarifications": {
+      "pack_directory": "does_not_exist_use_pack_archive",
+      "run_secret_scanner": "compatibility_alias_of_run_secret_scanners"
+    },
+    "cli": "python -m scripts.archive.cdx_common --preflight-context --json",
+    "tests": [
+      "tests/archive/test_cdx_sqlite_archive.py",
+      "tests/archive/test_cdx_context.py"
+    ],
+    "purpose": "offline_capability_context_not_scanner_execution_or_clearance"
+  }
 }

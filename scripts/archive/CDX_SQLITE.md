@@ -5,6 +5,84 @@ implement a regenerable `.cdx.sqlite` snapshot. The database is a build artifact
 not a replacement for Git history and not a file to commit to the repository.
 The source directory is never modified by packing.
 
+## Offline skills catalog and common preflight
+
+`python -m scripts.archive.cdx_common --preflight-context --json` exposes local
+capability context, not a secret scan, review approval, or permission to pack.
+The session startup packet persists `skills_registry`, `cdx_module_index`, and
+`cdx_common_preflight`, including exact source lines and CLI/test commands.
+`scripts/ci/cdx_context.py` regenerates these from explicit local source/test paths
+without network access or scanning agent directories.
+`python -m scripts.ci.startup_health --refresh-context` updates only catalog fields
+without changing health data or its timestamp; `--validate` rejects missing/stale
+CDX catalogs while allowing unrelated skills/candidates and registry metadata.
+Context refresh retains those unrelated registry extensions.
+Normal generation also includes the CDX fields.
+The holding profile `.github/agents-holding/cdx-archive-lifecycle.agent.md` is
+discoverable as a staged candidate, never proof of hosted activation or authority.
+`python -m scripts.archive.cdx_preflight --preflight-summary --json` exposes
+the shared read-only summary without scanning a selected source. The common
+public API also exports `inspect_and_pack_blob`, `validate_safe_rel_path`,
+`validate_symlink_target`, `verify_archive_connection`, `verify_archive`, and
+`validate_inventory`, with lazy delegation to existing implementations.
+Their exact locations, and preflight `assess_acquired_batch`, are catalogued.
+The candidate ID is `cdx-archive-lifecycle`; both `agent_candidates` and `skills`
+expose it as `staged_candidate`, not a runnable/hosted activation.
+`cdx_common_preflight.functions` explicitly maps `inspect_text`,
+`compute_merkle_root`, `_canonical_scanner_finding`, `_validate_external_path`,
+`run_secret_scanners`, `pack_archive`, `CodexArchiveQuery`, `rehydrate_archive`,
+and `verify_archive`. **`pack_directory` does not exist**: use `pack_archive`.
+The canonical scanner function is plural `run_secret_scanners`;
+`run_secret_scanner` is an exported compatibility alias of that same function,
+not an independent scanner or clearance mechanism.
+
+### Actual CLI parser contracts
+
+Each module index entry includes `cli_contract`: parser-derived root arguments,
+subcommands and their arguments, with source lines. This is static AST discovery,
+not execution or inferred command support.
+`exported_signatures` includes public top-level/class-method signatures and
+requested private helpers across all eight explicit Python/Go source modules.
+Commands below use prefix `python -m scripts.archive.` (except the Go executable):
+
+| Module | Actual subcommands / principal options |
+| --- | --- |
+| `cdx_common` | `--preflight-context --json` |
+| `cdx_preflight` | `--preflight-summary --json`; preparation `--source`, `--private-directory`, `--assess-first-batch`, `--assess-acquired-batch`, `--gitleaks-adapter` |
+| `cdx_review` | `--source`, `--inventory`, `--bindings`, `--output`, optional `--resume` or read-only `--list-batches` |
+| `cdx_adapter` | `--list-batches`, `--source`, `--private-directory`, `--gitleaks-adapter` |
+| `codex_packer` | positional `SOURCE OUTPUT`; `--max-file-bytes`, `--max-blob-bytes`, `--exclude`, `--allow-large`, `--finding-dispositions`, `--finding-inventory` |
+| `codex_query` | positional archive then `info`, `list`, `read`, `search`, `symbols`, `callgraph`, `context`; `context --budget-tokens --format`, `search --limit`, `list --prefix --glob --type --language` |
+| `codex_rehydrate` | `verify ARCHIVE`, `extract ARCHIVE DESTINATION`, `compare LEFT RIGHT`; `extract --allow-external-symlinks`, `verify/extract --max-blob-bytes --max-text-bytes` |
+| Go adapter executable | `identity`; no-argument scan consumes owner-only request JSON on stdin |
+
+For example, the extraction CLI is
+`python -m scripts.archive.codex_rehydrate extract ARCHIVE.cdx.sqlite DESTINATION`,
+not an archive/destination invocation without `extract`.
+
+| Source module | Key functions | CLI entrypoint | Tests |
+| --- | --- | --- | --- |
+| `scripts/archive/cdx_common.py` | `iter_deterministic_tree`, `run_secret_scanners`, `run_cdx_common_preflight` | `python -m scripts.archive.cdx_common --preflight-context --json` | `tests/archive/test_cdx_context.py`, `test_cdx_sqlite_archive.py` |
+| `scripts/archive/cdx_preflight.py` | `measure_tree`, `measure_toolchain`, `run_preflight`, `load_preflight`, `assess_batch` | `python -m scripts.archive.cdx_preflight --help` | `tests/archive/test_cdx_preflight.py` |
+| `scripts/archive/cdx_review.py` | `read_private_json`, `validate_inventory`, `build_queue`, `schedule_batch`, `write_checkpoint` | `python -m scripts.archive.cdx_review --help` | `tests/archive/test_cdx_review.py` |
+| `scripts/archive/cdx_adapter.py` | `measure_adapter`, `run_adapter`, `load_adapter`, `stock_relationship`, `acquired_span`, `list_batches` | `python -m scripts.archive.cdx_adapter --list-batches --source SOURCE --private-directory PRIVATE --gitleaks-adapter EXECUTABLE` | `tests/archive/test_cdx_adapter.py` |
+| `scripts/archive/codex_packer.py` | `pack_archive` | `python -m scripts.archive.codex_packer --help` | `tests/archive/test_cdx_sqlite_archive.py` |
+| `scripts/archive/codex_query.py` | `CodexArchiveQuery.list_tree`, `search_fts`, `query_symbols`, `build_llm_context` | `python -m scripts.archive.codex_query --help` | `tests/archive/test_cdx_sqlite_archive.py` |
+| `scripts/archive/codex_rehydrate.py` | `verify_archive`, `rehydrate_archive`, `compare_trees` | `python -m scripts.archive.codex_rehydrate --help` | `tests/archive/test_cdx_sqlite_archive.py` |
+| `scripts/archive/gitleaks_adapter/main.go` | `provenance`, `readFile`, `selectedFiles`, `localize`, `scan` | `EXECUTABLE identity`; owner-only JSON request on stdin | `cd scripts/archive/gitleaks_adapter && GOPROXY=off GOSUMDB=off go test ./...` |
+
+Adapter `--list-batches` revalidates the completed current bundle, never scans or
+creates checkpoints, and indexes **all** observations in deterministic batches
+of at most 32. Batch indices are zero-based, consistent with review batch
+discovery; `start_ordinal` and
+`end_ordinal_exclusive` form zero-based half-open ranges. Zero observations produce
+an empty list. Output includes only bindings/counts/index ranges, not matched
+values or spans; the operation always retains `packer_clearance_compatible: false`.
+The executable's local `identity` operation is still checked during revalidation;
+listing is not a substitute for actual adapter provenance or completed scans.
+Discovery indices are distinct from the historical one-based
+`cdx_preflight.assess_batch(..., batch_index=N)` checkpoint numbering.
+
 ## Pack
 
 Packing requires pinned `gitleaks` 8.30.1 with the `dir` command and
@@ -274,6 +352,23 @@ zero approvals. Context predicates are investigation aids, not harmlessness proo
 The existing advisory CLI still accepts structurally valid supplied bindings;
 only the measured producer/loader makes these additional local provenance checks.
 
+### Separate acquisition-bound assessment
+
+`python -m scripts.archive.cdx_preflight --source SOURCE --private-directory PRIVATE
+--gitleaks-adapter EXECUTABLE --assess-acquired-batch` requires the measured adapter
+and assesses at most 32 freshly revalidated acquisition observations.
+`assess_acquired_batch(source, private, executable, batch_index=1)` uses one-based
+assessment checkpoint numbering and writes create-only `acquired-batch-NNN.json`;
+this numbering is separate from zero-based discovery indices.
+The output namespace is `acquired_full_file_adapter_not_stock`, with purpose
+`acquired_adapter_assessment_not_stock_mapping_or_clearance`.
+Only the independently validated full-file acquisition permits the mapper's
+caller-only `unfragmented=True` input, including acquired input at or above
+100,000 bytes. Every assessed row remains advisory `indeterminate`, with zero
+accepted observations, semantic false-positive proofs and stock fragment-origin
+proofs. `--assess-first-batch` remains stock-only; record equality never transfers
+acquisition provenance to stock reports or authorizes packing.
+
 ### Supported private Gitleaks coordinate contract
 
 The shared private span helper is pinned to **Gitleaks 8.30.1**, based on official
@@ -289,19 +384,30 @@ It does not emulate Go regular expressions or infer secret capture groups.
   Importantly, the pinned implementation measures subsequent-line columns from
   the preceding **LF byte index**, not the byte after LF; the first content byte
   on such a line is column 2. First-line columns start at 1.
-- Only strict UTF-8 regular-file content smaller than the pinned 100,000-byte
-  default fragment buffer is supported, with LF or CRLF (including mixed LF/CRLF).
+- By default, only strict UTF-8 regular-file content smaller than the pinned
+  100,000-byte fragment buffer is mapped, with LF or CRLF (including mixed LF/CRLF).
+  The private helper also accepts caller-verified acquisition provenance through
+  the mutually exclusive keywords `unfragmented=True` or
+  `source_window=(byte_origin, byte_end)`. These are caller-only inputs, never
+  report-controlled fields or inferred from stock Gitleaks coordinates.
+  Unfragmented provenance establishes that the complete acquired input was one
+  detector invocation; a window identifies that invocation's exact half-open byte
+  interval in the original source. Windows convert reported global LF line numbers
+  to local lines and retain fragment-local byte-column origins.
   No NUL, lone CR, split UTF-8 code points, archive-member paths, commit/symlink
   source metadata or non-null `Fragment` metadata is supported. A span is limited
   to 65,536 bytes and a line-number difference of at most 100. Endpoints must be
   inside content, not line terminators; intervening LF/CRLF bytes are preserved.
+  Selected input remains bounded by `DEFAULT_MAX_TEXT_BYTES` (64 MiB).
 - Single-line spans may end on an unterminated final line. Multi-line spans
   ending on that line are unsupported: the pinned location implementation does
   not produce a usable end column in that case. Missing/malformed coordinates,
-  large/chunked files and other versions/encodings remain explicitly unsupported,
-  not guessed or converted through character indexes.
-- At **100,000 bytes inclusive**, mapping returns `unsupported_fragment_origin`,
-  including when the file also has malformed encoding. Below that threshold,
+  large/chunked files without caller-verified provenance and other
+  versions/encodings remain explicitly unsupported, not guessed or converted
+  through character indexes.
+- Without caller-verified provenance, at **100,000 bytes inclusive**, mapping
+  returns `unsupported_fragment_origin`, including when the file also has malformed
+  encoding. Below that threshold,
   NUL, lone CR and invalid UTF-8 retain `unsupported_source_encoding_or_size`.
   This is a conservative origin guard, not a claim that every file at the
   threshold was split: the pinned reader can extend its buffer by up to 25,000
@@ -322,7 +428,7 @@ private span bytes and source lines/values are never exported in its results.
 Every row remains `indeterminate`, with zero semantic false-positive proofs or
 approvals. No disposition/evidence acceptance rules are changed.
 
-#### Why large-file coordinates remain unsupported
+#### Why stock large-file coordinates alone remain unsupported
 
 Stock v8.30.1 reports omit the actual observed fragment's byte interval.
 The reader accumulates LF counts into `Fragment.StartLine`; `DetectContext` adds
@@ -338,8 +444,9 @@ increasing the accumulated line number. Buffered reads can be shorter than
 100,000 bytes; the default buffer plus lookahead is not a fixed chunk stride.
 Distinct global byte intervals, even containing different bytes, can then have
 identical reported line/column coordinates and identical redacted payloads.
-The synthetic regressions use explicitly known small fragments/windows as local
-mapping oracles and reject the corresponding complete large files.
+The synthetic regressions use explicitly known fragments/windows as local mapping
+oracles, including caller-verified unfragmented large input and explicit windows.
+The corresponding complete large stock inputs without provenance remain rejected.
 They are negative demonstrations, **not**
 a fragment-origin producer or semantic origin/use proof. Searching for matching
 text, guessing chunk boundaries or hashing the report cannot resolve this

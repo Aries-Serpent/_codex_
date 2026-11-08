@@ -20,6 +20,64 @@ Operate the repository's existing `.cdx.sqlite` archive lifecycle through:
 Do not reimplement their schema, storage, integrity, or extraction logic. Keep
 source trees unchanged and archive outputs outside the selected source tree.
 
+## Local skills and entrypoints
+
+The startup packet's `skills_registry`, `cdx_module_index`, and
+`cdx_common_preflight` record this staged candidate and exact current function
+locations. `scripts/ci/cdx_context.py` regenerates the source-located catalog;
+`python -m scripts.ci.startup_health --refresh-context` preserves unrelated
+health/timestamp fields, and `--validate` rejects stale catalog data. Discovery
+uses explicit local paths and no network; discoverability is not hosted activation
+or authorization.
+The preflight context alias is
+`python -m scripts.archive.cdx_preflight --preflight-summary --json`.
+Common's public validators, blob inspector and archive verification wrappers
+delegate lazily to the existing lifecycle implementations; their exact source
+locations and `assess_acquired_batch` are included in the module index.
+The catalog ID is `cdx-archive-lifecycle`, also listed among skills with
+`availability: staged_candidate`. Module `cli_contract` records actual parser
+options/subcommands: query supports `info/list/read/search/symbols/callgraph/context`,
+and rehydrate supports `verify/extract/compare`. Extraction requires
+`python -m scripts.archive.codex_rehydrate extract ARCHIVE DESTINATION`.
+`pack_directory` is not implemented; use `pack_archive`.
+The canonical scanner API is `run_secret_scanners` (plural);
+`run_secret_scanner` is its exported compatibility alias, not a separate scan.
+
+| Source module | Key functions | CLI entrypoint | Focused tests |
+| --- | --- | --- | --- |
+| `scripts/archive/cdx_common.py` | `run_cdx_common_preflight`, `run_secret_scanners` | `python -m scripts.archive.cdx_common --preflight-context --json` | `tests/archive/test_cdx_context.py`, `test_cdx_sqlite_archive.py` |
+| `scripts/archive/cdx_preflight.py` | `measure_tree`, `run_preflight`, `load_preflight`, `assess_batch` | `python -m scripts.archive.cdx_preflight --help` | `tests/archive/test_cdx_preflight.py` |
+| `scripts/archive/cdx_review.py` | `build_queue`, `schedule_batch`, `write_checkpoint` | `python -m scripts.archive.cdx_review --help` | `tests/archive/test_cdx_review.py` |
+| `scripts/archive/cdx_adapter.py` | `run_adapter`, `load_adapter`, `stock_relationship`, `acquired_span`, `list_batches` | `python -m scripts.archive.cdx_adapter --list-batches --source SOURCE --private-directory PRIVATE --gitleaks-adapter EXECUTABLE` | `tests/archive/test_cdx_adapter.py` |
+| `scripts/archive/codex_packer.py` | `pack_archive` | `python -m scripts.archive.codex_packer --help` | `tests/archive/test_cdx_sqlite_archive.py` |
+| `scripts/archive/codex_query.py` | `CodexArchiveQuery.build_llm_context` | `python -m scripts.archive.codex_query --help` | `tests/archive/test_cdx_sqlite_archive.py` |
+| `scripts/archive/codex_rehydrate.py` | `verify_archive`, `rehydrate_archive`, `compare_trees` | `python -m scripts.archive.codex_rehydrate --help` | `tests/archive/test_cdx_sqlite_archive.py` |
+| `scripts/archive/gitleaks_adapter/main.go` | `provenance`, `scan`, `localize` | `EXECUTABLE identity`; private JSON request on stdin | `cd scripts/archive/gitleaks_adapter && GOPROXY=off GOSUMDB=off go test ./...` |
+
+Adapter batch discovery revalidates the existing completed run and lists every
+observation in deterministic batches of at most 32, with zero-based batch indices
+and zero-based `[start_ordinal, end_ordinal_exclusive)` ranges. It does not run
+scans, output matches, create review checkpoints, or grant packer clearance.
+Review discovery uses the same zero-based indexing; preflight assessment
+checkpoint numbering remains a separate one-based API.
+
+For private Gitleaks coordinate mapping, stock reports at 100,000 bytes or larger
+remain `unsupported_fragment_origin`: reported lines/columns do not prove the
+acquired fragment's byte origin. `_gitleaks_private_span` accepts only explicit
+caller-verified `unfragmented=True` or `source_window=(byte_origin, byte_end)`
+provenance, never origin claims supplied in a scanner report. A window binds an
+exact half-open detector-input interval, converts global LF lines to local lines
+and preserves fragment-local byte columns. Do not infer either provenance input
+from matching redacted text. Mapping still does not recover Secret or establish
+origin/use, harmlessness, reviewer authority or packer clearance.
+For actual acquired assessment, use preflight `--gitleaks-adapter EXECUTABLE
+--assess-acquired-batch` with explicit source/private-directory arguments.
+This independently validates at most 32 acquisition observations in namespace
+`acquired_full_file_adapter_not_stock`. `assess_acquired_batch(..., batch_index=1)`
+has one-based create-only checkpoint numbering, distinct from zero-based batch
+discovery. `--assess-first-batch` remains stock-only. Both retain zero approvals,
+semantic false-positive proofs and stock fragment-origin proofs.
+
 ## Required operating rules
 
 ### Pack

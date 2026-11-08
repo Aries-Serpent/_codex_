@@ -13,7 +13,6 @@ import sqlite3
 import stat
 import sys
 import tempfile
-import zlib
 from pathlib import Path
 from typing import Any
 
@@ -24,7 +23,7 @@ from scripts.archive.cdx_common import (
     SCHEMA_VERSION,
     compute_merkle_root,
     git_blob_oids,
-    inspect_text,
+    inspect_and_pack_blob,
     iter_deterministic_tree,
     run_secret_scanners,
 )
@@ -340,7 +339,7 @@ def pack_archive(
         raise ValueError("file and blob size limits must be non-negative")
     blob_ids = git_blob_oids(root)
     destination.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix="cdx-pack-") as work_dir:
+    with tempfile.TemporaryDirectory(prefix="cdx-pack-", dir=destination.parent) as work_dir:
         snapshot = Path(work_dir) / "tree"
         metadata = _create_scanned_snapshot(
             root,
@@ -363,6 +362,7 @@ def pack_archive(
             finding_inventory,
             root,
             scanner_environment=scanner_environment,
+            scanner_directory=Path(work_dir),
         )
         fd, temp_name = tempfile.mkstemp(
             prefix=f".{destination.name}.", suffix=".tmp", dir=destination.parent
@@ -420,20 +420,21 @@ def pack_archive(
                     blob_sha = hashlib.sha256(raw).hexdigest()
                     if len(raw) != expected["size"] or blob_sha != expected["blob_sha256"]:
                         raise RuntimeError("scanned snapshot content changed during packing")
+                    blob = inspect_and_pack_blob(raw, max_blob_bytes=max_blob_bytes)
                     connection.execute(
                         """
                         INSERT OR IGNORE INTO content_blobs(
                             blob_sha256, codec, raw_size, raw_payload
                         ) VALUES (?, 'zlib', ?, ?)
                         """,
-                        (blob_sha, len(raw), zlib.compress(raw, level=9)),
+                        (blob_sha, len(raw), blob["raw_payload"]),
                     )
-                    text, encoding, endings = inspect_text(raw)
-                    text_sha256 = (
-                        hashlib.sha256(text.encode("utf-8")).hexdigest()
-                        if text is not None
-                        else None
+                    text, encoding, endings = (
+                        blob["text"],
+                        blob["text_encoding"],
+                        blob["line_endings"],
                     )
+                    text_sha256 = blob["text_sha256"]
                     cursor = connection.execute(
                         """
                         INSERT INTO tree_entries(

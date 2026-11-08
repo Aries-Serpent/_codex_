@@ -423,17 +423,17 @@ def rehydrate_archive(
     max_blob_bytes: int = DEFAULT_MAX_BLOB_BYTES,
     max_text_bytes: int = DEFAULT_MAX_TEXT_BYTES,
 ) -> dict[str, Any]:
-    verification = verify_archive(
-        archive,
-        max_blob_bytes=max_blob_bytes,
-        max_text_bytes=max_text_bytes,
-    )
     if destination.is_symlink():
         raise ValueError("destination must not be a symlink")
     root = destination.resolve()
     if root.exists() and any(root.iterdir()):
         raise FileExistsError("destination must be empty")
     with closing(_connect_readonly(archive)) as connection:
+        verification = verify_archive_connection(
+            connection,
+            max_blob_bytes=max_blob_bytes,
+            max_text_bytes=max_text_bytes,
+        )
         entries = [
             dict(row)
             for row in connection.execute("SELECT * FROM tree_entries ORDER BY path COLLATE BINARY")

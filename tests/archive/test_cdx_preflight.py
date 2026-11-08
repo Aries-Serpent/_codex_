@@ -538,14 +538,16 @@ def test_scanner_relative_paths_use_child_cwd_not_parent_cwd(tmp_path, monkeypat
     captured = []
 
     def run(command, **options):
-        assert options["cwd"] == private
+        assert options["cwd"].parent == private
+        assert options["cwd"] != private
+        reference = os.path.relpath(root / "fixture", options["cwd"])
         if command[1] == "version":
             return subprocess.CompletedProcess(command, 0, "8.30.1", "")
         if command[1] == "--version":
             return subprocess.CompletedProcess(command, 0, "1.5.0", "")
         if command[1] == "dir":
             report = (
-                [{"File": "snapshot/fixture", "RuleID": "synthetic", "StartLine": 1}]
+                [{"File": reference, "RuleID": "synthetic", "StartLine": 1}]
                 if scanner == "gitleaks"
                 else []
             )
@@ -558,7 +560,7 @@ def test_scanner_relative_paths_use_child_cwd_not_parent_cwd(tmp_path, monkeypat
                 {
                     "results": (
                         {
-                            "snapshot/fixture": [
+                            reference: [
                                 {
                                     "type": "synthetic",
                                     "line_number": 1,
@@ -986,3 +988,556 @@ def test_existing_queue_destination_never_publishes_partial_batch(produced):
         preflight.assess_batch(source, private)
     assert (private / "queue-001.json").read_bytes() == before
     assert not (private / "batch-001.json").exists()
+
+
+@pytest.mark.parametrize("newline", [b"\n", b"\r\n"])
+@pytest.mark.parametrize("line", [1, 2, 3])
+@pytest.mark.parametrize("size", [100_000, 100_001])
+def test_large_unfragmented_match_coordinates_are_lf_byte_origins(newline, line, size):
+    match = "é headVALUEω".encode()
+    prefix = (b"prefix" + newline) * (line - 1)
+    raw = (prefix + match + newline).ljust(size, b"x")
+    origin = 0 if line == 1 else len(prefix) - 1
+    record = dict(
+        StartLine=line,
+        EndLine=line,
+        StartColumn=len(prefix) - origin + 1,
+        EndColumn=len(prefix) - origin + len(match),
+        Match=match.decode(),
+        Secret="REDACTED",
+    )
+    assert common._gitleaks_private_span(raw, record, version="8.30.1") == (
+        None,
+        "unsupported_fragment_origin",
+    )
+    span, status = common._gitleaks_private_span(raw, record, version="8.30.1", unfragmented=True)
+    assert span == record["Match"].encode()
+    assert status == "mapped_reported_match_not_secret"
+
+
+@pytest.mark.parametrize("newline", [b"\n", b"\r\n"])
+@pytest.mark.parametrize("midline", [False, True])
+@pytest.mark.parametrize("line", [1, 2])
+def test_exact_large_source_window_maps_actual_match_not_guessed_file_columns(
+    newline, midline, line
+):
+    prefix = b"x" * 100_000 + (b"middle" if midline else newline * 2)
+    match = "αVALUEω".encode()
+    leading = b"before" + newline if line == 2 else b""
+    fragment = leading + match + newline
+    raw = prefix + fragment + b"trailing" * 1000
+    local_origin = len(leading) - 1 if line == 2 else 0
+    record = dict(
+        StartLine=prefix.count(b"\n") + line,
+        EndLine=prefix.count(b"\n") + line,
+        StartColumn=len(leading) - local_origin + 1,
+        EndColumn=len(leading) - local_origin + len(match),
+        Match=match.decode(),
+        Secret="REDACTED",
+    )
+    span, status = common._gitleaks_private_span(
+        raw, record, version="8.30.1", source_window=(len(prefix), len(prefix) + len(fragment))
+    )
+    assert span == record["Match"].encode()
+    assert status == "mapped_reported_match_not_secret"
+    assert common._gitleaks_private_span(raw, record, version="8.30.1")[0] is None
+
+
+@pytest.mark.parametrize(
+    "options",
+    [
+        {"unfragmented": "yes"},
+        {"source_window": (-1, 100_001)},
+        {"source_window": (True, 100_001)},
+        {"source_window": (0, 200_000)},
+        {"source_window": (0, 0)},
+        {"source_window": [0, 100_001]},
+        {"source_window": (0, 100_001), "unfragmented": True},
+    ],
+)
+def test_large_mapping_requires_explicit_well_formed_window(options):
+    raw = b"VALUE" + b"x" * 100_000
+    record = dict(StartLine=1, EndLine=1, StartColumn=1, EndColumn=5)
+    assert common._gitleaks_private_span(raw, record, version="8.30.1", **options) == (
+        None,
+        "unsupported_fragment_origin",
+    )
+
+
+@pytest.mark.parametrize(
+    "record",
+    [{"Tags": ["decoded:base64"]}, {"Fragment": {}}, {"Commit": "commit"}, {"File": "outer!inner"}],
+)
+def test_large_explicit_mapping_does_not_override_unsupported_report_origin(record):
+    raw = b"VALUE" + b"x" * 100_000
+    coordinates = dict(StartLine=1, EndLine=1, StartColumn=1, EndColumn=5, **record)
+    for options in ({"unfragmented": True}, {"source_window": (0, len(raw))}):
+        span, status = common._gitleaks_private_span(raw, coordinates, version="8.30.1", **options)
+        assert span is None
+        assert status.startswith("unsupported_")
+
+
+@pytest.mark.parametrize("producer", ["shared", "measured", "packer"])
+def test_source_ignore_file_blocks_without_silently_excluding_contents(
+    tmp_path, monkeypatch, producer
+):
+    from scripts.archive import codex_packer
+
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / ".gitleaksignore").write_text("ignore fingerprint\n")
+    (source / "fixture").write_text("must not be silently cleared\n")
+    monkeypatch.setattr(common.shutil, "which", lambda name: name)
+    monkeypatch.setattr(preflight, "measure_toolchain", lambda: {"synthetic": "test_only"})
+    monkeypatch.setattr(common, "git_blob_oids", lambda _root: {})
+    monkeypatch.setattr(codex_packer, "git_blob_oids", lambda _root: {})
+    monkeypatch.setattr(
+        common.subprocess, "run", lambda *_args, **_kwargs: pytest.fail("must block")
+    )
+    private = tmp_path / "private"
+    private.mkdir(mode=0o700)
+    output = tmp_path / "archive.cdx.sqlite"
+    with pytest.raises(RuntimeError, match="source gitleaks ignore"):
+        if producer == "shared":
+            common.run_secret_scanners(source)
+        elif producer == "measured":
+            preflight.run_preflight(source, private)
+        else:
+            codex_packer.pack_archive(source, output)
+    assert not output.exists()
+    assert not (private / "complete.json").exists()
+    assert (source / ".gitleaksignore").read_text() == "ignore fingerprint\n"
+    if producer == "measured":
+        failure, _ = review.read_private_json(private / "failure.json")
+        assert failure["reason_code"] == "source_suppression_file_blocked"
+
+
+@pytest.mark.parametrize("explicit", [False, True])
+def test_shared_scanner_always_pins_external_config_empty_ignore_and_ignores_inline_allow(
+    tmp_path, monkeypatch, explicit
+):
+    root = tmp_path / "source"
+    root.mkdir()
+    config_payload = b'[allowlist]\nregexes = [".*"]\n'
+    (root / ".gitleaks.toml").write_bytes(config_payload)
+    inline = b"synthetic credential # gitleaks:allow\n"
+    (root / "fixture").write_bytes(inline)
+    monkeypatch.setenv("GITLEAKS_CONFIG", str(root / ".gitleaks.toml"))
+    monkeypatch.setenv("GITLEAKS_CONFIG_TOML", config_payload.decode())
+    monkeypatch.setenv("SECRET_CREDENTIAL", "synthetic-private-only")
+    monkeypatch.setattr(common.shutil, "which", lambda name: name)
+    calls = []
+
+    def run(command, **options):
+        calls.append(command)
+        assert options["cwd"] != root
+        assert not options["cwd"].is_relative_to(root)
+        assert options["env"]["HOME"] == str(options["cwd"])
+        assert set(options["env"]) == {
+            "PATH",
+            "HOME",
+            "LC_ALL",
+            "PYTHONNOUSERSITE",
+            "PYTHONDONTWRITEBYTECODE",
+        }
+        if command[1] == "version":
+            return subprocess.CompletedProcess(command, 0, "8.30.1", "")
+        if command[1] == "--version":
+            return subprocess.CompletedProcess(command, 0, "1.5.0", "")
+        if command[1] == "dir":
+            config = Path(command[command.index("--config") + 1])
+            ignore = Path(command[command.index("--gitleaks-ignore-path") + 1])
+            assert config.read_bytes() == common.TRUSTED_GITLEAKS_CONFIG
+            assert ignore.read_bytes() == b""
+            assert config.parent == ignore.parent == options["cwd"]
+            assert "--ignore-gitleaks-allow" in command
+            assert Path(command[-1]) == root
+            assert (root / ".gitleaks.toml").read_bytes() == config_payload
+            assert (root / "fixture").read_bytes() == inline
+            Path(command[command.index("--report-path") + 1]).write_text("[]")
+            return subprocess.CompletedProcess(command, 0, "", "")
+        return subprocess.CompletedProcess(command, 0, '{"results": {}}', "")
+
+    monkeypatch.setattr(common.subprocess, "run", run)
+    options = {}
+    if explicit:
+        config = tmp_path / "trusted.toml"
+        config.write_bytes(common.TRUSTED_GITLEAKS_CONFIG)
+        ignore = tmp_path / "empty.ignore"
+        ignore.write_bytes(b"")
+        options.update(gitleaks_config=config, gitleaks_ignore=ignore)
+    common.run_secret_scanners(root, **options)
+    assert len(calls) == 4
+
+
+@pytest.mark.parametrize("kind", ["config", "ignore"])
+def test_custom_scanner_suppression_cannot_replace_trusted_policy(tmp_path, monkeypatch, kind):
+    root = tmp_path / "source"
+    root.mkdir()
+    config = tmp_path / "custom"
+    config.write_text("suppress all\n")
+    monkeypatch.setattr(common.shutil, "which", lambda name: name)
+    monkeypatch.setattr(
+        common.subprocess, "run", lambda *_args, **_kwargs: pytest.fail("must block")
+    )
+    with pytest.raises(RuntimeError, match="untrusted"):
+        common.run_secret_scanners(root, **{f"gitleaks_{kind}": config})
+
+
+def test_common_exports_blob_helper_and_lazy_validators_are_canonical():
+    import zlib
+
+    from scripts.archive import codex_rehydrate
+
+    assert len(common.__all__) == len(set(common.__all__))
+    assert all(hasattr(common, name) for name in common.__all__)
+    assert common.SCHEMA_DDL is common.SCHEMA_SQL
+    assert common.run_secret_scanner is common.run_secret_scanners
+    assert {"run_secret_scanner", "_canonical_scanner_finding", "_validate_external_path"}.issubset(
+        common.__all__
+    )
+    raw = "é\r\nvalue\r\n".encode()
+    blob = common.inspect_and_pack_blob(raw)
+    assert zlib.decompress(blob["raw_payload"]) == raw
+    assert blob["blob_sha256"] == hashlib.sha256(raw).hexdigest()
+    assert blob["text"] == common.inspect_text(raw)[0]
+    assert common.validate_safe_rel_path("safe/file") == codex_rehydrate.validate_safe_rel_path(
+        "safe/file"
+    )
+    for path in ("../unsafe", "/absolute"):
+        with pytest.raises(ValueError):
+            common.validate_safe_rel_path(path)
+    with pytest.raises(ValueError):
+        common.inspect_and_pack_blob(raw, max_blob_bytes=1)
+    assert common.validate_inventory({"schema_version": 1, "findings": []}) == []
+
+
+@pytest.mark.parametrize("budget", [-1, 0])
+def test_empty_blob_budget_matches_existing_positive_packer_contract(tmp_path, budget):
+    from scripts.archive import codex_packer
+
+    source = tmp_path / "empty-source"
+    source.mkdir()
+    with pytest.raises(ValueError):
+        common.inspect_and_pack_blob(b"", max_blob_bytes=budget)
+    with pytest.raises(ValueError):
+        codex_packer.pack_archive(source, tmp_path / "empty.sqlite", max_blob_bytes=budget)
+    assert common.inspect_and_pack_blob(b"")["raw_size"] == 0
+
+
+def test_common_context_is_bounded_deterministic_and_never_scans_tree(tmp_path, monkeypatch):
+    archive = tmp_path / ".codex" / "archive"
+    archive.mkdir(parents=True)
+    (archive / "MANIFEST.json").write_text('{"total_files": 2, "files": ["a", "b"]}')
+    (archive / "ARCHIVE_LEDGER.jsonl").write_text('{"status": "candidate"}\n')
+    (archive / "ARCHIVE_INDEX.md").write_text("# Index\n\n## Collection\n")
+    monkeypatch.setattr(common.shutil, "which", lambda name: f"/tools/{name}")
+    monkeypatch.setattr(
+        common,
+        "run_secret_scanners",
+        lambda *_args, **_kwargs: pytest.fail("not scanner clearance"),
+    )
+    calls = []
+
+    def run(command, **options):
+        calls.append(command)
+        assert len(command) == 2
+        assert options["timeout"] == 3
+        return subprocess.CompletedProcess(
+            command,
+            0,
+            {"git": "git version 2.49.0", "detect-secrets": "1.5.0", "gitleaks": "8.30.1"}[
+                Path(command[0]).name
+            ],
+            "",
+        )
+
+    monkeypatch.setattr(common.subprocess, "run", run)
+    first = common.run_cdx_common_preflight(tmp_path)
+    assert common.run_cdx_common_preflight(tmp_path) == first
+    assert len(calls) == 6
+    assert first["purpose"] == "read_only_context_not_secret_clearance"
+    assert first["archive"]["manifest"]["listed_files"] == 2
+    assert first["archive"]["ledger"]["records"] == 1
+    assert first["archive"]["index"]["headings"] == 2
+    assert first["tools"]["gitleaks"]["version"] == "8.30.1"
+    assert all(row["line"] > 0 and row["signature"] for row in first["functions"])
+    exported_common = {
+        row["name"]
+        for row in first["functions"]
+        if row["path"] == "scripts/archive/cdx_common.py" and row["exported"]
+    }
+    assert exported_common.issubset(set(common.__all__))
+    assert any(row["path"] == "scripts/archive/cdx_preflight.py" for row in first["functions"])
+    assert any(row["language"] == "go" and row["exported"] for row in first["functions"])
+
+
+def test_common_context_reports_missing_and_malformed_without_leaking_contents(
+    tmp_path, monkeypatch
+):
+    archive = tmp_path / ".codex" / "archive"
+    archive.mkdir(parents=True)
+    (archive / "MANIFEST.json").write_text("PRIVATE_INVALID_JSON")
+    (archive / "ARCHIVE_LEDGER.jsonl").symlink_to(archive / "MANIFEST.json")
+    monkeypatch.setattr(common.shutil, "which", lambda _name: None)
+    result = common.run_cdx_common_preflight(tmp_path)
+    assert result["archive"]["manifest"]["status"] == "unavailable_or_malformed"
+    assert result["archive"]["ledger"]["status"] == "unavailable_or_malformed"
+    assert result["archive"]["index"]["status"] == "missing"
+    assert result["tools"]["gitleaks"]["status"] == "missing"
+    assert "PRIVATE_INVALID_JSON" not in json.dumps(result)
+
+
+def test_archive_catalog_indexes_python_aliases_and_go_without_importing(tmp_path):
+    archive = tmp_path / "scripts" / "archive"
+    archive.mkdir(parents=True)
+    (archive / "example.py").write_text(
+        "__all__ = ['public', 'alias', '_explicit']\n"
+        "raise RuntimeError('must never execute')\n"
+        "def public(value: bytes, *, limit: int = 32) -> int:\n    return len(value)\n"
+        "alias = public\n"
+        "def _explicit():\n    pass\n"
+        "def _private():\n    pass\n"
+    )
+    (archive / "example.go").write_text(
+        "package archive\n"
+        "func Exported(value []byte) (int, error) {\n return 0, nil\n}\n"
+        "func internal() {\n}\n"
+    )
+    functions, modules = common._archive_function_catalog(tmp_path)
+    assert len(functions) == 6
+    assert {row["name"] for row in functions if row["exported"]} == {
+        "public",
+        "alias",
+        "_explicit",
+        "Exported",
+    }
+    assert next(row for row in functions if row["name"] == "alias")["line"] == 5
+    assert next(row for row in functions if row["name"] == "Exported")["signature"] == (
+        "(value []byte) (int, error)"
+    )
+    assert all(row["status"] == "indexed" for row in modules)
+
+
+def test_common_and_preflight_context_clis_emit_context_json(monkeypatch, capsys):
+    document = {"purpose": "read_only_context_not_secret_clearance"}
+    monkeypatch.setattr(common, "run_cdx_common_preflight", lambda: document)
+    assert common.main(["--preflight-context", "--json"]) == 0
+    assert json.loads(capsys.readouterr().out) == document
+    assert preflight.main(["--preflight-summary", "--json"]) == 0
+    assert json.loads(capsys.readouterr().out) == document
+
+
+@pytest.fixture
+def acquired_produced(tmp_path, monkeypatch):
+    import hmac
+
+    from scripts.archive import cdx_adapter
+
+    source = tmp_path / "source"
+    source.mkdir()
+    private = tmp_path / "private"
+    private.mkdir(mode=0o700)
+    snapshot = private / "snapshot"
+    snapshot.mkdir()
+    match = "αVALUEω".encode()
+    raw = (b"prefix\n" + match + b"\n").ljust(100_001, b"x")
+    (snapshot / "fixture").write_bytes(raw)
+    identity = {
+        "mode": cdx_adapter.MODE,
+        "module": cdx_adapter.MODULE,
+        "version": cdx_adapter.VERSION,
+        "module_sum": cdx_adapter.MODULE_SUM,
+        "config_sha256": "a" * 64,
+        "executable_sha256": "b" * 64,
+    }
+    request = {
+        "key": "c" * 64,
+        "bindings": {"run_namespace": "d" * 32},
+        "files": [{"path": "fixture", "size": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}],
+    }
+    report = {
+        **identity,
+        "schema_version": 1,
+        "request_sha256": "e" * 64,
+        "bindings": request["bindings"],
+        "acquisitions": [
+            {
+                **request["files"][0],
+                "origin_start": 0,
+                "origin_end": len(raw),
+                "detector_calls": 1,
+                "observations": [
+                    {
+                        "record": {
+                            "File": "fixture",
+                            "RuleID": "synthetic-only",
+                            "StartLine": 2,
+                            "EndLine": 2,
+                            "StartColumn": 2,
+                            "EndColumn": len(match) + 1,
+                            "Tags": [],
+                            "Secret": "REDACTED",
+                            "Match": match.decode(),
+                        },
+                        "start": 7,
+                        "end": 7 + len(match),
+                        "mapping_status": "mapped_acquired_full_file",
+                        "match_hmac": hmac.new(
+                            bytes.fromhex(request["key"]), match, hashlib.sha256
+                        ).hexdigest(),
+                    }
+                ],
+            }
+        ],
+    }
+    findings = cdx_adapter._validate_report(snapshot, request, "e" * 64, report, identity)
+    complete = {"bindings": request["bindings"]}
+    calls = []
+
+    def load(*_args):
+        calls.append("load")
+        return copy.deepcopy(complete), copy.deepcopy(findings)
+
+    monkeypatch.setattr(cdx_adapter, "load_adapter", load)
+    return source, private, tmp_path / "synthetic-adapter", findings, calls
+
+
+def test_acquired_production_batch_maps_large_verified_origin_without_stock_proof(
+    acquired_produced,
+):
+    source, private, executable, findings, calls = acquired_produced
+    result = preflight.assess_acquired_batch(source, private, executable)
+    assert result["assigned"] == result["assessed"] == result["mapped"] == 1
+    assert result["accepted"] == result["semantic_false_positive_proofs"] == 0
+    assert result["stock_fragment_origin_proofs"] == 0
+    assert len(calls) == 2
+    assert (
+        common._gitleaks_private_span(
+            (private / "snapshot" / "fixture").read_bytes(),
+            findings[0]["_record"],
+            version="8.30.1",
+        )[0]
+        is None
+    )
+    document, _ = review.read_private_json(private / "acquired-batch-001.json")
+    predicates = document["assessments"][0]["predicates"]
+    assert predicates["acquired_full_file_origin_verified"] is True
+    assert predicates["reported_match_span_available"] is True
+    assert predicates["stock_fragment_origin_proved"] is False
+    assert predicates["exact_secret_recovered"] is False
+    assert "VALUE" not in json.dumps(document)
+    with pytest.raises(FileExistsError):
+        preflight.assess_acquired_batch(source, private, executable)
+
+
+@pytest.mark.parametrize("mutation", ["decoded", "fragment", "unsupported", "source", "drift"])
+def test_acquired_production_preserves_unsupported_and_blocks_drift(
+    acquired_produced, monkeypatch, mutation
+):
+    from scripts.archive import cdx_adapter
+
+    source, private, executable, findings, _calls = acquired_produced
+    if mutation == "decoded":
+        findings[0]["_record"]["Tags"] = ["decoded:base64"]
+    elif mutation == "fragment":
+        findings[0]["_record"]["Fragment"] = {}
+    elif mutation == "unsupported":
+        findings[0]["_acquisition"]["mapping_status"] = "unsupported_match_interval"
+    elif mutation == "source":
+        (private / "snapshot" / "fixture").write_bytes(b"source changed")
+    else:
+        calls = []
+
+        def drift(*_args):
+            calls.append(1)
+            return {"bindings": {"synthetic": len(calls)}}, copy.deepcopy(findings)
+
+        monkeypatch.setattr(cdx_adapter, "load_adapter", drift)
+    if mutation in {"source", "drift"}:
+        with pytest.raises(ValueError):
+            preflight.assess_acquired_batch(source, private, executable)
+        assert not (private / "acquired-batch-001.json").exists()
+    else:
+        result = preflight.assess_acquired_batch(source, private, executable)
+        assert result["mapped"] == 0
+        assert result["unsupported"] == 1
+
+
+def test_acquired_production_batch_is_capped_at_32(acquired_produced):
+    source, private, executable, findings, _calls = acquired_produced
+    template = copy.deepcopy(findings[0])
+    for ordinal in range(1, 65):
+        finding = copy.deepcopy(template)
+        finding["finding_id"] = f"{ordinal:064x}"
+        findings.append(finding)
+    for index, expected in enumerate((32, 32, 1, 0), 1):
+        result = preflight.assess_acquired_batch(source, private, executable, batch_index=index)
+        assert result["assigned"] == result["mapped"] == expected
+        assert result["accepted"] == result["stock_fragment_origin_proofs"] == 0
+
+
+def test_acquired_production_batch_1000_is_accessible(acquired_produced, monkeypatch):
+    from scripts.archive import cdx_adapter
+
+    source, private, executable, findings, _calls = acquired_produced
+    template = findings[0]
+    rows = [{**template, "finding_id": f"{ordinal:064x}"} for ordinal in range(31_969)]
+    monkeypatch.setattr(cdx_adapter, "load_adapter", lambda *_args: ({"bindings": {}}, rows))
+    result = preflight.assess_acquired_batch(source, private, executable, batch_index=1000)
+    assert result["assigned"] == result["mapped"] == 1
+    document, _ = review.read_private_json(private / "acquired-batch-1000.json")
+    assert document["start_ordinal"] == 31_968
+    assert document["end_ordinal_exclusive"] == 31_969
+
+
+def test_acquired_production_batch_bound_tracks_findings_budget(acquired_produced):
+    source, private, executable, _findings, _calls = acquired_produced
+    maximum = (review.MAX_FINDINGS + 31) // 32
+    assert maximum == 1563
+    assert (
+        preflight.assess_acquired_batch(source, private, executable, batch_index=maximum)[
+            "assigned"
+        ]
+        == 0
+    )
+    with pytest.raises(ValueError, match="invalid batch index"):
+        preflight.assess_acquired_batch(source, private, executable, batch_index=maximum + 1)
+
+
+def test_preflight_cli_can_assess_acquired_large_files_independently(monkeypatch, tmp_path, capsys):
+    from scripts.archive import cdx_adapter
+
+    source, private, executable = tmp_path / "source", tmp_path / "private", tmp_path / "adapter"
+    calls = []
+    monkeypatch.setattr(
+        preflight, "run_preflight", lambda *_args: {"clearance": "BLOCKED_FINDINGS"}
+    )
+    monkeypatch.setattr(cdx_adapter, "run_adapter", lambda *_args: {"mapped": 1})
+    monkeypatch.setattr(
+        preflight,
+        "assess_batch",
+        lambda *_args: pytest.fail("stock spans cannot borrow adapter proof"),
+    )
+
+    def assess(*args):
+        calls.append(args)
+        return {"mapped": 1, "stock_fragment_origin_proofs": 0}
+
+    monkeypatch.setattr(preflight, "assess_acquired_batch", assess)
+    assert (
+        preflight.main(
+            [
+                "--source",
+                str(source),
+                "--private-directory",
+                str(private),
+                "--gitleaks-adapter",
+                str(executable),
+                "--assess-acquired-batch",
+            ]
+        )
+        == 2
+    )
+    assert calls == [(source, private, executable)]
+    assert capsys.readouterr().out == "CDX preflight: BLOCKED_FINDINGS\n"

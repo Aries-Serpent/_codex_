@@ -1,3 +1,29 @@
+## Session: PR #5763 archive review follow-up — 2026-11-08
+
+### Agents Used
+
+- `archive-review-fixes` — path traversal, same-connection extraction, scanner stub, and review batch indexing.
+- `scanner-hardening` — scanner suppression controls, span mapping, and shared preflight exports.
+- `cdx-session-context` — session catalog, adapter batch discovery, and documentation.
+- `archive-integration-review` — read-only integration review; identified the acquisition batch ceiling, now derived from the observation budget and regression-tested.
+- Parent agent — integration, setup diagnosis, policy validation, and evidence reporting.
+
+### Evidence and outcome
+
+- The current review has four open threads, not the six asserted in the additional comment; the PR currently has 17 total threads, including resolved historical findings.
+- Cognitive Pre-flight job `128583125921` in run `42431749864` passed accountability verification but failed last-commit CHANGELOG verification. Its automatic repair then received HTTP 403 on push. This session updates actual documentation evidence without changing authentication or approval claims.
+- The review setup log in run `42431013999` reports that Python `3.12.10` is unavailable for Ubuntu 26.04 x64. The setup step now supplies `3.12` directly; the upstream Python manifest lists compatible stable 3.12 builds.
+- Local setup validation passed 13/13 checks, the strict security owner/reason check and commit-message wording check passed, and `go test ./...` passed for the Gitleaks adapter.
+- Final archive validation passed **351 tests, zero failures/skips**: adapter 51, preflight 181, review 69, SQLite archive 37, and context 13. The explicit pinned adapter enabled all five live end-to-end cases.
+- Black, isort, Ruff, compilation, scoped mypy (eight source files, imported-module analysis skipped), packet validation, actionlint, YAML lint, and scoped cognitive current-evidence checks passed.
+- Live synthetic scanner checks confirmed source configuration and inline allow comments cannot suppress findings, and source ignore files block without exclusion. Live large-file acquisition assessment mapped a file exceeding 100,000 bytes while keeping approval/proof counters zero.
+- Six historical resolved threads now have explicit replies citing `b1be58fb`; the four current findings are implemented with regression coverage. Authentication artifacts were not rewritten to manufacture authorization or current-SHA claims.
+- The latest inspected completed strict gate, run `42430920521` on `b1be58fb`, passed. New-head runs require platform approval; no approval, dispatch, merge, or clean hosted CI claim is made.
+- **Owner**: PR maintainer for workflow approvals and merge decisions.
+- **Reason**: Local validation cannot establish hosted execution or remove platform approval requirements. Obtain authorized current-head checks before merging.
+
+---
+
 ## Session: PR #5761 review-thread follow-up — 2026-11-07
 
 ### Agents Used

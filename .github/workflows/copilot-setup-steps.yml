@@ -149,7 +149,7 @@ jobs:
     - name: "🐍 Set up Python with cache"
       uses: ./.github/actions/setup-python-cached
       with:
-        python-version: ${{ env.PYTHON_VERSION }}
+        python-version: '3.12'
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
     - name: Fetch and verify requested LFS assets

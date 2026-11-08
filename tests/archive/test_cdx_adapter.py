@@ -248,6 +248,78 @@ def test_acquired_mapper_requires_current_run_not_origin_dict(tmp_path, monkeypa
         adapter.acquired_span(tmp_path, tmp_path, tmp_path / "tool", "caller-selected-id")
 
 
+@pytest.mark.parametrize("count", [0, 1, 32, 33, 65, 100])
+def test_list_batches_indexes_every_observation(count, monkeypatch):
+    calls = []
+
+    def load(*args):
+        calls.append(args)
+        return {"bindings": {"run_namespace": "synthetic"}}, [{}] * count
+
+    monkeypatch.setattr(adapter, "load_adapter", load)
+    paths = (Path("/source"), Path("/private"), Path("/tool"))
+    result = adapter.list_batches(*paths)
+    assert calls == [paths]
+    assert result == adapter.list_batches(*paths)
+    batches = result["batches"]
+    assert result["index_base"] == 0
+    assert [batch["batch_index"] for batch in batches] == list(range(len(batches)))
+    assert all(1 <= batch["observations"] <= 32 for batch in batches)
+    assert [
+        ordinal
+        for batch in batches
+        for ordinal in range(batch["start_ordinal"], batch["end_ordinal_exclusive"])
+    ] == list(range(count))
+    assert sum(batch["observations"] for batch in batches) == count
+    assert not result["packer_clearance_compatible"]
+
+
+def test_list_batches_cli_reports_only_index(monkeypatch, capsys):
+    monkeypatch.setattr(
+        adapter, "load_adapter", lambda *_: ({"bindings": {}}, [{"Secret": "not-output"}] * 65)
+    )
+    assert (
+        adapter.main(
+            [
+                "--list-batches",
+                "--source",
+                "/source",
+                "--private-directory",
+                "/private",
+                "--gitleaks-adapter",
+                "/tool",
+            ]
+        )
+        == 0
+    )
+    output = capsys.readouterr().out
+    assert "not-output" not in output
+    assert len(json.loads(output)["batches"]) == 3
+    assert json.loads(output)["batches"][0]["batch_index"] == 0
+
+
+def test_list_batches_cli_fails_closed(monkeypatch, capsys):
+    def fail(*_):
+        raise ValueError("private matched value must not escape")
+
+    monkeypatch.setattr(adapter, "load_adapter", fail)
+    assert (
+        adapter.main(
+            [
+                "--list-batches",
+                "--source",
+                "/source",
+                "--private-directory",
+                "/private",
+                "--gitleaks-adapter",
+                "/tool",
+            ]
+        )
+        == 2
+    )
+    assert "private matched value" not in capsys.readouterr().out
+
+
 @pytest.mark.parametrize(
     "prefix,newline,fragment_boundary",
     [

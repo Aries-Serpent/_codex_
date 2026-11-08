@@ -240,7 +240,7 @@ def _produce_preflight(source: Path, private: Path) -> dict[str, Any]:
     if measure_tree(snapshot) != source_before or measure_tree(source) != source_before:
         raise ValueError("source and exact snapshot differ")
     config = private / "gitleaks.toml"
-    config.write_text("[extend]\nuseDefault = true\n")
+    config.write_bytes(common.TRUSTED_GITLEAKS_CONFIG)
     config.chmod(0o600)
     ignore = private / "gitleaks.ignore"
     ignore.touch(mode=0o600)
@@ -250,6 +250,7 @@ def _produce_preflight(source: Path, private: Path) -> dict[str, Any]:
         "gitleaks": ["dir", "--redact=100", "--ignore-gitleaks-allow", "--exit-code", "2"],
         "detect-secrets": ["scan", "--no-verify", "--all-files"],
         "environment": "isolated_home_cwd_no_pythonpath_no_user_site_no_inherited_credentials",
+        "source_suppression": "reject_gitleaksignore_scan_config_contents_ignore_inline_allow",
     }
     review.write_checkpoint(
         private / "preparation.json",
@@ -394,6 +395,10 @@ def run_preflight(source: Path, private: Path) -> dict[str, Any]:
             "secret scanner returned an out-of-root path": "observation_out_of_root",
             "secret scanner returned an invalid file path": "observation_invalid_path",
             "gitleaks returned invalid finding tags": "gitleaks_invalid_tags",
+            "source gitleaks ignore files are unsupported; no contents skipped": (
+                "source_suppression_file_blocked"
+            ),
+            "untrusted secret scanner configuration": "untrusted_scanner_configuration",
         }
         reports = [
             stage
@@ -607,17 +612,112 @@ def assess_batch(source: Path, private: Path, *, batch_index: int = 1) -> dict[s
     }
 
 
+def assess_acquired_batch(
+    source: Path, private: Path, executable: Path, *, batch_index: int = 1
+) -> dict[str, Any]:
+    """Localize up to 32 actual adapter observations, never stock fragment spans."""
+    from . import cdx_adapter
+
+    max_batch_index = (review.MAX_FINDINGS + 31) // 32
+    if type(batch_index) is not int or not 1 <= batch_index <= max_batch_index:
+        raise ValueError("invalid batch index")
+    checkpoint = private / f"acquired-batch-{batch_index:03d}.json"
+    try:
+        checkpoint.lstat()
+    except FileNotFoundError:
+        pass
+    else:
+        raise FileExistsError("acquisition assessment checkpoint already exists")
+    complete, findings = cdx_adapter.load_adapter(source, private, executable)
+    first = (batch_index - 1) * 32
+    selected = findings[first : first + 32]
+    assessments = []
+    for finding in selected:
+        raw = read_source_file(
+            private / "snapshot", finding["path"], limit=cdx_adapter.LIMITS["file_bytes"]
+        )
+        if hashlib.sha256(raw).hexdigest() != finding["file_sha256"]:
+            raise ValueError("adapter acquired source changed")
+        acquisition = finding["_acquisition"]
+        span = None
+        status = acquisition["mapping_status"]
+        if status == "mapped_acquired_full_file":
+            # Only the freshly verified acquisition establishes full-file origin.
+            # Record equality with a stock finding is deliberately not consulted.
+            span, status = common._gitleaks_private_span(
+                raw, finding["_record"], version=finding["scanner_version"], unfragmented=True
+            )
+            if span is not None and span != raw[acquisition["start"] : acquisition["end"]]:
+                raise ValueError("adapter and reported match mapping differ")
+        assessments.append(
+            {
+                "finding_id": finding["finding_id"],
+                "state": "indeterminate",
+                "predicates": {
+                    "reported_match_mapping_status": status,
+                    "reported_match_span_available": span is not None,
+                    "acquired_full_file_origin_verified": True,
+                    "exact_secret_recovered": False,
+                    "stock_fragment_origin_proved": False,
+                },
+                "raw_context_status": "inspected_privately_not_exported",
+                "evidence_gap": "acquisition_localized_not_origin_use_or_harmlessness_proof",
+            }
+        )
+    if cdx_adapter.load_adapter(source, private, executable) != (complete, findings):
+        raise ValueError("adapter changed during acquisition assessment")
+    mapped = sum(row["predicates"]["reported_match_span_available"] for row in assessments)
+    document = {
+        "purpose": "acquired_adapter_assessment_not_stock_mapping_or_clearance",
+        "bindings": complete["bindings"],
+        "batch_index": batch_index,
+        "start_ordinal": first,
+        "end_ordinal_exclusive": first + len(selected),
+        "assessments": assessments,
+        "accepted": 0,
+        "semantic_false_positive_proofs": 0,
+        "stock_fragment_origin_proofs": 0,
+    }
+    digest = review.write_checkpoint(checkpoint, document)
+    return {
+        "namespace": "acquired_full_file_adapter_not_stock",
+        "assigned": len(assessments),
+        "assessed": len(assessments),
+        "mapped": mapped,
+        "unsupported": len(assessments) - mapped,
+        "batch_sha256": digest,
+        "accepted": 0,
+        "semantic_false_positive_proofs": 0,
+        "stock_fragment_origin_proofs": 0,
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", required=True, type=Path)
-    parser.add_argument("--private-directory", required=True, type=Path)
+    parser.add_argument("--source", type=Path)
+    parser.add_argument("--private-directory", type=Path)
+    parser.add_argument("--preflight-summary", action="store_true")
+    parser.add_argument("--json", action="store_true")
     parser.add_argument("--assess-first-batch", action="store_true")
+    parser.add_argument(
+        "--assess-acquired-batch",
+        action="store_true",
+        help="Assess up to 32 acquisition-bound adapter findings in their separate namespace",
+    )
     parser.add_argument(
         "--gitleaks-adapter",
         type=Path,
         help="Absolute locally built pinned-library adapter; advisory supplement only",
     )
     args = parser.parse_args(argv)
+    if args.preflight_summary:
+        return common.main(["--preflight-context", *(["--json"] if args.json else [])])
+    if args.source is None or args.private_directory is None:
+        parser.error("--source and --private-directory are required for measured preparation")
+    if args.json:
+        parser.error("--json is only supported with --preflight-summary")
+    if args.assess_acquired_batch and args.gitleaks_adapter is None:
+        parser.error("--assess-acquired-batch requires --gitleaks-adapter")
     try:
         result = run_preflight(args.source, args.private_directory)
         if args.gitleaks_adapter is not None:
@@ -628,6 +728,10 @@ def main(argv: list[str] | None = None) -> int:
             )
         if args.assess_first_batch:
             result["batch"] = assess_batch(args.source, args.private_directory)
+        if args.assess_acquired_batch:
+            result["acquired_batch"] = assess_acquired_batch(
+                args.source, args.private_directory, args.gitleaks_adapter
+            )
     except Exception:
         # Scanner diagnostics, private paths and parsed values must not escape.
         print("BLOCKED: private preparation, scanner execution or binding verification failed")

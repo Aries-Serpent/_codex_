@@ -2,17 +2,23 @@
 
 from __future__ import annotations
 
+import argparse
+import ast
 import copy
 import hashlib
 import hmac
+import io
 import json
 import os
 import re
 import shutil
 import stat
 import subprocess
+import sys
 import tempfile
-from pathlib import Path
+import zlib
+from contextlib import contextmanager
+from pathlib import Path, PurePosixPath
 from typing import Any, Iterator, cast
 
 SCHEMA_VERSION = 1
@@ -20,6 +26,7 @@ DEFAULT_MAX_BLOB_BYTES = 512 * 1024 * 1024
 DEFAULT_MAX_TEXT_BYTES = 64 * 1024 * 1024
 SECRET_SCANNER_VERSIONS = {"gitleaks": "8.30.1", "detect-secrets": "1.5.0"}
 SECRET_SCANNER_TIMEOUT_SECONDS = 600
+TRUSTED_GITLEAKS_CONFIG = b"[extend]\nuseDefault = true\n"
 FINDING_IDENTITY_VERSION = 2
 DEFAULT_DENIED_COMPONENTS = {
     ".git",
@@ -113,6 +120,80 @@ CREATE TRIGGER fts_documents_delete AFTER DELETE ON fts_documents BEGIN
 END;
 """
 
+SCHEMA_DDL = SCHEMA_SQL
+
+__all__ = [
+    "SCHEMA_VERSION",
+    "SCHEMA_SQL",
+    "SCHEMA_DDL",
+    "DEFAULT_MAX_BLOB_BYTES",
+    "DEFAULT_MAX_TEXT_BYTES",
+    "DEFAULT_DENIED_COMPONENTS",
+    "DEFAULT_DENIED_GLOBS",
+    "SECRET_SCANNER_VERSIONS",
+    "SECRET_SCANNER_TIMEOUT_SECONDS",
+    "TRUSTED_GITLEAKS_CONFIG",
+    "FINDING_IDENTITY_VERSION",
+    "iter_deterministic_tree",
+    "inspect_text",
+    "inspect_and_pack_blob",
+    "git_blob_oids",
+    "compute_merkle_root",
+    "run_secret_scanners",
+    "run_secret_scanner",
+    "_canonical_scanner_finding",
+    "_validate_external_path",
+    "validate_safe_rel_path",
+    "validate_symlink_target",
+    "verify_archive",
+    "verify_archive_connection",
+    "validate_inventory",
+    "run_cdx_common_preflight",
+]
+
+
+@contextmanager
+def _scanner_workspace(
+    roots: list[Path],
+    directory: Path | None,
+    config: Path | None,
+    ignore: Path | None,
+) -> Iterator[tuple[Path, Path, Path, Path]]:
+    """Never let the scanned tree supply scanner configuration or suppression."""
+    for path, _relative, _info in iter_deterministic_tree(
+        roots[0], denied_components=set(), denied_globs=set()
+    ):
+        if path.name == ".gitleaksignore":
+            raise RuntimeError("source gitleaks ignore files are unsupported; no contents skipped")
+    parent = (directory or roots[0].absolute().parent).resolve(strict=True)
+    _validate_external_path(roots, parent / ".cdx-scanner-workspace", must_exist=False)
+    with tempfile.TemporaryDirectory(prefix="cdx-scan-", dir=parent) as work:
+        workspace = Path(work)
+        effective = []
+        for candidate, name, payload in (
+            (config, "gitleaks.toml", TRUSTED_GITLEAKS_CONFIG),
+            (ignore, "gitleaks.ignore", b""),
+        ):
+            if candidate is not None:
+                candidate = _validate_external_path(roots, candidate, must_exist=True)
+                fd = os.open(candidate, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+                with os.fdopen(fd, "rb") as stream:
+                    info = os.fstat(stream.fileno())
+                    if (
+                        not stat.S_ISREG(info.st_mode)
+                        or info.st_size != len(payload)
+                        or stream.read(len(payload) + 1) != payload
+                    ):
+                        raise RuntimeError("untrusted secret scanner configuration")
+                if candidate.is_symlink():
+                    raise RuntimeError("untrusted secret scanner configuration")
+            # Pin private copies, not mutable caller-owned files.
+            pinned = workspace / name
+            pinned.write_bytes(payload)
+            pinned.chmod(0o600)
+            effective.append(pinned)
+        yield workspace, workspace, effective[0], effective[1]
+
 
 def iter_deterministic_tree(
     root: Path,
@@ -176,6 +257,27 @@ def inspect_text(raw: bytes) -> tuple[str | None, str | None, str | None]:
         line_endings = "MIXED" if len(endings) > 1 else next(iter(endings), "NONE")
         return text, label, line_endings
     return None, None, None
+
+
+def inspect_and_pack_blob(
+    raw: bytes, *, max_blob_bytes: int = DEFAULT_MAX_BLOB_BYTES
+) -> dict[str, Any]:
+    """Return the canonical stored blob and optional lossless text metadata."""
+    if type(max_blob_bytes) is not int or max_blob_bytes <= 0 or len(raw) > max_blob_bytes:
+        raise ValueError("content exceeds the blob byte budget")
+    text, encoding, endings = inspect_text(raw)
+    return {
+        "blob_sha256": hashlib.sha256(raw).hexdigest(),
+        "codec": "zlib",
+        "raw_size": len(raw),
+        "raw_payload": zlib.compress(raw, level=9),
+        "text": text,
+        "text_encoding": encoding,
+        "line_endings": endings,
+        "text_sha256": (
+            hashlib.sha256(text.encode("utf-8")).hexdigest() if text is not None else None
+        ),
+    }
 
 
 def git_blob_oids(root: Path) -> dict[str, str]:
@@ -267,6 +369,7 @@ def run_secret_scanners(
     gitleaks_ignore: Path | None = None,
 ) -> None:
     """Fail closed unless every exact scanner finding has an active disposition."""
+    root = root.resolve(strict=True)
     if dispositions_path is not None and not isinstance(dispositions_path, Path):
         raise RuntimeError("path-wide secret allowlists are not supported")
     roots = [root]
@@ -280,19 +383,8 @@ def run_secret_scanners(
     detect_secrets = shutil.which("detect-secrets")
     if not gitleaks or not detect_secrets:
         raise RuntimeError("gitleaks and detect-secrets are required before packing")
-    execution: dict[str, Any] = {}
-    if scanner_environment is not None:
-        execution["env"] = scanner_environment
-    if scanner_directory is not None:
-        execution["cwd"] = scanner_directory
-    configuration = []
-    if gitleaks_config is not None:
-        configuration.extend(["--config", str(gitleaks_config), "--ignore-gitleaks-allow"])
-    if gitleaks_ignore is not None:
-        configuration.extend(["--gitleaks-ignore-path", str(gitleaks_ignore)])
     # Exit 1 can mean partial failure, even when a report contains findings.
     finding_exit = 2
-    configuration.extend(["--exit-code", str(finding_exit)])
 
     def retain(stage: str, result: Any, raw_report: str | None = None) -> None:
         if report_sink is not None:
@@ -306,8 +398,33 @@ def run_secret_scanners(
                 },
             )
 
-    with tempfile.TemporaryDirectory(prefix="cdx-scan-") as temp_dir:
-        report = Path(temp_dir) / "gitleaks.json"
+    with _scanner_workspace(roots, scanner_directory, gitleaks_config, gitleaks_ignore) as (
+        workspace,
+        report_directory,
+        config,
+        ignore,
+    ):
+        report = workspace / "gitleaks.json"
+        supplied = scanner_environment or {}
+        execution: dict[str, Any] = {
+            "cwd": report_directory,
+            "env": {
+                "PATH": supplied.get("PATH", os.environ.get("PATH", "")),
+                "HOME": str(workspace),
+                "LC_ALL": "C.UTF-8",
+                "PYTHONNOUSERSITE": "1",
+                "PYTHONDONTWRITEBYTECODE": "1",
+            },
+        }
+        configuration = [
+            "--config",
+            str(config),
+            "--ignore-gitleaks-allow",
+            "--gitleaks-ignore-path",
+            str(ignore),
+            "--exit-code",
+            str(finding_exit),
+        ]
         try:
             gitleaks_version = subprocess.run(
                 [gitleaks, "version"],
@@ -394,7 +511,7 @@ def run_secret_scanners(
                 "gitleaks",
                 versions["gitleaks"],
                 finding,
-                report_directory=scanner_directory,
+                report_directory=report_directory,
             )
         )
     detect_results = detect_findings.get("results")
@@ -414,7 +531,7 @@ def run_secret_scanners(
                     "detect-secrets",
                     versions["detect-secrets"],
                     record,
-                    report_directory=scanner_directory,
+                    report_directory=report_directory,
                 )
             )
 
@@ -485,6 +602,9 @@ def run_secret_scanners(
             raise RuntimeError("secret scan review evidence could not be verified") from exc
         if evidence_digest.hexdigest() != disposition["evidence_sha256"]:
             raise RuntimeError("secret scan review evidence digest does not match")
+
+
+run_secret_scanner = run_secret_scanners
 
 
 def _scanner_relative_path(
@@ -587,12 +707,19 @@ def _canonical_scanner_finding(
 
 
 def _gitleaks_private_span(
-    raw: bytes, record: dict[str, Any], *, version: str
+    raw: bytes,
+    record: dict[str, Any],
+    *,
+    version: str,
+    unfragmented: bool = False,
+    source_window: tuple[int, int] | None = None,
 ) -> tuple[bytes | None, str]:
     """Map a bounded v8.30.1 file Match privately, never recover its Secret.
 
     location.go uses byte offsets and the preceding LF index as the column
-    origin on later lines. Only small, unfragmented UTF-8 files are supported.
+    origin on later lines. Large input needs caller-verified unfragmented
+    provenance or the exact fragment byte window; stock reports lack that proof.
+    Neither keyword is inferred from the untrusted report.
     """
     if version != "8.30.1":
         return None, "unsupported_scanner_version"
@@ -612,11 +739,25 @@ def _gitleaks_private_span(
         or "!" in str(record.get("File", ""))
     ):
         return None, "unsupported_fragment_or_nested_source"
-    # Stock reports omit the observed fragment's byte origin. Even line-aligned
-    # later fragments use a different first-line column origin from the file.
-    if len(raw) >= 100_000:
+    if type(unfragmented) is not bool:
         return None, "unsupported_fragment_origin"
-    if b"\x00" in raw or b"\r" in raw.replace(b"\r\n", b""):
+    line_offset = 0
+    if source_window is not None:
+        if (
+            unfragmented
+            or not isinstance(source_window, tuple)
+            or len(source_window) != 2
+            or any(type(value) is not int for value in source_window)
+            or not 0 <= source_window[0] < source_window[1] <= len(raw)
+            or source_window[1] - source_window[0] > DEFAULT_MAX_TEXT_BYTES
+        ):
+            return None, "unsupported_fragment_origin"
+        origin, limit = source_window
+        line_offset = raw.count(b"\n", 0, origin)
+        raw = raw[origin:limit]
+    elif len(raw) >= 100_000 and not unfragmented:
+        return None, "unsupported_fragment_origin"
+    if len(raw) > DEFAULT_MAX_TEXT_BYTES or b"\x00" in raw or b"\r" in raw.replace(b"\r\n", b""):
         return None, "unsupported_source_encoding_or_size"
     try:
         raw.decode("utf-8")
@@ -628,20 +769,32 @@ def _gitleaks_private_span(
     if any(type(value) is not int or value < 1 for value in coordinates):
         return None, "unsupported_coordinates"
     start, end, left, right = (cast(int, value) for value in coordinates)
-    newlines = [index for index, value in enumerate(raw) if value == 10]
-    origins = [0] + newlines
-    if not (1 <= start <= end <= len(origins)) or end - start > 100:
+    start -= line_offset
+    end -= line_offset
+    if not 1 <= start <= end or end - start > 100:
         return None, "unsupported_coordinates"
+    # Find only the requested origins, rather than allocating one Python integer
+    # for every newline of a large file.
+    origins = {1: 0}
+    previous = -1
+    for line in range(2, end + 1):
+        previous = raw.find(b"\n", previous + 1)
+        if previous < 0:
+            return None, "unsupported_coordinates"
+        if line in (start, end):
+            origins[line] = previous
+    next_lf = raw.find(b"\n", origins[end] + (end > 1))
     # location.go does not set a usable end column for a multi-line match
     # ending beyond the final LF when its start was already found.
-    if end > start and end > len(newlines):
+    if end > start and next_lf < 0:
         return None, "unsupported_unterminated_multiline"
-    begin = origins[start - 1] + left - 1
-    finish = origins[end - 1] + right
+    begin = origins[start] + left - 1
+    finish = origins[end] + right
 
     def content_bounds(line: int) -> tuple[int, int]:
-        lower = origins[line - 1] + (line > 1)
-        upper = newlines[line - 1] if line <= len(newlines) else len(raw)
+        lower = origins[line] + (line > 1)
+        newline = raw.find(b"\n", lower)
+        upper = newline if newline >= 0 else len(raw)
         if upper > lower and raw[upper - 1 : upper] == b"\r":
             upper -= 1
         return lower, upper
@@ -786,3 +939,266 @@ def _load_finding_dispositions(path: Path) -> list[dict[str, Any]]:
         ):
             raise RuntimeError("secret finding disposition has invalid values")
     return result
+
+
+def validate_safe_rel_path(path: str) -> PurePosixPath:
+    from scripts.archive.codex_rehydrate import validate_safe_rel_path as validate
+
+    return validate(path)
+
+
+def validate_symlink_target(
+    link_path: str,
+    target: str,
+    *,
+    allow_external: bool = False,
+    archive_symlinks: set[str] | None = None,
+) -> None:
+    from scripts.archive.codex_rehydrate import validate_symlink_target as validate
+
+    return validate(
+        link_path, target, allow_external=allow_external, archive_symlinks=archive_symlinks
+    )
+
+
+def verify_archive_connection(
+    connection: Any,
+    *,
+    max_blob_bytes: int = DEFAULT_MAX_BLOB_BYTES,
+    max_text_bytes: int = DEFAULT_MAX_TEXT_BYTES,
+) -> dict[str, Any]:
+    from scripts.archive.codex_rehydrate import verify_archive_connection as verify
+
+    return verify(connection, max_blob_bytes=max_blob_bytes, max_text_bytes=max_text_bytes)
+
+
+def verify_archive(
+    archive: Path,
+    *,
+    max_blob_bytes: int = DEFAULT_MAX_BLOB_BYTES,
+    max_text_bytes: int = DEFAULT_MAX_TEXT_BYTES,
+) -> dict[str, Any]:
+    from scripts.archive.codex_rehydrate import verify_archive as verify
+
+    return verify(archive, max_blob_bytes=max_blob_bytes, max_text_bytes=max_text_bytes)
+
+
+def validate_inventory(document: dict[str, Any]) -> list[dict[str, Any]]:
+    from scripts.archive.cdx_review import validate_inventory as validate
+
+    return validate(document)
+
+
+def _archive_function_catalog(
+    repository: Path,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Index archive source declarations without importing or executing them."""
+    from scripts.archive.cdx_preflight import read_source_file
+
+    functions: list[dict[str, Any]] = []
+    modules: list[dict[str, Any]] = []
+    archive = repository / "scripts" / "archive"
+    for path, relative, info in iter_deterministic_tree(archive, set(), set()):
+        if path.suffix not in {".py", ".go"}:
+            continue
+        source_path = f"scripts/archive/{relative}"
+        language = "python" if path.suffix == ".py" else "go"
+        module: dict[str, Any] = {"path": source_path, "language": language}
+        declarations = []
+        try:
+            if not stat.S_ISREG(info.st_mode):
+                raise ValueError("source catalog requires regular files")
+            raw = read_source_file(repository, source_path, limit=4 * 1024 * 1024)
+            text = raw.decode("utf-8")
+            if language == "python":
+                tree = ast.parse(text)
+                definitions = {
+                    node.name: node
+                    for node in tree.body
+                    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+                }
+                exports = None
+                aliases = {}
+                for node in tree.body:
+                    if isinstance(node, ast.Assign):
+                        for target in node.targets:
+                            if isinstance(target, ast.Name) and target.id == "__all__":
+                                value = ast.literal_eval(node.value)
+                                if not isinstance(value, (list, tuple)) or any(
+                                    not isinstance(name, str) for name in value
+                                ):
+                                    raise ValueError("invalid source exports")
+                                exports = set(value)
+                            elif isinstance(target, ast.Name) and isinstance(node.value, ast.Name):
+                                if node.value.id in definitions:
+                                    aliases[target.id] = (definitions[node.value.id], node.lineno)
+                for name, node in definitions.items():
+                    signature = f"({ast.unparse(node.args)})"
+                    if node.returns is not None:
+                        signature += f" -> {ast.unparse(node.returns)}"
+                    declarations.append(
+                        {
+                            "name": name,
+                            "signature": signature,
+                            "line": node.lineno,
+                            "exported": (
+                                name in exports if exports is not None else not name.startswith("_")
+                            ),
+                        }
+                    )
+                for name, (node, line) in aliases.items():
+                    if exports is not None and name in exports:
+                        signature = f"({ast.unparse(node.args)})"
+                        if node.returns is not None:
+                            signature += f" -> {ast.unparse(node.returns)}"
+                        declarations.append(
+                            {"name": name, "signature": signature, "line": line, "exported": True}
+                        )
+            else:
+                for line, text_line in enumerate(text.splitlines(), 1):
+                    match = re.match(
+                        r"^func\s+(?:\([^)]*\)\s*)?([A-Za-z_]\w*)\s*(\(.*)\s*\{\s*$",
+                        text_line,
+                    )
+                    if match:
+                        name, signature = match.groups()
+                        declarations.append(
+                            {
+                                "name": name,
+                                "signature": signature.strip(),
+                                "line": line,
+                                "exported": name[0].isupper(),
+                            }
+                        )
+                module["signature_parser"] = "single_line_go_declarations"
+            module.update(
+                status="indexed",
+                sha256=hashlib.sha256(raw).hexdigest(),
+                functions=len(declarations),
+            )
+            functions.extend(
+                {**declaration, "path": source_path, "language": language}
+                for declaration in declarations
+            )
+        except (OSError, ValueError, SyntaxError, UnicodeError, RecursionError):
+            module["status"] = "unavailable_or_malformed"
+        modules.append(module)
+    return (
+        sorted(functions, key=lambda row: (row["path"], row["line"], row["name"])),
+        sorted(modules, key=lambda row: row["path"]),
+    )
+
+
+def run_cdx_common_preflight(repository_root: Path | None = None) -> dict[str, Any]:
+    """Return bounded read-only context, not scanner clearance or full-tree proof."""
+    from scripts.archive.cdx_preflight import read_source_file
+
+    root = (repository_root or Path(__file__).resolve().parents[2]).resolve(strict=True)
+    functions, modules = _archive_function_catalog(Path(__file__).resolve().parents[2])
+    tools: dict[str, Any] = {
+        "python": {"present": True, "path": sys.executable, "version": sys.version.split()[0]}
+    }
+    for name, arguments in (
+        ("git", ["--version"]),
+        ("detect-secrets", ["--version"]),
+        ("gitleaks", ["version"]),
+    ):
+        executable = shutil.which(name)
+        entry: dict[str, Any] = {"present": executable is not None, "path": executable}
+        if executable:
+            try:
+                result = subprocess.run(
+                    [executable, *arguments],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                    timeout=3,
+                    cwd=root,
+                    env={
+                        "PATH": os.environ.get("PATH", ""),
+                        "LC_ALL": "C.UTF-8",
+                        "PYTHONNOUSERSITE": "1",
+                        "PYTHONDONTWRITEBYTECODE": "1",
+                    },
+                )
+                version = result.stdout.strip()
+                if result.returncode != 0 or not version or len(version) > 128 or "\n" in version:
+                    entry["status"] = "version_unavailable"
+                else:
+                    entry.update(status="measured", version=version)
+            except (OSError, UnicodeError, subprocess.TimeoutExpired):
+                entry["status"] = "version_unavailable"
+        else:
+            entry["status"] = "missing"
+        tools[name] = entry
+    archive = {}
+    for label, name in (
+        ("manifest", "MANIFEST.json"),
+        ("ledger", "ARCHIVE_LEDGER.jsonl"),
+        ("index", "ARCHIVE_INDEX.md"),
+    ):
+        relative = f".codex/archive/{name}"
+        summary: dict[str, Any] = {"path": relative}
+        try:
+            raw = read_source_file(root, relative, limit=4 * 1024 * 1024)
+            summary.update(status="read", bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest())
+            if label == "manifest":
+                document = _scanner_json(raw.decode("utf-8"))
+                if (
+                    not isinstance(document, dict)
+                    or type(document.get("total_files")) is not int
+                    or document["total_files"] < 0
+                    or not isinstance(document.get("files"), list)
+                    or any(not isinstance(path, str) for path in document["files"])
+                ):
+                    raise ValueError("invalid manifest summary")
+                summary.update(
+                    total_files=document.get("total_files"), listed_files=len(document["files"])
+                )
+            elif label == "ledger":
+                count = 0
+                for line in io.StringIO(raw.decode("utf-8")):
+                    if line.strip():
+                        if not isinstance(_scanner_json(line), dict):
+                            raise ValueError("invalid ledger summary")
+                        count += 1
+                summary["records"] = count
+            else:
+                summary["headings"] = sum(
+                    line.startswith("#") for line in raw.decode("utf-8").splitlines()
+                )
+        except FileNotFoundError:
+            summary["status"] = "missing"
+        except (OSError, ValueError, UnicodeError, RecursionError):
+            summary["status"] = "unavailable_or_malformed"
+        archive[label] = summary
+    return {
+        "schema_version": 1,
+        "purpose": "read_only_context_not_secret_clearance",
+        "exports": sorted(__all__),
+        "functions": functions,
+        "modules": modules,
+        "tools": tools,
+        "archive": archive,
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--preflight-context", action="store_true", required=True)
+    parser.add_argument("--json", action="store_true")
+    args = parser.parse_args(argv)
+    result = run_cdx_common_preflight()
+    if args.json:
+        print(json.dumps(result, indent=2, sort_keys=True))
+    else:
+        print("CDX common preflight: read-only context; no scanner clearance")
+        print(f"Exports: {len(result['exports'])}; functions: {len(result['functions'])}")
+        for name, tool in sorted(result["tools"].items()):
+            print(f"{name}: {tool.get('version', tool.get('status', 'unavailable'))}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    raise SystemExit(main())
