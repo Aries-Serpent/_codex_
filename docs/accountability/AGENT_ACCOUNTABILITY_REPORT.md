@@ -14015,6 +14015,59 @@ and the CI gate requirement.
 
 ---
 
+## Session: 2026-11-08T05:42Z — PR #5763 review setup and agent integration follow-up
+
+**Status:** Partial. Repository-owned review setup remediation is committed and
+locally validated. The staged CDX agent passed profile-schema validation and an
+isolated registry-linkage check, but was not moved into the active agent directory
+or registered in the authoritative registry.
+
+### Evidence and impact
+
+- Archive review fixes are in commit `462f416f`; the focused archive suite reported
+  46 passing tests.
+- Commit `e8043aee` adds `.github/workflows/copilot-code-review.yml` and the
+  dependency-free `.github/actions/setup-python-runtime` composite action.
+  Pre-commit, workflow YAML/contract, setup-policy, permissions, and secret checks
+  passed. The setup has not been verified by a new hosted review run.
+- The staged profile's frontmatter and a temporary registry linkage passed
+  `scripts.validate_agent_specs`; `tests/agents/test_validate_agent_specs.py`
+  passed 24 tests. This is candidate validation, not active registration.
+- CodeQL reported zero Actions alerts. Python analysis was skipped because the
+  CodeQL database exceeded the available size limit.
+- The hosted review log for run `42448427477` reports a 404 while fetching Copilot
+  content exclusions. GitHub documents the organization endpoint as
+  `GET /orgs/{org}/copilot/content_exclusion`, requiring `copilot` or `read:org`
+  scope for OAuth/PAT credentials. The local `gh` executable was present but not
+  authenticated, so no org-level API request was made; this does not establish
+  whether organization secrets or hosted credentials exist.
+
+### Agent integration continuation
+
+The candidate remains in `.github/agents-holding`. The active profile directory
+and registry were not changed, and hosted activation is not claimed. In an
+execution context with scoped access to the active agent path:
+
+1. Inspect the active profile filename conventions and the `AGENT_REGISTRY.yaml`
+   entry shape; confirm `cdx-archive-lifecycle` is not already registered.
+2. Move the validated profile to the repository's canonical active location and
+   add one advisory (`E`) registry entry with matching ID, name, description,
+   file reference, maturity, and capability tags. Do not assign `D_CAPABLE`.
+3. Run `python scripts/validate_agent_specs.py --strict`,
+   `python -m pytest tests/agents/test_validate_agent_specs.py -q`, and the
+   relevant agent registry/file-size checks. Refresh and validate the CDX startup
+   catalog with `python -m scripts.ci.startup_health --refresh-context` followed
+   by `--validate`.
+4. Review the exact diff and verify discoverability through an authorized
+   GitHub/Copilot surface before claiming hosted activation.
+
+### Ownership and next action
+
+The repository maintainer or a session provisioned with the required active-path
+scope must perform steps 1–3; the GitHub organization owner should verify the
+content-exclusion endpoint/access independently. No secrets were requested or
+disclosed, no workflow was dispatched, and no review thread was dismissed.
+
 ### Agents Used
 - `session-analysis-agent` (session wrap-up)
 - `memory-sync-agent` (PDA/accountability update)
