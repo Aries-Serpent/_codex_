@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-08T07:41:52Z",
+  "generated_at": "2026-11-08T08:04:22Z",
   "branch_drift_severity": "UNKNOWN",
   "main_commits_ahead": 0,
   "ci_failure_rate": 7.3,
@@ -1322,20 +1322,20 @@
         },
         "rehydrate_archive": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 455,
-          "location": "scripts/archive/codex_rehydrate.py:455",
+          "line": 457,
+          "location": "scripts/archive/codex_rehydrate.py:457",
           "signature": "def rehydrate_archive(archive: Path, destination: Path, *, allow_external_symlinks: bool=False, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
         },
         "compare_trees": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 573,
-          "location": "scripts/archive/codex_rehydrate.py:573",
+          "line": 575,
+          "location": "scripts/archive/codex_rehydrate.py:575",
           "signature": "def compare_trees(left: Path, right: Path, *, check_mtime: bool=True) -> dict[str, Any]"
         },
         "main": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 643,
-          "location": "scripts/archive/codex_rehydrate.py:643",
+          "line": 645,
+          "location": "scripts/archive/codex_rehydrate.py:645",
           "signature": "def main(argv: list[str] | None=None) -> int"
         }
       },
@@ -1362,17 +1362,17 @@
         },
         "rehydrate_archive": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 455,
+          "line": 457,
           "signature": "def rehydrate_archive(archive: Path, destination: Path, *, allow_external_symlinks: bool=False, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
         },
         "compare_trees": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 573,
+          "line": 575,
           "signature": "def compare_trees(left: Path, right: Path, *, check_mtime: bool=True) -> dict[str, Any]"
         },
         "main": {
           "path": "scripts/archive/codex_rehydrate.py",
-          "line": 643,
+          "line": 645,
           "signature": "def main(argv: list[str] | None=None) -> int"
         }
       },
@@ -1389,19 +1389,19 @@
                 "names": [
                   "archive"
                 ],
-                "line": 628
+                "line": 630
               },
               {
                 "names": [
                   "--max-blob-bytes"
                 ],
-                "line": 629
+                "line": 631
               },
               {
                 "names": [
                   "--max-text-bytes"
                 ],
-                "line": 630
+                "line": 632
               }
             ]
           },
@@ -1411,32 +1411,32 @@
                 "names": [
                   "archive"
                 ],
-                "line": 632
+                "line": 634
               },
               {
                 "names": [
                   "destination"
                 ],
-                "line": 633
+                "line": 635
               },
               {
                 "names": [
                   "--allow-external-symlinks"
                 ],
-                "line": 634,
+                "line": 636,
                 "action": "store_true"
               },
               {
                 "names": [
                   "--max-blob-bytes"
                 ],
-                "line": 635
+                "line": 637
               },
               {
                 "names": [
                   "--max-text-bytes"
                 ],
-                "line": 636
+                "line": 638
               }
             ]
           },
@@ -1446,13 +1446,13 @@
                 "names": [
                   "left"
                 ],
-                "line": 638
+                "line": 640
               },
               {
                 "names": [
                   "right"
                 ],
-                "line": 639
+                "line": 641
               }
             ]
           }
@@ -1719,8 +1719,8 @@
       },
       "rehydrate_archive": {
         "path": "scripts/archive/codex_rehydrate.py",
-        "line": 455,
-        "location": "scripts/archive/codex_rehydrate.py:455",
+        "line": 457,
+        "location": "scripts/archive/codex_rehydrate.py:457",
         "signature": "def rehydrate_archive(archive: Path, destination: Path, *, allow_external_symlinks: bool=False, max_blob_bytes: int=DEFAULT_MAX_BLOB_BYTES, max_text_bytes: int=DEFAULT_MAX_TEXT_BYTES) -> dict[str, Any]"
       },
       "common.verify_archive": {
