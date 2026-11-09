@@ -138,3 +138,60 @@ def test_rust_swarm_ignores_only_metadata_codex_changes(event: str) -> None:
         ".github/workflows/rust_swarm_ci.yml",
     ):
         assert not any(fnmatchcase(trigger_path, pattern) for pattern in ignored_paths)
+
+
+@pytest.mark.parametrize(
+    ("event_name", "head_repository", "publishes_check"),
+    [
+        ("pull_request", "Aries-Serpent/_codex_", True),
+        ("pull_request", "contributor/_codex_", False),
+        ("push", None, True),
+        ("workflow_dispatch", None, True),
+    ],
+)
+def test_rust_swarm_audit_selects_trusted_or_fork_path(
+    event_name: str, head_repository: str | None, publishes_check: bool
+) -> None:
+    workflow = _load_workflow("rust_swarm_ci.yml")
+    job = workflow["jobs"]["security_audit"]
+    steps = job["steps"]
+    publisher = next(s for s in steps if s.get("uses", "").startswith("rustsec/audit-check@"))
+    installer = next(s for s in steps if s.get("run") == "cargo install cargo-audit --locked")
+    auditor = next(s for s in steps if s.get("run") == "cargo audit")
+    trusted_condition = (
+        "github.event_name != 'pull_request' || "
+        "github.event.pull_request.head.repo.full_name == github.repository"
+    )
+    fork_condition = (
+        "github.event_name == 'pull_request' && "
+        "github.event.pull_request.head.repo.full_name != github.repository"
+    )
+    predicates = {
+        "github.event_name != 'pull_request'": event_name != "pull_request",
+        "github.event_name == 'pull_request'": event_name == "pull_request",
+        "github.event.pull_request.head.repo.full_name == github.repository": (
+            head_repository == "Aries-Serpent/_codex_"
+        ),
+        "github.event.pull_request.head.repo.full_name != github.repository": (
+            head_repository != "Aries-Serpent/_codex_"
+        ),
+    }
+    selected = []
+    for step, expected_condition in (
+        (publisher, trusted_condition),
+        (installer, fork_condition),
+        (auditor, fork_condition),
+    ):
+        condition = " ".join(step["if"].removeprefix("${{").removesuffix("}}").split())
+        assert condition == expected_condition
+        selected.append(
+            any(
+                all(predicates[atom.strip()] for atom in branch.split("&&"))
+                for branch in condition.split("||")
+            )
+        )
+    assert selected == [publishes_check, not publishes_check, not publishes_check]
+    assert publisher["with"]["token"] == "${{ github.token }}"
+    assert job["permissions"] == {"contents": "read", "checks": "write"}
+    assert "with" not in installer and "with" not in auditor
+    assert "env" not in installer and "env" not in auditor

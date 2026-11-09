@@ -172,8 +172,8 @@
     {
       "label": "Codex: frontend typecheck",
       "type": "process",
-      "command": "npm",
-      "args": ["exec", "--", "tsc", "--noEmit"],
+      "command": "node",
+      "args": ["${workspaceFolder}/cognitive_app/node_modules/typescript/bin/tsc", "--noEmit"],
       "options": {
         "cwd": "${workspaceFolder}/cognitive_app"
       },
