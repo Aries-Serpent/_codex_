@@ -23,6 +23,10 @@
   changing only authentication provenance metadata. Integrated that commit
   through a conflict-free local merge, without rebasing or force-pushing.
   The staged patch Gitleaks stdin scan covered 11,542 bytes and found no leaks.
+- A second push was rejected after metadata-only update `3debf49453`.
+  Preserved it through another conflict-free local merge. The integrated
+  regression rerun passed 68 tests and the configured secret hook passed.
+  No remote-history overwrite or workflow retry was used.
 
 **Owner:** PR security reviewer for exact suppression review; maintainer for
 current-head CI approvals and protected merge.

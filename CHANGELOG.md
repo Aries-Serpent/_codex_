@@ -5,6 +5,7 @@
 ### Fixed (SN) - PR #5765 PDA baseline (2026-11-09)
 - Classify five confirmed public PDA provenance fingerprints that blocked Fast Validation; preserve ledger history and detect unknown values with regression coverage, without excluding the ledger or changing scanner rules.
 - Preserve the concurrent automation provenance update through local merge rather than rewriting either branch's history.
+- Retain the subsequent metadata-only update and revalidate the integrated correction after publication races.
 
 ### Fixed — PR #5765 readiness follow-up (2026-11-09)
 - Remove the documented Codespace guide's trailing whitespace found by Fast Validation, and keep Rust advisory auditing available to fork pull requests without asking their read-only token to publish a check.
