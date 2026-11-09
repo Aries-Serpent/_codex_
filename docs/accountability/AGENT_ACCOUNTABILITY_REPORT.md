@@ -1,3 +1,31 @@
+## Session: PR #5765 Fast Validation PDA correction - 2026-11-09
+
+### Agents Used
+
+- None - direct execution (no delegated agents).
+
+### Evidence and outcome
+
+- Reviewed the linked rescue comment and Fast Validation job `128953375716`,
+  run `42552926204`, attempt 2, head `0e9485540f63`. Only detect-secrets failed;
+  the five findings were four public Git IDs and a session-label false positive.
+- Verified historical commit identities through GitHub commit metadata and the
+  current PR's local commit object. Added exactly five filename/type/value
+  fingerprints; no ledger history, scanner configuration or exclusions changed.
+- Added five regressions proving baseline values are detected and changed values
+  are not covered. PDA integrity suite: 68 passed. Ruff, Black, isort, scoped
+  mypy and compilation passed.
+- Replayed the configured detect-secrets hook on the PDA ledger and changed test,
+  suppression registry and changelog: passed. Missing declared quality tools
+  were restored into the existing validation venv; no dependency files changed.
+
+**Owner:** PR security reviewer for exact suppression review; maintainer for
+current-head CI approvals and protected merge.
+**Limits:** Local hook success is not hosted CI or archive clearance. No workflow
+retry/dispatch, CodeQL operation, merge, hosted activation or real-source scan.
+
+---
+
 ## Session: PR #5765 current-head readiness follow-up — 2026-11-09
 
 ### Agents Used

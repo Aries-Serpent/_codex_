@@ -1627,3 +1627,44 @@ Other normal push checks may run; publication is not evidence that they pass.
 Required owner security dispositions, independent reviews and merge controls
 remain applicable. Publication and PR outcome must be verified separately;
 this preparation section does not claim those operations already succeeded.
+
+## Verified Fast Validation PDA correction - 2026-11-09
+
+Run `42552926204`, attempt 2, job `128953375716`, evaluated published head
+`0e9485540f6379b8c5894f291e860ca45aa03249`. The linked rescue comment
+`6731134074` reports its failure. Completed job logs identify only
+detect-secrets as failing: PDA lines 445, 446, 451 and 453 contain five
+unbaselined fingerprints. Four are public Git commit IDs, verified against
+GitHub commit metadata and the local PR commit object; the fifth is a
+session-label Base64 false positive.
+
+The scoped fix adds exactly five filename/type/value baseline entries and
+documents their rationale in `docs/security/SUPPRESSIONS.md`. Ledger history,
+scanner rules and path exclusions are unchanged; no broad baseline refresh
+or archive-finding approval occurred. Five regressions verify the known values
+remain detectable and changed values are not baselined.
+
+Actual validation with the existing `.venv/bin/python`:
+
+```bash
+.venv/bin/python -m pytest --confcutdir=tests/ci \
+  -o 'addopts=--strict-markers --import-mode=importlib' -q \
+  tests/ci/test_pda_record_integrity.py
+.venv/bin/python -m ruff check tests/ci/test_pda_record_integrity.py
+.venv/bin/python -m black --check tests/ci/test_pda_record_integrity.py
+.venv/bin/python -m isort --check-only tests/ci/test_pda_record_integrity.py
+.venv/bin/python -m mypy --follow-imports=skip tests/ci/test_pda_record_integrity.py
+.venv/bin/python -m py_compile tests/ci/test_pda_record_integrity.py
+PATH="/workspaces/_codex_/.venv/bin:$PATH" \
+  .venv/bin/python -m pre_commit run detect-secrets --files \
+  .codex/aftermath/pda_iterations.jsonl tests/ci/test_pda_record_integrity.py \
+  docs/security/SUPPRESSIONS.md CHANGELOG.md
+```
+
+All passed: 68 tests, no failures/skips; mypy reported no issues in the selected
+file. Missing declared quality tools were installed into the existing venv
+after their commands failed; no dependency manifest or lockfile changed.
+This is local evidence only. The PR security reviewer owns the new exact
+suppression review, and the maintainer owns current-head CI approval/merge
+controls. No workflow retry, CodeQL operation, real-source scan or archive
+clearance is established.

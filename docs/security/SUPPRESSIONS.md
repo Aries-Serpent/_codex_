@@ -108,6 +108,23 @@ All dependencies are up-to-date with no known CVEs.
 
 ## detect-secrets Baseline
 
+### PDA public provenance fingerprints (2026-11-09)
+
+Fast Validation run `42552926204`, attempt 2, failed on five PDA ledger
+fingerprints: four public Git commit IDs and the session label
+`AGENT-SELF-IMPROVEMENT-001/draft-review-continuation`. The commit IDs were
+verified through GitHub repository commit reads (historical PRs #5746, #5747,
+#5763) and the local PR #5765 commit object. The label is a session identifier,
+not encoded credential material.
+
+Only these five filename/type/value fingerprints were added to
+`.secrets.baseline`, with `is_secret: false` and `is_verified: false`.
+Historical ledger records, scanner plugins, filters and path exclusions are
+unchanged. Regression tests prove the original values are still detected and
+changed values remain outside the baseline. JSONL cannot use inline comments
+without corrupting its format. This classification is not archive clearance or
+independent approval; the PR security reviewer owns suppression review.
+
 ### CDX generated compatibility metadata (2026-11-08)
 
 One exact `Secret Keyword` entry for `.codex/session_startup_packet.json` records
