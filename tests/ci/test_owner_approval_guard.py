@@ -15,6 +15,12 @@ GUARD = REPO_ROOT / "scripts/ci/owner_approval_guard.sh"
     ("approval_env", "expected_code", "expected_source"),
     [
         ({}, 2, "env-missing"),
+        ({"OWNER_APPROVAL_PROTECTED": "true"}, 2, "env-missing"),
+        (
+            {"OWNER_APPROVED_UNTIL": "2100-01-01T00:00:00Z"},
+            0,
+            "env-until",
+        ),
         ({"OWNER_APPROVED_UNTIL": "invalid"}, 2, "env-until-invalid"),
         ({"OWNER_APPROVED_UNTIL": "2000-01-01T00:00:00Z"}, 2, "env-until-expired"),
         (
@@ -35,11 +41,30 @@ GUARD = REPO_ROOT / "scripts/ci/owner_approval_guard.sh"
                 "COPILOT_AGENT_AUTH_ENABLED": "true",
                 "COPILOT_AGENT_AUTH_BYPASS_TOOLS": "security-scans, docker-build-push",
             },
+            2,
+            "env-unprotected",
+        ),
+        (
+            {
+                "COPILOT_AGENT_AUTH_ENABLED": "true",
+                "COPILOT_AGENT_AUTH_BYPASS_TOOLS": "docker-build-push",
+                "OWNER_APPROVED_UNTIL": "2100-01-01T00:00:00Z",
+            },
+            2,
+            "env-unprotected",
+        ),
+        (
+            {
+                "OWNER_APPROVAL_PROTECTED": "true",
+                "COPILOT_AGENT_AUTH_ENABLED": "true",
+                "COPILOT_AGENT_AUTH_BYPASS_TOOLS": "security-scans, docker-build-push",
+            },
             0,
             "env-agent-auth",
         ),
         (
             {
+                "OWNER_APPROVAL_PROTECTED": "true",
                 "COPILOT_AGENT_AUTH_ENABLED": "true",
                 "COPILOT_AGENT_AUTH_BYPASS_TOOLS": "security-scans",
             },

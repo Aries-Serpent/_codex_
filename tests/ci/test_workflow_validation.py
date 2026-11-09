@@ -146,7 +146,6 @@ def test_rust_swarm_ignores_only_metadata_codex_changes(event: str) -> None:
         ("pull_request", "Aries-Serpent/_codex_", True),
         ("pull_request", "contributor/_codex_", False),
         ("push", None, True),
-        ("workflow_dispatch", None, True),
     ],
 )
 def test_rust_swarm_audit_selects_trusted_or_fork_path(
@@ -195,3 +194,37 @@ def test_rust_swarm_audit_selects_trusted_or_fork_path(
     assert job["permissions"] == {"contents": "read", "checks": "write"}
     assert "with" not in installer and "with" not in auditor
     assert "env" not in installer and "env" not in auditor
+
+
+def test_docker_approval_requires_protected_environment() -> None:
+    workflow = _load_workflow("docker-build-push.yml")
+    dispatch_inputs = workflow["on"]["workflow_dispatch"]["inputs"]
+    assert "approval_duration" not in dispatch_inputs
+    assert "approval_until" not in dispatch_inputs
+    assert workflow["env"]["OWNER_APPROVED_DURATION"] == "${{ vars.OWNER_APPROVED_DURATION }}"
+    assert workflow["env"]["OWNER_APPROVED_UNTIL"] == "${{ vars.OWNER_APPROVED_UNTIL }}"
+
+    for job_name in ("approval-check", "build-and-smoke", "push"):
+        job = workflow["jobs"][job_name]
+        assert job["environment"] == "owner-approval"
+        guard = next(
+            step
+            for step in job["steps"]
+            if step.get("run") == "bash scripts/ci/owner_approval_guard.sh"
+        )
+        assert guard["env"]["OWNER_APPROVAL_PROTECTED"] == "${{ secrets.OWNER_APPROVAL_PROTECTED }}"
+
+
+def test_agent_delegation_requires_protected_environment() -> None:
+    workflow = _load_workflow("agent-auth-delegation.yml")
+    activation = workflow["jobs"]["activate-delegation"]
+    assert activation["environment"] == "owner-approval"
+    provenance_check = next(
+        step
+        for step in activation["steps"]
+        if step.get("name") == "Verify protected owner approval"
+    )
+    assert (
+        provenance_check["env"]["OWNER_APPROVAL_PROTECTED"]
+        == "${{ secrets.OWNER_APPROVAL_PROTECTED }}"
+    )

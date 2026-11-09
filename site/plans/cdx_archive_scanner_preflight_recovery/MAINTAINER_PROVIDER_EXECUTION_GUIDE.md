@@ -24,12 +24,18 @@ covers the same operation and exact scope.
 
 Worktree records such as `.codex/agent_auth_session.json` and
 `.github/OWNER_APPROVAL.yml` are not approval authority. The owner-approval guard
-accepts only explicit environment inputs. Maintainers must supply these from
-protected workflow/environment configuration and evaluate trusted guard code
+accepts approval-window values supplied by trusted workflow configuration. The
+Docker workflow uses repository variables, not dispatch inputs, and gates its
+approval, build, and push jobs with the `owner-approval` environment. The
+`COPILOT_AGENT_AUTH_ENABLED` bypass additionally requires
+`OWNER_APPROVAL_PROTECTED=true` from that environment. Configure it with
+required independent maintainer reviewers and the `OWNER_APPROVAL_PROTECTED`
+secret set to `true`; verify those settings before relying on the gate. A
+cached delegation flag alone is insufficient. Evaluate trusted guard code
 before any PR-controlled checkout or execution; never expose approval secrets
-to untrusted code. Configuring or executing that protected gate requires separate
-maintainer authorization. A committed record, dispatch input, or cached
-delegation flag does not prove that protection exists.
+to untrusted code. Configuring or executing that protected gate requires
+separate maintainer authorization. A committed record, dispatch input, or
+cached delegation flag does not prove that protection exists.
 
 ### Important researched limitation
 
