@@ -96,7 +96,7 @@ lifecycle script, and environment variable mirrors the Actions workflow exactly.
 
 ```
 GitHub Actions (CI) GitHub Codespace (interactive)
- 
+
 copilot-setup-steps.yml .devcontainer/devcontainer.json
  Phase 1+2: system deps ≡ on-create.sh
  Phase 3+4: pip install ≡ update-content.sh
@@ -150,13 +150,13 @@ Codespaces runs devcontainer lifecycle hooks in this exact order:
 
 ```
 Container pulled / built
- 
+
  ① onCreateCommand
  on-create.sh
  • apt-get system packages
  • git lfs install --skip-smudge
  • mkdir .codex/sessions, artifacts
- 
+
  ② updateContentCommand (re-runs on branch switch)
  update-content.sh
  • pip install pytest, ruff, black, mypy, ...
@@ -165,7 +165,7 @@ Container pulled / built
  • npm ci (if package.json)
  • cargo build (if Cargo.toml)
  • pre-commit install
- 
+
  ③ postCreateCommand (after first updateContent)
  post-create.sh
  • write ~/.codex_env (all CODEX_* vars)
@@ -173,14 +173,14 @@ Container pulled / built
  • write .codex/codespace_auth_status.json
  • load agent_context.json (repo variables)
  • validate python / gh / ruff / imports
- 
+
  ④ postStartCommand (every container start)
  post-start.sh
  • kill stale CLI API server
  • nohup uvicorn ... :8765 (with auth token forwarding)
  • retry health-check × 5
  • verify GitHub App JWT generation
- 
+
  ⑤ postAttachCommand (every terminal attach)
  post-attach.sh
  • print Copilot agent banner
@@ -239,7 +239,7 @@ Both environments use the **same priority chain**:
 
 ```
  GitHub Actions Codespace
- 
+
 1 (primary) job env: CODEX_MASTER_KEY ≡ Codespace secret env var
 2 (backup) job env: CODEX_BACKUP_KEY ≡ Codespace secret env var
 3 (alias) AGENT_GITHUB_TOKEN ≡ GITHUB_TOKEN (auto-provided)
@@ -300,12 +300,12 @@ nohup uvicorn cognitive_app.src.server.cli_api_server:app \
 import os
 from codex.auth.github_app import GitHubApp, GitHubAppConfig, _resolve_github_token
 
-# 1. Check token chain 
+# 1. Check token chain
 for val, name in _resolve_github_token():
  status = "" if val else ""
  print(f" {status} {name}")
 
-# 2. Generate App JWT (needs _GITHUB_APP_ID + _GITHUB_APP_PRIVATE_KEY) 
+# 2. Generate App JWT (needs _GITHUB_APP_ID + _GITHUB_APP_PRIVATE_KEY)
 cfg = GitHubAppConfig(
  app_id=int(os.environ["_GITHUB_APP_ID"]),
  private_key_pem=os.environ["_GITHUB_APP_PRIVATE_KEY"],
@@ -314,14 +314,14 @@ cfg = GitHubAppConfig(
 app = GitHubApp(cfg)
 jwt = app.generate_jwt()
 
-# 3. Get installation token 
+# 3. Get installation token
 token = app.get_installation_token(
  installation_id=int(os.environ["_GITHUB_APP_INSTALLATION_ID"]),
 )
 print(token.token) # ghs_xxxx
 print(token.is_expired()) # False
 
-# 4. PAT fallback (auto MASTER_KEY BACKUP_KEY) 
+# 4. PAT fallback (auto MASTER_KEY BACKUP_KEY)
 data = app.pat_api_get(
  "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"
 )
@@ -340,7 +340,7 @@ verifier = WebhookVerifier(secret=os.environ["WEBHOOK_SECRET"])
 # Verify a payload (e.g., from a test script)
 payload = b'{"action":"opened","number":42}'
 sig = verifier.compute_signature(payload) # "sha256=abc123..."
-assert verifier.verify(payload, sig) is True # 
+assert verifier.verify(payload, sig) is True #
 
 # Forward to OODA loop via CLI server
 from codex.agents.brain_client import BrainClient
