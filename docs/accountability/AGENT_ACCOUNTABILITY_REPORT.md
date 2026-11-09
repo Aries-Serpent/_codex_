@@ -18,6 +18,11 @@
 - Replayed the configured detect-secrets hook on the PDA ledger and changed test,
   suppression registry and changelog: passed. Missing declared quality tools
   were restored into the existing validation venv; no dependency files changed.
+- Created signed correction `3662f3814f`; signature verification passed. The
+  push was rejected because automation concurrently published `eb9efc3063`,
+  changing only authentication provenance metadata. Integrated that commit
+  through a conflict-free local merge, without rebasing or force-pushing.
+  The staged patch Gitleaks stdin scan covered 11,542 bytes and found no leaks.
 
 **Owner:** PR security reviewer for exact suppression review; maintainer for
 current-head CI approvals and protected merge.
