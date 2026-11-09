@@ -39,7 +39,11 @@ env/
 .venv
 
 # IDE
-.vscode/
+.vscode/*
+!/.vscode/extensions.json
+!/.vscode/settings.json
+!/.vscode/tasks.json
+!/.vscode/launch.json
 .idea/
 *.swp
 *.swo
@@ -162,4 +166,11 @@ mlruns/
 /.codex/aftermath/cache/
 /.codex/.validation_cache.json
 /site/
+!/site/
+/site/*
+!/site/plans/
+/site/plans/*
+!/site/plans/cdx_archive_scanner_preflight_recovery/
+/site/plans/cdx_archive_scanner_preflight_recovery/*
+!/site/plans/cdx_archive_scanner_preflight_recovery/MAINTAINER_PROVIDER_EXECUTION_GUIDE.md
 /runs/
