@@ -271,6 +271,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      checks: write
     timeout-minutes: 30
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -279,7 +280,7 @@ jobs:
     - name: Run cargo audit
       uses: rustsec/audit-check@69366f33c96575abad1ee0dba8212993eecbe998
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        token: ${{ github.token }}
     - name: Run cargo deny (if available)
       run: |
         if ! command -v cargo-deny &> /dev/null; then

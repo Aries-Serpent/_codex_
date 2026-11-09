@@ -1,0 +1,183 @@
+{
+  "version": "2.0.0",
+  "options": {
+    "cwd": "${workspaceFolder}"
+  },
+  "tasks": [
+    {
+      "label": "Codex: inspect worktree",
+      "type": "process",
+      "command": "git",
+      "args": ["--no-pager", "status", "--short"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: native runtime diagnostics",
+      "type": "process",
+      "command": "python3.12",
+      "args": [
+        "-c",
+        "import json, os, shutil, sys; print(json.dumps({'python_version': list(sys.version_info[:3]), 'workspace': os.getcwd(), 'native_terminal_ipc_present': bool(os.environ.get('VSCODE_IPC_HOOK_CLI')), 'git_ipc_present': bool(os.environ.get('VSCODE_GIT_IPC_HANDLE')), 'tools_on_path': {name: shutil.which(name) is not None for name in ('git', 'code', 'go', 'cargo', 'npm')}}, indent=2))"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: native VS Code version",
+      "type": "process",
+      "command": "code",
+      "args": ["--version"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: validate CDX catalog (workspace venv)",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": ["-m", "scripts.ci.startup_health", "--validate"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: read-only CDX summary",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "-m",
+        "scripts.archive.cdx_preflight",
+        "--preflight-summary",
+        "--json"
+      ],
+      "options": {
+        "env": {
+          "PATH": "${workspaceFolder}/.venv/bin:${env:HOME}/.local/bin:${env:PATH}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: CDX focused tests",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "-m",
+        "pytest",
+        "--confcutdir=tests/archive",
+        "-o",
+        "addopts=--strict-markers --import-mode=importlib",
+        "-q",
+        "tests/archive/test_cdx_context.py",
+        "tests/archive/test_cdx_preflight.py",
+        "tests/archive/test_cdx_review.py",
+        "tests/archive/test_cdx_adapter.py",
+        "tests/archive/test_cdx_sqlite_archive.py"
+      ],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: CDX tests with real adapter",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "-m",
+        "pytest",
+        "--confcutdir=tests/archive",
+        "-o",
+        "addopts=--strict-markers --import-mode=importlib",
+        "-q",
+        "tests/archive/test_cdx_context.py",
+        "tests/archive/test_cdx_preflight.py",
+        "tests/archive/test_cdx_review.py",
+        "tests/archive/test_cdx_adapter.py",
+        "tests/archive/test_cdx_sqlite_archive.py"
+      ],
+      "options": {
+        "env": {
+          "CDX_TEST_ADAPTER_EXECUTABLE": "${env:HOME}/.local/bin/codex-cdx-gitleaks-adapter",
+          "PATH": "${workspaceFolder}/.venv/bin:${env:HOME}/.local/bin:${env:PATH}"
+        }
+      },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: offline Go module verification (Go 1.27.3)",
+      "type": "process",
+      "command": "${env:HOME}/.local/opt/go1.27.3/bin/go",
+      "args": ["mod", "verify"],
+      "options": {
+        "cwd": "${workspaceFolder}/scripts/archive/gitleaks_adapter",
+        "env": {
+          "GOPATH": "${env:HOME}/.cache/codex-gopath",
+          "GOMODCACHE": "${env:HOME}/.cache/codex-gomodcache",
+          "GOPROXY": "off",
+          "GOSUMDB": "off",
+          "GOTOOLCHAIN": "local"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: offline Go adapter tests (verified Go 1.27.3)",
+      "type": "process",
+      "command": "${env:HOME}/.local/opt/go1.27.3/bin/go",
+      "args": ["test", "./..."],
+      "options": {
+        "cwd": "${workspaceFolder}/scripts/archive/gitleaks_adapter",
+        "env": {
+          "GOPATH": "${env:HOME}/.cache/codex-gopath",
+          "GOMODCACHE": "${env:HOME}/.cache/codex-gomodcache",
+          "GOPROXY": "off",
+          "GOSUMDB": "off",
+          "GOTOOLCHAIN": "local"
+        }
+      },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: Rust advisory check (user-local toolchain)",
+      "type": "process",
+      "command": "${env:HOME}/.cargo/bin/cargo",
+      "args": ["deny", "check", "advisories"],
+      "options": {
+        "env": {
+          "CARGO_HOME": "${env:HOME}/.cache/codex-cargo",
+          "RUSTUP_HOME": "${env:HOME}/.rustup",
+          "RUSTUP_TOOLCHAIN": "stable-x86_64-unknown-linux-musl",
+          "PATH": "${env:HOME}/.local/bin:${env:HOME}/.cargo/bin:${env:PATH}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: validate workflow YAML",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "-m",
+        "yamllint",
+        "--strict",
+        "-c",
+        ".yamllint.yml",
+        ".github/workflows/rust_swarm_ci.yml"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: validate workflow with actionlint",
+      "type": "process",
+      "command": "${env:HOME}/.local/bin/actionlint",
+      "args": [".github/workflows/rust_swarm_ci.yml"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: frontend typecheck",
+      "type": "process",
+      "command": "npm",
+      "args": ["exec", "--", "tsc", "--noEmit"],
+      "options": {
+        "cwd": "${workspaceFolder}/cognitive_app"
+      },
+      "problemMatcher": ["$tsc"]
+    }
+  ]
+}

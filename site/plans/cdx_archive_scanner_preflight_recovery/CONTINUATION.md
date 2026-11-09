@@ -799,3 +799,831 @@ rather than manufacturing a pass or taking an alternate route.
   any later commit or the merge commit. The first priority remains the
   narrowly scoped Fast Validation fix, followed by owner-directed resolution
   of the independent blockers in the preceding table.
+
+## Verified post-merge resumption and local profile integration — 2026-11-08
+
+This append preserves the original checkpoint/prompt manifest, all earlier
+measurements and S/D/R/P/C/E/F/A/G acceptance criteria. No new numbered
+checkpoint, continuation prompt or index was created.
+
+### Current baseline and exact historical recovery
+
+- PR #5763 is marked merged at `2026-11-08T12:35:14Z`. Its returned
+  `merge_commit_sha` is null; independently the GitHub commit endpoint identifies
+  `25ab8b63afc8fddcc93dbbfb123e0d708c777e0e` as the #5763 integration commit.
+  Local main and both remote main/0D_base_ tips matched that SHA at entry.
+  The worktree was clean, so the previous timestamp-only dirty packet was not
+  present. No reset, stash, rebase or restoration of historical timestamps occurred.
+- Work is on `copilot/session-cdx-postmerge-agent-integration`, based on that
+  verified merged snapshot. The seven known synthetic hook annotations were
+  already present and the configured detect-secrets hook passed on those files.
+  No duplicate annotation hotfix was added.
+- `git fetch --no-tags origin 6ac13cb98af69d667f4809708748a498181ce513`
+  recovered the exact sanitized history without changing the worktree.
+  In-memory SHA-256 comparisons verified all 27 original streams against the
+  existing manifest: 12 checkpoints, 14 prompts and the original INDEX.
+  All 21 rows with recorded explicit introducing SHAs were confirmed as
+  file additions using `git diff-tree --root --name-status`.
+- The six previously boundary-only checkpoint introductions were recovered with
+  `git log 6ac13cb9 --diff-filter=A --format=%H -- <exact-path>`:
+
+| Checkpoint | Recovered introducing commit |
+| --- | --- |
+| 001 | `1db9ea48f9c428a3413f4f6c16fdd080e85f41aa` |
+| 002 | `7692621e2a59ab2d8a34ca253fa58b67a26be352` |
+| 003 | `5e435f28c3120e190d51af1f8930943471acc3fc` |
+| 004 | `0f727b3fa0e2c41b459efa995daa55a51e34c341` |
+| 005 | `40692d5628e302e5eefdb16e6e7b11ea30636ed0` |
+| 006 | `202d6677bc2b812653ffa910a840137ce0b4757f` |
+
+The old manifest remains unchanged as historical evidence. Sanitized Git recovery
+does not recover private keys, source snapshots, custody or finding approvals.
+
+### Local implementation and validation
+
+The sole CDX profile was moved into `.github/agents/cdx-archive-lifecycle.agent.md`
+with explicit read/search/execute/edit tools, no model override or wildcard
+tools. Its mission still uses the maintained lifecycle code, task-conditioned
+same-scope edits, pinned scanners and integrity gates. Shell aliases are not
+OS containment. The registry, explicit-path offline catalog, tests, startup
+packet and directly related documentation were synchronized. The local catalog
+state is `local_profile`; hosted activation remains `not_established`, and catalog
+generation still grants no authorization. The registry's already-stale counters
+were reconciled with its actual rows while adding the profile: 121 total,
+102 active, 19 archived.
+
+The refreshed JSON packet exposed one additional synthetic `Secret Keyword`
+hit: the API-name description `compatibility_alias_of_run_secret_scanners`.
+JSON cannot contain the source's pragma. One exact filename/type/value baseline
+entry was added with documented rationale; no baseline regeneration, plugin
+change or broad exclusion occurred. A regression proves a changed value is
+still detected. This hook classification is not an archive finding approval
+or independent security-owner disposition.
+
+Actual completed validation:
+
+- Configured `pre-commit run detect-secrets --files <exact integration files>`:
+  passed after staging the exact baseline change as required by the hook.
+- Fresh Gitleaks 8.30.1 `dir` scan of all ten changed integration files in a
+  preserved-path private snapshot, with 100% redaction: no leaks, exit 0.
+  The task-owned scan snapshot was removed.
+- Five focused CDX files with normal repository conftest: 367 passed, five
+  optional real-adapter tests initially skipped before supplying an executable.
+- After the additional baseline regression, the complete focused suite with
+  the actual built adapter and `--confcutdir=tests/archive`: **373 passed,
+  zero skipped**, using strict markers/importlib mode.
+  This isolated run avoids the unrelated global torch fixture inserting
+  root-owned system site-packages into the measured private Python environment.
+  The initial real-adapter attempt failed that ownership check; no production
+  ownership/containment guard was weakened.
+- Official Go 1.25.0 and Gitleaks 8.30.1 downloads were authenticated against
+  fresh official checksums before execution. Go module restoration used the
+  official proxy/sumdb; then `GOPROXY=off GOSUMDB=off GOTOOLCHAIN=local go test ./...`
+  passed and the adapter was built for synthetic tests.
+- Startup context refresh/validation, changed-Python compilation, Ruff, Black,
+  isort, scoped mypy and `git diff --cached --check`: passed.
+
+No real archive source was scanned, no private historical bundle was acquired,
+no finding was approved and no archive was created.
+
+### Publication, platform access and activation remain concrete blockers
+
+The owner expressly authorized autonomous profile implementation, ready scoped
+commit/push/PR publication and both runtime activation targets. Do not ask again
+for this consent. Actual execution attempts, not permission assumptions, found:
+
+- The process-accessible GitHub credential returned HTTP 401 `Bad credentials`
+  for repository access, protections, rulesets and both alert details. No token
+  values were printed. Authenticated read-only GitHub MCP tools remain usable;
+  session/activation/write-tool discovery exposed no callable alternative.
+- The validated scoped commit was attempted with the required co-author trailer.
+  Git's configured signing failed because the configured GitHub signing identity
+  has no secret key. No unsigned bypass was taken. No commit, push, PR or runtime
+  activation was created; HEAD remains `25ab8b63`. The code integration is staged,
+  while this sole-handoff update is kept separate.
+- Neither VS Code/Copilot SDK nor GitHub-hosted discovery/selection/invocation
+  could be exercised through an actual custom-agent interface in this session.
+  Direct lifecycle tests and registry entries are not substituted as activation
+  proof. Supply a working signing facility and an actual valid operation-scoped
+  GitHub/runtime interface through the approved environment, then publish the
+  ready scope and verify each runtime independently. This is a capability remedy,
+  not a request to renew already-granted owner authorization.
+
+Latest final-PR-head evidence is distinct from merged-main evidence:
+Validation `42477836166`, Rust `42477836382`, ML `42477836380` and Data Quality
+`42477836420` completed failure at `235f9562`; job/log retrieval returned zero
+jobs, so no new source defect was inferred from them.
+Dynamic Code Quality `42477835029` and dynamic Code Scanning `42477834550`
+completed success on that same final PR head. Their success does not establish
+current-main CI or resolve alerts 25452/25453. No exact merged-main Fast
+Validation success was found; its workflow does not trigger simply on main push.
+
+Continue with working authenticated evidence routes: resolve the actual signing/
+publication/runtime capability failures; collect applicable completed main checks
+and actual alert dispositions; recover actionable Rust/ML/startup diagnostics.
+Retain S's required external result, D's actual durable custody, R's verified
+writer exclusion, P's current complete provenance, and C's missing exact-stock
+compatibility contract. E/F/A/G remain dependent and blocked, not completed.
+Do not retry the prohibited timed-out CodeQL tool, generate orientation epochs,
+blindly resume historical batch5, or treat local source integration as final
+clearance.
+
+### Continued capability recovery after the blocked handoff
+
+Additional authorized alternatives were attempted rather than stopping at the
+first error:
+
+- `git push --dry-run origin HEAD:refs/heads/copilot/session-cdx-postmerge-agent-integration`
+  failed with `unable to get password from user`; no remote ref was created.
+  Git/SSH askpass endpoints, SSH_AUTH_SOCK and the VS Code Git IPC handle are
+  absent. No unrelated credential stores were searched.
+- The configured Codespaces signing program's supported help path resolves to
+  GnuPG; no usable authenticated remote-signing or SSH signing-agent route was
+  established. Commit signing was not disabled.
+- `code --help` returned `code or code-insiders is not installed`.
+  Newly available `create_session`/`get_session_context` host tools were exercised
+  for a read-only CDX discovery/invocation verification task. That host route has
+  no custom-agent selection/profile-path parameter; discovery exposed no
+  alternative selection API. The verification chat completed with the exact
+  capability limitation. It was not an invocation of the CDX profile, so
+  activation remains unverified.
+- The locked Rust advisory route was traced without changing dependencies:
+  `pin-utils 0.1.0 <- futures-util 0.3.31 <- pyo3-async-runtimes <- codex-swarm-engine`.
+  Official RustSec identifies RUSTSEC-2026-0441 as unmaintained with no patched
+  pin-utils version. The official futures-rs 0.3.32 Cargo manifest removes
+  pin-utils and uses pin-project-lite; a targeted futures-util update is an
+  evidence-backed next candidate, not a validated fix. Cargo/rustup are absent,
+  so no hand-edited or untested lockfile update was substituted.
+- The 19 focused context/profile tests passed again; staged and unstaged diff
+  whitespace checks passed. Existing validated code remains staged, and this
+  continuation remains separate. No remote publication, runtime activation,
+  scanner finding approval or real-source epoch was performed.
+
+The remaining failures require actual signing/credential/runtime facilities or
+external S/D/R/C/reviewer evidence, not another generic owner-consent request.
+Continue from the preserved implementation and these exact capability results;
+do not repeat an unavailable route without new evidence or claim full completion.
+
+### Maintainer capability-remedy plan — 2026-11-08
+
+[Human continuation plan](./human_continuation_plan.md) records the requested
+minimal account/UI/administrative and independent-review actions, with Copilot
+handbacks and the complete original gate scope. The current active VS Code
+Server exists; the agent shell lacks its terminal IPC context, so native
+integrated-terminal execution is the next supported route. Existing owner
+authorization is retained. These are planned remedies, not new activation,
+publication, custody, finding approval or archive-creation evidence.
+
+### Native VS Code route verified after workspace tailoring
+
+The requested follow-on workspace task added tracked-eligible VS Code
+recommendations, scoped Python settings, process tasks and debugpy launches.
+Native task calls using `process: Codex: inspect worktree`,
+`process: Codex: native runtime diagnostics` and
+`process: Codex: native VS Code version` succeeded. The task terminal exposes
+genuine terminal/Git IPC; Code reports 1.145.2, x64. The plain agent shell's
+missing IPC no longer blocks the supported native task route.
+
+The exact stored catalog/CDX/Go task arguments passed in the authenticated
+validation environment: catalog validation, 373 Python tests with zero skips,
+and offline Go tests. An initial five-test failure exposed missing scanner
+launchers on PATH; the task now accepts explicit authenticated tool directories,
+without changing scanner/ownership guards. Existing staged integration remains
+separate from workspace/doc edits. Signing, GitHub write access, both actual
+selected-agent invocations and S/D/R/P/C/E/F/A/G are not proved by these results.
+
+## Copilot CLI and VS Code execution lane — findings handoff, not executed
+
+The user-provided **“Findings: CDX execution through CLI and VS Code”**
+capability review is incorporated here as an ownership and sequencing handoff.
+It was produced in a separate review context; its reported public tips,
+installed tools, API capabilities, permission booleans and CLI behavior are
+not fresh evidence for this worktree. Recheck exact current state before each
+operation. The procedures below are **not executed by this documentation
+update** and do not expand the authorization or gates recorded above.
+
+Copilot owns the safe, technically available CLI and VS Code work below; do not
+ask a human to run ordinary commands merely because they appear in the human
+plan. Human intervention remains limited to inaccessible account/UI or
+administrative facilities, genuine independent reviews and owner judgments.
+After such a handback, Copilot resumes the available verification and execution.
+Do not disclose credentials, IPC/socket values, private source bytes, raw
+findings or private storage references in this public continuation.
+
+### Direct CLI work, in dependency order
+
+| Work lane | Copilot-owned CLI/VS Code work | Boundary and completion evidence |
+| --- | --- | --- |
+| **W0 — Reconcile workspace and installed tools** | In the original worktree, inspect `git status --short`, `git diff --cached --name-only`, `git rev-parse HEAD`, and the relevant remote tips. Rediscover the installed VS Code remote CLI from supported host metadata; inspect its `--help`, `--version`, `chat --help`, and extension listing. Check `gh --version` and the specific command help before relying on `gh agent-task`. Use the real native terminal or exposed, type-qualified task interface. | Preserve staged/unstaged/untracked work and historical timestamps. Require useful operation output, not exit status alone. Never invent `code --run-task`, an IPC endpoint, or a terminal bridge; a zero-exit WSL/terminal-context error is not success. |
+| **W1 — Run local validation** | Use the selected validation interpreter and authenticated scanner executable/PATH. Run startup-context validation, the read-only CDX preflight summary, the focused archive tests with the real adapter and JUnit rejection gate, and offline Go module verification/tests for the adapter. Recheck pinned tool, package, configuration and consumer bytes using authenticated official provenance where required. | Record exact command, interpreter/tool versions, result and skips/xfails. A selected Python executable without scanner launchers is insufficient. The historical 373-test result is not a permanent expected count, current validation, hosted CI or archive clearance. Do not refresh generated catalogs or packet fields unless a separate task requires the write. |
+| **W2 — Bind and test the profile** | Hash/inspect the exact `.github/agents/cdx-archive-lifecycle.agent.md` source and validate the explicit catalog. Use local `code chat --mode` only if the installed CLI supports it and the provider identifies the actual selected source, harness and tools. Use the bounded synthetic prompt and verify isolation before testing. | A registry row, matching name, agent catalog, `code --profile`, editor setting or chat launch is not profile binding or completed invocation. Keep tests credential-free and synthetic; validate isolation separately for each target. Hosted invocation waits for reviewed integration into the actual default branch and correct launch routing. |
+| **W3 — Probe signing and access per operation** | Inspect signer configuration and use supported `gh`/Git reads to test the actual required repository, rules/protection, checks, security-alert and Actions read surfaces. Verify signing and remote receipt only after a genuine signer and authenticated transport are available. | Authentication, signing and write access are distinct. A read credential or permission boolean does not establish push, merge, security-event, Actions-write or hosted-agent authority. An inaccessible Accounts/SSO/device-auth flow, missing signing material or required administrative grant is a human/provider handback; do not print tokens or run credential/environment dumps. |
+| **W4 — Publish only the scoped change** | After exact staged-byte review, signing and operation-specific access are proven, Copilot may stage only approved paths, create/verify the signed scoped commit, push the authorized branch and create/reuse the template-conformant sub-PR. Read required checks and actual head SHA. After the sub-PR lands, check for/reuse a matching promotion PR and publish it under the existing route. | Existing publication authorization does not waive signing, branch protections, reviews, checks or separate merge authority. No direct `main` push, self-approval, bypass, or ignored-tree bulk staging. A platform maintainer performs a required merge if Copilot lacks actual merge authority/transport; Copilot reads back the merge/default SHA and profile bytes. This update performs none of these operations. |
+| **W5 — Inspect CI and security evidence** | Bind Actions runs, attempts, events, jobs, check-runs and artifacts to the exact target SHA; retrieve diagnostics into approved private storage; reproduce the smallest actionable local failure and prepare separately scoped source fixes. Read current alert/analyzer evidence where authorized. | Preserve `queued`, `in_progress`, `cancelled`, `skipped`, `neutral`, `startup_failure`, `failure`, `success` and `unavailable` as distinct. Dispatch/retry only an existing supported workflow with separate operation authority and understood concurrency/side effects. Never retry or recreate the prohibited timed-out CodeQL operation. External analysis and exact-alert owner disposition remain human/security-owner gates where unavailable. |
+| **W6 — Verify prerequisites and implement the stock contract** | Copilot owns mechanical validation of actual approved custody, recovery/bundle completeness, exact source containment/writer exclusion, authenticated tool provenance and the separately scoped execution-bound stock-evidence contract, including rejection tests. Use only a specifically exposed approved storage/containment interface. | S/D/R/P/C are independent prerequisites. Human/provider owners identify or provision unavailable private custody, retention/recovery, enforced per-target containment and independent-review authority. Shared directories, file modes, no-follow reads, hashes, an adapter, HMAC possession or another agent persona are not substitutes. Do not search unrelated stores or access real sources before the gates. |
+| **W7 — Run E/F/A/G tools only after their gates** | After S/D/R/P/C and source-specific E authority, use maintained preflight/adapter interfaces for one justified acquisition, then conservative read-only discovery and bounded batches; mechanically reject incomplete/stale/mismatched review decisions. Only after complete renewed clearance and separate G authority may Copilot use the maintained pack, verify, query, extract and compare interfaces. | Preflight assessment flags can start acquisition; they are not resume/restore. A non-empty private directory is rejected, while another empty directory can create a new epoch. Read-only review discovery omits `--output` because it writes a checkpoint. Preserve limits of at most 16 observations per scanner and 32 per batch, complete reconciliation and genuine independent decisions. True secrets block unchanged-source clearance. No source scan, finding approval, queue mutation or archive operation is initiated by this update. |
+
+The source handoff IDs map explicitly to these Copilot lanes: H1 -> W0/W1;
+H2/H3 -> W3; H4/H6 -> W2; H5a/H5b -> W4; H7 -> W1/W5; H8 -> W5; H9/H10 -> W6;
+P/C -> W1/W6; and E/F/H11/A/H12/G -> W7. The CLI work transfers to Copilot;
+account authentication, administrative grants, independent review, unavailable
+service/custody/containment controls and final source-operation decisions remain
+with their actual human/provider owners.
+
+### Command references for the later authorized execution
+
+These are command families from the supplied capability review, not commands
+run or validated here. Rediscover tool paths/versions, validate every
+placeholder, inspect current help, and check each result before continuing.
+
+```bash
+# Workspace identity and preservation
+git --no-pager status --short
+git --no-pager diff --cached --name-only
+git rev-parse HEAD
+git ls-remote --heads origin main 0D_base_
+
+# Signing/access inspection; keep output limited to safe metadata
+git config --show-origin --get commit.gpgsign
+git config --show-origin --get gpg.program
+gh auth status
+gh api --paginate "repos/$REPO/rulesets?includes_parents=true"
+gh api "repos/$REPO/branches/main/protection"
+gh api "repos/$REPO/rules/branches/main"
+```
+
+If authentication itself is unavailable to Copilot, the account owner completes
+the supported Accounts/SSO/device flow. `gh auth login --web` may initiate that
+flow but is not account repair evidence; `gh auth setup-git` changes credential
+configuration and is conditional on compatibility and operation authority.
+Never paste device codes, tokens or credential-helper output into chat or Git.
+
+For local validation, use the discovered validation interpreter and authenticated
+scanner paths; do not copy this block with unresolved variables:
+
+```bash
+"$VALIDATION_PYTHON" -m scripts.ci.startup_health --validate
+"$VALIDATION_PYTHON" -m scripts.archive.cdx_preflight --preflight-summary --json
+"$VALIDATION_PYTHON" -m pytest -q -ra -o xfail_strict=true tests/archive
+(cd scripts/archive/gitleaks_adapter &&
+ GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off go mod verify &&
+ GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off go test ./...)
+```
+
+Before a supported local invocation, bind the exact profile source and verify
+the actual provider/harness:
+
+```bash
+sha256sum .github/agents/cdx-archive-lifecycle.agent.md
+"$CODE_CLI" chat --help
+```
+
+Publication and invocation commands are conditional, not current next actions:
+signed commit/push/PR operations require the W3/W4 evidence; local agent
+invocation requires W2 source binding and isolation; hosted `gh agent-task`
+launch requires reviewed default-branch integration, entitlement, isolation
+and verified generated-PR routing. `--base` can select an unintended PR base,
+so resolve the sub-PR-to-`0D_base_` route before any hosted launch. Do not infer
+that a CLI feature is installed or authorized from the separate review report.
+
+For CI, Copilot may use supported `gh api`/`gh run view` interfaces to read
+exact-SHA runs, check-runs, attempts, jobs and logs. Log/artifact output stays
+in approved private diagnostic storage. A specific dispatch/retry is not a
+read operation and remains conditional on separate authority; do not alter
+triggers to manufacture evidence.
+
+For the archive lifecycle, the relevant maintained entry points are
+`scripts.archive.cdx_preflight`, `scripts.archive.cdx_adapter`,
+`scripts.archive.cdx_review`, `scripts.archive.codex_packer`,
+`scripts.archive.codex_rehydrate` and `scripts.archive.codex_query`. Their
+preflight/acquisition and pack operations are not ordinary local validation:
+do not invoke them on real sources until the exact prerequisites, custody and
+operation-specific instructions are verified. No CLI wrapper, runbook, native
+task or synthetic success result alone proves S, D, R, P, C, E, F, A or G.
+
+#### Additional conditional command families (not executed)
+
+Use the native CLI only after rediscovering its current path and confirming the
+installed harness actually supports these interfaces. A local profile launch
+requires exact provider/source binding and a verified synthetic sandbox:
+
+```bash
+"$CODE_CLI" chat --reuse-window --mode "$LOCAL_AGENT_ID" \
+  --add-file "$SAFE_PROMPT_FILE" \
+  "Follow the bounded synthetic task; verify the selected profile and isolation before execution."
+```
+
+The hosted task command has platform side effects and may route its generated
+PR to the wrong base. Do not launch until reviewed default-branch integration,
+entitlement, per-target isolation and the required sub-PR/promotion route are
+verified:
+
+```bash
+gh agent-task create -R "$REPO" --base "$DEFAULT_BRANCH" \
+  --custom-agent "$HOSTED_AGENT_ID" --from-file "$SAFE_PROMPT_FILE"
+gh agent-task view "$HOSTED_TASK_ID" -R "$REPO" \
+  --json id,repository,state,createdAt,completedAt,pullRequestUrl
+```
+
+After W3/W4 evidence and review of the exact staged bytes, the scoped
+publication route is:
+
+```bash
+git diff --cached --check
+git commit -S -m "Integrate reviewed CDX agent profile" \
+  -m "Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+git verify-commit HEAD
+git push origin "HEAD:refs/heads/$BRANCH"
+gh pr create -R "$REPO" --base 0D_base_ --head "$BRANCH" \
+  --title "Integrate reviewed CDX agent profile" --body-file "$SUBPR_BODY"
+gh pr checks "$SUBPR" -R "$REPO" --required --watch
+```
+
+The body files must follow the repository PR template; reuse matching open
+PRs. The promotion PR (`--base main --head 0D_base_`) is considered only after
+the scoped sub-PR lands. Merge requires separately established authority,
+required independent reviews/checks and an exact-head guard; do not bypass or
+push directly to `main`.
+
+Only after the scoped sub-PR actually lands and the existing promotion route is
+verified may Copilot create/reuse the promotion PR:
+
+```bash
+gh pr create -R "$REPO" --base main --head 0D_base_ \
+  --title "Promote reviewed staging integration" \
+  --body-file "$PROMOTION_BODY"
+```
+
+For CI evidence, bind every returned object to the requested SHA, run and
+attempt; preserve incomplete or unavailable states:
+
+```bash
+gh api --paginate "repos/$REPO/actions/runs?head_sha=$TARGET_SHA&per_page=100"
+gh api --paginate "repos/$REPO/commits/$TARGET_SHA/check-runs?per_page=100"
+gh run view "$RUN_ID" -R "$REPO" --attempt "$ATTEMPT" \
+  --json databaseId,attempt,event,headSha,workflowName,status,conclusion,jobs,url
+gh api --paginate "repos/$REPO/actions/runs/$RUN_ID/attempts/$ATTEMPT/jobs?per_page=100"
+```
+
+Retrieve failed logs/artifacts only to the approved private diagnostic store:
+
+```bash
+gh run view "$RUN_ID" -R "$REPO" --attempt "$ATTEMPT" --log-failed \
+  > "$PRIVATE_DIAGNOSTICS/failed-steps.log"
+gh run download "$RUN_ID" -R "$REPO" --name "$ARTIFACT_NAME" \
+  --dir "$PRIVATE_DIAGNOSTICS/artifacts"
+```
+
+Fast/full validation dispatches have different gating; dispatch is not
+read-only, may cancel a concurrency-group run, and does not pin a SHA. Rust has
+no dispatch event at the inspected baseline. Use the existing applicable run
+or a separately authorized operation; never retry the prohibited CodeQL task.
+For Rust, restore authenticated official Cargo tooling, inspect the reverse
+dependency path and evaluate any targeted `futures-util` change with Cargo and
+affected tests plus `cargo deny check advisories`; do not hand-edit a lockfile.
+For ML failures, first recover exact failing test names/errors and artifacts,
+then reproduce and fix only the owning scope.
+
+The gated archive CLI families correspond to these maintained entry points:
+
+```bash
+# Acquisition: only after S/D/R/P/C and source-specific E authority.
+"$VALIDATION_PYTHON" -m scripts.archive.cdx_preflight \
+  --source "$APPROVED_SOURCE" \
+  --private-directory "$APPROVED_PRIVATE_DIRECTORY" \
+  --gitleaks-adapter "$CDX_TEST_ADAPTER_EXECUTABLE"
+
+# Existing-bundle discovery only; assessment/acquisition flags are not resume.
+"$VALIDATION_PYTHON" -m scripts.archive.cdx_adapter --list-batches \
+  --source "$APPROVED_SOURCE" \
+  --private-directory "$APPROVED_PRIVATE_DIRECTORY" \
+  --gitleaks-adapter "$CDX_TEST_ADAPTER_EXECUTABLE"
+"$VALIDATION_PYTHON" -m scripts.archive.cdx_review --list-batches \
+  --source "$APPROVED_SOURCE" --inventory "$APPROVED_INVENTORY" \
+  --bindings "$APPROVED_BINDINGS"
+
+# Packing: only after full renewed clearance and separate G authority.
+"$VALIDATION_PYTHON" -m scripts.archive.codex_packer \
+  "$APPROVED_SOURCE" "$APPROVED_ARCHIVE" \
+  --finding-dispositions "$APPROVED_DISPOSITIONS"
+"$VALIDATION_PYTHON" -m scripts.archive.codex_rehydrate verify "$APPROVED_ARCHIVE"
+"$VALIDATION_PYTHON" -m scripts.archive.codex_query "$APPROVED_ARCHIVE" info
+"$VALIDATION_PYTHON" -m scripts.archive.codex_rehydrate extract \
+  "$APPROVED_ARCHIVE" "$APPROVED_EMPTY_DESTINATION"
+"$VALIDATION_PYTHON" -m scripts.archive.codex_rehydrate compare \
+  "$APPROVED_SOURCE" "$APPROVED_EMPTY_DESTINATION"
+```
+
+These are not current actions. Assessment flags can initiate acquisition; a
+non-empty private directory is rejected, while another empty directory may
+create a new epoch. Omit `--output` from read-only review discovery because it
+writes a checkpoint. Inject a retained key only through an approved secret
+facility, never chat/shared JSON. Packer clearance requires its independent
+stock rescan, exact dispositions, SQLite integrity and byte/Merkle checks,
+then bounded rehydration/compare. True secrets remain blocking.
+
+### VS Code ownership and remaining human actions
+
+Copilot owns native terminal/task diagnostics and any specifically scoped,
+reviewed workspace configuration needed for supported tasks. Existing native
+tasks are invoked through their actual type-qualified task IDs or VS Code's
+supported task interface; do not assume a generic CLI switch exists. Settings
+can express signing intent but cannot provide signing identity; extension
+recommendations do not install tools, authenticate or grant entitlement; a
+debugpy session is not containment; agent-file discovery does not activate a
+hosted profile. Sandbox enforcement must be demonstrated independently in each
+selected target, including mounts, network and credential/socket boundaries.
+This task does not edit `.vscode/` or run its tasks.
+
+| VS Code surface | Copilot-owned work | Safeguard |
+| --- | --- | --- |
+| `settings.json` | Configure reviewed terminal cwd, signing intent and existing pytest discovery only when specifically in scope. | Merge JSONC carefully; settings do not supply a signing identity. |
+| `extensions.json` | Review publisher recommendations. | Recommendations do not install tools, authenticate or grant entitlement. |
+| `tasks.json` | Use or add fixed process tasks with explicit command, args, cwd and authenticated scanner PATH when separately scoped. | Preserve existing tasks; no folder-open scan/pack/dispatch/merge or invented generic task CLI. |
+| `launch.json` | Use the selected interpreter for read-only summary or synthetic debugpy sessions. | Loopback debugging is not isolation; no real source or credentials. |
+| Agent discovery | Inspect the maintained `.github/agents/` source and provider binding. | No holding-directory shortcut, duplicate user-profile copy or hosted-activation assumption. |
+| Additional agent locations | Use `chat.agentFilesLocations` only if a real local need is established. | It does not configure hosted discovery or standalone Copilot CLI and is unnecessary by default. |
+| Sandbox configuration | Use an approved container/provider control only when it can enforce the stated boundaries. | Verify mount, network, privilege and credential/socket controls separately in each selected target. |
+
+Human/provider intervention remains only where Copilot cannot perform the
+specific required operation: complete inaccessible account/SSO/device
+authentication or restore genuine signing material; grant a least-privilege
+administrative entitlement; provide a real UI selector/hosted task facility;
+perform required independent reviews or a platform merge; repair a proven
+runner/service control; supply authentic external-security/alert-owner
+decisions; identify or provision approved private custody/retention and
+enforced containment; establish authentic independent-review identity; and
+give the final source/selection/destination instruction or derivative decision.
+These are concrete blockers, not reasons to ask again for generic consent.
+After each handback, Copilot resumes all accessible CLI verification. Keep the
+original order S/D/R/P/C -> E -> F -> genuine A -> separately authorized G.
+
+## Native local validation results — 2026-11-08T23:35Z
+
+Validation was attempted from the current VS Code workspace at branch
+`copilot/session-cdx-postmerge-agent-integration`, HEAD
+`0d91e513f7f404612f443f49e3b478a730fcee45`. Initial status was clean. The
+tracked `.vscode/tasks.json` defines native catalog, focused CDX, real-adapter,
+offline Go and Rust advisory tasks.
+
+### Completed local checks
+
+- Native task `process: Codex: native runtime diagnostics`: **passed**.
+  Python is 3.12.16; workspace is `/workspaces/_codex_`; terminal and Git IPC
+  are present. Git and `code` are on the task PATH; `go`, `cargo` and `npm` are
+  not.
+- Native task `process: Codex: native VS Code version`: **passed**; Code
+  reports 1.145.2, commit `c4453f8ea430795f941c1b2ff6c9321135a74a02`, x64.
+- Native task `process: Codex: inspect worktree`: **passed**; no status entries
+  were printed.
+- Direct read-only equivalent
+  `python3.12 -m scripts.ci.startup_health --validate`: **passed** with
+  `Startup packet CDX catalog validated (offline)`.
+- Direct read-only command
+  `python3.12 -m scripts.archive.cdx_preflight --preflight-summary --json`:
+  **passed**, returning the `read_only_context_not_secret_clearance` summary.
+  It reports Python 3.12.16 and Git present, but `gitleaks` and
+  `detect-secrets` missing. This is context inspection, not scanner execution
+  or a source scan.
+
+### Blocked local test/tool tasks
+
+- Native `process: Codex: validate CDX catalog`, `process: Codex: CDX tests
+  with real adapter` and `process: Codex: offline Go adapter tests` each
+  returned **“Task started but no terminal was found”**. The catalog check was
+  therefore run successfully via its direct equivalent above. Native task
+  outputs could not be retrieved.
+- Native `process: Codex: Rust advisory check` reached task execution but
+  failed to launch: `Path to shell executable "cargo" does not exist`.
+- The VS Code test runner reported **zero registered test controllers** and
+  no discovered items for the five configured archive files.
+- Exact focused pytest fallback with Python 3.12 and the five files from the
+  configured CDX test task failed before collection:
+  `python3.12: No module named pytest` (exit 1).
+- Exact offline Go fallback in
+  `scripts/archive/gitleaks_adapter` failed before module verification:
+  `/bin/bash: go: command not found` (exit 127). No Go executable, authenticated
+  adapter, scanner executable or repository `.venv` was found in the inspected
+  local validation locations. No dependencies were installed and no task or
+  settings files were modified.
+
+### Current exact-SHA Actions evidence and code assessment
+
+Read-only Actions metadata for run
+[`42534018472`](https://github.com/Aries-Serpent/_codex_/actions/runs/42534018472),
+attempt 1, confirms completed **failure** on this exact HEAD. Job
+`128894207470` (“Security Audit”) failed at “Run cargo audit”; the following
+“Run cargo deny (if available)” step was skipped. The failure details/log
+content were not retrieved, so no root cause is asserted. This newer exact-HEAD
+run is distinct from the earlier 07:20Z evidence on SHA `521ba0f9` that reported
+`cargo audit` success followed by a `cargo deny` advisory failure; the earlier
+result does not describe this run. `cargo` is also unavailable locally; no
+dependency or lockfile change was made.
+
+The bounded review of the maintained stock-span, acquired-assessment and
+related regression-test contract found no concrete defect against the recorded
+large-file rejection, fragment/decoding rejection, acquisition-vs-stock
+provenance, zero-approval or checkpoint-drift requirements. No code change was
+warranted from that review. The contract test suite could not be executed here
+because pytest and the real adapter/toolchain are unavailable.
+
+No CI run was dispatched or retried; no CodeQL operation was run; no source
+acquisition, scanner execution, queue/checkpoint write, finding disposition,
+archive operation, authentication, publication or profile activation occurred.
+S/D/R/P/C/E/F/A/G remain unproven except for any separately bound evidence
+already recorded above. The next local validation requires the supported
+Python test environment, authenticated scanner/adapter executables and Go
+toolchain; the failed CI security step additionally requires its actual
+diagnostic before selecting a fix.
+
+## Subsequent local validation and remediation — 2026-11-09
+
+This update supersedes the earlier statement that the exact-SHA security-job
+diagnostic was unavailable. The verified run remains
+[`42534018472`](https://github.com/Aries-Serpent/_codex_/actions/runs/42534018472),
+attempt 1, on `0d91e513f7f404612f443f49e3b478a730fcee45`; job
+`128894207470` completed the Cargo audit with zero vulnerabilities, then
+`rustsec/audit-check` failed while creating a check run:
+`You must authenticate via a GitHub App`. The audit also reported the
+unmaintained `pin-utils 0.1.0` advisory `RUSTSEC-2026-0441`. This was a
+check-run authentication failure, not a vulnerability finding.
+
+### Local workflow correction
+
+The bounded workflow edit in `.github/workflows/rust_swarm_ci.yml` gives only
+the `security_audit` job `checks: write` alongside its existing
+`contents: read`, and passes `${{ github.token }}` to `rustsec/audit-check`
+instead of the repository master/backup secrets. The workflow contains no
+other use of those secrets. YAML parsing, permission/token assertions,
+`yamllint --strict -c .yamllint.yml .github/workflows/rust_swarm_ci.yml` and
+`actionlint .github/workflows/rust_swarm_ci.yml` passed. The local actionlint
+is 1.7.7; yamllint is 1.38.0.
+
+This patch was not pushed or executed in Actions, so it is not yet a live
+verification. GitHub's fork pull-request token restrictions may still prevent
+check creation for untrusted fork PRs; no fork event was tested.
+
+### Rust advisory remediation
+
+Before the lockfile change, the reverse dependency path was
+`codex-swarm-engine -> pyo3-async-runtimes 0.29.0 -> futures-util 0.3.31 ->
+pin-utils 0.1.0`. `cargo audit --json --file Cargo.lock` found zero
+vulnerabilities and one unmaintained warning; `cargo deny check advisories`
+failed on that warning. In an isolated temporary copy, the targeted Cargo
+update `cargo update -p futures-util --precise 0.3.34` upgraded the futures
+0.3.31 family and removed `pin-utils`. Candidate `cargo deny check advisories`
+passed, candidate audit reported zero vulnerabilities and no warnings, and
+`cargo test --lib --release --locked` passed **39 tests, 1 ignored**. No
+repository dependency file was changed until this candidate evaluation passed.
+
+The same Cargo update was then applied to the repository. Only `Cargo.lock`
+changed; `Cargo.toml` did not. Afterward:
+
+- `cargo deny check advisories`: **passed**.
+- `cargo audit --json --file Cargo.lock`: **0 vulnerabilities, 0 warnings**.
+- `cargo tree --locked --invert futures-util@0.3.34`: confirmed the updated
+  `codex-swarm-engine -> pyo3-async-runtimes -> futures-util` path.
+- `cargo test --lib --release --locked`: **39 passed, 1 ignored**.
+- `cargo clippy --all-targets --all-features --locked -- -D warnings`: **passed**;
+  Rust emitted a non-fatal warning that `cdylib` is unsupported for the local
+  `x86_64-unknown-linux-musl` test target.
+- `cargo fmt --all -- --check`: **passed** after installing the missing
+  `rustfmt` component (rustfmt 1.10.0; clippy 0.1.99; Cargo 1.99.1).
+
+This Alpine/musl environment initially could not link `-lpython3.12`. The
+successful local Rust test/clippy runs used
+`PYO3_PYTHON=/usr/bin/python3.12` and
+`RUSTFLAGS=-Lnative=/usr/lib/python3.12/config-3.12-x86_64-linux-musl` to
+locate the already installed Python static library. No Rust source or manifest
+change was needed for that environment workaround.
+
+### Native local validation tasks
+
+`.vscode/tasks.json` now uses the workspace validation interpreter at
+`${workspaceFolder}/.venv/bin/python`, removes prompt inputs that the native
+task interface could not resolve, and supplies the verified user-local adapter,
+Go, Cargo, actionlint and scanner paths/cache locations. It adds a read-only
+CDX summary task, Go module verification, and workflow YAML/actionlint tasks.
+The native runtime did not expose `python.interpreterPath` (`command not
+found`), so the workspace venv path is used instead.
+
+Verified through VS Code tasks or their exact CLI equivalents:
+
+- Startup catalog validation: **passed**, offline.
+- Read-only CDX summary: **passed**, purpose
+  `read_only_context_not_secret_clearance`; Python 3.12.16, Gitleaks 8.30.1,
+  detect-secrets 1.5.0 and Git were measured. The summary does not run scanners.
+- Focused archive suite using the maintained adapter and synthetic fixtures:
+  **373 passed**. JUnit totals: **373 tests, 0 failures, 0 errors, 0 skipped**.
+- Go module verification and offline adapter tests: **passed** (`all modules
+  verified`; `go test ./...` passed) using Go 1.27.3 and the isolated verified
+  module cache.
+- Native Rust advisory, workflow YAML, and actionlint tasks: **passed**.
+
+`go mod download all` had added session-generated checksum lines to
+`scripts/archive/gitleaks_adapter/go.sum`. A temporary copy using the original
+tracked `go.sum` passed both offline `go test -mod=readonly ./...` and
+`go mod verify`; the generated checksum churn was therefore removed, and
+`go.sum` is unchanged. `go mod tidy -diff` on the generated state returned a
+checksum diff (exit 1), further confirming the additions were not canonical.
+An earlier Go task run lacked the isolated module-cache environment and failed
+with `module lookup disabled by GOPROXY=off`; the task was corrected and the
+offline checks then passed.
+
+### Scope and remaining limits
+
+The local profile source and startup catalog identify
+`cdx-archive-lifecycle` as `local_profile`, discoverable, with
+`hosted_activation: not_established` and `authorization: none_granted`. No
+profile invocation was attempted because provider selection/activation and
+credential-free target isolation remain unproven. Synthetic adapter tests do
+not establish real-source clearance.
+
+A Gitleaks command intended to check the changed workflow unexpectedly logged
+that it scanned **248,054,158 bytes** despite receiving the workflow file path.
+It reported zero findings; its temporary report/log were removed. The scope was
+broader than intended, so this is recorded as an unintended repository scan and
+is not evidence of source clearance. No further scan was run.
+
+No human-only plan change, source acquisition, source/archive clearance,
+checkpoint/queue creation, finding approval, packing, authentication, workflow
+dispatch/retry, commit, push, PR update, merge, or profile activation occurred.
+S/D/R/P/C/E/F/A/G remain unproven for any real-source/archive operation. A
+maintainer must review and authorize publication/execution of the local
+workflow/lockfile changes before any live CI result can be claimed.
+
+## Independent local rerun and current read evidence - 2026-11-09
+
+The requested local-only rerun verified branch
+`copilot/session-cdx-postmerge-agent-integration` and HEAD
+`0d91e513f7f404612f443f49e3b478a730fcee45`. All four existing changes were
+already staged at entry, unlike the earlier unstaged checkpoint. They were
+preserved; this section is an unstaged documentation addition. The companion
+execution guide exists on disk and inherits the `/site/` ignore rule; no ignore
+rule or staging was changed.
+
+### Commands and measured results
+
+The validation interpreter was `/workspaces/_codex_/.venv/bin/python`
+(Python 3.12.16). Commands below used the existing verified executable/cache
+locations; no dependencies were installed or dependency files changed.
+
+```bash
+export PATH="/workspaces/_codex_/.venv/bin:/home/vscode/.local/bin:$PATH"
+.venv/bin/python -m scripts.ci.startup_health --validate
+.venv/bin/python -m scripts.archive.cdx_preflight --preflight-summary --json
+CDX_TEST_ADAPTER_EXECUTABLE=/home/vscode/.local/bin/codex-cdx-gitleaks-adapter \
+  .venv/bin/python -m pytest --confcutdir=tests/archive \
+  -o 'addopts=--strict-markers --import-mode=importlib' -q \
+  --junitxml="$SESSION_FILES/cdx-rerun-junit.xml" \
+  tests/archive/test_cdx_context.py tests/archive/test_cdx_preflight.py \
+  tests/archive/test_cdx_review.py tests/archive/test_cdx_adapter.py \
+  tests/archive/test_cdx_sqlite_archive.py
+```
+
+`SESSION_FILES` above denotes this session's existing local diagnostic files
+directory; the executed command supplied its absolute path. It contains only
+synthetic test metadata, not real-source findings or clearance material.
+Catalog validation passed. The summary completed read-only. The JUnit run
+passed **373 tests in 74.47 seconds**, with **0 failures, 0 errors, 0 skips**.
+The five `test_actual_maintained_adapter_end_to_end` cases were specifically
+checked in JUnit and all completed, rather than inferred from a name containing
+`real`. An earlier same-scope run also passed 373 tests in 60.44 seconds.
+
+Stock/acquired separation and threshold rejection coverage were inspected:
+tests cover 99,999/100,000/100,001-byte boundaries and retain
+`unsupported_fragment_origin` for unsupported stock mappings. No concrete
+same-scope regression was identified that warranted another source patch.
+Synthetic success does not approve findings or establish stock clearance.
+
+```bash
+cd scripts/archive/gitleaks_adapter
+export GOPATH=/home/vscode/.cache/codex-gopath
+export GOMODCACHE=/home/vscode/.cache/codex-gomodcache
+export GOPROXY=off GOSUMDB=off GOTOOLCHAIN=local
+/home/vscode/.local/opt/go1.27.3/bin/go mod verify
+/home/vscode/.local/opt/go1.27.3/bin/go test ./...
+```
+
+Both passed: `all modules verified`, adapter tests `ok` (8.327 seconds).
+The first attempt accidentally ran from the repository root and failed with
+`go.mod file not found`; correcting only cwd resolved it.
+
+```bash
+export PATH="/home/vscode/.local/bin:/home/vscode/.cargo/bin:$PATH"
+export CARGO_HOME=/home/vscode/.cache/codex-cargo
+export RUSTUP_HOME=/home/vscode/.rustup
+export RUSTUP_TOOLCHAIN=stable-x86_64-unknown-linux-musl
+export PYO3_PYTHON=/usr/bin/python3.12
+export RUSTFLAGS=-Lnative=/usr/lib/python3.12/config-3.12-x86_64-linux-musl
+cargo audit --json --file Cargo.lock
+cargo deny check advisories
+cargo tree --locked --invert futures-util
+cargo test --lib --release --locked
+cargo clippy --all-targets --all-features --locked -- -D warnings
+cargo fmt --all -- --check
+```
+
+Cargo 1.99.1: audit reported **0 vulnerabilities and no warnings**; deny reported
+`advisories ok`. The reverse dependency path remains `codex-swarm-engine ->
+pyo3-async-runtimes 0.29.0 -> futures-util 0.3.34`. Tests passed **39, with 1
+ignored**. Clippy and formatting exited zero; Clippy retained the non-fatal
+unsupported-musl-`cdylib` warning. Test/Clippy/format exits were additionally
+confirmed in a fail-fast cached rerun. The documented Python static library
+path was verified to exist before using the linkage environment.
+
+```bash
+.venv/bin/python -m yamllint --strict -c .yamllint.yml \
+  .github/workflows/rust_swarm_ci.yml
+/home/vscode/.local/bin/actionlint .github/workflows/rust_swarm_ci.yml
+.venv/bin/python -m json.tool .vscode/tasks.json
+git diff --check
+git diff --cached --check
+```
+
+These checks passed. Measured versions: Git 2.56.0, Go 1.27.3, Gitleaks 8.30.1,
+detect-secrets 1.5.0, actionlint 1.7.7, yamllint 1.38.0. Adapter `identity`
+reported `cdx-full-file-v1`, Gitleaks module v8.30.1 and module checksum; identity
+output alone is not newly authenticated distribution provenance or clearance.
+
+### Actual VS Code, CI and isolation boundaries
+
+Native `process: Codex: native runtime diagnostics` and
+`process: Codex: native VS Code version` succeeded. VS Code is 1.145.2
+(commit `c4453f8ea430795f941c1b2ff6c9321135a74a02`), with genuine terminal/Git
+IPC present. The standalone shell's `code --help` and `code chat --help` failed
+with `code or code-insiders is not installed` (127). The genuine installed
+remote CLI instead printed `Command is only available in WSL or inside a
+Visual Studio Code terminal` with exit zero. Neither is usable CLI-help or
+profile-invocation evidence. No task configuration was changed to bypass this.
+
+`gh` and standalone `copilot` were not found on the inspected shell PATH.
+Available authenticated GitHub MCP reads were used instead of installing an
+unneeded alternate CLI. Current `actions_list(list_workflow_runs)` for the Rust
+workflow and this branch returned only run **42534018472**, attempt **1**, on
+the unchanged published HEAD, completed **failure**. Fresh `actions_get`
+run/job reads confirmed Security Audit job **128894207470** belongs to that
+SHA/run/attempt: `Run cargo audit` failed and `Run cargo deny (if available)`
+was **skipped**. These reads do not verify the staged patch. No raw logs or
+artifacts were newly retrieved, and commit check-run correlation was not
+available through the selected Actions schemas.
+
+The host is **Alpine Linux 3.23.7**, x86_64. Current official
+[VS Code sandbox documentation](https://code.visualstudio.com/docs/agents/run/agent-sandboxing)
+explicitly excludes Alpine/musl shell sandboxing for its shared runtime.
+`bubblewrap 0.12.0` and `unshare` (util-linux 2.41.6) exist, but their presence
+does not prove containment of this agent's read/search/execution integrations.
+Docker/podman were not found on the inspected shell PATH. No approved
+all-tool containment interface, provider-selected CDX binding or synthetic
+canary target was established.
+
+The current profile SHA-256 is
+`049e8e35f9b1880c6be425d48959c18176de327636f222722f583e6d075e8c01`.
+Catalog validation and source inspection establish local discoverability only.
+No profile invocation or adversarial host probing was performed without the
+required isolation/selection evidence.
+
+### Resume gates
+
+- Publication and a new live result require exact-scope publication authority;
+  this task expressly withheld commit/push/PR/dispatch/settings/merge authority.
+- The runtime/provider owner must supply a supported or equivalently enforced
+  synthetic-only target, covering every effective tool, and verifiable profile
+  selection before a bounded invocation.
+- Additional private CI diagnostics require approved custody if needed; current
+  metadata sufficed to establish the existing run's failure, not the patch's
+  success.
+
+The human-only plan and existing staged bytes remain unchanged. No new scanner
+run on real sources, archive lifecycle operation, workflow retry/dispatch,
+publication, hosted launch or settings change occurred. S/D/R/P/C/E/F/A/G
+remain unproven for real-source/archive operations.
+
+## Publication preparation authorized - 2026-11-09
+
+The owner subsequently requested review, commit, push and a PR on the active
+branch, preferably targeting `0D_base_`. This supersedes the earlier local-only
+publication boundary for this scoped handoff; it does not authorize merge,
+workflow retries, hosted activation or real-source archive operations.
+
+Remote reads confirmed `0D_base_` and `main` both at
+`25ab8b63afc8fddcc93dbbfb123e0d708c777e0e` and the session branch at
+`0d91e513f7f404612f443f49e3b478a730fcee45` before publication.
+A read-only branch review found that the workspace guide still described
+removed task prompts. That mismatch was corrected to document the actual
+workspace venv and user-local tool/cache prerequisites.
+
+The execution guide was the only ignored deliverable in this continuation
+folder. A narrow `.gitignore` exception now exposes that exact file without
+tracking the generated site, validation caches, tool installations or private
+session diagnostics. Existing tracked continuation and human-only plan remain
+tracked. Session checkpoints/JUnit are diagnostic metadata outside the
+repository, not public branch deliverables.
+
+The inspected custom CodeQL gate's push/PR branch filters do not include this
+session branch or the intended `0D_base_` PR base. The CodeQL inventory is
+manual/scheduled. No prohibited timed-out CodeQL tool retry was requested.
+Other normal push checks may run; publication is not evidence that they pass.
+Required owner security dispositions, independent reviews and merge controls
+remain applicable. Publication and PR outcome must be verified separately;
+this preparation section does not claim those operations already succeeded.

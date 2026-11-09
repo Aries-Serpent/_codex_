@@ -12,6 +12,81 @@
 
 ---
 
+## Existing remote VS Code workspace
+
+The tracked [workspace settings](../../.vscode/settings.json),
+[extension recommendations](../../.vscode/extensions.json),
+[tasks](../../.vscode/tasks.json) and [debug configurations](../../.vscode/launch.json)
+also support an already-running remote VS Code window without rebuilding a
+container or running lifecycle scripts. The remaining guide describes the
+devcontainer/service setup, not proof those facilities exist in this session
+or prerequisites for ordinary local agent work. Native editing, tests and
+debugging do not require administrative PATs or webhook activation.
+
+1. Open the repository in the existing remote window. Install recommended
+   extensions only when needed and permitted; recommendations are not evidence
+   they are installed. Select **Python: Select Interpreter** and choose the
+   existing supported Python 3.12 validation environment.
+2. Use **Tasks: Run Task**. `Codex: inspect worktree` is dependency-free apart
+   from Git. Python validation tasks use the existing workspace
+   `.venv/bin/python`; process tasks pass it as an executable, not interpolated
+   shell code. They do not prompt for interpreter selection.
+   This choice is environment configuration, not renewed owner consent.
+   Copilot's native `runTask` tool uses type-qualified IDs such as
+   `process: Codex: inspect worktree`; the bare label can return "Task not found".
+   `Codex: native runtime diagnostics` reports Python/workspace, presence of
+   terminal/Git IPC and tool availability without exposing environment values.
+   These are observed capabilities, not proof of signing or GitHub access.
+   `Codex: native VS Code version` checks whether the CLI is actually usable
+   in that terminal context; command presence alone is insufficient.
+3. `Codex: validate CDX catalog (workspace venv)` is read-only. It does not regenerate startup
+   timestamps or invoke the unsupported `scripts.ci.cdx_context` module as a CLI.
+4. `Codex: CDX focused tests` isolates the archive conftest and can skip five
+   optional adapter integrations if no adapter is supplied. It is not full
+   real-adapter validation. `Codex: CDX tests with real adapter` uses the
+   authenticated adapter at `${env:HOME}/.local/bin/codex-cdx-gitleaks-adapter`
+   and prepends the workspace `.venv/bin` and user-local `.local/bin` to PATH.
+   These locations must contain detect-secrets and pinned Gitleaks; selecting a
+   Python interpreter alone does not install those launchers.
+   Missing or invalid paths must fail,
+   not be treated as a pass. Both use the five maintained CDX test files.
+5. The offline Go tasks use `${env:HOME}/.local/opt/go1.27.3/bin/go` and the
+   verified `${env:HOME}/.cache/codex-gomodcache` module cache; they disable online
+   fetching. The Rust advisory task uses the user-local Cargo toolchain with
+   `stable-x86_64-unknown-linux-musl` and requires installed cargo-deny.
+   Recheck these environment-specific prerequisites before use; tasks do not
+   provision tools. The frontend typecheck
+   task requires the installed cognitive_app dependencies. Missing tools are
+   explicit environment failures; restore only what the selected validation
+   actually needs, through approved authenticated distribution.
+6. F5 uses debugpy and the selected Python interpreter. Debug current development
+   source or the fixed CDX context-test launch, never untrusted archived source.
+   Use the Testing panel for selected tests, Problems for diagnostics, and
+   Pylance/Rust Analyzer/Go for supported symbol navigation. Full pytest discovery
+   is not the workspace default: the Testing panel starts with the five CDX
+   files and does not rediscover on save. Configure the test paths for another
+   owning-area task explicitly, or use its smallest CLI selector.
+7. Use GitHub PR/Actions extensions or available authenticated tools for actual
+   feedback and check evidence. Source Control uses real account/signing
+   facilities; workspace settings grant no credentials or platform rights.
+8. For custom agents, use **Chat: Open Customizations**, inspect the Agents entry
+   and source, choose the intended Session Target and **CDX Archive Lifecycle**.
+   An already-exposed agent tool is another candidate to reconcile, not proof of
+   source binding or hosted activation. Record actual selection/invocation.
+
+These files intentionally contain no per-session absolute interpreter paths,
+credentials, blanket auto-approvals, automatic startup tasks or profile copies.
+Other machine-local `.vscode/` data stays ignored. Configuration and extension
+recommendations are reusable repository data, not a claim of hosted selection.
+
+If a native task/terminal tool is unavailable to the current Copilot host, use
+the same task command/arguments in the existing integrated terminal or authorized
+CLI environment and report that limitation. The remote CLI needs its genuine
+VS Code terminal IPC context; an error printed with exit zero is still failure.
+Do not guess IPC values, launch another server or rewrite global PATH.
+See the [human continuation plan](../../site/plans/cdx_archive_scanner_preflight_recovery/human_continuation_plan.md)
+for minimal account/UI/administrative handbacks and the unchanged archive gates.
+
 ## Overview
 
 A GitHub Codespace for this repository gives a Copilot agent the **same
