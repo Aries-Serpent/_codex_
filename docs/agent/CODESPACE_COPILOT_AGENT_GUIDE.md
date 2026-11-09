@@ -28,8 +28,9 @@ debugging do not require administrative PATs or webhook activation.
    they are installed. Select **Python: Select Interpreter** and choose the
    existing supported Python 3.12 validation environment.
 2. Use **Tasks: Run Task**. `Codex: inspect worktree` is dependency-free apart
-   from Git. Python tasks prompt for the existing interpreter executable;
-   process tasks pass it as an executable, not interpolated shell code.
+   from Git. Python validation tasks use the existing workspace
+   `.venv/bin/python`; process tasks pass it as an executable, not interpolated
+   shell code. They do not prompt for interpreter selection.
    This choice is environment configuration, not renewed owner consent.
    Copilot's native `runTask` tool uses type-qualified IDs such as
    `process: Codex: inspect worktree`; the bare label can return "Task not found".
@@ -38,21 +39,23 @@ debugging do not require administrative PATs or webhook activation.
    These are observed capabilities, not proof of signing or GitHub access.
    `Codex: native VS Code version` checks whether the CLI is actually usable
    in that terminal context; command presence alone is insufficient.
-3. `Codex: validate CDX catalog` is read-only. It does not regenerate startup
+3. `Codex: validate CDX catalog (workspace venv)` is read-only. It does not regenerate startup
    timestamps or invoke the unsupported `scripts.ci.cdx_context` module as a CLI.
 4. `Codex: CDX focused tests` isolates the archive conftest and can skip five
    optional adapter integrations if no adapter is supplied. It is not full
-   real-adapter validation. `Codex: CDX tests with real adapter` prompts for the
-   authenticated adapter executable and the authenticated executable directories
-   prepended to Linux PATH. Include the validation environment's `bin` directory
-   for detect-secrets and the directory containing pinned Gitleaks; selecting a
-   Python executable alone does not put its scanner launchers on PATH.
-   Do not leave required paths empty. Invalid paths must fail,
+   real-adapter validation. `Codex: CDX tests with real adapter` uses the
+   authenticated adapter at `${env:HOME}/.local/bin/codex-cdx-gitleaks-adapter`
+   and prepends the workspace `.venv/bin` and user-local `.local/bin` to PATH.
+   These locations must contain detect-secrets and pinned Gitleaks; selecting a
+   Python interpreter alone does not install those launchers.
+   Missing or invalid paths must fail,
    not be treated as a pass. Both use the five maintained CDX test files.
-5. `Codex: offline Go adapter tests` requires a previously authenticated Go
-   executable (selected by its task prompt) and populated verified module cache;
-   it disables online fetching.
-   `Codex: Rust advisory check` requires Cargo/cargo-deny. The frontend typecheck
+5. The offline Go tasks use `${env:HOME}/.local/opt/go1.27.3/bin/go` and the
+   verified `${env:HOME}/.cache/codex-gomodcache` module cache; they disable online
+   fetching. The Rust advisory task uses the user-local Cargo toolchain with
+   `stable-x86_64-unknown-linux-musl` and requires installed cargo-deny.
+   Recheck these environment-specific prerequisites before use; tasks do not
+   provision tools. The frontend typecheck
    task requires the installed cognitive_app dependencies. Missing tools are
    explicit environment failures; restore only what the selected validation
    actually needs, through approved authenticated distribution.
@@ -71,7 +74,7 @@ debugging do not require administrative PATs or webhook activation.
    An already-exposed agent tool is another candidate to reconcile, not proof of
    source binding or hosted activation. Record actual selection/invocation.
 
-These files intentionally contain no session-specific interpreter paths,
+These files intentionally contain no per-session absolute interpreter paths,
 credentials, blanket auto-approvals, automatic startup tasks or profile copies.
 Other machine-local `.vscode/` data stays ignored. Configuration and extension
 recommendations are reusable repository data, not a claim of hosted selection.

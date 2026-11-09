@@ -29,16 +29,33 @@
       "problemMatcher": []
     },
     {
-      "label": "Codex: validate CDX catalog",
+      "label": "Codex: validate CDX catalog (workspace venv)",
       "type": "process",
-      "command": "${input:codexPython}",
+      "command": "${workspaceFolder}/.venv/bin/python",
       "args": ["-m", "scripts.ci.startup_health", "--validate"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: read-only CDX summary",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "-m",
+        "scripts.archive.cdx_preflight",
+        "--preflight-summary",
+        "--json"
+      ],
+      "options": {
+        "env": {
+          "PATH": "${workspaceFolder}/.venv/bin:${env:HOME}/.local/bin:${env:PATH}"
+        }
+      },
       "problemMatcher": []
     },
     {
       "label": "Codex: CDX focused tests",
       "type": "process",
-      "command": "${input:codexPython}",
+      "command": "${workspaceFolder}/.venv/bin/python",
       "args": [
         "-m",
         "pytest",
@@ -58,7 +75,7 @@
     {
       "label": "Codex: CDX tests with real adapter",
       "type": "process",
-      "command": "${input:codexPython}",
+      "command": "${workspaceFolder}/.venv/bin/python",
       "args": [
         "-m",
         "pytest",
@@ -74,21 +91,40 @@
       ],
       "options": {
         "env": {
-          "CDX_TEST_ADAPTER_EXECUTABLE": "${input:cdxAdapterExecutable}",
-          "PATH": "${input:cdxToolPath}:${env:PATH}"
+          "CDX_TEST_ADAPTER_EXECUTABLE": "${env:HOME}/.local/bin/codex-cdx-gitleaks-adapter",
+          "PATH": "${workspaceFolder}/.venv/bin:${env:HOME}/.local/bin:${env:PATH}"
         }
       },
       "group": "test",
       "problemMatcher": []
     },
     {
-      "label": "Codex: offline Go adapter tests",
+      "label": "Codex: offline Go module verification (Go 1.27.3)",
       "type": "process",
-      "command": "${input:codexGoExecutable}",
+      "command": "${env:HOME}/.local/opt/go1.27.3/bin/go",
+      "args": ["mod", "verify"],
+      "options": {
+        "cwd": "${workspaceFolder}/scripts/archive/gitleaks_adapter",
+        "env": {
+          "GOPATH": "${env:HOME}/.cache/codex-gopath",
+          "GOMODCACHE": "${env:HOME}/.cache/codex-gomodcache",
+          "GOPROXY": "off",
+          "GOSUMDB": "off",
+          "GOTOOLCHAIN": "local"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: offline Go adapter tests (verified Go 1.27.3)",
+      "type": "process",
+      "command": "${env:HOME}/.local/opt/go1.27.3/bin/go",
       "args": ["test", "./..."],
       "options": {
         "cwd": "${workspaceFolder}/scripts/archive/gitleaks_adapter",
         "env": {
+          "GOPATH": "${env:HOME}/.cache/codex-gopath",
+          "GOMODCACHE": "${env:HOME}/.cache/codex-gomodcache",
           "GOPROXY": "off",
           "GOSUMDB": "off",
           "GOTOOLCHAIN": "local"
@@ -98,10 +134,39 @@
       "problemMatcher": []
     },
     {
-      "label": "Codex: Rust advisory check",
+      "label": "Codex: Rust advisory check (user-local toolchain)",
       "type": "process",
-      "command": "cargo",
+      "command": "${env:HOME}/.cargo/bin/cargo",
       "args": ["deny", "check", "advisories"],
+      "options": {
+        "env": {
+          "CARGO_HOME": "${env:HOME}/.cache/codex-cargo",
+          "RUSTUP_HOME": "${env:HOME}/.rustup",
+          "RUSTUP_TOOLCHAIN": "stable-x86_64-unknown-linux-musl",
+          "PATH": "${env:HOME}/.local/bin:${env:HOME}/.cargo/bin:${env:PATH}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: validate workflow YAML",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "-m",
+        "yamllint",
+        "--strict",
+        "-c",
+        ".yamllint.yml",
+        ".github/workflows/rust_swarm_ci.yml"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: validate workflow with actionlint",
+      "type": "process",
+      "command": "${env:HOME}/.local/bin/actionlint",
+      "args": [".github/workflows/rust_swarm_ci.yml"],
       "problemMatcher": []
     },
     {
@@ -113,31 +178,6 @@
         "cwd": "${workspaceFolder}/cognitive_app"
       },
       "problemMatcher": ["$tsc"]
-    }
-  ],
-  "inputs": [
-    {
-      "id": "codexPython",
-      "type": "promptString",
-      "description": "Python 3.12 executable in your existing supported validation environment",
-      "default": "python3.12"
-    },
-    {
-      "id": "cdxAdapterExecutable",
-      "type": "promptString",
-      "description": "Absolute path to the authenticated, built CDX Gitleaks adapter"
-    },
-    {
-      "id": "cdxToolPath",
-      "type": "promptString",
-      "description": "Authenticated validation/scanner executable directories for Linux PATH, separated by colons",
-      "default": ".venv/bin"
-    },
-    {
-      "id": "codexGoExecutable",
-      "type": "promptString",
-      "description": "Authenticated Go executable with an already verified module cache",
-      "default": "go"
     }
   ]
 }
