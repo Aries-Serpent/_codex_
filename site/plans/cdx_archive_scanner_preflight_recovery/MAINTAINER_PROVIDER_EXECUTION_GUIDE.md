@@ -207,6 +207,7 @@ literal values to copy blindly.
 Conditional publication commands:
 
 ```bash
+set -e
 # Stage only the reviewed, authorized content first.
 git diff --cached --check
 git --no-pager diff --cached

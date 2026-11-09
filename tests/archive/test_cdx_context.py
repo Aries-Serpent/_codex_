@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import copy
-import hashlib
 import json
 import socket
 import subprocess
@@ -156,9 +155,8 @@ def test_generated_alias_baseline_is_exact_and_not_an_archive_approval():
     rows = baseline["results"][".codex/session_startup_packet.json"]
     assert len(rows) == 1
     assert rows[0]["type"] == "Secret Keyword"
-    assert (
-        rows[0]["hashed_secret"] == hashlib.sha1(alias.encode(), usedforsecurity=False).hexdigest()
-    )
+    assert alias == "compatibility_alias_of_run_secret_scanners"
+    assert rows[0]["hashed_secret"] == "c5162f254563733e6a9d2c28a44921ee91c682ea"
     assert rows[0]["is_secret"] is False
     assert rows[0]["is_verified"] is False
     changed = KeywordDetector().analyze_line(

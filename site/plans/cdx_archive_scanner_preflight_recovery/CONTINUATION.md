@@ -1129,6 +1129,7 @@ After W3/W4 evidence and review of the exact staged bytes, the scoped
 publication route is:
 
 ```bash
+set -e
 git diff --cached --check
 git commit -S -m "Integrate reviewed CDX agent profile" \
   -m "Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
