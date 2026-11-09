@@ -27,6 +27,12 @@
   Preserved it through another conflict-free local merge. The integrated
   regression rerun passed 68 tests and the configured secret hook passed.
   No remote-history overwrite or workflow retry was used.
+- Integrated peer review commit `2d73a00715` and packet update `c3c29bee20`.
+  Peer changes add fail-fast publication examples and remove runtime SHA-1
+  from the existing context fixture; the scoped PDA correction is retained.
+- Combined PDA/context validation passed 87 tests. The peer's precomputed
+  fixture digest introduced two detector hits; annotated that exact synthetic
+  assertion and retained all configured scanner plugins and filters.
 
 **Owner:** PR security reviewer for exact suppression review; maintainer for
 current-head CI approvals and protected merge.
