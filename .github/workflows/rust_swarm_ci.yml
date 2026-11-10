@@ -271,15 +271,25 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      checks: write
     timeout-minutes: 30
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
     - name: Install Rust toolchain
-      uses: actions-rust-lang/setup-rust-toolchain@a188e68d0fd2bd36ad51dccb2b07ba6e75105f30
-    - name: Run cargo audit
+      uses: actions-rust-lang/setup-rust-toolchain@ecabd13d1c56bd1345c230e542e9144811ad706f
+    - name: Publish cargo audit check (trusted pull request token)
+      if: >-
+        github.event_name != 'pull_request' ||
+        github.event.pull_request.head.repo.full_name == github.repository
       uses: rustsec/audit-check@69366f33c96575abad1ee0dba8212993eecbe998
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        token: ${{ github.token }}
+    - name: Install cargo-audit for fork pull requests
+      if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+      run: cargo install cargo-audit --locked
+    - name: Run cargo audit for fork pull requests
+      if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+      run: cargo audit
     - name: Run cargo deny (if available)
       run: |
         if ! command -v cargo-deny &> /dev/null; then

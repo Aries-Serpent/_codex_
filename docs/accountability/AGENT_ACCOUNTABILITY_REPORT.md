@@ -1,3 +1,68 @@
+## Session: PR #5765 Fast Validation PDA correction - 2026-11-09
+
+### Agents Used
+
+- None - direct execution (no delegated agents).
+
+### Evidence and outcome
+
+- Reviewed the linked rescue comment and Fast Validation job `128953375716`,
+  run `42552926204`, attempt 2, head `0e9485540f63`. Only detect-secrets failed;
+  the five findings were four public Git IDs and a session-label false positive.
+- Verified historical commit identities through GitHub commit metadata and the
+  current PR's local commit object. Added exactly five filename/type/value
+  fingerprints; no ledger history, scanner configuration or exclusions changed.
+- Added five regressions proving baseline values are detected and changed values
+  are not covered. PDA integrity suite: 68 passed. Ruff, Black, isort, scoped
+  mypy and compilation passed.
+- Replayed the configured detect-secrets hook on the PDA ledger and changed test,
+  suppression registry and changelog: passed. Missing declared quality tools
+  were restored into the existing validation venv; no dependency files changed.
+- Created signed correction `3662f3814f`; signature verification passed. The
+  push was rejected because automation concurrently published `eb9efc3063`,
+  changing only authentication provenance metadata. Integrated that commit
+  through a conflict-free local merge, without rebasing or force-pushing.
+  The staged patch Gitleaks stdin scan covered 11,542 bytes and found no leaks.
+- A second push was rejected after metadata-only update `3debf49453`.
+  Preserved it through another conflict-free local merge. The integrated
+  regression rerun passed 68 tests and the configured secret hook passed.
+  No remote-history overwrite or workflow retry was used.
+- Integrated peer review commit `2d73a00715` and packet update `c3c29bee20`.
+  Peer changes add fail-fast publication examples and remove runtime SHA-1
+  from the existing context fixture; the scoped PDA correction is retained.
+- Combined PDA/context validation passed 87 tests. The peer's precomputed
+  fixture digest introduced two detector hits; annotated that exact synthetic
+  assertion and retained all configured scanner plugins and filters.
+
+**Owner:** PR security reviewer for exact suppression review; maintainer for
+current-head CI approvals and protected merge.
+**Limits:** Local hook success is not hosted CI or archive clearance. No workflow
+retry/dispatch, CodeQL operation, merge, hosted activation or real-source scan.
+
+---
+
+## Session: PR #5765 current-head readiness follow-up — 2026-11-09
+
+### Agents Used
+
+- None — direct execution for this work. Copilot run `42551835437` was already in progress at initial inspection; no work or result is attributed to it.
+
+### Evidence and outcome
+
+- The branch initially pointed at `a07e9f2f` (`chore(auth): write provenance session token [skip ci]`). The PR head check query returned zero checks; this commit-level skip marker explains the empty status response. Empty status is not a pass.
+- Agent Token Delegation run `42549219821`, attempt 2, evaluated head `1111b7c2` and synthetic merge SHA `70ee1a06`. Cognitive Pre-flight job `128944417019` failed REQ-4 because the accountability report was not updated in the last commit. Auto-repair appended a report entry but its push failed with HTTP 403 for `github-actions[bot]`; no hosted repair was published.
+- Validation Pipeline run `42548943691`, attempt 2, evaluated head `1111b7c2`. Fast Validation job `128944406690` failed only because `trailing-whitespace` modified `docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md`. The private run artifact `13644774730` records SHA-256 `21b411afd902f6e28a87031249f91b3a320270f3fcdf0f29d4fc5aade260e629`; the guide was corrected locally.
+- Data Quality run `42548943801`, attempt 2, evaluated the same head but ended `startup_failure` with zero jobs. This is runner/workflow startup evidence, not a source-level defect.
+- The Rust security-audit review identified that fork pull requests receive a read-only token for `rustsec/audit-check`. The workflow now confines that check-publishing action to push and same-repository PR events, while fork PRs install and run `cargo audit` directly. No live fork execution is claimed.
+- Focused local validation passed: trailing-whitespace and end-of-file hooks; yamllint; repository workflow validation (52 files); action-version policy (63 files); fork/trusted-path assertions; PDA record integrity (19 tests); workflow YAML tests (63 tests); Markdown link and internal-link checks; and `git diff --check`. `actionlint` is unavailable, and the task prohibits the CodeQL operation.
+- Progress commit `8725eab6` captured the pre-existing startup-packet timestamp-only edit because the progress operation commits pending work. It was not altered further. The WEC selections were not changed.
+- At the latest check, workflows on `8725eab6` were `action_required`; the PR check query returned no check runs. No workflow was approved, dispatched, or retried. The latest review has no approval, and the reported agent-capability boundary remains unverified because `.github/agents/` is not available for inspection in this environment.
+
+**Owner:** PR maintainer for action-required workflow approvals and review/merge decisions; agent-profile maintainer for the capability-boundary finding.
+**Next decision:** Run naturally triggered checks after the scoped fixes, resolve the profile-boundary finding through authorized access, and obtain maintainer review. No clean hosted status, CodeQL result, or merge readiness is claimed.
+
+---
+
 ## Session: PR #5763 archive review follow-up — 2026-11-08
 
 ### Agents Used

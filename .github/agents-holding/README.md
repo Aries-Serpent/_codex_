@@ -10,11 +10,17 @@ profile and registry conventions, adapt its metadata and tool policy, validate
 the profile and registry, and obtain any applicable review. Do not copy
 profiles into a different active location as a workaround.
 
-`cdx-archive-lifecycle.agent.md` is a staged candidate for pack/query/verify/
-rehydrate operations. It relies on the existing `scripts/archive` tools and
-requires the packer's exact, fail-closed secret-scanning gate.
+The CDX lifecycle profile now lives at
+[`../agents/cdx-archive-lifecycle.agent.md`](../agents/cdx-archive-lifecycle.agent.md).
+Its registry/catalog integration is local source evidence, not runtime selection
+or hosted activation. It retains the existing tools and fail-closed scanning gate.
 
-## Next-session plan: restore the pinned Gitleaks preflight
+## Historical staged-candidate preflight plan
+
+The plan below is historical context, not a current real-source execution
+instruction. The sole consolidated handoff at
+`site/plans/cdx_archive_scanner_preflight_recovery/CONTINUATION.md` retains the
+actual custody, runtime, provenance, security and review prerequisites.
 
 The last recorded preflight stopped before scanning because `gitleaks` was not
 available; `detect-secrets` 1.5.0 was present at that time. Treat this as
@@ -56,7 +62,7 @@ authorize archive creation or resolve any findings.
 ```text
 Resume the CDX archive scanner-preflight recovery. Read the current
 .codex/CODEBASE_AGENCY_POLICY.md, .github/AGENTS.md,
-.github/agents-holding/cdx-archive-lifecycle.agent.md,
+.github/agents/cdx-archive-lifecycle.agent.md,
 scripts/archive/CDX_SQLITE.md, and scripts/archive/cdx_common.py before acting.
 
 1. Record `git status --short --branch`; preserve all existing dirty work,

@@ -80,6 +80,25 @@ security owner/reason and execution gates remain intact.
 
 ## Local environment references
 
+### Native VS Code workspace
+
+Use the existing remote VS Code window and integrated terminal rather than
+assuming a broken PATH `code` wrapper means the editor is absent. Shared
+`.vscode/` files recommend relevant extensions, configure Python analysis/test
+discovery, provide explicit process-based validation tasks and debugpy launches.
+See [the workspace guide](../docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md#existing-remote-vs-code-workspace).
+Use native task, testing, debugging, Problems, code-intelligence and GitHub
+interfaces when actually exposed; otherwise run the equivalent scoped CLI.
+For the native runTask tool, use the task's type-qualified ID, for example
+`process: Codex: inspect worktree`, rather than its bare label.
+Select the existing validation interpreter, not a hard-coded session path.
+Tasks never provision dependencies, grant permissions or activate profiles.
+Record real-adapter skips separately from full adapter validation, and keep
+automatic broad discovery disabled in this large repository.
+Inspect and bind the actual custom-agent source/selection before invocation.
+Do not execute archived source through the current-file debugger, auto-dispatch
+CI, alter signing, or weaken tool/approval controls to enable native tooling.
+
 `CODEX_SESSION_ID`, `CODEX_SESSION_LOG_DIR`, `CODEX_LOG_DB_PATH`/`CODEX_DB_PATH`
 and `CODEX_SQLITE_POOL` configure local session/logging consumers when present.
 Language-version/runtime variables configure only documented consumers; no
@@ -103,7 +122,7 @@ authorization.
 `python -m scripts.archive.cdx_preflight --preflight-summary --json` provides
 the shared read-only context alias. The module index also maps common's public
 validation/verification/blob-inspection wrappers and `assess_acquired_batch`.
-The candidate ID `cdx-archive-lifecycle` appears in skills as `staged_candidate`.
+The profile ID `cdx-archive-lifecycle` appears in skills as `local_profile`.
 Each module's `cli_contract` records actual parser subcommands/options.
 Query supports `info/list/read/search/symbols/callgraph/context`; rehydrate requires
 `verify`, `extract`, or `compare` (for example `codex_rehydrate extract ARCHIVE DESTINATION`).
@@ -129,6 +148,6 @@ Neither assessment transfers stock fragment provenance or grants clearance.
 | `scripts.archive.codex_rehydrate` | `verify_archive`, `rehydrate_archive`, `compare_trees` | `python -m scripts.archive.codex_rehydrate --help`; `tests/archive/test_cdx_sqlite_archive.py` |
 | `scripts/archive/gitleaks_adapter/main.go` | `provenance`, `scan`, `localize` | `EXECUTABLE identity` / private request on stdin; `cd scripts/archive/gitleaks_adapter && GOPROXY=off GOSUMDB=off go test ./...` |
 
-`.github/agents-holding/cdx-archive-lifecycle.agent.md` is a discoverable staged
-candidate only. Its listing does not establish hosted activation, selection,
+`.github/agents/cdx-archive-lifecycle.agent.md` is a registered repository
+profile. Its listing does not establish hosted activation, selection,
 credentials, reviewer authority, or permission to pack or publish.
