@@ -121,9 +121,18 @@ cargo test
 # Python integration tests
 pytest tests/test_rust_integration.py
 
+# codex_swarm gzip and Python/Rust boundary regressions, after installing a
+# freshly built wheel (maturin build --release --features python --locked)
+python -m pytest tests/rust_integration/test_phase4_boundary.py
+
 # Benchmarks
 cargo bench
 ```
+
+For dependency upgrades, use `cargo test --locked --lib` and
+`cargo clippy --locked --all-targets --all-features -- -D warnings`.
+The boundary suite must import the freshly installed `codex_swarm` module and
+execute without skips; an absent extension is not a successful gzip validation.
 
 ### Building Documentation
 

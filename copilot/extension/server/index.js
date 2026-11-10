@@ -62,6 +62,8 @@ app.get("/healthz", (_req, res) => {
   res.json({ status: "ok" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Copilot extension shim listening on port ${PORT}`);
+const server = app.listen(PORT, () => {
+  const address = server.address();
+  const boundPort = typeof address === "string" ? address : address.port;
+  console.log(`Copilot extension shim listening on port ${boundPort}`);
 });

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import gc
+import gzip
 import threading
 import time
 
@@ -101,6 +102,36 @@ def test_decompression_limit_rejects_expansion() -> None:
 
     with pytest.raises(ValueError, match=r"exceeds 128 byte limit"):
         codex_swarm.Compression.decompress_with_limit(compressed, 128)
+
+
+@pytest.mark.parametrize("payload", [b"", b"\x00\xff", bytes(range(256)), b"x" * 4096])
+def test_gzip_interoperates_with_python(payload: bytes) -> None:
+    compressed = bytes(codex_swarm.Compression.compress(payload))
+    assert gzip.decompress(compressed) == payload
+    assert bytes(codex_swarm.Compression.decompress(gzip.compress(payload, mtime=0))) == payload
+
+
+@pytest.mark.parametrize("limit", [0, 1, 128])
+def test_gzip_output_limit_boundaries(limit: int) -> None:
+    for size in {max(0, limit - 1), limit, limit + 1}:
+        payload = b"x" * size
+        compressed = gzip.compress(payload, mtime=0)
+        if size > limit:
+            with pytest.raises(ValueError, match=rf"exceeds {limit} byte limit"):
+                codex_swarm.Compression.decompress_with_limit(compressed, limit)
+        else:
+            assert (
+                bytes(codex_swarm.Compression.decompress_with_limit(compressed, limit)) == payload
+            )
+
+
+@pytest.mark.parametrize(
+    "compressed",
+    [b"not gzip", gzip.compress(b"payload", mtime=0)[:-1]],
+)
+def test_gzip_rejects_corrupt_or_truncated_streams(compressed: bytes) -> None:
+    with pytest.raises(OSError, match="Decompression failed"):
+        codex_swarm.Compression.decompress(compressed)
 
 
 def test_submitted_buffer_is_owned_after_python_source_is_mutated() -> None:

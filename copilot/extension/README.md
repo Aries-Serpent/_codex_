@@ -23,3 +23,20 @@ request is validated, logged, and replayed to the ITA with the required headers.
 variables rather than source control.
 
 > **Note:** Fill in your GitHub App credentials and deploy `server/` to an accessible URL when promoting beyond local testing.
+
+## Dependency validation
+
+Use the committed lockfile with a supported Node.js version:
+
+```bash
+npm ci
+npm ls --all
+npm run lint
+npm test
+```
+
+The Node test runner starts the real shim and a disposable local ITA stub using
+synthetic configuration and OS-assigned ports (`PORT=0`); the startup message
+reports the actual bound port. Tests cover both forwarding routes, request headers,
+upstream errors, body limits and missing-configuration startup failures. No
+production ITA service or API key is required.
