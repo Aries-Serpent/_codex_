@@ -8,8 +8,9 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
-CANDIDATE = ".github/agents-holding/cdx-archive-lifecycle.agent.md"
+CANDIDATE = ".github/agents/cdx-archive-lifecycle.agent.md"
 CANDIDATE_ID = "cdx-archive-lifecycle"
+LEGACY_CANDIDATE = ".github/agents-holding/cdx-archive-lifecycle.agent.md"
 MODULES = {
     "common": (
         "scripts/archive/cdx_common.py",
@@ -313,12 +314,12 @@ def build_cdx_context(root: Path = ROOT) -> dict[str, Any]:
         if name == "preflight":
             skills[-1]["context_cli"] = index[name]["context_cli"]
     if not (root / CANDIDATE).is_file():
-        raise ValueError("CDX staged candidate missing")
+        raise ValueError("CDX local profile missing")
     candidate: dict[str, Any] = {
         "id": CANDIDATE_ID,
         "name": "CDX Archive Lifecycle",
         "path": CANDIDATE,
-        "status": "staged_candidate",
+        "status": "local_profile",
         "discoverable": True,
         "hosted_activation": "not_established",
         "authorization": "none_granted",
@@ -326,8 +327,8 @@ def build_cdx_context(root: Path = ROOT) -> dict[str, Any]:
     skills.append(
         {
             **candidate,
-            "kind": "agent_candidate",
-            "availability": "staged_candidate",
+            "kind": "agent_profile",
+            "availability": "local_profile",
             "module_index_keys": list(index),
         }
     )
@@ -379,6 +380,8 @@ def refresh_cdx_context(packet: dict[str, Any]) -> None:
         registry["agent_candidates"].extend(
             row
             for row in previous.get("agent_candidates", [])
-            if isinstance(row, dict) and row.get("path") != CANDIDATE
+            if isinstance(row, dict)
+            and row.get("id") != CANDIDATE_ID
+            and row.get("path") not in {CANDIDATE, LEGACY_CANDIDATE}
         )
     packet.update(catalog)

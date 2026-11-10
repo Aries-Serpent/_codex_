@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Fixed (SN) - PR #5765 PDA baseline (2026-11-09)
+- Classify five confirmed public PDA provenance fingerprints that blocked Fast Validation; preserve ledger history and detect unknown values with regression coverage, without excluding the ledger or changing scanner rules.
+- Preserve the concurrent automation provenance update through local merge rather than rewriting either branch's history.
+- Retain the subsequent metadata-only update and revalidate the integrated correction after publication races.
+- Integrate the peer review fix and packet update without dropping the PDA correction or peer work.
+
+### Fixed — PR #5765 readiness follow-up (2026-11-09)
+- Remove the documented Codespace guide's trailing whitespace found by Fast Validation, and keep Rust advisory auditing available to fork pull requests without asking their read-only token to publish a check.
+- Record the verified preflight push denial and no-job startup failure separately from local checks; current hosted checks remain action-required and review approval is not established.
+
 ### Fixed — CDX archive review and session context (2026-11-08)
 - Harden archive review paths, scanner suppression controls, and verification/extraction identity; add bounded batch discovery and source-located CDX session context.
 - Give Copilot setup an explicit Python 3.12 input: the review runner's Ubuntu 26.04 image has no Python 3.12.10 build. Preserve approval controls and report hosted CI separately from local validation.

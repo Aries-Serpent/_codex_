@@ -931,6 +931,7 @@ jobs:
     - await-approval
     - cognitive-preflight
     runs-on: ubuntu-latest
+    environment: owner-approval
     timeout-minutes: 30
     if: 'always() &&
 
@@ -952,6 +953,10 @@ jobs:
 
       '
     steps:
+    - name: Verify protected owner approval
+      env:
+        OWNER_APPROVAL_PROTECTED: ${{ secrets.OWNER_APPROVAL_PROTECTED }}
+      run: test "$OWNER_APPROVAL_PROTECTED" = "true"
     - name: Cache Python dependencies (Layer 1)
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       with:
