@@ -22,6 +22,21 @@ statements about broader approval must not be treated as authorization to
 publish these newer changes. Reuse an existing approval only when it actually
 covers the same operation and exact scope.
 
+Worktree records such as `.codex/agent_auth_session.json` and
+`.github/OWNER_APPROVAL.yml` are not approval authority. The owner-approval guard
+accepts approval-window values supplied by trusted workflow configuration. The
+Docker workflow uses repository variables, not dispatch inputs, and gates its
+approval, build, and push jobs with the `owner-approval` environment. The
+`COPILOT_AGENT_AUTH_ENABLED` bypass additionally requires
+`OWNER_APPROVAL_PROTECTED=true` from that environment. Configure it with
+required independent maintainer reviewers and the `OWNER_APPROVAL_PROTECTED`
+secret set to `true`; verify those settings before relying on the gate. A
+cached delegation flag alone is insufficient. Evaluate trusted guard code
+before any PR-controlled checkout or execution; never expose approval secrets
+to untrusted code. Configuring or executing that protected gate requires
+separate maintainer authorization. A committed record, dispatch input, or
+cached delegation flag does not prove that protection exists.
+
 ### Important researched limitation
 
 The continuation records an Alpine/musl environment. The official VS Code
@@ -327,7 +342,7 @@ No matching run means pending/unavailable evidence, not success.
 
 | Claim | Required evidence |
 | --- | --- |
-| Authentication fix works | The patched revision successfully creates the expected check run; no GitHub App authentication failure |
+| Authentication fix works | A separately authorized reporting case on the patched revision successfully creates the expected check run; no GitHub App authentication failure. A clean audit leaves check publication unverified |
 | Advisory remediation works in CI | Audit and cargo-deny complete successfully for the patched revision |
 | Security job passes | `Security Audit` is completed with conclusion `success` |
 | Entire workflow passes | Every required job and the workflow conclusion are independently verified |
@@ -335,6 +350,12 @@ No matching run means pending/unavailable evidence, not success.
 
 `queued`, `in_progress`, `skipped`, `cancelled`, `neutral` and `unavailable` are
 not success.
+
+The pinned `rustsec/audit-check` returns before `reporter.reportCheck` when
+there are no vulnerabilities or warnings. A successful clean audit therefore
+does not exercise check-creation permissions. Do not introduce vulnerabilities
+into the project to validate reporting; obtain separate authorization for an
+isolated representative reporting case.
 
 ### 4.5 Failed-run handling
 
