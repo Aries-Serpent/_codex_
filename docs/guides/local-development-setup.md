@@ -293,7 +293,8 @@ psql postgres
 
 # Create development database
 CREATE DATABASE codex_dev;
-CREATE USER codex_user WITH PASSWORD 'dev_password';
+CREATE USER codex_user;
+\password codex_user
 GRANT ALL PRIVILEGES ON DATABASE codex_dev TO codex_user;
 
 # Exit
@@ -400,65 +401,17 @@ curl http://localhost:8000/metrics
 
 ### Visual Studio Code
 
-**Install extensions**:
-- Python (Microsoft)
-- Pylance
-- Black Formatter
-- Pylint
-- autoDocstring
+Use the tracked [extension recommendations](../../.vscode/extensions.json),
+[settings](../../.vscode/settings.json), [tasks](../../.vscode/tasks.json) and
+[debugpy launches](../../.vscode/launch.json). Select your supported interpreter
+with **Python: Select Interpreter**; no machine-specific path is committed.
+Dedicated Black/Ruff extensions replace deprecated Python lint/format settings.
+See [the native workspace guide](../agent/CODESPACE_COPILOT_AGENT_GUIDE.md#existing-remote-vs-code-workspace)
+for scoped Copilot task execution, debugging and actual agent selection.
 
-**`.vscode/settings.json`**:
-```json
-{
- "python.defaultInterpreterPath": "${workspaceFolder}/venv/bin/python",
- "python.linting.enabled": true,
- "python.linting.pylintEnabled": true,
- "python.formatting.provider": "black",
- "python.formatting.blackArgs": ["--line-length", "100"],
- "editor.formatOnSave": true,
- "editor.rulers": [100],
- "[python]": {
- "editor.defaultFormatter": "ms-python.python",
- "editor.formatOnSave": true
- }
-}
-```
-
-**`.vscode/launch.json`**:
-```json
-{
- "version": "0.2.0",
- "configurations": [
- {
- "name": "Python: Current File",
- "type": "python",
- "request": "launch",
- "program": "${file}",
- "console": "integratedTerminal"
- },
- {
- "name": "Python: Flask",
- "type": "python",
- "request": "launch",
- "module": "flask",
- "env": {
- "FLASK_APP": "src/codex_ml/api/app.py",
- "FLASK_ENV": "development"
- },
- "args": ["run"],
- "jinja": true
- },
- {
- "name": "Python: Debug Tests",
- "type": "python",
- "request": "launch",
- "module": "pytest",
- "args": ["tests/", "-v", "-s"],
- "console": "integratedTerminal"
- }
- ]
-}
-```
+Use F5 with the maintained current-file or CDX context-test launch. These use
+debugpy and the selected interpreter without automatically starting a service
+or collecting the entire test suite.
 
 ### PyCharm Professional
 
@@ -603,7 +556,7 @@ pg_isready
 tail -f /var/lib/postgresql/data/postgresql.log # Linux
 
 # Reset PostgreSQL password
-psql -U postgres -c "ALTER USER codex_user PASSWORD 'new_password';"
+psql -U postgres -c '\password codex_user'
 ```
 
 **Issue 4: Dependency Conflicts**
