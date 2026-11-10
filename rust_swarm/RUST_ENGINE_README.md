@@ -159,4 +159,24 @@ MIT License - See LICENSE file for details
 
 ## Contributing
 
+### Python gzip boundary validation
+
+Build a fresh wheel with `python -m maturin build --release --features python
+--locked --out /tmp/codex-wheels`, install that wheel with `pip install --no-deps`
+into a disposable Python 3.12 environment containing pytest, and verify
+`codex_swarm.__file__` points into that environment before running
+`tests/rust_integration/test_phase4_boundary.py`. The required gate must first
+run `python -c 'import codex_swarm; print(codex_swarm.__file__)'` and stop on
+failure, then run the boundary tests and verify zero skips in JUnit. The normal
+Python-only suite retains its optional-extension skip; that skip is not
+compatibility evidence. `test_compression_integration.py` targets a different
+pipeline and does not validate this FFI.
+
+`Compression` exchanges gzip payloads with Python's `gzip`. Malformed or
+truncated streams raise `OSError`; output exceeding the explicit limit raises
+`ValueError`. Exactly the limit is accepted, including empty output at zero.
+The default expansion limit remains 64 MiB. The suite compares payloads rather
+than gzip headers and covers optional header fields affected by flate2 1.1.11;
+reader retry and write-decoder APIs are not exposed by this byte-buffer FFI.
+
 See `.github/plans/RUST_SWARM_ARCHITECTURE_PLANSET.md` for implementation details and `.github/prompts/RUST_SWARM_PROMPTSET.md` for autonomous execution templates.

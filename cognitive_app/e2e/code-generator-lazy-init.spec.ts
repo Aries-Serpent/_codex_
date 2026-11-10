@@ -69,6 +69,19 @@ async function waitForToast(page: Page, text: string, timeout = 5000) {
 test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
 
   test.beforeEach(async ({ page }) => {
+    // Keep historical app scenarios isolated from real APIs and Spark services.
+    await page.route('**/*', async (route) => {
+      const url = new URL(route.request().url());
+      if (url.origin !== new URL(BASE_URL).origin || /^\/(?:_spark|api)\//.test(url.pathname)) {
+        await route.fulfill({
+          status: 503,
+          contentType: 'application/json',
+          body: JSON.stringify({ error: 'Synthetic unavailable API' }),
+        });
+      } else {
+        await route.continue();
+      }
+    });
     // Clear any existing storage
     await page.context().clearCookies();
     await page.evaluate(() => localStorage.clear());

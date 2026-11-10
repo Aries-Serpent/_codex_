@@ -28,6 +28,16 @@ import { defineConfig, devices } from '@playwright/test';
  */
 const shouldUseHarReplay = !!(process.env.CI || process.env.PLAYWRIGHT_HAR_REPLAY);
 const harReplayConfig = shouldUseHarReplay ? { serviceWorkers: 'block' as const } : {};
+const production = process.env.E2E_PRODUCTION === '1';
+const port = process.env.E2E_PORT || '5173';
+const baseURL = process.env.BASE_URL || `http://127.0.0.1:${port}/`;
+if (!/^\d+$/.test(port) || Number(port) < 1 || Number(port) > 65535) {
+  throw new Error('E2E_PORT must be a TCP port');
+}
+const site = new URL(baseURL);
+if (site.protocol !== 'http:' || site.hostname !== '127.0.0.1' || site.port !== port) {
+  throw new Error('BASE_URL must use the task-owned loopback E2E_PORT');
+}
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -57,7 +67,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env.BASE_URL || 'http://localhost:5173',
+    baseURL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -131,9 +141,12 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
+    command: production
+      ? `npm run preview -- --host 127.0.0.1 --port ${port} --strictPort`
+      : `npm run dev -- --config e2e/vite.config.ts --host 127.0.0.1 --port ${port} --strictPort`,
+    url: baseURL,
+    reuseExistingServer: false,
+    env: { GITHUB_ACTIONS: production ? process.env.GITHUB_ACTIONS || '' : '' },
     timeout: 120 * 1000, // 2 minutes to start dev server
     stdout: 'pipe',
     stderr: 'pipe',
