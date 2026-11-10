@@ -1,7 +1,7 @@
 version: 2.0.1
-last_updated: '2026-10-05T05:00:00Z'
-total_agents: 119
-active_agents: 100
+last_updated: '2026-11-08T12:52:47Z'
+total_agents: 121
+active_agents: 102
 archived_agents: 19
 enforcement_tier: MIXED
 execution_contract:
@@ -73,6 +73,43 @@ execution_contract:
     completion_gate: final_merge_gate_passed
     description: Final readiness lane that accepts only converged evidence.
 agents:
+- id: cdx-archive-lifecycle
+  name: CDX Archive Lifecycle
+  version: 1.0.0
+  directory: .github/agents
+  file: .github/agents/cdx-archive-lifecycle.agent.md
+  status: active
+  maturity: experimental
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: true
+  category: archive
+  subcategory: content_addressable_lifecycle
+  purpose: Operate existing CDX pack, query, verify, and rehydrate tools safely.
+  description: >-
+    Repository profile for scanner-gated archive creation, read-only queries,
+    integrity verification, safe extraction, and authorized same-scope fixes.
+    Registration does not establish hosted selection or archive clearance.
+  capabilities:
+  - archive_packing
+  - archive_querying
+  - integrity_verification
+  - safe_extraction
+  capability_tags:
+  - cdx
+  - archive-lifecycle
+  - content-addressable
+  - scanner-gated
+  - safe-extraction
+  integration_points:
+  - scripts/archive/codex_packer.py
+  - scripts/archive/codex_query.py
+  - scripts/archive/codex_rehydrate.py
+  - scripts/archive/CDX_SQLITE.md
+  priority: high
+  role: specialist
+  selectable: true
 - id: deep-research-analysis-agent
   name: Evidence-Grounded Deep Research Analysis Agent
   version: 1.0.0
