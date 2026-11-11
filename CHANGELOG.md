@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5773 review follow-up (2026-11-11)
+- Separate default and dedicated lazy-init E2E discovery, preserve external HAR targets without starting a local server, and decode filesystem URLs for variant-server working directories.
+- Align the frontend Node engine declaration and lock metadata with jsdom 31, retaining requested dependency upgrades, and restore the startup packet's prior generated timestamp.
+
 ### Fixed (SN) - PR #5765 PDA baseline (2026-11-09)
 - Classify five confirmed public PDA provenance fingerprints that blocked Fast Validation; preserve ledger history and detect unknown values with regression coverage, without excluding the ledger or changing scanner rules.
 - Preserve the concurrent automation provenance update through local merge rather than rewriting either branch's history.
