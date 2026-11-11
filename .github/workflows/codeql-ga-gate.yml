@@ -55,16 +55,16 @@ jobs:
         fetch-depth: 0
         persist-credentials: false
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@311b4ee155dcdab395044f00946f664bd51ff173
+      uses: github/codeql-action/init@0911ee96d2d6c8def97122c36c5cadd93829a4b4
       with:
         languages: python, javascript
         queries: security-extended, security-and-quality
         config-file: ./.github/codeql/codeql-config.yml
     - name: Autobuild
-      uses: github/codeql-action/autobuild@311b4ee155dcdab395044f00946f664bd51ff173
+      uses: github/codeql-action/autobuild@0911ee96d2d6c8def97122c36c5cadd93829a4b4
     - name: Perform CodeQL Analysis
       if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-      uses: github/codeql-action/analyze@311b4ee155dcdab395044f00946f664bd51ff173
+      uses: github/codeql-action/analyze@0911ee96d2d6c8def97122c36c5cadd93829a4b4
       with:
         category: python-security-gate-${{ github.run_id }}-${{ github.run_attempt }}
         # Default CodeQL setup is enabled for this repository, so SARIF upload from

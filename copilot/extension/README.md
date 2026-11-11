@@ -23,3 +23,13 @@ request is validated, logged, and replayed to the ITA with the required headers.
 variables rather than source control.
 
 > **Note:** Fill in your GitHub App credentials and deploy `server/` to an accessible URL when promoting beyond local testing.
+
+## Regression checks
+
+Run `npm ci`, `npm run lint`, and `npm test` from this directory. The Node
+built-in test runner starts the real CommonJS server and an ITA stub on
+OS-assigned loopback ports, with synthetic configuration and an isolated working
+directory. It checks forwarding, request IDs, error responses, missing
+configuration, and the existing 1 MiB JSON limit. No production service or API
+key is required. `HOST=127.0.0.1 PORT=0` can also be used for manual local checks;
+the startup message reports the actual bound port.
