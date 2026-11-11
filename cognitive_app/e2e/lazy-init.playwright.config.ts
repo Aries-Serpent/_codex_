@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { resolve } from 'node:path';
 import { variantNames, variantURL } from './lazy-init/variants';
 
 const firstPort = Number(process.env.LAZY_PORT || 5410);
@@ -40,7 +41,7 @@ export default defineConfig({
     const port = firstPort + index;
     const args = `--config e2e/lazy-init.vite.config.ts --host 127.0.0.1 --port ${port} --strictPort`;
     return {
-      cwd: new URL('..', import.meta.url).pathname,
+      cwd: resolve(import.meta.dirname, '..'),
       command: production
         ? `node node_modules/vite/bin/vite.js build --config e2e/lazy-init.vite.config.ts && node node_modules/vite/bin/vite.js preview ${args}`
         : `node node_modules/vite/bin/vite.js ${args}`,

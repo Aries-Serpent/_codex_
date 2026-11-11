@@ -35,15 +35,17 @@ if (!/^\d+$/.test(port) || Number(port) < 1 || Number(port) > 65535) {
   throw new Error('E2E_PORT must be a TCP port');
 }
 const site = new URL(baseURL);
-if (site.protocol !== 'http:' || site.hostname !== '127.0.0.1' || site.port !== port) {
-  throw new Error('BASE_URL must use the task-owned loopback E2E_PORT');
+if (!['http:', 'https:'].includes(site.protocol) || site.username || site.password) {
+  throw new Error('BASE_URL must be an HTTP(S) URL without credentials');
 }
+const externalServer = !!process.env.BASE_URL;
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
   testDir: './e2e',
+  testIgnore: '**/code-generator-lazy-init.spec.ts',
 
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -140,7 +142,7 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: {
+  webServer: externalServer ? undefined : {
     command: production
       ? `npm run preview -- --host 127.0.0.1 --port ${port} --strictPort`
       : `npm run dev -- --config e2e/vite.config.ts --host 127.0.0.1 --port ${port} --strictPort`,
