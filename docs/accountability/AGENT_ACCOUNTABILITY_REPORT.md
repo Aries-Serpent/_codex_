@@ -1,3 +1,73 @@
+## Session: PR #5773 bounded final validation recovery — 2026-11-11
+
+### Agents Used
+
+- `recover-validation` — prior timed-out run identification and recovery research.
+- `harness-review` — read-only harness review and verification of scoped corrections.
+- `exact-head-security` — read-only security review and dependency-advisory triage.
+- `frontend-gates` — installed dependency tree, unit, lint, compiler and audit gates.
+- `extension-final` — clean extension install, lint and real HTTP regression tests.
+- Parent agent — authenticated job-log recovery, scoped edits, browser matrices,
+  source-consumption checks and publication.
+
+### Evidence and outcome
+
+- Recovered authenticated logs for run `42769032330`, job `129672232718`.
+  The prior session exceeded GitHub's 59-minute limit. Historical reported
+  373 CDX tests, 19 fresh-wheel FFI tests and Rust gates are carried forward,
+  not represented as fresh exact-head executions in this session.
+- Published harness correction `cc0088199696`: require exactly one new infer
+  request for each generation, await completion rather than stale output,
+  attach request/error evidence, retain both teardown boundary failures, and
+  correct the ten-port upper boundary. Added a schema-invalid HTTP 200 response
+  regression without changing production fallback behavior.
+- Development, root-production and GitHub Actions base-path affected-feature
+  matrices each passed **21 tests**, covering Chromium, Firefox and WebKit:
+  **63 passed, zero failures/skips/retries**. Matching browser prerequisites
+  were installed only after the installed CLI reported them missing.
+- Corrected lazy-init development, root-production and optional base-path
+  production each passed **87 tests, zero failures/skips/retries** (29 scenarios
+  across three engines): **261 passed**. Each run had a fixed upper bound.
+- A disposable wrong-endpoint mutation failed as expected, proving exact API
+  matching is enforced. All ten owned variant servers were closed after that
+  intentional failure, and all fixture ports were closed after the final run.
+- Fresh frontend unit tests passed **197 tests in 19 files**. Changed-file lint
+  passed. Full lint remains **44 errors / 65 warnings**, matching the exact
+  pre-fix baseline after root/alignment normalization. The explicit compiler
+  still fails with **62 diagnostics**, byte-identical to that baseline.
+- Fresh extension clean install, lint and **three real HTTP tests** passed,
+  with zero skips. Source-consumption checks cover all nine dependency files:
+  zero missing source changes; source lockfiles and non-JSON blobs match.
+  Staging still lacks the upgrades; inclusion here does not establish inclusion
+  in PR #5766. The original local startup-packet change remains uncommitted.
+- Static security review found no high-confidence exploitable issue in the
+  scoped changes; changed-file secret scanning found no secrets. CodeQL on
+  `cc0088199696` reported zero Actions alerts, skipped Python for database size,
+  and timed out before all languages completed. Do not retry that operation or
+  describe it as full security clearance.
+- Today's PDA JSON entry is valid and the existing PDA integrity suite passed
+  **68 tests**. Existing ledger records and scanner suppressions are preserved.
+
+**Open findings, owners and next steps:**
+
+- **Frontend maintainers:** both browser matrices, including their separate
+  base-path builds, are complete. Preserve existing lint/compiler diagnostics until
+  separately scoped remediation is authorized.
+- **Dependency/API-client maintainers:** frontend audit reports ten moderate
+  findings and one existing high Zod finding, GHSA-mrhx-c7xc-m3w5 (`<4.6.6`).
+  Establish vulnerable constrained-collection reachability and evaluate a
+  compatible upgrade separately. Extension audit retains four moderate findings.
+- **Security/CI maintainers:** complete an authorized, resource-appropriate
+  exact-head analysis; the local checker cannot establish Python/JavaScript
+  clearance. No scanner limits, exclusions or execution approvals were weakened.
+- **PR maintainer:** obtain actual hosted checks/reviews and decide protected
+  staging integration. The recorded maintainer approval binds to `15ad5cc8`,
+  not the newer harness correction. No approval, workflow retry/dispatch, merge, or source-PR
+  state mutation was performed in this session. Local success is not merge
+  readiness.
+
+---
+
 ## Session: PR #5765 Fast Validation PDA correction - 2026-11-09
 
 ### Agents Used
