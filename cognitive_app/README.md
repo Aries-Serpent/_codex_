@@ -65,7 +65,7 @@ cascade timing constants; browser scripts never pretend to mutate Vite's
 `import.meta.env`. `LAZY_PORT` selects the first of ten consecutive ports
 (default 5410–5419). Occupied ports fail rather than attaching to another server.
 The config owns startup/shutdown, blocks service workers, has no retries/skips,
-and runs all 28 cases in Chromium, Firefox and WebKit:
+and runs all 29 cases in Chromium, Firefox and WebKit:
 
 ```bash
 GITHUB_ACTIONS='' node node_modules/@playwright/test/cli.js test \
@@ -139,6 +139,9 @@ unchanged.
 | Keyboard submission | L25: explicit prompt focus, Tab focus on Generate, Enter generates exactly once |
 
 Additional cases assert that **429 rejects without demo success**, 5001
-characters cannot submit while 5000 can, and failed keyed status explicitly
-connects in demo mode. Development/production fixture success never waives
+characters cannot submit while 5000 can, failed keyed status explicitly
+connects in demo mode, and malformed successful responses are rejected before
+explicit demo fallback. Each generation must issue exactly one new infer request;
+teardown attaches request/error evidence and records both boundary assertions
+without replacing the original test failure. Development/production fixture success never waives
 existing lint, type or unit gates.

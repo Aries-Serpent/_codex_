@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 import { variantNames, variantURL } from './lazy-init/variants';
 
 const firstPort = Number(process.env.LAZY_PORT || 5410);
-if (!Number.isInteger(firstPort) || firstPort < 1024 || firstPort + variantNames.length > 65535) {
+if (!Number.isInteger(firstPort) || firstPort < 1024 || firstPort + variantNames.length - 1 > 65535) {
   throw new Error('LAZY_PORT must start an unprivileged ten-port loopback range');
 }
 const production = process.env.E2E_PRODUCTION === '1';

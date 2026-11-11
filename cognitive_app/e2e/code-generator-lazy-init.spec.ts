@@ -26,6 +26,7 @@ type Harness = {
   inferStatus: number;
   statusCode: number;
   cacheHit: boolean;
+  malformedResponse: boolean;
   hasKey: () => boolean;
   holdStatus: () => void;
   releaseStatus: () => void;
@@ -42,7 +43,7 @@ const test = base.extend<{ harness: Harness }>({
     const pageErrors: string[] = [];
     page.on('pageerror', error => pageErrors.push(error.message));
     const harness: Harness = {
-      calls: [], inferStatus: 200, statusCode: 200, cacheHit: false,
+      calls: [], inferStatus: 200, statusCode: 200, cacheHit: false, malformedResponse: false,
       hasKey: () => Boolean(variants[active].key),
       holdStatus() { statusGate = new Promise<void>(resolve => { release = resolve; }); },
       releaseStatus() { release(); statusGate = undefined; },
@@ -95,7 +96,9 @@ const test = base.extend<{ harness: Harness }>({
           await route.fulfill({
             status: harness.inferStatus,
             json: harness.inferStatus === 200
-              ? { ...response, metadata: { ...response.metadata, cache_hit: harness.cacheHit } }
+              ? harness.malformedResponse
+                ? { code: 'untrusted malformed response' }
+                : { ...response, metadata: { ...response.metadata, cache_hit: harness.cacheHit } }
               : { message: `Synthetic infer ${harness.inferStatus}` },
           });
         }
@@ -112,8 +115,12 @@ const test = base.extend<{ harness: Harness }>({
       await runFixture(harness);
     } finally {
       harness.releaseStatus();
-      expect(unexpected, 'No unmocked external/backend traffic').toEqual([]);
-      expect(pageErrors, 'No uncaught browser errors').toEqual([]);
+      await testInfo.attach('harness-evidence.json', {
+        body: JSON.stringify({ variant: active, calls: harness.calls, unexpected, pageErrors }),
+        contentType: 'application/json',
+      });
+      expect.soft(unexpected, 'No unmocked external/backend traffic').toEqual([]);
+      expect.soft(pageErrors, 'No uncaught browser errors').toEqual([]);
     }
   },
 });
@@ -131,12 +138,14 @@ async function connected(page: Page) {
 
 async function generate(page: Page, harness: Harness, text = 'Create a synthetic Python function') {
   await connected(page);
+  const previousCalls = inferCalls(harness).length;
   await prompt(page).fill(text);
   await expect(generateButton(page)).toBeEnabled();
   await generateButton(page).click();
   await expect(page.getByRole('heading', { name: 'Generated Code', exact: true })).toBeVisible();
+  await expect(generateButton(page)).toBeEnabled();
   if (harness.hasKey()) {
-    expect(inferCalls(harness).length).toBeGreaterThan(0);
+    await expect.poll(() => inferCalls(harness).length).toBe(previousCalls + 1);
     expect(inferCalls(harness).at(-1)).toMatchObject({
       method: 'POST', authorization: expectedAuthorization,
       body: { prompt: text, context: { language: 'python', tier: 'B' } },
@@ -439,4 +448,16 @@ test('failed keyed status explicitly connects in demo mode', async ({ page, harn
   await connected(page);
   await expect(page.getByText('API connection failed, using demo mode', { exact: true })).toBeVisible();
   expect(statusCalls(harness)).toHaveLength(1);
+});
+
+test('malformed successful infer response is rejected before explicit demo fallback', async ({ page, harness }) => {
+  harness.malformedResponse = true;
+  await harness.open();
+  await generate(page, harness);
+  expect(inferCalls(harness)).toHaveLength(1);
+  await demoResult(page);
+  await expect(page.getByText('Generation failed', { exact: true })).toBeVisible();
+  await expect(page.getByText(/Primary API failed:/)).toBeVisible();
+  await expect(page.locator('pre code')).not.toContainText('untrusted malformed response');
+  await expect(page.getByText(/Generated with Codex API/)).toHaveCount(0);
 });
