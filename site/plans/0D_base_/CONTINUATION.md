@@ -597,3 +597,30 @@ on unmodified HEAD due to the repository `torch/` stub; hosted
 targeting `main`, so it must be confirmed on #5766 after #5776 reaches
 `0D_base_`. #5766 remains NOT READY pending that run, Security/CI acceptance
 of the 2,794-result SARIF inventory, and genuine protected owner approval.
+
+### #5776 integrated; `[skip ci]` suppression of #5766 checks
+
+PR #5776 was squash-merged into `0D_base_` as `a801ed41` at
+`2026-11-12T05:05:00Z`. The default squash body listed the bot commit
+`chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci]`, so GitHub
+created no `push` or `pull_request` workflow runs for #5766's new head; only
+dynamic Copilot/CodeQL runs appeared. An absent run is not a pass. This
+follow-up is merged with an explicit commit message free of skip directives so
+the PR-to-`main` lanes (ML integration, GA CodeQL gate, RAG) execute on the
+real head. **Convention:** when squash-merging staging sub-PRs, always supply
+an explicit commit body; never inherit bot `[skip ci]` lines.
+
+Pre-merge hosted results on `1a591054`: Enterprise Compliance & CodeQL
+`43156022460` success; WEC, Status, Deferral and Strict No-Deferral gates
+success; Agent Token Delegation failed at the protected-approval step
+(repository admin owner). RAG Module Tests `43156015673` ended with a hosted
+runner shutdown signal (exit 143), matching pre-existing run `41394751224`,
+after reporting failures in unchanged `tests/rag/` files. **Owner:** RAG/CI
+maintainers to diagnose runner resource exhaustion and the RAG test failures;
+no rerun or scope change was made here.
+
+Expected on #5766 once checks run: the GA gate now sees the true backlog
+(644 critical / 358 high / 1,792 medium from the original artifact replay) and
+should fail under its `high` threshold. That is a correct, previously masked
+signal, not a regression to suppress; Security/CI owners must remediate or
+formally disposition it before #5766 can be represented as ready.

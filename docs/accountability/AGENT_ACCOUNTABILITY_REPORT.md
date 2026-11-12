@@ -24872,3 +24872,10 @@ because the repository-root `torch/` stub shadows real Torch on this Alpine
 host. Secret-hook false positives in pre-existing dummy fixtures were marked
 inline. **Owner:** ML Components/CI maintainers; hosted ML integration on
 the PR #5766 head remains the authority.
+
+**Post-merge follow-up (direct execution).** #5776 merged as `a801ed41`; its
+inherited `[skip ci]` squash line suppressed all #5766 PR workflows. This
+documentation-only follow-up records the cause and is merged with an explicit
+clean message to obtain genuine hosted evidence on #5766's head.
+Cognitive pre-flight REQ-5 required `CHANGELOG.md` in the last commit; the
+changelog entry was added in a follow-up commit (bot auto-fix push was denied).

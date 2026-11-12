@@ -6,6 +6,7 @@
 - Include the Copilot extension source and tests in the shared CodeQL scope without changing query suites, exclusions, permissions or approval gates.
 - Recover and verify the original hosted SARIF/source artifacts; record the actual 2,794 Python and zero JavaScript results, older checkout binding and unresolved candidate assurance instead of claiming a 35-result triage or promotion readiness.
 - Repair ML integration-test failures blocking PR #5766: bound pandas to `>=3.0.5,<3.1` (Evidently 0.7 needs an API removed in 3.1), use Evidently's legacy report API with explicit p-value tests and fail closed on missing drift results, accept OmegaConf mappings in pipeline validation, parse multi-field perf logs, fix `build_api_docs` repository-root resolution, and never re-register an inactive tenant's API key from a stale auth cache. Hosted ML integration remains the authority (local Torch is a repository stub on this host).
+- Record that #5776's default squash body inherited a bot `[skip ci]` line, suppressing all #5766 PR workflows; staging sub-PRs must be squash-merged with an explicit commit body.
 - Honor SARIF rule-inherited severity levels in the GA gate: the original artifact omitted every result-level field, so the old parser incorrectly counted zero findings. Preserve existing policy buckets and thresholds rather than suppressing the newly visible backlog.
 
 ### Fixed — PR #5766 Data Quality startup failure (2026-11-12)
