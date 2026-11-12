@@ -219,9 +219,15 @@ _PERMISSION_LEVELS = {"none": 0, "read": 1, "write": 2}
 
 
 def _permission_grants(permissions: object) -> dict[str, int] | None:
-    """Normalize a permissions block; ``None`` means every scope at write."""
-    if permissions is None or permissions == "write-all":
+    """Normalize a permissions block; return ``None`` for write on every scope.
+
+    An omitted block (``None``) falls back to the repository's default token
+    permissions, which may be read-only, so it guarantees no grant.
+    """
+    if permissions == "write-all":
         return None
+    if permissions is None:
+        return {}
     if permissions == "read-all":
         return {"*": _PERMISSION_LEVELS["read"]}
     assert isinstance(permissions, dict), f"Unexpected permissions: {permissions!r}"
