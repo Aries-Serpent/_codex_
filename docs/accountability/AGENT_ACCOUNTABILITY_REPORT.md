@@ -24739,3 +24739,51 @@ On 2026-11-08, evidence-based replies were posted to all eight open review threa
 and verified in the PR thread listing. The threads remain open; the CodeQL alert
 was not dismissed because its detail API returned 403 and owner-side disposition
 has not been recorded.
+
+## Session: 2026-11-12T03:30Z — PR #5766 merge readiness and Data Quality startup fix
+
+**Status:** Partial. The Data Quality startup failure is fixed in sub-PR #5775,
+which targets `0D_base_`, and the fix passed on hosted runs for that PR. The
+promotion of PR #5766 still depends on owner-only settings actions recorded
+below. Agents: none. This was direct execution with no delegated agents.
+
+### Evidence and impact
+
+- `data-quality-suite.yml` called the reusable `cost-gate.yml` without
+  job-level permissions. The `rescue-comment` job in `cost-gate.yml` requests
+  `issues: write`, which exceeded the caller's grant, so GitHub rejected every
+  run at startup with zero jobs. This affected `main`, `0D_base_`, and the
+  PR #5766 attempt-2 run `42962244177`. The caller now grants
+  `contents: read`, `issues: write` and `pull-requests: write`.
+  `docker-build-push.yml` had the same latent defect; it is manually disabled
+  and now gets the same grant. `cost-gate.yml` was not changed.
+- Hosted results on head `389f82a8`:
+  - Data Quality & Determinism Suite run `43146712483` succeeded with six
+    jobs.
+  - Code Quality, Validation Pipeline, Status Gate, Strict No-Deferral,
+    Template Lint, Workflow Execution Gate, Deferral Language Gate, Semgrep
+    and the Rust swarm also succeeded.
+- Local results:
+  - 69 tests passed across the cost-gate, owner-approval guard, workflow YAML
+    and workflow validation suites.
+  - The new caller test failed against the unfixed workflow.
+  - actionlint 1.7.12 passed.
+  - The workflow compliance matrix was unchanged.
+- Copilot review comment `4545792398` was valid: an omitted permissions block
+  no longer counts as a write grant in the regression test.
+
+### Ownership and next action
+
+- **Agent Token Delegation (repository admin):** the run still fails closed at
+  `Verify protected owner approval`. The `owner-approval` environment has no
+  protection rules, so configure its required reviewers and the
+  `OWNER_APPROVAL_PROTECTED` secret. The gate was not weakened.
+- **Auto-approve sweep (repository admin):** the sweep could not approve
+  Copilot-authored runs. Replace the non-PEM GitHub App private key and rotate
+  the rejected fallback PATs.
+- **ML Components integration failures (ML/CI maintainers):** these failures
+  also occur on `main`. The intermittent `test_gap23_boundaries` failures are
+  order-dependent.
+- **Still open:** the scorecard `auto_fix` backlog, CodeQL artifact binding,
+  the `copilot/extension` scope decision, the Zod advisory, and the
+  compiler/lint backlog.

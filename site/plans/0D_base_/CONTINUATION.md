@@ -158,3 +158,271 @@ Do not dispatch/approve workflows, weaken scanners, mutate source PRs, deploy
 or merge without explicit operation authorization. Use bounded checkpoints;
 publish authorized scoped changes and provide another precise continuation.
 ```
+
+## SARIF triage and extension coverage checkpoint — 2026-11-12
+
+### Exact-staging SARIF: blocked before triage
+
+The active local checkout is branch `0D_base_` at
+`8746dfaa29126f6f65d939d419d2834af737d755`; the locally cached
+`origin/0D_base_` ref has the same value. The workspace was clean before this
+checkpoint. The cached ref was not refreshed from GitHub, so this does not
+establish the current remote staging tip or PR #5773 merge state.
+
+The candidate evidence remains Enterprise Compliance & CodeQL run
+`42955914698`, attempt 2, recorded above against PR head `aafbc726`. Its four
+listed Python/JavaScript SARIF and source artifacts have not been retrieved or
+verified here. The terminal has no `gh` executable and the available GitHub
+interfaces did not expose Actions artifact download. A read-only PR #5773
+status query returned no status-check records; an empty result is not a pass or
+proof that the run/artifacts are current.
+
+The workspace also contains
+`.codex/reports/security/codeql-sarif/javascript/javascript.sarif`. Its
+structured metadata reports SARIF 2.1.0, CodeQL 2.26.0, JavaScript only, and
+37 results. No run/SHA binding to `42955914698` or current staging was
+established. It is not the stated 35-result set and is not accepted as a
+substitute. No finding rows or dispositions are asserted in this checkpoint.
+
+**Next action:** obtain the existing four artifacts through an authorized
+read-only artifact interface, or have an authorized maintainer place them in
+approved private storage. Verify archive and extracted-file hashes, run and
+attempt, checkout SHA, SARIF invocation metadata, and exact tree equivalence to
+the refreshed `0D_base_` tip. Then reconcile the claimed 35 results before
+triaging. If any binding fails or the count differs, record the discrepancy and
+keep triage blocked; do not filter, infer, or silently reuse PR-head results.
+Keep raw SARIF and source data in approved private storage. Because a separate
+`SARIF_TRIAGE.md` would currently be ignored by `.gitignore`, maintain the
+initial inventory/disposition record in this tracked continuation unless a
+separate, reviewed tracking-path decision is made.
+
+### `copilot/extension` CodeQL coverage: authorization pending, not changed
+
+The active `.github/codeql/codeql-config.yml` paths do not include the
+repository-root `copilot/extension/`. The active
+`.github/workflows/codeql-ga-gate.yml` analyzes JavaScript through this shared
+configuration. Therefore the recorded CodeQL success does not by itself prove
+that the extension source or tests were extracted and analyzed.
+
+**Next action / owner:** obtain a separately authorized coverage decision from
+the Security/CI maintainer: either add `copilot/extension/` to the shared CodeQL paths, with
+review of the impact on every consumer, or approve a separate least-privilege
+analysis lane if shared scope is unsuitable. No configuration/workflow change,
+workflow dispatch, permission change, alert dismissal, publication, or merge
+was made. Once authorized and reviewed, validate that the completed analysis
+for the exact staging SHA includes the extension source and tests; existing
+unit tests or config inspection alone do not prove CodeQL coverage.
+
+### Current limits
+
+- No exact-staging SARIF was downloaded, no 35-result count was verified, and
+  no finding was individually triaged or dispositioned.
+- No current remote branch/merge state or completed staging check result was
+  established by this local checkpoint.
+- Extension CodeQL coverage remains unverified pending owner decision,
+  reviewed implementation, and exact-SHA completed analysis.
+
+## PR #5773 and hosted-evidence refresh — 2026-11-12
+
+This refresh supersedes the earlier checkpoint's statements that merge state
+and remote staging state were not refreshed. The pre-existing local changes to
+this continuation are preserved; this section is appended rather than
+replacing that work.
+
+### Actual merge and successor timestamp
+
+The refreshed GitHub API reports PR #5773 closed and merged at
+`2026-11-11T04:34:37Z` as `0d185fa855a8a0ac6cd99ca5653892dab9bbaf9b` into
+`0D_base_` at `fec362069b774564e97afc792b279bbd7c9dc18f`. The current remote
+`0D_base_` tip is `8746dfaa29126f6f65d939d419d2834af737d755`, whose parent is
+the merge commit; ancestry was verified. `main` remains
+`25ab8b63afc8fddcc93dbbfb123e0d708c777e0e`. The current PR source head is
+`9cea274a43bb0cbb457fbb1d5ab089b0a570f25a`; its tree matches the merged tree
+`759654a453dfefefc6a204545c086a08debba9e6`.
+
+The CodeQL run head `aafbc726c14c7ca0fac51fdf25a5fee77a8ef53c` has tree
+`e749b94c`; comparing it with the merged tree shows only:
+
+- modified `.codex/session_startup_packet.json`;
+- added `site/plans/0D_base_/CONTINUATION.md`.
+
+No path in the configured CodeQL paths changed in that comparison, but this is
+not exact tree equivalence and does not replace source-artifact or SARIF
+binding.
+
+The merged commit's packet timestamp is `2026-11-11T04:25:05Z`; its sole
+successor changes only that field to `2026-11-11T04:41:25Z`. The earlier
+`f983ac60` packet value was `2026-11-10T05:13:16Z`, and the CodeQL run-head
+value was `2026-11-11T03:44:16Z`. No timestamp restoration was made. Keep
+this churn visible; do not restore or regenerate the packet absent separately
+authorized scope.
+
+### Existing CodeQL artifacts: metadata available, triage still blocked
+
+Run `42955914698`, attempt 2, completed successfully against head `aafbc726`.
+GitHub lists the following four unexpired artifacts, expiring
+`2027-01-10T03:59:57Z`:
+
+| Artifact | ID | Listed size | API-listed archive SHA-256 |
+| --- | ---: | ---: | --- |
+| Python SARIF (`codeql-results-python`) | 13827513062 | 474808 bytes | `d9cd27300fdfd8b889a1d50b5edfac1de109ad1a8bc7562ab95bd7bfb520d8a5` |
+| Python source (`codeql-source-python`) | 13827418474 | 389 bytes | `b4c8ecd7fb57282510d3f1f542e7df09871ab06b46c46c35ab119ccee5197c39` |
+| JavaScript SARIF (`codeql-results-javascript`) | 13826663822 | 152012 bytes | `2a1796f4903d7084e7170ca7d0fbbe303b6e3a8e9c986e133e9741e6995a1310` |
+| JavaScript source (`codeql-source-javascript`) | 13827670386 | 389 bytes | `f714636f2acebcc330723c066b5ec282eaa664e616e583d616cf17d53349c06f` |
+
+These are API metadata digests only; the archive bytes and contents have not
+been verified. Download attempts using `GITHUB_TOKEN` returned HTTP 401 for
+the four artifacts. A bounded retry for the Python SARIF with
+`CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` also returned HTTP 401. The GitHub
+Actions MCP list/download calls failed before retrieval with a missing
+`Mcp-Param-owner` header. No archive was obtained. Do not report a SARIF result
+count, zero findings, a clean scan, or finding dispositions.
+
+The shared CodeQL configuration still excludes `copilot/extension/`. Security
+and CI maintainers must decide whether to extend the shared scope or provide a
+separate reviewed analysis lane. No configuration change or local CodeQL rerun
+was made.
+
+### Hosted failures, checks, and owners
+
+- Agent Token Delegation run `42956274434`, attempt 2, failed on the PR head;
+  merge-commit run `42960150163`, attempt 1, also failed at
+  `Verify protected owner approval`. The first run's log identified an empty
+  `OWNER_APPROVAL_PROTECTED`. **Owner:** repository/security maintainer
+  responsible for the genuine protected-approval configuration. Preserve the
+  gate; no approval or dispatch was performed.
+- Data Quality run `42955914843`, attempt 2, is `startup_failure` with zero
+  jobs. **Owner:** Actions/CI workflow and runner-infrastructure maintainers
+  to diagnose startup; it is not a test pass or source-level test result.
+- Strict No-Deferral run `42955914540`, attempt 2, succeeded. The later
+  `42956569401` run is now reported by the API as completed `failure`, attempt
+  1, with zero jobs, not `action_required`. **Owner:** CI/security gate owner
+  to reconcile the earlier action-required description and determine whether
+  a valid rerun is needed. No rerun or approval was initiated.
+- No check run with `action_required` conclusion was found on the analyzed
+  head, merge commit, or current staging tip. The pull-request status tool
+  returned an empty check list. The legacy combined status is `pending` with
+  zero legacy status entries, despite nine successful check runs on current
+  staging. The merged commit has 117 check runs across two pages: 55 success,
+  42 skipped, one neutral, and two failures. This does not establish that all
+  branch-protection-required checks are satisfied. **Owner:** repository/CI
+  maintainer to reconcile required-check configuration and status.
+- The merged-commit ML Components Test Suite run `42960150291` failed in
+  `test-ml-components (ubuntu-latest, 3.12, integration)`, at step
+  `Run integration tests`; its other reported matrix jobs succeeded.
+  **Owner:** ML Components test and CI maintainers to inspect the failed job
+  log and classify the failure. No failure cause is inferred here.
+
+Current staging tip `8746dfaa` has nine successful check runs and is a direct
+child of the merged commit, but that limited result does not clear the failed
+merge-commit checks or the pending/empty combined status. Obtain the actual
+required-check and owner dispositions before representing the candidate as
+fully assured.
+
+### Remaining scope and next authorized decisions
+
+Keep the Zod GHSA-mrhx-c7xc-m3w5 advisory, 62 compiler diagnostics, and
+previous lint backlog open pending scoped owner decisions and their own
+validation. No source changes, workflow dispatch/approval, PR mutation, push,
+deployment, or merge occurred in this refresh. Documentation validation was
+limited to `git diff --check`; tests were not run.
+
+For the next session:
+
+```text
+Resume PR #5773 follow-up from
+/workspaces/_codex_/site/plans/0D_base_/CONTINUATION.md. Preserve the existing
+dirty continuation work and do not restore the startup-packet timestamp
+without separate authorization. PR #5773 is merged as 0d185fa; current
+0D_base_ is 8746dfaa, its direct child. Obtain the four existing artifacts
+from run 42955914698 attempt 2 through authorized private storage; verify
+archive hashes, source checkout metadata, invocation/SHA binding, result
+counts, and individual SARIF findings before triage. Do not rerun local
+CodeQL. Ask Security/CI to decide extension CodeQL scope; ask CI owners to
+resolve the protected-approval failure, zero-job Data Quality startup failure,
+the zero-job 42956569401 classification, and required-check status. Have the
+ML Components/CI owner inspect 42960150291's integration-test failure. Keep
+Zod and compiler/lint findings open pending scoped decisions. Do not dispatch
+or approve workflows, change scanners, mutate source PRs, push, deploy, or
+merge without explicit operation authorization.
+```
+
+## PR #5766 merge-readiness checkpoint — 2026-11-12
+
+@mbaetiong authorized maintainer action to bring PR #5766 (`0D_base_` →
+`main`) to a mergeable state. At this checkpoint the PR was open with head
+`8746dfaa`, base `main` `25ab8b63`, `mergeable=true` and
+`mergeable_state=unstable`. Neither `main`'s classic protection nor ruleset
+11369401 configures required status checks. The ruleset requires Copilot code
+review; failing optional checks report `unstable` but do not block the merge.
+
+The head's 18 pull-request runs were held at `action_required` because
+`copilot-swe-agent` authored the commit. The session's Codespaces token got
+HTTP 403 on run approval because it lacks `actions:write`. @mbaetiong then
+approved them, producing attempt 2. The scheduled auto-approve sweep had found
+the same runs but failed all 18 approvals: the GitHub App private-key secret is
+not a PEM key (`Invalid keyData`), and the fallback PATs are rejected.
+**Owner:** repository admin, to replace the App key and rotate the fallback
+tokens.
+
+### Dispositions
+
+- **Data Quality `startup_failure` (fixed in this sub-PR):**
+  `data-quality-suite.yml` calls `cost-gate.yml` without job permissions. The
+  caller's workflow grant is `contents: read, pull-requests: write`, while
+  `cost-gate.yml`'s `rescue-comment` job requests `issues: write`. GitHub
+  rejected the run at startup with zero jobs. The workflow file is identical on
+  `main`, so this is pre-existing.
+  - The caller now grants exactly what the reusable workflow requests, the same
+    grant already used by the working `rust_swarm_ci.yml` caller.
+  - The manually disabled `docker-build-push.yml` had the same latent defect
+    and gets the same grant.
+  - A regression test checks every `cost-gate.yml` caller.
+  - Nothing in `cost-gate.yml` was weakened.
+- **Agent Token Delegation (owner settings action):** attempt 2 failed only at
+  `Verify protected owner approval`. The `owner-approval` environment exists
+  without protection rules, and this token cannot read secrets. The fail-closed
+  gate is intentionally unchanged.
+  **Owner:** repository admin. Configure the required independent reviewers
+  and the `OWNER_APPROVAL_PROTECTED` secret as described in
+  `MAINTAINER_PROVIDER_EXECUTION_GUIDE.md`.
+- **ML Components integration job (pre-existing):** the merge-commit run
+  `42960150291` and daily `main` schedule runs share the same failure baseline.
+  The intermittent `tests/integration/test_gap23_boundaries.py` failures
+  (`No module named 'monitoring.dashboard_api'`) also occur on main-based
+  Dependabot runs `43001109241` and `42593310266`. This is not a PR #5766
+  regression.
+  **Owner:** ML Components/CI maintainers, to isolate the order-dependent
+  `monitoring` import pollution.
+- **Scorecard `auto_fix` dimension (open backlog):**
+  `auto_fix_common_issues.py --check-only` reports repository-wide existing
+  findings: patterns 6, 7, 19, 34 and 36, including 4,587 assertion-message
+  candidates. These were not mass-edited in this scoped change. The check also
+  rewrites `.codex/fragile_tests.json`; revert that side effect before
+  committing.
+- The SARIF artifact binding, `copilot/extension` CodeQL scope, Zod advisory
+  and compiler/lint backlog items above remain open and unchanged.
+
+### Validation (local)
+
+- `pytest tests/capabilities/ci_test/test_cost_gate_integration.py
+  tests/ci/test_owner_approval_guard.py tests/unit/test_check_workflow_yaml.py
+  tests/ci/test_workflow_validation.py`: 69 passed.
+- The new caller test failed against the unfixed `data-quality-suite.yml`.
+- `actionlint` 1.7.12 passed on both changed workflows.
+- The workflow compliance matrix is identical with and without the change.
+- Hosted results for the published fix must be read from its own runs; local
+  results are not hosted CI.
+
+```text
+Resume PR #5766 merge readiness from
+/workspaces/_codex_/site/plans/0D_base_/CONTINUATION.md. Confirm the
+copilot/session-pr5766-merge-readiness sub-PR is merged into 0D_base_ and that
+Data Quality on the new PR #5766 head starts jobs. Then classify any failures
+against main baselines. Do not weaken OWNER_APPROVAL_PROTECTED or cost-gate
+controls. Ask the repository admin to configure owner-approval reviewers and
+its secret, and to repair the auto-approve App key and PATs. Keep the SARIF,
+extension-scope, Zod and compiler/lint items open pending scoped decisions.
+Re-check mergeable/mergeable_state and the required Copilot review before
+reporting PR #5766 as ready.
+```

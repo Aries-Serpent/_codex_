@@ -215,6 +215,66 @@ def test_docker_approval_requires_protected_environment() -> None:
         assert guard["env"]["OWNER_APPROVAL_PROTECTED"] == "${{ secrets.OWNER_APPROVAL_PROTECTED }}"
 
 
+_PERMISSION_LEVELS = {"none": 0, "read": 1, "write": 2}
+
+
+def _permission_grants(permissions: object) -> dict[str, int] | None:
+    """Normalize a permissions block; return ``None`` for write on every scope.
+
+    An omitted block (``None``) falls back to the repository's default token
+    permissions, which may be read-only, so it guarantees no grant.
+    """
+    if permissions == "write-all":
+        return None
+    if permissions is None:
+        return {}
+    if permissions == "read-all":
+        return {"*": _PERMISSION_LEVELS["read"]}
+    assert isinstance(permissions, dict), f"Unexpected permissions: {permissions!r}"
+    return {scope: _PERMISSION_LEVELS[level] for scope, level in permissions.items()}
+
+
+def _granted_level(grants: dict[str, int] | None, scope: str) -> int:
+    if grants is None:
+        return _PERMISSION_LEVELS["write"]
+    return grants.get(scope, grants.get("*", 0))
+
+
+def test_cost_gate_callers_grant_called_workflow_permissions() -> None:
+    """Callers must grant everything cost-gate.yml requests.
+
+    A reusable workflow cannot exceed its caller's grant; GitHub rejects the
+    run at startup with zero jobs instead of failing an individual job.
+    """
+    called = _load_workflow("cost-gate.yml")
+    required: dict[str, int] = {}
+    blocks = [called.get("permissions")] + [
+        job.get("permissions") for job in called["jobs"].values()
+    ]
+    for block in blocks:
+        for scope, level in (_permission_grants(block) or {}).items():
+            required[scope] = max(required.get(scope, 0), level)
+    assert required.get("issues") == _PERMISSION_LEVELS["write"]
+
+    callers = []
+    for path in sorted(WORKFLOWS_DIR.glob("*.y*ml")):
+        workflow = yaml.safe_load(path.read_text(encoding="utf-8"))
+        if not isinstance(workflow, dict):
+            continue
+        for job_name, job in (workflow.get("jobs") or {}).items():
+            if isinstance(job, dict) and str(job.get("uses", "")).endswith("/cost-gate.yml"):
+                block = job.get("permissions", workflow.get("permissions"))
+                grants = _permission_grants(block)
+                missing = {
+                    scope: level
+                    for scope, level in required.items()
+                    if _granted_level(grants, scope) < level
+                }
+                assert not missing, f"{path.name}:{job_name} lacks {missing}"
+                callers.append(path.name)
+    assert "data-quality-suite.yml" in callers
+
+
 def test_agent_delegation_requires_protected_environment() -> None:
     workflow = _load_workflow("agent-auth-delegation.yml")
     activation = workflow["jobs"]["activate-delegation"]
