@@ -624,3 +624,44 @@ Expected on #5766 once checks run: the GA gate now sees the true backlog
 should fail under its `high` threshold. That is a correct, previously masked
 signal, not a regression to suppress; Security/CI owners must remediate or
 formally disposition it before #5766 can be represented as ready.
+
+### Hosted results on #5766 head `46699c4a`; dashboard import fix
+
+PR-to-`main` lanes fired on `46699c4a` after the clean #5777 merge:
+
+- Success: Enterprise Compliance & CodeQL `43162728218`, Data Quality &
+  Determinism `43162728308` (startup fix confirmed), Audit & QA
+  `43162728075`, Code Quality & Coverage `43162728099`, Semgrep, Security
+  Scanning, Validation Pipeline, Rust-Python Hybrid, WEC, Status, Template
+  Lint, Deferral and Strict No-Deferral gates.
+- ML Components `43162728212`: every matrix lane passed except
+  `integration` (5 failed, 537 passed, 22 skipped). All five failures were
+  `tests/integration/test_gap23_boundaries.py` API tests raising
+  `No module named 'monitoring.dashboard_api'`; two other tests in that
+  file passed in the same run, confirming the order-dependent resolution
+  noted earlier. The previously repaired pandas/Evidently/OmegaConf/perf/
+  doc/tenant failures did not recur.
+- Art_CodeQL GA Security Gate `43162728254`: failed as expected with
+  641 critical / 358 high / 1,791 medium under threshold `high`. This is
+  the correct, previously masked signal. **Owner:** Security/CI maintainers
+  to remediate or formally disposition the backlog; not suppressed here.
+- RAG Module Tests `43162728399`: runner shutdown signal (exit 143) after
+  test failures, matching earlier runs. **Owner:** RAG/CI maintainers.
+- Agent Token Delegation `43162728260`: failed at protected owner approval.
+  **Owner:** repository admin; the gate is unchanged.
+
+**Fix (direct execution):** `tests/conftest.py` deliberately places `src/`
+before the repository root, so `monitoring` resolves to `src/monitoring`
+(which has no `dashboard_api`) unless an earlier test cached the root
+package. The integration test now loads the repository-root
+`monitoring/dashboard_api.py` by explicit path under a private module name,
+without changing `sys.path` order or either package. Locally the five tests
+failed in isolation before the change and all 19 tests in the file pass
+after it; the full local integration lane shows no `gap23` failure (the
+remaining local failures are the known root `torch/` stub shadowing and a
+missing local `msgpack`, all passing in hosted CI). Hosted ML integration on
+the next #5766 head remains the authority.
+
+#5766 remains NOT READY: GA gate backlog disposition, RAG runner/test
+failures and genuine protected owner approval are open owner items, and the
+Zod advisory and compiler/lint backlog stay open.

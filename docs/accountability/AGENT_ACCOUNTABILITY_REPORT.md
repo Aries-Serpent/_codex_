@@ -24879,3 +24879,12 @@ documentation-only follow-up records the cause and is merged with an explicit
 clean message to obtain genuine hosted evidence on #5766's head.
 Cognitive pre-flight REQ-5 required `CHANGELOG.md` in the last commit; the
 changelog entry was added in a follow-up commit (bot auto-fix push was denied).
+
+**#5766 head `46699c4a` follow-up (direct execution).** Hosted ML integration
+failed only in five `test_gap23_boundaries.py` API tests: `monitoring`
+resolved to `src/monitoring` (no `dashboard_api`) due to `src/`-first path
+order. The test now loads the root `monitoring/dashboard_api.py` by explicit
+path. Local: failure reproduced, then all 19 file tests pass; Black/Ruff/isort
+clean. GA gate on the head reported 641/358/1,791 and failed as expected
+(Security/CI owner); RAG exit 143 (RAG/CI owner); protected approval
+(repository admin) remains open. #5766 stays NOT READY.
