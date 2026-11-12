@@ -24787,3 +24787,47 @@ below. Agents: none. This was direct execution with no delegated agents.
 - **Still open:** the scorecard `auto_fix` backlog, CodeQL artifact binding,
   the `copilot/extension` scope decision, the Zod advisory, and the
   compiler/lint backlog.
+
+## Session: 2026-11-12 — PR #5766 assurance repair
+
+**Status: NOT READY.** Technical mergeability is not promotion readiness.
+Data Quality run `43149315400` succeeded on candidate `285a0090`; protected
+approval and ML integration still fail. The direct execution lane handles
+CodeQL evidence/scope and publication. The invoked **CI Testing Agent** handles
+only ML integration diagnosis and local repair; no independent approval is
+claimed from that delegation.
+
+- Recovered all four original artifacts from run `42955914698`, attempt 2.
+  Every downloaded archive matches its API SHA-256. Both source records bind
+  to synthetic checkout `5e3fd6b8`, whose tree matches old PR head `aafbc726`,
+  not current staging. Their upload times fall within the respective
+  attempt-2 jobs. Authenticated API requests and signed storage downloads
+  use separate requests; credentials are not forwarded to storage.
+- Actual SARIF: 2,794 Python results (six security-tagged), zero JavaScript
+  results, CodeQL 2.27.4. Neither language's extraction evidence includes
+  `copilot/extension/`. This does not reconcile the earlier 35-result claim.
+  Full candidate triage/acceptance remains open.
+- Prepared the smallest coverage expansion in the shared configuration.
+  All three consumers were inspected; query suites, filters, existing paths
+  and permissions remain unchanged. Completed hosted extraction for the
+  extension and exact candidate is still required.
+- Local validation: 43 passed across enterprise scan reporting, CodeQL gate
+  script security and owner-approval tests. The initial run skipped three
+  Node-dependent cases; all three passed after installing a user-local
+  Alpine Node runtime. Two existing pytest configuration warnings remain.
+  actionlint passed for all three shared-config consumers; scoped
+  detect-secrets returned zero findings and `git diff --check` passed.
+- Installed checksum-verified official GitHub/Copilot CLI releases in user
+  scope. Native VS Code runtime diagnostics confirmed terminal IPC.
+  The native Actions MCP still fails with a missing owner-header error;
+  authenticated REST/`gh` works for the verified read operations.
+- `owner-approval` has no protection rules and no pending deployment review.
+  The environment secrets public-key and workflow-permission endpoints
+  return HTTP 403. **Owner: repository/security administrator**, to configure
+  genuine independent reviewers and the protected secret through an
+  authorized account. The fail-closed guard is unchanged; no self-approval,
+  scanner weakening, promotion merge or deployment is permitted by these
+  local results.
+
+The tracked staging continuation contains archive/file digests, provisional
+security-result classifications, remaining ownership and exact next steps.

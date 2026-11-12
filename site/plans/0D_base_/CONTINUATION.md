@@ -426,3 +426,103 @@ extension-scope, Zod and compiler/lint items open pending scoped decisions.
 Re-check mergeable/mergeable_state and the required Copilot review before
 reporting PR #5766 as ready.
 ```
+
+## PR #5766 assurance repair — 2026-11-12
+
+**NOT READY:** `mergeable=true` does not clear the remaining assurance gates.
+PR #5766 is open at head `285a0090f1d7ced742528410b4fde2690d13dc38`,
+base `25ab8b63afc8fddcc93dbbfb123e0d708c777e0e`, with
+`mergeable_state=unstable`. All four review threads are resolved. Data Quality
+run `43149315400`, attempt 1, succeeded on this exact head; the startup failure
+is fixed. Agent Token Delegation `43149315443` and ML Components
+`43149315492` still fail. Baseline parity alone is not owner acceptance.
+
+### Original artifact recovery and binding
+
+All four archives listed earlier were downloaded to restricted local session
+storage and verified against the API digests in that table. The authenticated
+API redirect and signed storage download were separate requests; no GitHub
+credential was forwarded to the storage host. Raw SARIF stays outside Git.
+
+| Extracted member | SHA-256 |
+| --- | --- |
+| Python `python.sarif` | `a76317d5017d31c5c01a0c2cfbd0a8a0ef04184251b548afb76be103a1358247` |
+| JavaScript `javascript.sarif` | `54e45be60cc1296e69a9175c449b65d50d92e64f30fefa2ede4ff0b345a92a75` |
+| Both `scan-source.json` members | `a247a3ed31fc7d10e9f9718c48aeff255d33064338ba64733523ea43c5950f05` |
+
+Both source records identify run `42955914698`, attempt `2`, PR #5773,
+`refs/pull/5773/merge`, and checkout/event SHA
+`5e3fd6b85e7eca154f3cf13d2421d7f8d90fe007`. Its parents are `fec36206`
+and `aafbc726`; Git verifies tree
+`e749b94c89971ffefaeb4a4c6b24bc158a37cfcf`, identical to that old PR head.
+Artifact metadata binds all four to that run/head. JavaScript uploads at
+04:01:22–23Z fall within job `130312198375` (04:00:00–04:01:27Z); Python
+uploads at 04:11:33–34Z fall within job `130312198331`
+(04:00:00–04:11:39Z), all on 2026-11-11.
+
+SARIF reports CodeQL **2.27.4**, successful invocations, language-specific
+automation IDs, and no error-level extraction notifications. It does not
+contain `versionControlProvenance`; checkout binding relies on the verified
+co-retained source records and run/job/artifact metadata, not an invented
+embedded SHA.
+
+Current candidate tree `3867a0fcc36d47bf1daf9e4855b94d8cb896e86b` differs
+in nine paths: the startup packet, Data Quality/Docker workflows,
+`.secrets.baseline`, `CHANGELOG.md`, `CODEX_MANIFEST.json`, accountability,
+this continuation and `tests/ci/test_workflow_validation.py`. Thus old
+artifacts are not exact-candidate evidence. No timestamp restoration or local
+CodeQL rerun was performed.
+
+### Result-count discrepancy and bounded review
+
+The actual complete arrays contain **2,794 Python results and zero JavaScript
+results**, not 35. Six Python results carry the `security` tag (all rule
+security-severity 7.8); the remaining 2,788 are quality/reliability findings
+and are not individually accepted or dismissed. The unrelated local
+37-result JavaScript file is not a substitute. **Owner: Security/CI**, to
+identify the source of the 35-result claim and accept a candidate-bound triage.
+
+The following are provisional technical classifications of the six actual
+security-tagged results, not alert dismissals or independent risk acceptance.
+Their files are unchanged between the analyzed checkout and `285a0090`.
+
+| Rule / location | Reviewed context and proposed disposition |
+| --- | --- |
+| `py/incomplete-url-substring-sanitization`, `scripts/validate_and_fix_links.py:150` | Classifies schemeless GitHub links for an offline documentation checker; all HTTP(S) URLs are already accepted. No network request, authorization or hostname trust decision occurs here. Proposed non-security result; Security owner to confirm. |
+| Same rule, `tests/test_link_validation.py:352` | Assertion on a fixed malformed-link fixture, not untrusted endpoint authorization. Proposed test-only result; Security/test owner to confirm. |
+| Same rule, `tests/github/test_package_registry.py:171` | Assertion on literal `https://ghcr.io`; no dynamic URL or network call. Proposed test-only result; Security/test owner to confirm. |
+| `py/overly-permissive-file`, `tests/test_monkeypatch_log_adapters.py:452` | Makes a synthetic database read-only inside a `TemporaryDirectory` for a permission-error test. No production data; parent directory restricts access. Proposed test-only result; Security/test owner to confirm. |
+| Same rule and file, line 464 | Restores synthetic database permissions inside that private directory before cleanup. Proposed test-only result; Security/test owner to confirm. |
+| Same rule, `tests/test_phase12_tier2_lane4_edge_cases.py:491` | Restores an empty temporary fixture before immediate deletion. Proposed test-only result; Security/test owner to confirm. |
+
+### Extension coverage and authentic approval
+
+The prepared shared-config change adds only `copilot/extension/`. Enterprise
+Compliance, the GA gate and the manual/reusable security-suite CodeQL lane
+consume it. Queries, exclusions and permissions are unchanged. Both original
+SARIFs have **zero extension artifacts/extraction diagnostics**. New hosted
+JavaScript extraction must include `server/index.js`, `test/server.test.js`
+and `eslint.config.js`; configuration or unit tests alone cannot close this.
+
+Exact-head token job `130955570479` fails because
+`OWNER_APPROVAL_PROTECTED` is empty. The live environment has no protection
+rules, permits admin bypass, and has no pending deployment approval.
+Environment-secret public-key access and workflow-permission access return
+HTTP 403. **Owner: repository/security administrator**, to configure genuine
+independent reviewers and the protected secret using an authorized account.
+The workflow guard remains unchanged. Broad task authorization cannot supply
+missing API scopes or manufacture independent approval.
+
+Local validation passed 43 focused enterprise/CodeQL/approval tests (zero
+skips after supplying Node); two existing pytest configuration warnings remain.
+actionlint passed on all three consumers; scoped secret scanning returned
+zero findings; `git diff --check` passed. Installed official checksum-verified
+GitHub and musl Copilot CLIs in user scope. System Node installation was denied;
+signed Alpine packages were instead extracted into user scope without system
+install scripts. Native runtime diagnostics work; native Actions MCP still
+fails with the owner-header mismatch, so verified REST/`gh` is used.
+
+The CI Testing Agent is repairing the separate ML integration lane. Keep
+the Zod advisory, compiler/lint backlog, 2,788 unreviewed quality results and
+authentic owner decisions open. Do not promote #5766 until its exact head has
+completed required analysis/checks and actual owner dispositions.

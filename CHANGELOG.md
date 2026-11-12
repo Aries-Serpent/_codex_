@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed — PR #5766 assurance repair (2026-11-12)
+- Include the Copilot extension source and tests in the shared CodeQL scope without changing query suites, exclusions, permissions or approval gates.
+- Recover and verify the original hosted SARIF/source artifacts; record the actual 2,794 Python and zero JavaScript results, older checkout binding and unresolved candidate assurance instead of claiming a 35-result triage or promotion readiness.
+
 ### Fixed — PR #5766 Data Quality startup failure (2026-11-12)
 - Grant the `issues: write` scope required by `cost-gate.yml` to the Data Quality and Docker cost-gate caller jobs, and cover every caller with a regression test; Data Quality had failed at startup with zero jobs on `main` and staging. The test treats an omitted permissions block as granting nothing.
 
