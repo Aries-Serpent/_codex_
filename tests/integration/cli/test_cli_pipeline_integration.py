@@ -1,9 +1,12 @@
 """CLI pipeline integration tests (Phase 23 Week 2)."""
 
-import tempfile
-
 import pytest
 from omegaconf import OmegaConf
+
+
+@pytest.fixture(params=[dict, OmegaConf.create], ids=["dict", "omegaconf"])
+def config_factory(request):
+    return request.param
 
 
 def _make_config(**overrides):
@@ -53,10 +56,16 @@ def test_cli_pipeline_override_forwarding():
 
 
 @pytest.mark.integration
-def test_cli_pipeline_checkpoint_config():
-    """Test CLI configures checkpointing."""
-    _make_config(trainer={"checkpoint": {"every": 5, "path": os.path.join(tempfile.gettempdir(), "ckpt")}})
-    # Verify checkpoint config is passed
+def test_cli_pipeline_checkpoint_config(tmp_path, config_factory):
+    """Accept checkpoint settings without changing the requested destination."""
+    pipeline = _load_pipeline_module()
+    checkpoint = {"every": 5, "path": str(tmp_path / "ckpt")}
+    config = config_factory({"data": {}, "trainer": {"checkpoint": checkpoint}})
+
+    pipeline.validate_pipeline_config(config)
+
+    assert config["trainer"]["checkpoint"] == checkpoint
+    assert not (tmp_path / "ckpt").exists()
 
 
 @pytest.mark.integration
@@ -79,6 +88,7 @@ def _load_pipeline_module():
         current = current.parent
     module_path = current / "src" / "cli" / "pipeline.py"
     spec = importlib.util.spec_from_file_location("src.cli.pipeline", module_path)
+    assert spec is not None and spec.loader is not None
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
@@ -97,11 +107,34 @@ def test_cli_pipeline_missing_data_config():
 
 
 @pytest.mark.integration
-def test_cli_pipeline_invalid_checkpoint():
-    """Test CLI handles invalid checkpoint configuration."""
+def test_cli_pipeline_invalid_checkpoint(tmp_path, config_factory):
+    """Reject a missing checkpoint for both plain and Hydra configurations."""
     pipeline = _load_pipeline_module()
 
-    config = _make_config(trainer={"checkpoint": "invalid_string"})
-    # Validate checkpoint config format - should raise ValueError for non-existent path
+    config = config_factory({"data": {}, "trainer": {"checkpoint": str(tmp_path / "missing.ckpt")}})
     with pytest.raises(ValueError, match="checkpoint file not found"):
+        pipeline.validate_pipeline_config(config)
+
+
+@pytest.mark.integration
+def test_cli_pipeline_existing_checkpoint(tmp_path, config_factory):
+    """Accept an existing checkpoint path."""
+    pipeline = _load_pipeline_module()
+    checkpoint = tmp_path / "model.ckpt"
+    checkpoint.write_bytes(b"checkpoint")
+    config = config_factory({"data": {}, "trainer": {"checkpoint": str(checkpoint)}})
+
+    pipeline.validate_pipeline_config(config)
+
+    assert config["trainer"]["checkpoint"] == str(checkpoint)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("checkpoint", [42, True, ["model.ckpt"]])
+def test_cli_pipeline_invalid_checkpoint_type(checkpoint, config_factory):
+    """Do not silently accept non-mapping checkpoint settings."""
+    pipeline = _load_pipeline_module()
+    config = config_factory({"data": {}, "trainer": {"checkpoint": checkpoint}})
+
+    with pytest.raises(ValueError, match="checkpoint must be a dict or path string"):
         pipeline.validate_pipeline_config(config)

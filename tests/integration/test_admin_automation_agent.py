@@ -15,7 +15,7 @@ import pytest
 
 sys.path.insert(
     0, str(Path(__file__).parent.parent / ".github" / "agents" / "admin-automation-agent" / "src")
-) # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+)  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 try:
     from agent import AdminAutomationAgent
@@ -77,7 +77,9 @@ class TestAdminAutomationAgentIntegration:
         # Should still succeed with warnings
         assert "tasks" in result, "Result must not be empty"
         # Environment validation should run
-        assert any("validate" in str(t) or "environment" in str(t) for t in result["tasks"]), "Result must not be empty"
+        assert any(
+            "validate" in str(t) or "environment" in str(t) for t in result["tasks"]
+        ), "Result must not be empty"
 
     @patch("agent.Phase10Validator")
     def test_health_check_no_validator(self, mock_validator, agent):
@@ -221,9 +223,7 @@ class TestSecurityCompliance:
         import logging
 
         logger = logging.getLogger(__name__)
-        logger.info(
-            "Secret value: %s", safe_value
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info("Secret value: %s", safe_value)  # codeql[py/clear-text-logging-sensitive-data]
 
         # Confirm the raw token is absent from captured log output
         assert secret_value not in caplog.text, "Value must be initialized"
@@ -242,7 +242,11 @@ class TestSecurityCompliance:
         """Test that dictionary keys containing secrets are redacted."""
         from codex.security_utils import redact_dict_with_secret_keys
 
-        secrets_dict = {"GITHUB_TOKEN": "value1", "API_KEY": "value2", "SECRET_KEY": "value3"}
+        secrets_dict = {
+            "GITHUB_TOKEN": "value1",
+            "API_KEY": "value2",  # pragma: allowlist secret
+            "SECRET_KEY": "value3",  # pragma: allowlist secret
+        }
 
         redacted = redact_dict_with_secret_keys(secrets_dict)
 
@@ -271,10 +275,10 @@ class TestEndToEndWorkflow:
         # Mock secrets manager
         mock_sm_instance = Mock()
         mock_sm_instance.setup_phase10_secrets.return_value = {
-            "secret1": "configured",
-            "secret2": "configured",
-            "secret3": "configured",
-            "secret4": "configured",
+            "secret1": "configured",  # pragma: allowlist secret
+            "secret2": "configured",  # pragma: allowlist secret
+            "secret3": "configured",  # pragma: allowlist secret
+            "secret4": "configured",  # pragma: allowlist secret
         }
         mock_secrets_mgr.return_value = mock_sm_instance
 
@@ -329,12 +333,13 @@ class TestErrorScenarios:
     """Test error handling scenarios."""
 
     def test_missing_github_token(self):
-        """Test behavior when GitHub token is missing."""
+        """Missing credentials must fail closed during manager construction."""
         with patch.dict(os.environ, {}, clear=True):
+            from scripts.ci._token_resolver import TokenResolutionError
             from scripts.phase10.automated_secrets_manager import GitHubSecretsManager
 
-            manager = GitHubSecretsManager("owner", "repo", token=None)
-            assert manager.token is None, "token is not valid"
+            with pytest.raises(TokenResolutionError, match="No token available"):
+                GitHubSecretsManager("owner", "repo", token=None)
 
     def test_api_rate_limit_handling(self):
         """Test handling of GitHub API rate limits."""

@@ -512,6 +512,8 @@ HTTP 403. **Owner: repository/security administrator**, to configure genuine
 independent reviewers and the protected secret using an authorized account.
 The workflow guard remains unchanged. Broad task authorization cannot supply
 missing API scopes or manufacture independent approval.
+Fresh bounded attempts through both already-known fallback token routes
+returned HTTP 401; no usable administrative alternative was established.
 
 Local validation passed 43 focused enterprise/CodeQL/approval tests (zero
 skips after supplying Node); two existing pytest configuration warnings remain.
@@ -526,3 +528,72 @@ The CI Testing Agent is repairing the separate ML integration lane. Keep
 the Zod advisory, compiler/lint backlog, 2,788 unreviewed quality results and
 authentic owner decisions open. Do not promote #5766 until its exact head has
 completed required analysis/checks and actual owner dispositions.
+
+### Published coverage proof and gate parser correction
+
+Draft repair PR **#5776** targets `0D_base_`. Signed commit
+`809d2824d8c697a9417c45a41b3c005956094d19` is verified by GitHub. Its
+automation successor `0f6e088df0c28ae3333d993b168bcf08e93b010c` changes only
+`.secrets.baseline` and `CODEX_MANIFEST.json`; it was fast-forwarded locally
+without discarding the CI Testing Agent's unstaged ML changes.
+
+Hosted JavaScript job `130966429104` in run `43153020206`, attempt 1,
+**completed successfully**. Both artifacts were downloaded and hash-verified:
+
+| Artifact/member | SHA-256 |
+| --- | --- |
+| Results archive `13914304326` | `1213687123d7efc699752b6fb97122b71858d21dc706a50e33b779b8bd001166` |
+| Extracted `javascript.sarif` | `500461f7e899869321931ef45bf1730a4425f53cf156123145b54a25ac8b8dc7` |
+| Python results archive `13914952037` | `1fd8cad27d4bd1f82db3b04125ad7f40b55ecda209a9b3654c8b36bf2c8c207d` |
+| Extracted `python.sarif` | `ce54bfac28139eb3a69e49620c2fc7b220af956c96af9325ec4c106930d505aa` |
+| Source archives `13914886232` (JS), `13914748212` (Python) | `0ef4cc6f34629c77c87fe048b979fb4a2508b4953f6f7fef3df2863c2150921c` |
+| Both extracted `scan-source.json` members | `e0ca77d515c217e34b77b1bb72042bc918d21b8af4c039a1f019dcdc243a14dc` |
+
+The Python job `130966429434` subsequently completed successfully at
+04:19:22Z and the full run completed successfully at 04:19:47Z.
+Its verified SARIF again contains 2,794 results: the same six security-tagged
+locations listed above and 2,788 quality/reliability results. Successful
+analysis is not a zero-finding result or acceptance of that inventory.
+
+The source record identifies PR #5776 head `809d2824`, base `285a0090`,
+and synthetic checkout `15667f6c1e1a705d6d49258ffadb5032e48db4e7`.
+Git confirms both head and synthetic checkout have tree
+`dba669d532de8c6b36fbed2bd2960ecf091b1470`. Successfully-extracted-file
+diagnostics include all three expected files:
+`copilot/extension/server/index.js`, `copilot/extension/test/server.test.js`,
+and `copilot/extension/eslint.config.js`. This SARIF contains **zero results**.
+Coverage is now demonstrated for that revision; do not silently transfer the
+claim to a later head or to unmerged promotion #5766.
+
+Actual-artifact replay also found a **silent GA gate counting defect**.
+All original 2,794 Python results omit `result.level`; their descriptor
+`defaultConfiguration.level` carries the severity. The old parser ignored
+those defaults and returned `critical=0 high=0 medium=0`.
+The repair resolves driver and extension descriptors, respects explicit
+result levels, defaults to warning as specified by SARIF, and fails on invalid
+indexed references. Replaying the same artifact now returns
+`critical=644 high=358 medium=1792` under the **existing** policy buckets.
+Those buckets include quality/reliability findings and must not be described
+as CVSS vulnerability counts. Queries, filters and thresholds are unchanged.
+**Owner: Security/CI**, to review the exposed backlog and approve any separate
+policy decision; do not suppress findings to recover a green badge.
+
+The focused enterprise/GA/approval command now passes **45 tests**, including
+two parser regressions. Actual-artifact before/after replay verifies both count
+triples. Changed-test Black/Ruff/isort/mypy and all-consumer actionlint pass.
+From `copilot/extension`, `npm test` passes all three real-server tests and
+`npm run lint` passes. An earlier root-directory npm command was a no-op and
+is not counted as extension validation. The relocated user-local Node runtime
+now supports real child processes and ICU data without system installation.
+
+### ML integration repair published to PR #5776
+
+ML integration fixes (pandas `<3.1` bound for Evidently 0.7, fail-closed drift
+parsing, OmegaConf mapping validation, multi-field perf logs, API-doc root,
+inactive-tenant revocation) and the GA SARIF level parser fix are committed on
+`copilot/session-pr5766-assurance-repair`. Locally, two tests fail identically
+on unmodified HEAD due to the repository `torch/` stub; hosted
+`test-ml-components (ubuntu-latest, 3.12, integration)` only runs for PRs
+targeting `main`, so it must be confirmed on #5766 after #5776 reaches
+`0D_base_`. #5766 remains NOT READY pending that run, Security/CI acceptance
+of the 2,794-result SARIF inventory, and genuine protected owner approval.

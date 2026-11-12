@@ -3,22 +3,23 @@
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 from dataclasses import dataclass
+from types import ModuleType
 from typing import Any, Optional
 
+logger = logging.getLogger(__name__)
 LOGGER = logging.getLogger(__name__)
 
+torch: ModuleType | None
 try:  # pragma: no cover - optional dependency
-    import torch
+    import torch as _torch
 
     # Verify torch is actually functional (not just a stub)
-    _ = torch.float32  # Test access to a common attribute
+    _ = _torch.float32  # Test access to a common attribute
+    torch = _torch
     _HAS_TORCH = True
 except (ImportError, AttributeError):  # pragma: no cover - defensive import guard
-    torch = None  # type: ignore[assignment]
+    torch = None
     _HAS_TORCH = False
 
 
@@ -47,7 +48,8 @@ def _supports_bfloat16() -> bool:
         if getattr(torch.backends, "mps", None):  # pragma: no branch - optional backend
             mps = torch.backends.mps
             return bool(getattr(mps, "is_built", lambda: False)())
-    except (ImportError, AttributeError):  # pragma: no cover - conservative fallback
+    except (ImportError, AttributeError, RuntimeError) as exc:
+        logger.warning("Unable to determine bfloat16 support: %s", type(exc).__name__)
         return False
     return False
 
@@ -268,7 +270,7 @@ def get_device_config(
     if device is None:
         return DeviceConfig.auto_detect()
 
-    if dtype is None and _HAS_TORCH:
+    if dtype is None and torch is not None:
         dtype = torch.float32
     elif dtype is None:
         dtype = "float32"

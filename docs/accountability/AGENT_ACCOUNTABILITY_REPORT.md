@@ -24828,6 +24828,47 @@ claimed from that delegation.
   authorized account. The fail-closed guard is unchanged; no self-approval,
   scanner weakening, promotion merge or deployment is permitted by these
   local results.
+  Bounded capability checks of both already-known fallback token routes
+  returned HTTP 401; neither provides an alternative authorized secret path.
 
 The tracked staging continuation contains archive/file digests, provisional
 security-result classifications, remaining ownership and exact next steps.
+
+### Hosted coverage proof and silent gate-count defect
+
+Draft #5776 is published to `0D_base_`. Hosted JavaScript job `130966429104`
+in run `43153020206` succeeded on `809d2824`; verified SARIF extraction
+diagnostics include all three extension JavaScript files. The SARIF contains
+zero results. Its verified source record binds synthetic checkout `15667f6c`
+to that exact head/base; Git confirms the synthetic and head trees match.
+This is coverage proof for that revision, not the eventual promotion candidate.
+The Python job and full run subsequently succeeded; its verified Python/source
+artifacts contain 2,794 results and the same six security-tagged locations.
+The source binding is identical in both languages. Run success is not a clean
+security inventory.
+
+Replaying the original Python artifact exposed a tightly related gate defect:
+all 2,794 results omit `result.level`, inheriting levels from CodeQL rule
+descriptors. The old GA parser returned zero/zero/zero. The repair resolves
+driver/extension descriptors and SARIF's default warning level, preserves
+explicit levels, and rejects invalid indexed references. The same artifact
+now yields existing-policy buckets **644 critical, 358 high, 1,792 medium**.
+These are severity-label buckets including quality findings, **not 644 critical
+vulnerabilities**. No query filter, threshold or backlog waiver was changed.
+
+Validation: 45 focused tests passed, including two new parser regressions;
+Black/Ruff/isort, mypy on the changed test and actionlint on all consumers
+passed. Actual-artifact before/after replay verified both count triples.
+Extension `npm test` passed all three tests and `npm run lint` passed.
+**Security/CI owner:** review the exposed result inventory and gate semantics;
+a previous green GA run is not valid zero-finding assurance.
+
+**ML integration repair (delegated: CI Testing Agent, reviewed by parent).**
+Changed pandas runtime bounds, Evidently drift parsing, pipeline mapping
+validation, perf-log parsing, API-doc root resolution and inactive-tenant
+key revocation, with matching integration tests. Local focused run: all
+changed tests pass except two that fail identically on unmodified HEAD
+because the repository-root `torch/` stub shadows real Torch on this Alpine
+host. Secret-hook false positives in pre-existing dummy fixtures were marked
+inline. **Owner:** ML Components/CI maintainers; hosted ML integration on
+the PR #5766 head remains the authority.
