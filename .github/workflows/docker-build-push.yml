@@ -43,6 +43,10 @@ jobs:
   cost-gate:
     name: 💰 Cost Gate
     uses: ./.github/workflows/cost-gate.yml
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     with:
       workflow_name: Build & Push Docker (GHCR)
       runner: self-hosted

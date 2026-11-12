@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed — PR #5766 Data Quality startup failure (2026-11-12)
+- Grant the `issues: write` scope required by `cost-gate.yml` to the Data Quality and Docker cost-gate caller jobs, and cover every caller with a regression test; Data Quality had failed at startup with zero jobs on `main` and staging.
+
 ### Fixed — PR #5773 review follow-up (2026-11-11)
 - Separate default and dedicated lazy-init E2E discovery, preserve external HAR targets without starting a local server, and decode filesystem URLs for variant-server working directories.
 - Align the frontend Node engine declaration and lock metadata with jsdom 31, retaining requested dependency upgrades, and restore the startup packet's prior generated timestamp.
