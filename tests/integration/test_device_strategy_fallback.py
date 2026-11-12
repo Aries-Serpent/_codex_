@@ -1,3 +1,8 @@
+from types import SimpleNamespace
+from unittest import mock
+
+import pytest
+
 #             assert config.device in (, "Condition must be true"
 #
 #         """Verify bfloat16 check handles errors gracefully."""
@@ -169,7 +174,8 @@ class TestDeviceStrategyValidation:
         expected_cuda = torch.cuda.is_available()
 
         # Assert
-        assert (cuda_available == expected_cuda, "cuda_available is not valid"
+        assert (
+            cuda_available == expected_cuda
         ), "CUDA availability should match torch.cuda.is_available()"
 
 
@@ -232,42 +238,54 @@ class TestDeviceStrategyIntegration:
 class TestDeviceStrategyErrorHandling:
     """Test error handling in device strategy."""
 
+    def test_explicit_cpu_config_without_torch(self):
+        """Explicit device configuration retains the documented non-tensor dtype."""
+        from codex_ml.training import device_strategy
+
+        with mock.patch.object(device_strategy, "torch", None):
+            config = device_strategy.get_device_config("cpu")
+
+        assert config.device == "cpu"
+        assert config.dtype == "float32"
+        assert config.mixed_precision is False
+
     def test_device_strategy_torch_required_error_message(self):
         """Verify clear error when torch is required but unavailable."""
-        # Arrange
-        try:
-            import torch  # noqa: F401
-        except ImportError:
-            pytest.skip("PyTorch not available")
+        from codex_ml.training import device_strategy
 
-        from codex_ml.training.device_strategy import _torch_required
-
-        # Mock torch unavailability
-        with mock.patch("src.codex_ml.training.device_strategy.torch", None):
+        # Patch the module actually used by the caller, not a second src.* import.
+        with mock.patch.object(device_strategy, "torch", None):
             # Act & Assert
             with pytest.raises(RuntimeError) as exc_info:
-                _torch_required()
+                device_strategy._torch_required()
 
             assert "torch" in str(exc_info.value).lower(), "Error should mention torch"
 
-    def test_device_strategy_bfloat16_check_handles_exceptions(self):
+    @pytest.mark.parametrize("error_type", [ImportError, AttributeError, RuntimeError])
+    def test_device_strategy_bfloat16_check_handles_exceptions(self, error_type, caplog):
         """Verify bfloat16 check handles errors gracefully."""
-        # Arrange
-        try:
-            import torch  # noqa: F401
-        except ImportError:
-            pytest.skip("PyTorch not available")
+        from codex_ml.training import device_strategy
 
-        from codex_ml.training.device_strategy import _supports_bfloat16
+        # Inject a failing hardware probe; no tensor runtime is needed for this path.
+        probe = mock.Mock(side_effect=error_type("CUDA error"))
+        backend = SimpleNamespace(cuda=SimpleNamespace(is_available=probe))
+        with mock.patch.object(device_strategy, "torch", backend):
+            result = device_strategy._supports_bfloat16()
 
-        # Mock exception during CUDA check
-        with mock.patch("torch.cuda.is_available", side_effect=RuntimeError("CUDA error")):
-            # Act: Should not raise
-            result = _supports_bfloat16()
+        probe.assert_called_once_with()
+        assert result is False, "Should return False when the capability probe fails"
+        assert f"Unable to determine bfloat16 support: {error_type.__name__}" in caplog.messages
 
-            # Assert
-            assert isinstance(result, bool), "Should return boolean even with CUDA error"
-            assert result is False, "Should return False when check fails"
+    def test_device_strategy_bfloat16_does_not_mask_programming_errors(self):
+        from codex_ml.training import device_strategy
+
+        probe = mock.Mock(side_effect=TypeError("invalid probe call"))
+        backend = SimpleNamespace(cuda=SimpleNamespace(is_available=probe))
+        with mock.patch.object(device_strategy, "torch", backend):
+            with pytest.raises(TypeError, match="invalid probe call"):
+                device_strategy._supports_bfloat16()
+
+        probe.assert_called_once_with()
 
 
 if __name__ == "__main__":

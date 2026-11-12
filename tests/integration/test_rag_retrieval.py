@@ -4,29 +4,21 @@ Integration tests for RAG retrieval functionality.
 Tests end-to-end retrieval workflows with query processing and ranking.
 """
 
-import importlib.util
-import tempfile
+from types import ModuleType
 from unittest.mock import MagicMock, Mock, patch
 
+import numpy as np
 import pytest
 
-# Skip entire module if torch is not available or unloadable
-pytest.importorskip("torch", reason="PyTorch required for tests")
-# Check if required dependencies are available
-NUMPY_AVAILABLE = importlib.util.find_spec("numpy") is not None
 
-try:
-    if importlib.util.find_spec("sentence_transformers") is None:
-        raise ImportError
-    SENTENCE_TRANSFORMERS_AVAILABLE = True
-except ImportError:
-    SENTENCE_TRANSFORMERS_AVAILABLE = False
-
-# Skip all tests if numpy or sentence_transformers is not available
-pytestmark = pytest.mark.skipif(
-    not NUMPY_AVAILABLE or not SENTENCE_TRANSFORMERS_AVAILABLE,
-    reason="numpy and sentence_transformers required for RAG retrieval tests",
-)
+@pytest.fixture
+def model_loader():
+    """Isolate neural loading at its real boundary; never download model weights."""
+    with (
+        patch("codex.rag.retriever.SentenceTransformer"),
+        patch("aries_serpent_core.rag._model_utils.safe_load_sentence_transformer") as loader,
+    ):
+        yield loader
 
 
 class TestRetrieverInitialization:
@@ -38,19 +30,17 @@ class TestRetrieverInitialization:
 
         assert Retriever is not None, "Retriever must be initialized"
 
-    @patch("codex.rag.retriever.SentenceTransformer")
-    def test_retriever_initialization_basic(self, mock_st):
+    def test_retriever_initialization_basic(self, model_loader, tmp_path):
         """Test Retriever basic initialization."""
         from codex.rag.retriever import Retriever
 
-        mock_model = Mock()
-        mock_st.return_value = mock_model
-
         with patch.object(Retriever, "_load_index"):
-            retriever = Retriever(index_dir=os.path.join(tempfile.gettempdir(), "test"), model_name="test-model")
+            retriever = Retriever(index_dir=str(tmp_path), model_name="test-model")
 
-            assert retriever.index_dir == os.path.join(tempfile.gettempdir(), "test"), "index_dir is not valid"
-            assert retriever.model_name == "test-model", "model_name is not valid"
+        assert retriever.index_dir == str(tmp_path)
+        assert retriever.model_name == "test-model"
+        assert retriever.model is model_loader.return_value
+        model_loader.assert_called_once_with("test-model", None)
 
     def test_retriever_has_required_attributes(self):
         """Test Retriever has required attributes."""
@@ -129,31 +119,61 @@ class TestRetrieverModelLoading:
 
     @patch("codex.rag.retriever.SentenceTransformer", None)
     def test_load_model_without_sentence_transformers_raises(self):
-        """Test _load_model raises when sentence-transformers not installed."""
+        """Without neural dependencies, an empty corpus cannot fit the fallback."""
         from codex.rag.retriever import Retriever
 
         with patch.object(Retriever, "_load_index"):
-            with pytest.raises(ImportError, match="sentence-transformers not installed"):
+            with pytest.raises(ImportError, match="TF-IDF fallback requires chunk text metadata"):
                 Retriever()
 
-    @patch.dict("os.environ", {"HF_TOKEN": "test_token"}, clear=False)
-    @patch("codex.rag.utils.safe_model_to_device", side_effect=lambda m, d: m)
-    @patch("codex.rag.retriever.SentenceTransformer")
-    def test_load_model_uses_hf_token(self, mock_st, mock_safe):
-        """Test _load_model uses HF_TOKEN when available."""
+    def test_load_model_uses_hf_token(self, monkeypatch, tmp_path):
+        """Exercise the shared loader and assert the external constructor contract."""
         from codex.rag.retriever import Retriever
 
-        mock_model = Mock()
-        mock_model.to.return_value = mock_model
-        mock_model.eval.return_value = mock_model
-        mock_st.return_value = mock_model
+        monkeypatch.setenv("HF_TOKEN", "test_token")
+        model = Mock(spec=["eval"])
+        constructor = Mock(return_value=model)
+        dependency = ModuleType("sentence_transformers")
+        dependency.SentenceTransformer = constructor
+        with (
+            patch.dict("sys.modules", {"sentence_transformers": dependency}),
+            patch("codex.rag.retriever.SentenceTransformer", constructor),
+            patch("aries_serpent_core.rag.utils.safe_model_to_device", return_value=model) as move,
+            patch.object(Retriever, "_load_index"),
+        ):
+            retriever = Retriever(model_name="test-model", cache_dir=str(tmp_path))
 
-        with patch.object(Retriever, "_load_index"):
-            Retriever()
+        constructor.assert_called_once_with(
+            "test-model",
+            device="cpu",
+            cache_folder=str(tmp_path),
+            trust_remote_code=False,
+            use_auth_token="test_token",
+        )
+        move.assert_called_once_with(model, "cpu")
+        model.eval.assert_called_once_with()
+        assert retriever.model is model
 
-            # Should have attempted to use HF_TOKEN
-            call_kwargs = mock_st.call_args[1]
-            assert "use_auth_token" in call_kwargs, "Condition must be true"
+    @patch("codex.rag.retriever.SentenceTransformer", None)
+    def test_load_model_without_sentence_transformers_fits_indexed_chunks(self):
+        """The supported offline fallback must fit real TF-IDF query embeddings."""
+        from aries_serpent_core.rag.embeddings import TfidfEmbeddingProvider
+        from codex.rag.retriever import Retriever
+
+        chunks = [{"text": "oranges fruit orchard"}, {"text": "python software code"}]
+        with patch(
+            "aries_serpent_core.rag.indexer.load_index",
+            return_value=(None, chunks, {"dimension": 8}),
+        ):
+            retriever = Retriever()
+
+        # The provider is imported canonically by the retriever.
+        assert isinstance(retriever.model, TfidfEmbeddingProvider)
+        embedding = retriever.model.encode(["oranges fruit"])
+        assert embedding.shape[0] == 1
+        assert np.isfinite(embedding).all()
+        assert np.linalg.norm(embedding) > 0
+        assert retriever.model.is_fitted
 
 
 class TestRetrieverIndexLoading:
@@ -165,8 +185,8 @@ class TestRetrieverIndexLoading:
 
         assert hasattr(Retriever, "_load_index")
 
-    @patch("codex.rag.retriever.load_index")
-    def test_load_index_file_not_found_warning(self, mock_load):
+    @patch("aries_serpent_core.rag.indexer.load_index")
+    def test_load_index_file_not_found_warning(self, mock_load, caplog):
         """Test _load_index handles FileNotFoundError gracefully."""
         from codex.rag.retriever import Retriever
 
@@ -178,8 +198,12 @@ class TestRetrieverIndexLoading:
 
             # Index should be None after failed load
             assert retriever.faiss_index is None, "faiss_index is not valid"
+        assert any("Index not found" in message for message in caplog.messages)
+        mock_load.assert_called_once_with(
+            index_name="default", tenant_id="default", index_dir=".codex/tenants"
+        )
 
-    @patch("codex.rag.retriever.load_index")
+    @patch("aries_serpent_core.rag.indexer.load_index")
     def test_load_index_success(self, mock_load):
         """Test _load_index successful loading."""
         from codex.rag.retriever import Retriever
@@ -194,7 +218,11 @@ class TestRetrieverIndexLoading:
             retriever = Retriever()
 
             assert retriever.faiss_index == mock_index, "faiss_index is not valid"
-            assert len(retriever.chunks_metadata) == 2, "Collection must not be empty"
+            assert retriever.chunks_metadata == mock_metadata
+            assert retriever.index_metadata == mock_index_meta
+        mock_load.assert_called_once_with(
+            index_name="default", tenant_id="default", index_dir=".codex/tenants"
+        )
 
 
 class TestRetrieverHelperMethods:
@@ -222,41 +250,32 @@ class TestRetrieverHelperMethods:
 class TestRetrieverConfiguration:
     """Test Retriever configuration options."""
 
-    @patch("codex.rag.retriever.SentenceTransformer")
-    def test_retriever_custom_index_dir(self, mock_st):
+    def test_retriever_custom_index_dir(self, model_loader, tmp_path):
         """Test Retriever with custom index_dir."""
         from codex.rag.retriever import Retriever
 
-        mock_model = Mock()
-        mock_st.return_value = mock_model
-
         with patch.object(Retriever, "_load_index"):
-            retriever = Retriever(index_dir="/custom/path")
+            retriever = Retriever(index_dir=str(tmp_path))
 
-            assert retriever.index_dir == "/custom/path", "index_dir is not valid"
+        assert retriever.index_dir == str(tmp_path)
+        model_loader.assert_called_once_with(retriever.model_name, None)
 
-    @patch("codex.rag.retriever.SentenceTransformer")
-    def test_retriever_custom_tenant_id(self, mock_st):
+    def test_retriever_custom_tenant_id(self, model_loader):
         """Test Retriever with custom tenant_id."""
         from codex.rag.retriever import Retriever
-
-        mock_model = Mock()
-        mock_st.return_value = mock_model
 
         with patch.object(Retriever, "_load_index"):
             retriever = Retriever(tenant_id="custom-tenant")
 
-            assert retriever.tenant_id == "custom-tenant", "tenant_id is not valid"
+        assert retriever.tenant_id == "custom-tenant"
+        model_loader.assert_called_once_with(retriever.model_name, None)
 
-    @patch("codex.rag.retriever.SentenceTransformer")
-    def test_retriever_custom_cache_dir(self, mock_st):
+    def test_retriever_custom_cache_dir(self, model_loader, tmp_path):
         """Test Retriever with custom cache_dir."""
         from codex.rag.retriever import Retriever
 
-        mock_model = Mock()
-        mock_st.return_value = mock_model
-
         with patch.object(Retriever, "_load_index"):
-            retriever = Retriever(cache_dir="/cache/path")
+            retriever = Retriever(cache_dir=str(tmp_path))
 
-            assert retriever.cache_dir == "/cache/path", "cache_dir is not valid"
+        assert retriever.cache_dir == str(tmp_path)
+        model_loader.assert_called_once_with(retriever.model_name, str(tmp_path))

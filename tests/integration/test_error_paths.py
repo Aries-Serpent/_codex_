@@ -159,18 +159,16 @@ class TestDALErrorPaths:
 class TestRAGErrorPaths:
     """Test RAG error paths."""
 
-    def test_retriever_load_model_import_error(self):
-        """Test Retriever handles missing dependencies."""
-        try:
-            from codex.rag.retriever import Retriever
+    def test_retriever_load_model_import_error(self, tmp_path):
+        """No neural dependency and no chunk text must fail, not return a fake encoder."""
+        from codex.rag.retriever import Retriever
 
-            with patch("codex.rag.retriever.SentenceTransformer", None):
-                with pytest.raises(
-                    ImportError, match="(?:sentence-transformers|faiss-cpu) not installed"
-                ):
-                    Retriever()
-        except ImportError:
-            pytest.skip("Retriever not available")
+        with (
+            patch("codex.rag.retriever.SentenceTransformer", None),
+            patch.object(Retriever, "_load_index"),
+        ):
+            with pytest.raises(ImportError, match="TF-IDF fallback requires chunk text metadata"):
+                Retriever(index_dir=str(tmp_path))
 
     def test_indexer_chunk_text_invalid_params(self):
         """Test chunk_text parameter validation."""

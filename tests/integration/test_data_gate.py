@@ -40,7 +40,8 @@ def test_data_gate_non_abort(tmp_path: Path) -> None:
         abort_on_critical=False,
         tracked_columns=["value"],
     )
-    assert "gate" in summary and isinstance(summary["gate"].get("fail"), bool)
+    assert summary["gate"]["fail"] is False
+    assert summary["columns"] == ["value"]
 
 
 def test_data_gate_abort(tmp_path: Path) -> None:

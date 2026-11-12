@@ -24787,3 +24787,88 @@ below. Agents: none. This was direct execution with no delegated agents.
 - **Still open:** the scorecard `auto_fix` backlog, CodeQL artifact binding,
   the `copilot/extension` scope decision, the Zod advisory, and the
   compiler/lint backlog.
+
+## Session: 2026-11-12 — PR #5766 assurance repair
+
+**Status: NOT READY.** Technical mergeability is not promotion readiness.
+Data Quality run `43149315400` succeeded on candidate `285a0090`; protected
+approval and ML integration still fail. The direct execution lane handles
+CodeQL evidence/scope and publication. The invoked **CI Testing Agent** handles
+only ML integration diagnosis and local repair; no independent approval is
+claimed from that delegation.
+
+- Recovered all four original artifacts from run `42955914698`, attempt 2.
+  Every downloaded archive matches its API SHA-256. Both source records bind
+  to synthetic checkout `5e3fd6b8`, whose tree matches old PR head `aafbc726`,
+  not current staging. Their upload times fall within the respective
+  attempt-2 jobs. Authenticated API requests and signed storage downloads
+  use separate requests; credentials are not forwarded to storage.
+- Actual SARIF: 2,794 Python results (six security-tagged), zero JavaScript
+  results, CodeQL 2.27.4. Neither language's extraction evidence includes
+  `copilot/extension/`. This does not reconcile the earlier 35-result claim.
+  Full candidate triage/acceptance remains open.
+- Prepared the smallest coverage expansion in the shared configuration.
+  All three consumers were inspected; query suites, filters, existing paths
+  and permissions remain unchanged. Completed hosted extraction for the
+  extension and exact candidate is still required.
+- Local validation: 43 passed across enterprise scan reporting, CodeQL gate
+  script security and owner-approval tests. The initial run skipped three
+  Node-dependent cases; all three passed after installing a user-local
+  Alpine Node runtime. Two existing pytest configuration warnings remain.
+  actionlint passed for all three shared-config consumers; scoped
+  detect-secrets returned zero findings and `git diff --check` passed.
+- Installed checksum-verified official GitHub/Copilot CLI releases in user
+  scope. Native VS Code runtime diagnostics confirmed terminal IPC.
+  The native Actions MCP still fails with a missing owner-header error;
+  authenticated REST/`gh` works for the verified read operations.
+- `owner-approval` has no protection rules and no pending deployment review.
+  The environment secrets public-key and workflow-permission endpoints
+  return HTTP 403. **Owner: repository/security administrator**, to configure
+  genuine independent reviewers and the protected secret through an
+  authorized account. The fail-closed guard is unchanged; no self-approval,
+  scanner weakening, promotion merge or deployment is permitted by these
+  local results.
+  Bounded capability checks of both already-known fallback token routes
+  returned HTTP 401; neither provides an alternative authorized secret path.
+
+The tracked staging continuation contains archive/file digests, provisional
+security-result classifications, remaining ownership and exact next steps.
+
+### Hosted coverage proof and silent gate-count defect
+
+Draft #5776 is published to `0D_base_`. Hosted JavaScript job `130966429104`
+in run `43153020206` succeeded on `809d2824`; verified SARIF extraction
+diagnostics include all three extension JavaScript files. The SARIF contains
+zero results. Its verified source record binds synthetic checkout `15667f6c`
+to that exact head/base; Git confirms the synthetic and head trees match.
+This is coverage proof for that revision, not the eventual promotion candidate.
+The Python job and full run subsequently succeeded; its verified Python/source
+artifacts contain 2,794 results and the same six security-tagged locations.
+The source binding is identical in both languages. Run success is not a clean
+security inventory.
+
+Replaying the original Python artifact exposed a tightly related gate defect:
+all 2,794 results omit `result.level`, inheriting levels from CodeQL rule
+descriptors. The old GA parser returned zero/zero/zero. The repair resolves
+driver/extension descriptors and SARIF's default warning level, preserves
+explicit levels, and rejects invalid indexed references. The same artifact
+now yields existing-policy buckets **644 critical, 358 high, 1,792 medium**.
+These are severity-label buckets including quality findings, **not 644 critical
+vulnerabilities**. No query filter, threshold or backlog waiver was changed.
+
+Validation: 45 focused tests passed, including two new parser regressions;
+Black/Ruff/isort, mypy on the changed test and actionlint on all consumers
+passed. Actual-artifact before/after replay verified both count triples.
+Extension `npm test` passed all three tests and `npm run lint` passed.
+**Security/CI owner:** review the exposed result inventory and gate semantics;
+a previous green GA run is not valid zero-finding assurance.
+
+**ML integration repair (delegated: CI Testing Agent, reviewed by parent).**
+Changed pandas runtime bounds, Evidently drift parsing, pipeline mapping
+validation, perf-log parsing, API-doc root resolution and inactive-tenant
+key revocation, with matching integration tests. Local focused run: all
+changed tests pass except two that fail identically on unmodified HEAD
+because the repository-root `torch/` stub shadows real Torch on this Alpine
+host. Secret-hook false positives in pre-existing dummy fixtures were marked
+inline. **Owner:** ML Components/CI maintainers; hosted ML integration on
+the PR #5766 head remains the authority.

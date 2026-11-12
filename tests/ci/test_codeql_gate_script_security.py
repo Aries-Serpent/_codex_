@@ -21,6 +21,75 @@ def test_github_script_does_not_interpolate_github_context():
                 assert not re.search(r"\$\{\{\s*github\.", step["with"]["script"])
 
 
+def _parse_sarif(tmp_path, run):
+    workflow = yaml.safe_load(_WORKFLOW.read_text())
+    script = next(
+        step["run"]
+        for step in workflow["jobs"]["codeql-analysis"]["steps"]
+        if step["name"] == "Parse CodeQL Results"
+    )
+    results = tmp_path / "results"
+    results.mkdir()
+    (results / "test.sarif").write_text(json.dumps({"runs": [run]}))
+    output = tmp_path / "outputs"
+    result = subprocess.run(
+        ["bash"],
+        input=script,
+        text=True,
+        capture_output=True,
+        cwd=tmp_path,
+        env={
+            **os.environ,
+            "GITHUB_OUTPUT": str(output),
+            "GITHUB_STEP_SUMMARY": str(tmp_path / "summary"),
+        },
+        timeout=10,
+    )
+    return result, output
+
+
+def test_parser_counts_inherited_driver_and_extension_rule_levels(tmp_path):
+    result, output = _parse_sarif(
+        tmp_path,
+        {
+            "tool": {
+                "driver": {"rules": [{"id": "shared", "defaultConfiguration": {"level": "note"}}]},
+                "extensions": [
+                    {"rules": [{"id": "shared", "defaultConfiguration": {"level": "error"}}]}
+                ],
+            },
+            "results": [
+                {"ruleId": "shared", "ruleIndex": 0},
+                {
+                    "ruleId": "shared",
+                    "rule": {"id": "shared", "index": 0, "toolComponent": {"index": 0}},
+                },
+                {"ruleId": "no-descriptor"},
+                {"ruleId": "shared", "level": "warning"},
+            ],
+        },
+    )
+    assert result.returncode == 0, result.stderr
+    assert output.read_text().splitlines() == [
+        "critical_count=1",
+        "high_count=2",
+        "medium_count=1",
+    ]
+
+
+def test_parser_rejects_invalid_rule_component_without_zero_counts(tmp_path):
+    result, output = _parse_sarif(
+        tmp_path,
+        {
+            "tool": {"driver": {}},
+            "results": [{"rule": {"toolComponent": {"index": 9}}}],
+        },
+    )
+    assert result.returncode != 0
+    assert "Invalid SARIF rule toolComponent index" in result.stderr
+    assert not output.exists()
+
+
 @pytest.mark.parametrize(
     "ref",
     [

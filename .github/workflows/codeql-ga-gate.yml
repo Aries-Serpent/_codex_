@@ -118,6 +118,41 @@ jobs:
         def normalize(value: object) -> str:
             return str(value or '').strip().lower()
 
+        def effective_level(run, result):
+            if 'level' in result:
+                return normalize(result['level'])
+            reference = result.get('rule') or {}
+            tool = run.get('tool') or {}
+            component = tool.get('driver') or {}
+            component_ref = reference.get('toolComponent') or {}
+            extensions = tool.get('extensions') or []
+            if 'index' in component_ref:
+                index = component_ref['index']
+                if type(index) is not int or not 0 <= index < len(extensions):
+                    raise ValueError('Invalid SARIF rule toolComponent index')
+                component = extensions[index]
+            elif component_ref:
+                matches = [
+                    candidate for candidate in [component, *extensions]
+                    if all(candidate.get(key) == value for key, value in component_ref.items())
+                ]
+                if len(matches) != 1:
+                    raise ValueError('Unresolved SARIF rule toolComponent')
+                component = matches[0]
+            rules = component.get('rules') or []
+            rule_id = reference.get('id') or result.get('ruleId')
+            index = reference.get('index', result.get('ruleIndex'))
+            if index is not None:
+                if type(index) is not int or not 0 <= index < len(rules):
+                    raise ValueError('Invalid SARIF rule index')
+                rule = rules[index]
+                if rule_id is not None and rule.get('id') != rule_id:
+                    raise ValueError('SARIF rule ID/index mismatch')
+            else:
+                rule = next((item for item in rules if item.get('id') == rule_id), {})
+            # SARIF defaults an omitted level to the rule configuration, then warning.
+            return normalize((rule.get('defaultConfiguration') or {}).get('level', 'warning'))
+
         if not sarif_files:
             print(
                 '::error::No SARIF files were produced after CodeQL analysis '
@@ -146,7 +181,7 @@ jobs:
                 for result in run.get('results') or []:
                     if not isinstance(result, dict):
                         continue
-                    level = normalize(result.get('level'))
+                    level = effective_level(run, result)
                     severity = normalize((result.get('properties') or {}).get('severity'))
                     if level in {'error', 'fatal', 'fatal-error'} or severity in {'error', 'fatal', 'critical'}:
                         critical += 1
