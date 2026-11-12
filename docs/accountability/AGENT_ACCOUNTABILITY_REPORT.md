@@ -24877,3 +24877,5 @@ the PR #5766 head remains the authority.
 inherited `[skip ci]` squash line suppressed all #5766 PR workflows. This
 documentation-only follow-up records the cause and is merged with an explicit
 clean message to obtain genuine hosted evidence on #5766's head.
+Cognitive pre-flight REQ-5 required `CHANGELOG.md` in the last commit; the
+changelog entry was added in a follow-up commit (bot auto-fix push was denied).
