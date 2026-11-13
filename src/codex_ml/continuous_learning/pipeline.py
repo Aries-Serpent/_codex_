@@ -48,6 +48,7 @@ Usage example::
 from __future__ import annotations
 
 import logging
+import uuid
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any
@@ -70,15 +71,17 @@ class RetrainingJob:
     """Descriptor for a retraining job created by the pipeline.
 
     Attributes:
-        job_id: Unique identifier (ISO timestamp by default).
-        trigger: The :class:`RetrainingTrigger` that caused this job.
+        job_id: Unique identifier (``retrain_<UTC second>_<random hex>`` by
+            default; the timestamp alone collides for jobs in the same second).
+        trigger: The :class:`RetrainingTrigger` that caused this job, or
+            ``None`` for manually created jobs.
         config: Training configuration snapshot.
         status: Job status string (``"pending"``, ``"running"``, ``"done"``,
             ``"failed"``).
     """
 
     job_id: str
-    trigger: RetrainingTrigger
+    trigger: RetrainingTrigger | None
     config: dict[str, Any] = field(default_factory=dict)
     status: str = "pending"
 
@@ -86,7 +89,7 @@ class RetrainingJob:
         """Serialise to a plain dictionary."""
         return {
             "job_id": self.job_id,
-            "trigger": self.trigger.to_dict(),
+            "trigger": self.trigger.to_dict() if self.trigger is not None else None,
             "config": dict(self.config),
             "status": self.status,
         }
@@ -190,7 +193,7 @@ class ContinuousLearningPipeline:
             timestamp=datetime.now(UTC),
             config_snapshot=cfg,
         )
-        job_id = f"retrain_{trigger.timestamp.strftime('%Y%m%dT%H%M%S')}"
+        job_id = f"retrain_{trigger.timestamp.strftime('%Y%m%dT%H%M%S')}_{uuid.uuid4().hex[:8]}"
         job = RetrainingJob(job_id=job_id, trigger=trigger, config=cfg)
         self._last_trigger = trigger
         self._last_job = job
