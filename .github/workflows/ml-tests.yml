@@ -9,6 +9,8 @@ name: ML Components Test Suite
       - training/**/*.py
       - tests/**/*.py
       - requirements.txt
+      # Baseline-only pushes must still run the ratchet.
+      - .codex/baselines/ml_unit_*.json
   pull_request:
     branches:
       - main
@@ -407,6 +409,43 @@ jobs:
             exit 1
           fi
           python scripts/ci/ml_slow_aggregate.py ratchet --base-ref HEAD^1 \
+            --floor-file .codex/baselines/ml_unit_coverage_floor.json \
+            --quarantine .codex/baselines/ml_unit_quarantine.json
+
+      # Pushes are ratcheted against the previous tip; approval never applies.
+      - name: Check out push base baselines
+        if: >-
+          always() && github.event_name == 'push' && github.event.before != '' &&
+          github.event.before != '0000000000000000000000000000000000000000'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.before }}
+          path: .ml-ratchet-base
+          persist-credentials: false
+          fetch-depth: 1
+          sparse-checkout: .codex/baselines
+
+      - name: Ratchet quarantine and coverage floor against push base
+        if: always() && github.event_name == 'push'
+        env:
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          unset ML_QUARANTINE_GROWTH_APPROVED
+          if [ -z "${PUSH_BEFORE}" ] || [ "${PUSH_BEFORE}" = "0000000000000000000000000000000000000000" ]; then
+            echo "::notice::No previous commit for this push (new branch); baseline ratchet skipped"
+            exit 0
+          fi
+          if ! printf '%s' "${PUSH_BEFORE}" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "::error::Unexpected push base SHA"
+            exit 1
+          fi
+          git fetch --no-tags --depth=1 ./.ml-ratchet-base HEAD
+          if [ "$(git rev-parse FETCH_HEAD)" != "${PUSH_BEFORE}" ]; then
+            echo "::error::Fetched push base does not match github.event.before"
+            exit 1
+          fi
+          python scripts/ci/ml_slow_aggregate.py ratchet --no-approval --base-ref "${PUSH_BEFORE}" \
             --floor-file .codex/baselines/ml_unit_coverage_floor.json \
             --quarantine .codex/baselines/ml_unit_quarantine.json
 

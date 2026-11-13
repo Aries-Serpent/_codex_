@@ -113,7 +113,9 @@ def git_show(ref: str, path: str) -> str | None:
     return shown.stdout
 
 
-def ratchet(base_ref: str, quarantine_path: Path, floor_path: Path) -> tuple[str, int]:
+def ratchet(
+    base_ref: str, quarantine_path: Path, floor_path: Path, *, allow_approval: bool = True
+) -> tuple[str, int]:
     current_quarantine = shards.load_quarantine(quarantine_path)
     current_floor = load_floor(floor_path)
     base_text = git_show(base_ref, str(quarantine_path))
@@ -127,7 +129,7 @@ def ratchet(base_ref: str, quarantine_path: Path, floor_path: Path) -> tuple[str
     )
     if not problems:
         return text + "\nNo quarantine growth or floor decrease.\n", 0
-    approved = os.environ.get(APPROVAL_ENV) == "1"
+    approved = allow_approval and os.environ.get(APPROVAL_ENV) == "1"
     for problem in problems:
         text += f"\n- {html.escape(problem)}"
         prefix = "::warning::" if approved else "::error::"
@@ -192,6 +194,16 @@ def validate_selections(
             or set(quarantined) | set(not_selected) != set(quarantine)
         ):
             raise ValueError(f"{prefix}-{index}: shard did not apply the quarantine manifest")
+        results = manifest.get("quarantine_results")
+        if not isinstance(results, dict) or not set(results) <= set(quarantined):
+            raise ValueError(f"{prefix}-{index}: missing quarantine outcomes")
+        # Defense in depth: JUnit may record a non-strict XPASS as a plain pass.
+        xpassed = sorted(nodeid for nodeid, outcome in results.items() if outcome == "xpassed")
+        if xpassed:
+            raise ValueError(
+                f"{prefix}-{index}: quarantined tests passed (XPASS), remove them from "
+                f"the manifest: {', '.join(xpassed)}"
+            )
         stale &= set(not_selected)
     return sorted(stale)
 
@@ -405,7 +417,12 @@ def main() -> int:
     )
     parser.add_argument("--floor-file", type=Path)
     parser.add_argument("--quarantine", type=Path)
-    parser.add_argument("--base-ref", help="ratchet: git ref of the PR base")
+    parser.add_argument("--base-ref", help="ratchet: git ref of the PR or push base")
+    parser.add_argument(
+        "--no-approval",
+        action="store_true",
+        help=f"ratchet: ignore {APPROVAL_ENV} (push events cannot be approved)",
+    )
     args = parser.parse_args()
     required = {
         "summarize": ("reports",),
@@ -429,7 +446,12 @@ def main() -> int:
                 quarantine=shards.load_quarantine(args.quarantine),
             )
         else:
-            summary, exit_code = ratchet(args.base_ref, args.quarantine, args.floor_file)
+            summary, exit_code = ratchet(
+                args.base_ref,
+                args.quarantine,
+                args.floor_file,
+                allow_approval=not args.no_approval,
+            )
         write_summary(summary)
         print(summary)
         return exit_code

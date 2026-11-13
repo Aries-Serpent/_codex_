@@ -104,6 +104,7 @@ def make_reports(root: Path, quarantine: dict | None = None) -> None:
                     "quarantine_digest": shards.quarantine_digest(quarantine),
                     "quarantined": sorted(set(quarantine) & set(selected)),
                     "quarantine_not_selected": sorted(set(quarantine) - set(selected)),
+                    "quarantine_results": {},
                 }
             (directory / "selection.json").write_text(
                 json.dumps(
@@ -400,6 +401,9 @@ def test_quarantine_runs_entries_as_strict_xfail(pytester, quarantined, expected
     selection = json.loads(report.read_text())
     assert selection["quarantined"] == sorted(quarantined)
     assert selection["quarantine_not_selected"] == []
+    assert selection["quarantine_results"] == {
+        nodeid: "xfailed" if nodeid.endswith("fails") else "xpassed" for nodeid in quarantined
+    }
     summary, failed = junit_summary(pytester.path, "unit")
     assert failed is (expected != pytest.ExitCode.OK)
     if quarantined:
@@ -631,5 +635,121 @@ def test_ratchet_against_base(tmp_path, monkeypatch, base, head, approved, expec
     write(head)
     summary, exit_code = ratchet("HEAD", Path("baselines/q.json"), Path("baselines/floor.json"))
     assert exit_code == expected, summary
+    if approved and expected == 0 and base is not None:
+        # Push events run with --no-approval: the label/env can never waive the ratchet.
+        script = Path(ml_slow_aggregate.__file__)
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(script),
+                "ratchet",
+                "--no-approval",
+                "--base-ref",
+                "HEAD",
+                "--quarantine",
+                "baselines/q.json",
+                "--floor-file",
+                "baselines/floor.json",
+            ],
+            capture_output=True,
+            text=True,
+            env={
+                "PATH": "/usr/bin:/bin",
+                "PYTHONPATH": str(script.parent),
+                ml_slow_aggregate.APPROVAL_ENV: "1",
+            },
+        )
+        assert proc.returncode == 1, proc.stdout + proc.stderr
     with pytest.raises(ValueError, match="not an available commit"):
         ratchet("no-such-ref", Path("baselines/q.json"), Path("baselines/floor.json"))
+
+
+XFAIL_DECLARING_TESTS = {
+    "function": """
+import pytest
+@pytest.mark.xfail(strict=False, reason="author xfail")
+def test_flaky():
+    pass
+""",
+    "module": """
+import pytest
+pytestmark = pytest.mark.xfail(strict=False, reason="author xfail")
+def test_flaky():
+    pass
+""",
+}
+
+
+@pytest.mark.parametrize("scope", sorted(XFAIL_DECLARING_TESTS))
+def test_quarantined_xpass_fails_despite_non_strict_xfail(pytester, tmp_path, monkeypatch, scope):
+    pytester.makepyfile(
+        ml_pytest_shards=Path(shards.__file__).read_text(),
+        test_x=XFAIL_DECLARING_TESTS[scope],
+    )
+    nodeid = "test_x.py::test_flaky"
+    manifest = write_manifest(pytester.path / "quarantine.json", [nodeid])
+    report = pytester.path / "selection.json"
+    result = pytester.runpytest_subprocess(
+        "test_x.py",
+        "-p",
+        "ml_pytest_shards",
+        f"--ml-quarantine={manifest}",
+        f"--ml-shard-report={report}",
+        "--junitxml=junit.xml",
+    )
+    assert result.ret == pytest.ExitCode.TESTS_FAILED
+    result.assert_outcomes(failed=1)
+    assert json.loads(report.read_text())["quarantine_results"] == {nodeid: "xpassed"}
+    assert junit_summary(pytester.path, "unit")[1] is True
+    # The prepended strict quarantine marker is the one pytest evaluates.
+    assert (
+        "[XPASS(strict)] quarantined: #5784 api-drift" in (pytester.path / "junit.xml").read_text()
+    )
+
+    # The aggregate rejects a recorded XPASS even when JUnit shows a plain pass.
+    monkeypatch.chdir(tmp_path)
+    unit = "tests/test_3.py::test_example"
+    quarantine = {unit: _entry(nodeid=unit)}
+    reports = tmp_path / "reports"
+    make_reports(reports, quarantine)
+    for selection_path in (reports / "unit").glob("unit-cov-*/selection.json"):
+        selection = json.loads(selection_path.read_text())
+        if unit in selection["quarantined"]:
+            selection["quarantine_results"] = {unit: "xpassed"}
+            selection_path.write_text(json.dumps(selection))
+    needs = _green_coverage(tmp_path, reports, range(0, 10))
+    summary, exit_code = aggregate(reports, needs, floor=FLOOR, quarantine=quarantine)
+    assert exit_code == 1
+    assert "quarantined tests passed (XPASS)" in summary
+
+
+def test_quarantined_setup_error_stays_an_error(pytester):
+    """Fixture errors are not the tracked failure, so quarantine does not absorb them."""
+    pytester.makepyfile(
+        ml_pytest_shards=Path(shards.__file__).read_text(),
+        test_s="""
+import pytest
+@pytest.fixture
+def broken():
+    raise RuntimeError("fixture broke")
+def test_uses_fixture(broken):
+    assert False
+""",
+    )
+    nodeid = "test_s.py::test_uses_fixture"
+    manifest = write_manifest(pytester.path / "quarantine.json", [nodeid])
+    report = pytester.path / "selection.json"
+    result = pytester.runpytest_subprocess(
+        "test_s.py",
+        "-p",
+        "ml_pytest_shards",
+        f"--ml-quarantine={manifest}",
+        f"--ml-shard-report={report}",
+        "--junitxml=junit.xml",
+    )
+    assert result.ret == pytest.ExitCode.TESTS_FAILED
+    result.assert_outcomes(errors=1)
+    assert json.loads(report.read_text())["quarantine_results"] == {nodeid: "setup-error"}
+    summary, failed = junit_summary(pytester.path, "unit")
+    assert failed is True
+    assert "failures/errors: 1" in summary

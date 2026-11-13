@@ -118,6 +118,24 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
         "contains(github.event.pull_request.labels.*.name, 'quarantine-approved')"
         in ratchet["env"]["ML_QUARANTINE_GROWTH_APPROVED"]
     )
+    push_base = steps["Check out push base baselines"]
+    assert "github.event_name == 'push'" in push_base["if"]
+    assert "0000000000000000000000000000000000000000" in push_base["if"]
+    assert push_base["with"]["ref"] == "${{ github.event.before }}"
+    assert push_base["with"]["persist-credentials"] is False
+    push_ratchet = steps["Ratchet quarantine and coverage floor against push base"]
+    assert push_ratchet["if"] == "always() && github.event_name == 'push'"
+    # Approval is never available on push; untrusted values reach the shell via env only.
+    assert push_ratchet["env"] == {"PUSH_BEFORE": "${{ github.event.before }}"}
+    assert "unset ML_QUARANTINE_GROWTH_APPROVED" in push_ratchet["run"]
+    assert '--no-approval --base-ref "${PUSH_BEFORE}"' in push_ratchet["run"]
+    assert "::notice::" in push_ratchet["run"]
+    for step in aggregate["steps"]:
+        assert "${{" not in step.get("run", "")
+    assert (
+        ".codex/baselines/ml_unit_*.json"
+        in yaml.safe_load(workflow_path.read_text())["on"]["push"]["paths"]
+    )
     for job in jobs.values():
         assert job["timeout-minutes"] <= 60
         for step in job["steps"]:

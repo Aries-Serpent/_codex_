@@ -7,13 +7,15 @@ import html
 import json
 import os
 import re
-from collections.abc import Mapping
+from collections.abc import Generator, Mapping
 from pathlib import Path
 from typing import Any
 
 import pytest
 
 _REPORTED_FAILURES = pytest.StashKey[int]()
+_QUARANTINED = pytest.StashKey[set[str]]()
+_QUARANTINE_RESULTS = pytest.StashKey[dict[str, str]]()
 
 QUARANTINE_FIELDS = ("nodeid", "cluster", "issue", "owner", "reason", "added_sha")
 _ISSUE = re.compile(r"#[1-9][0-9]*|https://[^\s]+")
@@ -122,15 +124,19 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
             quarantine = load_quarantine(quarantine_path)
         except (OSError, ValueError) as exc:
             raise pytest.UsageError(f"invalid --ml-quarantine manifest: {exc}") from exc
+        config.stash[_QUARANTINED] = {item.nodeid for item in selected} & set(quarantine)
+        config.stash[_QUARANTINE_RESULTS] = {}
         for item in selected:
             entry = quarantine.get(item.nodeid)
             if entry is not None:
                 # strict: an unexpected pass fails the run so the manifest must shrink.
+                # Prepended so it is evaluated before any xfail the test itself declares.
                 item.add_marker(
                     pytest.mark.xfail(
                         strict=True,
                         reason=f"quarantined: {entry['issue']} {entry['cluster']}",
-                    )
+                    ),
+                    append=False,
                 )
     report = config.getoption("ml_shard_report")
     if report is not None:
@@ -165,3 +171,48 @@ def quarantine_report(
         "quarantined": sorted(selected_ids & set(quarantine)),
         "quarantine_not_selected": sorted(set(quarantine) - selected_ids),
     }
+
+
+@pytest.hookimpl(wrapper=True, tryfirst=True)
+def pytest_runtest_makereport(
+    item: pytest.Item, call: pytest.CallInfo[None]
+) -> Generator[None, pytest.TestReport, pytest.TestReport]:
+    """Classify quarantined outcomes after pytest's own xfail handling.
+
+    Only a failure of the test body counts as the quarantined failure. A
+    passing body always fails (XPASS), whatever other xfail marks say. Setup
+    and teardown errors are fixture/environment breakage, not the tracked
+    failure, so they stay errors instead of being absorbed by the xfail mark.
+    """
+    report = yield
+    if item.nodeid not in item.config.stash.get(_QUARANTINED, set()):
+        return report
+    results = item.config.stash[_QUARANTINE_RESULTS]
+    if call.when == "call":
+        if call.excinfo is None:
+            results[item.nodeid] = "xpassed"
+            if not report.failed:
+                report.outcome = "failed"
+                report.longrepr = (
+                    "[XPASS(quarantine)] quarantined test passed; remove it from the manifest"
+                )
+            if hasattr(report, "wasxfail"):
+                del report.wasxfail
+        else:
+            results[item.nodeid] = "xfailed" if hasattr(report, "wasxfail") else report.outcome
+    elif call.excinfo is not None and not call.excinfo.errisinstance(pytest.skip.Exception):
+        results[item.nodeid] = f"{call.when}-error"
+        if hasattr(report, "wasxfail"):
+            del report.wasxfail
+            report.outcome = "failed"
+    return report
+
+
+def pytest_sessionfinish(session: pytest.Session) -> None:
+    config = session.config
+    report = config.getoption("ml_shard_report")
+    if report is None or _QUARANTINE_RESULTS not in config.stash or not report.is_file():
+        return
+    data = json.loads(report.read_text(encoding="utf-8"))
+    data["quarantine_results"] = dict(sorted(config.stash[_QUARANTINE_RESULTS].items()))
+    report.write_text(json.dumps(data, indent=2), encoding="utf-8")

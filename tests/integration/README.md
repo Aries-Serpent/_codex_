@@ -122,9 +122,14 @@ Pre-existing unit failures are tracked, not ignored. Coverage shards pass
 `--ml-quarantine .codex/baselines/ml_unit_quarantine.json`; each listed test
 item (`{"version": 1, "entries": [{"nodeid", "cluster", "issue", "owner",
 "reason", "added_sha"}]}`, `issue` is an https URL or `#<n>`) runs as
-`xfail(strict=True)`. A quarantined test that passes (XPASS) fails the run, so
-fixed tests must leave the manifest. Collection errors have no item ID and are
-never quarantinable. Shards record their pytest exit code and only fail the job
+`xfail(strict=True)`, prepended so it overrides any `xfail` the test declares
+itself. A quarantined test whose body passes (XPASS) fails the run, and the
+shard report's `quarantine_results` lets the aggregate reject an XPASS even if
+JUnit shows a plain pass, so fixed tests must leave the manifest. Only a failure
+of the test body is quarantined: setup/teardown (fixture) errors stay errors
+(`setup-error`/`teardown-error`), because they signal broken environment or
+fixtures rather than the tracked failure. Collection errors have no item ID and
+are never quarantinable. Shards record their pytest exit code and only fail the job
 for infrastructure problems (no JUnit, timeout, exit codes other than 0/1);
 `ml-slow-aggregate` is the gate and fails on any non-quarantined failure/error,
 any collection error, or any manifest entry that no shard collected (stale).
@@ -138,8 +143,11 @@ files with the PR base (`HEAD^1` of the merge commit,
 `ml_slow_aggregate.py ratchet`): adding manifest entries or lowering the floor
 fails unless the PR carries the `quarantine-approved` label
 (`ML_QUARANTINE_GROWTH_APPROVED=1`). Labels are read from the event payload, so
-push a new commit after adding the label. A base without the files imposes no
-constraint.
+push a new commit after adding the label. Pushes are compared with
+`github.event.before` (checked out by SHA, `--no-approval`: approval never
+applies on push); a push with no previous commit (new branch) skips with a
+notice. Pushes touching only `.codex/baselines/ml_unit_*.json` still trigger the
+workflow. A base without the files imposes no constraint.
 
 Use `--durations=30` output to identify expensive files before changing timeouts
 or introducing xdist. No quick-subset selection or component-coverage reuse is
