@@ -4,6 +4,7 @@ Unit tests for Security Cache Manager
 """
 
 import json
+import re
 from datetime import datetime, timezone
 
 import pytest
@@ -334,7 +335,12 @@ class TestSecurityFindingsTrendAnalyzer:
         # Verify markdown structure
         assert dashboard.startswith("# 🛡️")
         assert "---" in dashboard
-        assert dashboard.endswith("*Generated:")
+        # Footer is the final line and carries an ISO-8601 UTC timestamp.
+        assert re.fullmatch(
+            r"\*Dashboard generated: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z\*",
+            dashboard.splitlines()[-1],
+        ), dashboard.splitlines()[-1]
+        assert dashboard_path.read_text() == dashboard
 
     def test_generate_markdown_report(self, temp_cache_dir, sample_findings_json):
         """Test traditional markdown report generation"""
