@@ -141,11 +141,8 @@ def _gh(
                 return 502, {"error": "GitHub API response exceeds size limit"}
             try:
                 parsed = json.loads(body_bytes) if body_bytes.strip() else {}
-            except json.JSONDecodeError as jde:
-                parsed = {
-                    "error": f"Invalid JSON from GitHub API: {jde}",
-                    "raw": body_bytes[:200].decode("utf-8", errors="replace"),
-                }
+            except json.JSONDecodeError:
+                return 502, {"error": "Invalid JSON from GitHub API"}
             return resp.status, parsed
     except urllib.error.HTTPError as exc:
         try:

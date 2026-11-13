@@ -679,6 +679,19 @@ def test_agent_approval_audit_preserves_real_bot_identity(delegated_app, monkeyp
     assert "delegated-app-fixture" not in repr(decisions)
 
 
+def test_malformed_success_response_is_not_permission_evidence(monkeypatch):
+    from contextlib import nullcontext
+    from types import SimpleNamespace
+
+    response = SimpleNamespace(status=200, read=lambda limit: b"non-json-private-response")
+    opener = SimpleNamespace(open=lambda *args, **kwargs: nullcontext(response))
+    monkeypatch.setattr(approval.urllib.request, "build_opener", lambda *args: opener)
+    status, payload = approval._gh("GET", "/user", "fixture")
+    assert status == 502
+    assert payload == {"error": "Invalid JSON from GitHub API"}
+    assert "private-response" not in repr(payload)
+
+
 def test_delegation_verification_precedes_any_untrusted_checkout():
     from pathlib import Path
 

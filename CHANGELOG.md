@@ -10,6 +10,8 @@
 - Add credential-route preflight with real endpoint results, no credential
   output and no repository mutations. Repair the existing App bootstrap's
   undefined token resolver and unreachable administrative fallback.
+- Reject malformed success-response JSON as an explicit protocol error, not
+  successful capability evidence, and never echo its unparsed response body.
 - Document sole-owner agent-maintainer operation without requiring a second
   human or treating labels, role metadata or token names as granted API scopes.
 

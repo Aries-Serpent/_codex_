@@ -17,9 +17,15 @@
   a non-PEM App key, and 403 for administration/environment-secret reads using
   the otherwise working integration credential. Owner authorization is
   accepted; these are credential capability failures, not missing consent.
-- Final focused approval, workflow and preflight validation: 212 passed, with
+- Final focused approval, workflow and preflight validation: 213 passed, with
   two existing pytest configuration warnings. Black/Ruff, compilation, relevant
   actionlint and mypy for all three changed source files passed.
+- Preserve concurrent bot commit `6a0a98bf6e` by fast-forward, without discarding
+  its manifest/baseline metadata. Reject malformed HTTP-200 JSON as a protocol
+  error rather than reporting it as successful access or echoing its raw body.
+- Fresh authorized environment PUT again returned 403. Hosted delegation run
+  `43386873908` passed preflight but skipped activation and approval jobs; its
+  green workflow is not evidence that protected approval succeeded.
 - Protected deployment success and exact-SHA hosted agent-maintainer approval
   remain unverified. No second human or false human identity is prescribed.
 
