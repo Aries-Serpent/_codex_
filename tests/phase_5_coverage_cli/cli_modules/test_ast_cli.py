@@ -1,351 +1,248 @@
-"""Tests for src/codex/cli/ast_cli.py module.
+"""Tests for the ``codex.cli.ast_cli`` module.
 
-Phase 5 Week 2 Gap-Fill Coverage Campaign
-Module 8: CLI for parsing and querying AST structures
-
-Test Coverage Goals:
-  - 20 test functions total
-  - 50%+ coverage of ast_cli module
-  - Happy paths (60%): Parse command, query, language detection
-  - Error handling (25%): Invalid language, malformed files
-  - Edge cases (15%): Empty files, unicode, multiple languages
+``codex.cli.ast_cli`` is a compatibility re-export of
+``aries_serpent_core.cli.ast_cli``: ``get_adapter`` plus the ``parse`` /
+``stats`` / ``query`` sub-command handlers, which log JSON via ``logger.info``
+and return an exit code (0 success, 1 failure, never raising for missing files).
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import logging
 from pathlib import Path
 
-import click
 import pytest
 
-# Import the module to test
-try:
-    from codex.cli import ast_cli
-except ImportError:
-    pytest.skip("ast_cli module not importable", allow_module_level=True)
+from codex.cli import ast_cli
+
+_LOGGER = "aries_serpent_core.cli.ast_cli"
+
+
+def _logged_json(caplog: pytest.LogCaptureFixture) -> object:
+    records = [r for r in caplog.records if r.name == _LOGGER and r.levelno == logging.INFO]
+    assert records, "command must log its JSON result"
+    return json.loads(records[-1].getMessage())
+
+
+def _query_args(path: Path, node_type: str, *, metadata: bool = False) -> argparse.Namespace:
+    return argparse.Namespace(file=str(path), language="python", type=node_type, metadata=metadata)
 
 
 class TestGetAdapter:
     """Test get_adapter function."""
 
     def test_get_adapter_python(self) -> None:
-        """Test getting Python adapter."""
-        try:
-            adapter = ast_cli.get_adapter("python")
-            assert adapter is not None, "adapter must be initialized"
-        except (AssertionError, ValueError, TypeError, RuntimeError):
-            pytest.skip("PythonASTAdapter not available")
+        adapter = ast_cli.get_adapter("python")
+        assert type(adapter).__name__ == "PythonASTAdapter"
 
     def test_get_adapter_yaml(self) -> None:
-        """Test getting YAML adapter."""
-        try:
-            adapter = ast_cli.get_adapter("yaml")
-            assert adapter is not None, "adapter must be initialized"
-        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-            pytest.skip("YAMLASTAdapter not available")
+        adapter = ast_cli.get_adapter("yaml")
+        assert type(adapter).__name__ == "YAMLASTAdapter"
 
     def test_get_adapter_json(self) -> None:
-        """Test getting JSON adapter."""
-        try:
-            adapter = ast_cli.get_adapter("json")
-            assert adapter is not None, "adapter must be initialized"
-        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-            pytest.skip("JSONASTAdapter not available")
+        adapter = ast_cli.get_adapter("json")
+        assert type(adapter).__name__ == "JSONASTAdapter"
 
     def test_get_adapter_sql(self) -> None:
-        """Test getting SQL adapter."""
-        try:
-            adapter = ast_cli.get_adapter("sql")
-            assert adapter is not None, "adapter must be initialized"
-        except (AssertionError, ValueError, TypeError, RuntimeError):
-            pytest.skip("SQLASTAdapter not available")
+        pytest.importorskip("sqlparse")  # optional extra ("core"); adapter guards it
+        adapter = ast_cli.get_adapter("sql")
+        assert type(adapter).__name__ == "SQLASTAdapter"
 
     def test_get_adapter_invalid_language(self) -> None:
-        """Test get_adapter with unsupported language."""
         with pytest.raises(ValueError):
             ast_cli.get_adapter("invalid_language")
 
     def test_get_adapter_case_sensitive(self) -> None:
-        """Test get_adapter is case-sensitive."""
         with pytest.raises(ValueError):
-            ast_cli.get_adapter("Python")  # Capital P should fail
+            ast_cli.get_adapter("Python")
 
     def test_get_adapter_returns_instance(self) -> None:
-        """Test get_adapter returns adapter instance."""
-        try:
-            adapter = ast_cli.get_adapter("python")
-            # Should be an object with methods
-            assert hasattr(adapter, 'parse') or hasattr(adapter, '__call__')
-        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-            pytest.skip("Adapters not available")
+        adapter = ast_cli.get_adapter("python")
+        assert callable(adapter.parse)
+        assert callable(adapter.parse_file)
+        assert ast_cli.get_adapter("python") is not adapter, "a fresh adapter per call"
 
 
 class TestParseCommand:
     """Test parse_command function."""
 
     def test_parse_command_exists(self) -> None:
-        """Test parse_command function exists."""
-        assert hasattr(ast_cli, 'parse_command')
+        assert hasattr(ast_cli, "parse_command")
 
     def test_parse_command_is_callable(self) -> None:
-        """Test parse_command is callable."""
-        assert callable(ast_cli.parse_command), "Condition must be true"
+        assert callable(ast_cli.parse_command)
 
-    def test_parse_command_python_file(self, tmp_path: Path) -> None:
-        """Test parsing a Python file."""
+    def test_parse_command_python_file(
+        self, tmp_path: Path, caplog: pytest.LogCaptureFixture
+    ) -> None:
         py_file = tmp_path / "test.py"
         py_file.write_text("def hello():\n    return 'world'\n")
+        caplog.set_level(logging.INFO, logger=_LOGGER)
 
-        try:
-            args = argparse.Namespace(file=str(py_file), language='python', query=None)
-            result = ast_cli.parse_command(args)
-            # Should return result without raising
-            assert result is not None or result is None, "result must be initialized"
-        except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
-            pytest.skip("parse_command implementation may vary")
+        assert ast_cli.parse_command(argparse.Namespace(file=str(py_file), language="python")) == 0
+        tree = _logged_json(caplog)
+        assert tree["node_type"] == "module"
+        assert tree["file_path"] == str(py_file)
+        assert tree["children_count"] == 1
 
     def test_parse_command_with_query(self, tmp_path: Path) -> None:
-        """Test parse_command with query argument."""
+        """Extra namespace attributes are ignored by the parse handler."""
         py_file = tmp_path / "test.py"
         py_file.write_text("x = 1")
+        args = argparse.Namespace(file=str(py_file), language="python", query="FunctionDef")
+        assert ast_cli.parse_command(args) == 0
 
-        try:
-            args = argparse.Namespace(
-                file=str(py_file),
-                language='python',
-                query='FunctionDef'
-            )
-            result = ast_cli.parse_command(args)
-            assert result is not None or result is None, "result must be initialized"
-        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-            pytest.skip("parse_command with query not available")
-
-    def test_parse_command_invalid_file(self) -> None:
-        """Test parse_command with nonexistent file."""
-        try:
-            args = argparse.Namespace(
-                file='/nonexistent/file.py',
-                language='python',
-                query=None
-            )
-            # Should raise or handle gracefully
-            try:
-                ast_cli.parse_command(args)
-            except (FileNotFoundError, IOError, ValueError):
-                pass  # Expected
-        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-            pytest.skip("parse_command error handling may vary")
+    def test_parse_command_invalid_file(self, caplog: pytest.LogCaptureFixture) -> None:
+        args = argparse.Namespace(file="/nonexistent/file.py", language="python")
+        assert ast_cli.parse_command(args) == 1
+        assert "File not found" in caplog.text
 
     def test_parse_command_empty_file(self, tmp_path: Path) -> None:
-        """Test parse_command with empty file."""
         py_file = tmp_path / "empty.py"
         py_file.write_text("")
-
-        try:
-            args = argparse.Namespace(
-                file=str(py_file),
-                language='python',
-                query=None
-            )
-            result = ast_cli.parse_command(args)
-            assert result is not None or result is None, "result must be initialized"
-        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-            pytest.skip("parse_command may not handle empty files")
+        assert ast_cli.parse_command(argparse.Namespace(file=str(py_file), language="python")) == 0
 
 
 class TestQueryCommand:
-    """Test query_command function."""
+    """Test query_command function (``-t/--type`` and ``-m/--metadata``)."""
 
     def test_query_command_exists(self) -> None:
-        """Test query_command function exists."""
-        assert hasattr(ast_cli, 'query_command')
+        assert hasattr(ast_cli, "query_command")
 
     def test_query_command_is_callable(self) -> None:
-        """Test query_command is callable."""
-        assert callable(ast_cli.query_command), "Condition must be true"
+        assert callable(ast_cli.query_command)
 
-    def test_query_command_function_defs(self, tmp_path: Path) -> None:
-        """Test query_command for function definitions."""
+    def test_query_command_function_defs(
+        self, tmp_path: Path, caplog: pytest.LogCaptureFixture
+    ) -> None:
         py_file = tmp_path / "test.py"
         py_file.write_text("def func1():\n    pass\ndef func2():\n    pass\n")
+        caplog.set_level(logging.INFO, logger=_LOGGER)
 
-        try:
-            args = argparse.Namespace(
-                file=str(py_file),
-                node_type='FunctionDef',
-                language='python'
-            )
-            result = ast_cli.query_command(args)
-            # Should find 2 functions
-            assert result is not None or result is None, "result must be initialized"
-        except (AssertionError, ValueError, TypeError, RuntimeError):
-            pytest.skip("query_command not available")
+        assert ast_cli.query_command(_query_args(py_file, "function")) == 0
+        result = _logged_json(caplog)
+        assert [n["name"] for n in result] == ["func1", "func2"]
+        assert all(n["type"] == "function" and "metadata" not in n for n in result)
 
-    def test_query_command_class_defs(self, tmp_path: Path) -> None:
-        """Test query_command for class definitions."""
+    def test_query_command_class_defs(
+        self, tmp_path: Path, caplog: pytest.LogCaptureFixture
+    ) -> None:
         py_file = tmp_path / "test.py"
         py_file.write_text("class MyClass:\n    pass\n")
+        caplog.set_level(logging.INFO, logger=_LOGGER)
 
-        try:
-            args = argparse.Namespace(
-                file=str(py_file),
-                node_type='ClassDef',
-                language='python'
-            )
-            result = ast_cli.query_command(args)
-            assert result is not None or result is None, "result must be initialized"
-        except (AssertionError, ValueError, TypeError, RuntimeError):
-            pytest.skip("query_command not available")
+        assert ast_cli.query_command(_query_args(py_file, "class", metadata=True)) == 0
+        result = _logged_json(caplog)
+        assert [n["name"] for n in result] == ["MyClass"]
+        assert {"line_start", "line_end", "column_start", "column_end"} <= result[0].keys()
+        assert isinstance(result[0]["metadata"], dict)
 
-    def test_query_command_invalid_node_type(self, tmp_path: Path) -> None:
-        """Test query_command with invalid node type."""
+    def test_query_command_invalid_node_type(
+        self, tmp_path: Path, caplog: pytest.LogCaptureFixture
+    ) -> None:
         py_file = tmp_path / "test.py"
         py_file.write_text("x = 1")
+        caplog.set_level(logging.INFO, logger=_LOGGER)
 
-        try:
-            args = argparse.Namespace(
-                file=str(py_file),
-                node_type='InvalidNodeType',
-                language='python'
-            )
-            # May raise or return empty
-            result = ast_cli.query_command(args)
-        except (ValueError, AttributeError):
-            pass  # Expected
-        except (AssertionError, ValueError, TypeError, RuntimeError):
-            pytest.skip("query_command error handling varies")
+        assert ast_cli.query_command(_query_args(py_file, "InvalidNodeType")) == 0
+        assert _logged_json(caplog) == []
 
 
 class TestStatisticsCommand:
     """Test statistics command."""
 
     def test_stats_command_exists(self) -> None:
-        """Test statistics command exists."""
-        assert hasattr(ast_cli, 'stats_command') or callable(ast_cli.parse_command)
+        assert callable(ast_cli.stats_command)
 
-    def test_stats_python_file(self, tmp_path: Path) -> None:
-        """Test statistics on Python file."""
+    def test_stats_python_file(self, tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
         py_file = tmp_path / "test.py"
         py_file.write_text(
-            "def func1():\n    pass\n"
-            "def func2():\n    pass\n"
-            "class MyClass:\n    pass\n"
+            "def func1():\n    pass\n" "def func2():\n    pass\n" "class MyClass:\n    pass\n"
         )
+        caplog.set_level(logging.INFO, logger=_LOGGER)
 
-        try:
-            args = argparse.Namespace(file=str(py_file), language='python')
-            # Try stats if it exists
-            if hasattr(ast_cli, 'stats_command'):
-                result = ast_cli.stats_command(args)
-                assert result is not None or result is None, "result must be initialized"
-        except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
-            pytest.skip("stats_command not available")
+        assert ast_cli.stats_command(argparse.Namespace(file=str(py_file), language="python")) == 0
+        stats = _logged_json(caplog)
+        assert stats["function"] == 2
+        assert stats["class"] == 1
 
 
 class TestLanguageSupport:
     """Test language support."""
 
     def test_supported_languages(self) -> None:
-        """Test module supports multiple languages."""
-        langs = ['python', 'yaml', 'json', 'sql']
+        langs = ["python", "yaml", "json"]
+        try:
+            import sqlparse  # noqa: F401
+        except ImportError:  # optional extra; covered by test_get_adapter_sql
+            pass
+        else:
+            langs.append("sql")
         for lang in langs:
-            try:
-                ast_cli.get_adapter(lang)
-                # Language is supported
-            except ValueError:
-                pass  # Language not supported, that's OK
+            assert ast_cli.get_adapter(lang) is not None, lang
 
     def test_language_detection(self) -> None:
-        """Test language can be detected."""
-        # Module should have language detection logic
-        assert hasattr(ast_cli, 'get_adapter')
+        with pytest.raises(ValueError, match="python, yaml, json, sql"):
+            ast_cli.get_adapter("cobol")
 
     def test_python_parsing(self, tmp_path: Path) -> None:
-        """Test Python parsing."""
         py_file = tmp_path / "test.py"
         py_file.write_text("x = 1\ny = 2\n")
+        adapter = ast_cli.get_adapter("python")
 
-        try:
-            adapter = ast_cli.get_adapter('python')
-            if hasattr(adapter, 'parse'):
-                result = adapter.parse(str(py_file))
-                assert result is not None, "result must be initialized"
-        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-            pytest.skip("Python parsing not available")
+        root = adapter.parse_file(str(py_file))
+        assert root.node_type == "module"
+        assert adapter.get_stats().get("assignment") == 2
+        assert adapter.parse(py_file.read_text()).node_type == "module"
 
 
 class TestArgumentParsing:
-    """Test argument parsing."""
+    """Test argument parsing via ``main``."""
 
-    def test_main_has_argparse(self) -> None:
-        """Test module uses argparse."""
-        # Should have parser or subparsers
-        assert hasattr(ast_cli, 'parse_command') or hasattr(ast_cli, 'get_adapter')
+    def test_main_has_argparse(self, capsys: pytest.CaptureFixture[str]) -> None:
+        assert ast_cli.main([]) == 1  # no sub-command -> help + failure
+        assert "parse" in capsys.readouterr().out
 
-    def test_parse_args_basic(self) -> None:
-        """Test basic argument parsing."""
-        # Module should be able to parse arguments
-        try:
-            # Try creating basic args
-            args = argparse.Namespace(
-                command='parse',
-                file='test.py',
-                language='python'
-            )
-            assert args is not None, "args must be initialized"
-        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-            pytest.skip("Argument parsing test error")
+    def test_parse_args_basic(self, tmp_path: Path) -> None:
+        py_file = tmp_path / "test.py"
+        py_file.write_text("def f():\n    pass\n")
+        assert ast_cli.main(["parse", str(py_file), "-l", "python"]) == 0
+        assert ast_cli.main(["query", str(py_file), "-l", "python", "-t", "function", "-m"]) == 0
+        with pytest.raises(SystemExit):
+            ast_cli.main(["query", str(py_file), "-l", "python"])  # --type is required
 
 
 class TestEdgeCases:
     """Test edge cases."""
 
     def test_empty_python_file(self, tmp_path: Path) -> None:
-        """Test parsing empty Python file."""
         py_file = tmp_path / "empty.py"
         py_file.write_text("")
-
-        try:
-            adapter = ast_cli.get_adapter('python')
-            if hasattr(adapter, 'parse'):
-                result = adapter.parse(str(py_file))
-                # Should handle empty file
-                assert result is not None or result is None, "result must be initialized"
-        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-            pytest.skip("Empty file handling not available")
+        adapter = ast_cli.get_adapter("python")
+        root = adapter.parse_file(str(py_file))
+        assert root.node_type == "module"
+        assert root.children == []
 
     def test_unicode_content(self, tmp_path: Path) -> None:
-        """Test parsing file with unicode content."""
         py_file = tmp_path / "unicode.py"
-        py_file.write_text("# -*- coding: utf-8 -*-\n# 你好世界\nlogger.info('hello')\n")
-
-        try:
-            adapter = ast_cli.get_adapter('python')
-            if hasattr(adapter, 'parse'):
-                result = adapter.parse(str(py_file))
-                assert result is not None or result is None, "result must be initialized"
-        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-            pytest.skip("Unicode handling not available")
+        py_file.write_text(
+            "# -*- coding: utf-8 -*-\n# 你好世界\ndef grüß():\n    return '你好'\n",
+            encoding="utf-8",
+        )
+        adapter = ast_cli.get_adapter("python")
+        adapter.parse_file(str(py_file))
+        assert [n.name for n in adapter.find_nodes_by_type("function")] == ["grüß"]
 
     def test_large_file(self, tmp_path: Path) -> None:
-        """Test parsing large Python file."""
         py_file = tmp_path / "large.py"
-        # Generate large file with many functions
-        content = "\n".join([f"def func{i}():\n    pass" for i in range(100)])
-        py_file.write_text(content)
-
-        try:
-            adapter = ast_cli.get_adapter('python')
-            if hasattr(adapter, 'parse'):
-                result = adapter.parse(str(py_file))
-                assert result is not None or result is None, "result must be initialized"
-        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-            pytest.skip("Large file handling not available")
+        py_file.write_text("\n".join(f"def func{i}():\n    pass" for i in range(100)))
+        adapter = ast_cli.get_adapter("python")
+        adapter.parse_file(str(py_file))
+        assert len(adapter.find_nodes_by_type("function")) == 100
 
     def test_complex_syntax(self, tmp_path: Path) -> None:
-        """Test parsing complex Python syntax."""
         py_file = tmp_path / "complex.py"
         py_file.write_text(
             "def func(a, b=1, *args, **kwargs):\n"
@@ -354,79 +251,50 @@ class TestEdgeCases:
             "        return [x for x in range(10) if x % 2]\n"
             "    return inner()\n"
         )
-
-        try:
-            adapter = ast_cli.get_adapter('python')
-            if hasattr(adapter, 'parse'):
-                result = adapter.parse(str(py_file))
-                assert result is not None or result is None, "result must be initialized"
-        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-            pytest.skip("Complex syntax handling not available")
+        adapter = ast_cli.get_adapter("python")
+        adapter.parse_file(str(py_file))
+        assert sorted(n.name for n in adapter.find_nodes_by_type("function")) == ["func", "inner"]
 
 
 class TestErrorHandling:
     """Test error handling."""
 
     def test_invalid_language_error_message(self) -> None:
-        """Test error message for invalid language."""
         with pytest.raises(ValueError) as exc_info:
             ast_cli.get_adapter("invalid")
+        assert "Unsupported language: invalid" in str(exc_info.value)
 
-        # Error message should mention supported languages
-        assert "language" in str(exc_info.value).lower() or "invalid" in str(exc_info.value).lower()
-
-    def test_file_not_found_handling(self) -> None:
-        """Test handling of nonexistent file."""
-        try:
-            args = argparse.Namespace(
-                file='/does/not/exist.py',
-                language='python'
-            )
-            try:
-                ast_cli.parse_command(args)
-                pytest.fail("Should raise FileNotFoundError")
-            except (FileNotFoundError, IOError, ValueError):
-                pass  # Expected
-        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-            pytest.skip("Error handling may vary")
+    def test_file_not_found_handling(self, caplog: pytest.LogCaptureFixture) -> None:
+        """Handlers report a missing file via exit code 1 rather than raising."""
+        for handler in (ast_cli.parse_command, ast_cli.stats_command):
+            caplog.clear()
+            args = argparse.Namespace(file="/does/not/exist.py", language="python")
+            assert handler(args) == 1
+            assert "File not found" in caplog.text
+        assert ast_cli.query_command(_query_args(Path("/does/not/exist.py"), "function")) == 1
 
     def test_malformed_python_syntax(self, tmp_path: Path) -> None:
-        """Test handling of malformed Python."""
         py_file = tmp_path / "malformed.py"
         py_file.write_text("def func(\n  invalid syntax")
-
-        try:
-            adapter = ast_cli.get_adapter('python')
-            if hasattr(adapter, 'parse'):
-                try:
-                    result = adapter.parse(str(py_file))
-                except SyntaxError:
-                    pass  # Expected for malformed code
-        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-            pytest.skip("Syntax error handling not available")
+        adapter = ast_cli.get_adapter("python")
+        with pytest.raises(SyntaxError):
+            adapter.parse_file(str(py_file))
 
 
 class TestModuleStructure:
     """Test module structure."""
 
     def test_has_get_adapter(self) -> None:
-        """Test module has get_adapter function."""
-        assert hasattr(ast_cli, 'get_adapter')
+        assert hasattr(ast_cli, "get_adapter")
 
     def test_has_parse_command(self) -> None:
-        """Test module has parse_command function."""
-        assert hasattr(ast_cli, 'parse_command')
+        assert hasattr(ast_cli, "parse_command")
 
     def test_functions_callable(self) -> None:
-        """Test key functions are callable."""
-        assert callable(ast_cli.get_adapter), "Condition must be true"
-        assert callable(ast_cli.parse_command), "Condition must be true"
+        assert callable(ast_cli.get_adapter)
+        assert callable(ast_cli.parse_command)
 
     def test_adapter_imports(self) -> None:
-        """Test AST adapters are imported."""
-        # Should import adapters for multiple languages
-        try:
-            from codex.ast_adapters import PythonASTAdapter
-            assert PythonASTAdapter is not None, "PythonASTAdapter must be initialized"
-        except ImportError:
-            pytest.skip("ast_adapters module not available")
+        from aries_serpent_core.ast_adapters import PythonASTAdapter
+
+        assert isinstance(ast_cli.get_adapter("python"), PythonASTAdapter)
