@@ -1,3 +1,4 @@
+import pytest
 from pathlib import Path
 
 #         assert _sanitize_branch_name("special!@, "Condition must be true"

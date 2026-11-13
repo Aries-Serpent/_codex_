@@ -1,3 +1,14 @@
+import importlib.util
+from pathlib import Path
+
+# Load by path: ``tests/data`` can shadow the top-level ``data`` package during collection.
+_LOADERS_PATH = Path(__file__).resolve().parents[2] / "src" / "data" / "loaders.py"
+_spec = importlib.util.spec_from_file_location("_src_data_loaders", _LOADERS_PATH)
+assert _spec is not None and _spec.loader is not None
+_loaders = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_loaders)
+safe_line_loader = _loaders.safe_line_loader
+validate_records = _loaders.validate_records
 #         assert "@, "Condition must be true"
 #         assert "<html>" in lines[1], "Condition must be true"
 # - Safe line loading from files

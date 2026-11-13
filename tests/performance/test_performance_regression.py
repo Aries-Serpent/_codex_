@@ -1,3 +1,8 @@
+from collections.abc import Callable
+import gc
+import time
+import statistics
+import pytest
 #         assert PerformanceBaseline.check_threshold(, "Perf is not valid"
 #
 #         """Test list creation doesn't regress."""
@@ -258,6 +263,35 @@
 #         assert memory_mb < 50, f"Dict memory too high: {memory_mb:.2f}MB"
 
 
+def measure_time(func: Callable, iterations: int = 100) -> dict[str, float]:
+    """Measure execution time statistics for a function."""
+    times = []
+
+    # Warmup
+    for _ in range(min(10, iterations // 10)):
+        func()
+
+    # Actual measurements
+    for _ in range(iterations):
+        gc.disable()
+        start = time.perf_counter()
+        func()
+        end = time.perf_counter()
+        gc.enable()
+        times.append((end - start) * 1000)  # Convert to ms
+
+    return {
+        "mean_ms": statistics.mean(times),
+        "median_ms": statistics.median(times),
+        "stdev_ms": statistics.stdev(times) if len(times) > 1 else 0,
+        "min_ms": min(times),
+        "max_ms": max(times),
+        "ops_per_sec": (
+            1000 / statistics.mean(times) if statistics.mean(times) > 0 else float("inf")
+        ),
+    }
+
+
 class TestAgentMemoryPerformance:
     """Test agent memory system performance."""
 
@@ -282,8 +316,7 @@ class TestAgentMemoryPerformance:
             stats = measure_time(store_decision, iterations=50)
 
             # Should be able to store at least 10 decisions per second
-            assert (stats["ops_per_sec"] >= 10, "Value must be greater than zero"
-            ), f"Decision storage too slow: {stats['ops_per_sec']:.1f} ops/sec"
+            assert stats["ops_per_sec"] >= 10, f"Decision storage too slow: {stats['ops_per_sec']:.1f} ops/sec"
 
     def test_retrieve_context_performance(self):
         """Test context retrieval performance."""

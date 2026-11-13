@@ -1,3 +1,7 @@
+import subprocess
+import sys
+import json
+import importlib
 #         assert fixer.fix_missing_newline_at_eof() ==
 #         assert target.read_bytes() == b"logger.info('sample')\n", "Condition must be true"
 #         assert empty.read_bytes() == b"", "Condition must be true"
@@ -5,6 +9,51 @@
 from pathlib import Path
 
 import pytest
+
+
+@pytest.fixture()
+def conn(tmp_db):
+    c = pr._open_db(tmp_db)
+    yield c
+    c.close()
+
+
+@pytest.fixture()
+def tmp_db(tmp_path):
+    return str(tmp_path / "test.db")
+
+
+_ROOT = Path(__file__).parent.parent.parent
+
+
+_AUTO_FIX_PATH = _ROOT / "scripts" / "ci" / "auto_fix_common_issues.py"
+
+
+def _load(rel: str):
+    path = _ROOT / rel
+    spec = importlib.util.spec_from_file_location(path.stem, path)
+    mod = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
+    spec.loader.exec_module(mod)  # type: ignore[union-attr]
+    return mod
+
+
+def _load_auto_fix():
+    spec = importlib.util.spec_from_file_location("auto_fix_common_issues", _AUTO_FIX_PATH)
+    mod = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
+    spec.loader.exec_module(mod)  # type: ignore[union-attr]
+    return mod
+
+
+_ROOT = Path(__file__).parent.parent.parent
+
+
+pipeline = _load("scripts/ci/ci_pattern_pipeline.py")
+
+
+hook = _load("scripts/hooks/pre_commit_pattern_check.py")
+
+
+pr = _load("scripts/ci/pattern_recorder.py")
 
 
 class TestPattern30MergeReadiness:

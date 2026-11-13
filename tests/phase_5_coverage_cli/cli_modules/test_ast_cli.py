@@ -17,6 +17,7 @@ import argparse
 import json
 from pathlib import Path
 
+import click
 import pytest
 
 # Import the module to test

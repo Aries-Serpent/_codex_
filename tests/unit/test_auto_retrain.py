@@ -1,3 +1,8 @@
+from dataclasses import dataclass
+from typing import Optional
+from dataclasses import field
+from codex_ml.training.auto_retrain import AutoRetrainPipeline, RetrainResult
+import pytest
 #     assert _UTC_ISO_PATTERN.match(, "Condition must be true"
 #         result.timestamp
 #     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
@@ -183,6 +188,35 @@
 # ---------------------------------------------------------------------------
 # T-07: should_retrain respects min_samples guard
 # ---------------------------------------------------------------------------
+
+
+@dataclass
+class _FakeDriftResult:
+    """Minimal stand-in for DriftResult used in tests."""
+
+    drift_detected: bool
+    js_divergence: Optional[float] = None
+    confidence_stats: object = None
+    reasons: list[str] = field(default_factory=list)
+
+
+def _drifted(js_div: float = 0.10, reasons: list[str] | None = None) -> _FakeDriftResult:
+    """Return a DriftResult-like object with drift_detected=True."""
+    return _FakeDriftResult(
+        drift_detected=True,
+        js_divergence=js_div,
+        reasons=reasons or [f"JSD={js_div:.4f} exceeds threshold=0.05"],
+    )
+
+
+@dataclass
+class _FakeDriftResult:
+    """Minimal stand-in for DriftResult used in tests."""
+
+    drift_detected: bool
+    js_divergence: Optional[float] = None
+    confidence_stats: object = None
+    reasons: list[str] = field(default_factory=list)
 
 
 def test_should_retrain_false_when_min_samples_not_met():

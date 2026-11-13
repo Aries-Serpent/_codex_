@@ -1,3 +1,4 @@
+import pytest
 # @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ specific tests")
 class TestPython312TomlFeatures:
     """Test Python 3.12-specific TOML features."""

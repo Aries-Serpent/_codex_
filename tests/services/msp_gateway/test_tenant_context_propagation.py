@@ -379,7 +379,7 @@ def test_tenant_context_propagation_with_dependencies(
         return tenant
 
     @app.get("/v1/with-deps")
-    async def with_deps(request: Request, tenant = pytest.deprecated_call(lambda: get_tenant(request))):
+    async def with_deps(request: Request):
         # Note: In real code, use Depends(get_tenant) from fastapi
         tenant_from_dep = get_tenant(request)
         return {

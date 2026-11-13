@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed - ML coverage shard test-suite damage surfaced by PR #5784
+- Restore real torch modules after any test that drops or replaces them; torch
+  forbids re-import, which cascaded into ~580 shard-4 failures.
+- Restore imports, helpers and fixtures deleted from 76 test files by earlier
+  bulk sweeps, using git history as the source; undo `print`→`logger` identifier
+  mangling (`fingerprint` → `fingerlogger.info`) and four always-true tuple asserts.
+
 ### Changed - Parallel ML slow-test follow-up to PR #5783
 - Split integration pass/fail into four stable file-path shards and the existing
   non-slow/non-integration coverage selection into four independent shards.

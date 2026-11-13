@@ -1,3 +1,4 @@
+from scripts.ci.collect_telemetry import TelemetryCollector
 from unittest.mock import patch
 
 import pytest
@@ -167,7 +168,7 @@ import pytest
 #         jobs = [{"name": "unknown-job"}]
 #         pattern = collector.classify_failure(run, jobs)
 #         assert pattern == "unknown", "pattern is not valid"
-#     @patch("collect_telemetry.requests.get")
+#     @patch("scripts.ci.collect_telemetry.requests.get")
 #     def test_collect_workflow_runs(self, mock_get, collector, mock_workflow_runs):
 #     def test_collect_workflow_runs(self, mock_get, collector, mock_workflow_runs):
 #         """Test workflow run collection."""
@@ -181,7 +182,7 @@ import pytest
 #         assert runs[0]["name"] == "Auto-Fix Common Issues", "Condition must be true"
 #         mock_get.assert_called_once()
 #
-#     @patch("collect_telemetry.requests.get")
+#     @patch("scripts.ci.collect_telemetry.requests.get")
 #     def test_collect_workflow_runs_pagination(self, mock_get, collector):
 #     def test_collect_workflow_runs_pagination(self, mock_get, collector):
 #         """Test workflow run collection with pagination."""
@@ -206,7 +207,7 @@ import pytest
 #         assert len(runs) == 150, "Runs must not be empty"
 #         assert mock_get.call_count == 2, "Count must be greater than zero"
 #
-#     @patch("collect_telemetry.requests.get")
+#     @patch("scripts.ci.collect_telemetry.requests.get")
 #     def test_collect_job_details(self, mock_get, collector, mock_jobs):
 #     def test_collect_job_details(self, mock_get, collector, mock_jobs):
 #         """Test job details collection."""
@@ -219,7 +220,7 @@ import pytest
 #         assert len(jobs) == 1, "Jobs must not be empty"
 #         assert jobs[0]["name"] == "auto-fix", "Condition must be true"
 #
-#     @patch("collect_telemetry.requests.get")
+#     @patch("scripts.ci.collect_telemetry.requests.get")
 #     def test_collect_artifacts(self, mock_get, collector, mock_artifacts):
 #     def test_collect_artifacts(self, mock_get, collector, mock_artifacts):
 #         """Test artifact collection."""
@@ -232,9 +233,9 @@ import pytest
 #         assert len(artifacts) == 1, "Artifacts must not be empty"
 #         assert artifacts[0]["name"] == "test-results", "Result must not be empty"
 #
-#     @patch("collect_telemetry.TelemetryCollector.collect_artifacts")
-#     @patch("collect_telemetry.TelemetryCollector.collect_job_details")
-#     @patch("collect_telemetry.TelemetryCollector.collect_workflow_runs")
+#     @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_artifacts")
+#     @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_job_details")
+#     @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_workflow_runs")
 #     def test_generate_report(
 #         self,
 #         mock_collect_runs,
@@ -580,9 +581,9 @@ class TestCancelledRunsHandling:
             "created_at": "2024-01-01T00:00:00Z",
         }
 
-    @patch("collect_telemetry.TelemetryCollector.collect_artifacts")
-    @patch("collect_telemetry.TelemetryCollector.collect_job_details")
-    @patch("collect_telemetry.TelemetryCollector.collect_workflow_runs")
+    @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_artifacts")
+    @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_job_details")
+    @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_workflow_runs")
     def test_cancelled_excluded_from_failed_runs(
         self, mock_runs, mock_jobs, mock_artifacts, collector, tmp_path
     ):
@@ -602,9 +603,9 @@ class TestCancelledRunsHandling:
         assert len(report["failed_runs"]) == 1, "Collection must not be empty"
         assert report["failed_runs"][0]["run_id"] == 3, "rep is not valid"
 
-    @patch("collect_telemetry.TelemetryCollector.collect_artifacts")
-    @patch("collect_telemetry.TelemetryCollector.collect_job_details")
-    @patch("collect_telemetry.TelemetryCollector.collect_workflow_runs")
+    @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_artifacts")
+    @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_job_details")
+    @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_workflow_runs")
     def test_cancelled_counted_in_cancelled_runs_field(
         self, mock_runs, mock_jobs, mock_artifacts, collector, tmp_path
     ):
@@ -622,9 +623,9 @@ class TestCancelledRunsHandling:
 
         assert report["summary"]["cancelled_runs"] == 2, "rep is not valid"
 
-    @patch("collect_telemetry.TelemetryCollector.collect_artifacts")
-    @patch("collect_telemetry.TelemetryCollector.collect_job_details")
-    @patch("collect_telemetry.TelemetryCollector.collect_workflow_runs")
+    @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_artifacts")
+    @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_job_details")
+    @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_workflow_runs")
     def test_failure_rate_excludes_cancelled(
         self, mock_runs, mock_jobs, mock_artifacts, collector, tmp_path
     ):
@@ -651,9 +652,9 @@ class TestCancelledRunsHandling:
         assert report["summary"]["failed_runs"] == 1, "rep is not valid"
         assert report["summary"]["cancelled_runs"] == 3, "rep is not valid"
 
-    @patch("collect_telemetry.TelemetryCollector.collect_artifacts")
-    @patch("collect_telemetry.TelemetryCollector.collect_job_details")
-    @patch("collect_telemetry.TelemetryCollector.collect_workflow_runs")
+    @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_artifacts")
+    @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_job_details")
+    @patch("scripts.ci.collect_telemetry.TelemetryCollector.collect_workflow_runs")
     def test_timed_out_still_counts_as_failure(
         self, mock_runs, mock_jobs, mock_artifacts, collector, tmp_path
     ):

@@ -1,3 +1,9 @@
+import pytest
+from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
+from pathlib import Path
+from codex.ast.export import export_knowledge_graph
+from codex.ast.export import ExportFormat
+import json
 #         assert ", "Condition must be true"
 #         assert "test_project" in result.content, "Result must not be empty"
 #         assert "Dependency Analysis" in result.content, "Result must not be empty"
@@ -321,6 +327,36 @@
 #         assert data["format"] == "json", "Data must not be empty"
 #         assert data["output_path"] == "test.json", "Data must not be empty"
 #         assert data["success"] is True, "Data must not be empty"
+
+
+@pytest.fixture
+def sample_nodes():
+    """Create sample AST nodes for testing."""
+    loc1 = SourceLocation(Path("module.py"), 1, 0, 50, 0)
+    root = StandardizedASTNode("mod1", NodeType.MODULE, "sample_module", loc1)
+
+    loc2 = SourceLocation(Path("module.py"), 5, 0, 20, 0)
+    func = StandardizedASTNode(
+        "func1",
+        NodeType.FUNCTION,
+        "process_data",
+        loc2,
+        docstring="Process the data.",
+    )
+
+    loc3 = SourceLocation(Path("module.py"), 25, 0, 50, 0)
+    cls = StandardizedASTNode(
+        "cls1",
+        NodeType.CLASS,
+        "DataProcessor",
+        loc3,
+        docstring="Data processing class.",
+    )
+
+    root.add_child(func)
+    root.add_child(cls)
+
+    return [root]
 
 
 class TestExportKnowledgeGraphFunction:

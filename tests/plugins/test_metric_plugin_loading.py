@@ -1,3 +1,4 @@
+from codex_ml.metrics.registry import init_metric_plugins, list_metrics
 #         assert "f1" in metric_set_lower, "Condition must be true"
 
 
@@ -25,5 +26,4 @@ def test_metric_plugins_graceful_with_no_entry_points():
     expected_builtins = ["f1", "exact_match", "bleu"]
     found_builtins = [m for m in expected_builtins if m in available_lower]
 
-    assert (len(found_builtins) >= 2, "Found_builtins must not be empty"
-    ), f"Expected at least 2 built-in metrics from {expected_builtins}, found {found_builtins}"
+    assert len(found_builtins) >= 2, f"Expected at least 2 built-in metrics from {expected_builtins}, found {found_builtins}"

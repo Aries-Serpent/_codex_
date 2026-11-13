@@ -9,6 +9,8 @@ Tests cover:
 - Convergence detection
 """
 
+import math
+
 
 class TestOptimizationBasics:
     """Test optimization algorithm basics."""
