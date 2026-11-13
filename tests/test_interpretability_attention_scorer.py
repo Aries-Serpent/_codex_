@@ -1,405 +1,285 @@
 """
-Comprehensive test suite for interpretability attention scorer.
+Test suite for the interpretability attention scorer.
 
-Tests cover:
-- Attention weight extraction and analysis
-- Token importance scoring
-- Attention flow analysis
-- Layer name mapping
-- Edge cases and error handling
+The scorer wraps a ``torch.nn.Module`` (``AttentionScorer(model, ...)``) and
+exposes ``extract_attention_weights``, ``compute_token_importance``,
+``compute_attention_flow``, ``analyze_attention`` and
+``get_top_attended_tokens``.  Attention tensors use the Hugging Face layout:
+one ``(batch, heads, seq, seq)`` tensor per layer.
+
+Tests that need real tensor math are skipped when the repo-local torch stub is
+active; they run in CI against real CPU torch.
 """
 
+from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
-from codex.interpretability.attention_scorer import (
+
+torch = pytest.importorskip("torch")
+
+from codex.interpretability.attention_scorer import (  # noqa: E402
     AttentionAnalysis,
     AttentionScorer,
 )
+
+TORCH_STUB = getattr(torch, "__version__", "").endswith("stub")
+requires_real_torch = pytest.mark.skipif(
+    TORCH_STUB, reason="tensor math requires real torch (stub active)"
+)
+
+
+def _mock_model() -> MagicMock:
+    model = MagicMock()
+    model.to.return_value = model
+    return model
+
+
+def _layers(array: np.ndarray) -> list:
+    """Convert a (layers, heads, seq, seq) array into per-layer batch tensors."""
+    return [torch.tensor(layer[None, ...], dtype=torch.float32) for layer in array]
+
+
+class _FakeAttentionModel(torch.nn.Module if not TORCH_STUB else object):
+    """Minimal HF-style model returning fixed ``attentions``."""
+
+    def __init__(self, attentions: list) -> None:
+        super().__init__()
+        self._attentions = attentions
+        self.calls: list[dict] = []
+
+    def forward(self, input_ids=None, attention_mask=None, output_attentions=False):
+        self.calls.append({"output_attentions": output_attentions, "mask": attention_mask})
+        return SimpleNamespace(attentions=tuple(self._attentions) if output_attentions else None)
 
 
 class TestAttentionAnalysisDataclass:
     """Test AttentionAnalysis dataclass."""
 
     def test_attention_analysis_creation(self):
-        """Test creating AttentionAnalysis."""
-        attention_weights = np.random.randn(2, 8, 10, 10)
-        token_importance = np.random.randn(10)
-        attention_flow = np.random.randn(10, 10)
-
         analysis = AttentionAnalysis(
-            attention_weights=attention_weights,
-            token_importance=token_importance,
-            attention_flow=attention_flow,
-            layer_names=["layer_1", "layer_2"]
+            attention_weights=np.random.randn(2, 8, 10, 10),
+            token_importance=np.random.randn(10),
+            attention_flow=np.random.randn(10, 10),
+            layer_names=["layer_1", "layer_2"],
         )
 
         assert analysis.attention_weights.shape == (2, 8, 10, 10)
         assert analysis.token_importance.shape == (10,)
         assert analysis.attention_flow.shape == (10, 10)
+        assert analysis.token_ids is None
+        assert analysis.tokens is None
 
     def test_attention_analysis_with_token_ids(self):
-        """Test AttentionAnalysis with token IDs."""
         analysis = AttentionAnalysis(
             attention_weights=np.random.randn(1, 8, 5, 5),
             token_importance=np.random.randn(5),
             attention_flow=np.random.randn(5, 5),
             layer_names=["layer_1"],
-            token_ids=[101, 2054, 2003, 2175, 102]
+            token_ids=[101, 2054, 2003, 2175, 102],
         )
 
         assert analysis.token_ids == [101, 2054, 2003, 2175, 102]
 
     def test_attention_analysis_with_tokens(self):
-        """Test AttentionAnalysis with token strings."""
         analysis = AttentionAnalysis(
             attention_weights=np.random.randn(1, 8, 3, 3),
             token_importance=np.random.randn(3),
             attention_flow=np.random.randn(3, 3),
             layer_names=["layer_1"],
-            tokens=["[CLS]", "hello", "[SEP]"]
+            tokens=["[CLS]", "hello", "[SEP]"],
         )
 
         assert analysis.tokens == ["[CLS]", "hello", "[SEP]"]
 
 
+@requires_real_torch
 class TestAttentionScorerInitialization:
-    """Test AttentionScorer initialization."""
+    """AttentionScorer requires a model and moves it to the target device."""
 
-    def test_attention_scorer_creation(self):
-        """Test creating AttentionScorer."""
-        scorer = AttentionScorer()
-        assert scorer is not None, "scorer must be initialized"
+    def test_model_is_required(self):
+        with pytest.raises(TypeError):
+            AttentionScorer()  # type: ignore[call-arg]
 
-    def test_attention_scorer_with_model(self):
-        """Test AttentionScorer with model."""
-        mock_model = MagicMock()
-        scorer = AttentionScorer(model=mock_model)
-        assert scorer is not None, "scorer must be initialized"
+    def test_model_moved_to_device_and_eval(self):
+        model = _mock_model()
+        scorer = AttentionScorer(model, device="cpu")
 
+        assert scorer.model is model
+        assert scorer.normalize is True
+        assert scorer.epsilon == pytest.approx(1e-10)
+        model.to.assert_called_once()
+        model.eval.assert_called_once()
 
-class TestAttentionWeightExtraction:
-    """Test attention weight extraction."""
+    def test_custom_options(self):
+        scorer = AttentionScorer(_mock_model(), normalize=False, device="cpu", epsilon=1e-6)
 
-    def test_extract_attention_weights_basic(self):
-        """Test basic attention weight extraction."""
-        scorer = AttentionScorer()
-
-        # Mock attention weights
-        attention_weights = np.random.randn(2, 8, 10, 10)
-
-        result = scorer.extract_attention_weights(attention_weights)
-        assert result is not None, "result must be initialized"
-        assert isinstance(result, np.ndarray)
-
-    def test_extract_attention_weights_shape_preserved(self):
-        """Test extraction preserves weight shape."""
-        scorer = AttentionScorer()
-
-        weights = np.random.randn(4, 12, 20, 20)
-        result = scorer.extract_attention_weights(weights)
-
-        assert result.shape == weights.shape or len(result.shape) >= 2, "Shape must not be empty"
-
-    def test_extract_attention_weights_multiple_layers(self):
-        """Test extracting weights from multiple layers."""
-        scorer = AttentionScorer()
-
-        # Weights from 6 layers
-        layers = [np.random.randn(8, 12, 12) for _ in range(6)]
-
-        results = [scorer.extract_attention_weights(w) for w in layers]
-        assert len(results) == 6, "Results must not be empty"
-
-    def test_extract_attention_with_nan_values(self):
-        """Test handling of NaN values in weights."""
-        scorer = AttentionScorer()
-
-        weights = np.random.randn(2, 8, 10, 10)
-        weights[0, 0, 0, 0] = np.nan
-
-        # Should handle NaN gracefully
-        result = scorer.extract_attention_weights(weights)
-        assert result is not None, "result must be initialized"
+        assert scorer.normalize is False
+        assert scorer.epsilon == pytest.approx(1e-6)
 
 
+@requires_real_torch
 class TestTokenImportanceScoring:
-    """Test token importance scoring."""
+    def test_mean_importance_shape_and_normalization(self):
+        scorer = AttentionScorer(_mock_model(), device="cpu")
+        weights = _layers(np.abs(np.random.randn(2, 8, 10, 10)))
 
-    def test_compute_token_importance(self):
-        """Test computing token importance scores."""
-        scorer = AttentionScorer()
-
-        attention_weights = np.random.randn(2, 8, 10, 10)
-        importance = scorer.compute_token_importance(attention_weights)
+        importance = scorer.compute_token_importance(weights)
 
         assert importance.shape == (10,)
-        assert np.all(importance >= 0) or True, "importance must be greater than zero"
-
-    def test_token_importance_sum_normalization(self):
-        """Test token importance sums to expected value."""
-        scorer = AttentionScorer()
-
-        attention_weights = np.random.randn(1, 4, 5, 5)
-        importance = scorer.compute_token_importance(attention_weights)
-
-        # Importance should have expected properties
-        assert len(importance) == 5, "Importance must not be empty"
-        assert not np.any(np.isnan(importance)), "Condition must be true"
+        assert np.all(importance >= 0)
+        assert importance.sum() == pytest.approx(1.0, rel=1e-5)
 
     def test_highest_importance_token(self):
-        """Test identifying highest importance token."""
-        scorer = AttentionScorer()
+        scorer = AttentionScorer(_mock_model(), device="cpu")
+        array = np.zeros((1, 1, 5, 5))
+        array[0, 0, :, 2] = 1.0  # every token attends to token 2
 
-        attention_weights = np.zeros((1, 1, 5, 5))
-        # Make token 2 have highest attention
-        attention_weights[0, 0, :, 2] = 1.0
+        for method in ("mean", "max", "norm"):
+            importance = scorer.compute_token_importance(_layers(array), method=method)
+            assert int(np.argmax(importance)) == 2, method
 
-        importance = scorer.compute_token_importance(attention_weights)
-        max_idx = np.argmax(importance)
+    def test_unnormalized_mean_matches_numpy(self):
+        scorer = AttentionScorer(_mock_model(), normalize=False, device="cpu")
+        array = np.abs(np.random.randn(3, 4, 6, 6))
 
-        assert max_idx == 2, "max_idx is not valid"
+        importance = scorer.compute_token_importance(_layers(array))
 
-    def test_zero_attention_weights(self):
-        """Test with zero attention weights."""
-        scorer = AttentionScorer()
+        np.testing.assert_allclose(importance, array.mean(axis=(0, 1, 2)), rtol=1e-5)
 
-        attention_weights = np.zeros((1, 1, 5, 5))
-        importance = scorer.compute_token_importance(attention_weights)
+    def test_zero_attention_weights_do_not_produce_nan(self):
+        scorer = AttentionScorer(_mock_model(), device="cpu")
 
-        # Should handle zero weights gracefully
-        assert importance is not None, "importance must be initialized"
+        importance = scorer.compute_token_importance(_layers(np.zeros((1, 1, 5, 5))))
+
+        assert not np.any(np.isnan(importance))
+        np.testing.assert_array_equal(importance, np.zeros(5))
+
+    def test_unknown_method_raises(self):
+        scorer = AttentionScorer(_mock_model(), device="cpu")
+
+        with pytest.raises(ValueError, match="Unknown method"):
+            scorer.compute_token_importance(_layers(np.ones((1, 1, 3, 3))), method="bogus")
+
+    def test_empty_weights_raise(self):
+        scorer = AttentionScorer(_mock_model(), device="cpu")
+
+        with pytest.raises(ValueError, match="No attention weights"):
+            scorer.compute_token_importance([])
 
 
+@requires_real_torch
 class TestAttentionFlowAnalysis:
-    """Test attention flow between tokens."""
+    def test_flow_shape(self):
+        scorer = AttentionScorer(_mock_model(), device="cpu")
 
-    def test_analyze_attention_flow(self):
-        """Test analyzing attention flow."""
-        scorer = AttentionScorer()
-
-        attention_weights = np.random.randn(1, 8, 10, 10)
-        flow = scorer.analyze_attention_flow(attention_weights)
+        flow = scorer.compute_attention_flow(_layers(np.random.rand(2, 8, 10, 10)))
 
         assert flow.shape == (10, 10)
 
-    def test_attention_flow_normalization(self):
-        """Test attention flow normalization."""
-        scorer = AttentionScorer()
+    def test_flow_aggregations_match_numpy(self):
+        scorer = AttentionScorer(_mock_model(), device="cpu")
+        array = np.random.rand(3, 4, 5, 5)
+        per_layer = array.mean(axis=1)
 
-        attention_weights = np.random.randn(2, 4, 8, 8)
-        flow = scorer.analyze_attention_flow(attention_weights)
-
-        # Flow should be normalized between 0 and 1
-        assert np.all(flow >= -0.1) or True, "flow must be greater than zero"
-        assert np.all(flow <= 1.1) or True, "flow is not valid"
-
-    def test_attention_flow_matrix_properties(self):
-        """Test attention flow matrix properties."""
-        scorer = AttentionScorer()
-
-        attention_weights = np.random.randn(1, 1, 5, 5)
-        flow = scorer.analyze_attention_flow(attention_weights)
-
-        # Should be square matrix
-        assert flow.shape[0] == flow.shape[1], "Condition must be true"
-        assert flow.shape[0] == 5, "Condition must be true"
-
-    def test_self_attention_in_flow(self):
-        """Test self-attention appears in flow matrix."""
-        scorer = AttentionScorer()
-
-        attention_weights = np.zeros((1, 1, 3, 3))
-        # Token 0 pays attention to itself
-        attention_weights[0, 0, 0, 0] = 1.0
-
-        flow = scorer.analyze_attention_flow(attention_weights)
-
-        # Diagonal should reflect self-attention
-        assert True, "True is not valid"
-
-
-class TestLayerNameMapping:
-    """Test layer name mapping."""
-
-    def test_map_layer_names(self):
-        """Test mapping layer names to indices."""
-        scorer = AttentionScorer()
-
-        layer_names = ["layer.0", "layer.1", "layer.2"]
-        mapping = scorer.create_layer_mapping(layer_names)
-
-        assert "layer.0" in mapping or len(layer_names) > 0, "Layer_names must not be empty"
-
-    def test_layer_count_matching(self):
-        """Test layer count matches weights."""
-        scorer = AttentionScorer()
-
-        num_layers = 6
-        attention_weights = np.random.randn(num_layers, 12, 64, 64)
-        layer_names = [f"encoder.layer.{i}" for i in range(num_layers)]
-
-        analysis = scorer.analyze_by_layer(attention_weights, layer_names)
-        assert analysis is not None, "analysis must be initialized"
-
-    def test_custom_layer_names(self):
-        """Test custom layer naming."""
-        scorer = AttentionScorer()
-
-        custom_names = ["input", "hidden_1", "hidden_2", "output"]
-        analysis = AttentionAnalysis(
-            attention_weights=np.random.randn(4, 8, 10, 10),
-            token_importance=np.random.randn(10),
-            attention_flow=np.random.randn(10, 10),
-            layer_names=custom_names
+        np.testing.assert_allclose(
+            scorer.compute_attention_flow(_layers(array), "mean"), per_layer.mean(0), rtol=1e-5
+        )
+        np.testing.assert_allclose(
+            scorer.compute_attention_flow(_layers(array), "last"), per_layer[-1], rtol=1e-5
+        )
+        np.testing.assert_allclose(
+            scorer.compute_attention_flow(_layers(array), "sum"), per_layer.sum(0), rtol=1e-5
         )
 
-        assert analysis.layer_names == custom_names, "layer_names is not valid"
+    def test_self_attention_on_diagonal(self):
+        scorer = AttentionScorer(_mock_model(), device="cpu")
+
+        flow = scorer.compute_attention_flow(_layers(np.eye(3)[None, None, ...]))
+
+        np.testing.assert_allclose(flow, np.eye(3))
+
+    def test_unknown_aggregation_raises(self):
+        scorer = AttentionScorer(_mock_model(), device="cpu")
+
+        with pytest.raises(ValueError, match="Unknown aggregation"):
+            scorer.compute_attention_flow(_layers(np.ones((1, 1, 2, 2))), "median")
+
+    def test_empty_weights_raise(self):
+        scorer = AttentionScorer(_mock_model(), device="cpu")
+
+        with pytest.raises(ValueError, match="No attention weights"):
+            scorer.compute_attention_flow([])
 
 
-class TestAttentionHeads:
-    """Test attention head analysis."""
+@requires_real_torch
+class TestModelIntegration:
+    def test_extract_attention_weights_from_outputs(self):
+        attentions = _layers(np.random.rand(2, 4, 6, 6))
+        model = _FakeAttentionModel(attentions)
+        scorer = AttentionScorer(model, device="cpu")
 
-    def test_analyze_attention_heads(self):
-        """Test analyzing individual attention heads."""
-        scorer = AttentionScorer()
+        weights, names = scorer.extract_attention_weights(torch.zeros((1, 6), dtype=torch.long))
 
-        # 2 layers, 12 heads, 10 tokens
-        attention_weights = np.random.randn(2, 12, 10, 10)
+        assert names == ["layer_0", "layer_1"]
+        assert len(weights) == 2
+        assert tuple(weights[0].shape) == (1, 4, 6, 6)
+        assert model.calls[0]["output_attentions"] is True
 
-        heads_analysis = scorer.analyze_attention_heads(attention_weights)
-        assert heads_analysis is not None, "heads_analysis must be initialized"
+    def test_analyze_attention_full_pipeline(self):
+        array = np.random.rand(3, 2, 4, 4)
+        model = _FakeAttentionModel(_layers(array))
+        scorer = AttentionScorer(model, device="cpu")
+        input_ids = torch.tensor([[11, 12, 13, 14]])
+        tokens = ["a", "b", "c", "d"]
 
-    def test_head_importance_ranking(self):
-        """Test ranking attention head importance."""
-        scorer = AttentionScorer()
-
-        attention_weights = np.random.randn(1, 8, 10, 10)
-        head_importance = scorer.rank_attention_heads(attention_weights)
-
-        # Should have importance for each head
-        assert len(head_importance) == 8, "Head_importance must not be empty"
-
-    def test_head_specialization(self):
-        """Test detecting head specialization."""
-        scorer = AttentionScorer()
-
-        # Head 0: position-based attention
-        attention_weights = np.zeros((1, 4, 10, 10))
-        attention_weights[0, 0] = np.eye(10)  # Self-attention pattern
-
-        specialization = scorer.detect_head_specialization(attention_weights)
-        assert specialization is not None, "specialization must be initialized"
-
-
-class TestErrorHandling:
-    """Test error handling."""
-
-    def test_invalid_shape_attention_weights(self):
-        """Test handling invalid attention weight shape."""
-        scorer = AttentionScorer()
-
-        # Invalid: 2D instead of 4D
-        invalid_weights = np.random.randn(10, 10)
-
-        try:
-            result = scorer.extract_attention_weights(invalid_weights)
-            # May handle gracefully or raise error
-            assert True, "True is not valid"
-        except (ValueError, IndexError):
-            assert True, "True is not valid"
-
-    def test_none_attention_weights(self):
-        """Test handling None weights."""
-        scorer = AttentionScorer()
-
-        with pytest.raises((TypeError, AttributeError)):
-            scorer.extract_attention_weights(None)
-
-    def test_empty_attention_weights(self):
-        """Test handling empty weights."""
-        scorer = AttentionScorer()
-
-        empty_weights = np.array([])
-
-        try:
-            result = scorer.extract_attention_weights(empty_weights)
-            assert True, "True is not valid"
-        except (ValueError, IndexError):
-            assert True, "True is not valid"
-
-    def test_infinite_values_in_weights(self):
-        """Test handling infinite values."""
-        scorer = AttentionScorer()
-
-        weights = np.random.randn(1, 1, 5, 5)
-        weights[0, 0, 0, 0] = np.inf
-
-        result = scorer.extract_attention_weights(weights)
-        assert result is not None, "result must be initialized"
-
-
-class TestIntegration:
-    """Test integration workflows."""
-
-    def test_full_analysis_pipeline(self):
-        """Test full attention analysis pipeline."""
-        scorer = AttentionScorer()
-
-        # Simulate model output
-        attention_weights = np.random.randn(6, 12, 128, 128)
-        layer_names = [f"layer_{i}" for i in range(6)]
-        token_ids = list(range(128))
-        tokens = [f"token_{i}" for i in range(128)]
-
-        # Run full analysis
-        analysis = scorer.full_analysis(
-            attention_weights=attention_weights,
-            layer_names=layer_names,
-            token_ids=token_ids,
-            tokens=tokens
-        )
+        analysis = scorer.analyze_attention(input_ids, tokens=tokens)
 
         assert isinstance(analysis, AttentionAnalysis)
+        assert analysis.attention_weights.shape == (3, 2, 4, 4)
+        np.testing.assert_allclose(analysis.attention_weights, array, rtol=1e-6)
+        assert analysis.token_importance.shape == (4,)
+        assert analysis.attention_flow.shape == (4, 4)
+        assert analysis.layer_names == ["layer_0", "layer_1", "layer_2"]
+        assert analysis.token_ids == [11, 12, 13, 14]
+        assert analysis.tokens == tokens
 
-    def test_comparative_analysis(self):
-        """Test comparative analysis of multiple states."""
-        scorer = AttentionScorer()
+    def test_analyze_attention_without_attentions_raises(self):
+        model = _FakeAttentionModel([])
+        scorer = AttentionScorer(model, device="cpu")
 
-        weights1 = np.random.randn(1, 8, 10, 10)
-        weights2 = np.random.randn(1, 8, 10, 10)
-
-        importance1 = scorer.compute_token_importance(weights1)
-        importance2 = scorer.compute_token_importance(weights2)
-
-        # Should be able to compare
-        assert len(importance1) == len(importance2), "Importance1 must not be empty"
-
-
-class TestPerformanceConsiderations:
-    """Test performance handling."""
-
-    def test_large_attention_matrix(self):
-        """Test handling large attention matrices."""
-        scorer = AttentionScorer()
-
-        # Large: 24 layers, 16 heads, 512 tokens
-        large_weights = np.random.randn(24, 16, 512, 512)
-
-        result = scorer.extract_attention_weights(large_weights)
-        assert result is not None, "result must be initialized"
-
-    def test_memory_efficiency(self):
-        """Test memory-efficient processing."""
-        scorer = AttentionScorer()
-
-        # Process in chunks if needed
-        weights = np.random.randn(12, 8, 100, 100)
-
-        result = scorer.extract_attention_weights(weights)
-        assert result is not None, "result must be initialized"
+        with pytest.raises(ValueError, match="Failed to extract attention weights"):
+            scorer.analyze_attention(torch.zeros((1, 3), dtype=torch.long))
 
 
-if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+@requires_real_torch
+class TestTopAttendedTokens:
+    def test_top_k_sorted_with_tokens(self):
+        scorer = AttentionScorer(_mock_model(), device="cpu")
+        analysis = AttentionAnalysis(
+            attention_weights=np.zeros((1, 1, 4, 4)),
+            token_importance=np.array([0.1, 0.4, 0.2, 0.3]),
+            attention_flow=np.zeros((4, 4)),
+            layer_names=["layer_0"],
+            tokens=["w", "x", "y", "z"],
+        )
+
+        top = scorer.get_top_attended_tokens(analysis, top_k=2)
+
+        assert [(i, t) for i, _, t in top] == [(1, "x"), (3, "z")]
+        assert top[0][1] == pytest.approx(0.4)
+
+    def test_top_k_without_tokens(self):
+        scorer = AttentionScorer(_mock_model(), device="cpu")
+        analysis = AttentionAnalysis(
+            attention_weights=np.zeros((1, 1, 3, 3)),
+            token_importance=np.array([0.5, 0.2, 0.3]),
+            attention_flow=np.zeros((3, 3)),
+            layer_names=["layer_0"],
+        )
+
+        top = scorer.get_top_attended_tokens(analysis, top_k=3)
+
+        assert [i for i, _, _ in top] == [0, 2, 1]
+        assert all(token is None for _, _, token in top)
