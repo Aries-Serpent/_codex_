@@ -11,10 +11,13 @@ Tests cover:
 
 from datetime import UTC, datetime
 
+import pytest
+
 from codex_ml.continuous_learning.pipeline import (
     ContinuousLearningPipeline,
     RetrainingJob,
 )
+from codex_ml.continuous_learning.trigger import RetrainingTrigger
 
 
 class TestRetrainingJobBasics:
@@ -55,10 +58,16 @@ class TestRetrainingJobBasics:
 
     def test_retraining_job_to_dict(self):
         """Test job serialization to dictionary."""
+        trigger = RetrainingTrigger(
+            reason="drift_threshold_exceeded",
+            drift_score=0.3,
+            timestamp=datetime.now(UTC),
+        )
         job = RetrainingJob(
-            job_id="job_serial", trigger=None, config={"epochs": 5}, status="running"
+            job_id="job_serial", trigger=trigger, config={"epochs": 5}, status="running"
         )
         job_dict = job.to_dict()
+        assert job_dict["trigger"]["reason"] == "drift_threshold_exceeded"
 
         assert job_dict["job_id"] == "job_serial", "Condition must be true"
         assert job_dict["config"]["epochs"] == 5, "Condition must be true"
@@ -262,10 +271,10 @@ class TestEvaluationGate:
     def test_eval_gate_various_thresholds(self):
         """Test eval gate with various threshold combinations."""
         test_cases = [
-            {"thresholds": {"min_accuracy": 0.80}, "metrics": {"accuracy": 0.85}},
-            {"thresholds": {"max_loss": 0.5}, "metrics": {"loss": 0.3}},
+            {"thresholds": {"eval_gate_min_accuracy": 0.80}, "metrics": {"accuracy": 0.85}},
+            {"thresholds": {"eval_gate_max_loss": 0.5}, "metrics": {"loss": 0.3}},
             {
-                "thresholds": {"min_improvement": 1.0},
+                "thresholds": {"eval_gate_min_improvement_pct": 1.0},
                 "metrics": {"accuracy": 0.85, "baseline_accuracy": 0.84},
             },
         ]
@@ -294,13 +303,13 @@ class TestModelPromotion:
         pipeline = ContinuousLearningPipeline()
 
         registry = {}
-        metadata = {
-            "version": "1.0",
-            "timestamp": datetime.now(UTC).isoformat(),
-            "metrics": {"accuracy": 0.87},
-        }
+        promoted = pipeline.promote(
+            "/path/to/model.pt", registry=registry, metrics={"accuracy": 0.87}
+        )
 
-        pipeline.promote("/path/to/model.pt", registry=registry, **metadata)
+        assert promoted is True
+        assert registry["model_path"] == "/path/to/model.pt"
+        assert "promoted_at" in registry
 
     def test_promote_preserves_model_path(self):
         """Test promotion preserves model path."""
@@ -455,14 +464,14 @@ class TestMetricsTracking:
         metrics = {"accuracy": 0.87, "baseline_accuracy": 0.83}
 
         improvement = metrics["accuracy"] - metrics["baseline_accuracy"]
-        assert improvement == 0.04, "improvement is not valid"
+        assert improvement == pytest.approx(0.04), "improvement is not valid"
 
     def test_loss_metrics_storage(self):
         """Test storing loss metrics."""
         metrics = {"loss": 0.35, "baseline_loss": 0.45}
 
         improvement = metrics["baseline_loss"] - metrics["loss"]
-        assert improvement == 0.1, "improvement is not valid"
+        assert improvement == pytest.approx(0.1), "improvement is not valid"
 
     def test_multiple_metric_types(self):
         """Test tracking multiple metric types."""

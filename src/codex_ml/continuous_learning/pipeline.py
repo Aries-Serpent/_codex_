@@ -48,6 +48,7 @@ Usage example::
 from __future__ import annotations
 
 import logging
+import uuid
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any
@@ -70,7 +71,7 @@ class RetrainingJob:
     """Descriptor for a retraining job created by the pipeline.
 
     Attributes:
-        job_id: Unique identifier (ISO timestamp by default).
+        job_id: Unique identifier (``retrain_<UTC timestamp>_<8 hex>`` by default).
         trigger: The :class:`RetrainingTrigger` that caused this job.
         config: Training configuration snapshot.
         status: Job status string (``"pending"``, ``"running"``, ``"done"``,
@@ -190,7 +191,9 @@ class ContinuousLearningPipeline:
             timestamp=datetime.now(UTC),
             config_snapshot=cfg,
         )
-        job_id = f"retrain_{trigger.timestamp.strftime('%Y%m%dT%H%M%S')}"
+        # Timestamp alone collides for jobs created within the same second;
+        # a short random suffix keeps IDs unique and still sortable by time.
+        job_id = f"retrain_{trigger.timestamp.strftime('%Y%m%dT%H%M%S')}_{uuid.uuid4().hex[:8]}"
         job = RetrainingJob(job_id=job_id, trigger=trigger, config=cfg)
         self._last_trigger = trigger
         self._last_job = job
