@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Fixed - PR #5781 RAG runner and CodeQL classification repair
+- Preserve concurrent manifest/baseline automation through normal integration;
+  keep hosted validation enabled on the repair commit.
 - Stop the RAG test chunker after its final chunk; the unbounded overlap loop
   exhausted hosted runner memory before pytest could report other failures.
 - Compare parsed hostnames and use owner-only permissions in the six

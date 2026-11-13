@@ -13,6 +13,10 @@
 
 ### Evidence and boundaries
 
+- Preserved concurrent bot manifest/baseline commit `081ef98174` through a
+  normal merge after the first push was rejected; no force push, reset or
+  history rewrite was used. The integration commit deliberately contains no
+  CI-skip marker.
 - The original inline chunking loop timed out; the repaired loop terminates.
   Hosted #5781 run at `d8a5c90235` completed without runner shutdown:
   1,643 passed, 180 skipped, 23 failed and 17 errors in 408.11 seconds.
