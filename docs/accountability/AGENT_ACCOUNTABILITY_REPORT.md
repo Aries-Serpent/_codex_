@@ -1,5 +1,18 @@
 ## Session: PR #5766 bounded readiness repair - 2026-11-13
 
+### Consolidation follow-up
+
+- Normal SHA-guarded squash merges integrated #5774 at `7eeddbe0c0` and #5779
+  at `f8bde84f4d`; only #5766 remains open. No admin bypass or CI-skip body was used.
+- Exact integrated-tree score is 85/100, AAIS 91.72/100; 32 focused regression
+  cases pass. Hosted checks remain the authority, not the diagnostic score.
+- `ci-testing-agent` lane `pr5766-rust-docs` removed the unused direct PyO3 build
+  dependency, reconciled Cargo without upgrades and passed documentation with
+  warnings denied. Parent transferred the minimal patch to a staging sub-branch.
+- Built-in rubber-duck lane `pr5766-integration-challenge` challenged stability
+  claims. Token delegation fails with an empty protected approval secret;
+  environment secret access returns 403. No approval guard was weakened.
+
 ### Agents Used
 
 - `ci-testing-agent` (CI Testing Agent, runtime lane `pr5766-ci`) - RAG/slow-ML diagnosis and
