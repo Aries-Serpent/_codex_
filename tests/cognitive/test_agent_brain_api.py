@@ -241,9 +241,10 @@ class TestAgentCapabilitiesMap:
         assert set(caps) == set(ImprovementArea), "Condition must be true"
 
     def test_codeql_agent_covers_security(self):
-        assert (ImprovementArea.SECURITY_REMEDIATION, "Condition must be true"
+        assert (
+            ImprovementArea.SECURITY_REMEDIATION
             in AGENT_CAPABILITIES["codeql-alert-resolution-agent"]
-        )
+        ), "Condition must be true"
 
     def test_qi_agent_covers_qi_testing(self):
         assert ImprovementArea.QI_TESTING in AGENT_CAPABILITIES["quantum-compliance-tuning-agent"]
@@ -318,7 +319,9 @@ class TestCognitiveBrain:
     def test_discover_all_12_areas(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
         d = cb.discover()
-        assert set(d["improvement_areas"]) == {a.value for a in ImprovementArea}, "Value must be initialized"
+        assert set(d["improvement_areas"]) == {
+            a.value for a in ImprovementArea
+        }, "Value must be initialized"
 
     def test_discover_is_json_serialisable(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
