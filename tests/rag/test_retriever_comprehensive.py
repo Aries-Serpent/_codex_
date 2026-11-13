@@ -31,7 +31,17 @@ if not HAS_NUMPY or not HAS_SENTENCE_TRANSFORMERS:
         f"sentence-transformers={'available' if HAS_SENTENCE_TRANSFORMERS else 'missing'}"
     )
 
-from codex.rag.retriever import Retriever
+import importlib  # noqa: E402
+
+# Resolve the canonical module via sys.modules. ``codex.rag`` aliases
+# ``aries_serpent_core.rag``; importing/patching ``codex.rag.<sub>`` executes a
+# second copy of the submodule under the legacy name, while Retriever performs a
+# lazy ``from aries_serpent_core.rag.indexer import load_index``.  Patching
+# ``codex.rag.indexer.load_index`` therefore patched the wrong module object and
+# the real loader (real FAISS in CI) ran against the placeholder index file.
+_retriever_mod = importlib.import_module("aries_serpent_core.rag.retriever")
+Retriever = _retriever_mod.Retriever
+_LOAD_INDEX = "aries_serpent_core.rag.indexer.load_index"
 
 
 @pytest.fixture
@@ -120,7 +130,7 @@ class TestRetrieverInitialization:
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
     ):
         """Test initialization with default parameters."""
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, [], {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, [], {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -134,7 +144,7 @@ class TestRetrieverInitialization:
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
     ):
         """Test initialization with custom parameters."""
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, [], {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, [], {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -158,7 +168,7 @@ class TestRetrieverInitialization:
 
         with (
             patch(
-                "codex.rag.indexer.load_index",
+                _LOAD_INDEX,
                 return_value=(mock_faiss_index, chunks_metadata, index_metadata),
             ) as mock_load,
             patch(
@@ -175,7 +185,7 @@ class TestRetrieverInitialization:
     def test_initialization_index_not_found(self, temp_index_dir, mock_sentence_transformer):
         """Test initialization handles missing index gracefully."""
         with (
-            patch("codex.rag.indexer.load_index", side_effect=FileNotFoundError("Index not found")),
+            patch(_LOAD_INDEX, side_effect=FileNotFoundError("Index not found")),
             patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ),
@@ -187,7 +197,7 @@ class TestRetrieverInitialization:
 
     def test_initialization_loads_embedding_model(self, temp_index_dir, mock_faiss_index):
         """Test that initialization loads the embedding model."""
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, [], {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, [], {})):
             # Model loading goes through _model_utils which does a local import from
             # sentence_transformers — patch at the source module level.
             with patch("sentence_transformers.SentenceTransformer") as mock_st:
@@ -199,10 +209,10 @@ class TestRetrieverInitialization:
 
     def test_initialization_model_import_error(self, temp_index_dir, mock_faiss_index):
         """Test initialization handles missing sentence-transformers."""
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, [], {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, [], {})):
             # Setting the module-level sentinel to None triggers the ImportError guard
             # inside _load_model before safe_load_sentence_transformer is called.
-            with patch("codex.rag.retriever.SentenceTransformer", new=None):
+            with patch("aries_serpent_core.rag.retriever.SentenceTransformer", new=None):
                 with pytest.raises(ImportError):
                     Retriever(index_dir=str(temp_index_dir))
 
@@ -214,7 +224,7 @@ class TestRetrieverQuery:
         """Test basic query functionality."""
         chunks = [{"id": 0, "text": "Test chunk", "start": 0, "end": 10}]
 
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, chunks, {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, chunks, {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -230,7 +240,7 @@ class TestRetrieverQuery:
         """Test query returns correctly structured results."""
         chunks = [{"id": 0, "text": "Test chunk", "start": 0, "end": 10}]
 
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, chunks, {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, chunks, {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -248,7 +258,7 @@ class TestRetrieverQuery:
 
     def test_query_empty_string(self, temp_index_dir, mock_faiss_index, mock_sentence_transformer):
         """Test query with empty string returns empty results."""
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, [], {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, [], {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -261,7 +271,7 @@ class TestRetrieverQuery:
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
     ):
         """Test query with whitespace-only string returns empty results."""
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, [], {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, [], {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -273,7 +283,7 @@ class TestRetrieverQuery:
     def test_query_no_index_loaded(self, temp_index_dir, mock_sentence_transformer):
         """Test query without loaded index returns empty results."""
         with (
-            patch("codex.rag.indexer.load_index", side_effect=FileNotFoundError),
+            patch(_LOAD_INDEX, side_effect=FileNotFoundError),
             patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ),
@@ -297,7 +307,7 @@ class TestRetrieverQuery:
             np.array([[i for i in range(10)]]),
         )
 
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, chunks, {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, chunks, {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -310,7 +320,7 @@ class TestRetrieverQuery:
         """Test query with invalid top_k uses default."""
         chunks = [{"id": 0, "text": "Test", "start": 0, "end": 10}]
 
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, chunks, {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, chunks, {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -335,7 +345,7 @@ class TestRetrieverQuery:
             np.array([[0, 1]]),  # indices
         )
 
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, chunks, {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, chunks, {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -351,7 +361,7 @@ class TestRetrieverQuery:
         """Test that query text is encoded before search."""
         chunks = [{"id": 0, "text": "Test", "start": 0, "end": 10}]
 
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, chunks, {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, chunks, {})):
             with patch(
                 "sentence_transformers.SentenceTransformer",
                 return_value=mock_sentence_transformer,
@@ -370,7 +380,7 @@ class TestRetrieverQuery:
         """Test that FAISS index search is called."""
         chunks = [{"id": 0, "text": "Test", "start": 0, "end": 10}]
 
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, chunks, {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, chunks, {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -394,7 +404,7 @@ class TestRetrieverQuery:
             np.array([[-1, 100]]),  # Invalid indices
         )
 
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, chunks, {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, chunks, {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -410,7 +420,7 @@ class TestRetrieverQuery:
         """Test that query results include timestamp."""
         chunks = [{"id": 0, "text": "Test", "start": 0, "end": 10}]
 
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, chunks, {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, chunks, {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -430,7 +440,7 @@ class TestRetrieverHelperMethods:
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
     ):
         """Test line number estimation."""
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, [], {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, [], {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -449,7 +459,7 @@ class TestRetrieverHelperMethods:
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
     ):
         """Test line number estimation with custom chars per line."""
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, [], {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, [], {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -462,7 +472,7 @@ class TestRetrieverHelperMethods:
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
     ):
         """Test file extraction from chunk metadata."""
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, [], {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, [], {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -480,9 +490,7 @@ class TestRetrieverHelperMethods:
         index_metadata = {"files": [{"file": "index_file.py"}]}
 
         with (
-            patch(
-                "codex.rag.indexer.load_index", return_value=(mock_faiss_index, [], index_metadata)
-            ),
+            patch(_LOAD_INDEX, return_value=(mock_faiss_index, [], index_metadata)),
             patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ),
@@ -497,7 +505,7 @@ class TestRetrieverHelperMethods:
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
     ):
         """Test file extraction returns unknown when no file info."""
-        with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, [], {})):
+        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, [], {})):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -517,9 +525,7 @@ class TestRetrieverStats:
         metadata = {"test_key": "test_value"}
 
         with (
-            patch(
-                "codex.rag.indexer.load_index", return_value=(mock_faiss_index, chunks, metadata)
-            ),
+            patch(_LOAD_INDEX, return_value=(mock_faiss_index, chunks, metadata)),
             patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ),
@@ -539,7 +545,7 @@ class TestRetrieverStats:
     def test_get_stats_no_index(self, temp_index_dir, mock_sentence_transformer):
         """Test getting stats when no index is loaded."""
         with (
-            patch("codex.rag.indexer.load_index", side_effect=FileNotFoundError),
+            patch(_LOAD_INDEX, side_effect=FileNotFoundError),
             patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ),

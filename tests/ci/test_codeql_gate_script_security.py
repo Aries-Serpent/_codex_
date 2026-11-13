@@ -74,6 +74,57 @@ def test_parser_counts_inherited_driver_and_extension_rule_levels(tmp_path):
         "critical_count=1",
         "high_count=2",
         "medium_count=1",
+        "quality_count=0",
+    ]
+
+
+def test_parser_ranks_security_rules_by_security_severity(tmp_path):
+    def rule(rule_id, level, tags, score=None):
+        properties = {"tags": tags}
+        if score is not None:
+            properties["security-severity"] = score
+        return {
+            "id": rule_id,
+            "defaultConfiguration": {"level": level},
+            "properties": properties,
+        }
+
+    result, output = _parse_sarif(
+        tmp_path,
+        {
+            "tool": {
+                "driver": {
+                    "rules": [
+                        rule("sec-critical", "note", ["security"], "9.8"),
+                        rule("sec-high", "warning", ["security", "external/cwe/cwe-020"], "7.8"),
+                        rule("sec-medium", "error", ["security"], "5.0"),
+                        rule("sec-unscored", "error", ["security"]),
+                        rule(
+                            "quality-error",
+                            "error",
+                            ["reliability", "correctness", "external/cwe/cwe-457"],
+                        ),
+                        {"id": "untagged", "defaultConfiguration": {"level": "warning"}},
+                    ]
+                }
+            },
+            "results": [
+                {"ruleId": "sec-critical"},
+                {"ruleId": "sec-high"},
+                {"ruleId": "sec-medium"},
+                {"ruleId": "sec-unscored"},
+                {"ruleId": "quality-error"},
+                {"ruleId": "quality-error", "level": "error"},
+                {"ruleId": "untagged"},
+            ],
+        },
+    )
+    assert result.returncode == 0, result.stderr
+    assert output.read_text().splitlines() == [
+        "critical_count=2",
+        "high_count=2",
+        "medium_count=1",
+        "quality_count=2",
     ]
 
 
@@ -88,6 +139,107 @@ def test_parser_rejects_invalid_rule_component_without_zero_counts(tmp_path):
     assert result.returncode != 0
     assert "Invalid SARIF rule toolComponent index" in result.stderr
     assert not output.exists()
+
+
+@pytest.mark.parametrize("score", ["NaN", "Infinity", -1, 0, 11, True, "invalid", None])
+def test_parser_rejects_invalid_security_scores(tmp_path, score):
+    result, output = _parse_sarif(
+        tmp_path,
+        {
+            "tool": {
+                "driver": {
+                    "rules": [
+                        {
+                            "id": "security",
+                            "properties": {"tags": ["correctness"], "security-severity": score},
+                        }
+                    ]
+                }
+            },
+            "results": [{"ruleId": "security"}],
+        },
+    )
+    assert result.returncode != 0
+    assert "Invalid SARIF security-severity" in result.stderr
+    assert not output.exists()
+
+
+@pytest.mark.parametrize(
+    ("score", "bucket"),
+    [(9, "critical"), (7, "high"), (4, "medium"), (3.9, None), (None, "quality")],
+)
+def test_parser_security_score_overrides_quality_tags_in_extensions(tmp_path, score, bucket):
+    result, output = _parse_sarif(
+        tmp_path,
+        {
+            "tool": {
+                "driver": {},
+                "extensions": [
+                    {"rules": []},
+                    {
+                        "rules": [
+                            {
+                                "id": "security",
+                                "defaultConfiguration": {"level": "error"},
+                                "properties": {
+                                    "tags": ["correctness", "external/cwe/cwe-457"],
+                                    **({"security-severity": score} if score is not None else {}),
+                                },
+                            }
+                        ]
+                    },
+                ],
+            },
+            "results": [
+                {
+                    "rule": {"id": "security", "index": 0, "toolComponent": {"index": 1}},
+                }
+            ],
+        },
+    )
+    assert result.returncode == 0, result.stderr
+    counts = dict(line.split("=") for line in output.read_text().splitlines())
+    assert counts == {
+        "critical_count": str(int(bucket == "critical")),
+        "high_count": str(int(bucket == "high")),
+        "medium_count": str(int(bucket == "medium")),
+        "quality_count": str(int(bucket == "quality")),
+    }
+
+
+@pytest.mark.parametrize(
+    "result_properties",
+    [
+        {"tags": ["security"]},
+        {"tags": ["external/cwe/cwe-020"]},
+        {"security-severity": "9.8"},
+        {"tags": "security"},
+        {"tags": "external/cwe/cwe-020"},
+        {"tags": [123]},
+        {"tags": None},
+    ],
+)
+def test_parser_conflicting_result_metadata_is_not_quality(tmp_path, result_properties):
+    result, output = _parse_sarif(
+        tmp_path,
+        {
+            "tool": {
+                "driver": {
+                    "rules": [
+                        {
+                            "id": "conflicting",
+                            "defaultConfiguration": {"level": "error"},
+                            "properties": {"tags": ["correctness"]},
+                        }
+                    ]
+                }
+            },
+            "results": [{"ruleId": "conflicting", "properties": result_properties}],
+        },
+    )
+    assert result.returncode == 0, result.stderr
+    assert "critical_count=1" in output.read_text()
+    assert "quality_count=0" in output.read_text()
 
 
 @pytest.mark.parametrize(

@@ -22,10 +22,38 @@ def _make_workspace(name: str) -> Path:
     return root
 
 
+def _raise_offline(*_args, **_kwargs):
+    raise ImportError("offline")
+
+
+def _force_offline(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Deterministically simulate missing/unloadable sentence-transformers.
+
+    Patch the *globals of the function objects this test actually calls* rather
+    than a module re-imported via the package attribute. Under the
+    ``codex.rag`` -> ``aries_serpent_core.rag`` alias (and other tests that pop
+    or reload RAG modules) the package attribute can be a different module
+    object than the one ``build_index_from_files``/``Retriever`` close over, so
+    ``monkeypatch.setattr(module, ...)`` silently had no effect when the real
+    sentence-transformers package and a cached model were installed (hosted CI).
+    """
+    monkeypatch.setitem(build_index_from_files.__globals__, "embed_chunks", _raise_offline)
+    monkeypatch.setitem(Retriever._load_model.__globals__, "SentenceTransformer", None)
+    # Belt and braces: even if a SentenceTransformer symbol is consulted, the
+    # loader must fail so the TF-IDF fallback path is the only option.
+    import sys
+
+    model_utils = sys.modules.get("aries_serpent_core.rag._model_utils")
+    if model_utils is not None and hasattr(model_utils, "safe_load_sentence_transformer"):
+
+        def _loader_offline(*_args, **_kwargs):
+            raise OSError("offline: model unavailable")
+
+        monkeypatch.setattr(model_utils, "safe_load_sentence_transformer", _loader_offline)
+
+
 def test_build_index_from_files_falls_back_to_tfidf(monkeypatch: pytest.MonkeyPatch) -> None:
     """Index building should remain available without sentence-transformers."""
-    from aries_serpent_core.rag import indexer as indexer_module
-
     workspace = _make_workspace("offline-build")
     try:
         source = workspace / "python_doc.txt"
@@ -33,11 +61,7 @@ def test_build_index_from_files_falls_back_to_tfidf(monkeypatch: pytest.MonkeyPa
             "Python makes data pipelines reliable. Python supports semantic search tests.",
             encoding="utf-8",
         )
-        monkeypatch.setattr(
-            indexer_module,
-            "embed_chunks",
-            lambda *_args, **_kwargs: (_ for _ in ()).throw(ImportError("offline")),
-        )  # noqa: E501
+        _force_offline(monkeypatch)
 
         index_path = build_index_from_files(
             files=[source],
@@ -58,9 +82,6 @@ def test_build_index_from_files_falls_back_to_tfidf(monkeypatch: pytest.MonkeyPa
 
 def test_retriever_uses_tfidf_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
     """Retriever should query TF-IDF-built indices when transformer deps are absent."""
-    from aries_serpent_core.rag import indexer as indexer_module
-    from aries_serpent_core.rag import retriever as retriever_module
-
     workspace = _make_workspace("offline-query")
     try:
         python_doc = workspace / "python_doc.txt"
@@ -74,12 +95,7 @@ def test_retriever_uses_tfidf_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
             encoding="utf-8",
         )
 
-        monkeypatch.setattr(
-            indexer_module,
-            "embed_chunks",
-            lambda *_args, **_kwargs: (_ for _ in ()).throw(ImportError("offline")),
-        )  # noqa: E501
-        monkeypatch.setattr(retriever_module, "SentenceTransformer", None)
+        _force_offline(monkeypatch)
 
         build_index_from_files(
             files=[python_doc, garden_doc],

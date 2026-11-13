@@ -2,6 +2,25 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5781 RAG runner and CodeQL classification repair
+- Measure RAG coverage against the runtime implementation package rather than
+  its compatibility shim. Hosted tests passed all 1,688 cases but generated no
+  coverage artifacts with the old scope; the configured 90 percent threshold
+  is unchanged (95 percent remains the documented roadmap target).
+- Preserve concurrent manifest/baseline automation through normal integration;
+  keep hosted validation enabled on the repair commit.
+- Stop the RAG test chunker after its final chunk; the unbounded overlap loop
+  exhausted hosted runner memory before pytest could report other failures.
+- Compare parsed hostnames and use owner-only permissions in the six
+  security-high CodeQL finding locations.
+- Rank CodeQL security findings by validated security scores while retaining
+  non-security quality counts. Reject invalid scores and preserve conservative
+  fallback for missing/conflicting metadata; the high threshold is unchanged.
+- Repair RAG test mock namespaces, missing tenant fixtures and deterministic
+  offline-provider coverage. Let auto-provider selection reach TF-IDF when
+  optional GPT4All is absent. Allow fixed shared-CI latency tolerance without
+  scaling success, error or timeout requirements.
+
 ### Fixed - PR #5766 bounded readiness repair (2026-11-13)
 - Remove the unused direct PyO3 build dependency and reconcile the Cargo lock without upgrading remaining packages; Rust documentation now passes with build warnings denied.
 - Require a captured INFO record with exact redacted content in the logging compliance regression; the previous test could pass without capturing any log.

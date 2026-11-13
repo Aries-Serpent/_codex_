@@ -95,6 +95,8 @@ class TestDocumentIngestion:
                     while start < len(text):
                         end = min(start + self.chunk_size, len(text))
                         chunks.append(text[start:end])
+                        if end == len(text):
+                            break
                         start = end - self.overlap
                     return chunks
 

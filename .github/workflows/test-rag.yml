@@ -278,7 +278,7 @@ jobs:
         echo ""
 
         echo "[TEST-RUN] ========== Test Execution Configuration =========="
-        echo "[TEST-RUN] Module: src/codex/rag"
+        echo "[TEST-RUN] Module: src/aries_serpent_core/rag"
         echo "[TEST-RUN] Coverage config: tests/rag/.coveragerc"
         echo "[TEST-RUN] Individual test timeout: 300s (5 min)"
         echo "[TEST-RUN] Workflow timeout: 60 minutes"
@@ -298,7 +298,7 @@ jobs:
         if ! timeout 2700 "$PYTHON_BIN" -m pytest \
           tests/test_rag_*.py tests/rag/ \
           -v --tb=short --timeout=300 --timeout-method=signal \
-          --cov=src/codex/rag --cov-config=tests/rag/.coveragerc \
+          --cov=src/aries_serpent_core/rag --cov-config=tests/rag/.coveragerc \
           --cov-report=xml --cov-report=html --cov-report=term-missing \
           2>&1 | tee /tmp/test_output.log; then
           TEST_EXIT=$?

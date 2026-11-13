@@ -1,7 +1,7 @@
 """
 Phase 12 WS3 Tier 2 Lane 4: Comprehensive Edge Case & Boundary Condition Tests
 
-Mission: Implement 100+ edge case and boundary condition tests to improve coverage 
+Mission: Implement 100+ edge case and boundary condition tests to improve coverage
 from 34.63% baseline to 35%+ (target: +3-5% improvement).
 
 Test Categories:
@@ -488,7 +488,7 @@ class TestFileIOEdgeCases:
                 with open(temp_path, 'r') as f:
                     f.read()
         finally:
-            os.chmod(temp_path, 0o644)
+            os.chmod(temp_path, 0o600)
             os.unlink(temp_path)
 
     def test_file_not_found_handling(self):
