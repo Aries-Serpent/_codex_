@@ -932,6 +932,11 @@ jobs:
     - cognitive-preflight
     runs-on: ubuntu-latest
     environment: owner-approval
+    permissions:
+      actions: read
+      contents: write
+      pull-requests: write
+      issues: write
     timeout-minutes: 30
     if: 'always() &&
 

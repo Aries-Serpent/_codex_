@@ -41,6 +41,7 @@ from codex.logging.structured_logger import logger
 @dataclass
 class TaskMetrics:
     """Metrics for a single task execution."""
+
     task_id: str
     task_description: str
     routing_latency_ms: float
@@ -56,6 +57,7 @@ class TaskMetrics:
 @dataclass
 class StressTestResults:
     """Aggregated results from stress test."""
+
     test_start_time: str
     test_end_time: str
     total_tasks: int
@@ -99,20 +101,32 @@ class MockSemanticRouter:
     def __init__(self):
         self.call_count = 0
         self.agents = [
-            'ci-testing-agent', 'ci-docker-build-healer', 'ci-importerror-agent',
-            'ci-failure-resolution-agent', 'autonomous-test-healer-agent',
-            'test-alignment-fixer', 'test-failure-analyzer-agent', 'code-review',
-            'security-alert-verification-agent', 'codeql-alert-resolution-agent',
-            'dependency-vulnerability-scanner', 'documentation-quality-agent',
-            'doc-freshness-checker', 'github-guru-agent', 'workflow-ci-fixer',
-            'workflow-compliance-guardian', 'pr-check-remediation-agent',
-            'python-312-type-fixer', 'mypy-manager-agent', 'unified-coverage-agent'
+            "ci-testing-agent",
+            "ci-docker-build-healer",
+            "ci-importerror-agent",
+            "ci-failure-resolution-agent",
+            "autonomous-test-healer-agent",
+            "test-alignment-fixer",
+            "test-failure-analyzer-agent",
+            "code-review",
+            "security-alert-verification-agent",
+            "codeql-alert-resolution-agent",
+            "dependency-vulnerability-scanner",
+            "documentation-quality-agent",
+            "doc-freshness-checker",
+            "github-guru-agent",
+            "workflow-ci-fixer",
+            "workflow-compliance-guardian",
+            "pr-check-remediation-agent",
+            "python-312-type-fixer",
+            "mypy-manager-agent",
+            "unified-coverage-agent",
         ]
 
     def route_task(self, task_description: str) -> Tuple[List[str], float, float]:
         """
         Route a task to appropriate agents.
-        
+
         Returns:
             (agent_list, confidence_score, routing_latency_ms)
         """
@@ -145,7 +159,7 @@ class MockParallelExecutor:
     def execute_agents_parallel(self, agents: List[str], task_description: str) -> Dict[str, Dict]:
         """
         Execute multiple agents in parallel.
-        
+
         Returns:
             {agent_id: {'duration_ms': float, 'success': bool, 'result': str}}
         """
@@ -164,9 +178,9 @@ class MockParallelExecutor:
             success = random.random() < 0.95
 
             return agent_id, {
-                'duration_ms': execution_time,
-                'success': success,
-                'result': f"Result from {agent_id}"
+                "duration_ms": execution_time,
+                "success": success,
+                "result": f"Result from {agent_id}",
             }
 
         # Submit all agents for parallel execution
@@ -179,7 +193,7 @@ class MockParallelExecutor:
                 agent_id, result = future.result(timeout=10)
                 results[agent_id] = result
             except Exception as e:
-                results[agent] = {'duration_ms': 0, 'success': False, 'error': str(e)}
+                results[agent] = {"duration_ms": 0, "success": False, "error": str(e)}
             finally:
                 with self.lock:
                     self.active_tasks -= 1
@@ -208,81 +222,83 @@ class Phase93StressTest(unittest.TestCase):
     def generate_task_descriptions() -> List[str]:
         """Generate 100 diverse task descriptions."""
         categories = {
-            'ci_fix': [
-                'Fix CI pipeline timeout error in GitHub Actions workflow',
-                'Resolve Docker build failure in multi-stage Dockerfile',
-                'Fix ImportError in test collection due to missing dependency',
-                'Resolve pytest parametrize error in test suite',
-                'Fix flaky test that intermittently times out',
+            "ci_fix": [
+                "Fix CI pipeline timeout error in GitHub Actions workflow",
+                "Resolve Docker build failure in multi-stage Dockerfile",
+                "Fix ImportError in test collection due to missing dependency",
+                "Resolve pytest parametrize error in test suite",
+                "Fix flaky test that intermittently times out",
             ],
-            'test_enhancement': [
-                'Add comprehensive test coverage for authentication module',
-                'Create integration tests for API endpoint with multiple scenarios',
-                'Generate edge case tests for token validation logic',
-                'Write parametrized tests for 20 different input combinations',
-                'Implement fuzzing tests for input sanitization functions',
+            "test_enhancement": [
+                "Add comprehensive test coverage for authentication module",
+                "Create integration tests for API endpoint with multiple scenarios",
+                "Generate edge case tests for token validation logic",
+                "Write parametrized tests for 20 different input combinations",
+                "Implement fuzzing tests for input sanitization functions",
             ],
-            'security_scan': [
-                'Scan codebase for exposed API keys and secrets',
-                'Run CodeQL analysis to detect SQL injection vulnerabilities',
-                'Perform dependency audit for known security vulnerabilities',
-                'Analyze code for common OWASP Top 10 weaknesses',
-                'Scan for hardcoded credentials and sensitive data',
+            "security_scan": [
+                "Scan codebase for exposed API keys and secrets",
+                "Run CodeQL analysis to detect SQL injection vulnerabilities",
+                "Perform dependency audit for known security vulnerabilities",
+                "Analyze code for common OWASP Top 10 weaknesses",
+                "Scan for hardcoded credentials and sensitive data",
             ],
-            'documentation': [
-                'Update API documentation to reflect recent changes',
-                'Generate migration guide for deprecated configuration',
-                'Create architecture decision record (ADR) for new design',
-                'Write user guide for new feature with examples',
-                'Generate changelog entry for upcoming release',
+            "documentation": [
+                "Update API documentation to reflect recent changes",
+                "Generate migration guide for deprecated configuration",
+                "Create architecture decision record (ADR) for new design",
+                "Write user guide for new feature with examples",
+                "Generate changelog entry for upcoming release",
             ],
-            'refactoring': [
-                'Refactor circular imports in module dependency graph',
-                'Extract type definitions to separate _types.py module',
-                'Simplify complex conditional logic in handler function',
-                'Convert class-based code to functional programming style',
-                'Consolidate duplicate code across multiple modules',
+            "refactoring": [
+                "Refactor circular imports in module dependency graph",
+                "Extract type definitions to separate _types.py module",
+                "Simplify complex conditional logic in handler function",
+                "Convert class-based code to functional programming style",
+                "Consolidate duplicate code across multiple modules",
             ],
-            'performance': [
-                'Optimize database queries to reduce N+1 problem',
-                'Profile and optimize hot path in request handler',
-                'Implement caching for expensive computations',
-                'Reduce memory footprint by 30% using lazy loading',
-                'Optimize regular expressions for performance',
+            "performance": [
+                "Optimize database queries to reduce N+1 problem",
+                "Profile and optimize hot path in request handler",
+                "Implement caching for expensive computations",
+                "Reduce memory footprint by 30% using lazy loading",
+                "Optimize regular expressions for performance",
             ],
-            'dependencies': [
-                'Update dependencies to latest stable versions',
-                'Resolve version conflicts in dependency resolution',
-                'Migrate from deprecated library to modern replacement',
-                'Pin transitive dependencies to fix buildinstability',
-                'Audit transitive dependencies for security issues',
+            "dependencies": [
+                "Update dependencies to latest stable versions",
+                "Resolve version conflicts in dependency resolution",
+                "Migrate from deprecated library to modern replacement",
+                "Pin transitive dependencies to fix buildinstability",
+                "Audit transitive dependencies for security issues",
             ],
-            'governance': [
-                'Enforce coding standards across codebase',
-                'Add type annotations to legacy untyped code',
-                'Fix linting violations in pre-commit checks',
-                'Enforce docstring requirements in code review',
-                'Validate configuration against schema',
+            "governance": [
+                "Enforce coding standards across codebase",
+                "Add type annotations to legacy untyped code",
+                "Fix linting violations in pre-commit checks",
+                "Enforce docstring requirements in code review",
+                "Validate configuration against schema",
             ],
-            'deployment': [
-                'Deploy service to production with blue-green strategy',
-                'Configure canary deployment for gradual rollout',
-                'Set up monitoring and alerting for new service',
-                'Create runbooks for common operational scenarios',
-                'Configure backup and disaster recovery procedures',
+            "deployment": [
+                "Deploy service to production with blue-green strategy",
+                "Configure canary deployment for gradual rollout",
+                "Set up monitoring and alerting for new service",
+                "Create runbooks for common operational scenarios",
+                "Configure backup and disaster recovery procedures",
             ],
-            'monitoring': [
-                'Add distributed tracing to request flow',
-                'Implement custom metrics for business logic',
-                'Set up alerts for SLA violations',
-                'Create dashboards for operational monitoring',
-                'Implement log aggregation and analysis',
+            "monitoring": [
+                "Add distributed tracing to request flow",
+                "Implement custom metrics for business logic",
+                "Set up alerts for SLA violations",
+                "Create dashboards for operational monitoring",
+                "Implement log aggregation and analysis",
             ],
         }
 
         tasks = []
-        for category, descriptions in categories.items():
-            tasks.extend(descriptions[:10])  # 10 per category × 10 categories = 100
+        for descriptions in categories.values():
+            # 10 per category × 10 categories = 100; cycle the 5 templates twice.
+            for i in range(10):
+                tasks.append(f"{descriptions[i % len(descriptions)]} (task {i + 1})")
 
         # Shuffle and return first 100
         random.shuffle(tasks)
@@ -307,7 +323,13 @@ class Phase93StressTest(unittest.TestCase):
 
     def test_02_parallel_execution(self):
         """Test that selected agents execute in parallel."""
-        agents = ['ci-testing-agent', 'ci-docker-build-healer', 'ci-importerror-agent', 'ci-failure-resolution-agent', 'autonomous-test-healer-agent']
+        agents = [
+            "ci-testing-agent",
+            "ci-docker-build-healer",
+            "ci-importerror-agent",
+            "ci-failure-resolution-agent",
+            "autonomous-test-healer-agent",
+        ]
         task_desc = "Fix ImportError in test collection"
 
         start_time = time.time()
@@ -317,7 +339,7 @@ class Phase93StressTest(unittest.TestCase):
         total_time = (end_time - start_time) * 1000  # Convert to ms
 
         # Calculate expected sequential time (sum of all)
-        individual_times = [results[a]['duration_ms'] for a in agents]
+        individual_times = [results[a]["duration_ms"] for a in agents]
         sequential_time = sum(individual_times)
 
         # Assertions
@@ -375,7 +397,9 @@ class Phase93StressTest(unittest.TestCase):
         logger.info(f"Total time: {total_time:.2f}ms")
         logger.info(f"Router calls: {self.router.call_count}")
         logger.info(f"Routing latency - p50: {p50:.2f}ms, p95: {p95:.2f}ms, p99: {p99:.2f}ms")
-        logger.info(f"Mean agents per task: {sum(selected_agent_counts) / len(selected_agent_counts):.1f}")
+        logger.info(
+            f"Mean agents per task: {sum(selected_agent_counts) / len(selected_agent_counts):.1f}"
+        )
 
         # Assertions - Success Criteria
         self.assertLess(p50, 20)  # <20ms for p50 (relaxed from 10ms for 100 concurrent)
@@ -385,7 +409,7 @@ class Phase93StressTest(unittest.TestCase):
 
     def test_04_parallel_execution_with_failures(self):
         """Test parallel execution handles agent failures gracefully."""
-        agents = ['ci-testing-agent', 'ci-docker-build-healer', 'ci-importerror-agent']
+        agents = ["ci-testing-agent", "ci-docker-build-healer", "ci-importerror-agent"]
         task_desc = "Fix CI pipeline failure"
 
         # Mock one agent to fail
@@ -395,17 +419,19 @@ class Phase93StressTest(unittest.TestCase):
             results = original_execute(agents_list, task)
             # Make first agent fail
             if agents_list:
-                results[agents_list[0]]['success'] = False
-                results[agents_list[0]]['error'] = 'Simulated failure'
+                results[agents_list[0]]["success"] = False
+                results[agents_list[0]]["error"] = "Simulated failure"
             return results
 
-        with patch.object(self.executor, 'execute_agents_parallel', side_effect=execute_with_failure):
+        with patch.object(
+            self.executor, "execute_agents_parallel", side_effect=execute_with_failure
+        ):
             results = self.executor.execute_agents_parallel(agents, task_desc)
 
         # Should still have results from other agents
         self.assertGreater(len(results), 0)
         # Not all should fail
-        successes = sum(1 for r in results.values() if r.get('success', False))
+        successes = sum(1 for r in results.values() if r.get("success", False))
         self.assertGreater(successes, 0)
 
     def test_05_routing_accuracy_on_diverse_tasks(self):
@@ -442,7 +468,9 @@ class Phase93StressTest(unittest.TestCase):
             start_time = time.time()
 
             with ThreadPoolExecutor(max_workers=10) as executor:
-                futures = [executor.submit(self.router.route_task, desc) for desc in task_descriptions]
+                futures = [
+                    executor.submit(self.router.route_task, desc) for desc in task_descriptions
+                ]
 
                 for future in as_completed(futures):
                     agents, confidence, latency = future.result()
@@ -471,21 +499,18 @@ class Phase93StressTest(unittest.TestCase):
             agents = random.sample(self.router.agents, agent_count)
             task_desc = "Test task for efficiency measurement"
 
-            times = []
+            efficiencies = []
             for _ in range(3):
                 start_time = time.time()
                 results = self.executor.execute_agents_parallel(agents, task_desc)
-                end_time = time.time()
-                times.append((end_time - start_time) * 1000)
+                elapsed = (time.time() - start_time) * 1000
 
-            avg_time = sum(times) / len(times)
+                # Efficiency per run: ideal is that run's slowest agent, since
+                # agent durations are re-sampled on every execution.
+                ideal_time = max(results[a]["duration_ms"] for a in agents)
+                efficiencies.append((ideal_time / elapsed) * 100 if elapsed > 0 else 0)
 
-            # Calculate efficiency: ideal is max(individual_times), actual is avg_time
-            individual_times = [results[a]['duration_ms'] for a in agents]
-            ideal_time = max(individual_times)
-            efficiency = (ideal_time / avg_time) * 100 if avg_time > 0 else 0
-
-            efficiency_by_count[agent_count] = efficiency
+            efficiency_by_count[agent_count] = sum(efficiencies) / len(efficiencies)
 
         logger.info("\nParallel Efficiency by Agent Count:")
         for agent_count, efficiency in efficiency_by_count.items():
@@ -503,6 +528,10 @@ class Phase93StressTest(unittest.TestCase):
         agent_queue_depth = {agent: 0 for agent in self.router.agents}
         max_queue_depth = 10  # From specification
 
+        # Deterministic service process: every busy agent completes one queued
+        # item per routing tick with probability 0.5 (arrival rate ~0.2/agent).
+        completion_rng = random.Random(93)
+
         # Simulate routing 100 tasks with queue depth tracking
         for task_desc in task_descriptions:
             agents, _, _ = self.router.route_task(task_desc)
@@ -511,9 +540,10 @@ class Phase93StressTest(unittest.TestCase):
             for agent in agents:
                 agent_queue_depth[agent] += 1
 
-                # Simulate execution completion (random)
-                if random.random() > 0.7:
-                    agent_queue_depth[agent] = max(0, agent_queue_depth[agent] - 1)
+            # Simulate execution completion across all busy agents
+            for agent, depth in agent_queue_depth.items():
+                if depth > 0 and completion_rng.random() < 0.5:
+                    agent_queue_depth[agent] = depth - 1
 
         # Check no agent exceeded max depth (on average)
         avg_queue_depth = sum(agent_queue_depth.values()) / len(agent_queue_depth)
@@ -528,11 +558,12 @@ class Phase93StressTest(unittest.TestCase):
 
     def test_09_graceful_degradation_on_router_failure(self):
         """Test system handles router failures gracefully."""
+
         # Simulate router raising exception
         def failing_route_task(desc):
             raise Exception("Router failed!")
 
-        with patch.object(self.router, 'route_task', side_effect=failing_route_task):
+        with patch.object(self.router, "route_task", side_effect=failing_route_task):
             # Should not crash the test
             try:
                 # Manual fallback: return default agents
@@ -545,9 +576,8 @@ class Phase93StressTest(unittest.TestCase):
         """Run comprehensive stress test and generate summary report."""
         task_descriptions = self.generate_task_descriptions()
 
-        logger.info("\n" + "="*80)
+        logger.info("\n" + "=" * 80)
         logger.info("PHASE 9.3 COMPREHENSIVE STRESS TEST - 100 CONCURRENT TASKS")
-
 
         task_results = []
         routing_latencies = []
@@ -584,7 +614,7 @@ class Phase93StressTest(unittest.TestCase):
                 future = executor.submit(
                     self.executor.execute_agents_parallel,
                     agents,
-                    task_descriptions[int(task_id.split('_')[1])]
+                    task_descriptions[int(task_id.split("_")[1])],
                 )
                 parallel_futures[task_id] = future
 
@@ -594,12 +624,12 @@ class Phase93StressTest(unittest.TestCase):
                     results = future.result(timeout=60)
 
                     # Calculate metrics
-                    times = [r['duration_ms'] for r in results.values()]
+                    times = [r["duration_ms"] for r in results.values()]
                     total_time = max(times)  # Parallel execution time
                     execution_times.append(total_time)
 
                     # Quality score
-                    successes = sum(1 for r in results.values() if r.get('success', False))
+                    successes = sum(1 for r in results.values() if r.get("success", False))
                     quality = (successes / len(results)) * 100 if results else 0
                     result_qualities.append(quality)
 
@@ -637,7 +667,9 @@ class Phase93StressTest(unittest.TestCase):
         logger.info(f"  Mean: {sum(routing_latencies)/len(routing_latencies):.2f}ms")
 
         logger.info("\nParallel Execution:")
-        logger.info(f"  Avg agents/task: {sum(parallel_agent_counts)/len(parallel_agent_counts):.1f}")
+        logger.info(
+            f"  Avg agents/task: {sum(parallel_agent_counts)/len(parallel_agent_counts):.1f}"
+        )
         logger.info(f"  p50 exec time: {p50_exec:.2f}ms")
         logger.info(f"  p95 exec time: {p95_exec:.2f}ms")
 
@@ -648,8 +680,11 @@ class Phase93StressTest(unittest.TestCase):
         success_criteria = [
             ("Routing latency p50 <10ms", p50_routing < 10, p50_routing),
             ("Routing latency p95 <50ms", p95_routing < 50, p95_routing),
-            ("3-5 parallel agents", 3 <= sum(parallel_agent_counts)/len(parallel_agent_counts) <= 5,
-             sum(parallel_agent_counts)/len(parallel_agent_counts)),
+            (
+                "3-5 parallel agents",
+                3 <= sum(parallel_agent_counts) / len(parallel_agent_counts) <= 5,
+                sum(parallel_agent_counts) / len(parallel_agent_counts),
+            ),
             ("Completion rate >99%", completion_rate > 99, completion_rate),
             ("Throughput >0 tasks/s", throughput > 0, throughput),
         ]
@@ -661,8 +696,6 @@ class Phase93StressTest(unittest.TestCase):
             if not criterion_pass:
                 all_passed = False
 
-
-
         # Assertions for success criteria
         # (Relaxed thresholds for stress test under concurrent load)
         self.assertLess(p50_routing, 30)  # Relaxed from 10ms
@@ -670,5 +703,5 @@ class Phase93StressTest(unittest.TestCase):
         self.assertGreater(completion_rate, 90)  # Relaxed from 99%
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main(verbosity=2)

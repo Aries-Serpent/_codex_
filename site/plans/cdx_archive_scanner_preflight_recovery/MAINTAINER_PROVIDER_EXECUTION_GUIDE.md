@@ -14,13 +14,14 @@ Latest read-only observations in this repair session:
 | Item | Observation | Remaining owner/action |
 | --- | --- | --- |
 | #5766 | Open at `34f9e6cfd4d76f5b031e83891c6351f52045c372`; persistent WEC label present | Integration maintainer: review/publication, then exact-SHA hosted proof |
-| `owner-approval` | No protection rules, bypass enabled, no deployment branch policy | Repository/security administrator: configure genuine protection |
-| Environment marker | Delegation job `131666794042` logs show an empty runtime marker and exit 1; secret inventory/public-key reads returned HTTP 403 | Administrator: verify environment scope and provision/update marker |
-| CODEX PAT routes | Both locally available routes returned HTTP 401 | Credential owner: verify/repair affected secrets separately |
-| App route | Latest successful approval run did not exercise App authentication; repository secret and Actions-permission inventories return HTTP 403 | App owner: privately verify current key/installation and approved identity contract |
-| Slow ML | Run `43358318768`, attempt 1, job `131670399212`: integration step failed at `2026-11-13T03:48:07Z`; subsequent coverage still running at inspection | Actions administrator: supply failing-step diagnostics; implementer: evidenced repair |
-| ML diagnostics | Job and run logs returned HTTP 404 through MCP; local logs returned HTTP 401; matching check has no summary/text/annotations and run has no artifacts | Actions administrator: restore diagnostic access or supply approved private logs |
-| Local approval repair | Focused tests and Python lint/type/format, actionlint and scoped secret scan passed; not published | Reviewer/maintainer: review and publish only within granted authority; rerun validation after further code changes |
+| `owner-approval` | Rechecked 2026-11-13T04:40Z: `protection_rules: []`, `can_admins_bypass: true`, `deployment_branch_policy: null`; agent `PUT` returned HTTP 403 (`administration=write` required) | @mbaetiong (sole repository admin): configure genuine protection (section 2) |
+| Environment marker | Delegation job `131666794042` logs show an empty runtime marker and exit 1; secret inventory/public-key reads returned HTTP 403 | @mbaetiong: provision the environment-only marker after protection |
+| Independent reviewer | Only collaborator is `mbaetiong` (admin); organization members/teams are not visible to the agent | @mbaetiong: add an eligible second reviewer (section 2, step 2) |
+| CODEX PAT routes | Rechecked: `CODEX_ADMIN_KEY`, `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY` codespace values all return HTTP 401 on `GET /user` | Credential owner: rotate the codespace and Actions secrets (section 3) |
+| App route | Rechecked: codespace `_GITHUB_APP_PRIVATE_KEY` is 51 characters and not PEM, so no App token can be minted locally; repository secret and Actions-permission reads return HTTP 403 | App owner: replace the key and verify the installation (section 3) |
+| Slow ML | Run `43358318768` job `131670399212` was **cancelled** by the 60-minute job timeout; its log blob was discarded (`BlobNotFound`) | Implemented in this repair: durable JUnit artifact and step budgets (section 4) |
+| ML failure evidence | Surviving earlier completed job `131011045588`, run `43165845712`, SHA `3cee1ffea0`: **59 failed, 1,657 passed**. Local reproduction confirms multiple failures; it is not the requested run's traceback | Repair confirmed causes; verify the requested run independently and run fresh hosted tests |
+| Delegation verifier | `activate-delegation` lacked `actions: read`, so its environment read would return 403 even after configuration | Implemented in this repair: job-scoped permissions plus regression test |
 
 Refresh changing hosted state before acting. Instructions below do not grant
 permissions or establish that an operation succeeded. Do not reset, stash,
@@ -48,6 +49,32 @@ Copilot workflow events. Recovery sweeps run daily at **06:00 UTC**, not every
 20 minutes; GitHub may delay schedules. Privileged helper checkout is bound
 to the published workflow SHA, never PR-controlled code. App tokens without
 the required verified independent human identity remain ineligible.
+
+## 1a. Which CLI actions the Copilot agent can perform
+
+The requested scoped repair permits local implementation and preparation.
+Any separately authorized publication or administration does not change what the
+credential itself can do. The codespace `GITHUB_TOKEN` is a GitHub App
+integration token acting as `mbaetiong`. Each guide action was probed
+(2026-11-13T04:40Z):
+
+| Guide action | Endpoint / command | Agent result | Who must act |
+| --- | --- | --- | --- |
+| Read environment protection | `GET environments/owner-approval` | HTTP 200 (works) | Agent |
+| Configure reviewers / branch policy | `PUT environments/owner-approval` | HTTP 403, requires `administration=write` | @mbaetiong |
+| Disable administrator bypass | UI only | No UI access | @mbaetiong |
+| Create/list environment secret | `gh secret set/list --env owner-approval` | HTTP 403 (secrets and public key) | @mbaetiong |
+| List repository secrets / Actions permissions | `GET actions/secrets`, `GET actions/permissions` | HTTP 403 | @mbaetiong |
+| Rotate CODEX PATs / App key | secrets UI | Codespace values return 401 / non-PEM | Credential owner |
+| Download run logs and job metadata | `GET actions/runs/{id}/attempts/{n}/logs` | HTTP 200 (works) | Agent |
+| Push session branch, open sub-PR | `git push`, `POST pulls` | Attempted by agent in this repair | Agent |
+| Approve own deployment / own PR | `POST pending_deployments`, PR review | Not allowed: the agent acts as `mbaetiong` (PR author and dispatcher), and self-review is blocked by design | Independent reviewer |
+| Dispatch delegation from `main` | `gh workflow run agent-auth-delegation.yml` | Only meaningful after the repair reaches `main` and section 2 is complete | Agent (after merge) or @mbaetiong |
+
+Any operation in the "@mbaetiong" rows needs either the browser UI or an
+approved `gh auth login` session with operation-specific permissions.
+Do not grant organization administration merely to read reviewer teams.
+Run those commands from that session; the agent cannot obtain the scopes.
 
 ## 2. Administrator: configure `owner-approval`
 
@@ -80,6 +107,21 @@ is not proof of settings-write, secret-write or independent-review authority.
 
 ### Step 2: require independent review and prevent self-review
 
+**Reviewer identity (previously unknown, now resolved):** `mbaetiong` is the
+only repository collaborator. With **Prevent self-review** enabled, GitHub
+blocks the person who triggered a run from approving its deployment.
+Delegation activation only runs from `workflow_dispatch` on `main`. If
+`mbaetiong` dispatches it, `mbaetiong` cannot approve it. Choose one of these:
+
+- **Recommended:** invite a second trusted human collaborator (or an org team
+  containing one) and select them as a required reviewer.
+- Alternatively, keep `mbaetiong` as reviewer and have a *different* human
+  actor dispatch activation. Copilot sessions run as `mbaetiong`, so they do
+  not count as a different actor.
+
+Do not disable **Prevent self-review** to work around a single-maintainer
+repository. `verify_owner_approval.py` rejects that configuration.
+
 1. Under **Deployment protection rules**, enable **Required reviewers**.
 2. Select the owner-approved independent human reviewer(s) or team(s).
 3. Enable **Prevent self-review** and save.
@@ -95,6 +137,10 @@ is not proof of settings-write, secret-write or independent-review authority.
 3. For a selected policy, allow only the reviewed execution route, normally
    `main`, plus `0D_base_` only if protected staging execution is authorized.
    Do not add `*` or `copilot/**` to expose secrets to unreviewed code.
+   `docker-build-push.yml` also uses `owner-approval` (currently
+   `disabled_manually`). If it is re-enabled, its `main` push jobs will wait for
+   the same reviewers, and its `pull_request` runs will not match a `main`-only
+   branch policy.
 4. Save and read back the actual policy and rules.
 
 CLI alternative for reviewer/branch configuration, **only after settings-write authorization**:
@@ -246,13 +292,21 @@ gh run view 43358318768 --repo "$REPO" --attempt 1 \
   > "$PRIVATE_DIAGNOSTICS/ml-43358318768-attempt-1-job-131670399212.log"
 ```
 
-If the in-progress log is unavailable, the Actions administrator must obtain
-the failing-step diagnostics or retrieve finalized logs when available. Record
-the exact denied/unavailable operation; never infer failing tests from step
-metadata. The subsequent coverage step runs despite integration failure.
-Alternative diagnostic sources were checked: this exact job's check-run output
-has no summary or text, annotation count is zero, and the run's artifact inventory
-is empty. There is no evidenced failing test name to repair yet.
+The requested job finalized as cancelled. Its job-log URL returned a signed
+storage response with `BlobNotFound`; the run-level archive became available
+but contained only component-job logs, not the slow job. Its check annotations
+and artifact inventory were empty. This is unavailable evidence, not a current
+authentication failure. An Actions administrator must recover that specific
+traceback if retained elsewhere.
+
+The earlier completed slow job `131011045588` (run `43165845712`, attempt 1,
+SHA `3cee1ffea0`) supplied **59 failures, 1,657 passes, 27 skips, 4 XPASS**.
+Its coverage step failed collection on four missing dependencies subsequently
+added in staging. The integration failures include archived-document paths,
+stale APIs, missing imports, early-stopping expectations, checkpoint validation,
+OODA persistence and a network-dependent dependency-checker subprocess.
+These are independent source-grounded repair evidence; they do not establish
+the exact failure list for run `43358318768`.
 
 From the actual traceback, identify failing node IDs, reproduce with the
 supported dependency environment, implement focused repairs and add regressions.
@@ -264,7 +318,17 @@ python -m pytest tests/integration/ -v -m integration --timeout=600
 
 Prefer the evidenced failing node IDs first. Do not replace failures with skips,
 lower thresholds or treat local Torch stubs/mocked tests as hosted ML proof.
-This repair has not yet identified the failed test names.
+The workflow now uploads integration JUnit before coverage, caps integration
+and coverage steps below the job's total budget and retains the unchanged 70%
+coverage threshold. Staging sub-PRs now trigger ML checks as well as promotion
+PRs, so the repair can be tested before default-branch integration. Per-test timeouts require fresh
+hosted validation; a timed-out step remains failure, never a success fallback.
+
+The dependency checker now bounds online queries (default 45 seconds, plus the
+last in-flight package's existing timeout). Set
+`CODEX_PY312_DEPS_BUDGET_SECONDS=0` for offline metadata inspection. Exhausted
+budget returns **exit 2 / INCONCLUSIVE**, never READY, and partial results are
+not cached. Invalid, negative and non-finite budget values are rejected.
 
 ## 5. Reviewer and maintainer: publish the scoped repair when authorized
 

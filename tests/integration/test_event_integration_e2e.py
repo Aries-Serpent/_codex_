@@ -17,7 +17,8 @@ class TestEventIntegrationLifecycle:
         # Arrange
         from codex_ml.training.callbacks import EarlyStopping
 
-        es = EarlyStopping(patience=2, min_delta=0.05, mode="min")
+        # Two improvements larger than min_delta, then a plateau.
+        es = EarlyStopping(patience=2, min_delta=0.01, mode="min")
         simulated_losses = [0.5, 0.48, 0.46, 0.46, 0.46, 0.46]
 
         # Act: Simulate training step sequence
@@ -101,12 +102,10 @@ class TestEventIntegrationLifecycle:
         es1 = EarlyStopping(patience=1, min_delta=0.0, mode="min")
         es2 = EarlyStopping(patience=2, min_delta=0.0, mode="min")
 
-        # Act
-        es1.step(1.0)
+        # Act: one non-improving step each
         es1.step(1.0)
         stop1 = es1.step(1.0)
 
-        es2.step(2.0)
         es2.step(2.0)
         stop2 = es2.step(2.0)
 
@@ -114,7 +113,13 @@ class TestEventIntegrationLifecycle:
         assert stop1 is True, "es1 with patience=1 should stop"
         assert stop2 is False, "es2 with patience=2 should not stop yet"
         assert es1.bad == 1, "es1 bad counter should be 1"
+        assert es2.bad == 1, "es2 bad counter should be 1"
+
+        # Advancing es2 must not affect es1
+        assert es2.step(2.0) is True, "es2 should stop after its second plateau step"
         assert es2.bad == 2, "es2 bad counter should be 2"
+        assert es1.bad == 1, "es1 state should be independent of es2"
+        assert es1.best == 1.0 and es2.best == 2.0
 
 
 class TestCheckpointResumeIntegration:
@@ -193,7 +198,9 @@ class TestCheckpointResumeIntegration:
 
             # The checkpoint should be independent of training config
             # Assert
-            assert (loaded_state["step"] == 100, "Condition must be true"
+            assert (
+                loaded_state["step"] == 100,
+                "Condition must be true",
             ), "Checkpoint step should be preserved regardless of config"
 
         finally:
@@ -340,15 +347,20 @@ class TestTrainingLoopIntegration:
             resume_epoch = loaded_state["epoch"]
 
             # Simulate continued training
-            resumed_losses = [0.24, 0.22, 0.21, 0.21, 0.21]
+            # (each improvement exceeds min_delta, then the loss plateaus)
+            resumed_losses = [0.24, 0.22, 0.20, 0.20, 0.20]
 
+            stopped = False
             for loss in resumed_losses:
                 if es.step(loss):
+                    stopped = True
                     break
 
             # Assert
             assert resume_epoch == 50, "Resumed epoch should match checkpoint"
-            assert es.best <= 0.21, "Training should continue from checkpoint state"
+            assert loaded_state["model_loss"] == 0.25
+            assert es.best == pytest.approx(0.20), "Training should continue improving"
+            assert stopped is True, "Plateau after resume should trigger early stopping"
 
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)

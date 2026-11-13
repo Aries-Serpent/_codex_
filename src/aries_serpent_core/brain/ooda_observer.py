@@ -288,7 +288,9 @@ class RepositoryObserver:
 
             # Count changes
             status_result = subprocess.run(
-                ["git", "status", "--porcelain"],
+                # Untracked entries are discarded below; skipping them avoids a
+                # full working-tree scan on large repositories.
+                ["git", "status", "--porcelain", "--untracked-files=no"],
                 cwd=self.repo_path,
                 capture_output=True,
                 text=True,
@@ -590,13 +592,44 @@ class TaskQueueObserver:
 class EnvironmentObserver:
     """Observes system environment metrics."""
 
+    def __init__(self, measure_network_latency: bool = False) -> None:
+        # The ICMP probe is opt-in: on hosts where ICMP is filtered it blocks
+        # until its timeout and would dominate OBSERVE latency.
+        self.measure_network_latency = measure_network_latency
+        try:
+            import psutil
+
+            # Prime the non-blocking CPU sampler so later reads cover the
+            # interval since construction instead of sleeping per observation.
+            psutil.cpu_percent(interval=None)
+        except (ImportError, OSError) as exc:
+            logger.warning("Unable to prime CPU metrics: %s", exc)
+
+    def _probe_network_latency(self) -> Optional[float]:
+        if not self.measure_network_latency:
+            return None
+        try:
+            start = time.time()
+            result = subprocess.run(
+                ["ping", "-c", "1", "-W", "1", "8.8.8.8"],
+                capture_output=True,
+                timeout=2,
+            )
+            if result.returncode != 0:
+                logger.warning("Network latency probe failed (exit %s)", result.returncode)
+                return None
+            return (time.time() - start) * 1000
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            logger.warning("Network latency probe unavailable: %s", exc)
+            return None
+
     def observe(self) -> EnvironmentMetrics:
         """Collect current environment metrics."""
         try:
             import psutil
 
             # CPU and memory
-            cpu_percent = psutil.cpu_percent(interval=0.1)
+            cpu_percent = psutil.cpu_percent(interval=None)
             memory = psutil.virtual_memory()
             memory_percent = memory.percent
             memory_available_mb = memory.available / (1024 * 1024)
@@ -606,17 +639,7 @@ class EnvironmentObserver:
             disk_percent = disk.percent
             disk_available_mb = disk.free / (1024 * 1024)
 
-            # Network latency to GitHub (simple ping to DNS)
-            try:
-                start = time.time()
-                subprocess.run(
-                    ["ping", "-c", "1", "-W", "100", "8.8.8.8"],
-                    capture_output=True,
-                    timeout=2,
-                )
-                network_latency_ms = (time.time() - start) * 1000
-            except Exception:
-                network_latency_ms = None
+            network_latency_ms = self._probe_network_latency()
 
             return EnvironmentMetrics(
                 cpu_percent=cpu_percent,

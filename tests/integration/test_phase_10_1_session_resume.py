@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import tempfile
 import time  # pragma: allowlist secret
 from pathlib import Path
@@ -54,7 +55,9 @@ class TestCheckpointManager:
 
     def test_checkpoint_manager_init(self, checkpoint_manager, temp_checkpoint_dir):
         """Test CheckpointManager initialization."""
-        assert checkpoint_manager.checkpoint_dir == temp_checkpoint_dir, "checkpoint_dir is not valid"
+        assert (
+            checkpoint_manager.checkpoint_dir == temp_checkpoint_dir
+        ), "checkpoint_dir is not valid"
         assert checkpoint_manager.schema_version == 1, "schema_version is not valid"
         assert checkpoint_manager.retention_count == 5, "Count must be greater than zero"
         assert (temp_checkpoint_dir / "v1").exists(), "Condition must be true"
@@ -72,7 +75,9 @@ class TestCheckpointManager:
         assert checkpoint_file.exists(), "Condition must be true"
 
         # Verify checkpoint integrity
-        assert checkpoint_manager.verify_checkpoint_integrity(checkpoint_id), "Condition must be true"
+        assert checkpoint_manager.verify_checkpoint_integrity(
+            checkpoint_id
+        ), "Condition must be true"
 
     def test_create_checkpoint_with_session_state(self, checkpoint_manager):
         """Test checkpoint creation with full session state."""
@@ -101,12 +106,16 @@ class TestCheckpointManager:
         )
 
         assert checkpoint_id is not None, "checkpoint_id must be initialized"
-        assert checkpoint_manager.verify_checkpoint_integrity(checkpoint_id), "Condition must be true"
+        assert checkpoint_manager.verify_checkpoint_integrity(
+            checkpoint_id
+        ), "Condition must be true"
 
         # Verify content
         content = checkpoint_manager.get_checkpoint_content(checkpoint_id)
         assert content is not None, "content must be initialized"
-        assert content["session_state"]["agent_state"]["agent_id"] == "test_agent", "Content must not be empty"
+        assert (
+            content["session_state"]["agent_state"]["agent_id"] == "test_agent"
+        ), "Content must not be empty"
 
     def test_list_checkpoints(self, checkpoint_manager):
         """Test listing checkpoints."""
@@ -141,7 +150,9 @@ class TestCheckpointManager:
 
         # Corrupt the checkpoint file
         checkpoint_file = checkpoint_manager.checkpoint_dir / "v1" / f"{cp_id}.json.gz"
-        os.chmod(checkpoint_file, 0o600)  # nosemgrep: semgrep.insecure-file-permissions - Test: temporarily making test file writable for corruption
+        os.chmod(
+            checkpoint_file, 0o600
+        )  # nosemgrep: semgrep.insecure-file-permissions - Test: temporarily making test file writable for corruption
         checkpoint_file.write_bytes(b"corrupted data")
 
         # Verification should fail
@@ -150,7 +161,9 @@ class TestCheckpointManager:
     def test_checkpoint_deletion(self, checkpoint_manager):
         """Test checkpoint deletion."""
         cp_id = checkpoint_manager.create_checkpoint(session_id="S001")
-        assert checkpoint_manager.get_checkpoint_content(cp_id) is not None, "Value must be initialized"
+        assert (
+            checkpoint_manager.get_checkpoint_content(cp_id) is not None
+        ), "Value must be initialized"
 
         # Delete checkpoint
         assert checkpoint_manager.delete_checkpoint(cp_id), "Condition must be true"
@@ -198,19 +211,22 @@ class TestCheckpointManager:
         # Compressed size should be much smaller
         metadata = checkpoint_manager.get_checkpoint_metadata(cp_id)
         assert metadata.compressed, "Data must not be empty"
-        assert (metadata.compressed_size_bytes < metadata.uncompressed_size_bytes * 0.5, "Data must not be empty"
-        )  # At least 50% compression
+        # At least 50% compression
+        assert (
+            metadata.compressed_size_bytes < metadata.uncompressed_size_bytes * 0.5
+        ), "Compressed checkpoint must be at least 50% smaller"
 
     def test_maybe_checkpoint_commit_trigger(self, checkpoint_manager):
         """Test commit-based checkpoint trigger."""
         # Should not trigger
-        assert checkpoint_manager.maybe_checkpoint(commit_count_delta=1) is None, "Count must be greater than zero"
+        assert (
+            checkpoint_manager.maybe_checkpoint(commit_count_delta=1) is None
+        ), "Count must be greater than zero"
 
         # Should trigger after 2 commits
         cp_id = checkpoint_manager.maybe_checkpoint(commit_count_delta=1)
         assert cp_id is not None, "cp_id must be initialized"
-        assert cp_id.startswith("cp_", "Condition must be true"
-        ), "Condition must be true"
+        assert cp_id.startswith("cp_"), "Condition must be true"
 
     def test_maybe_checkpoint_time_trigger(self, checkpoint_manager):
         """Test time-based checkpoint trigger."""
@@ -253,9 +269,7 @@ class TestSessionSerializer:
         """Test serializing complete session state."""
         agent_state = create_agent_state_snapshot("test_agent", "custom", "completed")
         decision = create_decision_snapshot("d_001", "code_change", "Test decision", 0.95)
-        memory = create_memory_snapshot(
-            total_patterns=10, memory_usage_bytes=5000
-        )
+        memory = create_memory_snapshot(total_patterns=10, memory_usage_bytes=5000)
         progress = create_execution_progress_snapshot(
             completed_tasks=["t1", "t2"], pending_tasks=["t3"]
         )
@@ -274,7 +288,9 @@ class TestSessionSerializer:
         assert state_dict["agent_state"]["agent_id"] == "test_agent", "Condition must be true"
         assert len(state_dict["decision_history"]) == 1, "Collection must not be empty"
         assert state_dict["memory_snapshot"]["total_patterns"] == 10, "Condition must be true"
-        assert len(state_dict["execution_progress"]["completed_tasks"]) == 2, "Collection must not be empty"
+        assert (
+            len(state_dict["execution_progress"]["completed_tasks"]) == 2
+        ), "Collection must not be empty"
 
     def test_serialize_to_json(self, serializer):
         """Test JSON serialization."""
@@ -324,9 +340,7 @@ class TestSessionSerializer:
     def test_json_roundtrip(self, serializer):
         """Test JSON serialization roundtrip."""
         agent_state = create_agent_state_snapshot("agent_1", "builtin")
-        decision = create_decision_snapshot(
-            "d_001", "code_change", "Test", 0.92, outcome="success"
-        )
+        decision = create_decision_snapshot("d_001", "code_change", "Test", 0.92, outcome="success")
 
         state_dict = serializer.serialize_session_state(
             agent_state=agent_state, decision_history=[decision]
@@ -382,9 +396,7 @@ class TestSessionResume:
     def test_load_checkpoint(self, checkpoint_manager, session_resume):
         """Test loading checkpoint."""
         session_state = {"test_key": "test_value"}
-        cp_id = checkpoint_manager.create_checkpoint(
-            session_state=session_state, session_id="S001"
-        )
+        cp_id = checkpoint_manager.create_checkpoint(session_state=session_state, session_id="S001")
 
         content = session_resume.load_checkpoint(cp_id)
         assert content is not None, "content must be initialized"
@@ -471,8 +483,9 @@ class TestSessionResume:
 
         # Corrupt the checkpoint
         cp_file = checkpoint_manager.checkpoint_dir / "v1" / f"{cp_id}.json.gz"
-        pass  # removed redundant `import os` (top-level import used)
-        os.chmod(cp_file, 0o600)  # nosemgrep: semgrep.insecure-file-permissions - Test: temporarily making test file writable for corruption
+        os.chmod(
+            cp_file, 0o600
+        )  # nosemgrep: semgrep.insecure-file-permissions - Test: temporarily making test file writable for corruption
         cp_file.write_bytes(b"corrupted")
 
         result = session_resume.resume_session(cp_id)
@@ -519,9 +532,7 @@ class TestEndToEndIntegration:
             "d_001", "refactor", "Optimized search", 0.94, "success"
         )
         memory = create_memory_snapshot(
-            short_term_memory=[
-                {"pattern_id": "p_043", "relevance": 0.92}
-            ],
+            short_term_memory=[{"pattern_id": "p_043", "relevance": 0.92}],
             total_patterns=47,
         )
         progress = create_execution_progress_snapshot(
@@ -555,7 +566,9 @@ class TestEndToEndIntegration:
         assert result.success, "Result must not be empty"
         assert result.agent_id == "semantic_search", "Result must not be empty"
         assert result.state["memory_snapshot"]["total_patterns"] == 47, "Result must not be empty"
-        assert len(result.state["execution_progress"]["completed_tasks"]) == 2, "Collection must not be empty"
+        assert (
+            len(result.state["execution_progress"]["completed_tasks"]) == 2
+        ), "Collection must not be empty"
 
     def test_multiple_checkpoints_with_progression(self, checkpoint_manager, session_resume):
         """Test multiple checkpoints tracking task progression."""

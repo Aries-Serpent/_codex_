@@ -36,3 +36,28 @@ def test_ml_jobs_install_and_preflight_collection_dependencies(job_name):
     assert {"detect_secrets", "hypothesis", "freezegun"} <= imports
     assert job["permissions"] == {"contents": "read"}
     assert job["timeout-minutes"] == 60
+
+
+def test_slow_job_preserves_integration_diagnostics_within_job_budget():
+    workflow_path = Path(__file__).resolve().parents[2] / ".github/workflows/ml-tests.yml"
+    job = yaml.safe_load(workflow_path.read_text())["jobs"]["test-integration-slow"]
+    steps = {step.get("name"): (index, step) for index, step in enumerate(job["steps"])}
+
+    integration_index, integration = steps["Run integration tests"]
+    upload_index, upload = steps["Upload integration test report"]
+    coverage_index, coverage = steps["Run all tests with coverage"]
+
+    assert "--junitxml=reports/integration-junit.xml" in integration["run"]
+    assert "-rfE" in integration["run"]
+    # The report must be uploaded before the long coverage step can exhaust the job.
+    assert integration_index < upload_index < coverage_index
+    assert upload["if"] == "always()"
+    assert upload["with"]["path"] == "reports/integration-junit.xml"
+    assert "--cov-fail-under=70" in coverage["run"]
+    assert integration["timeout-minutes"] + coverage["timeout-minutes"] < job["timeout-minutes"]
+
+
+def test_ml_repairs_can_be_validated_on_staging_sub_prs():
+    workflow_path = Path(__file__).resolve().parents[2] / ".github/workflows/ml-tests.yml"
+    workflow = yaml.safe_load(workflow_path.read_text())
+    assert "0D_base_" in workflow["on"]["pull_request"]["branches"]

@@ -94,9 +94,9 @@ class TestCheckpointCoreBasics:
         with pytest.raises(FileNotFoundError) as exc_info:
             load_checkpoint(str(nonexistent_path))
 
-        assert "weights not found" in str(exc_info.value).lower(), (
-            "Error message should indicate missing weights file"
-        )
+        assert (
+            "weights not found" in str(exc_info.value).lower()
+        ), "Error message should indicate missing weights file"
 
     def test_checkpoint_round_trip_preserves_state(self):
         """Verify state is preserved through save and load cycle."""
@@ -195,6 +195,52 @@ class TestCheckpointCoreBasics:
             assert loaded_state == test_state, "Should still load state despite schema mismatch"
 
 
+@pytest.mark.parametrize(
+    ("meta_version", "expect_warning"),
+    [("1.0", True), ("2.0", False)],
+)
+def test_checkpoint_metadata_schema_mismatch_warns(
+    tmp_path, monkeypatch, meta_version, expect_warning
+):
+    """A stale metadata.json schema version warns even when weights are current."""
+    import pickle
+    import warnings
+
+    from codex_ml.checkpointing import checkpoint_core
+
+    def _save(obj, path, **_kwargs):
+        with open(path, "wb") as f:
+            pickle.dump(obj, f)
+
+    def _load(path, **_kwargs):
+        with open(path, "rb") as f:
+            return pickle.load(f)  # nosec B301 - test-owned file
+
+    io = {"save": _save, "load": _load}
+    monkeypatch.setattr(checkpoint_core, "_require_torch_attr", io.__getitem__)
+    monkeypatch.setattr(checkpoint_core, "_torch_supports_weights_only", lambda: False)
+
+    ckpt_dir = tmp_path / "ckpt"
+    checkpoint_core.save_checkpoint(str(ckpt_dir), state={"step": 3}, meta={"run": "a"})
+    metadata_path = ckpt_dir / "metadata.json"
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    metadata["_schema_version"] = meta_version
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        state, meta = checkpoint_core.load_checkpoint(str(ckpt_dir))
+
+    schema_warnings = [str(w.message) for w in caught if "schema" in str(w.message)]
+    if expect_warning:
+        assert len(schema_warnings) == 1
+        assert "metadata declares schema v1.0" in schema_warnings[0]
+    else:
+        assert schema_warnings == []
+    assert state == {"step": 3}
+    assert meta["run"] == "a"
+
+
 class TestCheckpointAtomicIO:
     """Test atomic I/O operations for checkpoint safety."""
 
@@ -275,9 +321,9 @@ class TestCheckpointErrorHandling:
         with pytest.raises(RuntimeError) as exc_info:
             _require_torch_attr("nonexistent_torch_function")
 
-        assert "missing required attribute" in str(exc_info.value).lower(), (
-            "Error should indicate missing torch attribute"
-        )
+        assert (
+            "missing required attribute" in str(exc_info.value).lower()
+        ), "Error should indicate missing torch attribute"
 
     def test_checkpoint_save_to_nonexistent_parent(self):
         """Verify save creates parent directories as needed."""
@@ -298,9 +344,10 @@ class TestCheckpointErrorHandling:
 
         # Assert
         assert Path(result).exists(), "Nested checkpoint directory should be created"
-        assert (Path(result) / "weights.pt", "Result must not be empty"
-        ).exists(
-        ), "Weights file should exist in nested directory"
+        assert (
+            Path(result) / "weights.pt",
+            "Result must not be empty",
+        ).exists(), "Weights file should exist in nested directory"
 
 
 if __name__ == "__main__":

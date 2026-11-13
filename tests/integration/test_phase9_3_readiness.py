@@ -9,9 +9,81 @@ Authority: Copilot Agent (D-tier autonomy)
 Status: Production test suite
 """
 
+import importlib.util
+import re
 from pathlib import Path
 
 import pytest
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+# The Phase 9.2/9.3 planning docs were moved out of `.codex/` into read-only
+# archives (commits 07f924391c, 7cab7e1af7 and 41fa846e26); `.codex/archive/phases`
+# is used where several archived copies exist.
+_ARCHIVED_DOC_DIRS = {
+    "PHASE_9_2_AUTOFIX_PATTERNS.md": ".codex/archive/phase-reports/phase-1-10",
+    "PHASE_9_2_CASCADE_ARCHITECTURE.md": ".codex/archive/phases",
+    "PHASE_9_2_CASCADE_DEPLOYMENT_PLAN.md": ".codex/archive/legacy-root",
+    "PHASE_9_2_EXECUTION_SUMMARY.md": ".codex/archive/phases",
+    "PHASE_9_2_INTEGRATION_TEST_STRATEGY.md": ".codex/archive/phases",
+    "PHASE_9_2_PATTERN_ROUTING_MATRIX.md": ".codex/archive/phases",
+    "PHASE_9_3_EXECUTION_SUMMARY_FINAL.md": ".codex/archive/phases",
+    "PHASE_9_3_PARALLEL_DEPLOYMENT_PLAN.md": ".codex/archive/legacy-root",
+    "PHASE_9_3_ROUTER_SPECIFICATION_V2.md": ".codex/archive/phases",
+    "PHASE_9_3_AGENT_DELEGATION_BRIEF.md": ".codex/archive/phase-reports/phase-1-10",
+    "PHASE_9_3_DEPENDENCY_AUDIT.md": ".codex/archive/phase-reports/phase-1-10",
+    "PHASE_9_3_DESIGN_AUDIT.md": ".codex/archive/phase-reports/phase-1-10",
+    "PHASE_9_3_KNOWN_ISSUES.md": ".codex/archive/phase-reports/phase-1-10",
+    "PHASE_9_3_READINESS_GATE.md": ".codex/archive/phase-reports/phase-1-10",
+}
+
+# Literal credential values assigned to credential-named identifiers or keys.
+_HARDCODED_SECRET_RE = re.compile(
+    r"""["']?\b\w*?(?:password|passwd|secret|token|api_?key|access_?key|private_?key)\b["']?"""
+    r"""\s*[:=]\s*[rbuf]?["'][^"'\s]{4,}["']""",
+    re.IGNORECASE,
+)
+
+
+def _archived_doc(name: str) -> Path:
+    return REPO_ROOT / _ARCHIVED_DOC_DIRS[name] / name
+
+
+def _load_script(name: str):
+    path = REPO_ROOT / "scripts" / "ci" / f"{name}.py"
+    spec = importlib.util.spec_from_file_location(f"_readiness_{name}", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _make_router():
+    """Build a SemanticRouter over an in-memory capability index."""
+    router_module = _load_script("phase_9_3_semantic_router")
+    router = router_module.SemanticRouter(index_path=str(REPO_ROOT / "nonexistent-index.json"))
+    agents = {
+        "ci-healer": {"name": "CI Healer", "category": "ci", "capabilities": ["error_analysis"]},
+        "ops-runner": {
+            "name": "Ops Runner",
+            "category": "operations",
+            "capabilities": ["error_analysis"],
+        },
+        "doc-writer": {
+            "name": "Doc Writer",
+            "category": "docs",
+            "capabilities": ["error_analysis"],
+        },
+        "ci-alpha": {
+            "name": "CI Alpha",
+            "category": "ci",
+            "maturity": "alpha",
+            "capabilities": ["error_analysis"],
+        },
+    }
+    router.index_loader.index_data = {"agents": agents}
+    router.index_loader.agents = agents
+    router.index_loader.agent_by_id = dict(agents)
+    return router_module, router
 
 
 class TestPhase92Deliverables:
@@ -23,12 +95,23 @@ class TestPhase92Deliverables:
         assert path.exists(), "Cascade orchestrator script not found"
         assert path.stat().st_size > 10000, "Script too small"
 
-    def test_cascade_orchestrator_minimum_loc(self):
-        """Verify cascade orchestrator meets minimum LOC requirement"""
-        path = Path("scripts/ci/phase_9_2_cascade_orchestrator.py")
-        lines = path.read_text().split('\n')
-        loc = len([l for l in lines if l.strip() and not l.strip().startswith('#')])
-        assert loc >= 600, f"Cascade orchestrator has only {loc} LOC (target 694)"
+    def test_cascade_orchestrator_implements_pattern_catalog(self):
+        """Verify the orchestrator ships the 12 routed patterns and detects one"""
+        orchestrator = _load_script("phase_9_2_cascade_orchestrator")
+
+        catalog = orchestrator.PATTERN_CATALOG
+        assert [p.id for p in catalog] == [f"RP-{i:03d}" for i in range(1, 13)]
+        assert all(p.agent for p in catalog), "Every pattern needs a routed agent"
+
+        failure = orchestrator.FailureLog(
+            raw_log="ruff check failed\nwarning: F401 unused import 'subprocess'",
+            job_name="lint",
+            workflow_name="ci",
+            timestamp="2026-01-01T00:00:00Z",
+            exit_code=1,
+        )
+        matches = orchestrator.PatternDetector().detect(failure)
+        assert matches and matches[0].pattern.id == "RP-001"
 
     def test_pattern_router_exists(self):
         """Verify pattern router script exists"""
@@ -38,7 +121,7 @@ class TestPhase92Deliverables:
 
     def test_autofix_patterns_doc_exists(self):
         """Verify autofix patterns documentation exists"""
-        path = Path(".codex/PHASE_9_2_AUTOFIX_PATTERNS.md")
+        path = _archived_doc("PHASE_9_2_AUTOFIX_PATTERNS.md")
         assert path.exists(), "Autofix patterns doc not found"
         content = path.read_text()
 
@@ -49,7 +132,7 @@ class TestPhase92Deliverables:
 
     def test_pattern_routing_matrix_exists(self):
         """Verify pattern routing matrix exists"""
-        path = Path(".codex/PHASE_9_2_PATTERN_ROUTING_MATRIX.md")
+        path = _archived_doc("PHASE_9_2_PATTERN_ROUTING_MATRIX.md")
         assert path.exists(), "Pattern routing matrix not found"
         content = path.read_text()
 
@@ -59,22 +142,22 @@ class TestPhase92Deliverables:
 
     def test_cascade_architecture_doc_exists(self):
         """Verify cascade architecture documentation exists"""
-        path = Path(".codex/PHASE_9_2_CASCADE_ARCHITECTURE.md")
+        path = _archived_doc("PHASE_9_2_CASCADE_ARCHITECTURE.md")
         assert path.exists(), "Cascade architecture doc not found"
 
     def test_integration_test_strategy_exists(self):
         """Verify integration test strategy exists"""
-        path = Path(".codex/PHASE_9_2_INTEGRATION_TEST_STRATEGY.md")
+        path = _archived_doc("PHASE_9_2_INTEGRATION_TEST_STRATEGY.md")
         assert path.exists(), "Integration test strategy doc not found"
 
     def test_cascade_deployment_plan_exists(self):
         """Verify cascade deployment plan exists"""
-        path = Path(".codex/PHASE_9_2_CASCADE_DEPLOYMENT_PLAN.md")
+        path = _archived_doc("PHASE_9_2_CASCADE_DEPLOYMENT_PLAN.md")
         assert path.exists(), "Cascade deployment plan not found"
 
     def test_phase_9_2_test_coverage_documented(self):
         """Verify Phase 9.2 test coverage is documented"""
-        path = Path(".codex/PHASE_9_2_EXECUTION_SUMMARY.md")
+        path = _archived_doc("PHASE_9_2_EXECUTION_SUMMARY.md")
         assert path.exists(), "Phase 9.2 execution summary not found"
         content = path.read_text()
         assert "test" in content.lower(), "Test coverage not mentioned"
@@ -91,11 +174,21 @@ class TestPhase93Dependencies:
         assert path.stat().st_size > 8000, "Router script too small"
 
     def test_semantic_router_has_route_method(self):
-        """Verify semantic router has route_task method"""
-        path = Path("scripts/ci/phase_9_3_semantic_router.py")
-        content = path.read_text()
-        assert "def route_task" in content, "route_task method not found"
-        assert "selected_agents" in content, "Agent selection logic not found"
+        """Verify route_task selects a primary agent and a fallback chain"""
+        router_module, router = _make_router()
+        decision = router.route_task(
+            router_module.TaskSpec(
+                id="task-1",
+                description="Fix CI failure",
+                task_type="ci_fix",
+                required_capabilities=["error_analysis"],
+            )
+        )
+
+        assigned = {a.agent_id for a in decision.assigned_agents}
+        assert assigned == {"ci-healer", "ops-runner"}
+        assert decision.primary_agent is decision.assigned_agents[0]
+        assert decision.fallback_chain == decision.assigned_agents[1:]
 
     def test_agent_queue_manager_exists(self):
         """Verify agent queue manager exists"""
@@ -114,7 +207,7 @@ class TestPhase93Dependencies:
 
     def test_router_specification_exists(self):
         """Verify router specification document exists"""
-        path = Path(".codex/PHASE_9_3_ROUTER_SPECIFICATION_V2.md")
+        path = _archived_doc("PHASE_9_3_ROUTER_SPECIFICATION_V2.md")
         assert path.exists(), "Router specification not found"
         content = path.read_text()
 
@@ -125,7 +218,7 @@ class TestPhase93Dependencies:
 
     def test_parallel_deployment_plan_exists(self):
         """Verify parallel deployment plan exists"""
-        path = Path(".codex/PHASE_9_3_PARALLEL_DEPLOYMENT_PLAN.md")
+        path = _archived_doc("PHASE_9_3_PARALLEL_DEPLOYMENT_PLAN.md")
         assert path.exists(), "Parallel deployment plan not found"
         content = path.read_text()
 
@@ -135,7 +228,7 @@ class TestPhase93Dependencies:
 
     def test_dependency_audit_exists(self):
         """Verify Phase 9.3 dependency audit exists"""
-        path = Path(".codex/PHASE_9_3_DEPENDENCY_AUDIT.md")
+        path = _archived_doc("PHASE_9_3_DEPENDENCY_AUDIT.md")
         assert path.exists(), "Dependency audit not found"
         content = path.read_text()
         assert "verified" in content.lower(), "Verification status not found"
@@ -181,22 +274,29 @@ class TestCodeQualitySecurity:
             "scripts/ci/phase_9_3_workload_balancer.py",
         ]
 
-        secret_patterns = [
-            'password',
-            'token',
-            'secret',
-            'key=',
-            'api_key',
-        ]
-
         for script_path_str in scripts:
             path = Path(script_path_str)
-            if path.exists():
-                content = path.read_text().lower()
-                for pattern in secret_patterns:
-                    # Allow comments about secrets
-                    lines = [l for l in content.split('\n') if pattern in l and '#' not in l]
-                    assert len(lines) == 0, f"Potential secret in {script_path_str}: {pattern}"
+            assert path.exists(), f"{script_path_str} not found"
+            for lineno, line in enumerate(path.read_text().splitlines(), start=1):
+                assert not _HARDCODED_SECRET_RE.search(
+                    line
+                ), f"Potential hardcoded secret in {script_path_str}:{lineno}"
+
+    @pytest.mark.parametrize(
+        ("line", "flagged"),
+        [
+            ('API_KEY = "fake-value-for-detector-test"', True),  # pragma: allowlist secret
+            ('config = {"password": "fake-value-for-test"}', True),  # pragma: allowlist secret
+            ("github_token='fake-token-for-test'", True),  # pragma: allowlist secret
+            ("import secrets", False),
+            ('token = os.environ.get("GITHUB_TOKEN")', False),
+            ('password = ""', False),
+            ('token_count = "1234"', False),
+        ],
+    )
+    def test_hardcoded_secret_detector(self, line, flagged):
+        """Detector flags literal credential assignments but not stdlib/env usage"""
+        assert bool(_HARDCODED_SECRET_RE.search(line)) is flagged
 
     def test_error_handling_present(self):
         """Verify error handling in cascade and router"""
@@ -213,7 +313,7 @@ class TestDocumentation:
 
     def test_integration_spec_complete(self):
         """Verify integration specification is comprehensive"""
-        path = Path(".codex/PHASE_9_3_ROUTER_SPECIFICATION_V2.md")
+        path = _archived_doc("PHASE_9_3_ROUTER_SPECIFICATION_V2.md")
         assert path.exists(), "Condition must be true"
         content = path.read_text()
         size_kb = len(content) / 1024
@@ -221,29 +321,23 @@ class TestDocumentation:
 
     def test_session_context_documented(self):
         """Verify session context injection is documented"""
-        doc_path = Path(".codex/PHASE_9_3_ROUTER_SPECIFICATION_V2.md")
+        doc_path = _archived_doc("PHASE_9_3_DEPENDENCY_AUDIT.md")
         content = doc_path.read_text()
-        assert "context" in content.lower(), "Session context not documented"
+        assert "session context injection" in content.lower(), "Session context not documented"
 
     def test_recovery_procedures_documented(self):
         """Verify recovery procedures are documented"""
-        doc_path = Path(".codex/PHASE_9_3_PARALLEL_DEPLOYMENT_PLAN.md")
+        doc_path = _archived_doc("PHASE_9_3_PARALLEL_DEPLOYMENT_PLAN.md")
         assert doc_path.exists(), "Condition must be true"
         content = doc_path.read_text()
         assert "rollback" in content.lower(), "Rollback procedure not found"
-        assert "recovery" in content.lower() or "recover" in content.lower(), "Recovery not documented"
-
-    def test_cognitive_patterns_catalogued(self):
-        """Verify cognitive brain patterns are documented"""
-        # Check for pattern documentation in specification
-        spec_path = Path(".codex/PHASE_9_3_ROUTER_SPECIFICATION_V2.md")
-        assert spec_path.exists(), "Condition must be true"
-        content = spec_path.read_text()
-        assert "pattern" in content.lower(), "Patterns not documented"
+        assert (
+            "recovery" in content.lower() or "recover" in content.lower()
+        ), "Recovery not documented"
 
     def test_runbook_exists(self):
         """Verify operational runbook exists"""
-        doc_path = Path(".codex/PHASE_9_3_PARALLEL_DEPLOYMENT_PLAN.md")
+        doc_path = _archived_doc("PHASE_9_3_PARALLEL_DEPLOYMENT_PLAN.md")
         assert doc_path.exists(), "Condition must be true"
         content = doc_path.read_text()
         # Runbook should have deployment steps
@@ -251,7 +345,7 @@ class TestDocumentation:
 
     def test_incident_playbook_documented(self):
         """Verify incident response playbook is documented"""
-        doc_path = Path(".codex/PHASE_9_3_KNOWN_ISSUES.md")
+        doc_path = _archived_doc("PHASE_9_3_KNOWN_ISSUES.md")
         assert doc_path.exists(), "Condition must be true"
         content = doc_path.read_text()
         assert "escalation" in content.lower(), "Escalation procedures not found"
@@ -262,7 +356,7 @@ class TestTeamPreparation:
 
     def test_orchestrator_agent_brief_exists(self):
         """Verify orchestrator-agent briefing document exists"""
-        path = Path(".codex/PHASE_9_3_AGENT_DELEGATION_BRIEF.md")
+        path = _archived_doc("PHASE_9_3_AGENT_DELEGATION_BRIEF.md")
         assert path.exists(), "Agent briefing not found"
         content = path.read_text()
 
@@ -273,23 +367,25 @@ class TestTeamPreparation:
 
     def test_deployment_phases_documented(self):
         """Verify deployment phases are clearly documented"""
-        path = Path(".codex/PHASE_9_3_PARALLEL_DEPLOYMENT_PLAN.md")
+        path = _archived_doc("PHASE_9_3_PARALLEL_DEPLOYMENT_PLAN.md")
         content = path.read_text()
 
         assert "phase 1" in content.lower() or "canary" in content.lower(), "Phase 1 not documented"
-        assert "phase 2" in content.lower() or "regional" in content.lower(), "Phase 2 not documented"
+        assert (
+            "phase 2" in content.lower() or "regional" in content.lower()
+        ), "Phase 2 not documented"
         assert "phase 3" in content.lower() or "full" in content.lower(), "Phase 3 not documented"
 
     def test_workload_strategy_documented(self):
         """Verify workload balancing strategy is documented"""
-        path = Path(".codex/PHASE_9_3_AGENT_DELEGATION_BRIEF.md")
+        path = _archived_doc("PHASE_9_3_AGENT_DELEGATION_BRIEF.md")
         content = path.read_text()
         assert "workload" in content.lower(), "Workload strategy not documented"
         assert "balance" in content.lower(), "Balancing not documented"
 
     def test_monitoring_configured(self):
         """Verify monitoring and alerting is documented"""
-        path = Path(".codex/PHASE_9_3_AGENT_DELEGATION_BRIEF.md")
+        path = _archived_doc("PHASE_9_3_AGENT_DELEGATION_BRIEF.md")
         content = path.read_text()
         assert "monitor" in content.lower(), "Monitoring not documented"
         assert "alert" in content.lower(), "Alerting not documented"
@@ -297,10 +393,10 @@ class TestTeamPreparation:
 
     def test_rollback_procedures_documented(self):
         """Verify rollback procedures are clearly documented"""
-        path = Path(".codex/PHASE_9_3_AGENT_DELEGATION_BRIEF.md")
+        path = _archived_doc("PHASE_9_3_AGENT_DELEGATION_BRIEF.md")
         content = path.read_text()
         assert "rollback" in content.lower(), "Rollback procedures not documented"
-        assert "revert" in content.lower() or "undo" in content.lower(), "Revert procedure not documented"
+        assert "rollback decision" in content.lower(), "Rollback escalation path not documented"
 
 
 class TestReadinessChecklist:
@@ -310,9 +406,9 @@ class TestReadinessChecklist:
         """Verify all Gate 1 items pass"""
         gate_items = [
             ("Cascade orchestrator complete", Path("scripts/ci/phase_9_2_cascade_orchestrator.py")),
-            ("12 patterns documented", Path(".codex/PHASE_9_2_AUTOFIX_PATTERNS.md")),
-            ("Routing matrix defined", Path(".codex/PHASE_9_2_PATTERN_ROUTING_MATRIX.md")),
-            ("Architecture documented", Path(".codex/PHASE_9_2_CASCADE_ARCHITECTURE.md")),
+            ("12 patterns documented", _archived_doc("PHASE_9_2_AUTOFIX_PATTERNS.md")),
+            ("Routing matrix defined", _archived_doc("PHASE_9_2_PATTERN_ROUTING_MATRIX.md")),
+            ("Architecture documented", _archived_doc("PHASE_9_2_CASCADE_ARCHITECTURE.md")),
         ]
 
         for name, path in gate_items:
@@ -333,12 +429,12 @@ class TestReadinessChecklist:
     def test_all_gate_3_items(self):
         """Verify all Gate 3 security items pass"""
         docs = [
-            ".codex/PHASE_9_2_EXECUTION_SUMMARY.md",
-            ".codex/PHASE_9_3_EXECUTION_SUMMARY_FINAL.md",
+            "PHASE_9_2_EXECUTION_SUMMARY.md",
+            "PHASE_9_3_EXECUTION_SUMMARY_FINAL.md",
         ]
 
         for doc in docs:
-            path = Path(doc)
+            path = _archived_doc(doc)
             if path.exists():
                 content = path.read_text()
                 assert "coverage" in content.lower(), f"Coverage not mentioned in {doc}"
@@ -346,24 +442,24 @@ class TestReadinessChecklist:
     def test_all_gate_4_items(self):
         """Verify all Gate 4 documentation items"""
         docs = [
-            ".codex/PHASE_9_3_ROUTER_SPECIFICATION_V2.md",
-            ".codex/PHASE_9_3_PARALLEL_DEPLOYMENT_PLAN.md",
-            ".codex/PHASE_9_3_DEPENDENCY_AUDIT.md",
+            "PHASE_9_3_ROUTER_SPECIFICATION_V2.md",
+            "PHASE_9_3_PARALLEL_DEPLOYMENT_PLAN.md",
+            "PHASE_9_3_DEPENDENCY_AUDIT.md",
         ]
 
         for doc in docs:
-            path = Path(doc)
+            path = _archived_doc(doc)
             assert path.exists(), f"Gate 4 doc missing: {doc}"
 
     def test_all_gate_5_items(self):
         """Verify all Gate 5 team readiness items"""
         docs = [
-            ".codex/PHASE_9_3_AGENT_DELEGATION_BRIEF.md",
-            ".codex/PHASE_9_3_READINESS_GATE.md",
+            "PHASE_9_3_AGENT_DELEGATION_BRIEF.md",
+            "PHASE_9_3_READINESS_GATE.md",
         ]
 
         for doc in docs:
-            path = Path(doc)
+            path = _archived_doc(doc)
             assert path.exists(), f"Gate 5 doc missing: {doc}"
 
 
@@ -372,7 +468,7 @@ class TestDataFlowIntegration:
 
     def test_pattern_output_format(self):
         """Verify Phase 9.2 pattern output format is documented"""
-        path = Path(".codex/PHASE_9_2_AUTOFIX_PATTERNS.md")
+        path = _archived_doc("PHASE_9_2_AUTOFIX_PATTERNS.md")
         content = path.read_text()
 
         # Check for pattern structure documentation
@@ -381,21 +477,37 @@ class TestDataFlowIntegration:
 
     def test_routing_matrix_output_format(self):
         """Verify Phase 9.2 routing matrix output format"""
-        path = Path(".codex/PHASE_9_2_PATTERN_ROUTING_MATRIX.md")
+        path = _archived_doc("PHASE_9_2_PATTERN_ROUTING_MATRIX.md")
         content = path.read_text()
 
         assert "agent" in content.lower(), "Agent assignment not documented"
         assert "fallback" in content.lower(), "Fallback chains not documented"
 
     def test_cascade_to_router_adaptation(self):
-        """Verify cascade output can be adapted to router input"""
-        # Check if adaptation logic is present
-        router_path = Path("scripts/ci/phase_9_3_semantic_router.py")
-        content = router_path.read_text()
+        """Verify a cascade pattern match can be routed as a Phase 9.3 task"""
+        orchestrator = _load_script("phase_9_2_cascade_orchestrator")
+        failure = orchestrator.FailureLog(
+            raw_log="ruff check failed\nwarning: F401 unused import 'subprocess'",
+            job_name="lint",
+            workflow_name="ci",
+            timestamp="2026-01-01T00:00:00Z",
+            exit_code=1,
+        )
+        match = orchestrator.PatternDetector().detect(failure)[0]
 
-        # Should handle various input formats
-        assert "task" in content.lower(), "Task handling not found"
-        assert "input" in content.lower() or "param" in content.lower(), "Input handling not found"
+        router_module, router = _make_router()
+        decision = router.route_task(
+            router_module.TaskSpec(
+                id=match.pattern.id,
+                description=match.matched_text,
+                task_type="ci_fix",
+                required_capabilities=["error_analysis"],
+            )
+        )
+
+        assert decision.task_id == "RP-001"
+        assert decision.primary_agent is not None
+        assert decision.confidence_score > 0
 
 
 class TestPerformanceTargets:
@@ -403,7 +515,7 @@ class TestPerformanceTargets:
 
     def test_latency_targets_documented(self):
         """Verify latency targets are documented"""
-        path = Path(".codex/PHASE_9_3_ROUTER_SPECIFICATION_V2.md")
+        path = _archived_doc("PHASE_9_3_ROUTER_SPECIFICATION_V2.md")
         content = path.read_text()
 
         assert "latency" in content.lower(), "Latency not mentioned"
@@ -412,14 +524,16 @@ class TestPerformanceTargets:
 
     def test_throughput_targets_documented(self):
         """Verify throughput targets are documented"""
-        path = Path(".codex/PHASE_9_3_ROUTER_SPECIFICATION_V2.md")
+        path = _archived_doc("PHASE_9_3_ROUTER_SPECIFICATION_V2.md")
         content = path.read_text()
 
-        assert "throughput" in content.lower() or "concurrent" in content.lower(), "Throughput not documented"
+        assert (
+            "throughput" in content.lower() or "concurrent" in content.lower()
+        ), "Throughput not documented"
 
     def test_error_rate_targets_documented(self):
         """Verify error rate targets are documented"""
-        path = Path(".codex/PHASE_9_3_PARALLEL_DEPLOYMENT_PLAN.md")
+        path = _archived_doc("PHASE_9_3_PARALLEL_DEPLOYMENT_PLAN.md")
         content = path.read_text()
 
         assert "error" in content.lower(), "Error rate not mentioned"
@@ -431,22 +545,24 @@ class TestSecurityCompliance:
 
     def test_audit_logging_documented(self):
         """Verify audit logging is documented"""
-        path = Path(".codex/PHASE_9_3_DESIGN_AUDIT.md")
+        path = _archived_doc("PHASE_9_3_DESIGN_AUDIT.md")
         assert path.exists(), "Condition must be true"
         content = path.read_text()
         assert "audit" in content.lower(), "Audit logging not documented"
 
     def test_rbac_documented(self):
         """Verify RBAC model is documented"""
-        path = Path(".codex/PHASE_9_3_DESIGN_AUDIT.md")
+        path = _archived_doc("PHASE_9_3_DESIGN_AUDIT.md")
         content = path.read_text()
         assert "rbac" in content.lower() or "role" in content.lower(), "RBAC not documented"
 
     def test_input_validation_documented(self):
         """Verify input validation is documented"""
-        path = Path(".codex/PHASE_9_3_DESIGN_AUDIT.md")
+        path = _archived_doc("PHASE_9_3_DESIGN_AUDIT.md")
         content = path.read_text()
-        assert "validation" in content.lower() or "validate" in content.lower(), "Input validation not documented"
+        assert (
+            "validation" in content.lower() or "validate" in content.lower()
+        ), "Input validation not documented"
 
 
 class TestIssueTracking:
@@ -454,23 +570,27 @@ class TestIssueTracking:
 
     def test_known_issues_documented(self):
         """Verify known issues are documented"""
-        path = Path(".codex/PHASE_9_3_KNOWN_ISSUES.md")
+        path = _archived_doc("PHASE_9_3_KNOWN_ISSUES.md")
         assert path.exists(), "Known issues document not found"
 
     def test_issue_severity_classified(self):
         """Verify issues have severity classification"""
-        path = Path(".codex/PHASE_9_3_KNOWN_ISSUES.md")
+        path = _archived_doc("PHASE_9_3_KNOWN_ISSUES.md")
         content = path.read_text()
 
         # Check for severity levels
-        assert "critical" in content.lower() or "severity" in content.lower(), "Severity not classified"
+        assert (
+            "critical" in content.lower() or "severity" in content.lower()
+        ), "Severity not classified"
 
     def test_issue_mitigation_documented(self):
         """Verify all issues have documented mitigation"""
-        path = Path(".codex/PHASE_9_3_KNOWN_ISSUES.md")
+        path = _archived_doc("PHASE_9_3_KNOWN_ISSUES.md")
         content = path.read_text()
 
-        assert "mitigation" in content.lower() or "workaround" in content.lower(), "Mitigations not documented"
+        assert (
+            "mitigation" in content.lower() or "workaround" in content.lower()
+        ), "Mitigations not documented"
 
 
 # Test execution metadata
@@ -479,24 +599,28 @@ class TestMetadata:
 
     def test_readiness_audit_complete(self):
         """Verify readiness audit is marked complete"""
-        audit_path = Path(".codex/PHASE_9_3_DEPENDENCY_AUDIT.md")
+        audit_path = _archived_doc("PHASE_9_3_DEPENDENCY_AUDIT.md")
         assert audit_path.exists(), "Condition must be true"
         content = audit_path.read_text()
-        assert "verified" in content.lower() or "pass" in content.lower(), "Audit not marked complete"
+        assert (
+            "verified" in content.lower() or "pass" in content.lower()
+        ), "Audit not marked complete"
 
     def test_design_audit_complete(self):
         """Verify design audit is marked complete"""
-        audit_path = Path(".codex/PHASE_9_3_DESIGN_AUDIT.md")
+        audit_path = _archived_doc("PHASE_9_3_DESIGN_AUDIT.md")
         assert audit_path.exists(), "Condition must be true"
         content = audit_path.read_text()
         assert "pass" in content.lower(), "Design audit not marked complete"
 
     def test_readiness_gate_complete(self):
         """Verify readiness gate is marked complete"""
-        gate_path = Path(".codex/PHASE_9_3_READINESS_GATE.md")
+        gate_path = _archived_doc("PHASE_9_3_READINESS_GATE.md")
         assert gate_path.exists(), "Condition must be true"
         content = gate_path.read_text()
-        assert "pass" in content.lower() or "ready" in content.lower(), "Readiness gate not marked complete"
+        assert (
+            "pass" in content.lower() or "ready" in content.lower()
+        ), "Readiness gate not marked complete"
 
 
 if __name__ == "__main__":

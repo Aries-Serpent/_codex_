@@ -4,13 +4,23 @@ Verify all dependencies support Python 3.12.
 
 This script checks pyproject.toml dependencies against PyPI metadata
 to ensure Python 3.12 compatibility before migration.
+
+PyPI queries are bounded by a total time budget (default
+``DEFAULT_ONLINE_BUDGET_SECONDS``; override with the
+``CODEX_PY312_DEPS_BUDGET_SECONDS`` environment variable, ``0`` = offline).
+Packages left once the budget is spent are checked from locally installed
+metadata only and reported as warnings, and the partial run is not cached.
 """
 
 from __future__ import annotations
 
 import hashlib
 import json
+import math
+import os
 import re
+import time
+from importlib import metadata as importlib_metadata
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -43,6 +53,8 @@ ACTIVE_MANIFEST_NAMES = (
 CACHE_PATH = REPO_ROOT / ".codex" / "py312_deps_cache.json"
 PACKAGE_TIMEOUT_SECONDS = 15
 SHOW_TIMEOUT_SECONDS = 10
+DEFAULT_ONLINE_BUDGET_SECONDS = 45.0
+BUDGET_ENV_VAR = "CODEX_PY312_DEPS_BUDGET_SECONDS"
 
 
 def parse_dependency_spec(dep_spec: str) -> tuple[str, str | None, bool]:
@@ -336,6 +348,58 @@ def check_package_py312_support(
     return result
 
 
+def _online_budget_seconds() -> float:
+    """Return the total PyPI query budget in seconds (``0`` disables PyPI)."""
+    raw = os.environ.get(BUDGET_ENV_VAR)
+    if raw is None:
+        return DEFAULT_ONLINE_BUDGET_SECONDS
+    try:
+        budget = float(raw)
+    except ValueError as exc:
+        raise ValueError(f"{BUDGET_ENV_VAR} must be a finite non-negative number") from exc
+    if not math.isfinite(budget) or budget < 0:
+        raise ValueError(f"{BUDGET_ENV_VAR} must be a finite non-negative number")
+    return budget
+
+
+def _requires_python_supports_312(req: str) -> bool | None:
+    """Check all constraints, including exclusions and upper bounds."""
+    from packaging.specifiers import SpecifierSet
+
+    return SpecifierSet(req).contains("3.12")
+
+
+def check_package_py312_support_local(package: str, reason: str) -> dict[str, Any]:
+    """Check Python 3.12 support from installed metadata without network access."""
+    result: dict[str, Any] = {
+        "name": package,
+        "version": None,
+        "supports_312": None,
+        "latest_version": None,
+        "python_requires": None,
+        "error": None,
+        "warning": None,
+    }
+    try:
+        dist = importlib_metadata.distribution(package)
+    except importlib_metadata.PackageNotFoundError:
+        result["warning"] = f"{reason}; package not installed locally"
+        return result
+    result["version"] = dist.version
+    req = dist.metadata.get("Requires-Python")
+    if req:
+        result["python_requires"] = req
+        try:
+            result["supports_312"] = _requires_python_supports_312(req)
+        except ValueError as exc:
+            result["error"] = f"Invalid Requires-Python metadata for {package}: {exc}"
+    else:
+        result["python_requires"] = "Not specified (likely compatible)"
+        result["supports_312"] = True
+    result["warning"] = f"{reason}; used local metadata only"
+    return result
+
+
 def load_dependencies_from_pyproject() -> list[str]:
     """
     Load dependencies from pyproject.toml.
@@ -429,6 +493,9 @@ def main() -> int:
     incompatible = []
     errors = []
     warnings = []
+    online_budget = _online_budget_seconds()
+    online_deadline = time.monotonic() + online_budget
+    budget_exhausted = False
 
     for i, package in enumerate(sorted(packages), 1):
         print(
@@ -436,12 +503,22 @@ def main() -> int:
         )  # codeql[py/clear-text-logging-sensitive-data]
         sys.stdout.flush()
 
-        result = check_package_py312_support(package)
+        if not budget_exhausted and time.monotonic() >= online_deadline:
+            budget_exhausted = True
+        if budget_exhausted:
+            result = check_package_py312_support_local(
+                package, f"PyPI query budget ({online_budget:g}s) exhausted"
+            )
+        else:
+            result = check_package_py312_support(package)
         results.append(result)
 
         if result["error"]:
             print("❌ ERROR")  # codeql[py/clear-text-logging-sensitive-data]
             errors.append(result)
+        elif result["supports_312"] is False:
+            print("⚠️  INCOMPATIBLE")
+            incompatible.append(result)
         elif result["warning"]:
             print("⚠️  WARNING")  # codeql[py/clear-text-logging-sensitive-data]
             warnings.append(result)
@@ -540,6 +617,14 @@ def main() -> int:
             "   Please resolve incompatible dependencies before migrating."
         )  # codeql[py/clear-text-logging-sensitive-data]
         exit_code = 1
+    elif budget_exhausted:
+        print(
+            "⚠️  Python 3.12 migration readiness: INCONCLUSIVE"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            "   No incompatibilities found, but some packages were checked locally only."
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        exit_code = 2
     else:
         print(
             "✅ Python 3.12 migration readiness: READY"
@@ -548,6 +633,12 @@ def main() -> int:
             "   All dependencies support Python 3.12!"
         )  # codeql[py/clear-text-logging-sensitive-data]
         exit_code = 0
+    if budget_exhausted:
+        print(
+            f"⚠️  PyPI query budget ({online_budget:g}s) exhausted; "
+            f"set {BUDGET_ENV_VAR} to extend it. Partial results were not cached."
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        return exit_code
     _cache_save(
         fingerprint,
         {

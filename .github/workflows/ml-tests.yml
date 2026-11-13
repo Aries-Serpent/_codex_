@@ -12,6 +12,7 @@ name: ML Components Test Suite
   pull_request:
     branches:
       - main
+      - 0D_base_
   schedule:
     - cron: '0 2 * * *'
 
@@ -192,22 +193,40 @@ jobs:
           PY
 
       - name: Run integration tests
+        # Step budgets keep the job below its 60-minute limit; a job-level
+        # timeout cancels the job and GitHub may then discard its step logs.
+        timeout-minutes: 20
         run: |
           set -euo pipefail
           export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
           if [ -d "$PWD/agents/codex_client" ]; then
             export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
           fi
+          mkdir -p reports
           pytest tests/integration/ \
             -v \
+            -rfE \
             -m "integration" \
-            --timeout=600
+            --timeout=600 \
+            --junitxml=reports/integration-junit.xml
+
+      - name: Upload integration test report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          path: reports/integration-junit.xml
+          name: integration-junit
+          retention-days: 30
+          if-no-files-found: warn
 
       - name: Run all tests with coverage
         if: always()
+        timeout-minutes: 30
         run: |
           set -e
           pytest tests/ \
+            -rfE \
+            --timeout=300 \
             --cov=src \
             --cov=training \
             --cov-report=term \

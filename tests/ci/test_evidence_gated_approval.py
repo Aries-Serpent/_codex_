@@ -573,3 +573,11 @@ def test_delegation_verification_precedes_any_untrusted_checkout():
         verification["env"]["OWNER_APPROVAL_PROTECTED"] == "${{ secrets.OWNER_APPROVAL_PROTECTED }}"
     )
     assert "verify_owner_approval.py" in verification["run"]
+    # The verifier reads environment protection with github.token (actions: read);
+    # job-level permissions replace the workflow defaults, so preserve those too.
+    assert activation["permissions"] == {
+        "actions": "read",
+        "contents": "write",
+        "pull-requests": "write",
+        "issues": "write",
+    }

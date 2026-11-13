@@ -37,6 +37,12 @@ from check_py312_deps import (
 )
 
 
+@pytest.fixture(autouse=True)
+def isolated_cache(tmp_path, monkeypatch):
+    """Keep mocked main() results out of the real repository cache."""
+    monkeypatch.setattr(check_py312_deps, "CACHE_PATH", tmp_path / "py312_deps_cache.json")
+
+
 class TestParseDependencySpec:
     """Test dependency specification parsing."""
 
@@ -249,6 +255,58 @@ class TestMain:
         assert exit_code == 0, "exit_code is not valid"
 
 
+class TestOnlineBudget:
+    """The PyPI query phase is bounded so the checker cannot run unbounded."""
+
+    @patch("check_py312_deps._cache_save")
+    @patch("check_py312_deps._cache_load", return_value=None)
+    @patch("check_py312_deps.load_dependencies_from_active_manifests")
+    @patch("check_py312_deps.check_package_py312_support")
+    def test_exhausted_budget_uses_local_metadata_and_skips_cache(
+        self, mock_check, mock_load, _mock_cache_load, mock_cache_save, monkeypatch
+    ):
+        monkeypatch.setenv("CODEX_PY312_DEPS_BUDGET_SECONDS", "0")
+        mock_load.return_value = ["pytest>=8", "codex-definitely-not-installed-pkg"]
+
+        from check_py312_deps import main
+
+        with patch("builtins.print") as mock_print:
+            exit_code = main()
+
+        mock_check.assert_not_called()
+        mock_cache_save.assert_not_called()
+        assert exit_code == 2
+        printed = " ".join(str(call.args[0]) for call in mock_print.call_args_list if call.args)
+        assert "budget (0s) exhausted" in printed
+        assert "INCONCLUSIVE" in printed
+
+    @pytest.mark.parametrize("value", ["-1", "nan", "inf", "invalid"])
+    def test_invalid_budget_is_rejected(self, value, monkeypatch):
+        monkeypatch.setenv("CODEX_PY312_DEPS_BUDGET_SECONDS", value)
+        with pytest.raises(ValueError, match="finite non-negative"):
+            check_py312_deps._online_budget_seconds()
+
+    @pytest.mark.parametrize(
+        ("requirement", "compatible"),
+        [(">=3.10,<3.12", False), (">=3.10,!=3.12", False), (">=3.12,<4", True)],
+    )
+    def test_local_python_constraints_respect_exclusions(self, requirement, compatible):
+        assert check_py312_deps._requires_python_supports_312(requirement) is compatible
+
+    def test_local_check_reads_installed_metadata(self):
+        from check_py312_deps import check_package_py312_support_local
+
+        installed = check_package_py312_support_local("pytest", "offline")
+        missing = check_package_py312_support_local("codex-definitely-not-installed-pkg", "offline")
+
+        assert installed["version"] is not None
+        assert installed["supports_312"] is True
+        assert installed["warning"] == "offline; used local metadata only"
+        assert missing["supports_312"] is None
+        assert missing["error"] is None
+        assert missing["warning"] == "offline; package not installed locally"
+
+
 @pytest.mark.integration
 class TestIntegration:
     """Integration tests for dependency checker."""
@@ -266,7 +324,9 @@ class TestIntegration:
         )
 
         # Script should run (may pass or fail depending on actual compatibility)
-        assert result.returncode in [0, 1]
+        assert result.returncode in [0, 1, 2], result.stderr
+        if result.returncode == 2:
+            assert "INCONCLUSIVE" in result.stdout
         assert (
             "Python 3.12 Dependency Compatibility Checker" in result.stdout
         ), "Result must not be empty"
