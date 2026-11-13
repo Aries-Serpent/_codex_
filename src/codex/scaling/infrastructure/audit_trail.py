@@ -18,6 +18,7 @@ import logging
 import sqlite3
 import threading
 import time
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -236,13 +237,16 @@ class AuditTrail:
         severity: AuditSeverity = AuditSeverity.INFO,
         source_ip: Optional[str] = None,
         user_agent: Optional[str] = None,
+        status: str = "success",
     ) -> str:
         """
         Log an audit event (immutable).
 
         Gate Criterion 7: All tenant operations logged
         """
-        event_id = f"evt-{int(time.time() * 1000)}-{id(threading.current_thread())}"
+        # uuid suffix: millisecond + thread id alone collides when several
+        # events are logged within the same millisecond (UNIQUE event_id).
+        event_id = f"evt-{int(time.time() * 1000)}-{uuid.uuid4().hex[:12]}"
 
         event = AuditEvent(
             event_id=event_id,
@@ -253,6 +257,7 @@ class AuditTrail:
             resource_id=resource_id,
             resource_type=resource_type,
             action=action,
+            status=status,
             severity=severity,
             details=details or {},
             source_ip=source_ip,
