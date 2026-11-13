@@ -268,7 +268,8 @@ jobs:
       - name: Install project and ML runtime dependencies
         run: |
           set -euo pipefail
-          "${VENV_PYTHON}" -m pip install -e '.[runtime]'
+          # Optional integrations exercised by the unit suite (pyproject extra).
+          "${VENV_PYTHON}" -m pip install -e '.[runtime,test-ml-integrations]'
           "${VENV_PYTHON}" -m pip install \
             "detect-secrets>=1.5.0" \
             "hypothesis>=6.165.10,<7.0.0" \
@@ -280,6 +281,8 @@ jobs:
               "numpy", "torch", "transformers", "sentencepiece", "datasets",
               "accelerate", "peft", "pytest", "pytest_cov", "coverage",
               "detect_secrets", "hypothesis", "freezegun",
+              "sqlparse", "nox", "mypy", "pymysql",
+              "imageio", "skimage", "pywt", "cv2",
           ]:
               importlib.import_module(name)
           print("ML dependency preflight OK")
