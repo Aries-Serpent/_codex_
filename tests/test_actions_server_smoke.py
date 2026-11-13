@@ -5,93 +5,76 @@ Test module for actions server smoke.
 """
 
 import json
-import os
-import subprocess
-import sys
-import time
+import threading
 import urllib.request
-from pathlib import Path
-from urllib.parse import urlsplit
+from http.server import ThreadingHTTPServer
 
 import pytest
-from freezegun import freeze_time
 
 
-def _get(url: str, timeout: int = 5, max_retries: int = 5):
-    """
-    GET request with retry logic for resilience.
-    
-    Args:
-        url: URL to GET
-        timeout: Request timeout in seconds
-        max_retries: Maximum number of retries
-        
-    Returns:
-        Parsed JSON response
-        
-    Raises:
-        urllib.error.URLError: If all retries are exhausted
-    """
-    parts = urlsplit(url)
-    if parts.scheme != "http" or parts.hostname != "localhost" or parts.port != 8010:
-        raise ValueError(f"unexpected smoke-test URL: {url!r}")
+def _get(port: int, path: str):
+    url = f"http://127.0.0.1:{port}{path}"
+    with urllib.request.urlopen(url, timeout=10) as r:  # nosec B310 -- loopback test server
+        return r.status, json.loads(r.read().decode("utf-8"))
 
-    last_error = None
-    for attempt in range(max_retries):
-        try:
-            with urllib.request.urlopen(  # nosec B310 -- test-only controlled URL; scheme/host/port constrained to http://localhost:8010 above  # nosemgrep: semgrep.urllib-urlopen-dynamic -- URL is constrained to localhost:8010 above
-                url, timeout=timeout
-            ) as r:
-                return json.loads(r.read().decode("utf-8"))
-        except (urllib.error.URLError, TimeoutError) as e:
-            last_error = e
-            if attempt < max_retries - 1:
-                time.sleep(0.5 * (2 ** attempt))  # Exponential backoff
-            continue
 
-    raise last_error or TimeoutError(f"Failed to connect after {max_retries} retries")
+class _FakeGitHubResponse:
+    def __init__(self, payload):
+        self._payload = payload
+
+    def raise_for_status(self) -> None:
+        return None
+
+    def json(self):
+        return self._payload
 
 
 @pytest.mark.timeout(30)
-@freeze_time("2026-07-16 03:00:00")
-def test_server_health_and_branches_smoke(tmp_path):
-    """Test server health and branches endpoints with timeout protection."""
-    env = os.environ.copy()
-    env.setdefault("CODEX_GH_OWNER", "Aries-Serpent")
-    env.setdefault("CODEX_GH_REPO", "_codex_")
-    server_script = (Path.cwd() / "tools" / "actions_server.py").resolve()
-    p = subprocess.Popen(  # nosemgrep: python.lang.security.audit.dangerous-subprocess-use-tainted-env-args.dangerous-subprocess-use-tainted-env-args -- executable and script path are explicit and shell=False is used
-        [sys.executable, str(server_script)], env=env, shell=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
-    )
+def test_server_health_and_branches_smoke(tmp_path, monkeypatch):
+    """Serve the real handler on an ephemeral loopback port; GitHub is faked.
+
+    Previously this spawned ``tools/actions_server.py`` (moved to
+    ``src/tools`` in 57cb3506ed) on fixed port 8010, polled it under
+    ``freeze_time`` (so the wall-clock readiness loop never terminated), and
+    hit the real GitHub API.  Binding port 0 in-process removes the port
+    collision, start-up race, clock dependence and network dependence.
+    """
+    from tools import actions_server
+
+    monkeypatch.setattr(actions_server, "CACHE_DIR", str(tmp_path))
+    requested = []
+
+    def fake_get(url, headers=None, timeout=None):
+        requested.append(url)
+        return _FakeGitHubResponse([{"name": "main"}, {"name": "dev"}])
+
+    monkeypatch.setattr(actions_server.requests, "get", fake_get)
+
+    server = ThreadingHTTPServer(("127.0.0.1", 0), actions_server.App)
+    port = server.server_address[1]
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
     try:
-        # Wait for server startup with exponential backoff retry logic
-        max_startup_time = 10
-        start_time = time.time()
-        server_ready = False
+        status, health = _get(port, "/healthz")
+        assert status == 200, "healthz must return 200"
+        assert health["ok"] is True, "healthz must report ok"
+        assert isinstance(health["ts"], int), "healthz must report a timestamp"
 
-        while time.time() - start_time < max_startup_time:
-            try:
-                # Test with retry logic built in
-                health_response = _get("http://localhost:8010/healthz", timeout=2, max_retries=3)
-                if health_response.get("ok") is True:
-                    server_ready = True
-                    break
-            except Exception as _err:
-                time.sleep(0.5)
+        status, branches = _get(port, "/repo/branches?owner=Aries-Serpent&repo=_codex_")
+        assert status == 200, "branches must return 200"
+        assert branches == [{"name": "main"}, {"name": "dev"}], "branches payload mismatch"
+        assert requested == [
+            "https://api.github.com/repos/Aries-Serpent/_codex_/branches?per_page=100"
+        ], "must query the GitHub branches endpoint exactly once"
 
-        assert server_ready, f"Server failed to start within {max_startup_time}s"
-
-        # Now test branches endpoint
-        branches = _get("http://localhost:8010/repo/branches", timeout=5, max_retries=3)
-        assert isinstance(branches, list), "branches must be a list"
+        # Second call is served from the (tmp) cache, not GitHub.
+        _, cached = _get(port, "/repo/branches?owner=Aries-Serpent&repo=_codex_")
+        assert cached == branches, "cached payload mismatch"
+        assert len(requested) == 1, "second call must hit the cache"
     finally:
-        # Ensure process cleanup with proper timeout
-        try:
-            p.terminate()
-            p.wait(timeout=5)
-        except subprocess.TimeoutExpired:
-            p.kill()
-            p.wait()
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=5)
 
 
 def test_assert_safe_github_url_requires_string():
