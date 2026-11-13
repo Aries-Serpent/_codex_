@@ -256,6 +256,12 @@ def run_ab_test(
     else:
         _, p_value = _stdlib_ttest_ind(ctrl, trt)
 
+    # SciPy yields NaN when both groups have zero variance.  Resolve it the
+    # same way as the limit case: identical means → no evidence of a
+    # difference (p=1); distinct constant groups → certain difference (p=0).
+    if math.isnan(p_value):
+        p_value = 1.0 if mean_ctrl == mean_trt else 0.0
+
     # --- Cohen's d (pooled std, Welch variant) ---
     pooled_std = math.sqrt((var_ctrl * (n1 - 1) + var_trt * (n2 - 1)) / (n1 + n2 - 2))
     effect_size = (mean_trt - mean_ctrl) / pooled_std if pooled_std != 0.0 else 0.0
