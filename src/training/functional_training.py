@@ -58,6 +58,29 @@ load_from_pretrained: Any = None
 
 
 def _ensure_codex_ml_imports() -> None:
+    """Bind lazily imported symbols, preserving any already bound (e.g. patched) value."""
+    names = (
+        "FileLogger",
+        "log_run_metadata",
+        "EXAMPLES_PROCESSED",
+        "TRAIN_STEP_DURATION",
+        "track_time",
+        "dump_rng_state",
+        "load_rng_state",
+        "load_training_checkpoint",
+        "save_checkpoint",
+        "set_seed",
+        "_as_flat_params",
+        "maybe_mlflow",
+        "ensure_pinned_kwargs",
+        "load_from_pretrained",
+    )
+    bound = {n: globals()[n] for n in names if globals().get(n) is not None}
+    _load_codex_ml_imports()
+    globals().update(bound)
+
+
+def _load_codex_ml_imports() -> None:
     """Lazy load codex_ml imports only when needed."""
     global FileLogger
     global log_run_metadata
@@ -73,7 +96,7 @@ def _ensure_codex_ml_imports() -> None:
     global maybe_mlflow
     global ensure_pinned_kwargs
     global load_from_pretrained
-    if FileLogger is not None:
+    if FileLogger is not None and set_seed is not None and save_checkpoint is not None:
         return  # Already loaded
 
     try:
@@ -617,6 +640,7 @@ def evaluate_dataloader(model, dataloader, cfg: TrainCfg, device: torch.device) 
 
 def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dict[str, Any]:
     """Train ``model`` on ``train_ds`` using a minimal deterministic loop."""
+    _ensure_codex_ml_imports()
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model.to(device)
     set_seed(cfg.seed, deterministic=cfg.deterministic)

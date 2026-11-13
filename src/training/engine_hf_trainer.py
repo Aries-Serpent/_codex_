@@ -292,6 +292,36 @@ YAMLError: Any = None
 
 
 def _ensure_hf_trainer_imports() -> None:
+    """Bind lazily imported symbols, preserving any already bound (e.g. patched) value."""
+    names = (
+        "split_dataset",
+        "AsyncLogFile",
+        "CodexLoggers",
+        "_codex_log_all",
+        "_codex_logging_bootstrap",
+        "_codex_patch_argparse",
+        "_codex_sample_system",
+        "LogRecord",
+        "apply_lora",
+        "build_payload_bytes",
+        "load_payload",
+        "set_seed",
+        "log_error",
+        "ensure_pinned_kwargs",
+        "load_from_pretrained",
+        "snapshot_hydra_config",
+        "set_reproducible",
+        "safe_load",
+        "log_env_info",
+        "MissingPyYAMLError",
+        "YAMLError",
+    )
+    bound = {n: globals()[n] for n in names if globals().get(n) is not None}
+    _load_hf_trainer_imports()
+    globals().update(bound)
+
+
+def _load_hf_trainer_imports() -> None:
     """Lazy load imports needed for HF trainer, breaking circular dependencies."""
     global split_dataset
     global AsyncLogFile
@@ -315,8 +345,23 @@ def _ensure_hf_trainer_imports() -> None:
     global MissingPyYAMLError
     global YAMLError
 
-    if split_dataset is not None:
+    if all(
+        sym is not None
+        for sym in (
+            split_dataset,
+            LogRecord,
+            apply_lora,
+            set_seed,
+            set_reproducible,
+            load_from_pretrained,
+            ensure_pinned_kwargs,
+        )
+    ):
         return  # Already loaded
+    # NOTE: guard on every lazily bound callable, not only ``split_dataset``:
+    # ``monkeypatch`` restores patched-before-first-load symbols back to
+    # ``None``, which previously left e.g. ``set_reproducible`` permanently
+    # unbound ("'NoneType' object is not callable").
 
     try:
         from codex_ml.data_utils import split_dataset as _split_dataset
@@ -839,7 +884,9 @@ class NDJSONMetricsWriter:
                 valid_keys = {f.name for f in _dc.fields(LogRecord)}
                 filtered = {k: v for k, v in obj.items() if k in valid_keys}
                 data = LogRecord(**filtered).redacted().dict()
-            except (IOError, OSError, ModuleNotFoundError, ImportError):
+            except (TypeError, ValueError, IOError, OSError, ModuleNotFoundError, ImportError):
+                # Free-form metric dicts (e.g. ``{"train_loss": ..., "ts": ...}``)
+                # do not satisfy the strict LogRecord schema; persist them as-is.
                 logger.warning("Exception occurred", exc_info=True)
                 data = obj
         if self._async is not None:

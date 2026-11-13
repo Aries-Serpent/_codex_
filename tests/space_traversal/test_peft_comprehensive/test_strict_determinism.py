@@ -135,7 +135,7 @@ def _stub_hf_components(monkeypatch) -> None:
 def test_hf_trainer_passes_when_deterministic(monkeypatch, tmp_path):
     _patch_cuda_simple(monkeypatch, True)
     _stub_hf_components(monkeypatch)
-    monkeypatch.setattr("training.engine_hf_trainer.set_reproducible", lambda seed: None)
+    monkeypatch.setattr("training.engine_hf_trainer.set_reproducible", lambda seed, **_: None)
     try:
         run_hf_trainer(["hi"], tmp_path, distributed=False)
     except RuntimeError as exc:
@@ -147,7 +147,7 @@ def test_hf_trainer_passes_when_deterministic(monkeypatch, tmp_path):
 def test_hf_trainer_raises_when_nondeterministic(monkeypatch, tmp_path):
     _patch_cuda_simple(monkeypatch, False)
     _stub_hf_components(monkeypatch)
-    monkeypatch.setattr("training.engine_hf_trainer.set_reproducible", lambda seed: None)
+    monkeypatch.setattr("training.engine_hf_trainer.set_reproducible", lambda seed, **_: None)
     with pytest.raises((AssertionError, RuntimeError)):
         # On machines with NVIDIA driver: AssertionError (non-deterministic CUDA config).
         # On CPU-only machines (no driver): RuntimeError ("Found no NVIDIA driver").
