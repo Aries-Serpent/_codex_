@@ -287,6 +287,34 @@ class HFTokenizerAdapter(TokenizerAdapter):
     def name_or_path(self) -> str:
         return str(self.tokenizer.name_or_path)  # type: ignore[attr-defined]
 
+    def _legacy_call_kwargs(self, kwargs: dict[str, Any]) -> dict[str, Any]:
+        if "truncation_strategy" in kwargs:
+            # Pre-v4 spelling; ``truncation`` accepts the same strategy names.
+            kwargs.setdefault("truncation", kwargs.pop("truncation_strategy"))
+        self._ensure_pad_token(kwargs.get("padding"))
+        return kwargs
+
+    def _ensure_pad_token(self, padding: Any) -> None:
+        if padding and getattr(self.tokenizer, "pad_token", None) is None:
+            # GPT-2 style tokenizers lack a pad token by default; reuse eos.
+            self.tokenizer.pad_token = self.tokenizer.eos_token  # type: ignore[attr-defined]
+
+    def encode_plus(self, text: str, **kwargs: Any) -> Any:
+        """Hugging Face-style single-text encoding dict (compatibility alias).
+
+        ``transformers`` 5 removed ``PreTrainedTokenizerBase.encode_plus``; the
+        replacement is ``tokenizer(text, **kwargs)`` which returns the same
+        ``BatchEncoding`` (``input_ids``, ``attention_mask``, ...).
+        """
+        return self.tokenizer(text, **self._legacy_call_kwargs(kwargs))  # type: ignore[misc]
+
+    def batch_encode_plus(self, texts: Sequence[str], **kwargs: Any) -> Any:
+        """Hugging Face-style batch encoding dict (compatibility alias).
+
+        See :meth:`encode_plus`; delegates to ``tokenizer(list(texts), **kwargs)``.
+        """
+        return self.tokenizer(list(texts), **self._legacy_call_kwargs(kwargs))  # type: ignore[misc]
+
     def batch_encode(
         self,
         texts,
