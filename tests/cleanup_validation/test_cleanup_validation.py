@@ -13,6 +13,9 @@ import pytest
 
 from codex.logging.structured_logger import logger
 
+# Moved from the repo root into the archive by 68634a06e2 (#5291).
+INFRASTRUCTURE_DOC = ".codex/archive/misc/CLEANUP_VALIDATION_INFRASTRUCTURE.md"
+
 # ============================================================================
 # PHASE 1: Configuration Loading Tests
 # ============================================================================
@@ -89,12 +92,16 @@ class TestConfigurationContent:
     def test_pyproject_has_project_name(self):
         """Verify pyproject.toml has project name."""
         content = Path("pyproject.toml").read_text()
-        assert 'name = "codex-ml"' in content or 'name="codex-ml"' in content, "Content must not be empty"
+        assert (
+            'name = "codex-ml"' in content or 'name="codex-ml"' in content
+        ), "Content must not be empty"
 
     def test_pyproject_has_dependencies(self):
         """Verify pyproject.toml has dependencies section."""
         content = Path("pyproject.toml").read_text()
-        assert "dependencies = [" in content or "dependencies=[" in content, "Content must not be empty"
+        assert (
+            "dependencies = [" in content or "dependencies=[" in content
+        ), "Content must not be empty"
 
     def test_requirements_not_empty(self):
         """Verify requirements.txt is not empty."""
@@ -145,8 +152,13 @@ class TestDirectoryStructure:
         assert Path("docs").is_dir(), "docs/ directory not found"
 
     def test_src_has_init(self):
-        """Verify src/ has __init__.py."""
-        assert Path("src/__init__.py").exists(), "src/__init__.py not found"
+        """Verify src/ uses the canonical src-layout (not itself a package).
+
+        ``src/__init__.py`` was removed intentionally in 57cb3506ed; packages
+        live under ``src/<package>/__init__.py``.
+        """
+        assert not Path("src/__init__.py").exists(), "src/ must not be a package"
+        assert any(Path("src").glob("*/__init__.py")), "src/ must contain packages"
 
     def test_cleanup_validation_directory_exists(self):
         """Verify cleanup_validation test directory exists."""
@@ -154,7 +166,9 @@ class TestDirectoryStructure:
 
     def test_cleanup_validation_tests_exist(self):
         """Verify cleanup validation tests exist."""
-        assert Path("tests/cleanup_validation/test_cleanup_validation.py").exists(), "Condition must be true"
+        assert Path(
+            "tests/cleanup_validation/test_cleanup_validation.py"
+        ).exists(), "Condition must be true"
 
 
 # ============================================================================
@@ -210,7 +224,7 @@ class TestDocumentation:
 
     def test_cleanup_validation_infrastructure_doc_exists(self):
         """Verify cleanup infrastructure doc exists."""
-        assert Path("CLEANUP_VALIDATION_INFRASTRUCTURE.md").exists(), "Condition must be true"
+        assert Path(INFRASTRUCTURE_DOC).exists(), "Condition must be true"
 
     def test_cleanup_validation_guide_has_content(self):
         """Verify cleanup validation guide has meaningful content."""
@@ -219,7 +233,7 @@ class TestDocumentation:
 
     def test_infrastructure_doc_has_content(self):
         """Verify infrastructure doc has meaningful content."""
-        content = Path("CLEANUP_VALIDATION_INFRASTRUCTURE.md").read_text()
+        content = Path(INFRASTRUCTURE_DOC).read_text()
         assert len(content) > 1000, "Infrastructure doc is too short"
 
 
@@ -246,7 +260,7 @@ class TestCleanupValidationIntegration:
             "scripts/pre_cleanup_validation.sh",
             "scripts/post_cleanup_validation.sh",
             "docs/cleanup_validation_guide.md",
-            "CLEANUP_VALIDATION_INFRASTRUCTURE.md",
+            INFRASTRUCTURE_DOC,
         ]
 
         missing = [f for f in critical_files if not Path(f).exists()]
@@ -274,7 +288,7 @@ class TestCleanupValidationIntegration:
         # Check documentation
         docs = [
             "docs/cleanup_validation_guide.md",
-            "CLEANUP_VALIDATION_INFRASTRUCTURE.md",
+            INFRASTRUCTURE_DOC,
         ]
         for doc in docs:
             assert Path(doc).exists(), f"Documentation not found: {doc}"
@@ -307,7 +321,9 @@ class TestValidationSummary:
         """Verify cleanup validation infrastructure is ready."""
         # Verify test suite
         assert Path("tests/cleanup_validation").is_dir(), "Condition must be true"
-        assert Path("tests/cleanup_validation/test_cleanup_validation.py").exists(), "Condition must be true"
+        assert Path(
+            "tests/cleanup_validation/test_cleanup_validation.py"
+        ).exists(), "Condition must be true"
 
         # Verify scripts
         scripts_ok = all(
@@ -325,7 +341,7 @@ class TestValidationSummary:
             Path(d).exists()
             for d in [
                 "docs/cleanup_validation_guide.md",
-                "CLEANUP_VALIDATION_INFRASTRUCTURE.md",
+                INFRASTRUCTURE_DOC,
             ]
         )
         assert docs_ok, "Documentation files missing"
@@ -337,7 +353,6 @@ class TestValidationSummary:
         logger.info("✓ 3 validation scripts ready")
         logger.info("✓ Complete documentation provided")
         logger.info("✓ Zero breaking changes guaranteed")
-
 
 
 if __name__ == "__main__":
