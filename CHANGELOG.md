@@ -31,6 +31,19 @@
 - Integrate concurrent Copilot XML hardening and install its required defusedxml
   dependency in the lightweight aggregate job; preserve proper XML element types.
 
+### Fixed - Delegated agent-maintainer authentication
+- Accept a server-verified, active, repository-scoped GitHub App as an agent
+  maintainer instead of requiring an installation token to impersonate a human.
+  Preserve genuine current-head review, actor separation, token expiry, exact
+  run/PR binding, GitHub rejection and the separate protected deployment gate.
+- Add credential-route preflight with real endpoint results, no credential
+  output and no repository mutations. Repair the existing App bootstrap's
+  undefined token resolver and unreachable administrative fallback.
+- Reject malformed success-response JSON as an explicit protocol error, not
+  successful capability evidence, and never echo its unparsed response body.
+- Document sole-owner agent-maintainer operation without requiring a second
+  human or treating labels, role metadata or token names as granted API scopes.
+
 ### Fixed - PR #5783 protected approval and ML integration repair
 - Bind workflow-run approval to trusted workflow source and verified human
   activation/session evidence; distinguish it from protected deployment review.

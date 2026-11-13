@@ -1,17 +1,11 @@
 """The authenticated approval transport never follows redirects or ambient proxies."""
 
-import importlib.util
 import urllib.error
 import urllib.request
-from pathlib import Path
 
 import pytest
 
-_PATH = Path(__file__).parents[2] / "scripts" / "ci" / "approve_pending_runs.py"
-_SPEC = importlib.util.spec_from_file_location("approval_transport", _PATH)
-assert _SPEC and _SPEC.loader
-approval = importlib.util.module_from_spec(_SPEC)
-_SPEC.loader.exec_module(approval)
+from scripts.ci import approve_pending_runs as approval
 
 
 def test_redirect_is_not_followed():

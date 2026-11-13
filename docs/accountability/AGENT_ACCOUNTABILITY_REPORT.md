@@ -46,6 +46,36 @@
   Add the newly required defusedxml dependency to the isolated aggregate job;
   focused validation initially proved it was missing, then passed all 49 cases
   after installation. No branch history or concurrent metadata is discarded.
+## Session: delegated agent-maintainer authentication follow-up
+
+### Execution and evidence
+
+- Direct execution; no new agents were launched or attributed to this repair.
+  The isolated `copilot/session-5766-agent-maintainer` worktree preserves the
+  separately published ML follow-up and concurrent Copilot changes.
+- Replaced the App installation token's impossible human `/user` requirement
+  with signed App identity, active installation, repository owner, minted scope
+  and expiry checks. Agent review remains a genuine exact-head GitHub review
+  by an independently attributed maintainer, not a label or synthetic approval.
+- Approval decisions retain the actual Bot identity, credential source and
+  expiry; the token is excluded. No environment marker, reviewer setting,
+  self-review protection, trusted checkout or platform rejection is bypassed.
+- Added operation-specific credential discovery and repaired the existing App
+  bootstrap resolver. Live probes still return 401 for the three CODEX keys,
+  a non-PEM App key, and 403 for administration/environment-secret reads using
+  the otherwise working integration credential. Owner authorization is
+  accepted; these are credential capability failures, not missing consent.
+- Final focused approval, workflow and preflight validation: 213 passed, with
+  two existing pytest configuration warnings. Black/Ruff, compilation, relevant
+  actionlint and mypy for all three changed source files passed.
+- Preserve concurrent bot commit `6a0a98bf6e` by fast-forward, without discarding
+  its manifest/baseline metadata. Reject malformed HTTP-200 JSON as a protocol
+  error rather than reporting it as successful access or echoing its raw body.
+- Fresh authorized environment PUT again returned 403. Hosted delegation run
+  `43386873908` passed preflight but skipped activation and approval jobs; its
+  green workflow is not evidence that protected approval succeeded.
+- Protected deployment success and exact-SHA hosted agent-maintainer approval
+  remain unverified. No second human or false human identity is prescribed.
 
 ## Session: PR #5783 protected approval and ML integration repair
 
