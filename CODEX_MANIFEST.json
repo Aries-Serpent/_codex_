@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-11-13T07:37:13Z",
+  "generated_at": "2026-11-13T23:18:47Z",
   "agents": [
     {
       "name": "cdx-archive-lifecycle",
@@ -887,7 +887,7 @@
     },
     {
       "name": "ml-tests",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1386,5 +1386,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "540592232496d4ad7ac2812c04f7e0f672aa8d3ef27d0d1ad5ffe7585c6432eb"
+  "integrity_sha256": "968f4f06d948012f0436f818f0e5805d35a703f7b560a79bb8082cc8375f99a5"
 }
