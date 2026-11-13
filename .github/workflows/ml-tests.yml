@@ -73,6 +73,11 @@ jobs:
           PYTHON_BIN="${VENV_PYTHON:-python3}"
           "$PYTHON_BIN" -m pip install --upgrade pip
           "$PYTHON_BIN" -m pip install -e '.[runtime]'
+          # Marker filtering still imports all selected modules during collection.
+          "$PYTHON_BIN" -m pip install \
+            "detect-secrets>=1.5.0" \
+            "hypothesis>=6.165.10,<7.0.0" \
+            "freezegun>=1.5.1"
           export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
           if [ -d "$PWD/agents/codex_client" ]; then
             export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
@@ -88,6 +93,9 @@ jobs:
               "accelerate",
               "peft",
               "pytest",
+              "detect_secrets",
+              "hypothesis",
+              "freezegun",
           ]:
               importlib.import_module(name)
           print("ML dependency preflight OK")
@@ -155,6 +163,11 @@ jobs:
           PYTHON_BIN="${VENV_PYTHON:-python3}"
           "$PYTHON_BIN" -m pip install --upgrade pip
           "$PYTHON_BIN" -m pip install -e '.[runtime]'
+          # The coverage step collects tests/ before applying its marker filter.
+          "$PYTHON_BIN" -m pip install \
+            "detect-secrets>=1.5.0" \
+            "hypothesis>=6.165.10,<7.0.0" \
+            "freezegun>=1.5.1"
           export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
           if [ -d "$PWD/agents/codex_client" ]; then
             export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
@@ -170,6 +183,9 @@ jobs:
               "accelerate",
               "peft",
               "pytest",
+              "detect_secrets",
+              "hypothesis",
+              "freezegun",
           ]:
               importlib.import_module(name)
           print("ML dependency preflight OK")

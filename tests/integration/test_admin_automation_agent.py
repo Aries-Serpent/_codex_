@@ -203,29 +203,23 @@ class TestWorkflowIntegration:
 class TestSecurityCompliance:
     """Integration tests for security compliance."""
 
-    def test_no_secrets_in_logs(self, tmp_path, caplog):
+    def test_no_secrets_in_logs(self, caplog):
         """Test that secrets are never logged in clear text."""
         from codex.security_utils import redact_sensitive_value
 
-        # Simulate a raw secret value - NEVER log this directly.
-        # The test verifies that redact_sensitive_value() fully masks it.
-        secret_value = "******"
-
-        # Use redaction utility - safe_value must not contain the raw token
+        secret_value = "synthetic-redaction-fixture"  # pragma: allowlist secret
         safe_value = redact_sensitive_value(secret_value)
 
-        # Verify redaction happened before any logging occurs
-        assert "[REDACTED]" in safe_value, "redact_sensitive_value must redact the token"
+        assert safe_value == "[REDACTED]", "redact_sensitive_value must redact the token"
         assert secret_value not in safe_value, "raw secret must not survive redaction"
 
-        # Log only the already-redacted placeholder.
-        # nosec: safe_value is a [REDACTED] string - raw token never reaches the logger.
         import logging
 
         logger = logging.getLogger(__name__)
-        logger.info("Secret value: %s", safe_value)  # codeql[py/clear-text-logging-sensitive-data]
+        with caplog.at_level(logging.INFO, logger=logger.name):
+            logger.info("Redaction result: %s", safe_value)
 
-        # Confirm the raw token is absent from captured log output
+        assert caplog.messages == ["Redaction result: [REDACTED]"]
         assert secret_value not in caplog.text, "Value must be initialized"
 
     def test_secret_name_redaction(self):

@@ -1,3 +1,71 @@
+## Session: PR #5766 bounded readiness repair - 2026-11-13
+
+### Agents Used
+
+- CI Testing Agent (`pr5766-ci`) - actual RAG/slow-ML failure diagnosis and
+  focused dependency/workflow repairs.
+- Packaging Validation Agent (`pr5766-dependabot`) - all open Dependabot
+  inventory and scoped pyasn1 lock consistency.
+- Rubber-duck agent (`pr5766-readiness-challenge`) - independent adversarial
+  challenge of readiness claims and protected integration decisions.
+- Parent maintainer - review regression, scoped validation, permission checks,
+  evidence integrity and protected publication.
+
+### Evidence and boundaries
+
+- Verified #5766 remains open at staging head `3cee1ffea0ae1af698384930629d886ba8797a56`
+  with `UNSTABLE` merge state. Failed contexts are CodeQL GA, RAG, slow ML
+  integration and token delegation; successful/skipped auxiliary checks do not
+  establish merge readiness.
+- Strengthened the logging compliance test to capture an actual INFO record
+  and assert exactly `Redaction result: [REDACTED]`. Three related security
+  tests pass. Three disposable counterfactual tests pass: the original test
+  passed with empty capture, the repair captures the exact message, and a
+  missing-log mutation is rejected. Scoped Ruff, Black, isort, mypy,
+  compilation and detect-secrets baseline checks pass.
+- Sole open Dependabot candidate #5774 updates pyasn1 0.6.3 to 0.6.5.
+  Its current delegation/preflight failures prohibit blind integration; align
+  the coupled ML and canonical uv locks rather than allowing export to revert
+  the security update.
+- Combined affected tests pass **5 cases** (three logging/security and two ML
+  workflow regressions); the original four ML collection-blocker modules now
+  collect **90 cases** without those import errors. The fuzz module retains an
+  existing missing-tensorboard skip. RAG dependency-backed execution remains
+  unverified: installation resolution cannot satisfy Torch on this shared host.
+- Workflow YAML, embedded Python and seven shell blocks parse; actionlint
+  **1.7.12** passes for the changed ML workflow. Scoped secret scanning passes.
+  Permissions, concurrency and 60-minute timeouts are unchanged.
+- Pyasn1 hash-checked isolated installation and DER round-trip pass; frozen
+  exports include 0.6.5. Bounded online `uv lock --check` fails on both the
+  unmodified base and proposed lock; broader inherited lock freshness is not
+  claimed or repaired by regenerating unrelated packages.
+- The installed-tool scorecard in an isolated dirty snapshot measures
+  **85/100**, with AAIS **91.72/100**. Full-source Ruff genuinely passes.
+  This meets the user's numerical floor but the scorer verdict remains
+  **NOT READY**. Its failed 15-point auto-fix dimension reports 5,708 issues
+  and 895 auto-fixable items; no unrelated bulk auto-fix was performed.
+- Requested rubber-duck/adversarial review rejects promotion merge, premature
+  Dependabot closure and scanner-thread resolution without hosted evidence.
+  Publish only a bounded draft for exact-head CI; internal agent validation is
+  not an independent protected approval.
+- The hosted GA gate correctly reports 641 critical-policy, 358 high-policy
+  and 1791 medium-policy results. These buckets include reliability/quality
+  findings and are not counts of confirmed exploitable vulnerabilities.
+  No thresholds, query suites or exclusions were weakened.
+- Repository metadata advertises administration, but actual environment-secret,
+  Actions-permission, classic-protection and alert-detail endpoints return 403.
+  The owner-approval environment has no reviewer protection rules. Preserve the
+  fail-closed owner guard; configuration flags cannot supply independent approval.
+
+**Owners and next actions:** Security/CI maintainers must remediate or formally
+disposition the unchanged GA gate backlog and prove exact-head RAG/ML jobs.
+Repository administrators must establish genuine protected review and scoped
+access. The PR maintainer must verify protected staging inclusion and fresh
+promotion checks. A numerical scorecard, local test or user authorization does
+not replace these controls. No promotion merge readiness is claimed.
+
+---
+
 ## Session: PR #5773 bounded final validation recovery — 2026-11-11
 
 ### Agents Used
