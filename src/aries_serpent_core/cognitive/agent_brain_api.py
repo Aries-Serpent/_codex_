@@ -542,7 +542,10 @@ class AgentBrainAPI:
                 outcome=feedback.outcome,
                 context=feedback.context,
             )
-        except (ValueError, TypeError, RuntimeError) as exc:
+        except (ValueError, TypeError, RuntimeError, OSError) as exc:
+            # OSError: the maintained pattern store lock fails closed when the
+            # store directory does not exist (it never creates it); learning
+            # submission is best-effort and must not abort report_completion.
             logger.debug("Learning submission skipped: %s", exc)
 
     def __repr__(self) -> str:  # pragma: no cover
