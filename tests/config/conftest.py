@@ -51,3 +51,24 @@ if _cached_config is not None:
 
 pytest.importorskip("yaml")
 pytest.importorskip("omegaconf")
+
+
+@pytest.fixture(autouse=True)
+def _ensure_src_config_package(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Re-assert that ``config`` resolves to ``src/config`` for every test.
+
+    The module-level guard above only runs once, when this conftest is loaded.
+    In long sharded runs other tests may later put ``tests/`` on ``sys.path``
+    (making ``tests/config/`` importable as a top-level ``config`` package) and
+    import it, or import ``config`` as a namespace package, which
+    then makes ``from config.openai_client import ...`` fail with
+    ``ModuleNotFoundError``.  Evict the foreign package for the duration of the
+    test (monkeypatch restores it afterwards) and make sure ``src/`` is first.
+    """
+    cached = sys.modules.get("config")
+    origin = getattr(cached, "__file__", None) or ""
+    if cached is not None and not origin.startswith(_SRC):
+        for key in [k for k in sys.modules if k == "config" or k.startswith("config.")]:
+            monkeypatch.delitem(sys.modules, key)
+    if not sys.path or sys.path[0] != _SRC:
+        monkeypatch.syspath_prepend(_SRC)
