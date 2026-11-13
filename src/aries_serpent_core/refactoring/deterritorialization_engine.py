@@ -117,8 +117,10 @@ class RigidityDetector:
             file_path: Path to Python file
 
         Returns:
-            List of detected rigidities
+            List of rigidities detected in *this* file. All detections are also
+            accumulated on ``self.detections``.
         """
+        start = len(self.detections)
         try:
             with open(file_path, encoding="utf-8") as f:
                 source = f.read()
@@ -131,7 +133,7 @@ class RigidityDetector:
         except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             LOGGER.error(f"Error analyzing {file_path}: {e}")
 
-        return self.detections
+        return self.detections[start:]
 
     def _analyze_ast(self, tree: ast.AST, file_path: str, source: str) -> None:
         """Analyze AST for rigid patterns."""

@@ -2,464 +2,265 @@
 Comprehensive test suite for refactoring deterritorialization engine.
 
 Tests cover:
-- Code rigidity detection
-- Pattern identification
-- Refactoring recommendations
-- Line of flight analysis
-- Edge case handling
+- Code rigidity detection (deep nesting, long methods, god classes)
+- Line of flight proposal
+- Statistics / report export
+- Edge case handling (empty and invalid sources)
+
+The engine operates on files/directories (``detect_rigidity``) and proposes
+lines of flight from detected rigidities (``propose_lines_of_flight``).
 """
+
+from pathlib import Path
 
 import pytest
 from codex.refactoring.deterritorialization_engine import (
     DeterritorializationEngine,
+    LineOfFlight,
+    RigidityDetection,
+    RigidityDetector,
     RigidityType,  # pragma: allowlist secret
 )
 
-  # pragma: allowlist secret
-
-class TestRigidityType:
-    """Test RigidityType enum."""
-
-    def test_deep_nesting_rigidity_type(self):
-        """Test DEEP_NESTING rigidity type."""
-        assert RigidityType.DEEP_NESTING == "deep_nesting", "DEEP_NESTING is not valid"
-
-    def test_long_method_rigidity_type(self):
-        """Test LONG_METHOD rigidity type."""
-        assert RigidityType.LONG_METHOD == "long_method", "LONG_METHOD is not valid"
-
-    def test_god_class_rigidity_type(self):
-        """Test GOD_CLASS rigidity type."""
-        assert RigidityType.GOD_CLASS == "god_class", "GOD_CLASS is not valid"
-
-    def test_tight_coupling_rigidity_type(self):
-        """Test TIGHT_COUPLING rigidity type."""
-        assert RigidityType.TIGHT_COUPLING == "tight_coupling", "TIGHT_COUPLING is not valid"
-
-    def test_hardcoded_values_rigidity_type(self):
-        """Test HARDCODED_VALUES rigidity type."""
-        assert RigidityType.HARDCODED_VALUES == "hardcoded_values", "Value must be initialized"
-
-    def test_repeated_patterns_rigidity_type(self):
-        """Test REPEATED_PATTERNS rigidity type."""
-        assert RigidityType.REPEATED_PATTERNS == "repeated_patterns", "REPEATED_PATTERNS is not valid"
-
-    def test_overly_complex_rigidity_type(self):
-        """Test OVERLY_COMPLEX rigidity type."""
-        assert RigidityType.OVERLY_COMPLEX == "overly_complex", "OVERLY_COMPLEX is not valid"
-
-
-class TestDeterritorializationEngine:
-    """Test DeterritorializationEngine."""
-
-    def test_engine_initialization(self):
-        """Test engine initialization."""
-        engine = DeterritorializationEngine()
-        assert engine is not None, "engine must be initialized"
-
-    def test_detect_deep_nesting(self):
-        """Test detection of deep nesting."""
-        code = """
+DEEP_NESTING_CODE = """
 def outer():
     if True:
         if True:
             if True:
                 if True:
                     if True:
-                        pass
+                        if True:
+                            pass
 """
-        engine = DeterritorializationEngine()
-        rigidities = engine.analyze(code)
-        # Should detect deep nesting
-        assert any(r.type == RigidityType.DEEP_NESTING for r in rigidities) or len(rigidities) >= 0
 
-    def test_detect_long_method(self):
-        """Test detection of long methods."""
-        code = """
-def long_method():
-    x = 1
-    y = 2
-    z = 3
-    a = 4
-    b = 5
-    c = 6
-    d = 7
-    e = 8
-    f = 9
-    g = 10
-    h = 11
-    i = 12
-    j = 13
-    k = 14
-    l = 15
-    m = 16
-    n = 17
-    o = 18
-    p = 19
-    q = 20
-    r = 21
-    s = 22
-    t = 23
-    u = 24
-    v = 25
-    w = 26
-    x2 = 27
-    y2 = 28
-    z2 = 29
-    a2 = 30
-    b2 = 31
-    c2 = 32
-    d2 = 33
-    e2 = 34
-    f2 = 35
-    g2 = 36
-    h2 = 37
-    i2 = 38
-    j2 = 39
-    k2 = 40
-    l2 = 41
-    m2 = 42
-    n2 = 43
-    o2 = 44
-    p2 = 45
-    q2 = 46
-    r2 = 47
-    s2 = 48
-    t2 = 49
-    u2 = 50
-    v2 = 51
-    return x + y
-"""
-        engine = DeterritorializationEngine()
-        rigidities = engine.analyze(code)
-        # Should detect long method
-        assert any(r.type == RigidityType.LONG_METHOD for r in rigidities) or len(rigidities) >= 0
-
-    def test_detect_hardcoded_values(self):
-        """Test detection of hardcoded values."""
-        code = """
-def process_data():
-    timeout = 30
-    max_retries = 5
-    magic_number = 12345
-    api_key = "sk-12345678"
-    return timeout
-"""
-        engine = DeterritorializationEngine()
-        rigidities = engine.analyze(code)
-        # Should detect hardcoded values
-        assert any(r.type == RigidityType.HARDCODED_VALUES for r in rigidities) or len(rigidities) >= 0
-
-    def test_detect_repeated_patterns(self):
-        """Test detection of repeated patterns."""
-        code = """
-def process():
-    result = None
-    try:
-        result = operation1()
-    except Exception as _err:
-        result = None
-    
-    result2 = None
-    try:
-        result2 = operation2()
-    except Exception as _err:
-        result2 = None
-    
-    return result, result2
-"""
-        engine = DeterritorializationEngine()
-        rigidities = engine.analyze(code)
-        # Should detect repeated patterns
-        assert any(r.type == RigidityType.REPEATED_PATTERNS for r in rigidities) or len(rigidities) >= 0
-
-    def test_generate_refactoring_suggestions(self):
-        """Test generating refactoring suggestions."""
-        code = """
-def nested_function():
-    if True:
-        if True:
-            if True:
-                x = 1
-"""
-        engine = DeterritorializationEngine()
-        suggestions = engine.generate_suggestions(code)
-        # Should generate suggestions
-        assert isinstance(suggestions, list)
-
-    def test_calculate_rigidity_score(self):
-        """Test rigidity score calculation."""
-        code = """
+SIMPLE_CODE = """
 def simple():
     return 1
 """
-        engine = DeterritorializationEngine()
-        score = engine.calculate_rigidity_score(code)
-        assert isinstance(score, (int, float))
-        assert score >= 0, "score must be greater than zero"
 
-    def test_empty_code_handling(self):
-        """Test handling of empty code."""
-        engine = DeterritorializationEngine()
-        rigidities = engine.analyze("")
-        assert isinstance(rigidities, list)
 
-    def test_invalid_code_handling(self):
-        """Test handling of invalid code."""
-        code = "this is not valid python {"
+def _long_method_code(num_statements: int = 60) -> str:
+    body = "\n".join(f"    v{i} = {i}" for i in range(num_statements))
+    return f"def long_method():\n{body}\n    return v0\n"
+
+
+def _god_class_code(num_methods: int = 30) -> str:
+    methods = "\n".join(f"    def method{i}(self):\n        pass" for i in range(num_methods))
+    return f"class GodClass:\n{methods}\n"
+
+
+def _write(tmp_path: Path, name: str, code: str) -> Path:
+    path = tmp_path / name
+    path.write_text(code, encoding="utf-8")
+    return path
+
+
+class TestRigidityType:
+    """Test RigidityType enum values."""
+
+    @pytest.mark.parametrize(
+        ("member", "value"),
+        [
+            (RigidityType.DEEP_NESTING, "deep_nesting"),
+            (RigidityType.LONG_METHOD, "long_method"),
+            (RigidityType.GOD_CLASS, "god_class"),
+            (RigidityType.TIGHT_COUPLING, "tight_coupling"),
+            (RigidityType.HARDCODED_VALUES, "hardcoded_values"),
+            (RigidityType.REPEATED_PATTERNS, "repeated_patterns"),
+            (RigidityType.OVERLY_COMPLEX, "overly_complex"),
+        ],
+    )
+    def test_rigidity_type_values(self, member, value):
+        assert member.value == value
+        assert RigidityType(value) is member
+
+
+class TestDeterritorializationEngine:
+    """Test DeterritorializationEngine detection."""
+
+    def test_engine_initialization(self):
         engine = DeterritorializationEngine()
-        # Should handle gracefully
-        try:
-            rigidities = engine.analyze(code)
-            assert True, "True is not valid"
-        except SyntaxError:
-            # Expected for invalid code
-            assert True, "True is not valid"
+        assert engine.rigidities == []
+        assert engine.lines_of_flight == []
+        assert isinstance(engine.detector, RigidityDetector)
+
+    def test_detect_deep_nesting(self, tmp_path):
+        path = _write(tmp_path, "nested.py", DEEP_NESTING_CODE)
+        rigidities = DeterritorializationEngine().detect_rigidity(path)
+        nesting = [r for r in rigidities if r.rigidity_type == RigidityType.DEEP_NESTING]
+        assert len(nesting) == 1
+        assert nesting[0].metadata["method_name"] == "outer"
+        assert nesting[0].metadata["max_depth"] == 6
+
+    def test_detect_long_method(self, tmp_path):
+        path = _write(tmp_path, "long.py", _long_method_code())
+        rigidities = DeterritorializationEngine().detect_rigidity(path)
+        long_methods = [r for r in rigidities if r.rigidity_type == RigidityType.LONG_METHOD]
+        assert len(long_methods) == 1
+        assert long_methods[0].metadata["method_name"] == "long_method"
+        assert long_methods[0].metadata["num_lines"] > 50
+
+    def test_detect_god_class(self, tmp_path):
+        path = _write(tmp_path, "god.py", _god_class_code())
+        rigidities = DeterritorializationEngine().detect_rigidity(path)
+        god = [r for r in rigidities if r.rigidity_type == RigidityType.GOD_CLASS]
+        assert len(god) == 1
+        assert god[0].metadata == {"num_methods": 30, "class_name": "GodClass"}
+
+    def test_small_class_is_not_god_class(self, tmp_path):
+        path = _write(tmp_path, "small.py", _god_class_code(5))
+        rigidities = DeterritorializationEngine().detect_rigidity(path)
+        assert not any(r.rigidity_type == RigidityType.GOD_CLASS for r in rigidities)
+
+    def test_simple_code_has_no_rigidity(self, tmp_path):
+        path = _write(tmp_path, "simple.py", SIMPLE_CODE)
+        assert DeterritorializationEngine().detect_rigidity(path) == []
+
+    def test_custom_thresholds(self, tmp_path):
+        path = _write(tmp_path, "nested.py", DEEP_NESTING_CODE)
+        detector = RigidityDetector(max_nesting=10)
+        assert detector.analyze_file(path) == []
+
+    def test_empty_code_handling(self, tmp_path):
+        path = _write(tmp_path, "empty.py", "")
+        assert DeterritorializationEngine().detect_rigidity(path) == []
+
+    def test_invalid_code_handling(self, tmp_path):
+        path = _write(tmp_path, "broken.py", "this is not valid python {")
+        # Syntax errors are logged, not raised
+        assert DeterritorializationEngine().detect_rigidity(path) == []
+
+    def test_non_python_file_ignored(self, tmp_path):
+        path = _write(tmp_path, "notes.txt", DEEP_NESTING_CODE)
+        assert DeterritorializationEngine().detect_rigidity(path) == []
+
+    def test_directory_scan_does_not_duplicate(self, tmp_path):
+        _write(tmp_path, "a.py", DEEP_NESTING_CODE)
+        _write(tmp_path, "b.py", _god_class_code())
+        _write(tmp_path, "c.py", SIMPLE_CODE)
+        rigidities = DeterritorializationEngine().detect_rigidity(tmp_path)
+        assert len(rigidities) == 2
+        assert {Path(r.file_path).name for r in rigidities} == {"a.py", "b.py"}
 
 
 class TestDetectedRigidities:
-    """Test rigidity detection results."""
+    """Test rigidity detection result structure."""
 
-    def test_rigidity_result_has_type(self):
-        """Test rigidity result has type."""
-        engine = DeterritorializationEngine()
-        code = "def f(): pass"
-        rigidities = engine.analyze(code)
-        for r in rigidities:
-            assert hasattr(r, 'type')
+    @pytest.fixture
+    def detection(self, tmp_path) -> RigidityDetection:
+        path = _write(tmp_path, "nested.py", DEEP_NESTING_CODE)
+        (detection,) = DeterritorializationEngine().detect_rigidity(path)
+        return detection
 
-    def test_rigidity_result_has_location(self):
-        """Test rigidity result has location info."""
-        engine = DeterritorializationEngine()
-        code = "def f(): pass"
-        rigidities = engine.analyze(code)
-        for r in rigidities:
-            # Should have location info
-            assert True, "True is not valid"
+    def test_rigidity_result_has_type(self, detection):
+        assert detection.rigidity_type is RigidityType.DEEP_NESTING
 
-    def test_rigidity_result_has_severity(self):
-        """Test rigidity result has severity."""
-        engine = DeterritorializationEngine()
-        code = "def f(): pass"
-        rigidities = engine.analyze(code)
-        for r in rigidities:
-            # Should have severity level
-            assert True, "True is not valid"
+    def test_rigidity_result_has_location(self, detection):
+        assert detection.file_path.endswith("nested.py")
+        assert detection.line_number == 2
+        assert "def outer" in detection.context
 
+    def test_rigidity_result_has_severity(self, detection):
+        # depth 6 with threshold 4 -> (6 - 4) / 4
+        assert detection.severity == pytest.approx(0.5)
 
-class TestSuggestions:
-    """Test refactoring suggestions."""
-
-    def test_suggestion_format(self):
-        """Test suggestion format."""
-        engine = DeterritorializationEngine()
-        code = """
-def nested():
-    if True:
-        if True:
-            x = 1
-"""
-        suggestions = engine.generate_suggestions(code)
-        # Suggestions should be structured
-        assert isinstance(suggestions, list)
-
-    def test_suggestion_contains_action(self):
-        """Test suggestion contains action."""
-        engine = DeterritorializationEngine()
-        code = """
-def nested():
-    if True:
-        if True:
-            x = 1
-"""
-        suggestions = engine.generate_suggestions(code)
-        for suggestion in suggestions:
-            # Each suggestion should describe an action
-            assert True, "True is not valid"
+    def test_str_representation(self, detection):
+        text = str(detection)
+        assert text.startswith("deep_nesting at ")
+        assert "severity: 0.50" in text
 
 
 class TestLineOfFlight:
-    """Test line of flight analysis."""
+    """Test line of flight proposal."""
 
-    def test_identify_line_of_flight(self):
-        """Test identifying lines of flight."""
+    def test_identify_line_of_flight(self, tmp_path):
         engine = DeterritorializationEngine()
-        code = """
-def rigid():
-    if True:
-        if True:
-            if True:
-                x = 1
-"""
-        # Should identify escape routes from rigid structure
-        flights = engine.identify_lines_of_flight(code)
-        assert isinstance(flights, list)
+        engine.detect_rigidity(_write(tmp_path, "nested.py", DEEP_NESTING_CODE))
+        flights = engine.propose_lines_of_flight(min_severity=0.0)
+        assert len(flights) == 1
+        flight = flights[0]
+        assert isinstance(flight, LineOfFlight)
+        assert flight.rigidity.rigidity_type is RigidityType.DEEP_NESTING
+        assert "Flatten nesting" in flight.proposed_action
+        assert 0.0 <= flight.risk_level <= 1.0
+        assert 0.0 <= flight.innovation_potential <= 1.0
 
-    def test_line_of_flight_suggestions(self):
-        """Test line of flight suggestions."""
+    def test_min_severity_filters(self, tmp_path):
         engine = DeterritorializationEngine()
-        code = "def function(): pass"
-        flights = engine.identify_lines_of_flight(code)
-        # Should provide creative escape routes
-        assert isinstance(flights, list)
+        engine.detect_rigidity(_write(tmp_path, "nested.py", DEEP_NESTING_CODE))
+        assert engine.propose_lines_of_flight(min_severity=0.9) == []
 
-
-class TestReterritorializationPatterns:
-    """Test reterritorialization pattern generation."""
-
-    def test_generate_reterritorialization_patterns(self):
-        """Test generating reterritorialization patterns."""
+    def test_no_rigidity_no_flights(self, tmp_path):
         engine = DeterritorializationEngine()
-        code = """
-def rigid():
-    if True:
-        if True:
-            x = 1
-"""
-        patterns = engine.generate_reterritorialization_patterns(code)
-        # Should generate new structured patterns
-        assert isinstance(patterns, list)
+        engine.detect_rigidity(_write(tmp_path, "simple.py", SIMPLE_CODE))
+        assert engine.propose_lines_of_flight(min_severity=0.0) == []
 
-    def test_reterritorialization_preserves_intent(self):
-        """Test reterritorialization preserves original intent."""
-        engine = DeterritorializationEngine()
-        original_code = "def get_user(): return None"
-        refactored = engine.apply_deterritorialization(original_code)
-        # Refactored code should preserve functionality
-        assert True, "True is not valid"
+    @pytest.mark.parametrize("rigidity_type", list(RigidityType))
+    def test_every_rigidity_type_has_strategy(self, rigidity_type):
+        """Deterritorialization is purposeful: each rigidity maps to an action."""
+        rigidity = RigidityDetection(
+            rigidity_type=rigidity_type,
+            file_path="x.py",
+            line_number=1,
+            severity=1.0,
+            description="synthetic",
+            context="",
+        )
+        flight = DeterritorializationEngine()._create_line_of_flight(rigidity)
+        assert flight is not None
+        assert flight.proposed_action
+        assert flight.expected_outcome
+        assert str(flight).startswith(f"Line of flight from {rigidity_type.value}")
 
 
 class TestPhilosophicalFramework:
-    """Test deterritorialization philosophical framework."""
+    """Test deterritorialization force calculation."""
 
-    def test_not_random_destruction(self):
-        """Test deterritorialization is not random destruction."""
+    def test_force_positive_when_innovation_dominates(self):
         engine = DeterritorializationEngine()
-        code = "def f(): pass"
-        suggestions = engine.generate_suggestions(code)
-        # Suggestions should be purposeful
-        assert isinstance(suggestions, list)
+        assert engine.calculate_deterritorialization_force(0.2, 0.7) == pytest.approx(0.5)
 
-    def test_productive_transformation(self):
-        """Test productive transformation."""
+    def test_force_negative_when_rigidity_dominates(self):
         engine = DeterritorializationEngine()
-        code = """
-def process():
-    if True:
-        if True:
-            return True
-"""
-        suggestions = engine.generate_suggestions(code)
-        # Suggestions should enable productivity
-        assert True, "True is not valid"
+        assert engine.calculate_deterritorialization_force(0.8, 0.3) == pytest.approx(-0.5)
 
-    def test_creativity_enablement(self):
-        """Test creativity enablement."""
+    def test_force_equilibrium(self):
         engine = DeterritorializationEngine()
-        code = "def standard_function(): pass"
-        alternatives = engine.generate_alternative_designs(code)
-        # Should generate creative alternatives
-        assert isinstance(alternatives, list)
-
-
-class TestComplexCodeAnalysis:
-    """Test analysis of complex code patterns."""
-
-    def test_class_with_multiple_responsibilities(self):
-        """Test detecting god class."""
-        code = """
-class GodClass:
-    def method1(self): pass
-    def method2(self): pass
-    def method3(self): pass
-    def method4(self): pass
-    def method5(self): pass
-    def method6(self): pass
-    def method7(self): pass
-    def method8(self): pass
-    def method9(self): pass
-    def method10(self): pass
-    def method11(self): pass
-    def method12(self): pass
-    def method13(self): pass
-    def method14(self): pass
-    def method15(self): pass
-"""
-        engine = DeterritorializationEngine()
-        rigidities = engine.analyze(code)
-        # Should detect god class
-        assert any(r.type == RigidityType.GOD_CLASS for r in rigidities) or len(rigidities) >= 0
-
-    def test_tightly_coupled_code(self):
-        """Test detecting tight coupling."""
-        code = """
-class A:
-    def __init__(self, b):
-        self.b = b
-    def method(self):
-        return self.b.method1() + self.b.method2() + self.b.method3()
-
-class B:
-    def method1(self): return 1
-    def method2(self): return 2
-    def method3(self): return 3
-"""
-        engine = DeterritorializationEngine()
-        rigidities = engine.analyze(code)
-        # Should detect tight coupling
-        assert any(r.type == RigidityType.TIGHT_COUPLING for r in rigidities) or len(rigidities) >= 0
+        assert engine.calculate_deterritorialization_force(0.4, 0.4) == pytest.approx(0.0)
 
 
 class TestIntegration:
-    """Test integration of deterritorialization engine."""
+    """Test full analysis workflow."""
 
-    def test_full_analysis_workflow(self):
-        """Test full analysis workflow."""
-        code = """
-def process_data(data):
-    if True:
-        if True:
-            if True:
-                result = None
-                try:
-                    result = expensive_operation()
-                except (AttributeError, OSError, RuntimeError):
-                    pass
-                return result
-"""
+    def test_full_analysis_workflow(self, tmp_path):
+        _write(tmp_path, "nested.py", DEEP_NESTING_CODE)
+        _write(tmp_path, "god.py", _god_class_code())
         engine = DeterritorializationEngine()
 
-        # 1. Analyze
-        rigidities = engine.analyze(code)
-        assert isinstance(rigidities, list)
+        rigidities = engine.detect_rigidity(tmp_path)
+        assert len(rigidities) == 2
 
-        # 2. Generate suggestions
-        suggestions = engine.generate_suggestions(code)
-        assert isinstance(suggestions, list)
+        flights = engine.propose_lines_of_flight(min_severity=0.0)
+        assert len(flights) == 2
 
-        # 3. Identify lines of flight
-        flights = engine.identify_lines_of_flight(code)
-        assert isinstance(flights, list)
+        stats = engine.get_stats()
+        assert stats["total_rigidities"] == 2
+        assert stats["rigidity_by_type"] == {"deep_nesting": 1, "god_class": 1}
+        assert stats["lines_of_flight"] == 2
+        assert 0.0 < stats["average_severity"] <= 1.0
 
-    def test_iterative_deterritorialization(self):
-        """Test iterative deterritorialization."""
-        code = """
-def original():
-    if True:
-        if True:
-            x = 1
-"""
-        engine = DeterritorializationEngine()
+        report = engine.export_report()
+        assert {r["type"] for r in report["rigidities"]} == {"deep_nesting", "god_class"}
+        assert len(report["lines_of_flight"]) == 2
+        assert report["stats"] == stats
+        assert "timestamp" in report
 
-        # First iteration
-        suggestions1 = engine.generate_suggestions(code)
-        assert isinstance(suggestions1, list)
-
-        # Apply first suggestion (if any)
-        # Then analyze again
-        rigidities = engine.analyze(code)
-        assert isinstance(rigidities, list)
-
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+    def test_empty_stats(self):
+        stats = DeterritorializationEngine().get_stats()
+        assert stats == {
+            "total_rigidities": 0,
+            "rigidity_by_type": {},
+            "average_severity": 0.0,
+            "lines_of_flight": 0,
+            "high_priority_rigidities": 0,
+        }
