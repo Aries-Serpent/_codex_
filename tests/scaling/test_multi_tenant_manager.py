@@ -117,7 +117,7 @@ class TestMultiTenantIsolation:
         # Should show zero violations
         report = manager.verify_isolation()
         assert report["isolation_status"] == "VERIFIED", "rep is not valid"
-        assert len(report["cross_tenant_attempts"]) == 0, "Collection must not be empty"
+        assert report["cross_tenant_attempts"] == 0, "No cross-tenant attempts expected"
 
     def test_rbac_enforcement(self):
         """Test RBAC policies prevent unauthorized access."""
@@ -236,7 +236,7 @@ class TestLoadBalancing:
 
     def test_consistent_hashing(self):
         """Test consistent hashing algorithm."""
-        config = LoadBalancerConfig(algorithm="consistent_hash")
+        config = LoadBalancerConfig(name="test-lb", algorithm="consistent_hash")
         lb = LoadBalancer(config)
 
         backend1 = BackendNode("b1", "host1", 8080)
@@ -251,7 +251,7 @@ class TestLoadBalancing:
 
     def test_load_distribution_uniformity(self):
         """Test load distribution is uniform (<5% variance)."""
-        config = LoadBalancerConfig(algorithm="round_robin")
+        config = LoadBalancerConfig(name="test-lb", algorithm="round_robin")
         lb = LoadBalancer(config)
 
         # Add 3 backends
@@ -271,7 +271,7 @@ class TestLoadBalancing:
 
     def test_backend_health_aware_routing(self):
         """Test routing skips unhealthy backends."""
-        config = LoadBalancerConfig(algorithm="round_robin")
+        config = LoadBalancerConfig(name="test-lb", algorithm="round_robin")
         lb = LoadBalancer(config)
 
         backend1 = BackendNode("b1", "host1", 8080)
@@ -291,7 +291,7 @@ class TestLoadBalancing:
 
     def test_session_affinity(self):
         """Test session affinity (stickiness)."""
-        config = LoadBalancerConfig(algorithm="consistent_hash", session_stickiness=True)
+        config = LoadBalancerConfig(name="test-lb", algorithm="consistent_hash", session_stickiness=True)
         lb = LoadBalancer(config)
 
         backend1 = BackendNode("b1", "host1", 8080)
@@ -315,7 +315,7 @@ class TestLoadBalancing:
 
     def test_load_distribution_verification(self):
         """Test load distribution verification report."""
-        config = LoadBalancerConfig(algorithm="round_robin")
+        config = LoadBalancerConfig(name="test-lb", algorithm="round_robin")
         lb = LoadBalancer(config)
 
         for i in range(3):
