@@ -36,8 +36,7 @@ def test_adapter_initialization():
 
     assert not adapter.initialized, "Condition must be true"
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(adapter.initialize())
+    asyncio.run(adapter.initialize())
 
     assert adapter.initialized, "Condition must be true"
 
@@ -46,9 +45,12 @@ def test_adapter_shutdown():
     """Test adapter shutdown contract."""
     adapter = MockAdapter("test")
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(adapter.initialize())
-    loop.run_until_complete(adapter.shutdown())
+    async def _lifecycle() -> None:
+        await adapter.initialize()
+        assert adapter.initialized, "initialize() must set initialized"
+        await adapter.shutdown()
+
+    asyncio.run(_lifecycle())
 
     assert not adapter.initialized, "Condition must be true"
 
@@ -57,9 +59,11 @@ def test_adapter_execute():
     """Test adapter execute contract."""
     adapter = MockAdapter("test")
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(adapter.initialize())
-    result = loop.run_until_complete(adapter.execute("test_cmd"))
+    async def _run() -> Any:
+        await adapter.initialize()
+        return await adapter.execute("test_cmd")
+
+    result = asyncio.run(_run())
 
     assert result["status"] == "success", "Result must not be empty"
     assert result["command"] == "test_cmd", "Result must not be empty"
