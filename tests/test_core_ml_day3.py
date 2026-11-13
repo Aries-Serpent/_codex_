@@ -4,7 +4,6 @@ Configuration management edge cases, registry operations, pipeline execution,
 error handling, type coercion, and validation patterns.
 """
 
-
 import pytest
 
 
@@ -131,117 +130,78 @@ class TestConfigurationEdgeCases:
 
 
 class TestRegistryOperations:
-    """Test registry operations and lookups."""
+    """Test registry operations and lookups (codex_ml.registry.Registry)."""
 
     def test_registry_deduplication(self):
-        """Registry should handle duplicate registrations."""
-        try:
-            from codex_ml.registry import Registry
-        except (ImportError, AttributeError):
-            pytest.skip("Registry not available")
+        """Duplicate registrations are rejected unless override=True."""
+        from codex_ml.registry import Registry, RegistryConflictError
 
-        try:
-            registry = Registry()
-            registry.register("test", lambda: 1)
+        registry = Registry("test")
+        registry.register("test", lambda: 1)
+        with pytest.raises(RegistryConflictError):
             registry.register("test", lambda: 2)
-            # Should either overwrite or reject
-            plugin = registry.get("test")
-            assert plugin is not None, "plugin must exist"
-        except (NotImplementedError, ValueError):
-            pytest.skip("Registry deduplication incomplete")
+        assert registry.get("test")() == 1
+
+        registry.register("test", lambda: 2, override=True)
+        assert registry.get("test")() == 2
 
     def test_registry_case_sensitivity(self):
-        """Registry should be case sensitive or consistent."""
-        try:
-            from codex_ml.registry import Registry
-        except (ImportError, AttributeError):
-            pytest.skip("Registry not available")
+        """Registry keys are normalised case-insensitively."""
+        from codex_ml.registry import Registry, RegistryConflictError
 
-        try:
-            registry = Registry()
-            registry.register("Test", lambda: 1)
+        registry = Registry("test")
 
-            # Lookup should be consistent
-            result1 = registry.get("Test")
-            result2 = registry.get("test")
+        def plugin():
+            return 1
 
-            # Either both should work or both should fail
-            if result1 is not None:
-                assert result1 is not None, "should find Test"
-        except (KeyError, NotImplementedError):
-            pytest.skip("Registry case handling incomplete")
+        registry.register("Test", plugin)
+        assert registry.get("Test") is plugin
+        assert registry.get("test") is plugin
+        assert registry.get("TEST") is plugin
+        assert registry.list() == ["test"]
+        with pytest.raises(RegistryConflictError):
+            registry.register("tEsT", lambda: 2)
 
     def test_registry_special_characters_in_keys(self):
         """Registry should handle special characters in keys."""
-        try:
-            from codex_ml.registry import Registry
-        except (ImportError, AttributeError):
-            pytest.skip("Registry not available")
+        from codex_ml.registry import Registry
 
-        try:
-            registry = Registry()
-            registry.register("test-model-v1", lambda: 1)
-            plugin = registry.get("test-model-v1")
-            assert plugin is not None, "plugin must exist"
-        except (KeyError, NotImplementedError):
-            pytest.skip("Special char handling incomplete")
+        registry = Registry("test")
+        registry.register("test-model-v1.2_beta", lambda: 1)
+        assert registry.get("test-model-v1.2_beta")() == 1
 
     def test_registry_list_all_plugins(self):
-        """Registry should support listing all plugins."""
-        try:
-            from codex_ml.registry import Registry
-        except (ImportError, AttributeError):
-            pytest.skip("Registry not available")
+        """Registry lists all registered plugin names, sorted."""
+        from codex_ml.registry import Registry
 
-        try:
-            registry = Registry()
-            registry.register("test1", lambda: 1)
-            registry.register("test2", lambda: 2)
+        registry = Registry("test")
+        registry.register("test2", lambda: 2)
+        registry.register("test1", lambda: 1)
+        assert registry.list() == ["test1", "test2"]
 
-            all_plugins = registry.list_all()
-            if all_plugins:
-                assert len(all_plugins) >= 2, "Should have at least 2"
-        except (NotImplementedError, AttributeError):
-            pytest.skip("list_all not available")
+    def test_registry_decorator_registration(self):
+        """register() without an object acts as a decorator returning the target."""
+        from codex_ml.registry import Registry
 
-    def test_registry_plugin_metadata(self):
-        """Registry should support plugin metadata."""
-        try:
-            from codex_ml.registry import Registry
-        except (ImportError, AttributeError):
-            pytest.skip("Registry not available")
+        registry = Registry("test")
 
-        try:
-            registry = Registry()
+        @registry.register("decorated")
+        def plugin_func():
+            """Test plugin."""
+            return 42
 
-            def plugin_func():
-                """Test plugin."""
-                return 42
+        assert registry.get("decorated") is plugin_func
+        assert plugin_func() == 42
 
-            registry.register("test", plugin_func)
-            # Metadata should be accessible
-            metadata = registry.get_metadata("test")
-            assert metadata is not None or metadata is None, "handled metadata"
-        except (NotImplementedError, KeyError):
-            pytest.skip("Metadata not available")
+    def test_registry_temporarily_registered(self):
+        """temporarily_registered restores the registry afterwards."""
+        from codex_ml.registry import Registry
 
-    def test_registry_plugin_versioning(self):
-        """Registry should support version tracking."""
-        try:
-            from codex_ml.registry import Registry
-        except (ImportError, AttributeError):
-            pytest.skip("Registry not available")
-
-        try:
-            registry = Registry()
-            registry.register("model", lambda: 1, version="1.0.0")
-            registry.register("model", lambda: 2, version="2.0.0")
-
-            # Should retrieve specific version or latest
-            plugin = registry.get("model")
-            assert plugin is not None, "plugin must exist"
-        except (NotImplementedError, TypeError):
-            pytest.skip("Versioning not available")
+        registry = Registry("test")
+        registry.register("base", lambda: 0)
+        with registry.temporarily_registered({"temp": lambda: 1}):
+            assert registry.get("temp")() == 1
+        assert registry.list() == ["base"]
 
 
 class TestPipelineExecution:
@@ -269,6 +229,7 @@ class TestPipelineExecution:
             pytest.skip("Pipeline not available")
 
         try:
+
             def stage_fn(x):
                 return x + 1
 
@@ -306,6 +267,7 @@ class TestPipelineExecution:
             pytest.skip("Pipeline not available")
 
         try:
+
             def failing_stage(x):
                 raise ValueError("Stage failed")
 
@@ -371,6 +333,7 @@ class TestErrorHandlingRecovery:
             pytest.skip("Error handling not available")
 
         try:
+
             def primary():
                 raise ValueError("Primary failed")
 

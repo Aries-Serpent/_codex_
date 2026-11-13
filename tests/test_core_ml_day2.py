@@ -38,7 +38,7 @@ class TestConfigurationManagement:
         except (ImportError, AttributeError):
             pytest.skip("Config utilities not available")
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write("""
 model_name: test-model
 learning_rate: 0.001
@@ -109,83 +109,68 @@ batch_size: 32
 
 
 class TestRegistrySystem:
-    """Test plugin registration and lookup."""
+    """Test plugin registration and lookup (codex_ml.registry.Registry)."""
 
     def test_registry_registration(self):
         """Registry should support plugin registration."""
-        try:
-            from codex_ml.registry import Registry
-        except (ImportError, AttributeError):
-            pytest.skip("Registry not available")
+        from codex_ml.registry import Registry
 
-        try:
-            registry = Registry()
+        registry = Registry("test")
 
-            def dummy_plugin():
-                return "test"
+        def dummy_plugin():
+            return "test"
 
-            registry.register("test_plugin", dummy_plugin)
-            assert "test_plugin" in registry, "Condition must be true"
-        except (NotImplementedError, TypeError):
-            pytest.skip("Registry registration not implemented")
+        registry.register("test_plugin", dummy_plugin)
+        assert "test_plugin" in registry.list()
 
     def test_registry_lookup(self):
         """Registry should support plugin lookup."""
-        try:
-            from codex_ml.registry import Registry
-        except (ImportError, AttributeError):
-            pytest.skip("Registry not available")
+        from codex_ml.registry import Registry
 
-        try:
-            registry = Registry()
-            registry.register("test", lambda: 42)
+        registry = Registry("test")
+        registry.register("test", lambda: 42)
 
-            plugin = registry.get("test")
-            assert plugin is not None, "plugin must be initialized"
-            assert callable(plugin), "Condition must be true"
-        except (NotImplementedError, KeyError):
-            pytest.skip("Registry lookup not implemented")
+        plugin = registry.get("test")
+        assert callable(plugin)
+        assert plugin() == 42
+
+    def test_registry_lookup_unknown_raises(self):
+        """Unknown names raise RegistryNotFoundError listing available names."""
+        from codex_ml.registry import Registry, RegistryNotFoundError
+
+        registry = Registry("test")
+        registry.register("known", lambda: 1)
+        with pytest.raises(RegistryNotFoundError, match="known"):
+            registry.get("missing")
 
     def test_registry_caching(self):
-        """Registry should cache lookup results."""
-        try:
-            from codex_ml.registry import Registry
-        except (ImportError, AttributeError):
-            pytest.skip("Registry not available")
+        """Repeated lookups return the same registered object without calling it."""
+        from codex_ml.registry import Registry
 
-        try:
-            registry = Registry()
-            call_count = 0
+        registry = Registry("test")
+        call_count = 0
 
-            def counted_plugin():
-                nonlocal call_count
-                call_count += 1
-                return call_count
+        def counted_plugin():
+            nonlocal call_count
+            call_count += 1
+            return call_count
 
-            registry.register("counted", counted_plugin)
+        registry.register("counted", counted_plugin)
 
-            # Multiple lookups should use cache
-            first = registry.get("counted")
-            second = registry.get("counted")
+        first = registry.get("counted")
+        second = registry.get("counted")
+        assert first is counted_plugin
+        assert second is first
+        assert call_count == 0
 
-            # Check if caching is implemented (may not be)
-            assert first is not None, "first must be initialized"
-            assert second is not None, "second must be initialized"
-        except (NotImplementedError, TypeError):
-            pytest.skip("Registry caching not implemented")
+    def test_registry_component_is_required(self):
+        """Registry requires a component name (no version-pinning constructor)."""
+        from codex_ml.registry import Registry
 
-    def test_registry_version_compatibility(self):
-        """Registry should support version checking."""
-        try:
-            from codex_ml.registry import Registry
-        except (ImportError, AttributeError):
-            pytest.skip("Registry not available")
-
-        try:
-            registry = Registry(require_version="1.0.0")
-            assert registry is not None, "registry must be initialized"
-        except (NotImplementedError, ValueError):
-            pytest.skip("Version compatibility not implemented")
+        with pytest.raises(TypeError):
+            Registry()  # type: ignore[call-arg]
+        with pytest.raises(TypeError):
+            Registry("test", require_version="1.0.0")  # type: ignore[call-arg]
 
 
 class TestPipelineExecution:
@@ -249,7 +234,7 @@ class TestPipelineExecution:
                     {"name": "step1", "type": "loader"},
                     {"name": "step2", "type": "transformer"},
                 ],
-                "error_handling": "raise"
+                "error_handling": "raise",
             }
 
             pipeline = Pipeline(config)

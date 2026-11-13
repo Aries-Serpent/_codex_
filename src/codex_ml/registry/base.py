@@ -174,7 +174,9 @@ class Registry:
                 continue
             try:
                 value = ep.load()
-            except (ValueError, TypeError) as exc:  # pragma: no cover - plugin failure
+            except (ImportError, AttributeError, ValueError, TypeError) as exc:
+                # ep.load() surfaces missing modules (ImportError) and missing
+                # attributes (AttributeError); record them as load failures.
                 self._failed_entry_points[key] = exc
                 continue
             try:
