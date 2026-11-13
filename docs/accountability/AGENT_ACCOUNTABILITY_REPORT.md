@@ -1,3 +1,44 @@
+## Session: PR #5783 protected approval and ML integration repair
+
+### Agents Used
+
+- `ml-lane-readiness`: archived-document successors and meaningful routing tests.
+- `ml-lane-session-ooda`: session imports/assertions, OODA persistence/latency and
+  stress-generator repairs.
+- `ml-lane-e2e-checkpoint`: current brain/session contracts, early stopping,
+  metadata-schema warnings and bounded dependency inspection.
+- Parent: approval repair verification, job-scoped environment-read permission,
+  integration of all lanes, durable ML diagnostics, validation and publication.
+
+### Evidence and boundaries
+
+- Published draft #5783 against `0D_base_`, code SHA
+  `3c73028b08e6d3f592330ae1f39e96d91716694f`, with verified signed commits.
+- Focused approval tests: 231 passed, one skip. Focused ML tests: 210 passed.
+  Local Torch is a stub; these results do not prove real-Torch serialization.
+  Black, Ruff, compile, actionlint and staged Gitleaks passed. Approval mypy
+  passed; 13 ML-module type errors reproduce in unchanged baseline lines.
+- Requested run `43358318768`, attempt 1, slow job `131670399212` finalized
+  cancelled. Its log blob is unavailable and run archive omits that job.
+  Earlier completed job `131011045588` supplied 59 failures at `3cee1ffea0`;
+  reproduced causes were repaired without claiming that earlier log is the
+  requested run's exact traceback.
+- Fresh run `43370108972`, attempt 1, at the published code SHA passed all six
+  component jobs; slow integration/coverage remained in progress at inspection.
+  This is not full hosted ML acceptance.
+- Fresh delegation run `43370108841` failed its accountability check; auto-fix
+  push returned 403 for `github-actions[bot]`. This entry and the changelog
+  address the real bookkeeping requirement without changing credentials,
+  signing, permissions or gate logic. Fresh validation is still required.
+- Environment configuration PUT returned 403 requiring `administration=write`;
+  environment secret inventory/public-key reads also returned 403. The sole
+  visible admin, @mbaetiong, must configure protected independent review and
+  the environment-only marker. The current token acts as the PR author and
+  cannot supply independent approval. No settings changes, approval or merge
+  is claimed.
+- The maintainer guide retains exact administrator CLI/UI actions and the
+  post-merge hotfix handoff. Readiness scores and labels are not acceptance.
+
 ## Session: PR #5781 RAG runner and CodeQL classification repair
 
 ### Agents Used

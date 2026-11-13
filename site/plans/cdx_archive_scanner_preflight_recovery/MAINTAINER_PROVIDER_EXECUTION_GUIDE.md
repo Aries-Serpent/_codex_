@@ -67,7 +67,7 @@ integration token acting as `mbaetiong`. Each guide action was probed
 | List repository secrets / Actions permissions | `GET actions/secrets`, `GET actions/permissions` | HTTP 403 | @mbaetiong |
 | Rotate CODEX PATs / App key | secrets UI | Codespace values return 401 / non-PEM | Credential owner |
 | Download run logs and job metadata | `GET actions/runs/{id}/attempts/{n}/logs` | HTTP 200 (works) | Agent |
-| Push session branch, open sub-PR | `git push`, `POST pulls` | Attempted by agent in this repair | Agent |
+| Push session branch, open sub-PR | `git push`, `POST pulls` | Published draft [#5783](https://github.com/Aries-Serpent/_codex_/pull/5783) | Completed; review remains |
 | Approve own deployment / own PR | `POST pending_deployments`, PR review | Not allowed: the agent acts as `mbaetiong` (PR author and dispatcher), and self-review is blocked by design | Independent reviewer |
 | Dispatch delegation from `main` | `gh workflow run agent-auth-delegation.yml` | Only meaningful after the repair reaches `main` and section 2 is complete | Agent (after merge) or @mbaetiong |
 
@@ -330,20 +330,23 @@ last in-flight package's existing timeout). Set
 budget returns **exit 2 / INCONCLUSIVE**, never READY, and partial results are
 not cached. Invalid, negative and non-finite budget values are rejected.
 
-## 5. Reviewer and maintainer: publish the scoped repair when authorized
+## 5. Reviewer and maintainer: review the published scoped repair
 
-Only remaining actions belong here: review the actual repair diff, complete
-local validation, authorize publication side effects, and publish a scoped
-`copilot/session-*` sub-PR against `0D_base_`. Reuse a matching open sub-PR.
-Do not repeat completed Rust/RAG repairs or unrelated broad scoring sweeps.
+Draft [#5783](https://github.com/Aries-Serpent/_codex_/pull/5783) is already
+published against `0D_base_`. Do not recreate the PR or repeat the completed
+implementation commit. Review its current diff and fresh hosted results.
+The first delegation preflight failed because the last commit did not update
+the accountability report; its automatic push returned 403. The follow-up
+records actual lanes/evidence in the report and changelog, without weakening
+that gate or changing its credential route.
 
 ```bash
 git branch --show-current
 git rev-parse HEAD
 git status --short
-git diff --check
-git --no-pager diff --stat
-git --no-pager diff -- .github/workflows/auto-approve-workflows.yml \
+git diff --check origin/0D_base_...HEAD
+git --no-pager diff --stat origin/0D_base_...HEAD
+git --no-pager diff origin/0D_base_...HEAD -- .github/workflows/auto-approve-workflows.yml \
   .github/workflows/agent-auth-delegation.yml scripts/ci/approve_pending_runs.py \
   scripts/ci/require_wec_auto_approve.py scripts/ci/verify_owner_approval.py
 ```
@@ -352,22 +355,6 @@ Use the existing Python validation interpreter. Run changed-module Black/Ruff/
 isort/mypy, compile checks, focused approval/ML tests, pinned actionlint, scoped
 secret/permission review and `git diff --check`. Record exact commands/results;
 local tests do not establish hosted readiness.
-
-After explicit publication authorization, stage only reviewed files, preserve
-genuine signing, inspect the staged diff, and use:
-
-```bash
-git diff --cached --check
-git --no-pager diff --cached
-git commit -S -m "Repair trusted approval flow and protected delegation" \
-  -m "Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
-git verify-commit HEAD
-: "${BRANCH:?Verified authorized session branch required}"
-git push origin "HEAD:refs/heads/$BRANCH"
-: "${BODY_FILE:?Reviewed repository-template-conformant PR body required}"
-gh pr create --repo "$REPO" --base 0D_base_ --head "$BRANCH" \
-  --title "Repair protected approval and evidenced ML failures" --body-file "$BODY_FILE"
-```
 
 The [PR template](../../../.github/pull_request_template.md) governs the body;
 preserve its structure and applicable maintainer WEC selections. A signed commit

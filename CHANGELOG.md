@@ -2,6 +2,22 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5783 protected approval and ML integration repair
+- Bind workflow-run approval to trusted workflow source and verified human
+  activation/session evidence; distinguish it from protected deployment review.
+  Verify live environment protection and grant only the environment-read scope
+  needed by the activation verifier.
+- Repair reproduced stale integration contracts, archived-document references,
+  OODA enum persistence and blocking observation, and checkpoint-sidecar schema
+  validation. Bound dependency inspection with an explicit INCONCLUSIVE exit
+  instead of treating partial inspection as successful readiness.
+- Preserve integration JUnit before coverage and cap test steps within the
+  existing job timeout; enable staging sub-PR ML validation without reducing
+  coverage thresholds. Hosted slow ML and administrator-controlled approval
+  remain acceptance requirements.
+- Record the actual three repair lanes and local/hosted evidence required by
+  the fresh delegation preflight; do not weaken its failed auto-fix push control.
+
 ### Fixed - PR #5781 RAG runner and CodeQL classification repair
 - Measure RAG coverage against the runtime implementation package rather than
   its compatibility shim. Hosted tests passed all 1,688 cases but generated no
