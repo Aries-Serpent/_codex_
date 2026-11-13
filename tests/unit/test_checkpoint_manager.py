@@ -23,7 +23,7 @@ def _load_training_checkpoint_manager(
     allow_checkpointing_import: bool = False,
 ):
     module_name = "training.checkpoint_manager_under_test"
-    module_path = Path(__file__).resolve().parents[2] / "training" / "checkpoint_manager.py"
+    module_path = Path(__file__).resolve().parents[2] / "src" / "training" / "checkpoint_manager.py"
     original_import = builtins.__import__
 
     def _import(name, globals=None, locals=None, fromlist=(), level=0):
@@ -65,9 +65,10 @@ def test_dump_rng_state_without_torch_uses_fallback(monkeypatch, caplog):
     assert "python" in state, "Condition must be true"
     assert "numpy" not in state, "Condition must be true"
     assert "torch" not in state, "Condition must be true"
-    assert ("Failed to import build_payload_bytes/dump_rng_state ", "Condition must be true"
+    assert (
+        "Failed to import build_payload_bytes/dump_rng_state "
         "from codex_ml.utils.checkpointing; using legacy local fallback."
-    ) in caplog.text
+    ) in caplog.text, "fallback import failure must be logged"
 
 
 def test_checkpoint_helper_import_success_uses_imported_helpers(monkeypatch, caplog):
@@ -82,7 +83,9 @@ def test_checkpoint_helper_import_success_uses_imported_helpers(monkeypatch, cap
         allow_checkpointing_import=True,
     )
 
-    assert module.build_payload_bytes is fake_checkpointing.build_payload_bytes, "build_payload_bytes is not valid"
+    assert (
+        module.build_payload_bytes is fake_checkpointing.build_payload_bytes
+    ), "build_payload_bytes is not valid"
     assert module.dump_rng_state is fake_checkpointing.dump_rng_state, "dump_rng_state is not valid"
     assert module.build_payload_bytes({"k": "v"}) == b"ok", "Condition must be true"
     assert module.dump_rng_state() == {"python": [1, 2, 3]}
@@ -95,12 +98,13 @@ def test_checkpoint_helper_import_passthrough_uses_real_module(monkeypatch):
         allow_checkpointing_import=True,
     )
 
-    assert module.build_payload_bytes.__module__ == "codex_ml.utils.checkpointing", "__module__ is not valid"
+    assert (
+        module.build_payload_bytes.__module__ == "codex_ml.utils.checkpointing"
+    ), "__module__ is not valid"
     try:
         payload = module.build_payload_bytes(None)
     except RuntimeError as exc:  # pragma: no cover - torch-optional environment
-        assert "torch is required" in str(exc, "torch is not valid"
-    ), "torch is not valid"
+        assert "torch is required" in str(exc), "torch is not valid"
     else:
         assert isinstance(payload, bytes)  # pragma: no cover - torch-optional environment
     assert "python" in module.dump_rng_state(), "Condition must be true"
@@ -195,9 +199,15 @@ def test_update_best_drops_invalid_records_before_sort(monkeypatch, tmp_path, ca
     manager._update_best(candidate, 12, {"loss": 0.5})
 
     assert [r["path"] for r in manager._best_records] == ["ckpt-12.pt", "ckpt-10.pt"]
-    assert all("value" in r and "step" in r for r in manager._best_records), "Value must be initialized"
-    assert "Dropping invalid best-record entry missing required keys" in caplog.text, "Condition must be true"
-    assert "Dropping invalid best-record entry with non-numeric fields" in caplog.text, "Condition must be true"
+    assert all(
+        "value" in r and "step" in r for r in manager._best_records
+    ), "Value must be initialized"
+    assert (
+        "Dropping invalid best-record entry missing required keys" in caplog.text
+    ), "Condition must be true"
+    assert (
+        "Dropping invalid best-record entry with non-numeric fields" in caplog.text
+    ), "Condition must be true"
 
 
 def test_callback_on_step_end_skips_step_zero(monkeypatch, tmp_path):

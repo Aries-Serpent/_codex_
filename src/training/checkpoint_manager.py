@@ -345,7 +345,8 @@ class CheckpointManager:  # type: ignore[no-redef]
                 step = state.global_step
                 # Keep explicit None handling because some legacy/test state shims
                 # initialize global_step lazily before first step.
-                if step is not None and save_every > 0 and step % save_every == 0:
+                # Step 0 is the pre-training state; there is nothing to checkpoint yet.
+                if step and save_every > 0 and step % save_every == 0:
                     if self.model is None or self.optimizer is None:
                         raise RuntimeError(
                             "Checkpoint callback missing model/optimizer; on_train_begin not called"
@@ -390,6 +391,9 @@ class CheckpointManager:  # type: ignore[no-redef]
                 )  # File already deleted; no action needed
 
     def _update_best(self, path: Path, step: int, metrics: Optional[dict[str, float]]) -> None:
+        if self.best_k <= 0:
+            # best_k == 0 disables best-checkpoint tracking entirely
+            return
         if not self.metric or not metrics or self.metric not in metrics:
             return
         val = float(metrics[self.metric])
@@ -402,12 +406,12 @@ class CheckpointManager:  # type: ignore[no-redef]
             better = val > self._best
         if better:
             record = {"step": step, "value": val, "path": path.name}
-            existing = [r for r in self._best_records if r["path"] != path.name]
+            existing = self._valid_best_records(path.name)
             existing.append(record)
 
             def keyfn(item: dict[str, Any]) -> tuple[float, int]:
-                value = float(item.get("value", 0.0))
-                step_idx = int(item.get("step", 0))
+                value = float(item["value"])
+                step_idx = int(item["step"])
                 return (value, step_idx) if self.mode == "min" else (-value, step_idx)
 
             existing.sort(key=keyfn)
@@ -424,6 +428,33 @@ class CheckpointManager:  # type: ignore[no-redef]
                 json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
             )
             self._refresh_best_symlinks()
+
+    def _valid_best_records(self, exclude_path: str) -> list[dict[str, Any]]:
+        """Return existing best records that are well-formed, normalised.
+
+        Records missing ``path``/``value``/``step`` or carrying non-numeric
+        ``value``/``step`` (e.g. from a corrupted ``best.json``) are dropped with
+        a warning instead of crashing the sort.
+        """
+        valid: list[dict[str, Any]] = []
+        for record in self._best_records:
+            if not isinstance(record, dict) or not {"path", "value", "step"} <= record.keys():
+                logger.warning(
+                    "Dropping invalid best-record entry missing required keys: %r", record
+                )
+                continue
+            if record["path"] == exclude_path:
+                continue
+            try:
+                value = float(record["value"])
+                step = int(record["step"])
+            except (TypeError, ValueError):
+                logger.warning(
+                    "Dropping invalid best-record entry with non-numeric fields: %r", record
+                )
+                continue
+            valid.append({**record, "value": value, "step": step})
+        return valid
 
     def _refresh_best_symlinks(self) -> None:
         if not self._best_dir.exists():
