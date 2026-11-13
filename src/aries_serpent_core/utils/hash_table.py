@@ -149,28 +149,30 @@ class RobinHoodHashTable(Generic[K, V]):
             self._resize()
 
         idx = self._hash(key)
-        psl = 0  # Probe sequence length
-        entry = (key, value, psl)
+        psl = 0  # Probe sequence length of the entry currently being placed
+        cur_key, cur_value = key, value
+        carrying_original = True
 
         while True:
             current = self.table[idx]
 
-            # Empty slot - insert here
+            # Empty slot - insert here with the PSL accumulated so far
             if current is None:
-                self.table[idx] = entry
+                self.table[idx] = (cur_key, cur_value, psl)
                 self.size += 1
                 return
 
-            # Key already exists - update value
-            if current[0] == key:
+            # Key already exists - update value in place
+            if carrying_original and current[0] == key:
                 self.table[idx] = (key, value, current[2])
                 return
 
-            # Robin Hood: if our PSL > current PSL, swap and continue
+            # Robin Hood: if our PSL > current PSL, take the slot and carry the
+            # displaced ("richer") entry forward instead.
             if psl > current[2]:
-                self.table[idx] = entry
-                entry = current
-                psl = entry[2]
+                self.table[idx] = (cur_key, cur_value, psl)
+                cur_key, cur_value, psl = current
+                carrying_original = False
                 self.total_collisions += 1
 
             # Move to next slot
@@ -348,18 +350,26 @@ class CuckooHashTable(Generic[K, V]):
         """
         # Try table 1
         idx1 = self._hash1(key)
-        if self.table1[idx1] is None or self.table1[idx1][0] == key:  # type: ignore[index]
+        idx2 = self._hash2(key)
+        slot1 = self.table1[idx1]
+        slot2 = self.table2[idx2]
+
+        # Update in place if the key already exists in either table
+        if slot1 is not None and slot1[0] == key:
             self.table1[idx1] = (key, value)
-            if self.table1[idx1][0] != key:  # type: ignore[index]  # New insertion
-                self.size += 1
+            return
+        if slot2 is not None and slot2[0] == key:
+            self.table2[idx2] = (key, value)
             return
 
-        # Try table 2
-        idx2 = self._hash2(key)
-        if self.table2[idx2] is None or self.table2[idx2][0] == key:  # type: ignore[index]
+        # Try table 1, then table 2
+        if slot1 is None:
+            self.table1[idx1] = (key, value)
+            self.size += 1
+            return
+        if slot2 is None:
             self.table2[idx2] = (key, value)
-            if self.table2[idx2][0] != key:  # type: ignore[index]  # New insertion
-                self.size += 1
+            self.size += 1
             return
 
         # Both slots occupied - eviction chain
@@ -379,10 +389,9 @@ class CuckooHashTable(Generic[K, V]):
 
             # Try to place evicted in table 2
             idx2 = self._hash2(current_key)
-            if self.table2[idx2] is None or self.table2[idx2][0] == current_key:  # type: ignore[index]
+            if self.table2[idx2] is None:
                 self.table2[idx2] = (current_key, current_value)
-                if self.table2[idx2][0] != current_key:  # type: ignore[index]
-                    self.size += 1
+                self.size += 1
                 return
 
             # Evict from table 2
@@ -391,9 +400,11 @@ class CuckooHashTable(Generic[K, V]):
             self.total_evictions += 1
             current_key, current_value = evicted  # type: ignore[misc]
 
-        # Too many evictions - resize and retry
+        # Too many evictions - the original key is already stored, but the last
+        # evicted entry is still homeless. Resize (rehashing everything stored)
+        # and re-insert that homeless entry.
         self._resize()
-        self.insert(key, value)
+        self.insert(current_key, current_value)
 
     def lookup(self, key: K) -> Optional[V]:
         """
