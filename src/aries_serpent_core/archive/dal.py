@@ -682,7 +682,7 @@ class PostgresDAL(BaseDAL):
         self.dsn = dsn
         try:
             import psycopg
-        except (ConnectionError, TimeoutError) as e:  # pragma: no cover - import guard
+        except ImportError as e:  # pragma: no cover - optional driver import guard
             raise RuntimeError("psycopg (v3) is required for postgres backend") from e
         self.pg = psycopg
         self.conn = self.pg.connect(self.dsn)

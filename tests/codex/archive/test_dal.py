@@ -317,6 +317,7 @@ class TestArchiveDALFactory:
                 # psycopg not installed - expected
                 if "psycopg" in str(e):
                     pytest.skip("psycopg not installed")
+                raise
 
     def test_archive_dal_from_env_mariadb(self):
         """Test ArchiveDAL.from_env with mariadb backend."""
