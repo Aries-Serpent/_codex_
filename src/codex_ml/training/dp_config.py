@@ -35,7 +35,22 @@ class DifferentialPrivacyConfig:
 
     def __post_init__(self) -> None:
         if self.enabled:
+            # Reject invalid privacy parameters before probing for Opacus so
+            # misconfiguration surfaces as a clear ValueError.
+            self._validate_parameters()
             self._ensure_dependency()
+
+    def _validate_parameters(self) -> None:
+        if not self.epsilon > 0:
+            raise ValueError(f"epsilon must be positive, got {self.epsilon!r}")
+        if not 0 < self.delta < 1:
+            raise ValueError(f"delta must be in (0, 1), got {self.delta!r}")
+        if not self.max_grad_norm > 0:
+            raise ValueError(f"max_grad_norm must be positive, got {self.max_grad_norm!r}")
+        if not self.noise_multiplier >= 0:
+            raise ValueError(
+                f"noise_multiplier must be non-negative, got {self.noise_multiplier!r}"
+            )
 
     def _ensure_dependency(self) -> None:
         if self._dependency_checked:
