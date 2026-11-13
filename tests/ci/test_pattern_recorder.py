@@ -149,8 +149,7 @@ def _compute_merge_readiness_score():
 
         (scripts_ci / "session_wrapup_autofix.py").write_text(
             """
-        from pathlib import Path
-        from codex.logging.structured_logger import logger
+from pathlib import Path
 
 _import_count_file = Path(__file__).with_name("import_count.txt")
 _count = int(_import_count_file.read_text(encoding="utf-8")) if _import_count_file.exists() else 0
@@ -271,6 +270,8 @@ class TestResolveAcctDiffBase:
         base = mod._resolve_acct_diff_base(repo)
         expected_parent = self._git(repo, "rev-parse", "HEAD~2").strip()
         assert base == expected_parent, f"expected parent SHA {expected_parent!r}, got {base!r}"
+
+    def test_returns_none_when_all_commits_are_infra(self, tmp_path):
         mod = _load_auto_fix()
         repo = self._mkrepo(tmp_path)
         self._commit(
