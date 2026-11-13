@@ -9,14 +9,14 @@ been removed. Separate CDX custody, isolation and real-source requirements
 remain in the [continuation](./CONTINUATION.md); they are not cleared by this
 repair. No archive operation or hosted CDX launch is requested here.
 
-Latest read-only observations in this repair session:
+Historical read-only observations from the original repair session:
 
 | Item | Observation | Remaining owner/action |
 | --- | --- | --- |
 | #5766 | Open at `34f9e6cfd4d76f5b031e83891c6351f52045c372`; persistent WEC label present | Integration maintainer: review/publication, then exact-SHA hosted proof |
 | `owner-approval` | Rechecked 2026-11-13T04:40Z: `protection_rules: []`, `can_admins_bypass: true`, `deployment_branch_policy: null`; agent `PUT` returned HTTP 403 (`administration=write` required) | @mbaetiong (sole repository admin): configure genuine protection (section 2) |
 | Environment marker | Delegation job `131666794042` logs show an empty runtime marker and exit 1; secret inventory/public-key reads returned HTTP 403 | @mbaetiong: provision the environment-only marker after protection |
-| Independent reviewer | Only collaborator is `mbaetiong` (admin); organization members/teams are not visible to the agent | @mbaetiong: add an eligible second reviewer (section 2, step 2) |
+| Reviewer identity | Only human collaborator is `mbaetiong` (admin); owner delegates maintainer work to agents | Use a verified agent-maintainer identity and genuine independent current-head review; another human is not a repository requirement |
 | CODEX PAT routes | Rechecked: `CODEX_ADMIN_KEY`, `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY` codespace values all return HTTP 401 on `GET /user` | Credential owner: rotate the codespace and Actions secrets (section 3) |
 | App route | Rechecked: codespace `_GITHUB_APP_PRIVATE_KEY` is 51 characters and not PEM, so no App token can be minted locally; repository secret and Actions-permission reads return HTTP 403 | App owner: replace the key and verify the installation (section 3) |
 | Slow ML | Run `43358318768` job `131670399212` was **cancelled** by the 60-minute job timeout; its log blob was discarded (`BlobNotFound`) | Implemented in this repair: durable JUnit artifact and step budgets (section 4) |
@@ -30,7 +30,7 @@ rebase, discard dirty work, disable signing or weaken protection to proceed.
 ### Two approvals, two acceptance records
 
 - **Workflow-run approval:** WEC opt-in permits inspection of held Actions runs.
-  The helper requires independent human review of the exact current PR head,
+  The helper requires independently attributed maintainer review of the exact current PR head,
   an eligible independently authenticated approver and unambiguous run/PR
   association. Labels alone never establish approval.
 - **Environment deployment approval:** GitHub required reviewers release a job
@@ -47,8 +47,37 @@ heads/new activations and denied/dry paths preserve the label.
 Automatic inspection uses trusted default-branch events and the configured
 Copilot workflow events. Recovery sweeps run daily at **06:00 UTC**, not every
 20 minutes; GitHub may delay schedules. Privileged helper checkout is bound
-to the published workflow SHA, never PR-controlled code. App tokens without
-the required verified independent human identity remain ineligible.
+to the published workflow SHA, never PR-controlled code. The delegated-maintainer
+repair verifies the App using its signed JWT, active installation, repository
+owner, minted permissions and expiry. It does not call `/user` to pretend an
+installation token is a human account. Only that verified App's bot review can
+satisfy the agent-review route; arbitrary bots and labels alone remain ineligible.
+
+### Agent-maintainer authority and live capability preflight
+
+The owner explicitly authorizes agents to perform maintainer and administrator
+duties. A second human is not required by this repository's operating model.
+Review records must still come from an eligible identity other than the author
+and run initiator, cover the exact current SHA, and survive GitHub's actual
+required-review and deployment-review controls. A request by the sole owner can
+start inspection by an independently attributed App; it is not itself approval.
+
+Run this read-only preflight in subsequent sessions before attempting denied
+operations:
+
+```bash
+python -m scripts.ci.github_auth_preflight \
+  --repo Aries-Serpent/_codex_ --branch 0D_base_ --json
+```
+
+It tries configured credential routes independently, reports operation-specific
+HTTP results without values or response bodies, and exits nonzero when required
+reads are unavailable. A failed named CODEX key does not hide a working
+`GITHUB_TOKEN` route. App settings accept the documented `GITHUB_APP_*` names
+or their `_GITHUB_APP_*` Codespace aliases. Secret metadata cannot establish
+that its value is `true`; only the protected runtime verifier can establish that.
+Successful reads, static token-name scope maps and `permissions.admin=true`
+never establish write authority. The preflight makes no mutations.
 
 ## 1a. Which CLI actions the Copilot agent can perform
 
@@ -68,18 +97,20 @@ integration token acting as `mbaetiong`. Each guide action was probed
 | Rotate CODEX PATs / App key | secrets UI | Codespace values return 401 / non-PEM | Credential owner |
 | Download run logs and job metadata | `GET actions/runs/{id}/attempts/{n}/logs` | HTTP 200 (works) | Agent |
 | Push session branch, open sub-PR | `git push`, `POST pulls` | Published draft [#5783](https://github.com/Aries-Serpent/_codex_/pull/5783) | Completed; review remains |
-| Approve own deployment / own PR | `POST pending_deployments`, PR review | Not allowed: the agent acts as `mbaetiong` (PR author and dispatcher), and self-review is blocked by design | Independent reviewer |
+| Approve deployment / PR | `POST pending_deployments`, PR review | Same-identity self-review remains prohibited; separately authenticated eligible agent maintainers can provide real review | Verified eligible maintainer identity |
 | Dispatch delegation from `main` | `gh workflow run agent-auth-delegation.yml` | Only meaningful after the repair reaches `main` and section 2 is complete | Agent (after merge) or @mbaetiong |
 
-Any operation in the "@mbaetiong" rows needs either the browser UI or an
-approved `gh auth login` session with operation-specific permissions.
+An authorized delegated agent can perform the administrator rows using a
+credential with the actual operation-specific permissions. A denied token
+requires credential repair, not another statement of owner authorization.
+Browser-only controls still require an available authorized browser session.
 Do not grant organization administration merely to read reviewer teams.
 Run those commands from that session; the agent cannot obtain the scopes.
 
 ## 2. Administrator: configure `owner-approval`
 
 **Responsible operator:** authorized repository/security administrator.
-**Required reviewer:** an eligible independent human or approved team member,
+**Required reviewer:** an eligible independently authenticated maintainer or approved team,
 not the deployment initiator. PR review and deployment review are separate.
 
 ### Step 1: confirm operation authority and supported protection
@@ -107,23 +138,22 @@ is not proof of settings-write, secret-write or independent-review authority.
 
 ### Step 2: require independent review and prevent self-review
 
-**Reviewer identity (previously unknown, now resolved):** `mbaetiong` is the
-only repository collaborator. With **Prevent self-review** enabled, GitHub
-blocks the person who triggered a run from approving its deployment.
-Delegation activation only runs from `workflow_dispatch` on `main`. If
-`mbaetiong` dispatches it, `mbaetiong` cannot approve it. Choose one of these:
-
-- **Recommended:** invite a second trusted human collaborator (or an org team
-  containing one) and select them as a required reviewer.
-- Alternatively, keep `mbaetiong` as reviewer and have a *different* human
-  actor dispatch activation. Copilot sessions run as `mbaetiong`, so they do
-  not count as a different actor.
+`mbaetiong` is the sole human owner. With **Prevent self-review** enabled,
+GitHub blocks the deployment initiator's identity from approving its deployment.
+Use distinct, genuinely authenticated eligible identities for initiation and
+review, including delegated agents where the platform supports them. For
+example, an App-initiated run and a review under the owner account are distinct
+actors, but actual pending-deployment eligibility must be verified before
+claiming success. This is not a claim that every bot can be an environment
+required reviewer; GitHub's supported reviewer types and identity checks apply.
+Do not fabricate a second human, mislabel an App as human, or claim that a
+review executed under the initiator's account is independent.
 
 Do not disable **Prevent self-review** to work around a single-maintainer
 repository. `verify_owner_approval.py` rejects that configuration.
 
 1. Under **Deployment protection rules**, enable **Required reviewers**.
-2. Select the owner-approved independent human reviewer(s) or team(s).
+2. Select the owner-approved eligible reviewer identities or teams supported by GitHub.
 3. Enable **Prevent self-review** and save.
 4. Ensure an eligible reviewer other than the deployment initiator is available.
    GitHub normally requires one approval from this list, not approval by every
@@ -144,7 +174,7 @@ repository. `verify_owner_approval.py` rejects that configuration.
 4. Save and read back the actual policy and rules.
 
 CLI alternative for reviewer/branch configuration, **only after settings-write authorization**:
-assign `REVIEWER_LOGIN` to the approved independent human. This example is for
+assign `REVIEWER_LOGIN` to the approved eligible User identity. This example is for
 the inspected unprotected environment; if protection already exists, use a
 reviewed payload that preserves all existing required controls instead.
 Disabling administrator bypass remains a required **UI step**: the documented
@@ -153,7 +183,7 @@ does not list a `can_admins_bypass` input. Do not assume an undocumented JSON
 field changes that control; save it in the UI and verify the resulting state.
 
 ```bash
-: "${REVIEWER_LOGIN:?Approved independent human reviewer required}"
+: "${REVIEWER_LOGIN:?Approved eligible reviewer identity required}"
 REVIEWER_ID="$(gh api "users/$REVIEWER_LOGIN" --jq '.id')"
 
 jq -n --argjson reviewer "$REVIEWER_ID" \
@@ -253,8 +283,9 @@ or self-initiated deployment.
    eligible Actions access plus the helper's independent identity/review checks.
 3. Verify App key format, installation, repository selection and approved
    permissions privately. Do not log keys/tokens or treat an App installation
-   token as a human reviewer. The current policy rejects identities it cannot
-   independently establish.
+   token as a human reviewer. The repaired helper accepts a verified active App
+   as an agent maintainer, including its genuine current-head review, while
+   rejecting unverified bots, stale evidence, self-review and expired tokens.
 4. Repository reads do not prove approval, logs, settings or secret-write access.
    Recheck the particular denied operation after repair.
 
