@@ -84,6 +84,9 @@ class DummyAutoTokenizer:
 @pytest.fixture(autouse=True)
 def _patch_auto_tokenizer(monkeypatch):
     monkeypatch.setattr("codex_ml.interfaces.tokenizer._AutoTokenizer", DummyAutoTokenizer)
+    # ``dummy-tokenizer`` is not a local path, so hf_pinning requires an explicit
+    # commit hash. Pin one here instead of relying on env leaked by other suites.
+    monkeypatch.setenv("CODEX_HF_REVISION", "0123456789abcdef0123456789abcdef01234567")
 
 
 MODEL = "dummy-tokenizer"
