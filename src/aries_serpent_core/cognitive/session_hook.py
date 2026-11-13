@@ -184,6 +184,20 @@ def _context_from_agent_session(agent_ctx: Any) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
+# Errors that trigger the next fallback tier instead of propagating: the brain
+# API is an injected collaborator (live service, cache or mock) and the
+# three-tier contract guarantees that ``inject()`` never raises for it.
+_FALLBACK_ERRORS: tuple[type[BaseException], ...] = (
+    OSError,
+    ImportError,
+    RuntimeError,
+    ValueError,
+    TypeError,
+    KeyError,
+    AttributeError,
+)
+
+
 class SessionContextInjector:
     """Lifecycle hook: called at Copilot session start.
 
@@ -261,7 +275,7 @@ class SessionContextInjector:
             payload = self._build_payload(raw, session_metadata, reconstructed=False)
             self._write_cache(payload)
             return payload
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+        except _FALLBACK_ERRORS as exc:
             live_error = exc
             logger.warning("Live context fetch failed: %s", exc)
 
@@ -430,7 +444,7 @@ class SessionContextInjector:
                         len(reconstructed_patterns),
                         len(reconstructed_facts),
                     )
-            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+            except _FALLBACK_ERRORS as exc:
                 logger.debug("BrainClient.memory_search() skipped during reconstruction: %s", exc)
 
         # Entropy minimisation: read latest status file
@@ -453,7 +467,7 @@ class SessionContextInjector:
         )
         try:
             self._api.store_memory(lesson, tags=["api-failure", "reconstruction"])
-        except (IOError, OSError, ModuleNotFoundError, ImportError):
+        except _FALLBACK_ERRORS:
             logger.debug("Suppressed exception in handler", exc_info=True)
         return SessionContextPayload(
             session_id=(f"reconstructed-{hashlib.sha256(str(meta).encode()).hexdigest()[:8]}"),
