@@ -10,6 +10,9 @@ Test module for workflow validation.
 
 from __future__ import annotations
 
+import re
+import subprocess
+import sys
 from fnmatch import fnmatchcase
 from pathlib import Path
 
@@ -52,6 +55,53 @@ def _load_workflow(filename: str) -> dict:
     path = WORKFLOWS_DIR / filename
     assert path.exists(), f"Workflow not found: {path}"
     return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
+def test_rag_workflow_coverage_records_runtime_implementation(tmp_path):
+    pytest.importorskip("coverage")
+    workflow = _load_workflow("test-rag.yml")
+    script = next(
+        step["run"]
+        for job in workflow["jobs"].values()
+        for step in job.get("steps", [])
+        if step.get("name") == "Run RAG tests with coverage"
+    )
+    match = re.search(r"--cov=(\S+)", script)
+    assert match is not None
+    script = """
+import runpy
+import sys
+from coverage import Coverage
+
+source, config, implementation, destination = sys.argv[1:]
+collector = Coverage(config_file=config, data_file=None, source=[source])
+collector.start()
+try:
+    namespace = runpy.run_path(implementation)
+    assert namespace["OutputProcessor"].scrub_output(" answer ") == "answer"
+finally:
+    collector.stop()
+assert implementation in collector.get_data().measured_files()
+collector.xml_report(outfile=destination)
+"""
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            script,
+            match.group(1),
+            str(REPO_ROOT / "tests/rag/.coveragerc"),
+            str(REPO_ROOT / "src/aries_serpent_core/rag/postprocess.py"),
+            str(tmp_path / "coverage.xml"),
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert (tmp_path / "coverage.xml").is_file()
 
 
 @pytest.mark.parametrize("filename", _FLAGGED_WORKFLOWS)

@@ -99,7 +99,11 @@ def test_parser_ranks_security_rules_by_security_severity(tmp_path):
                         rule("sec-high", "warning", ["security", "external/cwe/cwe-020"], "7.8"),
                         rule("sec-medium", "error", ["security"], "5.0"),
                         rule("sec-unscored", "error", ["security"]),
-                        rule("quality-error", "error", ["reliability", "correctness"]),
+                        rule(
+                            "quality-error",
+                            "error",
+                            ["reliability", "correctness", "external/cwe/cwe-457"],
+                        ),
                         {"id": "untagged", "defaultConfiguration": {"level": "warning"}},
                     ]
                 }
@@ -162,7 +166,7 @@ def test_parser_rejects_invalid_security_scores(tmp_path, score):
 
 @pytest.mark.parametrize(
     ("score", "bucket"),
-    [(9, "critical"), (7, "high"), (4, "medium"), (3.9, None)],
+    [(9, "critical"), (7, "high"), (4, "medium"), (3.9, None), (None, "quality")],
 )
 def test_parser_security_score_overrides_quality_tags_in_extensions(tmp_path, score, bucket):
     result, output = _parse_sarif(
@@ -171,20 +175,24 @@ def test_parser_security_score_overrides_quality_tags_in_extensions(tmp_path, sc
             "tool": {
                 "driver": {},
                 "extensions": [
+                    {"rules": []},
                     {
                         "rules": [
                             {
                                 "id": "security",
                                 "defaultConfiguration": {"level": "error"},
-                                "properties": {"tags": ["correctness"], "security-severity": score},
+                                "properties": {
+                                    "tags": ["correctness", "external/cwe/cwe-457"],
+                                    **({"security-severity": score} if score is not None else {}),
+                                },
                             }
                         ]
-                    }
+                    },
                 ],
             },
             "results": [
                 {
-                    "rule": {"id": "security", "index": 0, "toolComponent": {"index": 0}},
+                    "rule": {"id": "security", "index": 0, "toolComponent": {"index": 1}},
                 }
             ],
         },
@@ -195,7 +203,7 @@ def test_parser_security_score_overrides_quality_tags_in_extensions(tmp_path, sc
         "critical_count": str(int(bucket == "critical")),
         "high_count": str(int(bucket == "high")),
         "medium_count": str(int(bucket == "medium")),
-        "quality_count": "0",
+        "quality_count": str(int(bucket == "quality")),
     }
 
 

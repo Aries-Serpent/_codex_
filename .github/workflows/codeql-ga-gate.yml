@@ -173,11 +173,12 @@ jobs:
                     return None
                 security_hint = (
                     'security-severity' in result_properties
+                    or 'security' in tags
                     or any(
                         isinstance(tag, str) and (
                             tag == 'security' or 'cwe-' in tag.lower()
                         )
-                        for tag in [*tags, *result_tags]
+                        for tag in result_tags
                     )
                 )
                 if isinstance(tags, list) and tags and not security_hint:

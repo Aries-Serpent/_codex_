@@ -3,7 +3,8 @@
 # Purpose: Prevents the global .coveragerc `source = src` from diluting
 # the RAG coverage metric.  When test-rag.yml runs with
 # `--cov-config=tests/rag/.coveragerc`, coverage is measured ONLY for
-# `src/codex/rag`, giving a meaningful per-module line-rate in coverage.xml.
+# `src/aries_serpent_core/rag`, the implementation behind the `codex.rag`
+# compatibility package, giving a meaningful per-module line-rate in coverage.xml.
 #
 # History:
 #   S235: Created to fix regression where `--cov=src` (main branch) caused
@@ -18,7 +19,7 @@
 
 [run]
 branch = True
-source = src/codex/rag
+source = src/aries_serpent_core/rag
 
 # Omit modules that require unavailable runtime services in CI:
 #   benchmarks/   — performance micro-benchmarks; not unit-tested (need real data)

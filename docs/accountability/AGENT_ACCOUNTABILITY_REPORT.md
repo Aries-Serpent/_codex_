@@ -13,6 +13,32 @@
 
 ### Evidence and boundaries
 
+- Fresh Python/JavaScript CodeQL analysis succeeded. Python SARIF from run
+  `43354317081`, bound to `4557c000f7`, contains zero security findings and
+  2,784 quality results. All six prior security findings are absent.
+- The adversarial reviewer accepted that descriptor CWE tags alone are not
+  security severity: CodeQL uses them on correctness rules too. Security scores
+  still override tags; malformed scores/tags and conflicting metadata retain
+  conservative handling.
+- Combined classifier/workflow regression suite passed 52 cases with three
+  Node-dependent skips. The runtime-coverage test records actual implementation
+  execution and generates XML; it fails with the original compatibility-only
+  scope. Scoped mypy, Ruff and actionlint passed for this follow-up.
+- The old slow ML job was cancelled after 65 minutes; its integration step
+  had failed earlier. Individual logs were unavailable through MCP/REST, and
+  the run archive lacked this job. Its root cause remains unverified.
+- Fresh hosted RAG at `4557c000f7` passed 1,688 tests with 180 skips and no
+  test failures. The job failed only because coverage still targeted the
+  compatibility shim and produced no XML/HTML data. Pointed the existing
+  coverage configuration and command at the runtime implementation package,
+  retaining all existing omissions and the 95 percent threshold.
+- Exact-head scorecard at `4557c000f7` measured 85/100 and AAIS 91.72/100
+  using the supported validation interpreter and a complete tracked snapshot.
+  Export-ignored tracked files were restored before measurement; the initial
+  incomplete archive was not valid scorecard evidence.
+- Hosted Fast Validation passed its security, workflow and type-check hooks
+  but failed on existing trailing whitespace in the permission-test file now
+  touched by this repair. Removed that whitespace; fresh validation is needed.
 - Preserved concurrent bot manifest/baseline commit `081ef98174` through a
   normal merge after the first push was rejected; no force push, reset or
   history rewrite was used. The integration commit deliberately contains no

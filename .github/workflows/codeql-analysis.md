@@ -50,6 +50,8 @@ The active repository gate for CodeQL analysis and enforcement. This workflow is
   Invalid scores fail analysis rather than becoming low-severity findings.
 - Explicitly tagged non-security quality diagnostics remain visible in
   `quality_count` and the summary, but are not vulnerability counts.
+  A descriptor CWE tag alone does not imply security severity: CodeQL also
+  assigns CWE references to correctness diagnostics.
   Missing or conflicting classification metadata uses the existing SARIF
   level/severity fallback, not a quality exemption.
 - The default security threshold remains `high`. Fresh SARIF from the repaired
