@@ -61,7 +61,7 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
     assert "--cov=src" in coverage["run"] and "--cov=training" in coverage["run"]
     assert "--cov-fail-under=0" in coverage["run"]  # Partial shards are not the gate.
     assert coverage["env"]["COVERAGE_FILE"] == ".coverage.unit-${{ matrix.shard }}"
-    for name, count in (("integration-shard", 4), ("coverage-shard", 2)):
+    for name, count in (("integration-shard", 4), ("coverage-shard", 4)):
         job = jobs[name]
         assert job["strategy"]["fail-fast"] is False
         assert len(job["strategy"]["matrix"]["shard"]) == count

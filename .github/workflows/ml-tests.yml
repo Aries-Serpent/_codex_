@@ -240,7 +240,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2]
+        shard: [1, 2, 3, 4]
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -298,7 +298,7 @@ jobs:
             -rfE \
             --durations=30 \
             --timeout=300 \
-            --ml-shards=2 --ml-shard=${{ matrix.shard }} \
+            --ml-shards=4 --ml-shard=${{ matrix.shard }} \
             --ml-shard-report=reports/selection.json \
             --junitxml=reports/junit.xml \
             --cov=src \

@@ -4,7 +4,7 @@
 
 ### Changed - Parallel ML slow-test follow-up to PR #5783
 - Split integration pass/fail into four stable file-path shards and the existing
-  non-slow/non-integration coverage selection into two independent shards.
+  non-slow/non-integration coverage selection into four independent shards.
   Enforce the unchanged 70 percent gate only on combined unit shard data.
 - Add one stable aggregate job, selection-completeness checks, merged JUnit and
   readable job summaries. Retain failures, cancellation and missing evidence as
@@ -14,6 +14,10 @@
   Required-check configuration remains an administrator action.
 - Distinguish repeated module-level collection skips from selected JUnit cases;
   preserve missing-test and collection-error failures while merging skips once.
+- Stream bounded, escaped test/collection failures into the running step summary
+  so diagnostics survive a timeout before final JUnit generation.
+- Increase coverage from two to four shards after both original shards exhausted
+  their hosted test budgets; keep the same selection and aggregate threshold.
 
 ### Fixed - PR #5783 protected approval and ML integration repair
 - Bind workflow-run approval to trusted workflow source and verified human

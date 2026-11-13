@@ -2,16 +2,16 @@
 
 ### Execution and evidence
 
-- Direct implementation: four file-hashed integration shards, two independent
+- Direct implementation: four file-hashed integration shards, four independent
   unit coverage shards and the fixed `ml-slow-aggregate` job. No additional
   agents, xdist workers, duration database or reduced PR selection.
 - Preserve `tests/integration/ -m integration` pass/fail independently of
-  `tests/ -m "not slow and not integration"` coverage. Only the two unit data
+  `tests/ -m "not slow and not integration"` coverage. Only the four unit data
   files enter the unchanged aggregate 70 percent gate.
 - Selection manifests bind each shard to its eligible collection and marker
   expression. The aggregate rejects disagreement, overlap, missing data or
   reports and failed/cancelled/skipped upstream jobs.
-- Focused sharding/workflow tests: 46 passed with two existing pytest config
+- Focused sharding/workflow tests: 48 passed with two existing pytest config
   warnings. Real coverage fixtures verify complementary partial data combines
   above 70 percent, insufficient unit coverage still fails despite complete
   integration data, and green coverage cannot mask failed shards.
@@ -29,6 +29,11 @@
   1,794 merged JUnit cases with zero failures/errors and 24 skips.
   The parent run's integration step passed; its separate coverage step timed
   out after 30 minutes. Neither observation establishes full ML acceptance.
+- Both initial coverage shards timed out after 18 minutes without final JUnit or
+  coverage data. Add bounded, escaped failure summaries at report time so a
+  later timeout cannot erase already observed test/collection failures.
+  Increase coverage to four shards while retaining the same selected tests,
+  isolated data and 70 percent aggregate gate. Fresh hosted execution is required.
 
 ## Session: PR #5783 protected approval and ML integration repair
 

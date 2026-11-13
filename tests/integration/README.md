@@ -77,10 +77,13 @@ These tests are designed to run in GitHub Actions. See `.github/workflows/integr
 ### ML workflow shards
 
 The [ML workflow](../../.github/workflows/ml-tests.yml) runs four independent
-integration shards and two non-integration coverage shards after the component
+integration shards and four non-integration coverage shards after the component
 jobs. Tests within a file stay together; SHA-256 of the relative file path
 selects the shard, independent of collection order or `pytest-randomly` seeds.
 No durations file, pytest-split or xdist is required.
+Two coverage shards both exceeded their 18-minute test budgets in the first
+hosted run, so the coverage partition was increased to four without changing
+the selection or threshold.
 
 From the repository root, reproduce an integration shard:
 
@@ -100,6 +103,8 @@ enter that gate. Integration pass/fail remains independently required.
 Module-level collection skips are not selected test items. The aggregate
 counts them once across shard reports without hiding missing selected tests
 or collection errors.
+Failures are also appended to the test step summary as they occur, before
+final JUnit generation, so a later timeout does not erase the first failures.
 
 Every shard records JUnit, its selected IDs and a digest of the entire eligible
 collection. The aggregate rejects differing collections, overlap, missing

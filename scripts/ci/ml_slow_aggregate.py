@@ -118,7 +118,7 @@ def aggregate(root: Path, needs: dict[str, dict[str, str]]) -> tuple[str, int]:
             failed = True
     for folder, prefix, count, marker, path in (
         ("integration", "int-junit", 4, "integration", "tests/integration"),
-        ("unit", "unit-cov", 2, "not slow and not integration", "tests"),
+        ("unit", "unit-cov", 4, "not slow and not integration", "tests"),
     ):
         try:
             validate_selections(root / folder, prefix, count, marker, path)
@@ -142,7 +142,7 @@ def aggregate(root: Path, needs: dict[str, dict[str, str]]) -> tuple[str, int]:
             failed = True
 
     coverage_files = [
-        root / "unit" / f"unit-cov-{index}" / f".coverage.unit-{index}" for index in (1, 2)
+        root / "unit" / f"unit-cov-{index}" / f".coverage.unit-{index}" for index in range(1, 5)
     ]
     if not all(path.is_file() for path in coverage_files):
         text += "\n**Coverage failed:** missing unit shard data.\n"

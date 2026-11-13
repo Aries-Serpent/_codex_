@@ -41,7 +41,7 @@ def test_slow(): pass
 """})
     for marker, count, suffix in (
         ("integration", 4, "::test_integration"),
-        ("not slow and not integration", 2, "::test_unit"),
+        ("not slow and not integration", 4, "::test_unit"),
     ):
         all_selected = []
         digests = set()
@@ -71,7 +71,7 @@ def test_slow(): pass
 def make_reports(root: Path) -> None:
     for folder, prefix, count, marker, arg in (
         ("integration", "int-junit", 4, "integration", "tests/integration/"),
-        ("unit", "unit-cov", 2, "not slow and not integration", "tests/"),
+        ("unit", "unit-cov", 4, "not slow and not integration", "tests/"),
     ):
         nodeids = [f"{arg}test_{index}.py::test_example" for index in range(8)]
         for index in range(1, count + 1):
@@ -119,7 +119,7 @@ def test_selection_evidence_rejects_missing_changed_or_overlapping_shards(tmp_pa
         report.write_text(json.dumps(manifest))
     with pytest.raises((OSError, ValueError)):
         validate_selections(
-            tmp_path / "unit", "unit-cov", 2, "not slow and not integration", "tests"
+            tmp_path / "unit", "unit-cov", 4, "not slow and not integration", "tests"
         )
 
 
@@ -171,6 +171,38 @@ def test_module_collection_skips_are_not_duplicate_selected_tests(pytester):
     assert "Tests: 9; failures/errors: 0; skipped: 1" in summary
 
 
+@pytest.mark.parametrize("phase", ["test-abort", "collection"])
+def test_failure_summary_survives_without_final_junit(pytester, monkeypatch, phase):
+    pytester.makepyfile(ml_pytest_shards=Path(shards.__file__).read_text())
+    if phase == "collection":
+        pytester.makepyfile(test_error='raise RuntimeError("<collection error>")')
+        expected = pytest.ExitCode.INTERRUPTED
+    else:
+        pytester.makepyfile(test_error="""
+import os
+def test_1_failure():
+    assert False, "<test failure>"
+def test_2_abort():
+    os._exit(3)
+""")
+        expected = pytest.ExitCode.INTERNAL_ERROR
+    summary = pytester.path / "summary.md"
+    monkeypatch.setenv("GITHUB_STEP_SUMMARY", str(summary))
+    result = pytester.runpytest_subprocess(
+        "-p", "ml_pytest_shards", "-p", "no:randomly", "--junitxml=report.xml"
+    )
+    assert result.ret == expected
+    text = summary.read_text()
+    assert "ML shard failures (reported as tests finish)" in text
+    assert (
+        "&lt;collection error&gt;" in text
+        if phase == "collection"
+        else "&lt;test failure&gt;" in text
+    )
+    if phase == "test-abort":
+        assert not (pytester.path / "report.xml").exists()
+
+
 def write_coverage(path: Path, source: Path, lines: range) -> None:
     cov = coverage.Coverage(data_file=str(path), config_file=False, include=[str(source)])
     cov.start()
@@ -201,10 +233,10 @@ def test_gate_combines_only_unit_data_and_never_masks_shard_failure(
     make_reports(reports)
     source = tmp_path / "sample.py"
     source.write_text("\n".join(f"x = {i}" for i in range(10)) + "\n")
-    for index in (1, 2):
-        midpoint = unit_lines.start + len(unit_lines) // 2
-        shard_lines = (
-            range(unit_lines.start, midpoint) if index == 1 else range(midpoint, unit_lines.stop)
+    for index in range(1, 5):
+        shard_lines = range(
+            unit_lines.start + (index - 1) * len(unit_lines) // 4,
+            unit_lines.start + index * len(unit_lines) // 4,
         )
         write_coverage(
             reports / "unit" / f"unit-cov-{index}" / f".coverage.unit-{index}", source, shard_lines
