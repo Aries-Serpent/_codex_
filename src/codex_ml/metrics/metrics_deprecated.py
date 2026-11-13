@@ -116,9 +116,19 @@ def accuracy(predictions: Iterable[int], targets: Iterable[int]) -> float:
 def bleu(
     predictions: Sequence[str],
     references: Sequence[str] | Sequence[Sequence[str]],
+    *,
+    lowercase: bool = True,
 ) -> float:
-    """DEPRECATED: Use metrics.compute_bleu() instead."""
+    """DEPRECATED: Use metrics.compute_bleu() instead.
+
+    ``lowercase`` is kept from the legacy ``eval.metrics.bleu`` signature.
+    """
     _deprecation_warning("bleu", "compute_bleu")
+    if lowercase:
+        predictions = [p.lower() for p in predictions]
+        references = [
+            r.lower() if isinstance(r, str) else [x.lower() for x in r] for r in references
+        ]
     return _compute_bleu(predictions, references)
 
 
