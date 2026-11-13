@@ -1,3 +1,28 @@
+## Session: delegated agent-maintainer authentication follow-up
+
+### Execution and evidence
+
+- Direct execution; no new agents were launched or attributed to this repair.
+  The isolated `copilot/session-5766-agent-maintainer` worktree preserves the
+  separately published ML follow-up and concurrent Copilot changes.
+- Replaced the App installation token's impossible human `/user` requirement
+  with signed App identity, active installation, repository owner, minted scope
+  and expiry checks. Agent review remains a genuine exact-head GitHub review
+  by an independently attributed maintainer, not a label or synthetic approval.
+- Approval decisions retain the actual Bot identity, credential source and
+  expiry; the token is excluded. No environment marker, reviewer setting,
+  self-review protection, trusted checkout or platform rejection is bypassed.
+- Added operation-specific credential discovery and repaired the existing App
+  bootstrap resolver. Live probes still return 401 for the three CODEX keys,
+  a non-PEM App key, and 403 for administration/environment-secret reads using
+  the otherwise working integration credential. Owner authorization is
+  accepted; these are credential capability failures, not missing consent.
+- Final focused approval, workflow and preflight validation: 212 passed, with
+  two existing pytest configuration warnings. Black/Ruff, compilation, relevant
+  actionlint and mypy for all three changed source files passed.
+- Protected deployment success and exact-SHA hosted agent-maintainer approval
+  remain unverified. No second human or false human identity is prescribed.
+
 ## Session: PR #5783 protected approval and ML integration repair
 
 ### Agents Used
