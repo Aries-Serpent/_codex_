@@ -98,3 +98,55 @@ def test_ml_repairs_can_be_validated_on_staging_sub_prs():
     workflow_path = Path(__file__).resolve().parents[2] / ".github/workflows/ml-tests.yml"
     workflow = yaml.safe_load(workflow_path.read_text())
     assert "0D_base_" in workflow["on"]["pull_request"]["branches"]
+
+
+def test_coverage_shard_installs_and_preflights_optional_test_integrations():
+    """Unit shards must install optional integrations their tests exercise."""
+    import tomllib
+
+    root = Path(__file__).resolve().parents[2]
+    extras = tomllib.loads((root / "pyproject.toml").read_text())["project"][
+        "optional-dependencies"
+    ]
+    integration_reqs = extras["test-ml-integrations"]
+    distributions = {
+        req.split(">", 1)[0].split("<", 1)[0].split("=", 1)[0].strip().lower()
+        for req in integration_reqs
+    }
+    expected_dists = {
+        "sqlparse",
+        "nox",
+        "mypy",
+        "pymysql",
+        "imageio",
+        "scikit-image",
+        "pywavelets",
+        "opencv-python-headless",
+    }
+    assert expected_dists <= distributions
+    # Every pin must carry a lower bound so CI never resolves an ancient release.
+    assert all(">=" in req for req in integration_reqs)
+
+    workflow = yaml.safe_load((root / ".github/workflows/ml-tests.yml").read_text())
+    install = next(
+        step["run"]
+        for step in workflow["jobs"]["coverage-shard"]["steps"]
+        if step.get("name") == "Install project and ML runtime dependencies"
+    )
+    assert "-m pip install -e '.[runtime,test-ml-integrations]'" in install
+    preflight = install.split("<<'PY'\n", 1)[1].rsplit("\nPY", 1)[0]
+    imports = {
+        node.value
+        for node in ast.walk(ast.parse(preflight))
+        if isinstance(node, ast.Constant) and isinstance(node.value, str)
+    }
+    assert {
+        "sqlparse",
+        "nox",
+        "mypy",
+        "pymysql",
+        "imageio",
+        "skimage",
+        "pywt",
+        "cv2",
+    } <= imports
