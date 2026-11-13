@@ -86,7 +86,9 @@ class TestEarlyStoppingBasics:
         # Arrange
         from codex_ml.training.callbacks import EarlyStopping
 
-        es = EarlyStopping(patience=1, min_delta=0.1, mode="min")
+        # Semantics: stop once ``bad >= patience``; patience=2 tolerates one
+        # non-improving step.
+        es = EarlyStopping(patience=2, min_delta=0.1, mode="min")
 
         # Act & Assert
         es.step(1.0)  # Set best to 1.0
@@ -121,8 +123,8 @@ class TestEarlyStoppingPlateauDetection:
             if i == 0:
                 # First metric
                 assert should_stop is False, "Should not stop on first metric"
-            elif i < 3:
-                # Not yet at patience limit
+            elif i < es.patience:
+                # Not yet at patience limit (stop once bad >= patience)
                 assert should_stop is False, f"Should not stop before patience at step {i}"
                 assert es.bad < es.patience, "Bad counter should be less than patience"
             else:
@@ -152,7 +154,7 @@ class TestEarlyStoppingPlateauDetection:
         # Arrange
         from codex_ml.training.callbacks import EarlyStopping
 
-        es = EarlyStopping(patience=1, min_delta=0.01, mode="max")
+        es = EarlyStopping(patience=2, min_delta=0.01, mode="max")
 
         # Act & Assert
         es.step(0.5)  # Set best = 0.5
@@ -210,7 +212,7 @@ class TestEarlyStoppingEdgeCases:
         # Arrange
         from codex_ml.training.callbacks import EarlyStopping
 
-        es = EarlyStopping(patience=1, min_delta=1e-10, mode="min")
+        es = EarlyStopping(patience=2, min_delta=1e-10, mode="min")
 
         # Act & Assert
         es.step(0.5)  # Set best
@@ -254,7 +256,7 @@ class TestEarlyStoppingEdgeCases:
 
             if i == 0:
                 assert es.bad == 0, "First step should have bad=0"
-            elif i <= 2:
+            elif i < 2:
                 # Not yet at patience (patience=2, so stop when bad >= 2)
                 assert should_stop is False, f"Should not stop at step {i} (bad={es.bad})"
             else:
@@ -274,11 +276,11 @@ class TestEarlyStoppingIntegration:
         # Simulated training losses
         losses = [
             0.5,  # Step 0: initial
-            0.45,  # Step 1: improvement (0.05)
-            0.44,  # Step 2: small improvement (<0.05)
-            0.445,  # Step 3: degradation
-            0.446,  # Step 4: degradation
-            0.447,  # Step 5: degradation (should stop)
+            0.40,  # Step 1: improvement (> min_delta) -> bad=0
+            0.38,  # Step 2: small improvement (< min_delta) -> bad=1
+            0.385,  # Step 3: degradation -> bad=2 >= patience: stop
+            0.386,  # Step 4: (not reached)
+            0.387,  # Step 5: (not reached)
         ]
 
         stopped_at = None
@@ -291,7 +293,7 @@ class TestEarlyStoppingIntegration:
 
         # Assert
         assert stopped_at is not None, "Training should have stopped"
-        assert stopped_at == 5, f"Should have stopped after patience exhausted at step {stopped_at}"
+        assert stopped_at == 3, f"Should have stopped after patience exhausted at step {stopped_at}"
 
     def test_early_stopping_recovery_sequence(self):
         """Test that significant improvements reset stop counter."""
