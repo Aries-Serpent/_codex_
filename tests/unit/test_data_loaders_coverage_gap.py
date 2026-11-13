@@ -1,4 +1,6 @@
 import importlib.util
+
+import pytest
 from pathlib import Path
 
 # Load by path: ``tests/data`` can shadow the top-level ``data`` package during collection.
@@ -285,3 +287,20 @@ class TestValidateRecords:
         assert isinstance(record["number"], int)
         assert isinstance(record["float"], float)
         assert isinstance(record["bool"], bool)
+        assert record["none"] is None
+        assert record["list"] == [1, 2, 3]
+        assert record["dict"] == {"nested": "value"}
+
+    def test_validate_records_rejects_nested_pollution_string(self):
+        """String leaves inside nested containers are still validated."""
+        from security import SecurityError
+
+        with pytest.raises(SecurityError):
+            validate_records([{"tags": ["ok", {"inner": "__proto__"}]}])
+
+    def test_validate_records_rejects_non_json_values(self):
+        """Values outside the JSON data model are rejected."""
+        from security import SecurityError
+
+        with pytest.raises(SecurityError):
+            validate_records([{"bad": object()}])
