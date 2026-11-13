@@ -74,6 +74,48 @@ pytest tests/integration/ -k "error" -v
 
 These tests are designed to run in GitHub Actions. See `.github/workflows/integration-tests.yml` for CI configuration.
 
+### ML workflow shards
+
+The [ML workflow](../../.github/workflows/ml-tests.yml) runs four independent
+integration shards and two non-integration coverage shards after the component
+jobs. Tests within a file stay together; SHA-256 of the relative file path
+selects the shard, independent of collection order or `pytest-randomly` seeds.
+No durations file, pytest-split or xdist is required.
+
+From the repository root, reproduce an integration shard:
+
+```bash
+PYTHONPATH="$PWD/scripts/ci:$PWD/src" pytest tests/integration/ \
+  -p ml_pytest_shards -m integration -rfE --durations=30 --timeout=600 \
+  --ml-shards=4 --ml-shard=1 --ml-shard-report=reports/selection.json \
+  --junitxml=reports/junit.xml
+```
+
+Coverage shards run **exactly** `tests/ -m "not slow and not integration"`,
+with `--cov=src --cov=training`. Their individual coverage thresholds are
+disabled because each sees only a subset. The single `ml-slow-aggregate`
+check combines only `.coverage.unit-*` from `unit-cov-*` artifacts and enforces
+the unchanged **70%** threshold. Component and integration coverage never
+enter that gate. Integration pass/fail remains independently required.
+
+Every shard records JUnit, its selected IDs and a digest of the entire eligible
+collection. The aggregate rejects differing collections, overlap, missing
+selections/reports/data, and failed/cancelled/skipped upstream jobs. It writes
+merged JUnit, coverage HTML and readable failure summaries; shards also write
+summaries to GitHub's job summary. Empty or unavailable evidence is failure,
+not successful skipped acceptance.
+
+Use `--durations=30` output to identify expensive files before changing timeouts
+or introducing xdist. No quick-subset selection or component-coverage reuse is
+enabled. Push/nightly runs are not automatically cancelled; superseded PR
+runs still are.
+
+The follow-up is stacked on #5783. `copilot/session-*` PR bases are included so
+stacked repairs can run this workflow. A repository administrator must replace
+any required `test-integration-slow` check with **`ml-slow-aggregate`** only
+after verifying its published check name and fresh hosted results. This code
+does not change branch protection or configure required checks.
+
 ---
 
 ## Test Scenarios

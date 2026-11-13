@@ -7,7 +7,7 @@ import pytest
 import yaml
 
 
-@pytest.mark.parametrize("job_name", ["test-ml-components", "test-integration-slow"])
+@pytest.mark.parametrize("job_name", ["test-ml-components", "integration-shard", "coverage-shard"])
 def test_ml_jobs_install_and_preflight_collection_dependencies(job_name):
     workflow_path = Path(__file__).resolve().parents[2] / ".github/workflows/ml-tests.yml"
     workflow = yaml.safe_load(workflow_path.read_text())
@@ -35,26 +35,52 @@ def test_ml_jobs_install_and_preflight_collection_dependencies(job_name):
     }
     assert {"detect_secrets", "hypothesis", "freezegun"} <= imports
     assert job["permissions"] == {"contents": "read"}
-    assert job["timeout-minutes"] == 60
+    assert job["timeout-minutes"] == (60 if job_name == "test-ml-components" else 25)
 
 
-def test_slow_job_preserves_integration_diagnostics_within_job_budget():
+def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
     workflow_path = Path(__file__).resolve().parents[2] / ".github/workflows/ml-tests.yml"
-    job = yaml.safe_load(workflow_path.read_text())["jobs"]["test-integration-slow"]
-    steps = {step.get("name"): (index, step) for index, step in enumerate(job["steps"])}
-
-    integration_index, integration = steps["Run integration tests"]
-    upload_index, upload = steps["Upload integration test report"]
-    coverage_index, coverage = steps["Run all tests with coverage"]
-
-    assert "--junitxml=reports/integration-junit.xml" in integration["run"]
+    jobs = yaml.safe_load(workflow_path.read_text())["jobs"]
+    integration = next(
+        step
+        for step in jobs["integration-shard"]["steps"]
+        if step.get("name") == "Run integration tests"
+    )
+    coverage = next(
+        step
+        for step in jobs["coverage-shard"]["steps"]
+        if step.get("name") == "Run non-integration coverage tests"
+    )
+    assert "tests/integration/" in integration["run"]
+    assert '-m "integration"' in integration["run"]
+    assert "--cov" not in integration["run"]
+    assert "--junitxml=reports/junit.xml" in integration["run"]
     assert "-rfE" in integration["run"]
-    # The report must be uploaded before the long coverage step can exhaust the job.
-    assert integration_index < upload_index < coverage_index
-    assert upload["if"] == "always()"
-    assert upload["with"]["path"] == "reports/integration-junit.xml"
-    assert "--cov-fail-under=70" in coverage["run"]
-    assert integration["timeout-minutes"] + coverage["timeout-minutes"] < job["timeout-minutes"]
+    assert "tests/" in coverage["run"]
+    assert '-m "not slow and not integration"' in coverage["run"]
+    assert "--cov=src" in coverage["run"] and "--cov=training" in coverage["run"]
+    assert "--cov-fail-under=0" in coverage["run"]  # Partial shards are not the gate.
+    assert coverage["env"]["COVERAGE_FILE"] == ".coverage.unit-${{ matrix.shard }}"
+    for name, count in (("integration-shard", 4), ("coverage-shard", 2)):
+        job = jobs[name]
+        assert job["strategy"]["fail-fast"] is False
+        assert len(job["strategy"]["matrix"]["shard"]) == count
+        assert job["needs"] == "test-ml-components"
+        assert any(
+            step.get("if") == "always()" and "Summarize" in step.get("name", "")
+            for step in job["steps"]
+        )
+    aggregate = jobs["ml-slow-aggregate"]
+    assert aggregate["name"] == "ml-slow-aggregate"
+    assert aggregate["if"] == "always()"
+    assert set(aggregate["needs"]) == {"test-ml-components", "integration-shard", "coverage-shard"}
+    assert aggregate["permissions"] == {"contents": "read"}
+    downloads = [
+        step["with"]["pattern"]
+        for step in aggregate["steps"]
+        if "download-artifact@" in step.get("uses", "")
+    ]
+    assert downloads == ["int-junit-*", "unit-cov-*"]
 
 
 def test_ml_repairs_can_be_validated_on_staging_sub_prs():

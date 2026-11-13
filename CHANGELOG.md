@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+### Changed - Parallel ML slow-test follow-up to PR #5783
+- Split integration pass/fail into four stable file-path shards and the existing
+  non-slow/non-integration coverage selection into two independent shards.
+  Enforce the unchanged 70 percent gate only on combined unit shard data.
+- Add one stable aggregate job, selection-completeness checks, merged JUnit and
+  readable job summaries. Retain failures, cancellation and missing evidence as
+  failures regardless of coverage percentage.
+- Report the slowest 30 tests per shard, keep direct workflow permissions
+  read-only and cancel superseded PR runs rather than push/nightly runs.
+  Required-check configuration remains an administrator action.
+
 ### Fixed - PR #5783 protected approval and ML integration repair
 - Bind workflow-run approval to trusted workflow source and verified human
   activation/session evidence; distinguish it from protected deployment review.

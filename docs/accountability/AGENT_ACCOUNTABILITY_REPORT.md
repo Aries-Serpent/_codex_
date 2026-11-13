@@ -1,3 +1,27 @@
+## Session: ML sharding follow-up stacked on PR #5783
+
+### Execution and evidence
+
+- Direct implementation: four file-hashed integration shards, two independent
+  unit coverage shards and the fixed `ml-slow-aggregate` job. No additional
+  agents, xdist workers, duration database or reduced PR selection.
+- Preserve `tests/integration/ -m integration` pass/fail independently of
+  `tests/ -m "not slow and not integration"` coverage. Only the two unit data
+  files enter the unchanged aggregate 70 percent gate.
+- Selection manifests bind each shard to its eligible collection and marker
+  expression. The aggregate rejects disagreement, overlap, missing data or
+  reports and failed/cancelled/skipped upstream jobs.
+- Focused sharding/workflow tests: 42 passed with two existing pytest config
+  warnings. Real coverage fixtures verify complementary partial data combines
+  above 70 percent, insufficient unit coverage still fails despite complete
+  integration data, and green coverage cannot mask failed shards.
+- Black, Ruff, mypy (two helpers), compile and actionlint passed. The workflow's
+  jobs retain explicit timeouts and contents-read permissions; direct actions are
+  pinned and the existing setup composite is unchanged. Required-check settings read returned 403. Administrator configuration
+  of the stable check and fresh hosted shard execution remain separate evidence.
+- This follow-up does not claim that sharding repairs the outstanding real
+  integration failures or proves #5783's protected deployment functionality.
+
 ## Session: PR #5783 protected approval and ML integration repair
 
 ### Agents Used
