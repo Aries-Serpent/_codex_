@@ -8,8 +8,11 @@ import json
 import os
 import subprocess
 import sys
-import xml.etree.ElementTree as ET
 from pathlib import Path
+from xml.etree.ElementTree import Element
+
+from defusedxml import ElementTree as ET
+from defusedxml.common import DefusedXmlException
 
 if __package__:
     from . import ml_pytest_shards as package_shards
@@ -52,7 +55,7 @@ def validate_selections(root: Path, prefix: str, count: int, marker: str, path: 
         raise ValueError(f"{prefix}: overlapping or incomplete test selection")
 
 
-def collection_skip_key(case: ET.Element) -> tuple[str, str] | None:
+def collection_skip_key(case: Element) -> tuple[str, str] | None:
     skipped = case.find("skipped")
     if (
         not case.get("classname")
@@ -67,7 +70,7 @@ def junit_summary(root: Path, label: str) -> tuple[str, bool]:
     files = sorted(root.rglob("*.xml"))
     if not files:
         raise ValueError(f"{label}: no JUnit reports")
-    cases: list[ET.Element] = []
+    cases: list[Element] = []
     collection_skips: set[tuple[str, str]] = set()
     for report in files:
         for case in ET.parse(report).getroot().iter("testcase"):
@@ -97,12 +100,14 @@ def junit_summary(root: Path, label: str) -> tuple[str, bool]:
         )
     if len(failures) > 30:
         text += "Additional failures are in the uploaded JUnit reports.\n"
-    merged = ET.Element("testsuite", name=label, tests=str(len(cases)))
-    merged.set("failures", str(len(failures)))
-    merged.set("skipped", str(skipped))
-    merged.extend(cases)
+    merged = (
+        f'<testsuite name="{html.escape(label, quote=True)}" tests="{len(cases)}" '
+        f'failures="{len(failures)}" skipped="{skipped}">'
+        + "".join(ET.tostring(case, encoding="unicode") for case in cases)
+        + "</testsuite>"
+    )
     # Keep the merged report outside the downloaded input directory.
-    ET.ElementTree(merged).write(root.parent / f"{root.name}-merged.xml", encoding="utf-8")
+    (root.parent / f"{root.name}-merged.xml").write_text(merged, encoding="utf-8")
     return text, bool(failures)
 
 
@@ -130,14 +135,21 @@ def aggregate(root: Path, needs: dict[str, dict[str, str]]) -> tuple[str, int]:
                 selected_cases = [case for case in cases if collection_skip_key(case) is None]
                 if len(selected_cases) != len(manifest["selected"]):
                     raise ValueError(f"{prefix}-{index}: incomplete JUnit report")
-        except (OSError, ValueError, KeyError, TypeError, ET.ParseError) as exc:
+        except (
+            OSError,
+            ValueError,
+            KeyError,
+            TypeError,
+            ET.ParseError,
+            DefusedXmlException,
+        ) as exc:
             text += f"\n**{folder} evidence failed:** {html.escape(str(exc))}\n"
             failed = True
         try:
             summary, junit_failed = junit_summary(root / folder, folder)
             text += "\n" + summary
             failed |= junit_failed
-        except (OSError, ValueError, ET.ParseError) as exc:
+        except (OSError, ValueError, ET.ParseError, DefusedXmlException) as exc:
             text += f"\n**{folder} JUnit failed:** {html.escape(str(exc))}\n"
             failed = True
 
@@ -159,6 +171,7 @@ def aggregate(root: Path, needs: dict[str, dict[str, str]]) -> tuple[str, int]:
                 proc = subprocess.run(
                     [sys.executable, "-m", "coverage", *args],
                     env=env,
+                    cwd=Path.cwd(),
                     capture_output=True,
                     text=True,
                     timeout=120,
@@ -199,6 +212,7 @@ def main() -> int:
         KeyError,
         TypeError,
         ET.ParseError,
+        DefusedXmlException,
         subprocess.TimeoutExpired,
     ) as exc:
         summary_path = os.environ.get("GITHUB_STEP_SUMMARY")

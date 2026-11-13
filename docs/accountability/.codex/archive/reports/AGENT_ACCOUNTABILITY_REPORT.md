@@ -21,6 +21,25 @@ Resolve the confirmed Authentication Tests and Copilot Setup Validation failures
 
 ---
 
+## SESSION SUMMARY — 2026-11-13 (CI Rescue — PR #5784)
+
+### Findings and Changes
+- Fast Validation run `43380642146` failed its `check-unsafe-xml` pre-commit hook on native XML parsing in the ML shard code.
+- Replaced XML parsing with `defusedxml`, report serialization with escaped output, and dynamic test-fixture execution with direct CoverageData construction.
+- Explicitly bound coverage subprocesses to the requested working directory and report defused-XML rejection as an aggregate failure.
+- No custom agents were invoked; work was performed directly.
+
+### Validation
+- Passed: 18 focused ML shard tests; Ruff; mypy; Python compilation; `check-unsafe-xml`; `git diff --check`.
+- Four pytester-heavy cases were excluded from the passing run. In the full-file attempt, child runs encountered unavailable optional ML dependencies; the marker-selection case also lacked the `pytest-randomly` plugin with plugin autoload disabled.
+- Local Semgrep could not start because the installed OpenTelemetry packages are incompatible (`_ExtendedAttributes` import failure). Hosted Semgrep for the new commit remains pending.
+- Base-branch ML integration run `43371132225` timed out after 30 minutes; this is separate from the Fast Validation failure above.
+
+### Worktree Note
+- Progress checkpoint `6d8a04b8` also committed pre-existing modifications in `.codex/agent_environment_config.yaml` and `.codex/session_startup_packet.json`; their content remains intact and they were not edited as part of this fix.
+
+---
+
 ## SESSION SUMMARY — 2026-10-21 — PR #5706 CI rescue remediation
 
 ### Objective

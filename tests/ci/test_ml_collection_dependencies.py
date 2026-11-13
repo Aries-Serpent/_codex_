@@ -88,6 +88,10 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
         if "download-artifact@" in step.get("uses", "")
     ]
     assert downloads == ["int-junit-*", "unit-cov-*"]
+    tooling = next(
+        step["run"] for step in aggregate["steps"] if step.get("name") == "Install report tooling"
+    )
+    assert "defusedxml>=0.7.1" in tooling
 
 
 def test_ml_repairs_can_be_validated_on_staging_sub_prs():

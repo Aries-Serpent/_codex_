@@ -11,7 +11,7 @@
 - Selection manifests bind each shard to its eligible collection and marker
   expression. The aggregate rejects disagreement, overlap, missing data or
   reports and failed/cancelled/skipped upstream jobs.
-- Focused sharding/workflow tests: 48 passed with two existing pytest config
+- Focused sharding/workflow tests: 49 passed with two existing pytest config
   warnings. Real coverage fixtures verify complementary partial data combines
   above 70 percent, insufficient unit coverage still fails despite complete
   integration data, and green coverage cannot mask failed shards.
@@ -41,6 +41,11 @@
   inside a 40-minute job, preserving the 300-second per-test limit.
   The aggregate failed closed on missing unit reports/data; no coverage pass
   or completed ML acceptance is claimed.
+- Preserve concurrent Copilot commits `6d8a04b839` and `a903de5f8e` through a
+  normal merge, including their XML hardening and coverage-data fixture changes.
+  Add the newly required defusedxml dependency to the isolated aggregate job;
+  focused validation initially proved it was missing, then passed all 49 cases
+  after installation. No branch history or concurrent metadata is discarded.
 
 ## Session: PR #5783 protected approval and ML integration repair
 

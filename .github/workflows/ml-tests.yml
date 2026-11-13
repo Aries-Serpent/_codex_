@@ -347,7 +347,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install report tooling
-        run: python -m pip install "coverage>=7.10.6,<8" "pytest>=9,<10"
+        run: python -m pip install "coverage>=7.10.6,<8" "pytest>=9,<10" "defusedxml>=0.7.1,<1"
 
       - name: Download integration reports only
         if: always()

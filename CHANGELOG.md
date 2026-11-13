@@ -21,6 +21,8 @@
 - Retain the original 30-minute coverage-step allowance after the four-way
   hosted trial also timed out; reserve setup/reporting time in a 40-minute job.
   Keep the 300-second per-test limit unchanged.
+- Integrate concurrent Copilot XML hardening and install its required defusedxml
+  dependency in the lightweight aggregate job; preserve proper XML element types.
 
 ### Fixed - PR #5783 protected approval and ML integration repair
 - Bind workflow-run approval to trusted workflow source and verified human

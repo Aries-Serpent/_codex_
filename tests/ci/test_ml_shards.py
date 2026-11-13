@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 import json
-import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import coverage
 import pytest
+from defusedxml import ElementTree as ET
 
 from scripts.ci import ml_pytest_shards as shards
 from scripts.ci.ml_slow_aggregate import aggregate, junit_summary, validate_selections
@@ -138,6 +138,24 @@ def test_junit_failures_are_merged_and_escaped(tmp_path):
     assert (tmp_path / "integration-merged.xml").is_file()
 
 
+def test_aggregate_rejects_junit_dtd(tmp_path):
+    make_reports(tmp_path)
+    report = tmp_path / "unit/unit-cov-1/junit.xml"
+    report.write_text(
+        '<!DOCTYPE testsuite [<!ENTITY x SYSTEM "file:///nonexistent">]>'
+        "<testsuite><testcase name='bad'>&x;</testcase></testsuite>"
+    )
+    needs = {
+        name: {"result": "success"}
+        for name in ("test-ml-components", "integration-shard", "coverage-shard")
+    }
+
+    summary, exit_code = aggregate(tmp_path, needs)
+
+    assert exit_code == 1
+    assert "Forbidden" in summary
+
+
 def test_module_collection_skips_are_not_duplicate_selected_tests(pytester):
     pytester.makepyfile(ml_pytest_shards=Path(shards.__file__).read_text())
     directory = pytester.path / "tests"
@@ -204,11 +222,9 @@ def test_2_abort():
 
 
 def write_coverage(path: Path, source: Path, lines: range) -> None:
-    cov = coverage.Coverage(data_file=str(path), config_file=False, include=[str(source)])
-    cov.start()
-    exec(compile("\n" * lines.start + "\n".join(f"x = {i}" for i in lines), str(source), "exec"))
-    cov.stop()
-    cov.save()
+    data = coverage.CoverageData(basename=str(path), suffix=False)
+    data.add_lines({str(source): {line + 1 for line in lines}})
+    data.write()
 
 
 @pytest.mark.parametrize(
@@ -249,17 +265,23 @@ def test_gate_combines_only_unit_data_and_never_masks_shard_failure(
     }
     if job_result.startswith("collection-"):
         for report in reports.rglob("junit.xml"):
-            suite = ET.parse(report).getroot()
+            suite = report.read_text()
             if job_result == "collection-skip-missing-test" and report.parent.name == "unit-cov-1":
-                case = suite.find("testcase")
-                assert case is not None
-                suite.remove(case)
-            case = ET.SubElement(suite, "testcase", classname="", name="missing.module")
+                case_start = suite.find("<testcase")
+                case_end = suite.find("/>", case_start)
+                assert case_start >= 0 and case_end >= 0
+                suite = suite[:case_start] + suite[case_end + 2 :]
             if job_result == "collection-error":
-                ET.SubElement(case, "error").text = "collection failed"
+                case = (
+                    '<testcase classname="" name="missing.module">'
+                    "<error>collection failed</error></testcase>"
+                )
             else:
-                ET.SubElement(case, "skipped", message="collection skipped").text = "module skipped"
-            ET.ElementTree(suite).write(report)
+                case = (
+                    '<testcase classname="" name="missing.module">'
+                    '<skipped message="collection skipped">module skipped</skipped></testcase>'
+                )
+            report.write_text(suite.replace("</testsuite>", f"{case}</testsuite>"))
     elif job_result == "junit-error":
         report = reports / "unit/unit-cov-1/junit.xml"
         report.write_text(
@@ -270,7 +292,7 @@ def test_gate_combines_only_unit_data_and_never_masks_shard_failure(
     summary, exit_code = aggregate(reports, needs)
     assert exit_code == expected, summary
     assert "coverage report" in summary
-    assert (tmp_path / "htmlcov/index.html").is_file()
+    assert (tmp_path / "htmlcov/index.html").is_file(), summary
     if job_result == "collection-skip":
         assert "Tests: 9; failures/errors: 0; skipped: 1" in summary
     elif job_result == "collection-skip-missing-test":
