@@ -120,8 +120,8 @@ class my_class:
         code = """
 try:
     risky()
-except (AssertionError, ValueError, TypeError, RuntimeError):  # noqa: BLE001
-    _ = None
+except:
+    handle()
 """
         detector = CodeSmellDetector()
         smells = detector.detect_string(code)
@@ -134,8 +134,8 @@ except (AssertionError, ValueError, TypeError, RuntimeError):  # noqa: BLE001
         code = """
 try:
     risky()
-except (AssertionError, ValueError, TypeError, RuntimeError):  # noqa: BLE001
-    _ = None
+except ValueError:
+    pass
 """
         detector = CodeSmellDetector()
         smells = detector.detect_string(code)

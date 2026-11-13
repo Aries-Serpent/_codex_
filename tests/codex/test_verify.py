@@ -43,8 +43,8 @@ class TestBehaviorComparator:
         baseline_dir.mkdir()
         patched_dir.mkdir()
 
-        (baseline_dir / "main.py").write_text("logger.info('hello')\n", encoding="utf-8")
-        (patched_dir / "main.py").write_text("logger.info('world')\n", encoding="utf-8")
+        (baseline_dir / "main.py").write_text("print('hello')\n", encoding="utf-8")
+        (patched_dir / "main.py").write_text("print('world')\n", encoding="utf-8")
 
         result = compare(baseline_dir, patched_dir, mode=ComparisonMode.STRICT)
 
@@ -60,8 +60,8 @@ class TestBehaviorComparator:
         patched_dir.mkdir()
 
         # Scripts with different whitespace but same content
-        (baseline_dir / "main.py").write_text("logger.info('a')\nprint('b')\n", encoding="utf-8")
-        (patched_dir / "main.py").write_text("logger.info('b')\nprint('a')\n", encoding="utf-8")
+        (baseline_dir / "main.py").write_text("print('a')\nprint('b')\n", encoding="utf-8")
+        (patched_dir / "main.py").write_text("print('b')\nprint('a')\n", encoding="utf-8")
 
         result = compare(baseline_dir, patched_dir, mode=ComparisonMode.FUZZY)
 
@@ -93,8 +93,8 @@ class TestBehaviorComparator:
         baseline_dir.mkdir()
         patched_dir.mkdir()
 
-        (baseline_dir / "main.py").write_text("logger.info('test')\n", encoding="utf-8")
-        (patched_dir / "main.py").write_text("logger.info('test')\n", encoding="utf-8")
+        (baseline_dir / "main.py").write_text("print('test')\n", encoding="utf-8")
+        (patched_dir / "main.py").write_text("print('test')\n", encoding="utf-8")
 
         result = compare(baseline_dir, patched_dir, mode=ComparisonMode.STRICT)
         data = result.to_dict()
@@ -114,8 +114,8 @@ class TestBehaviorComparator:
         baseline_dir.mkdir()
         patched_dir.mkdir()
 
-        (baseline_dir / "main.py").write_text("logger.info('test')\n", encoding="utf-8")
-        (patched_dir / "main.py").write_text("logger.info('test')\n", encoding="utf-8")
+        (baseline_dir / "main.py").write_text("print('test')\n", encoding="utf-8")
+        (patched_dir / "main.py").write_text("print('test')\n", encoding="utf-8")
 
         result = compare(baseline_dir, patched_dir, mode=ComparisonMode.STRICT)
 
@@ -226,7 +226,7 @@ class TestTestGeneration:
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
-        (source_dir / "main.py").write_text("logger.info('hello')\n", encoding="utf-8")
+        (source_dir / "main.py").write_text("print('hello')\n", encoding="utf-8")
 
         samples_dir = tmp_path / "samples"
         samples_dir.mkdir()
@@ -248,7 +248,7 @@ class TestTestGeneration:
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
-        (source_dir / "main.py").write_text("logger.info('hello')\n", encoding="utf-8")
+        (source_dir / "main.py").write_text("print('hello')\n", encoding="utf-8")
 
         samples_dir = tmp_path / "samples"
         samples_dir.mkdir()
@@ -297,8 +297,8 @@ class TestFlakiness:
         baseline_dir.mkdir()
         patched_dir.mkdir()
 
-        (baseline_dir / "main.py").write_text("logger.info('test')\n", encoding="utf-8")
-        (patched_dir / "main.py").write_text("logger.info('test')\n", encoding="utf-8")
+        (baseline_dir / "main.py").write_text("print('test')\n", encoding="utf-8")
+        (patched_dir / "main.py").write_text("print('test')\n", encoding="utf-8")
 
         result = compare(baseline_dir, patched_dir, mode=ComparisonMode.STRICT, flakiness_runs=3)
 

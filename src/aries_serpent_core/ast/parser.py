@@ -138,7 +138,7 @@ class UniversalParser:
 
             return root
 
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
+        except (cst.ParserSyntaxError, IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             if self.strict:

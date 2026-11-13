@@ -84,7 +84,8 @@ def hello():
             path1.write_text(code)
             path2.write_text(code)
 
-            uniqueness = compute_uniqueness([path1, path2])
+            # Tiny fixture: lower min_nodes so both files are counted
+            uniqueness = compute_uniqueness([path1, path2], min_nodes=1)
             # Identical files should have low uniqueness (close to 0)
             assert uniqueness < 0.5, "uniqueness is not valid"
 
