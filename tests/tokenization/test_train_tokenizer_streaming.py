@@ -1,8 +1,8 @@
-"""
-pytest.importorskip("charset_normalizer")
-Test Train Tokenizer Streaming
+"""Streaming tests for the authoritative tokenizer trainer.
 
-Test module for train tokenizer streaming.
+The helpers patched here (``ingest``, ``spm``, ``SentencePieceUnigramTokenizer``)
+live in :mod:`tokenization.train_tokenizer`; ``codex_ml.tokenization.train_tokenizer``
+only re-exports its public API.
 """
 
 from __future__ import annotations
@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from codex_ml.tokenization import train_tokenizer
+train_tokenizer = pytest.importorskip("tokenization.train_tokenizer")
 
 
 def test_iter_text_uses_chunk_size(monkeypatch):

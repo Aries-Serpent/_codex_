@@ -83,7 +83,8 @@ def test_sentencepiece_adapter_basic(tmp_path):
     adapter = SentencePieceAdapter(model_path)
     adapter.train_or_load(
         input_path=corpus_file,
-        vocab_size=100,
+        # Real sentencepiece caps vocab at what the tiny corpus supports (22).
+        vocab_size=20,
         character_coverage=0.98,
         model_type="unigram",
     )
@@ -111,11 +112,11 @@ def test_sentencepiece_adapter_load(tmp_path):
 
     model_path = tmp_path / "test.model"
     adapter = SentencePieceAdapter(model_path)
-    adapter.train_or_load(corpus_file, vocab_size=100)
+    adapter.train_or_load(corpus_file, vocab_size=20)
 
     # Load the same model
     adapter2 = SentencePieceAdapter(model_path)
-    loaded = adapter2.train_or_load(corpus_file, vocab_size=100)
+    loaded = adapter2.train_or_load(corpus_file, vocab_size=20)
 
     # Should load existing model rather than retrain
     assert loaded is not None, "loaded must be initialized"

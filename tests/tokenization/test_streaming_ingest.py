@@ -1,15 +1,15 @@
-"""
-pytest.importorskip("charset_normalizer")
-Test Streaming Ingest
+"""Streaming ingest tests for the authoritative tokenizer trainer.
 
-Test module for streaming ingest.
+``codex_ml.tokenization.train_tokenizer`` is a thin re-export wrapper; the
+streaming helpers (``ingest``, ``_iter_text``, ``_resolve_streaming_options``)
+live in :mod:`tokenization.train_tokenizer`, so patch them there.
 """
 
 from __future__ import annotations
 
 import pytest
 
-from codex_ml.tokenization import train_tokenizer as module
+module = pytest.importorskip("tokenization.train_tokenizer")
 
 pytestmark = pytest.mark.skipif(
     module is None, reason="tokenizers not available — train_tokenizer module not loaded"
@@ -29,8 +29,13 @@ def test_iter_text_uses_configured_chunk_size(monkeypatch):
     cfg = module.TrainTokenizerConfig(corpus_glob=[], streaming=True, stream_chunk_size=128)
     output = list(module._iter_text(["foo.txt", "bar.txt"], cfg))
 
-    # Fixed malformed assertion: assert calls ==
-    assert output == ["full\n", "text"]
+    assert calls == [("foo.txt", "auto", 128), ("bar.txt", "auto", 128)]
+    assert output == [
+        "foo.txt-line-1\n",
+        "foo.txt-line-2\n",
+        "bar.txt-line-1\n",
+        "bar.txt-line-2\n",
+    ]
 
 
 def test_iter_text_reads_entire_file_when_streaming_disabled(monkeypatch):

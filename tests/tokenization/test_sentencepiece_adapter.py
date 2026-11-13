@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import importlib
 import json
+import sys
 import types
 from pathlib import Path
 
@@ -37,6 +38,10 @@ def test_train_roundtrip(tmp_path, monkeypatch):
         ),
     )
     monkeypatch.setattr(mod, "spm", sp_stub)
+    # _get_sentencepiece() prefers a real ``sentencepiece`` in sys.modules over
+    # the module-level ``spm``; inject the stub there too so the real trainer
+    # is never invoked on this 1-line corpus.
+    monkeypatch.setitem(sys.modules, "sentencepiece", sp_stub)
     monkeypatch.setattr(
         mod.SentencePieceAdapter,
         "model_prefix",

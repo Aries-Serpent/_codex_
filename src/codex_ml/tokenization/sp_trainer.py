@@ -167,12 +167,17 @@ class SPTokenizer(TrainableTokenizerProtocol):
             "bos_id": 1,
             "eos_id": 2,
             "unk_id": 3,
-            "seed": int(seed),
             "shuffle_input_sentence": False,
             "input_sentence_size": 0,
             "user_defined_symbols": list(dict.fromkeys(extra_symbols)),
         }
 
+        # TrainerSpec has no ``seed`` field (sentencepiece raises
+        # ``NOT_FOUND: unknown field name "seed"``); seeding is exposed via the
+        # module-level ``set_random_generator_seed`` instead.
+        seeder = getattr(module, "set_random_generator_seed", None)
+        if callable(seeder):
+            seeder(int(seed))
         module.SentencePieceTrainer.train(**trainer_args)  # type: ignore[attr-defined]
         model_file = f"{model_prefix}.model"
         pointer_path = out_dir / "tokenizer.pointer"

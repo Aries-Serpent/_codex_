@@ -212,11 +212,15 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             train_kwargs["sentence_iterator"] = sentence_iterator_factory()
         else:
             train_kwargs["input"] = ",".join(files)
+        seeder = getattr(spm, "set_random_generator_seed", None)
+        if callable(seeder):
+            seeder(int(cfg.seed))
         try:
             spm.SentencePieceTrainer.Train(**train_kwargs)
-        except OSError as exc:
-            type(exc).__name__
-            logger.debug("OSError: <ERROR_TYPE>")
+        except (OSError, RuntimeError) as exc:
+            # sentencepiece>=0.2 raises RuntimeError("NOT_FOUND: unknown field
+            # name \"seed_sentencepiece\" in TrainerSpec.") for unknown flags.
+            logger.debug("SentencePiece trainer rejected kwargs: %s", type(exc).__name__)
             if "seed_sentencepiece" not in str(exc):
                 raise
             train_kwargs.pop("seed_sentencepiece", None)
@@ -230,6 +234,7 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             try:
                 _sp_model_pb2 = spm.sentencepiece_model_pb2
             except (
+                AttributeError,
                 IOError,
                 OSError,
                 ModuleNotFoundError,
