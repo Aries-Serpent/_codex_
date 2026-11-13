@@ -10,7 +10,6 @@ Test Coverage Targets:
 - Integration tests for full pipeline
 """
 
-
 import numpy as np
 import pytest
 
@@ -95,7 +94,7 @@ class TestHeuristicModel:
         """Test heuristic model initialization."""
         model = HeuristicModel()
         assert model is not None, "model must be initialized"
-        assert model.get_model_type() == ModelType.HEURISTIC, "Condition must be true"
+        assert model.model_type == ModelType.HEURISTIC, "Condition must be true"
 
     def test_heuristic_predict(self, test_features):
         """Test heuristic prediction."""
@@ -113,7 +112,7 @@ class TestMLModel:
         """Test ML model initialization."""
         model = MLModel()
         assert model is not None, "model must be initialized"
-        assert model.get_model_type() == ModelType.MACHINE_LEARNING, "Condition must be true"
+        assert model.model_type == ModelType.MACHINE_LEARNING, "Condition must be true"
 
     def test_ml_predict(self, test_features):
         """Test ML prediction."""
@@ -123,11 +122,19 @@ class TestMLModel:
         assert 0.0 <= result.confidence <= 1.0, "Result must not be empty"
 
     def test_ml_training(self, synthetic_data):
-        """Test ML model training."""
-        X, y = synthetic_data
+        """MLModel ships pre-fitted importance weights (no train() API).
+
+        Every synthetic sample must yield a bounded prediction, and the
+        advertised accuracy estimate stays in the documented 0.85-0.90 band.
+        """
+        X, _y = synthetic_data
         model = MLModel()
-        metrics = model.train(X, y)
-        assert "training_accuracy" in metrics, "Condition must be true"
+        keys = ["confidence", "frequency", "priority", "days_old", "category"]
+        assert set(model.feature_weights) == set(keys)
+        for row in X[:10]:
+            result = model.predict(dict(zip(keys, map(float, row))))
+            assert 0.0 <= result.confidence <= 1.0
+        assert 0.85 <= model.get_accuracy_estimate() <= 0.90
 
 
 class TestSymbolicModel:
@@ -137,7 +144,7 @@ class TestSymbolicModel:
         """Test symbolic model initialization."""
         model = SymbolicModel()
         assert model is not None, "model must be initialized"
-        assert model.get_model_type() == ModelType.SYMBOLIC, "Condition must be true"
+        assert model.model_type == ModelType.SYMBOLIC, "Condition must be true"
 
     def test_symbolic_predict(self, test_features):
         """Test symbolic prediction."""
