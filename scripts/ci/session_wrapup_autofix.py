@@ -544,6 +544,17 @@ def _build_wec_block(
     for fname, label, _ in active_workflows_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
+    lines += ["", "### 🚫 Never auto-checked / legacy-disabled workflow entries"]
+    for fname, label in (
+        ("comment-review-gate.yml", "Comment review gate"),
+        ("iterative-self-healing-ci.yml", "Iterative self-healing CI"),
+        ("pre-merge-validation.yml", "Pre-merge validation"),
+        ("unified-copilot-management.yml", "Unified Copilot management"),
+    ):
+        lines.append(
+            f"- [{_checked(fname)}] {fname} — {label} (legacy / disabled in active baseline)"
+        )
+
     lines += [
         "",
         "> **⚠️ HARDENED AGENT INSTRUCTION (non-negotiable):** This entire WEC block MUST be",
@@ -1417,10 +1428,13 @@ def fix_pr_body_checkboxes(
             print(f"⚠  PR #{pr_number} _build_wec_block() returned block without marker — forcing rebuild")  # codeql[py/clear-text-logging-sensitive-data]
         else:
             canon_from_marker = canonical_block[canonical_block.index(_WEC_MARKER):]
-            body_from_marker  = pr_body[pr_body.index(_WEC_MARKER):]
+            body_from_marker = pr_body[pr_body.index(_WEC_MARKER) :]
+            next_section = re.search(r"\n## ", body_from_marker[len(_WEC_MARKER) :])
+            if next_section:
+                body_from_marker = body_from_marker[: len(_WEC_MARKER) + next_section.start()]
             if canon_from_marker.strip() == body_from_marker.strip():
                 n_checked = sum(1 for v in existing_state.values() if v)
-                n_grants  = sum(1 for g in human_grants.values() if g.get("status") == "active")
+                n_grants = sum(1 for g in human_grants.values() if g.get("status") == "active")
                 print(
                     f"✅ PR #{pr_number} WEC is already canonical "
                     f"({n_checked} item(s) checked, {n_grants} human grant(s)) — no repair needed"
@@ -1440,27 +1454,55 @@ def fix_pr_body_checkboxes(
         agents_ok, agents_reason = check_pr_body_agents_used(pr_body)
         if not agents_ok:
             missing.append(f"Agents Used ({agents_reason})")
-        print(f"⚠  PR #{pr_number} missing: {', '.join(missing)} — restoring...")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"⚠  PR #{pr_number} missing: {', '.join(missing)} — restoring..."
+        )  # codeql[py/clear-text-logging-sensitive-data]
     else:
-        print(f"⚠  PR #{pr_number} has legacy WEC format — migrating to canonical heading format")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"⚠  PR #{pr_number} has legacy WEC format — migrating to canonical heading format"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
-    # Strip old WEC blocks (both new heading format and legacy bold-text format)
-    stripped_body = pr_body
-    for marker in (_WEC_MARKER, _WEC_MARKER_LEGACY,
-                   "\n### 💰 Cost Governance", "\n### 🔐 Agent Token Delegation",
-                   "\n---\n\n**🔄 Workflow Execution Checklist", "\n## 🤖 Agents Used"):
-        if marker in stripped_body:
-            idx = stripped_body.index(marker)
-            while idx > 0 and stripped_body[idx - 1] == "\n":
-                idx -= 1
-            stripped_body = stripped_body[:idx]
+    insertion = min(
+        (
+            pr_body.index(marker)
+            for marker in (_WEC_MARKER, _WEC_MARKER_LEGACY)
+            if marker in pr_body
+        ),
+        default=len(pr_body),
+    )
+    prefix, suffix = pr_body[:insertion], pr_body[insertion:]
+    # Remove only governance sections, not subsequent template/evidence sections.
+    for marker in (
+        _WEC_MARKER,
+        _WEC_MARKER_LEGACY,
+        "\n### 💰 Cost Governance",
+        "\n### 🔐 Agent Token Delegation",
+        "\n---\n\n**🔄 Workflow Execution Checklist",
+        "\n## 🤖 Agents Used",
+    ):
+        parts = [prefix, suffix]
+        for index, part in enumerate(parts):
+            while marker in part:
+                start = part.index(marker)
+                depth = 3 if marker.startswith("\n### ") else 2
+                next_section = re.search(
+                    rf"(?m)^#{{1,{depth}}}\s",
+                    part[start + len(marker) :],
+                )
+                end = start + len(marker) + next_section.start() if next_section else len(part)
+                part = part[:start] + part[end:]
+            parts[index] = part
+        prefix, suffix = parts
 
     new_wec = (
         _build_wec_block(existing_state, human_grants=human_grants)
-        if existing_state else _REQUIRED_PR_CHECKBOXES
+        if existing_state
+        else _REQUIRED_PR_CHECKBOXES
     )
     new_wec = _preserve_agent_attestation(new_wec, pr_body)
-    new_body = stripped_body.rstrip() + new_wec
+    new_body = prefix.rstrip() + new_wec
+    if suffix.strip():
+        new_body += "\n\n" + suffix.strip()
 
     if dry_run:
         n_checked = sum(1 for v in existing_state.values() if v)

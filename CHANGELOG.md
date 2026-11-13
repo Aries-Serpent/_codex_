@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5766 bounded readiness repair (2026-11-13)
+- Require a captured INFO record with exact redacted content in the logging compliance regression; the previous test could pass without capturing any log.
+- Repair the missing `os` import in the RAG model-profile test and include the open Dependabot pyasn1 0.6.5 update across the evaluation, ML and canonical uv locks.
+- Install and import-preflight the three missing ML collection dependencies in both ML jobs; add focused workflow regression coverage without changing permissions or timeouts.
+- Preserve template/testing sections after an in-place WEC repair; automatic restoration had truncated draft #5779's evidence and agent declarations.
+- Record current hosted CI and protected-access blockers separately from local validation; preserve severity thresholds, signing and genuine approval controls.
+
 ### Changed — PR #5766 assurance repair (2026-11-12)
 - Include the Copilot extension source and tests in the shared CodeQL scope without changing query suites, exclusions, permissions or approval gates.
 - Recover and verify the original hosted SARIF/source artifacts; record the actual 2,794 Python and zero JavaScript results, older checkout binding and unresolved candidate assurance instead of claiming a 35-result triage or promotion readiness.
