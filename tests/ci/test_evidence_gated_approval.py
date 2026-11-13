@@ -526,14 +526,23 @@ def test_app_token_is_scoped_to_approval_repository_and_permissions(monkeypatch)
     from types import SimpleNamespace
 
     monkeypatch.setenv("REPO", "o/r")
+    monkeypatch.setattr(approval, "_app_identity", None)
     monkeypatch.setitem(
         sys.modules, "jwt", SimpleNamespace(encode=lambda *args, **kwargs: "fixture")
     )
     calls = []
 
-    def request(method, path, token, body):
+    def request(method, path, token, body=None):
+        if path == "/app":
+            return 200, {"id": 1, "slug": "codex-maintainer"}
+        if path == "/app/installations/2":
+            return 200, {"id": 2, "app_id": 1, "account": {"login": "o"}}
         calls.append((method, path, body))
-        return 201, {"token": "scoped-fixture"}
+        return 201, {
+            "token": "scoped-fixture",
+            "expires_at": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
+            "permissions": {"actions": "write", "pull_requests": "read"},
+        }
 
     monkeypatch.setattr(approval, "_gh", request)
     assert approval._mint_app_token("1", "fixture", "2") == "scoped-fixture"
@@ -552,6 +561,135 @@ def test_app_token_is_scoped_to_approval_repository_and_permissions(monkeypatch)
             },
         ),
     ]
+
+
+@pytest.fixture
+def delegated_app(api, monkeypatch):
+    import sys
+    from types import SimpleNamespace
+
+    _, run, _, _ = api
+    monkeypatch.setattr(approval, "_app_identity", None)
+    monkeypatch.setenv("REPO", "o/r")
+    monkeypatch.setenv("GITHUB_APP_ID", "1")
+    monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "2")
+    monkeypatch.setenv("GITHUB_APP_PRIVATE_KEY", "fixture")
+    monkeypatch.setitem(
+        sys.modules, "jwt", SimpleNamespace(encode=lambda *args, **kwargs: "jwt-fixture")
+    )
+    evidence = {
+        "app": {"id": 1, "slug": "codex-maintainer"},
+        "installation": {"id": 2, "app_id": 1, "account": {"login": "o"}},
+        "token": {
+            "token": "delegated-app-fixture",
+            "expires_at": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
+            "permissions": {"actions": "write", "pull_requests": "read"},
+        },
+        "review": {
+            "user": {"login": "codex-maintainer[bot]", "type": "Bot"},
+            "author_association": "NONE",
+            "state": "APPROVED",
+            "commit_id": SHA,
+        },
+    }
+    original = approval._gh
+
+    def request(method, path, token, body=None):
+        if path == "/app":
+            return 200, deepcopy(evidence["app"])
+        if path == "/app/installations/2":
+            return 200, deepcopy(evidence["installation"])
+        if path == "/app/installations/2/access_tokens":
+            return 201, deepcopy(evidence["token"])
+        if "/reviews?" in path:
+            return 200, [deepcopy(evidence["review"])]
+        return original(method, path, token, body)
+
+    monkeypatch.setattr(approval, "_gh", request)
+    return evidence, run
+
+
+def test_verified_agent_maintainer_needs_no_second_human(delegated_app, monkeypatch):
+    _, run = delegated_app
+    monkeypatch.setenv("GITHUB_ACTOR", "author")
+    monkeypatch.setenv("GITHUB_TRIGGERING_ACTOR", "author")
+    token, source = approval._resolve_token()
+    assert source == "cognitive-brain-app"
+    assert approval._authorize_run(token, "o/r", "1", SHA, run) == "authorized"
+    assert "delegated-app-fixture" not in repr(approval._app_identity)
+
+
+@pytest.mark.parametrize("case", ["owner", "suspended", "app-id", "permissions", "expiry"])
+def test_agent_credentials_require_live_installation_evidence(delegated_app, case):
+    evidence, _ = delegated_app
+    if case == "owner":
+        evidence["installation"]["account"]["login"] = "elsewhere"
+    elif case == "suspended":
+        evidence["installation"]["suspended_at"] = datetime.now(timezone.utc).isoformat()
+    elif case == "app-id":
+        evidence["app"]["id"] = 9
+    elif case == "permissions":
+        evidence["token"]["permissions"]["actions"] = "read"
+    else:
+        evidence["token"]["expires_at"] = "2000-01-01T00:00:00Z"
+    assert approval._mint_app_token("1", "fixture", "2") is None
+    assert approval._app_identity is None
+
+
+@pytest.mark.parametrize("case", ["stale", "other-bot", "withdrawn", "self"])
+def test_delegated_review_preserves_independence_and_sha(delegated_app, case):
+    evidence, run = delegated_app
+    token, _ = approval._resolve_token()
+    if case == "stale":
+        evidence["review"]["commit_id"] = "b" * 40
+    elif case == "other-bot":
+        evidence["review"]["user"]["login"] = "unverified[bot]"
+    elif case == "withdrawn":
+        evidence["review"]["state"] = "DISMISSED"
+    else:
+        run["actor"]["login"] = "codex-maintainer[bot]"
+    expected = "self-approval" if case == "self" else "missing-independent-current-review"
+    assert approval._authorize_run(token, "o/r", "1", SHA, run) == expected
+
+
+def test_expired_app_identity_does_not_authorize(delegated_app, monkeypatch):
+    _, run = delegated_app
+    token, _ = approval._resolve_token()
+    monkeypatch.setattr(
+        approval, "_app_identity", approval._AppIdentity(token, "codex-maintainer[bot]", 0)
+    )
+    assert approval._authorize_run(token, "o/r", "1", SHA, run) == "unknown-approver-identity"
+
+
+def test_agent_approval_audit_preserves_real_bot_identity(delegated_app, monkeypatch):
+    _, run = delegated_app
+    monkeypatch.setenv("HEAD_SHA", SHA)
+    monkeypatch.setenv("PR_NUMBER", "1")
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
+    monkeypatch.setenv("CLEANUP_COPILOT_EYES", "false")
+    monkeypatch.setenv("DRY_RUN", "false")
+    monkeypatch.setattr(approval, "_get_action_required_runs", lambda *args, **kwargs: [run])
+    decisions = []
+    assert approval._run_decisions(decisions) == 0
+    record = next(item for item in decisions if item.get("outcome") == "approved")
+    assert record["approver"] == {"login": "codex-maintainer[bot]", "type": "Bot"}
+    assert record["token_source"] == "cognitive-brain-app"
+    assert record["head_sha"] == SHA
+    assert record["credential_expires_at"] > datetime.now(timezone.utc).timestamp()
+    assert "delegated-app-fixture" not in repr(decisions)
+
+
+def test_malformed_success_response_is_not_permission_evidence(monkeypatch):
+    from contextlib import nullcontext
+    from types import SimpleNamespace
+
+    response = SimpleNamespace(status=200, read=lambda limit: b"non-json-private-response")
+    opener = SimpleNamespace(open=lambda *args, **kwargs: nullcontext(response))
+    monkeypatch.setattr(approval.urllib.request, "build_opener", lambda *args: opener)
+    status, payload = approval._gh("GET", "/user", "fixture")
+    assert status == 502
+    assert payload == {"error": "Invalid JSON from GitHub API"}
+    assert "private-response" not in repr(payload)
 
 
 def test_delegation_verification_precedes_any_untrusted_checkout():
