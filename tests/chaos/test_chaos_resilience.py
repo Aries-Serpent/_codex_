@@ -30,7 +30,7 @@ class _FlakyService:
     def call(self) -> str:
         self._calls += 1
         if self._calls <= self._fail_count:
-            raise RuntimeError(f"Flaky failure #{self._calls}")
+            raise ConnectionError(f"Flaky failure #{self._calls}")
         return self.success_value
 
 
@@ -38,7 +38,7 @@ class _AlwaysFailingService:
     """A service that always raises."""
 
     def call(self) -> str:
-        raise RuntimeError("permanent failure")
+        raise ConnectionError("permanent failure")
 
 
 # ---------------------------------------------------------------------------
@@ -65,7 +65,7 @@ class TestCircuitBreakerUnderRandomFailures:
             return "success"
 
         def _fail() -> str:
-            raise RuntimeError("injected failure")
+            raise ConnectionError("injected failure")
 
         # Drive enough failures to open the circuit
         failures_injected = 0
@@ -80,7 +80,7 @@ class TestCircuitBreakerUnderRandomFailures:
                     cb.call(fn)
                     if fn is _succeed:
                         failures_injected = 0  # reset streak on success
-                except RuntimeError:
+                except ConnectionError:
                     failures_injected += 1
 
         assert cb.state is CircuitState.OPEN, "state is not valid"
@@ -94,7 +94,7 @@ class TestCircuitBreakerUnderRandomFailures:
             return "ok"
 
         def _fail() -> str:
-            raise RuntimeError("rare failure")
+            raise ConnectionError("rare failure")
 
         for _ in range(50):
             if cb.state is CircuitState.OPEN:
@@ -102,7 +102,7 @@ class TestCircuitBreakerUnderRandomFailures:
             fn = _fail if rng.random() < 0.05 else _succeed
             try:
                 cb.call(fn)
-            except RuntimeError:
+            except ConnectionError:
                 pass  # counted internally
 
         # With only ~5% failures, threshold of 5 should not be breached
@@ -179,11 +179,11 @@ class TestCircuitHalfOpenRecovery:
         )
 
         def _fail() -> None:
-            raise RuntimeError("forced failure")
+            raise ConnectionError("forced failure")
 
         # Trip the circuit open
         for _ in range(2):
-            with pytest.raises(RuntimeError):
+            with pytest.raises(ConnectionError):
                 cb.call(_fail)
 
         assert cb.state is CircuitState.OPEN, "state is not valid"
@@ -209,16 +209,16 @@ class TestCircuitHalfOpenRecovery:
         )
 
         def _fail() -> None:
-            raise RuntimeError("forced")
+            raise ConnectionError("forced")
 
         for _ in range(2):
-            with pytest.raises(RuntimeError):
+            with pytest.raises(ConnectionError):
                 cb.call(_fail)
 
         time.sleep(0.06)
         assert cb.state is CircuitState.HALF_OPEN, "state is not valid"
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(ConnectionError):
             cb.call(_fail)
 
         assert cb.state is CircuitState.OPEN, "state is not valid"
@@ -252,19 +252,28 @@ class TestCombinedCircuitPlusRetry:
         assert cb.state is CircuitState.CLOSED, "state is not valid"
 
     def test_combined_behaviour_circuit_opens_when_retry_always_exhausted(self) -> None:
-        """When every retry is exhausted the circuit eventually opens."""
+        """When retries keep failing the circuit opens and short-circuits retries.
+
+        The breaker only counts ``OSError``/``ImportError`` failures (see
+        ``codex.resilience.circuit_breaker``), so ``RetryExhausted`` is not a
+        breaker failure.  Retry therefore wraps each breaker-guarded attempt.
+        """
         svc = _AlwaysFailingService()
-
-        @retry_with_backoff(max_retries=1, base_delay=0.0, jitter=0.0)
-        def inner() -> str:
-            return svc.call()
-
         cb = CircuitBreaker(failure_threshold=3, recovery_timeout=60, name="combined_open")
 
-        for _ in range(3):
-            with pytest.raises(RetryExhausted):
-                cb.call(inner)
+        @retry_with_backoff(max_retries=1, base_delay=0.0, jitter=0.0, exceptions=(OSError,))
+        def guarded() -> str:
+            return cb.call(svc.call)
+
+        # Two counted failures; retry budget exhausted while circuit still closed.
+        with pytest.raises(RetryExhausted):
+            guarded()
+        assert cb.state is CircuitState.CLOSED, "state is not valid"
+
+        # Third failure opens the circuit; the retry attempt is rejected fast.
+        with pytest.raises(CircuitOpenError):
+            guarded()
 
         assert cb.state is CircuitState.OPEN, "state is not valid"
         with pytest.raises(CircuitOpenError):
-            cb.call(inner)
+            guarded()

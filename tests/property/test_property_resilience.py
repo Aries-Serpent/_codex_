@@ -90,7 +90,9 @@ class TestRetryProperties:
                 wrapped()
                 pytest.fail("Expected RetryExhausted")
             except RetryExhausted as exc:
-                assert (exc.attempts == max_retries + 1), f"attempts={exc.attempts} should equal max_retries+1={max_retries + 1}"
+                assert (
+                    exc.attempts == max_retries + 1
+                ), f"attempts={exc.attempts} should equal max_retries+1={max_retries + 1}"
 
     @given(st.integers(min_value=1, max_value=8), _fallback_values)
     @settings(max_examples=50)
@@ -164,6 +166,8 @@ class TestRetryProperties:
 
 
 class TestCircuitBreakerProperties:
+    # CircuitBreaker only counts OSError/ImportError failures (module contract),
+    # so these properties inject ConnectionError (an OSError subclass).
     """Property tests for CircuitBreaker."""
 
     @given(_failure_threshold)
@@ -178,22 +182,26 @@ class TestCircuitBreakerProperties:
         )
 
         def always_fails() -> None:
-            raise RuntimeError("fail")
+            raise ConnectionError("fail")
 
         # Execute failure_threshold - 1 failures; circuit must still be CLOSED.
         for _ in range(failure_threshold - 1):
             try:
                 cb.call(always_fails)
-            except RuntimeError:
+            except ConnectionError:
                 pass  # expected: underlying error propagates while circuit stays CLOSED
-        assert (cb.state is CircuitState.CLOSED), f"Circuit should still be CLOSED after {failure_threshold - 1} failures"
+        assert (
+            cb.state is CircuitState.CLOSED
+        ), f"Circuit should still be CLOSED after {failure_threshold - 1} failures"
 
         # One more failure trips it to OPEN.
         try:
             cb.call(always_fails)
-        except RuntimeError:
+        except ConnectionError:
             pass  # expected: final failure propagates and trips circuit to OPEN
-        assert (cb.state is CircuitState.OPEN), f"Circuit must be OPEN after {failure_threshold} consecutive failures"
+        assert (
+            cb.state is CircuitState.OPEN
+        ), f"Circuit must be OPEN after {failure_threshold} consecutive failures"
 
     @given(_failure_threshold)
     @settings(max_examples=50)
@@ -205,13 +213,13 @@ class TestCircuitBreakerProperties:
         )
 
         def fails() -> None:
-            raise RuntimeError("boom")
+            raise ConnectionError("boom")
 
         # Trip the circuit
         for _ in range(failure_threshold):
             try:
                 cb.call(fails)
-            except RuntimeError:
+            except ConnectionError:
                 pass  # expected: underlying error propagates while tripping the circuit
 
         assert cb.state is CircuitState.OPEN, "state is not valid"
@@ -237,12 +245,12 @@ class TestCircuitBreakerProperties:
         )
 
         def fails() -> None:
-            raise RuntimeError("fail")
+            raise ConnectionError("fail")
 
         for _ in range(failure_threshold):
             try:
                 cb.call(fails)
-            except RuntimeError:
+            except ConnectionError:
                 pass  # expected: underlying error propagates while tripping the circuit
 
         assert cb.state is CircuitState.OPEN, "state is not valid"
