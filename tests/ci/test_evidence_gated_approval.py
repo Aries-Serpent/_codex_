@@ -1,11 +1,14 @@
 """Negative approval tests use offline REST fixtures, never credentials."""
 
 from copy import deepcopy
+from datetime import datetime, timedelta, timezone
 
 import pytest
 import yaml
 
 from scripts.ci import approve_pending_runs as approval
+from scripts.ci import require_wec_auto_approve as label_gate
+from scripts.ci import verify_owner_approval as owner_gate
 
 SHA = "a" * 40
 
@@ -15,6 +18,7 @@ def api(monkeypatch):
     monkeypatch.setenv("GITHUB_ACTOR", "maintainer-requester")
     monkeypatch.setenv("GITHUB_TRIGGERING_ACTOR", "maintainer-requester")
     pr = {
+        "number": 1,
         "state": "open",
         "head": {"sha": SHA},
         "user": {"login": "author"},
@@ -173,7 +177,7 @@ def test_missing_pr_denied_and_recorded(monkeypatch, tmp_path):
     )
 
 
-def test_legacy_workflow_bypasses_unreachable():
+def test_only_trusted_workflow_run_approval_remains():
     from pathlib import Path
 
     workflow = yaml.safe_load(
@@ -191,20 +195,18 @@ def test_legacy_workflow_bypasses_unreachable():
                 or "gh label create" in source
             ):
                 assert step.get("if") == "${{ false }}"
-    push = workflow["jobs"]["approve-on-push"]
-    approve = next(
-        step for step in push["steps"] if step["name"] == "Approve pending runs (if PR found)"
+    assert "pull_request_target" in workflow["on"]
+    assert "push" not in workflow["on"]
+    assert "pull_request" not in workflow["on"]
+    job = workflow["jobs"]["approve-original"]
+    assert "endsWith(github.workflow_ref" in job["if"]
+    checkout = next(
+        step for step in job["steps"] if step.get("uses", "").startswith("actions/checkout@")
     )
-    assert "exit 0" not in approve["run"]
-    assert "approval_source == ''" in workflow["jobs"]["approve-original"]["if"]
-    for job_id in ("approve-on-push", "evaluate-approval", "execute-approval", "approve-original"):
-        assert "endsWith(github.workflow_ref" in workflow["jobs"][job_id]["if"]
-        checkout = next(
-            step
-            for step in workflow["jobs"][job_id]["steps"]
-            if step.get("uses", "").startswith("actions/checkout@")
-        )
-        assert checkout["with"]["ref"] == "${{ github.event.repository.default_branch }}"
+    assert checkout["with"]["ref"] == "${{ github.workflow_sha }}"
+    assert checkout["with"]["persist-credentials"] is False
+    assert "environment" not in job
+    assert job["permissions"]["contents"] == "read"
 
 
 def test_preliminary_inspection_failure_is_recorded(monkeypatch, tmp_path):
@@ -227,3 +229,347 @@ def test_preliminary_inspection_failure_is_recorded(monkeypatch, tmp_path):
         json.loads((tmp_path / "approval-decision.json").read_text())["decisions"][0]["rule"]
         == "inspection-error"
     )
+
+
+@pytest.mark.parametrize(
+    "event_name", ["pull_request_target", "workflow_run", "issue_comment", "schedule"]
+)
+def test_automatic_inspection_is_not_self_approval(api, monkeypatch, event_name):
+    _, run, identity, _ = api
+    monkeypatch.setenv("GITHUB_EVENT_NAME", event_name)
+    monkeypatch.setenv("GITHUB_ACTOR", "author")
+    monkeypatch.setenv("GITHUB_TRIGGERING_ACTOR", "author")
+    assert approval._authorize_run("", "o/r", "1", SHA, run) == "authorized"
+    identity["login"] = "author"
+    assert approval._authorize_run("", "o/r", "1", SHA, run) == "self-approval"
+
+
+@pytest.mark.parametrize("event_name", ["pull_request_target", "workflow_run", "issue_comment"])
+def test_trusted_event_resolves_exact_pr_head(api, monkeypatch, tmp_path, event_name):
+    import json
+
+    _, run, _, _ = api
+    event = {
+        "pull_request": {"number": 1, "head": {"sha": SHA}},
+        "issue": {"number": 1, "pull_request": {"url": "fixture"}},
+        "workflow_run": {"id": run["id"]},
+    }
+    # REST PR fixtures also carry their number.
+    gh = approval._gh
+
+    def numbered_pr(method, path, token, body=None):
+        status, data = gh(method, path, token, body)
+        if path == "/repos/o/r/pulls/1":
+            data["number"] = 1
+        return status, data
+
+    monkeypatch.setattr(approval, "_gh", numbered_pr)
+    path = tmp_path / "event.json"
+    path.write_text(json.dumps(event))
+    monkeypatch.setenv("GITHUB_EVENT_NAME", event_name)
+    monkeypatch.setenv("GITHUB_EVENT_PATH", str(path))
+    assert approval._event_target("", "o/r") == ("1", SHA)
+
+
+def test_workflow_event_rejects_ambiguous_association(api, monkeypatch, tmp_path):
+    _, run, _, _ = api
+    run["pull_requests"] = [{"number": 1}, {"number": 2}]
+    path = tmp_path / "event.json"
+    path.write_text('{"workflow_run": {"id": 7}}')
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_run")
+    monkeypatch.setenv("GITHUB_EVENT_PATH", str(path))
+    with pytest.raises(RuntimeError, match="ambiguous"):
+        approval._event_target("", "o/r")
+
+
+def test_invalid_primary_pat_does_not_hide_valid_backup(monkeypatch):
+    monkeypatch.delenv("GITHUB_APP_PRIVATE_KEY", raising=False)
+    monkeypatch.setenv("CODEX_MASTER_KEY", "invalid-fixture")
+    monkeypatch.setenv("CODEX_BACKUP_KEY", "valid-fixture")
+    monkeypatch.setattr(
+        approval,
+        "_gh",
+        lambda method, path, token: (
+            (401, {})
+            if token == "invalid-fixture"
+            else (200, {"type": "User", "login": "independent-maintainer"})
+        ),
+    )
+    assert approval._resolve_token() == ("valid-fixture", "CODEX_BACKUP_KEY")
+
+
+@pytest.mark.parametrize(
+    "case,expected",
+    [
+        ("fresh-old-pr", True),
+        ("expired", False),
+        ("future", False),
+        ("revoked", False),
+        ("missing", False),
+        ("naive", False),
+        ("bot", False),
+        ("extended-ttl", False),
+    ],
+)
+def test_once_grant_uses_verified_activation_not_pr_age(case, expected):
+    labels = [{"name": "wec:auto-approve-once"}]
+    pr = {"labels": labels, "created_at": "2020-01-01T00:00:00Z"}
+    activation = {
+        "id": 1,
+        "event": "labeled",
+        "label": {"name": "wec:auto-approve-once"},
+        "actor": {"type": "User", "login": "maintainer"},
+        "created_at": (datetime.now(timezone.utc) - timedelta(minutes=30)).isoformat(),
+    }
+    if case == "expired":
+        activation["created_at"] = (datetime.now(timezone.utc) - timedelta(hours=2)).isoformat()
+    elif case == "future":
+        activation["created_at"] = (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat()
+    elif case == "naive":
+        activation["created_at"] = "2026-11-13T00:00:00"
+    elif case == "bot":
+        activation["actor"]["type"] = "Bot"
+    events = [] if case == "missing" else [activation]
+    if case == "revoked":
+        events.append({**activation, "id": 2, "event": "unlabeled"})
+
+    def request(method, path, token):
+        return (200, events) if "/events?" in path else (200, pr)
+
+    assert (
+        label_gate.label_valid(
+            "", "o/r", 1, pr, request, ttl_hours=24 if case == "extended-ttl" else 1
+        )
+        is expected
+    )
+
+
+@pytest.mark.parametrize("case", ["denied", "truncated", "repeated"])
+def test_once_activation_requires_complete_history(case):
+    pr = {"labels": [{"name": "wec:auto-approve-once"}]}
+
+    def request(method, path, token):
+        if case == "denied":
+            return 403, {}
+        if case == "repeated":
+            return 200, [{"id": 1}, {"id": 1}]
+        return 200, [{"id": i} for i in range(1, 101)]
+
+    with pytest.raises(RuntimeError):
+        label_gate.label_valid("", "o/r", 1, pr, request)
+
+
+@pytest.mark.parametrize(
+    "case,error",
+    [
+        ("protected", None),
+        ("missing-marker", "missing-or-invalid-environment-marker"),
+        ("no-reviewers", "missing-independent-environment-review"),
+        ("self-review", "missing-independent-environment-review"),
+        ("bypass", "environment-allows-administrator-bypass"),
+        ("unrestricted", "unrestricted-environment-deployment-branches"),
+    ],
+)
+def test_owner_marker_never_substitutes_for_protection(case, error):
+    environment = {
+        "protection_rules": [
+            {
+                "type": "required_reviewers",
+                "prevent_self_review": True,
+                "reviewers": [{"type": "User", "reviewer": {"id": 1}}],
+            }
+        ],
+        "can_admins_bypass": False,
+        "deployment_branch_policy": {"protected_branches": True, "custom_branch_policies": False},
+    }
+    marker = "true"
+    if case == "missing-marker":
+        marker = ""
+    elif case == "no-reviewers":
+        environment["protection_rules"] = []
+    elif case == "self-review":
+        environment["protection_rules"][0]["prevent_self_review"] = False
+    elif case == "bypass":
+        environment["can_admins_bypass"] = True
+    elif case == "unrestricted":
+        environment["deployment_branch_policy"] = None
+    assert owner_gate.protection_error(environment, marker) == error
+
+
+def test_environment_api_denial_is_not_approval(monkeypatch, capsys):
+    monkeypatch.setenv("GITHUB_REPOSITORY", "o/r")
+    monkeypatch.setenv("GITHUB_TOKEN", "fixture")
+    monkeypatch.setenv("OWNER_APPROVAL_PROTECTED", "true")
+    monkeypatch.setattr(owner_gate, "_gh", lambda *args: (403, {}))
+    assert owner_gate.main() == 1
+    assert "HTTP 403" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize(
+    "event_name",
+    ["pull_request_target", "workflow_run", "issue_comment", "schedule", "workflow_dispatch"],
+)
+def test_supported_trigger_runs_complete_independent_approval(
+    api, monkeypatch, tmp_path, event_name
+):
+    import json
+
+    pr, run, _, calls = api
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("GITHUB_EVENT_NAME", event_name)
+    monkeypatch.setenv("REPO", "o/r")
+    monkeypatch.setenv("MAX_WAIT_SEC", "0")
+    monkeypatch.setenv("DRY_RUN", "false")
+    monkeypatch.delenv("HEAD_SHA", raising=False)
+    monkeypatch.delenv("PR_NUMBER", raising=False)
+    monkeypatch.delenv("APPROVAL_INTENT", raising=False)
+    monkeypatch.delenv("TARGET_RUN_ID", raising=False)
+    monkeypatch.setattr(approval, "_resolve_token", lambda: ("fixture", "fixture"))
+    monkeypatch.setattr(approval, "_get_action_required_runs", lambda *args, **kwargs: [run])
+    monkeypatch.setattr(approval, "_search_wec_labelled_prs", lambda *args: [("1", SHA)])
+    event = {
+        "pull_request": pr,
+        "issue": {"number": 1, "pull_request": {"url": "fixture"}},
+        "workflow_run": {"id": 7},
+    }
+    path = tmp_path / "event.json"
+    path.write_text(json.dumps(event))
+    monkeypatch.setenv("GITHUB_EVENT_PATH", str(path))
+    if event_name == "workflow_dispatch":
+        monkeypatch.setenv("PR_NUMBER", "1")
+    assert approval.main() == 0
+    assert [(method, path) for method, path in calls if method != "GET"] == [
+        ("POST", "/repos/o/r/actions/runs/7/approve")
+    ]
+    decision = json.loads((tmp_path / "approval-decision.json").read_text())["decisions"][0]
+    assert decision["head_sha"] == SHA
+    assert decision["outcome"] == "approved"
+
+
+@pytest.mark.parametrize("status", [401, 403, 409, 422])
+def test_platform_rejection_is_not_success(monkeypatch, status):
+    monkeypatch.setattr(approval, "_gh", lambda *args: (status, {}))
+    assert approval._approve_run("", "o/r", {"id": 7}) == "error"
+
+
+@pytest.mark.parametrize("case", ["consume", "stale-head", "new-activation", "denied"])
+def test_once_cleanup_binds_head_and_original_activation(monkeypatch, case):
+    pr = {
+        "state": "open",
+        "head": {"sha": SHA},
+        "labels": [{"name": "wec:auto-approve-once"}],
+    }
+    if case == "stale-head":
+        pr["head"]["sha"] = "b" * 40
+    calls = []
+
+    def request(method, path, token):
+        calls.append((method, path))
+        return (403, {}) if method == "DELETE" and case == "denied" else (200, pr)
+
+    monkeypatch.setattr(approval, "_gh", request)
+    monkeypatch.setattr(approval, "label_valid", lambda *args: True)
+    monkeypatch.setattr(
+        approval.label_gate,
+        "once_activation",
+        lambda *args: {"id": 2 if case == "new-activation" else 1},
+    )
+    if case == "denied":
+        with pytest.raises(RuntimeError, match="HTTP 403"):
+            approval._consume_once_grant("", "o/r", "1", SHA, 1)
+    else:
+        approval._consume_once_grant("", "o/r", "1", SHA, 1)
+    assert any(method == "DELETE" for method, _ in calls) is (case in {"consume", "denied"})
+
+
+@pytest.mark.parametrize("case", ["completed", "old-session", "running", "other-pr"])
+def test_once_cleanup_requires_verified_post_activation_session(monkeypatch, tmp_path, case):
+    now = datetime.now(timezone.utc)
+    session = {
+        "name": "Copilot coding agent",
+        "status": "completed",
+        "head_sha": SHA,
+        "pull_requests": [{"number": 1}],
+        "run_started_at": now.isoformat(),
+    }
+    if case == "old-session":
+        session["run_started_at"] = (now - timedelta(hours=2)).isoformat()
+    elif case == "running":
+        session["status"] = "in_progress"
+    elif case == "other-pr":
+        session["pull_requests"] = [{"number": 2}]
+    path = tmp_path / "event.json"
+    path.write_text('{"workflow_run": {"id": 8}}')
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_run")
+    monkeypatch.setenv("GITHUB_EVENT_PATH", str(path))
+    monkeypatch.setattr(
+        approval,
+        "_gh",
+        lambda method, path, token: (
+            (200, session)
+            if "/actions/runs/" in path
+            else (200, {"labels": [{"name": "wec:auto-approve-once"}]})
+        ),
+    )
+    monkeypatch.setattr(
+        approval.label_gate,
+        "once_activation",
+        lambda *args: {"id": 1, "created_at": (now - timedelta(minutes=30)).isoformat()},
+    )
+    assert approval._completed_once_grant("", "o/r", "1", SHA) == (
+        1 if case == "completed" else None
+    )
+
+
+def test_app_token_is_scoped_to_approval_repository_and_permissions(monkeypatch):
+    import sys
+    from types import SimpleNamespace
+
+    monkeypatch.setenv("REPO", "o/r")
+    monkeypatch.setitem(
+        sys.modules, "jwt", SimpleNamespace(encode=lambda *args, **kwargs: "fixture")
+    )
+    calls = []
+
+    def request(method, path, token, body):
+        calls.append((method, path, body))
+        return 201, {"token": "scoped-fixture"}
+
+    monkeypatch.setattr(approval, "_gh", request)
+    assert approval._mint_app_token("1", "fixture", "2") == "scoped-fixture"
+    assert calls == [
+        (
+            "POST",
+            "/app/installations/2/access_tokens",
+            {
+                "repositories": ["r"],
+                "permissions": {
+                    "actions": "write",
+                    "contents": "read",
+                    "pull_requests": "read",
+                    "issues": "write",
+                },
+            },
+        ),
+    ]
+
+
+def test_delegation_verification_precedes_any_untrusted_checkout():
+    from pathlib import Path
+
+    workflow = yaml.safe_load(
+        (
+            Path(__file__).resolve().parents[2] / ".github/workflows/agent-auth-delegation.yml"
+        ).read_text()
+    )
+    activation = workflow["jobs"]["activate-delegation"]
+    assert activation["environment"] == "owner-approval"
+    assert "endsWith(github.workflow_ref" in activation["if"]
+    checkout = activation["steps"][0]
+    assert checkout["with"]["ref"] == "${{ github.workflow_sha }}"
+    assert checkout["with"]["persist-credentials"] is False
+    verification = activation["steps"][1]
+    assert (
+        verification["env"]["OWNER_APPROVAL_PROTECTED"] == "${{ secrets.OWNER_APPROVAL_PROTECTED }}"
+    )
+    assert "verify_owner_approval.py" in verification["run"]

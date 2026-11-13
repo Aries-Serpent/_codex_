@@ -61,9 +61,19 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+if __package__ or __name__ != "__main__":
+    from scripts.ci import require_wec_auto_approve as package_gate
+
+    label_gate = package_gate
+    label_valid = package_gate.label_valid
+else:
+    import require_wec_auto_approve as script_gate
+
+    label_gate = script_gate
+    label_valid = script_gate.label_valid
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -131,6 +141,9 @@ def _mint_app_token(app_id: str, private_key_pem: str, installation_id: str) -> 
     try:
         import jwt as _jwt
     except ImportError:
+        print(
+            "App signing dependencies unavailable; falling back to verified PATs", file=sys.stderr
+        )
         return None
 
     now = int(time.time())
@@ -141,8 +154,26 @@ def _mint_app_token(app_id: str, private_key_pem: str, installation_id: str) -> 
         print("App JWT signing failed", file=sys.stderr)
         return None
 
+    repo = os.environ.get("REPO") or os.environ.get("GITHUB_REPOSITORY", "")
+    parts = repo.split("/")
+    if len(parts) != 2 or not all(parts):
+        print("App token requires an explicit repository scope", file=sys.stderr)
+        return None
     path = f"/app/installations/{installation_id}/access_tokens"
-    status, resp_body = _gh("POST", path, app_jwt)
+    status, resp_body = _gh(
+        "POST",
+        path,
+        app_jwt,
+        {
+            "repositories": [parts[1]],
+            "permissions": {
+                "actions": "write",
+                "contents": "read",
+                "pull_requests": "read",
+                "issues": "write",
+            },
+        },
+    )
     if status == 201 and isinstance(resp_body, dict) and resp_body.get("token"):
         return resp_body["token"]
     print(f"App token mint failed (HTTP {status})", file=sys.stderr)
@@ -163,10 +194,10 @@ def _resolve_token() -> tuple[str, str]:
         )  # codeql[py/clear-text-logging-sensitive-data]
         token = _mint_app_token(app_id, app_key, inst_id)
         if token:
-            print(
-                "✅ Using Cognitive Brain App token"
-            )  # codeql[py/clear-text-logging-sensitive-data]
-            return token, "cognitive-brain-app"
+            status, identity = _gh("GET", "/user", token)
+            if status == 200 and isinstance(identity, dict) and identity.get("type") == "User":
+                return token, "cognitive-brain-app"
+            print("App token lacks a verified independent human identity", file=sys.stderr)
         print(
             "⚠️  App token unavailable — falling back to PAT"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -174,23 +205,14 @@ def _resolve_token() -> tuple[str, str]:
     for env_name in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GH_TOKEN"):
         val = os.environ.get(env_name, "").strip()
         if val:
-            print(f"ℹ️  Using {env_name}")  # codeql[py/clear-text-logging-sensitive-data]
-            return val, env_name
+            status, identity = _gh("GET", "/user", val)
+            if status == 200 and isinstance(identity, dict) and identity.get("type") == "User":
+                print(f"Using verified {env_name}")
+                return val, env_name
+            print(f"{env_name} identity unavailable (HTTP {status})", file=sys.stderr)
 
     print("❌ No token available — set GH_TOKEN, CODEX_MASTER_KEY, or App secrets", file=sys.stderr)
     raise SystemExit(1)
-
-
-def _parse_iso8601_datetime(value: str | None) -> datetime | None:
-    if not value or not isinstance(value, str):
-        return None
-    candidate = value
-    if candidate.endswith("Z"):
-        candidate = candidate[:-1] + "+00:00"
-    try:
-        return datetime.fromisoformat(candidate).astimezone(timezone.utc)
-    except ValueError:
-        return None
 
 
 def _has_wec_auto_approve_label(
@@ -205,24 +227,7 @@ def _has_wec_auto_approve_label(
     if status != 200 or not isinstance(payload, dict):
         return False
 
-    return _wec_label_valid(payload, ttl_hours=ttl_hours)
-
-
-def _wec_label_valid(payload: dict[str, Any], *, ttl_hours: int = 1) -> bool:
-    labels = payload.get("labels", [])
-    label_names = {label.get("name") if isinstance(label, dict) else label for label in labels}
-    if "wec:auto-approve" in label_names:
-        return True
-    if "wec:auto-approve-once" not in label_names:
-        return False
-
-    created_at = payload.get("created_at") or payload.get("createdAt")
-    created_dt = _parse_iso8601_datetime(created_at)
-    if created_dt is None:
-        return False
-
-    age_hours = (datetime.now(timezone.utc) - created_dt).total_seconds() / 3600
-    return 0 <= age_hours <= ttl_hours
+    return label_valid(token, repo, pr_number, payload, _gh, ttl_hours=ttl_hours)
 
 
 def _filter_prs_by_wec_label(
@@ -285,7 +290,7 @@ def _search_wec_labelled_prs(token: str, repo: str) -> list[tuple[str, str]]:
             raise RuntimeError("Malformed discovered PR labels")
         if payload.get("state") not in {"open", "closed"}:
             raise RuntimeError("Malformed discovered PR state")
-        if payload["state"] == "open" and _wec_label_valid(payload):
+        if payload["state"] == "open" and label_valid(token, repo, pr_num, payload, _gh):
             targets.append((str(pr_num), sha))
     return targets
 
@@ -378,10 +383,6 @@ def _approve_run(
     if status in (201, 204):
         print(f"  ✅ Approved: {label}")  # codeql[py/clear-text-logging-sensitive-data]
         return "approved"
-    if status in (409, 422):
-        print(f"  ⏭️  Already processed: {label}")  # codeql[py/clear-text-logging-sensitive-data]
-        return "skipped"
-
     print(f"  ❌ Approval denied by GitHub (HTTP {status}): {label}", file=sys.stderr)
     return "error"
 
@@ -555,7 +556,16 @@ def _authorize_run(
     }
     if not author or "" in run_actors:
         return "unknown-author-identity"
-    if {approver, requester, triggering_requester} & (run_actors | {author}):
+    approval_actors = {approver}
+    # Automatic events request inspection; they are not the platform approver.
+    if os.environ.get("GITHUB_EVENT_NAME") not in {
+        "pull_request_target",
+        "workflow_run",
+        "issue_comment",
+        "schedule",
+    }:
+        approval_actors.update({requester, triggering_requester})
+    if approval_actors & (run_actors | {author}):
         return "self-approval"
     if not _has_wec_auto_approve_label(token, repo, pr_number):
         return "missing-or-expired-label"
@@ -599,6 +609,101 @@ def _authorize_run(
     return "authorized"
 
 
+def _event_target(token: str, repo: str) -> tuple[str, str] | None:
+    """Resolve trusted event metadata; final authorization rechecks the live run/PR."""
+    event_name = os.environ.get("GITHUB_EVENT_NAME")
+    if event_name not in {"pull_request_target", "issue_comment", "workflow_run"}:
+        return None
+    with Path(os.environ["GITHUB_EVENT_PATH"]).open(encoding="utf-8") as stream:
+        event = json.load(stream)
+    if event_name == "pull_request_target":
+        pr = event.get("pull_request")
+    elif event_name == "issue_comment":
+        issue = event.get("issue", {})
+        if not issue.get("pull_request"):
+            return None
+        number = issue.get("number")
+        if type(number) is not int or number <= 0:
+            raise RuntimeError("Invalid event PR identity")
+        status, pr = _gh("GET", f"/repos/{repo}/pulls/{number}", token)
+        if status != 200:
+            raise RuntimeError("Event PR inspection unavailable")
+    else:
+        run_id = (event.get("workflow_run") or {}).get("id")
+        if type(run_id) is not int or run_id <= 0:
+            raise RuntimeError("Invalid event run identity")
+        status, run = _gh("GET", f"/repos/{repo}/actions/runs/{run_id}", token)
+        if status != 200 or not isinstance(run, dict):
+            raise RuntimeError("Event run inspection unavailable")
+        associations = run.get("pull_requests")
+        if not isinstance(associations, list) or len(associations) != 1:
+            raise RuntimeError("Event run has ambiguous PR association")
+        pr = associations[0]
+        if not isinstance(pr, dict) or type(pr.get("number")) is not int:
+            raise RuntimeError("Invalid event PR association")
+        return str(pr["number"]), str(run["head_sha"])
+    if not isinstance(pr, dict) or type(pr.get("number")) is not int or pr["number"] <= 0:
+        raise RuntimeError("Invalid event PR context")
+    return str(pr["number"]), _inventory_pr_sha(pr)
+
+
+def _completed_once_grant(token: str, repo: str, pr_number: str, sha: str) -> int | None:
+    """Bind cleanup to a real completed Copilot session following activation."""
+    if os.environ.get("GITHUB_EVENT_NAME") != "workflow_run":
+        return None
+    with Path(os.environ["GITHUB_EVENT_PATH"]).open(encoding="utf-8") as stream:
+        run_id = (json.load(stream).get("workflow_run") or {}).get("id")
+    status, session = _gh("GET", f"/repos/{repo}/actions/runs/{run_id}", token)
+    if status != 200 or not isinstance(session, dict):
+        raise RuntimeError("Completed session inspection unavailable")
+    if (
+        session.get("name") != "Copilot coding agent"
+        or session.get("status") != "completed"
+        or session.get("head_sha") != sha
+        or session.get("pull_requests") is None
+        or len(session["pull_requests"]) != 1
+        or str(session["pull_requests"][0].get("number")) != pr_number
+    ):
+        return None
+    status, pr = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
+    if status != 200 or not isinstance(pr, dict):
+        raise RuntimeError("Session PR inspection unavailable")
+    names = {label["name"] for label in pr.get("labels", [])}
+    if label_gate.LABEL_NAME in names or label_gate.ONE_SESSION_LABEL_NAME not in names:
+        return None
+    activation = label_gate.once_activation(token, repo, pr_number, _gh)
+    if activation is None:
+        return None
+    started = label_gate._parse_activation_time(session.get("run_started_at"))
+    activated = label_gate._parse_activation_time(activation["created_at"])
+    if started is None or activated is None or started < activated:
+        return None
+    return int(activation["id"])
+
+
+def _consume_once_grant(
+    token: str, repo: str, pr_number: str, sha: str, activation_id: int
+) -> None:
+    status, pr = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
+    if status != 200 or not isinstance(pr, dict):
+        raise RuntimeError("Once-grant cleanup PR inspection unavailable")
+    if pr.get("state") != "open" or _inventory_pr_sha(pr) != sha:
+        return
+    names = {label["name"] for label in pr.get("labels", [])}
+    if label_gate.LABEL_NAME in names or label_gate.ONE_SESSION_LABEL_NAME not in names:
+        return
+    if not label_valid(token, repo, pr_number, pr, _gh):
+        return
+    activation = label_gate.once_activation(token, repo, pr_number, _gh)
+    if activation is None or activation["id"] != activation_id:
+        return
+    status, _ = _gh(
+        "DELETE", f"/repos/{repo}/issues/{pr_number}/labels/wec%3Aauto-approve-once", token
+    )
+    if status != 200:
+        raise RuntimeError(f"Once-grant cleanup denied (HTTP {status})")
+
+
 def _run_decisions(decisions: list[dict[str, Any]]) -> int:
     repo = os.environ.get("REPO") or os.environ.get("GITHUB_REPOSITORY", "")
     head_sha = os.environ.get("HEAD_SHA", "").strip() or None
@@ -627,6 +732,10 @@ def _run_decisions(decisions: list[dict[str, Any]]) -> int:
         return 1
 
     token, token_source = _resolve_token()
+    if not head_sha and not pr_number:
+        target = _event_target(token, repo)
+        if target is not None:
+            pr_number, head_sha = target
     mode_tag = "🔍 DRY-RUN" if dry_run else "🚀 LIVE"
     print(f"\n{'─'*60}")  # codeql[py/clear-text-logging-sensitive-data]
     print(f"⚡ approve_pending_runs — {mode_tag}")  # codeql[py/clear-text-logging-sensitive-data]
@@ -700,6 +809,7 @@ def _run_decisions(decisions: list[dict[str, Any]]) -> int:
     matched_target = False
 
     for pr_num, sha in targets:
+        activation_id = _completed_once_grant(token, repo, pr_num, sha)
         print(
             f"\n── PR #{pr_num} @ {sha[:12]} ──────────────────────────────"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -728,6 +838,7 @@ def _run_decisions(decisions: list[dict[str, Any]]) -> int:
             print("   Nothing to approve.")  # codeql[py/clear-text-logging-sensitive-data]
             continue
 
+        batch_start = len(decisions)
         for run in runs:
             if target_run_id and str(run.get("id")) != target_run_id:
                 continue
@@ -753,6 +864,14 @@ def _run_decisions(decisions: list[dict[str, Any]]) -> int:
                 total_skipped += 1
             else:
                 total_errors += 1
+        batch = decisions[batch_start:]
+        if (
+            activation_id is not None
+            and not dry_run
+            and len(batch) == len(runs)
+            and all(decision["outcome"] == "approved" for decision in batch)
+        ):
+            _consume_once_grant(token, repo, pr_num, sha, activation_id)
 
     # Summary ─────────────────────────────────────────────────────────────────
     print(f"\n{'─'*60}")  # codeql[py/clear-text-logging-sensitive-data]
@@ -783,6 +902,7 @@ def main() -> int:
     try:
         return _run_decisions(decisions)
     except (Exception, SystemExit):
+        print("Approval inspection failed; no unverified approval is permitted", file=sys.stderr)
         decisions.append(
             {
                 "rule": "inspection-error",
