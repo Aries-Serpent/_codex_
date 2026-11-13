@@ -25,106 +25,109 @@ from collections.abc import Iterable, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
+# Explicit override hook: when set (e.g. by tests or embedding code) it is used
+# instead of importing ``sentencepiece``.  It is never written by this module, so
+# an override cannot be shadowed by a previously imported real library.
 spm = None
+_FALLBACK_SPM: Any = None
+
+
+def _fallback_sentencepiece() -> Any:
+    """Return a lightweight stand-in used when ``sentencepiece`` is not installed."""
+
+    global _FALLBACK_SPM
+    if _FALLBACK_SPM is not None:
+        return _FALLBACK_SPM
+    from types import SimpleNamespace
+
+    class _StubSentencePieceTrainer:
+        @staticmethod
+        def train(
+            input: str,
+            model_prefix: str,
+            vocab_size: int,
+            character_coverage: float,
+            model_type: str,
+            **_: object,
+        ) -> None:
+            corpus_path = Path(input)
+            tokens: list[str] = []
+            if corpus_path.exists():
+                tokens = corpus_path.read_text(encoding="utf-8").split()
+            vocab = list(dict.fromkeys(tokens))[:vocab_size] or ["<unk>"]
+            model_file = Path(f"{model_prefix}.model")
+            model_file.write_text(json.dumps({"vocab": vocab}), encoding="utf-8")
+            Path(f"{model_prefix}.vocab").write_text("\n".join(vocab), encoding="utf-8")
+
+    class _StubSentencePieceProcessor:
+        def __init__(self, model_file: Optional[str] = None):
+            self.model_file = model_file
+            self.vocab: list[str] = []
+            if model_file and Path(model_file).exists():
+                try:
+                    data = json.loads(Path(model_file).read_text(encoding="utf-8"))
+                    self.vocab = list(data.get("vocab", []))
+                except (OSError, ValueError):  # unreadable / non-JSON model file
+                    logger.warning("Exception occurred", exc_info=True)
+                    self.vocab = []
+
+        def encode(self, text: str, out_type=int) -> list[int] | list[str]:
+            token_to_id = {tok: idx for idx, tok in enumerate(self.vocab)} or {"<unk>": 0}
+            ids = [token_to_id.get(tok, 0) for tok in text.split()]
+            return ids if out_type is int else [str(i) for i in ids]
+
+        def decode(self, ids) -> str:
+            id_to_token = {idx: tok for idx, tok in enumerate(self.vocab)} or {0: "<unk>"}
+            return " ".join(id_to_token.get(int(i), "<unk>") for i in ids)
+
+        def get_piece_size(self) -> int:
+            return len(self.vocab) if self.vocab else 1
+
+        # Compatibility shims
+        def __getattr__(self, name: str) -> Any:  # pragma: no cover - compatibility
+            """
+            Provide compatibility shims for certain attribute names.
+
+            Returns a bound reference to the get_piece_size method for 'GetPieceSize', 'piece_size', or 'vocab_size'
+            to mimic SentencePieceProcessor API variants. Raises AttributeError for all other names.
+            """  # noqa: E501
+            if name in {"GetPieceSize", "piece_size", "vocab_size"}:
+                return self.get_piece_size
+            raise AttributeError(name)
+
+    _FALLBACK_SPM = SimpleNamespace(
+        SentencePieceTrainer=_StubSentencePieceTrainer,
+        SentencePieceProcessor=_StubSentencePieceProcessor,
+    )
+    return _FALLBACK_SPM
 
 
 def _get_sentencepiece() -> Any:
-    """Return the ``sentencepiece`` module or raise ``ImportError``."""
+    """Return the ``sentencepiece`` module to use.
 
-    import sys as _sys
+    Precedence: the module-level ``spm`` override, then whatever
+    ``import sentencepiece`` yields (so ``sys.modules`` injection works), then a
+    lightweight fallback when the library is absent or only the repo-local shim
+    (``IS_CODEX_STUB``) is present.  A module that *is* importable but lacks
+    ``SentencePieceProcessor`` is a broken install and raises ``ImportError``
+    instead of silently degrading to the fallback.
+    """
 
-    global spm
-    # Check sys.modules first — allows tests to inject a stub via
-    # monkeypatch.setitem(sys.modules, "sentencepiece", stub)
-    # Skip the repo's own sentencepiece shim (IS_CODEX_STUB=True) so that
-    # monkeypatch can override the module-level `spm` variable in tests.
-    patched = _sys.modules.get("sentencepiece")
-    if (
-        patched is not None
-        and hasattr(patched, "SentencePieceProcessor")
-        and not getattr(patched, "IS_CODEX_STUB", False)
-    ):
-        return patched
     if spm is not None:
         return spm
     try:  # pragma: no cover - optional dependency
         import sentencepiece as sentencepiece_module
-
-        if getattr(sentencepiece_module, "IS_CODEX_STUB", False):
-            raise ImportError("sentencepiece is not installed (repo stub active)")
-        if not hasattr(sentencepiece_module, "SentencePieceTrainer"):
-            raise ImportError(
-                "sentencepiece module is missing SentencePieceTrainer. "
-                "Try reinstalling: pip install --force-reinstall sentencepiece"
-            )
-        spm = sentencepiece_module
-        return sentencepiece_module
-    except (ImportError, AttributeError):
-        logger.warning("Exception occurred", exc_info=True)
-        # Provide a lightweight stub that satisfies smoke tests when the
-        # native sentencepiece bindings are unavailable.
-        from types import SimpleNamespace
-
-        class _StubSentencePieceTrainer:
-            @staticmethod
-            def train(
-                input: str,
-                model_prefix: str,
-                vocab_size: int,
-                character_coverage: float,
-                model_type: str,
-                **_: object,
-            ) -> None:
-                corpus_path = Path(input)
-                tokens: list[str] = []
-                if corpus_path.exists():
-                    tokens = corpus_path.read_text(encoding="utf-8").split()
-                vocab = list(dict.fromkeys(tokens))[:vocab_size] or ["<unk>"]
-                model_file = Path(f"{model_prefix}.model")
-                model_file.write_text(json.dumps({"vocab": vocab}), encoding="utf-8")
-                Path(f"{model_prefix}.vocab").write_text("\n".join(vocab), encoding="utf-8")
-
-        class _StubSentencePieceProcessor:
-            def __init__(self, model_file: Optional[str] = None):
-                self.model_file = model_file
-                self.vocab: list[str] = []
-                if model_file and Path(model_file).exists():
-                    try:
-                        data = json.loads(Path(model_file).read_text(encoding="utf-8"))
-                        self.vocab = list(data.get("vocab", []))
-                    except (IOError, OSError, ModuleNotFoundError, ImportError):
-                        logger.warning("Exception occurred", exc_info=True)
-                        self.vocab = []
-
-            def encode(self, text: str, out_type=int) -> list[int] | list[str]:
-                token_to_id = {tok: idx for idx, tok in enumerate(self.vocab)} or {"<unk>": 0}
-                ids = [token_to_id.get(tok, 0) for tok in text.split()]
-                return ids if out_type is int else [str(i) for i in ids]
-
-            def decode(self, ids) -> str:
-                id_to_token = {idx: tok for idx, tok in enumerate(self.vocab)} or {0: "<unk>"}
-                return " ".join(id_to_token.get(int(i), "<unk>") for i in ids)
-
-            def get_piece_size(self) -> int:
-                return len(self.vocab) if self.vocab else 1
-
-            # Compatibility shims
-            def __getattr__(self, name: str) -> Any:  # pragma: no cover - compatibility
-                """
-                Provide compatibility shims for certain attribute names.
-
-                Returns a bound reference to the get_piece_size method for 'GetPieceSize', 'piece_size', or 'vocab_size'
-                to mimic SentencePieceProcessor API variants. Raises AttributeError for all other names.
-                """  # noqa: E501
-                if name in {"GetPieceSize", "piece_size", "vocab_size"}:
-                    return self.get_piece_size
-                raise AttributeError(name)
-
-        spm = SimpleNamespace(  # type: ignore[assignment]
-            SentencePieceTrainer=_StubSentencePieceTrainer,
-            SentencePieceProcessor=_StubSentencePieceProcessor,
+    except ImportError:
+        logger.debug("sentencepiece not installed; using fallback stub", exc_info=True)
+        return _fallback_sentencepiece()
+    if getattr(sentencepiece_module, "IS_CODEX_STUB", False):
+        return _fallback_sentencepiece()
+    if not hasattr(sentencepiece_module, "SentencePieceProcessor"):
+        raise ImportError(
+            "sentencepiece module is missing SentencePieceProcessor. "
+            "Try reinstalling: pip install --force-reinstall sentencepiece"
         )
-        return spm
+    return sentencepiece_module
 
 
 class SentencePieceAdapter:
