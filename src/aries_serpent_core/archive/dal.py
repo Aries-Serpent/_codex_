@@ -902,10 +902,11 @@ class MariaDbDAL(BaseDAL):
         self.dsn = dsn
         try:
             import pymysql
-        except (ValueError, TypeError) as e:  # pragma: no cover - import guard
+        except ImportError as e:  # pragma: no cover - import guard
             raise RuntimeError("pymysql is required for mariadb backend") from e
         self.mysql = pymysql
-        self.conn = self.mysql.connect(self._parse_dsn(self.dsn), autocommit=False)
+        # PyMySQL's Connection accepts keyword arguments only.
+        self.conn = self.mysql.connect(**self._parse_dsn(self.dsn), autocommit=False)
         self.ensure_schema()
 
     @staticmethod

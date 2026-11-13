@@ -324,18 +324,27 @@ class TestArchiveDALFactory:
 
         with patch.dict(
             "os.environ",
-            {"CODEX_ARCHIVE_BACKEND": "mariadb", "CODEX_ARCHIVE_URL": "mysql://localhost/test"},
+            {
+                "CODEX_ARCHIVE_BACKEND": "mariadb",
+                "CODEX_ARCHIVE_URL": "mysql://archivist@db.internal:3307/test?charset=utf8mb4",
+            },
             clear=True,
         ):
-            try:
+            pymysql = pytest.importorskip("pymysql")
+            # No database server in unit tests: stub the network connect.
+            with patch.object(pymysql, "connect", return_value=MagicMock()) as connect:
                 dal = ArchiveDAL.from_env()
-                from codex.archive.dal import MariaDbDAL
+            from codex.archive.dal import MariaDbDAL
 
-                assert isinstance(dal, MariaDbDAL)
-            except RuntimeError as e:
-                # pymysql not installed - expected
-                if "pymysql" in str(e):
-                    pytest.skip("pymysql not installed")
+            assert isinstance(dal, MariaDbDAL)
+            connect.assert_called_once_with(
+                host="db.internal",
+                port=3307,
+                user="archivist",
+                database="test",
+                charset="utf8mb4",
+                autocommit=False,
+            )
 
     def test_archive_dal_from_env_unsupported_backend(self):
         """Test ArchiveDAL.from_env with unsupported backend."""
