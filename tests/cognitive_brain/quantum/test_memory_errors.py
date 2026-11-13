@@ -4,7 +4,7 @@ Phase 8.1 Error Handling Tests - QuantumMemoryManager, PatternCompressor, Memory
 Tests error conditions, edge cases, and robustness of memory management components.
 """
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
@@ -148,7 +148,7 @@ class TestPatternCompressorErrors:
         """Test error when compressing before fitting."""
         compressor = PatternCompressor(target_dimensions=2)
 
-        with pytest.raises(ValueError, match="Compressor not fitted"):
+        with pytest.raises(RuntimeError, match="must be fitted"):
             compressor.compress(
                 {"f1": 0.5, "f2": 0.3}, pattern_id="test", decision="approve", confidence=0.8
             )
@@ -173,15 +173,18 @@ class TestPatternCompressorErrors:
             compressor.fit(patterns)
 
     def test_compress_dimension_mismatch(self):
-        """Test error when compressing pattern with wrong dimensions."""
+        """Missing fitted keys are zero-filled and unknown keys are ignored."""
         compressor = PatternCompressor(target_dimensions=2)
         compressor.fit([{"f1": 0.5, "f2": 0.3}, {"f1": 0.6, "f2": 0.4}])
 
-        # Try to compress pattern with different features
-        with pytest.raises(ValueError, match="Feature mismatch"):
-            compressor.compress(
-                {"f1": 0.5, "f3": 0.7}, pattern_id="test", decision="approve", confidence=0.8
-            )
+        # Pattern lacks "f2" and carries an unknown "f3"
+        compressed = compressor.compress(
+            {"f1": 0.5, "f3": 0.7}, pattern_id="test", decision="approve", confidence=0.8
+        )
+
+        assert compressed.feature_keys == ["f1", "f2"]
+        restored = compressor.decompress(compressed)
+        assert set(restored) == {"f1", "f2"}, "decompressed keys must match fitted keys"
 
     def test_decompress_invalid_compressed_pattern(self):
         """Test error when decompressing invalid pattern."""
@@ -259,17 +262,17 @@ class TestMemoryIntegrationErrors:
         )
 
         # Force an error during consolidation by corrupting memory
-        assessor.memory_manager.short_term_memory.append("invalid_pattern")
+        assessor.memory.stm.append("invalid_pattern")
 
         # Should handle error gracefully
         try:
-            assessor.memory_manager.consolidate()
+            assessor.memory.consolidate()
         except (TypeError, AttributeError):
             # Expected error, should not crash entire system
             _ = None  # suppressed: no action needed
 
         # System should still be usable
-        assert assessor.memory_manager is not None, "memory_manager must be initialized"
+        assert assessor.memory is not None, "memory manager must be initialized"
 
 
 class TestCachePruningEdgeCases:
@@ -282,7 +285,7 @@ class TestCachePruningEdgeCases:
         # Prune empty cache
         result = manager.prune_by_age(max_age_hours=30 * 24)
 
-        assert result.aged_pruned == 0, "Result must not be empty"
+        assert result == 0, "Nothing to prune in an empty LTM"
 
     def test_prune_all_patterns_old(self, quantum_config):
         """Test when all patterns exceed age threshold."""
@@ -295,15 +298,17 @@ class TestCachePruningEdgeCases:
                 features={"f1": float(i)},
                 decision="approve",
                 confidence=0.8,
-                timestamp=datetime.now(timezone.utc),
+                timestamp=datetime.now(timezone.utc) - timedelta(hours=1),
             )
-            manager.store_pattern(pattern)
+            # prune_by_age operates on long-term memory, so seed LTM directly.
+            manager.ltm[pattern.pattern_id] = pattern
 
         # Prune with very short threshold
         result = manager.prune_by_age(max_age_hours=0.000001)  # ~0.0036 seconds
 
-        # Most or all patterns should be removed
-        assert result.aged_pruned > 0, "aged_pruned must be greater than zero"
+        # All patterns are older than the threshold
+        assert result == 10, "all aged patterns must be pruned"
+        assert len(manager.ltm) == 0
 
     def test_prune_by_access_empty_ltm(self, quantum_config):
         """Test LRU pruning when LTM is empty."""
@@ -311,7 +316,7 @@ class TestCachePruningEdgeCases:
 
         result = manager.prune_by_access(keep_top_n=10)
 
-        assert result.access_pruned == 0, "Result must not be empty"
+        assert result == 0, "Nothing to prune in an empty LTM"
 
 
 class TestDecompressionBackwardCompatibility:
