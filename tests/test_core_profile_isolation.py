@@ -30,7 +30,8 @@ class TestCoreProfileBaseImports:
         try:
             import hydra
             from hydra import compose, initialize_config_dir
-            assert hasattr(hydra, '__version__')
+
+            assert hasattr(hydra, "__version__")
             assert compose is not None, "compose must be initialized"
             assert initialize_config_dir is not None, "initialize_config_dir must be initialized"
         except ImportError as e:
@@ -40,6 +41,7 @@ class TestCoreProfileBaseImports:
         """Test omegaconf import and basic functionality."""
         try:
             from omegaconf import DictConfig, OmegaConf
+
             assert OmegaConf is not None, "OmegaConf must be initialized"
             assert DictConfig is not None, "DictConfig must be initialized"
             # Test basic functionality
@@ -52,6 +54,7 @@ class TestCoreProfileBaseImports:
         """Test pydantic import and basic functionality."""
         try:
             from pydantic import BaseModel, ValidationError
+
             assert BaseModel is not None, "BaseModel must be initialized"
             assert ValidationError is not None, "ValidationError must be initialized"
 
@@ -68,6 +71,7 @@ class TestCoreProfileBaseImports:
         """Test pydantic-settings import."""
         try:
             from pydantic_settings import BaseSettings
+
             assert BaseSettings is not None, "BaseSettings must be initialized"
         except ImportError as e:
             pytest.skip(f"pydantic-settings not installed: {e}")
@@ -76,6 +80,7 @@ class TestCoreProfileBaseImports:
         """Test marshmallow import and basic functionality."""
         try:
             from marshmallow import Schema, fields
+
             assert Schema is not None, "Schema must be initialized"
             assert fields is not None, "fields must be initialized"
         except ImportError as e:
@@ -85,10 +90,11 @@ class TestCoreProfileBaseImports:
         """Test PyYAML import and basic functionality."""
         try:
             import yaml
+
             assert yaml is not None, "yaml must be initialized"
             # Test basic functionality
             data = yaml.safe_load("key: value")
-            assert data['key'] == 'value', "Data must not be empty"
+            assert data["key"] == "value", "Data must not be empty"
         except ImportError as e:
             pytest.skip(f"PyYAML not installed: {e}")
 
@@ -96,6 +102,7 @@ class TestCoreProfileBaseImports:
         """Test typer import and basic functionality."""
         try:
             import typer
+
             app = typer.Typer()
             assert app is not None, "app must be initialized"
         except ImportError as e:
@@ -105,9 +112,11 @@ class TestCoreProfileBaseImports:
         """Test click import and basic functionality."""
         try:
             import click
+
             @click.command()
             def test_cmd():
                 pass
+
             assert test_cmd is not None, "test_cmd must be initialized"
         except ImportError as e:
             pytest.skip(f"click not installed: {e}")
@@ -116,6 +125,7 @@ class TestCoreProfileBaseImports:
         """Test libcst import and basic functionality."""
         try:
             import libcst as cst
+
             assert cst is not None, "cst must be initialized"
             # Test parsing
             module = cst.parse_module("x = 1")
@@ -127,7 +137,8 @@ class TestCoreProfileBaseImports:
         """Test parso import and basic functionality."""
         try:
             import parso
-            assert hasattr(parso, '__version__')
+
+            assert hasattr(parso, "__version__")
             # Test parsing
             module = parso.parse("x = 1")
             assert module is not None, "module must be initialized"
@@ -138,6 +149,7 @@ class TestCoreProfileBaseImports:
         """Test tree-sitter imports."""
         try:
             from tree_sitter import Language, Parser
+
             assert Language is not None, "Language must be initialized"
             assert Parser is not None, "Parser must be initialized"
         except ImportError as e:
@@ -147,7 +159,8 @@ class TestCoreProfileBaseImports:
         """Test sqlparse import."""
         try:
             import sqlparse
-            assert hasattr(sqlparse, '__version__')
+
+            assert hasattr(sqlparse, "__version__")
         except ImportError as e:
             pytest.skip(f"sqlparse not installed: {e}")
 
@@ -161,6 +174,7 @@ class TestCoreProfileNoTorchContamination:
         # or SKIP if torch IS installed (meaning core profile isolation failed)
         try:
             import torch
+
             pytest.skip("torch IS installed - core profile isolation may be compromised")
         except ImportError:
             # This is the EXPECTED behavior for core profile
@@ -173,6 +187,7 @@ class TestCoreProfileNoTorchContamination:
         # or SKIP if transformers IS installed (meaning core profile isolation failed)
         try:
             import transformers
+
             pytest.skip("transformers IS installed - core profile isolation may be compromised")
         except ImportError:
             # This is the EXPECTED behavior for core profile
@@ -183,6 +198,7 @@ class TestCoreProfileNoTorchContamination:
         """Verify datasets is NOT available in core profile."""
         try:
             import datasets
+
             pytest.skip("datasets IS installed - core profile isolation may be compromised")
         except ImportError:
             pass
@@ -191,6 +207,7 @@ class TestCoreProfileNoTorchContamination:
         """Verify accelerate is NOT available in core profile."""
         try:
             import accelerate
+
             pytest.skip("accelerate IS installed - core profile isolation may be compromised")
         except ImportError:
             pass
@@ -199,6 +216,7 @@ class TestCoreProfileNoTorchContamination:
         """Verify fastapi is NOT available in core profile."""
         try:
             import fastapi
+
             pytest.skip("fastapi IS installed - core profile isolation may be compromised")
         except ImportError:
             pass
@@ -207,6 +225,7 @@ class TestCoreProfileNoTorchContamination:
         """Verify ray is NOT available in core profile."""
         try:
             import ray
+
             pytest.skip("ray IS installed - core profile isolation may be compromised")
         except ImportError:
             pass
@@ -215,47 +234,59 @@ class TestCoreProfileNoTorchContamination:
         """Verify pandas is NOT available in core profile."""
         try:
             import pandas
+
             pytest.skip("pandas IS installed - core profile isolation may be compromised")
         except ImportError:
             pass
+
+
+def _torch_loaded_after_import(module: str) -> bool:
+    """Import ``module`` in a fresh interpreter and report whether torch got loaded.
+
+    Checking ``sys.modules`` in the pytest process is meaningless: torch (or a
+    stub) is routinely loaded by other tests/conftest and kept there by the
+    ``_restore_real_torch_modules`` fixture.  A clean ``-I`` interpreter (no
+    PYTHONPATH, no repo ``sitecustomize``) isolates the dependency edge we
+    actually want to verify.
+    """
+    import subprocess
+    import sys
+
+    probe = (
+        "import importlib, sys\n"
+        "assert 'torch' not in sys.modules\n"
+        f"importlib.import_module({module!r})\n"
+        "print('torch' in sys.modules)\n"
+    )
+    result = subprocess.run(
+        [sys.executable, "-I", "-c", probe],
+        capture_output=True,
+        text=True,
+        timeout=120,
+        check=False,
+    )
+    if result.returncode != 0 and "ModuleNotFoundError" in result.stderr:
+        pytest.skip(f"{module} not installed")
+    assert result.returncode == 0, result.stderr
+    return result.stdout.strip() == "True"
 
 
 class TestCoreProfileDependencyTree:
     """Test that core profile dependencies do not indirectly import runtime packages."""
 
     def test_no_torch_via_libcst(self):
-        """Verify libcst doesn't bring in torch."""
-        try:
-            import sys
-
-            import libcst as cst
-            # Check if torch is in sys.modules after libcst import
-            if 'torch' in sys.modules:
-                pytest.fail("torch was imported indirectly via libcst")
-        except ImportError:
-            pytest.skip("libcst not installed")
+        """Verify importing libcst does not pull in torch."""
+        assert not _torch_loaded_after_import("libcst"), "torch was imported indirectly via libcst"
 
     def test_no_torch_via_parso(self):
-        """Verify parso doesn't bring in torch."""
-        try:
-            import sys
-
-            import parso
-            if 'torch' in sys.modules:
-                pytest.fail("torch was imported indirectly via parso")
-        except ImportError:
-            pytest.skip("parso not installed")
+        """Verify importing parso does not pull in torch."""
+        assert not _torch_loaded_after_import("parso"), "torch was imported indirectly via parso"
 
     def test_no_torch_via_pydantic(self):
-        """Verify pydantic doesn't bring in torch."""
-        try:
-            import sys
-
-            from pydantic import BaseModel
-            if 'torch' in sys.modules:
-                pytest.fail("torch was imported indirectly via pydantic")
-        except ImportError:
-            pytest.skip("pydantic not installed")
+        """Verify importing pydantic does not pull in torch."""
+        assert not _torch_loaded_after_import(
+            "pydantic"
+        ), "torch was imported indirectly via pydantic"
 
 
 class TestCoreProfileSize:
@@ -267,9 +298,18 @@ class TestCoreProfileSize:
 
         # Remove any already-loaded core modules for fresh import timing
         core_modules = [
-            'hydra', 'omegaconf', 'pydantic', 'pydantic_settings',
-            'marshmallow', 'yaml', 'typer', 'click',
-            'libcst', 'parso', 'tree_sitter', 'sqlparse'
+            "hydra",
+            "omegaconf",
+            "pydantic",
+            "pydantic_settings",
+            "marshmallow",
+            "yaml",
+            "typer",
+            "click",
+            "libcst",
+            "parso",
+            "tree_sitter",
+            "sqlparse",
         ]
 
         start_time = time.time()
@@ -309,6 +349,7 @@ class TestCoreProfileFunctionality:
         """Verify core profile can parse Python code."""
         try:
             import libcst as cst
+
             code = """
 def hello(name):
     print(f"Hello, {name}!")
@@ -347,6 +388,7 @@ def hello(name):
         """Verify core profile can load YAML configurations."""
         try:
             import yaml
+
             config_text = """
 database:
   host: localhost
@@ -354,8 +396,8 @@ database:
   debug: false
 """
             config = yaml.safe_load(config_text)
-            assert config['database']['host'] == 'localhost', "Data must not be empty"
-            assert config['database']['port'] == 5432, "Data must not be empty"
+            assert config["database"]["host"] == "localhost", "Data must not be empty"
+            assert config["database"]["port"] == 5432, "Data must not be empty"
         except ImportError:
             pytest.skip("PyYAML not installed")
 
@@ -366,18 +408,18 @@ class TestCoreProfileMinimalViability:
     def test_core_profile_has_minimum_imports(self):
         """Verify core profile packages are importable."""
         core_packages = [
-            'hydra',
-            'omegaconf',
-            'pydantic',
-            'pydantic_settings',
-            'marshmallow',
-            'yaml',
-            'typer',
-            'click',
-            'libcst',
-            'parso',
-            'tree_sitter',
-            'sqlparse',
+            "hydra",
+            "omegaconf",
+            "pydantic",
+            "pydantic_settings",
+            "marshmallow",
+            "yaml",
+            "typer",
+            "click",
+            "libcst",
+            "parso",
+            "tree_sitter",
+            "sqlparse",
         ]
 
         available = []
@@ -400,19 +442,19 @@ class TestCoreProfileMinimalViability:
     def test_core_profile_excludes_runtime_deps(self):
         """Verify core profile excludes runtime/dev dependencies."""
         runtime_deps = [
-            'torch',
-            'transformers',
-            'datasets',
-            'accelerate',
-            'peft',
-            'fastapi',
-            'litestar',
-            'ray',
-            'pandas',
-            'numpy',
-            'pytest',
-            'black',
-            'mypy',
+            "torch",
+            "transformers",
+            "datasets",
+            "accelerate",
+            "peft",
+            "fastapi",
+            "litestar",
+            "ray",
+            "pandas",
+            "numpy",
+            "pytest",
+            "black",
+            "mypy",
         ]
 
         found_runtime_deps = []
@@ -425,12 +467,14 @@ class TestCoreProfileMinimalViability:
                 pass
 
         if found_runtime_deps:
-            print(f"\n⚠️  Runtime dependencies found in core profile: {', '.join(found_runtime_deps)}")
+            print(
+                f"\n⚠️  Runtime dependencies found in core profile: {', '.join(found_runtime_deps)}"
+            )
             # Skip if runtime deps are installed (maybe we're testing full profile)
             pytest.skip(f"Runtime dependencies installed: {', '.join(found_runtime_deps)}")
         else:
             print("\n✅ No runtime dependencies found in core profile")
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v', '--tb=short'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v", "--tb=short"])
