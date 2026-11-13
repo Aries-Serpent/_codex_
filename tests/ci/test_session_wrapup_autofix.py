@@ -142,6 +142,48 @@ def test_wec_repair_preserves_existing_actual_agent_attestation(monkeypatch):
     assert edited[0].count("- `real-agent`") == 1
 
 
+def test_wec_repair_keeps_template_sections_after_checklist(monkeypatch):
+    body = (
+        "## Description\nScoped repair.\n"
+        + swa._REQUIRED_PR_CHECKBOXES.replace("Delegation: not recorded.", "- `real-agent`")
+        .replace("deferral-language-gate.yml", "old-gate.yml")
+        .replace("- [ ] auth-tests.yml", "- [x] auth-tests.yml")
+        + "\n\n## Type of Change\n- [x] Bug fix\n"
+        "## Testing\nExact command: passed.\n## Reviewers\nMaintainers.\n"
+    )
+    edits = []
+
+    def fake_run(command, **kwargs):
+        if command[:3] == ["gh", "pr", "view"]:
+            return swa.subprocess.CompletedProcess(command, 0, stdout=body)
+        edits.append(command[command.index("--body") + 1])
+        return swa.subprocess.CompletedProcess(command, 0, stdout="")
+
+    monkeypatch.setattr(swa.subprocess, "run", fake_run)
+    monkeypatch.setattr(swa, "_detect_human_grants", lambda *args: {})
+    monkeypatch.setattr(swa, "_record_agent_wec_write", lambda *args, **kwargs: None)
+    monkeypatch.setattr(swa, "_load_registered_agent_ids", lambda: frozenset({"real-agent"}))
+    assert swa.fix_pr_body_checkboxes("42")
+    body = edits[0]
+    assert "Exact command: passed." in body
+    headings = [
+        body.index(name)
+        for name in (
+            "## Description",
+            swa._WEC_MARKER,
+            "## Type of Change",
+            "## Testing",
+            "## Reviewers",
+        )
+    ]
+    assert headings == sorted(headings)
+    assert body.count("- `real-agent`") == 1
+    assert "- [x] auth-tests.yml" in body
+    assert swa.check_pr_body_agents_used(body)[0]
+    assert not swa.fix_pr_body_checkboxes("42")
+    assert len(edits) == 1
+
+
 @pytest.mark.parametrize("ok", [True, False])
 def test_generated_handoff_does_not_ping_or_invent_workflow_tasks(ok):
     handoff = swa._build_followup_prompt_md({"dimensions": [("local lint", 1, "result", ok)]})

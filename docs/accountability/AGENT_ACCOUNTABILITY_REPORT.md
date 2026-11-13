@@ -2,9 +2,9 @@
 
 ### Agents Used
 
-- CI Testing Agent (`pr5766-ci`) - actual RAG/slow-ML failure diagnosis and
+- `ci-testing-agent` (CI Testing Agent, runtime lane `pr5766-ci`) - RAG/slow-ML diagnosis and
   focused dependency/workflow repairs.
-- Packaging Validation Agent (`pr5766-dependabot`) - all open Dependabot
+- `packaging-validation-agent` (runtime lane `pr5766-dependabot`) - all open Dependabot
   inventory and scoped pyasn1 lock consistency.
 - Rubber-duck agent (`pr5766-readiness-challenge`) - independent adversarial
   challenge of readiness claims and protected integration decisions.
@@ -48,6 +48,18 @@
   Dependabot closure and scanner-thread resolution without hosted evidence.
   Publish only a bounded draft for exact-head CI; internal agent validation is
   not an independent protected approval.
+- Published GitHub-verified signed commit `ad4bb86a33` in draft #5779 against
+  staging. Automatic WEC restoration then truncated the template's testing and
+  agent sections; repair section boundaries, preserve maintainer selections and
+  verify the existing wrapup suite before restoring the full live template.
+  The wrapup suite passes **29 cases**, including suffix preservation, sticky
+  checkbox state and repeat-call idempotence. Actual invoked profile identifiers
+  now pass the registry-aware REQ-14 check; the built-in reviewer is not falsely
+  registered as a custom agent.
+- Initial draft-head Build Documentation job `131609804407` failed because Cargo
+  denies an existing unused `pyo3-build-config` build dependency warning. This
+  is separate from Python documentation changes and remains a Rust-maintainer
+  handoff; no warning policy was weakened.
 - The hosted GA gate correctly reports 641 critical-policy, 358 high-policy
   and 1791 medium-policy results. These buckets include reliability/quality
   findings and are not counts of confirmed exploitable vulnerabilities.
