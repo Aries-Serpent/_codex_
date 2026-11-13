@@ -34,6 +34,13 @@
   later timeout cannot erase already observed test/collection failures.
   Increase coverage to four shards while retaining the same selected tests,
   isolated data and 70 percent aggregate gate. Fresh hosted execution is required.
+- Corrected run `43379728206` at `bdf8e0cd7d` passed all integration shards;
+  the aggregate confirmed 1,794 cases, zero failures/errors and 24 skips.
+  All four coverage shards exhausted the shorter 18-minute allowance, with
+  one reaching 95%. Restore the original 30-minute coverage-step allowance
+  inside a 40-minute job, preserving the 300-second per-test limit.
+  The aggregate failed closed on missing unit reports/data; no coverage pass
+  or completed ML acceptance is claimed.
 
 ## Session: PR #5783 protected approval and ML integration repair
 

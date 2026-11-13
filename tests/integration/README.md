@@ -84,6 +84,9 @@ No durations file, pytest-split or xdist is required.
 Two coverage shards both exceeded their 18-minute test budgets in the first
 hosted run, so the coverage partition was increased to four without changing
 the selection or threshold.
+The four-way trial still timed out (one shard reached 95%), so coverage test
+steps retain the original 30-minute allowance inside a 40-minute job budget
+for setup and reporting. The 300-second per-test timeout is unchanged.
 
 From the repository root, reproduce an integration shard:
 

@@ -35,7 +35,14 @@ def test_ml_jobs_install_and_preflight_collection_dependencies(job_name):
     }
     assert {"detect_secrets", "hypothesis", "freezegun"} <= imports
     assert job["permissions"] == {"contents": "read"}
-    assert job["timeout-minutes"] == (60 if job_name == "test-ml-components" else 25)
+    assert (
+        job["timeout-minutes"]
+        == {
+            "test-ml-components": 60,
+            "integration-shard": 25,
+            "coverage-shard": 40,
+        }[job_name]
+    )
 
 
 def test_shards_preserve_scope_and_keep_coverage_out_of_integration():

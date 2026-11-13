@@ -18,6 +18,9 @@
   so diagnostics survive a timeout before final JUnit generation.
 - Increase coverage from two to four shards after both original shards exhausted
   their hosted test budgets; keep the same selection and aggregate threshold.
+- Retain the original 30-minute coverage-step allowance after the four-way
+  hosted trial also timed out; reserve setup/reporting time in a 40-minute job.
+  Keep the 300-second per-test limit unchanged.
 
 ### Fixed - PR #5783 protected approval and ML integration repair
 - Bind workflow-run approval to trusted workflow source and verified human
