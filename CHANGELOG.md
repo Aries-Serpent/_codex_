@@ -12,6 +12,8 @@
 - Report the slowest 30 tests per shard, keep direct workflow permissions
   read-only and cancel superseded PR runs rather than push/nightly runs.
   Required-check configuration remains an administrator action.
+- Distinguish repeated module-level collection skips from selected JUnit cases;
+  preserve missing-test and collection-error failures while merging skips once.
 
 ### Fixed - PR #5783 protected approval and ML integration repair
 - Bind workflow-run approval to trusted workflow source and verified human

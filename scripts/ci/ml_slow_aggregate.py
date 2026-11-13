@@ -52,13 +52,31 @@ def validate_selections(root: Path, prefix: str, count: int, marker: str, path: 
         raise ValueError(f"{prefix}: overlapping or incomplete test selection")
 
 
+def collection_skip_key(case: ET.Element) -> tuple[str, str] | None:
+    skipped = case.find("skipped")
+    if (
+        not case.get("classname")
+        and skipped is not None
+        and skipped.get("message") == "collection skipped"
+    ):
+        return case.get("name", ""), skipped.text or ""
+    return None
+
+
 def junit_summary(root: Path, label: str) -> tuple[str, bool]:
     files = sorted(root.rglob("*.xml"))
     if not files:
         raise ValueError(f"{label}: no JUnit reports")
     cases: list[ET.Element] = []
+    collection_skips: set[tuple[str, str]] = set()
     for report in files:
-        cases.extend(ET.parse(report).getroot().iter("testcase"))
+        for case in ET.parse(report).getroot().iter("testcase"):
+            key = collection_skip_key(case)
+            if key is not None:
+                if key in collection_skips:
+                    continue
+                collection_skips.add(key)
+            cases.append(case)
     failures = [
         (case, failure)
         for case in cases
@@ -108,7 +126,9 @@ def aggregate(root: Path, needs: dict[str, dict[str, str]]) -> tuple[str, int]:
                 directory = root / folder / f"{prefix}-{index}"
                 manifest = json.loads((directory / "selection.json").read_text())
                 cases = list(ET.parse(directory / "junit.xml").getroot().iter("testcase"))
-                if len(cases) != len(manifest["selected"]):
+                # Module-level skips are reported by every collector, not selected items.
+                selected_cases = [case for case in cases if collection_skip_key(case) is None]
+                if len(selected_cases) != len(manifest["selected"]):
                     raise ValueError(f"{prefix}-{index}: incomplete JUnit report")
         except (OSError, ValueError, KeyError, TypeError, ET.ParseError) as exc:
             text += f"\n**{folder} evidence failed:** {html.escape(str(exc))}\n"

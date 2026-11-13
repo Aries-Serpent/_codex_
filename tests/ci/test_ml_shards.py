@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import coverage
@@ -137,6 +138,39 @@ def test_junit_failures_are_merged_and_escaped(tmp_path):
     assert (tmp_path / "integration-merged.xml").is_file()
 
 
+def test_module_collection_skips_are_not_duplicate_selected_tests(pytester):
+    pytester.makepyfile(ml_pytest_shards=Path(shards.__file__).read_text())
+    directory = pytester.path / "tests"
+    directory.mkdir()
+    (directory / "test_unavailable.py").write_text(
+        'import pytest\npytest.skip("optional dependency unavailable", allow_module_level=True)\n'
+    )
+    for index in range(8):
+        (directory / f"test_file_{index}.py").write_text("def test_ok(): pass\n")
+    reports = pytester.path / "reports"
+    for index in (1, 2):
+        report = reports / f"unit-cov-{index}"
+        result = pytester.runpytest_subprocess(
+            "tests",
+            "-p",
+            "ml_pytest_shards",
+            "-m",
+            "not slow and not integration",
+            "--ml-shards=2",
+            f"--ml-shard={index}",
+            f"--ml-shard-report={report / 'selection.json'}",
+            f"--junitxml={report / 'junit.xml'}",
+        )
+        assert result.ret == 0
+        manifest = json.loads((report / "selection.json").read_text())
+        cases = list(ET.parse(report / "junit.xml").getroot().iter("testcase"))
+        assert len(cases) == len(manifest["selected"]) + 1
+    validate_selections(reports, "unit-cov", 2, "not slow and not integration", "tests")
+    summary, failed = junit_summary(reports, "unit")
+    assert failed is False
+    assert "Tests: 9; failures/errors: 0; skipped: 1" in summary
+
+
 def write_coverage(path: Path, source: Path, lines: range) -> None:
     cov = coverage.Coverage(data_file=str(path), config_file=False, include=[str(source)])
     cov.start()
@@ -154,6 +188,9 @@ def write_coverage(path: Path, source: Path, lines: range) -> None:
         (range(0, 8), "cancelled", 1),
         (range(0, 8), "skipped", 1),
         (range(0, 8), "junit-error", 1),
+        (range(0, 8), "collection-skip", 0),
+        (range(0, 8), "collection-skip-missing-test", 1),
+        (range(0, 8), "collection-error", 1),
     ],
 )
 def test_gate_combines_only_unit_data_and_never_masks_shard_failure(
@@ -178,7 +215,20 @@ def test_gate_combines_only_unit_data_and_never_masks_shard_failure(
         name: {"result": "success"}
         for name in ("test-ml-components", "integration-shard", "coverage-shard")
     }
-    if job_result == "junit-error":
+    if job_result.startswith("collection-"):
+        for report in reports.rglob("junit.xml"):
+            suite = ET.parse(report).getroot()
+            if job_result == "collection-skip-missing-test" and report.parent.name == "unit-cov-1":
+                case = suite.find("testcase")
+                assert case is not None
+                suite.remove(case)
+            case = ET.SubElement(suite, "testcase", classname="", name="missing.module")
+            if job_result == "collection-error":
+                ET.SubElement(case, "error").text = "collection failed"
+            else:
+                ET.SubElement(case, "skipped", message="collection skipped").text = "module skipped"
+            ET.ElementTree(suite).write(report)
+    elif job_result == "junit-error":
         report = reports / "unit/unit-cov-1/junit.xml"
         report.write_text(
             report.read_text().replace("/>", "><error>fixture failed</error></testcase>", 1)
@@ -189,6 +239,10 @@ def test_gate_combines_only_unit_data_and_never_masks_shard_failure(
     assert exit_code == expected, summary
     assert "coverage report" in summary
     assert (tmp_path / "htmlcov/index.html").is_file()
+    if job_result == "collection-skip":
+        assert "Tests: 9; failures/errors: 0; skipped: 1" in summary
+    elif job_result == "collection-skip-missing-test":
+        assert "incomplete JUnit report" in summary
     combined = coverage.Coverage(
         data_file=str(tmp_path / ".coverage.ml-unit-combined"), config_file=False
     )

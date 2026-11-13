@@ -97,6 +97,9 @@ disabled because each sees only a subset. The single `ml-slow-aggregate`
 check combines only `.coverage.unit-*` from `unit-cov-*` artifacts and enforces
 the unchanged **70%** threshold. Component and integration coverage never
 enter that gate. Integration pass/fail remains independently required.
+Module-level collection skips are not selected test items. The aggregate
+counts them once across shard reports without hiding missing selected tests
+or collection errors.
 
 Every shard records JUnit, its selected IDs and a digest of the entire eligible
 collection. The aggregate rejects differing collections, overlap, missing

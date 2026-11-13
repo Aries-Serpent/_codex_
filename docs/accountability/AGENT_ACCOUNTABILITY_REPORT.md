@@ -11,7 +11,7 @@
 - Selection manifests bind each shard to its eligible collection and marker
   expression. The aggregate rejects disagreement, overlap, missing data or
   reports and failed/cancelled/skipped upstream jobs.
-- Focused sharding/workflow tests: 42 passed with two existing pytest config
+- Focused sharding/workflow tests: 46 passed with two existing pytest config
   warnings. Real coverage fixtures verify complementary partial data combines
   above 70 percent, insufficient unit coverage still fails despite complete
   integration data, and green coverage cannot mask failed shards.
@@ -21,6 +21,14 @@
   of the stable check and fresh hosted shard execution remain separate evidence.
 - This follow-up does not claim that sharding repairs the outstanding real
   integration failures or proves #5783's protected deployment functionality.
+- Hosted run `43375618710` at `3a3e4757f2` passed all four integration shards.
+  Artifact inspection found three module-level skips repeated by every
+  collector, which must not count as selected tests. The aggregate correction
+  deduplicates those skips while retaining completeness and error checks.
+  Replaying the actual artifacts validates the complete/disjoint manifests and
+  1,794 merged JUnit cases with zero failures/errors and 24 skips.
+  The parent run's integration step passed; its separate coverage step timed
+  out after 30 minutes. Neither observation establishes full ML acceptance.
 
 ## Session: PR #5783 protected approval and ML integration repair
 
