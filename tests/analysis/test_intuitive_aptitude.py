@@ -305,7 +305,9 @@ def greet(name):
         assert "greet" in analyzer.functions, "Condition must be true"
         assert analyzer.functions["greet"].name == "greet", "name is not valid"
         assert analyzer.functions["greet"].args == ["name"], "args is not valid"
-        assert analyzer.functions["greet"].docstring == "Say hello to name.", "docstring is not valid"
+        assert (
+            analyzer.functions["greet"].docstring == "Say hello to name."
+        ), "docstring is not valid"
 
     def test_ingest_with_class(self):
         """Test ingesting code with a class."""
@@ -319,16 +321,18 @@ class Calculator:
         result = analyzer.ingest(code)
         assert result is True, "Result must not be empty"
         assert "Calculator" in analyzer.classes, "Condition must be true"
-        assert analyzer.classes["Calculator"].docstring == "Simple calculator.", "docstring is not valid"
+        assert (
+            analyzer.classes["Calculator"].docstring == "Simple calculator."
+        ), "docstring is not valid"
         assert "add" in analyzer.classes["Calculator"].methods, "Condition must be true"
 
     def test_ingest_with_imports(self):
         """Test ingesting code with import statements."""
         analyzer = intuitive_aptitude()
         code = """
-        import os
-        from sys import path as syspath
-        from typing import List, Dict
+import os
+from sys import path as syspath
+from typing import List, Dict
 """
         result = analyzer.ingest(code)
         assert result is True, "Result must not be empty"
@@ -388,7 +392,7 @@ class TestIntuitiveAptitudeSummary:
         """Test getting summary with analyzed code."""
         analyzer = intuitive_aptitude()
         code = """
-        import os
+import os
 x = 42
 def func(): pass
 class MyClass: pass
@@ -766,7 +770,8 @@ def test():
         func_node = tree.body[0]
         calls = intuitive_aptitude._find_calls(func_node)
         assert len(calls) >= 3, "Calls must not be empty"
-        assert "print" in calls or any("print" in c for c in calls), "Condition must be true"
+        assert "logger.info" in calls, "attribute calls must be reported by dotted name"
+        assert {"len", "calculate"} <= set(calls), "plain calls must be reported"
 
     def test_cyclomatic_complexity_simple(self):
         """Test _cyclomatic_complexity for simple function."""
@@ -813,9 +818,9 @@ class TestIntuitiveAptitudeCodeGeneration:
         """Test _generate_imports method."""
         analyzer = intuitive_aptitude()
         code = """
-        import os
-        from sys import path
-        from typing import List, Dict
+import os
+from sys import path
+from typing import List, Dict
 """
         analyzer.ingest(code)
         imports_str = analyzer._generate_imports()
@@ -1012,7 +1017,7 @@ def decorated_function():
         """Test handling complex type annotations."""
         analyzer = intuitive_aptitude()
         code = """
-        from typing import List, Dict, Optional, Union
+from typing import List, Dict, Optional, Union
 
 def annotated_func(
     x: List[Dict[str, Union[int, str]]],
@@ -1127,12 +1132,12 @@ class TestIntegrationScenarios:
 This module demonstrates various Python features.
 """
 
-        from __future__ import annotations
+from __future__ import annotations
 
-        import os
-        import sys
-        from typing import List, Dict, Optional
-        from codex.logging.structured_logger import logger
+import os
+import sys
+from typing import List, Dict, Optional
+from codex.logging.structured_logger import logger
 
 __all__ = ["main", "helper"]
 
