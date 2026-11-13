@@ -125,7 +125,9 @@ class TestAPISecurityHeaders:
             return True
         
         # Valid auth
-        headers = {"Authorization": "******"}
+        # Value was masked to "******" when the file was created; restore a
+        # well-formed synthetic bearer token (>= 20 chars).
+        headers = {"Authorization": "Bearer " + "t" * 32}
         assert validate_request_auth(headers)
         
         # Missing auth
