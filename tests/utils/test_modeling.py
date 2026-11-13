@@ -15,7 +15,8 @@ transformers = pytest.importorskip("transformers")
 if not hasattr(transformers, "AutoTokenizer"):
     pytest.skip("transformers missing AutoTokenizer", allow_module_level=True)
 
- # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
+# pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 def test_invalid_dtype():
     mod = importlib.import_module("codex_ml.utils.modeling")
     with pytest.raises(ValueError):
@@ -68,7 +69,8 @@ def test_load_success(monkeypatch):
     monkeypatch.setattr(
         mod,
         "AutoTokenizer",
-        types.SimpleNamespace(from_pretrained=lambda m, use_fast=True: Tok()),
+        # load_from_pretrained forwards revision/local_files_only to the factory.
+        types.SimpleNamespace(from_pretrained=lambda m, use_fast=True, **kw: Tok()),
     )
     monkeypatch.setattr(
         mod,

@@ -284,6 +284,9 @@ def test_missing_lora_path_raises(tmp_path, monkeypatch):
         "load_from_pretrained",
         lambda factory, identifier, **kwargs: factory.from_pretrained(identifier, **kwargs),
     )
+    # The path check only runs when PEFT is importable; stub it so the test does
+    # not depend on whether ``peft`` is installed.
+    monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (object, object, object))
     missing = tmp_path / "missing"
     with pytest.raises(FileNotFoundError):
         mod.load_model_with_optional_lora(

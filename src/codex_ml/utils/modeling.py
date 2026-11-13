@@ -454,6 +454,10 @@ def _get_registry_factory(name: str):
         from codex_ml.models.loader_registry import get_model
 
         return get_model(name)
+    except KeyError:
+        # ``get_model`` raises KeyError for unregistered names (or when the
+        # registry is disabled); fall back to the default loading path.
+        return None
     except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return None
