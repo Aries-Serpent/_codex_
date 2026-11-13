@@ -61,7 +61,7 @@ class TopicResearchStore:
             for name, content in artifacts.items():
                 if Path(name).name != name:
                     raise ValueError(f"Invalid research artifact name: {name}")
-                _atomic_write(run_dir / name, content)
+                write_bytes_atomic(run_dir / name, content)
             manifest = {
                 "schema_version": "1.0",
                 "topic": safe_title,
@@ -75,12 +75,12 @@ class TopicResearchStore:
                 "relative_path": f"{topic_slug}/runs/{run_id}",
                 "artifact_sha256": artifact_hashes,
             }
-            _atomic_write(manifest_path, _json_bytes(manifest))
+            write_bytes_atomic(manifest_path, _json_bytes(manifest))
 
         topic_index = _build_topic_index(topic_dir, safe_title, topic_slug)
-        _atomic_write(topic_dir / "index.json", _json_bytes(topic_index))
+        write_bytes_atomic(topic_dir / "index.json", _json_bytes(topic_index))
         root_index = _build_root_index(root)
-        _atomic_write(root / "index.json", _json_bytes(root_index))
+        write_bytes_atomic(root / "index.json", _json_bytes(root_index))
         return run_dir
 
 
@@ -194,7 +194,13 @@ def _json_bytes(value: Any) -> bytes:
     return (json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
 
 
-def _atomic_write(path: Path, content: bytes) -> None:
+def write_bytes_atomic(path: Path, content: bytes) -> None:
+    """Write ``content`` to ``path`` via same-dir temp file + fsync + ``os.replace``.
+
+    Shared by the deep-research store and CLI.  Deliberately local rather than
+    ``codex_ml.utils.atomic_io`` so this lightweight package does not import the
+    ``codex_ml`` stack; the temp file is removed if the write fails.
+    """
     descriptor, temp_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
     try:
         with os.fdopen(descriptor, "wb") as stream:
