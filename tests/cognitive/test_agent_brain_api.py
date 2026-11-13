@@ -382,8 +382,7 @@ class TestBrainSingleton:
     def test_brain_has_help(self):
         from codex.cognitive import brain
 
-        assert callable(brain.help, "Condition must be true"
-        ), "Condition must be true"
+        assert callable(brain.help), "Condition must be true"
 
     def test_brain_has_discover(self):
         from codex.cognitive import brain
