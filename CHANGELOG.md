@@ -17,6 +17,8 @@
   remain acceptance requirements.
 - Record the actual three repair lanes and local/hosted evidence required by
   the fresh delegation preflight; do not weaken its failed auto-fix push control.
+- Preserve concurrent manifest and secret-baseline automation through normal
+  integration rather than discarding its update or rewriting branch history.
 
 ### Fixed - PR #5781 RAG runner and CodeQL classification repair
 - Measure RAG coverage against the runtime implementation package rather than

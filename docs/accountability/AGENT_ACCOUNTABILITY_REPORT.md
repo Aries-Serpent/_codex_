@@ -14,6 +14,9 @@
 
 - Published draft #5783 against `0D_base_`, code SHA
   `3c73028b08e6d3f592330ae1f39e96d91716694f`, with verified signed commits.
+- Preserved concurrent bot commit `0ae0c66d35` (manifest and secret-baseline
+  metadata) by normal merge after a non-fast-forward push rejection. No reset,
+  rebase or force push; the integration commit records this actual evidence.
 - Focused approval tests: 231 passed, one skip. Focused ML tests: 210 passed.
   Local Torch is a stub; these results do not prove real-Torch serialization.
   Black, Ruff, compile, actionlint and staged Gitleaks passed. Approval mypy
