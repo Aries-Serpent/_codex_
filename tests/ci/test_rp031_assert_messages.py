@@ -35,8 +35,8 @@ class TestRP031AssertMessages:
         test_file.write_text("""
 def test_response_handling():
     response = {"status": "ok"}
-    assert response, "Response must not be empty"
-    assert len(response) > 0, "Response must not be empty"
+    assert response
+    assert len(response) > 0
 """)
 
         fixer = CommonIssueFixer(repo_root, check_only=True, dry_run=False)
@@ -167,9 +167,9 @@ def test_response_handling():
 def test_multi():
     data = [1, 2, 3]
     result = {"key": "value"}
-    assert data, "Data must not be empty"
-    assert result, "Result must not be empty"
-    assert len(data) > 0, "Data must not be empty"
+    assert data
+    assert result
+    assert len(data) > 0
 """)
 
         fixer = CommonIssueFixer(repo_root, check_only=False, dry_run=False)
@@ -178,8 +178,10 @@ def test_multi():
         assert len(issues) >= 3, "Issues must not be empty"
         content = test_file.read_text()
         # Verify multiple messages were added
-        assert content.count('assert ') >= 3, "Value must be greater than zero"
-        assert '", "' in content  # Multiple messages added
+        assert content.count("assert ") >= 3, "Value must be greater than zero"
+        assert 'assert data, "Data must not be empty"' in content, "data message missing"
+        assert 'assert result, "Result must not be empty"' in content, "result message missing"
+        assert 'assert len(data) > 0, "Data must not be empty"' in content, "len message missing"
 
     def test_preserves_indentation(self, tmp_repo):
         """Test that indentation is preserved."""
@@ -198,9 +200,9 @@ class TestClass:
 
         content = test_file.read_text()
         # Check that indentation is preserved (8 spaces for nested assert)
-        lines = content.split('\n')
-        assert_line = [l for l in lines if 'assert' in l and 'data' in l][0]
-        assert assert_line.startswith('        '), "Condition must be true"
+        lines = content.split("\n")
+        assert_line = [l for l in lines if "assert" in l and "data" in l][0]
+        assert assert_line.startswith("        "), "Condition must be true"
 
     def test_handles_empty_tests_dir(self, tmp_repo):
         """Test handling when tests directory exists but is empty."""
@@ -242,9 +244,9 @@ def test_keywords():
         issues = fixer.fix_assert_messages()
 
         content = test_file.read_text()
-        assert 'Response must not be empty' in content, "Response must not be empty"
-        assert 'Result must not be empty' in content, "Result must not be empty"
-        assert 'Content must not be empty' in content, "Content must not be empty"
+        assert "Response must not be empty" in content, "Response must not be empty"
+        assert "Result must not be empty" in content, "Result must not be empty"
+        assert "Content must not be empty" in content, "Content must not be empty"
 
 
 if __name__ == "__main__":

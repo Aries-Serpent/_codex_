@@ -3904,7 +3904,7 @@ class CommonIssueFixer:
                 return "Collection must not be empty"
             if 'is not None' in condition or '!= None' in condition:
                 if var_name:
-                    return f"{var_name} must be initialized"
+                    return f"{var_name.capitalize()} must be initialized"
                 return "Value must be initialized"
             if ' > ' in condition or '>=' in condition:
                 if 'count' in var_name.lower() or 'len' in condition:
