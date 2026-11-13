@@ -15,6 +15,11 @@ from scripts.ci.ml_slow_aggregate import aggregate, junit_summary, validate_sele
 pytest_plugins = ["pytester"]
 
 
+@pytest.fixture(autouse=True)
+def _default_subprocess_cwd():
+    """Keep pytester subprocesses in their isolated temporary directory."""
+
+
 @pytest.mark.parametrize("count,index", [(0, 1), (2, 3)])
 def test_invalid_shard_configuration_fails_collection(pytester, count, index):
     pytester.makepyfile(
@@ -50,6 +55,8 @@ def test_slow(): pass
             result = pytester.runpytest_subprocess(
                 "-p",
                 "ml_pytest_shards",
+                "-p",
+                "pytest_randomly",
                 "-m",
                 marker,
                 f"--ml-shards={count}",
