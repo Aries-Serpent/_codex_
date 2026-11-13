@@ -27,9 +27,7 @@ class TestApprovalEngine:
     def test_workflow_initialization(self, engine):
         """Verify workflow starts in correct state."""
         definition = {"id": "test", "name": "Test", "stages": []}
-        exec_id = engine.start_workflow(
-            "test", definition, {"type": "pr"}, "user1", ["admin"]
-        )
+        exec_id = engine.start_workflow("test", definition, {"type": "pr"}, "user1", ["admin"])
         assert exec_id.startswith("test-"), "Condition must be true"
         assert exec_id in engine.workflows, "Condition must be true"
         assert engine.workflows[exec_id].status == WorkflowStatus.RUNNING, "status is not valid"
@@ -37,9 +35,7 @@ class TestApprovalEngine:
     def test_approval_grant(self, engine):
         """Verify approval can be granted and recorded."""
         definition = {"id": "test", "name": "Test", "stages": []}
-        exec_id = engine.start_workflow(
-            "test", definition, {"type": "pr"}, "user1", ["admin"]
-        )
+        exec_id = engine.start_workflow("test", definition, {"type": "pr"}, "user1", ["admin"])
 
         result = engine.grant_approval(exec_id, "stage1", "alice", "Alice", reason="LGTM")
         assert result is True, "Result must not be empty"
@@ -51,28 +47,19 @@ class TestApprovalEngine:
     def test_approval_rejection(self, engine):
         """Verify rejection marks workflow as rejected."""
         definition = {"id": "test", "name": "Test", "stages": []}
-        exec_id = engine.start_workflow(
-            "test", definition, {"type": "pr"}, "user1", ["admin"]
-        )
+        exec_id = engine.start_workflow("test", definition, {"type": "pr"}, "user1", ["admin"])
 
         engine.reject_approval(exec_id, "stage1", "bob", "Bob", reason="Needs fixes")
         state = engine.get_workflow_state(exec_id)
-        assert state["status"] == "rejected", "Condition must be true"
+        assert state["status"] is WorkflowStatus.REJECTED, "Condition must be true"
 
     def test_delegation_creation(self, engine):
         """Verify delegation can be created and recorded."""
         definition = {"id": "test", "name": "Test", "stages": []}
-        exec_id = engine.start_workflow(
-            "test", definition, {"type": "pr"}, "user1", ["admin"]
-        )
+        exec_id = engine.start_workflow("test", definition, {"type": "pr"}, "user1", ["admin"])
 
         del_id = engine.create_delegation(
-            exec_id,
-            "stage1",
-            "alice",
-            "bob",
-            reason="Vacation",
-            expiry="2026-07-15T23:59:59Z"
+            exec_id, "stage1", "alice", "bob", reason="Vacation", expiry="2026-07-15T23:59:59Z"
         )
         assert del_id.startswith("del-"), "Condition must be true"
 
@@ -82,14 +69,11 @@ class TestApprovalEngine:
     def test_escalation_handling(self, engine):
         """Verify escalation can be triggered."""
         definition = {"id": "test", "name": "Test", "stages": []}
-        exec_id = engine.start_workflow(
-            "test", definition, {"type": "pr"}, "user1", ["admin"]
-        )
+        exec_id = engine.start_workflow("test", definition, {"type": "pr"}, "user1", ["admin"])
 
         from scripts.governance.approval_engine import EscalationAction
-        engine.escalate_workflow(
-            exec_id, "stage1", "Timeout", EscalationAction.AUTO_APPROVE
-        )
+
+        engine.escalate_workflow(exec_id, "stage1", "Timeout", EscalationAction.AUTO_APPROVE)
 
         state = engine.get_workflow_state(exec_id)
         assert "stage1" in state["escalations"], "Condition must be true"
@@ -127,13 +111,11 @@ class TestApprovalEngine:
     def test_workflow_completion(self, engine):
         """Verify workflow can be marked complete."""
         definition = {"id": "test", "name": "Test", "stages": []}
-        exec_id = engine.start_workflow(
-            "test", definition, {"type": "pr"}, "user1", ["admin"]
-        )
+        exec_id = engine.start_workflow("test", definition, {"type": "pr"}, "user1", ["admin"])
 
         engine.complete_workflow(exec_id, WorkflowStatus.APPROVED)
         state = engine.get_workflow_state(exec_id)
-        assert state["status"] == "approved", "Condition must be true"
+        assert state["status"] is WorkflowStatus.APPROVED, "Condition must be true"
         assert state["completed_at"] is not None, "Value must be initialized"
 
 
@@ -154,7 +136,7 @@ class TestAuditLogger:
             "workflow1",
             {"type": "pr"},
             {},
-            {"status": "started"}
+            {"status": "started"},
         )
         assert event_id.startswith("aud-"), "Condition must be true"
         assert len(logger.events) == 1, "Collection must not be empty"
@@ -169,7 +151,7 @@ class TestAuditLogger:
                 "workflow1",
                 {"type": "pr"},
                 {},
-                {}
+                {},
             )
 
         events = logger.get_events(workflow_id="workflow1")
@@ -178,24 +160,14 @@ class TestAuditLogger:
     def test_immutability_verification(self, logger):
         """Verify immutability check passes with valid events."""
         logger.log_event(
-            AuditEventType.WORKFLOW_STARTED,
-            "user1",
-            ["admin"],
-            "workflow1",
-            {},
-            {},
-            {}
+            AuditEventType.WORKFLOW_STARTED, "user1", ["admin"], "workflow1", {}, {}, {}
         )
         assert logger.verify_immutability() is True, "Condition must be true"
 
     def test_event_filtering_by_type(self, logger):
         """Verify filtering by event type."""
-        logger.log_event(
-            AuditEventType.WORKFLOW_STARTED, "u1", [], "w1", {}, {}, {}
-        )
-        logger.log_event(
-            AuditEventType.APPROVAL_GRANTED, "u2", [], "w1", {}, {}, {}
-        )
+        logger.log_event(AuditEventType.WORKFLOW_STARTED, "u1", [], "w1", {}, {}, {})
+        logger.log_event(AuditEventType.APPROVAL_GRANTED, "u2", [], "w1", {}, {}, {})
 
         started_events = logger.get_events(event_type=AuditEventType.WORKFLOW_STARTED)
         assert len(started_events) == 1, "Started_events must not be empty"
@@ -207,6 +179,7 @@ class TestSuccessCriteria:
     def test_policy_coverage(self):
         """SC1: Verify 40+ policies are defined."""
         from scripts.governance.compliance_monitor import PolicyLibrary
+
         policies = PolicyLibrary.define_policies()
         assert len(policies) >= 40, f"Expected ≥40 policies, got {len(policies)}"
 
@@ -234,31 +207,63 @@ class TestSuccessCriteria:
 
         # Test resource with all policies passing
         resource = {
-            "has_rbac_grant": True,
-            "tenant_isolated": True,
-            "session_expires": True,
             "coverage": 0.85,
-            "lint_pass": True,
-            "mypy_pass": True,
             "codeql_critical": 0,
-            "no_secrets": True,
-            "secrets_rotated": True,
-            "secrets_vaulted": True,
-            "approvals_complete": True,
-            "changelog_updated": True,
-            "dependencies_secure": True,
+            "api_secured": True,
             "audit_complete": True,
             "audit_immutable": True,
-            "session_documented": True,
-            "sla_met": True,
-            "tenant_isolation": True,
+            "bc_tested": True,
+            "breach_notification_sla": True,
+            "breaking_changes_notified": True,
+            "compliance_monitoring": True,
+            "credentials_expired": True,
+            "dashboard_available": True,
+            "delegation_audited": True,
+            "dependencies_secure": True,
             "deployment_window_ok": True,
+            "docstrings_valid": True,
+            "emergency_override_logged": True,
+            "encryption_at_rest": True,
+            "encryption_in_transit": True,
+            "has_rbac_grant": True,
+            "incident_detection": True,
+            "incident_investigation": True,
+            "ip_whitelisted": True,
+            "lint_pass": True,
+            "migrations_approved": True,
+            "mypy_pass": True,
+            "no_secrets": True,
+            "p0_approved": True,
+            "p1_approved": True,
+            "p2_approved": True,
+            "p3_approved": True,
+            "policies_enforced": True,
+            "quotas_enforced": True,
+            "rate_limiting": True,
+            "rbac_enforced": True,
+            "readme_updated": True,
+            "reports_generated": True,
+            "retention_enforced": True,
+            "reverts_tracked": True,
+            "secret_scan_complete": True,
+            "secrets_rotated": True,
+            "secrets_vaulted": True,
+            "session_documented": True,
+            "session_expires": True,
+            "sla_met": True,
+            "tenant_isolated": True,
+            "tenant_isolation": True,
+            "tokens_expired": True,
+            "workflow_performance": True,
         }
 
         status = monitor.check_compliance(resource)
         score = monitor.get_compliance_score()
 
-        assert score.compliance_rate >= 0.99, f"Compliance rate {score.compliance_rate:.2%} below 99%"
+        assert score.failed_checks == 0, f"unexpected violations: {score.violations_by_severity}"
+        assert (
+            score.compliance_rate >= 0.99
+        ), f"Compliance rate {score.compliance_rate:.2%} below 99%"
 
     def test_rbac_integration(self):
         """SC4: Verify 100% compatible with Track 12.1 RBAC."""
@@ -266,28 +271,30 @@ class TestSuccessCriteria:
         # For now, verify imports work
         try:
             from scripts.governance.approval_engine import ApprovalWorkflowEngine
-            assert hasattr(ApprovalWorkflowEngine, '__init__')
+
+            assert hasattr(ApprovalWorkflowEngine, "__init__")
             # Real test would verify RBAC enforcer parameter
         except ImportError:
             pytest.skip("RBAC module not yet integrated")
 
     def test_documentation_completeness(self):
         """SC5: Verify complete documentation."""
-        import os
+        from pathlib import Path
 
-        # Check all deliverables exist
+        repo_root = Path(__file__).resolve().parents[2]
+
+        # Check all deliverables exist (phase report archived in the
+        # phase-reports reorganisation).
         docs = [
             ".codex/GOVERNANCE_POLICY_FRAMEWORK.md",
             "scripts/governance/approval_engine.py",
             "scripts/governance/compliance_monitor.py",
-            ".codex/PHASE_12_2_COMPLIANCE_DASHBOARD.md",
+            ".codex/archive/phase-reports/phase-11-20/PHASE_12_2_COMPLIANCE_DASHBOARD.md",
         ]
 
         for doc in docs:
-            full_path = os.path.join("/home/runner/work/_codex_/_codex_", doc)
-            assert os.path.exists(full_path), f"Missing deliverable: {doc}"
+            assert (repo_root / doc).exists(), f"Missing deliverable: {doc}"
 
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])
-

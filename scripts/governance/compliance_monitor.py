@@ -18,6 +18,7 @@ import json
 import logging
 import threading
 import time
+import uuid
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta, timezone
 from enum import Enum
@@ -223,7 +224,7 @@ class ComplianceMonitor:
                     passed = policy.check_function(resource)
                     if not passed:
                         violation = PolicyViolation(
-                            violation_id=f"vio-{int(time.time() * 1000)}",
+                            violation_id=f"vio-{int(time.time() * 1000)}-{policy_id}-{uuid.uuid4().hex[:8]}",
                             policy_id=policy_id,
                             policy_name=policy.name,
                             severity=policy.severity,
