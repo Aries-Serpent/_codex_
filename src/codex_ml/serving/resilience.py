@@ -173,7 +173,10 @@ class CircuitBreaker:
             result = func(*args, **kwargs)
             self._on_success()
             return result
-        except (ConnectionError, TimeoutError):
+        except Exception:
+            # A circuit breaker must count *any* failure of the protected call
+            # (narrowing this to ConnectionError/TimeoutError in 31d2883303
+            # meant ordinary errors never opened the circuit). Re-raised as-is.
             self._on_failure()
             raise
 

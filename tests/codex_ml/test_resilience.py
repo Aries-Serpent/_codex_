@@ -81,7 +81,10 @@ class TestCircuitBreaker:
 
     def test_circuit_enters_half_open(self):
         """Test circuit enters half-open after timeout"""
-        config = CircuitBreakerConfig(failure_threshold=2, timeout=0.05)  # 50ms timeout
+        # Exponential backoff (default on, initial 1.0s) would override ``timeout``.
+        config = CircuitBreakerConfig(
+            failure_threshold=2, timeout=0.05, use_exponential_backoff=False
+        )  # 50ms timeout
         cb = CircuitBreaker(config)
 
         def fail_func():
@@ -111,6 +114,7 @@ class TestCircuitBreaker:
             failure_threshold=2,
             success_threshold=2,
             timeout=0.05,
+            use_exponential_backoff=False,
         )
         cb = CircuitBreaker(config)
 
@@ -138,7 +142,9 @@ class TestCircuitBreaker:
 
     def test_circuit_reopens_on_half_open_failure(self):
         """Test circuit reopens if half-open call fails"""
-        config = CircuitBreakerConfig(failure_threshold=2, timeout=0.05)
+        config = CircuitBreakerConfig(
+            failure_threshold=2, timeout=0.05, use_exponential_backoff=False
+        )
         cb = CircuitBreaker(config)
 
         def fail_func():
