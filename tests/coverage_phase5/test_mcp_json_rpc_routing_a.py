@@ -108,8 +108,7 @@ def test_json_rpc_version_negotiation():
         "params": {"supported": ["0.9", "1.0", "1.1"]},
     }
 
-    loop = asyncio.get_event_loop()
-    response = loop.run_until_complete(server.handle_request(request))
+    response = asyncio.run(server.handle_request(request))
 
     assert response is not None, "response must be initialized"
     assert "result" in response, "Response must not be empty"
@@ -130,8 +129,7 @@ def test_json_rpc_large_payload():
         "params": {},
     }
 
-    loop = asyncio.get_event_loop()
-    response = loop.run_until_complete(server.handle_request(request))
+    response = asyncio.run(server.handle_request(request))
 
     assert response is not None, "response must be initialized"
     assert isinstance(response["result"], list)
