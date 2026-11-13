@@ -60,7 +60,9 @@ class TestPerformanceBenchmarks:
 
         # Target: >= 1000 patterns/second
         # Relaxed for test environment: >= 500 patterns/second
-        assert (patterns_per_second >= 500, "patterns_per_second must be greater than zero"
+        assert (
+            patterns_per_second >= 500,
+            "patterns_per_second must be greater than zero",
         ), f"Compression speed: {patterns_per_second:.0f} patterns/s (target: 1000)"
 
     def test_retrieval_speed_benchmark(self):
@@ -98,7 +100,9 @@ class TestPerformanceBenchmarks:
 
         # Target: < 10ms average
         # Relaxed for test environment: < 50ms
-        assert (avg_retrieval_time < 50, "avg_retrieval_time is not valid"
+        assert (
+            avg_retrieval_time < 50,
+            "avg_retrieval_time is not valid",
         ), f"Avg retrieval time: {avg_retrieval_time:.2f}ms (target: <10ms)"
 
     def test_cache_hit_rate_realistic_workload(self):
@@ -112,21 +116,21 @@ class TestPerformanceBenchmarks:
 
         # First batch: create memory
         training_scenarios = generate_complex_scenarios(50, seed=42)
-        for scenario in training_scenarios:
-            assessor.assess_with_memory(scenario)
+        for audit, _decision, _complexity in training_scenarios:
+            assessor.assess_with_memory(audit)
 
         # Consolidate patterns
-        assessor.memory_manager.consolidate()
+        assessor.memory.consolidate()
 
         # Second batch: similar patterns (should hit cache)
         test_scenarios = generate_complex_scenarios(50, seed=43)  # Similar but not identical
 
-        initial_hits = assessor.memory_manager.cache_hits
+        initial_hits = assessor.memory.cache_hits
 
-        for scenario in test_scenarios:
-            assessor.assess_with_memory(scenario)
+        for audit, _decision, _complexity in test_scenarios:
+            assessor.assess_with_memory(audit)
 
-        final_hits = assessor.memory_manager.cache_hits
+        final_hits = assessor.memory.cache_hits
         cache_hits = final_hits - initial_hits
 
         cache_hit_rate = cache_hits / len(test_scenarios)
@@ -171,7 +175,9 @@ class TestPerformanceBenchmarks:
 
         # Target: < 100MB for 10k patterns
         # Relaxed: < 200MB
-        assert (estimated_10k_memory < 200, "estimated_10k_memory is not valid"
+        assert (
+            estimated_10k_memory < 200,
+            "estimated_10k_memory is not valid",
         ), f"Estimated memory for 10k: {estimated_10k_memory:.1f}MB (target: <100MB)"
 
     def test_consolidation_throughput(self):
@@ -198,6 +204,8 @@ class TestPerformanceBenchmarks:
 
         # Target: >= 100 patterns/second
         # Relaxed: >= 50 patterns/second
-        assert (patterns_per_second >= 50, "patterns_per_second must be greater than zero"
+        assert (
+            patterns_per_second >= 50,
+            "patterns_per_second must be greater than zero",
         ), f"Consolidation throughput: {patterns_per_second:.0f} patterns/s (target: 100)"
         assert result.promoted > 0, "No patterns were promoted during consolidation"

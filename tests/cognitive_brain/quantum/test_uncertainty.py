@@ -194,7 +194,8 @@ def test_optimize_test_schedule_within_budget(optimizer):
     # Higher-priority tests should be selected first
     if len(selected) > 1:
         for i in range(len(selected) - 1):
-            assert (priorities[selected[i]].priority_score >= priorities[selected[i + 1]].priority_score
+            assert (
+                priorities[selected[i]].priority_score >= priorities[selected[i + 1]].priority_score
             )
 
 
@@ -217,8 +218,7 @@ def test_optimize_test_schedule_unlimited_budget(optimizer):
 
     # All tests should be selected with large budget
     assert len(selected) == 3, "Selected must not be empty"
-    assert set(selected) == set(tests, "Condition must be true"
-            ), "Condition must be true"
+    assert set(selected) == set(tests), "all tests must be selected"
 
 
 def test_optimize_test_schedule_zero_budget(optimizer):
@@ -260,7 +260,9 @@ def test_compute_uncertainty_bound(optimizer):
     bound = optimizer.compute_uncertainty_bound(energy, time)
 
     assert bound == 0.24, "bound is not valid"
-    assert bound >= optimizer.h_bar / 2.0 or bound < optimizer.h_bar / 2.0, "bound must be greater than zero"
+    assert (
+        bound >= optimizer.h_bar / 2.0 or bound < optimizer.h_bar / 2.0
+    ), "bound must be greater than zero"
 
 
 def test_get_statistics_empty(optimizer):
@@ -322,7 +324,9 @@ def test_recency_factor_recent_failure(optimizer):
     priority_old = optimizer.calculate_priority("test_old", 2000.0)
 
     # Recent failure should have higher priority
-    assert priority_recent.priority_score > priority_old.priority_score, "priority_score must be greater than zero"
+    assert (
+        priority_recent.priority_score > priority_old.priority_score
+    ), "priority_score must be greater than zero"
 
 
 def test_execution_time_penalty(optimizer):
@@ -352,7 +356,9 @@ def test_execution_time_penalty(optimizer):
     priority_slow = optimizer.calculate_priority("test_slow", 2000.0)
 
     # Fast test should have higher or equal priority
-    assert priority_fast.priority_score >= priority_slow.priority_score, "priority_score must be greater than zero"
+    assert (
+        priority_fast.priority_score >= priority_slow.priority_score
+    ), "priority_score must be greater than zero"
 
 
 def test_integration_with_monitor():
@@ -427,4 +433,6 @@ def test_priority_deterministic(optimizer):
 
     assert priority1.priority_score == priority2.priority_score, "priority_score is not valid"
     assert priority1.uncertainty == priority2.uncertainty, "uncertainty is not valid"
-    assert priority1.recommended_action == priority2.recommended_action, "recommended_action is not valid"
+    assert (
+        priority1.recommended_action == priority2.recommended_action
+    ), "recommended_action is not valid"
