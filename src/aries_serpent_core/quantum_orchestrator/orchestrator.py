@@ -134,6 +134,10 @@ class DiracSpinor:
         """Total probability (should be 1.0 when normalized)."""
         return sum(abs(c) ** 2 for c in self.components)
 
+    def norm(self) -> float:
+        """Euclidean norm ‖ψ‖ = √(ψ†ψ) (1.0 for a normalized spinor)."""
+        return float(np.sqrt(self.total_probability))
+
     def normalize(self) -> None:
         """Normalize the spinor to unit probability."""
         norm = np.sqrt(self.total_probability)
@@ -199,6 +203,10 @@ class TaskState:
     required_resources: dict[str, float] = field(default_factory=dict)
 
     _constants: PhysicsConstants = field(default_factory=PhysicsConstants, repr=False)
+
+    def __post_init__(self) -> None:
+        if self.rest_mass < 0:
+            raise ValueError(f"rest_mass must be non-negative, got {self.rest_mass}")
 
     @property
     def amplitude(self) -> complex:

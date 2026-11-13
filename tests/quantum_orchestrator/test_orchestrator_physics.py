@@ -10,7 +10,6 @@ Focus on physics model validation:
 Tests target quantum evolution and physics constraints.
 """
 
-
 import numpy as np
 import pytest
 from codex.quantum_orchestrator.orchestrator import (
@@ -34,9 +33,7 @@ class TestQuantumOrchestratorPhysicsValidation:
     @pytest.fixture
     def orchestrator(self) -> QuantumRelativisticDiracOrchestrator:
         """Provide initialized orchestrator."""
-        return QuantumRelativisticDiracOrchestrator(
-            max_throughput=100.0, granularity=1.0, dt=0.1
-        )
+        return QuantumRelativisticDiracOrchestrator(max_throughput=100.0, granularity=1.0, dt=0.1)
 
     @pytest.fixture
     def constants(self) -> PhysicsConstants:
@@ -61,12 +58,11 @@ class TestQuantumOrchestratorPhysicsValidation:
 
         # Verify speed is capped
         actual_speed = np.linalg.norm(task.velocity)
-        assert actual_speed <= max_speed, (
-            f"Speed {actual_speed} exceeds limit {max_speed}"
-        )
+        assert actual_speed <= max_speed, f"Speed {actual_speed} exceeds limit {max_speed}"
 
-    def test_zero_mass_handling(self, orchestrator: QuantumRelativisticDiracOrchestrator, 
-                               constants: PhysicsConstants):
+    def test_zero_mass_handling(
+        self, orchestrator: QuantumRelativisticDiracOrchestrator, constants: PhysicsConstants
+    ):
         """Test handling of zero mass (massless particles)."""
         # Create task with zero mass
         task = TaskState(
@@ -142,15 +138,14 @@ class TestQuantumOrchestratorPhysicsValidation:
 
     def test_complex_amplitude_normalization(self, constants: PhysicsConstants):
         """Test that complex amplitudes remain normalized."""
-        spinor = DiracSpinor(constants=constants)
+        spinor = DiracSpinor(components=np.array([3.0 + 4.0j, 1.0j, 0.5 + 0j, 0j]))
+        spinor.normalize()
 
         # Amplitude should be complex
-        assert isinstance(spinor.psi_1, complex) or isinstance(
-            spinor.psi_1, np.complexfloating
-        )
+        assert isinstance(spinor.psi_1, complex) or isinstance(spinor.psi_1, np.complexfloating)
 
-        # Norm should be approximately 1
-        norm = spinor.norm
+        # Norm should be approximately 1 after normalization
+        norm = spinor.norm()
         assert abs(norm - 1.0) < 0.01, f"Norm {norm} not close to 1.0"
 
     def test_hamiltonian_hermiticity(self, constants: PhysicsConstants):
@@ -159,30 +154,28 @@ class TestQuantumOrchestratorPhysicsValidation:
 
         # Dirac matrices should be Hermitian
         for matrix in [
-            dirac_op.matrices.alpha_x,
-            dirac_op.matrices.alpha_y,
-            dirac_op.matrices.alpha_z,
-            dirac_op.matrices.beta,
+            dirac_op.matrices.alpha_x(),
+            dirac_op.matrices.alpha_y(),
+            dirac_op.matrices.alpha_z(),
+            dirac_op.matrices.beta(),
         ]:
             # Check Hermiticity: A† = A
             adjoint = np.conj(matrix.T)
-            assert np.allclose(
-                matrix, adjoint, atol=1e-10
-            ), "Matrix should be Hermitian"
+            assert np.allclose(matrix, adjoint, atol=1e-10), "Matrix should be Hermitian"
 
     def test_anticommutation_relations(self, constants: PhysicsConstants):
         """Test Clifford algebra anticommutation relations for Dirac matrices."""
         matrices = DiracMatrices()
 
-        # Test {α_i, α_j} = 2δ_ij 𝕀
-        # {α_x, α_x} = 2𝕀
-        result_xx = np.dot(matrices.alpha_x, matrices.alpha_x) + np.dot(
-            matrices.alpha_x, matrices.alpha_x
-        )
-        expected = 2 * np.eye(4)
-        assert np.allclose(
-            result_xx, expected, atol=1e-10
-        ), "Anticommutation relation violated"
+        # Test {γ_i, γ_j} = 2δ_ij 𝕀 for γ ∈ {α_x, α_y, α_z, β}
+        gammas = [*matrices.alpha_vector(), matrices.beta()]
+        for i, a in enumerate(gammas):
+            for j, b in enumerate(gammas):
+                anticommutator = np.dot(a, b) + np.dot(b, a)
+                expected = 2 * np.eye(4) if i == j else np.zeros((4, 4))
+                assert np.allclose(
+                    anticommutator, expected, atol=1e-10
+                ), f"Anticommutation relation violated for ({i}, {j})"
 
     # ========================================================================
     # NEGATIVE PROBABILITY TESTS
@@ -201,44 +194,56 @@ class TestQuantumOrchestratorPhysicsValidation:
 
         assert 0 <= prob <= 1, f"Probability {prob} out of bounds [0, 1]"
 
-    def test_probability_current_positivity(self, orchestrator: QuantumRelativisticDiracOrchestrator,
-                                           constants: PhysicsConstants):
+    def test_probability_current_positivity(
+        self, orchestrator: QuantumRelativisticDiracOrchestrator, constants: PhysicsConstants
+    ):
         """Test that probability current is physical (real-valued)."""
+        import copy
+
         current_op = ProbabilityCurrentOperator(constants)
 
         orchestrator.add_task("task_current", "Current Test")
         task = orchestrator.state.tasks["task_current"]
 
-        # Compute current components
-        # j^0 should give probability density (positive)
-        current_density = current_op.positive_energy_contribution(task.spinor)
+        # j^0 = ψ†ψ is the probability density and must be non-negative and real
+        current_density = np.vdot(task.spinor.components, task.spinor.components)
+        assert abs(current_density.imag) < 1e-12
+        assert (
+            current_density.real >= -1e-10
+        ), f"Probability current density {current_density} is negative"
+        assert task.spinor.positive_energy_prob >= -1e-10
 
-        # Should be non-negative
-        assert current_density >= -1e-10, (
-            f"Probability current density {current_density} is negative"
+        # The spatial current between two evolution steps must be real-valued
+        previous = copy.deepcopy(orchestrator.state)
+        orchestrator.evolve()
+        current = current_op.task_current(
+            orchestrator.state, previous, "task_current", orchestrator.dt
         )
+        assert isinstance(current, float) and np.isfinite(current)
 
-    def test_norm_preservation_during_evolution(self, orchestrator: QuantumRelativisticDiracOrchestrator):
+    def test_norm_preservation_during_evolution(
+        self, orchestrator: QuantumRelativisticDiracOrchestrator
+    ):
         """Test that spinor norm is preserved during evolution."""
         orchestrator.add_task("task_norm", "Norm Preservation Test")
 
         task = orchestrator.state.tasks["task_norm"]
-        initial_norm = task.spinor.norm
+        initial_norm = task.spinor.norm()
 
         # Evolve
         for _ in range(10):
             orchestrator.evolve()
 
-        final_norm = task.spinor.norm
+        final_norm = task.spinor.norm()
 
         # Norm should be approximately preserved
-        assert abs(final_norm - initial_norm) < 0.1, (
-            f"Norm changed from {initial_norm} to {final_norm}"
-        )
+        assert (
+            abs(final_norm - initial_norm) < 0.1
+        ), f"Norm changed from {initial_norm} to {final_norm}"
 
     def test_trace_of_density_matrix_unity(self, constants: PhysicsConstants):
         """Test that trace of density matrix equals 1."""
-        spinor = DiracSpinor(constants=constants)
+        spinor = DiracSpinor(components=np.array([0.6 + 0j, 0.0 + 0.8j, 0j, 0j]))
 
         # Density matrix ρ = |ψ⟩⟨ψ|
         psi = spinor.components
@@ -254,28 +259,29 @@ class TestQuantumOrchestratorPhysicsValidation:
 
     def test_superposition_state_initialization(self, constants: PhysicsConstants):
         """Test proper initialization of superposition states."""
-        spinor = DiracSpinor(constants=constants)
+        spinor = DiracSpinor(components=np.array([1.0 + 0j, 1.0 + 0j, 1.0j, 0j]))
+        spinor.normalize()
 
         # Should be in a superposition (not single basis state)
         components = spinor.components
         non_zero_count = np.sum(np.abs(components) > 1e-10)
 
-        # Should have multiple non-zero components
+        # Should have multiple non-zero components and unit total probability
         assert non_zero_count > 1, "Should be in superposition"
+        assert abs(spinor.total_probability - 1.0) < 1e-10
 
     def test_measurement_basis_orthogonality(self, constants: PhysicsConstants):
         """Test orthogonality of measurement basis states."""
         # Create two orthogonal spinor states
-        spinor1 = DiracSpinor(constants=constants)
-        spinor2 = DiracSpinor(constants=constants)
+        basis = [DiracSpinor(components=np.eye(4, dtype=complex)[k]) for k in range(4)]
 
-        # Get components
-        psi1 = spinor1.components
-        psi2 = spinor2.components
-
-        # Different initializations should give different states
-        # (not necessarily orthogonal, but different)
-        assert not np.allclose(psi1, psi2), "Different spinors should differ"
+        for i, s1 in enumerate(basis):
+            for j, s2 in enumerate(basis):
+                overlap = np.vdot(s1.components, s2.components)
+                expected = 1.0 if i == j else 0.0
+                assert (
+                    abs(overlap - expected) < 1e-12
+                ), f"<{i}|{j}> = {overlap}, expected {expected}"
 
     def test_collapse_determinism(self, orchestrator: QuantumRelativisticDiracOrchestrator):
         """Test that collapse-like behavior is deterministic."""
@@ -319,8 +325,9 @@ class TestQuantumOrchestratorPhysicsValidation:
     # MOMENTUM AND GRADIENT TESTS
     # ========================================================================
 
-    def test_gradient_finite_differences(self, orchestrator: QuantumRelativisticDiracOrchestrator,
-                                        constants: PhysicsConstants):
+    def test_gradient_finite_differences(
+        self, orchestrator: QuantumRelativisticDiracOrchestrator, constants: PhysicsConstants
+    ):
         """Test gradient computation via finite differences."""
         momentum_op = MomentumOperator(constants)
 
@@ -343,8 +350,9 @@ class TestQuantumOrchestratorPhysicsValidation:
         assert isinstance(grad_left, np.ndarray), "Gradient should be ndarray"
         assert grad_left.shape == (5,), "Gradient should be 5D"
 
-    def test_potential_landscape_smoothness(self, constants: PhysicsConstants,
-                                           orchestrator: QuantumRelativisticDiracOrchestrator):
+    def test_potential_landscape_smoothness(
+        self, constants: PhysicsConstants, orchestrator: QuantumRelativisticDiracOrchestrator
+    ):
         """Test that potential landscape is smooth."""
         potential = PotentialLandscape(constants)
 
@@ -353,7 +361,7 @@ class TestQuantumOrchestratorPhysicsValidation:
 
         # Sample potential at nearby points
         grad1 = potential.gradient("task_potential", orchestrator.state)
-        
+
         # Small perturbation
         task.position.priority += 0.01
         grad2 = potential.gradient("task_potential", orchestrator.state)
@@ -366,7 +374,9 @@ class TestQuantumOrchestratorPhysicsValidation:
     # FLOW AND CURRENT TESTS
     # ========================================================================
 
-    def test_probability_flow_conservation(self, orchestrator: QuantumRelativisticDiracOrchestrator):
+    def test_probability_flow_conservation(
+        self, orchestrator: QuantumRelativisticDiracOrchestrator
+    ):
         """Test conservation of probability flow."""
         flow_analyzer = FlowAnalyzer(orchestrator.constants)
 
@@ -430,7 +440,7 @@ class TestQuantumOrchestratorPhysicsValidation:
 
     def test_complex_arithmetic_precision(self, constants: PhysicsConstants):
         """Test precision of complex arithmetic."""
-        spinor = DiracSpinor(constants=constants)
+        spinor = DiracSpinor()
 
         # Components should be high precision complex numbers
         for component in spinor.components:
@@ -439,7 +449,7 @@ class TestQuantumOrchestratorPhysicsValidation:
             ), "Components should be complex"
 
         # Norm calculation should be precise
-        norm = spinor.norm
+        norm = spinor.norm()
         assert abs(norm - 1.0) < 1e-10, "Norm should be precisely 1.0"
 
     def test_matrix_multiplication_accuracy(self, constants: PhysicsConstants):
@@ -447,13 +457,12 @@ class TestQuantumOrchestratorPhysicsValidation:
         matrices = DiracMatrices()
 
         # Test matrix multiplications
-        result = np.dot(matrices.alpha_x, matrices.alpha_x)
-
-        # α_x² should equal identity
-        expected = 2 * np.eye(4)  # Due to {α_i, α_i} = 2I
-        assert np.allclose(
-            result + np.dot(matrices.alpha_x, matrices.alpha_x), expected, atol=1e-10
-        ), "Matrix multiplication should be accurate"
+        for matrix in [*matrices.alpha_vector(), matrices.beta()]:
+            # α_i² = β² = identity
+            result = np.dot(matrix, matrix)
+            assert np.allclose(
+                result, np.eye(4), atol=1e-10
+            ), "Matrix multiplication should be accurate"
 
 
 class TestQuantumOrchestratorIntegration:
