@@ -433,6 +433,9 @@ class FAISSStore(VectorStore):
                     "id": vid,
                     "score": cosine_similarity,
                     "metadata": doc,
+                    # ``document`` is consumed by retrieval.search.RetrievalEngine
+                    # (``result["document"]``); keep it alongside ``metadata``.
+                    "document": doc,
                     "distance": float(dist),
                 }
             )
