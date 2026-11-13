@@ -28,14 +28,17 @@ except ImportError as e:
     logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     from config_legacy import compose, initialize_config_dir
 
-CLI_PACKAGE_PATH = Path(__file__).resolve().parent.parent / "cli"
+# ``cli/`` and ``tokenization/`` live next to this module under ``src/`` since the
+# canonical src-only layout (57cb3506ed); they used to sit at the repository root.
+CLI_PACKAGE_PATH = Path(__file__).resolve().parent / "cli"
 PROJECT_ROOT = CLI_PACKAGE_PATH.parent
 # Keep project root importable but avoid shadowing installed third-party packages.
 # Remove cwd aliases to prevent local stub packages from shadowing site-packages.
-for candidate in ("", ".", str(PROJECT_ROOT)):
+for candidate in ("", "."):
     while candidate in sys.path:
         sys.path.remove(candidate)
-sys.path.append(str(PROJECT_ROOT))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.append(str(PROJECT_ROOT))
 
 TOKENIZATION_DIR = PROJECT_ROOT / "tokenization"
 tokenization_pkg = sys.modules.get("tokenization")
@@ -46,26 +49,31 @@ if tokenization_pkg is None:
     tokenization_pkg.__path__ = [str(TOKENIZATION_DIR)]
     sys.modules["tokenization"] = tokenization_pkg
 
-tokenization_spec = importlib.util.spec_from_file_location(
-    "tokenization.loader",
-    TOKENIZATION_DIR / "loader.py",
-    submodule_search_locations=[str(TOKENIZATION_DIR)],
-)
-if tokenization_spec is None or tokenization_spec.loader is None:
-    raise ImportError(f"Unable to load tokenization.loader from {TOKENIZATION_DIR}")
-tokenization_loader = importlib.util.module_from_spec(tokenization_spec)
-sys.modules["tokenization.loader"] = tokenization_loader
-tokenization_spec.loader.exec_module(tokenization_loader)
+tokenization_loader = sys.modules.get("tokenization.loader")
+if tokenization_loader is None:
+    tokenization_spec = importlib.util.spec_from_file_location(
+        "tokenization.loader",
+        TOKENIZATION_DIR / "loader.py",
+        submodule_search_locations=[str(TOKENIZATION_DIR)],
+    )
+    if tokenization_spec is None or tokenization_spec.loader is None:
+        raise ImportError(f"Unable to load tokenization.loader from {TOKENIZATION_DIR}")
+    tokenization_loader = importlib.util.module_from_spec(tokenization_spec)
+    sys.modules["tokenization.loader"] = tokenization_loader
+    tokenization_spec.loader.exec_module(tokenization_loader)
+
 TRAIN_CODEX_PATH = CLI_PACKAGE_PATH / "train_codex.py"
 if not TRAIN_CODEX_PATH.exists():
     raise ImportError(f"train_codex module not found at {TRAIN_CODEX_PATH}")
 
-spec = importlib.util.spec_from_file_location("cli.train_codex", TRAIN_CODEX_PATH)
-if spec is None or spec.loader is None:
-    raise ImportError(f"Unable to load train_codex module from {TRAIN_CODEX_PATH}")
-train_codex = importlib.util.module_from_spec(spec)
-sys.modules["cli.train_codex"] = train_codex
-spec.loader.exec_module(train_codex)
+train_codex = sys.modules.get("cli.train_codex")
+if train_codex is None:
+    spec = importlib.util.spec_from_file_location("cli.train_codex", TRAIN_CODEX_PATH)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Unable to load train_codex module from {TRAIN_CODEX_PATH}")
+    train_codex = importlib.util.module_from_spec(spec)
+    sys.modules["cli.train_codex"] = train_codex
+    spec.loader.exec_module(train_codex)
 
 
 def _ensure_real_torch() -> None:
