@@ -21,6 +21,7 @@ class TestMLflowMetricWriter:
                 assert result is False, "Result must not be empty"
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
+    @patch("codex_ml.tracking.writers.MlflowClient", Mock())
     @patch.dict("sys.modules", {"mlflow": Mock()})
     def test_write_metrics_success(self):
         """Test writing metrics successfully."""
@@ -44,6 +45,7 @@ class TestMLflowMetricWriter:
         mock_mlflow.log_metrics.assert_called_once_with({"loss": 0.5, "accuracy": 0.9}, step=10)
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
+    @patch("codex_ml.tracking.writers.MlflowClient", Mock())
     @patch.dict("sys.modules", {"mlflow": Mock()})
     def test_write_metric_single(self):
         """Test writing single metric."""
@@ -66,6 +68,7 @@ class TestMLflowMetricWriter:
         mock_mlflow.log_metrics.assert_called_once_with({"accuracy": 0.95}, step=5)
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
+    @patch("codex_ml.tracking.writers.MlflowClient", Mock())
     @patch.dict("sys.modules", {"mlflow": Mock()})
     def test_write_batch(self):
         """Test batch writing."""
@@ -97,6 +100,7 @@ class TestMLflowParamWriter:
     """Test parameter writer."""
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
+    @patch("codex_ml.tracking.writers.MlflowClient", Mock())
     @patch.dict("sys.modules", {"mlflow": Mock()})
     def test_write_params(self):
         """Test writing parameters."""
@@ -121,6 +125,7 @@ class TestMLflowParamWriter:
         mock_mlflow.log_params.assert_called_once_with({"lr": "0.001", "epochs": "10"})
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
+    @patch("codex_ml.tracking.writers.MlflowClient", Mock())
     @patch.dict("sys.modules", {"mlflow": Mock()})
     def test_write_config_flattened(self):
         """Test writing nested config."""
@@ -158,6 +163,7 @@ class TestMLflowArtifactWriter:
     """Test artifact writer."""
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
+    @patch("codex_ml.tracking.writers.MlflowClient", Mock())
     @patch.dict("sys.modules", {"mlflow": Mock()})
     def test_log_artifact(self, tmp_path):
         """Test artifact logging with proper cleanup using pytest tmp_path."""
@@ -199,6 +205,7 @@ class TestMLflowRunManager:
             assert manager.run_id is None, "run_id is not valid"
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
+    @patch("codex_ml.tracking.writers.MlflowClient", Mock())
     @patch.dict("sys.modules", {"mlflow": Mock()})
     def test_context_manager_with_mlflow(self):
         """Test context manager with MLflow."""
@@ -224,6 +231,7 @@ class TestMLflowRunManager:
             assert manager.run_id == "test_run_123", "run_id is not valid"
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
+    @patch("codex_ml.tracking.writers.MlflowClient", Mock())
     @patch.dict("sys.modules", {"mlflow": Mock()})
     def test_convenience_methods(self):
         """Test convenience logging methods."""
