@@ -1,148 +1,122 @@
 """
-Comprehensive test suite for QA rubric module.
+Test suite for the QA rubric module (``codex.qa.rubric``).
 
 Tests cover:
-- Rubric scoring
-- Quality metrics evaluation
-- Scoring aggregation
+- Rubric model construction and validation
+- Loading rubrics from CSV and JSON
+- Score generation (per-criterion scores and totals)
 - Edge cases and error handling
 """
+
+import json
 
 import pytest
 from codex.qa.rubric import (
     QARubric,
+    RubricCriterion,
+    generate_scores,
+    load_rubric,
 )
+from pydantic import ValidationError
+
+
+@pytest.fixture
+def rubric() -> QARubric:
+    return QARubric(
+        name="quality",
+        criteria=[
+            RubricCriterion(id="code_quality", description="Code quality", max_score=5),
+            RubricCriterion(id="documentation", description="Docs", max_score=3),
+        ],
+    )
 
 
 class TestQARubricInitialization:
-    """Test QARubric initialization."""
+    """Test QARubric construction."""
 
     def test_rubric_creation(self):
-        """Test creating a QA rubric."""
-        rubric = QARubric()
-        assert rubric is not None, "rubric must be initialized"
+        rubric = QARubric(name="empty")
+        assert rubric.name == "empty"
+        assert rubric.criteria == []
 
-    def test_rubric_with_custom_criteria(self):
-        """Test rubric with custom criteria."""
-        criteria = {
-            "code_quality": {"weight": 0.3, "threshold": 0.8},
-            "test_coverage": {"weight": 0.4, "threshold": 0.75},
-            "documentation": {"weight": 0.3, "threshold": 0.7},
-        }
-        # Should handle custom criteria
-        assert True, "True is not valid"
+    def test_rubric_requires_name(self):
+        with pytest.raises(ValidationError):
+            QARubric()
 
+    def test_rubric_with_custom_criteria(self, rubric):
+        assert [c.id for c in rubric.criteria] == ["code_quality", "documentation"]
+        assert rubric.criteria[0].max_score == 5.0
 
-class TestScoringFunctionality:
-    """Test QA scoring functionality."""
-
-    def test_score_code_quality(self):
-        """Test scoring code quality."""
-        rubric = QARubric()
-
-        code_sample = """
-def hello():
-    '''Say hello.'''
-    return "hello"
-"""
-        score = rubric.score_code_quality(code_sample)
-        assert isinstance(score, (int, float))
-        assert 0 <= score <= 1, "0 is not valid"
-
-    def test_score_test_coverage(self):
-        """Test scoring test coverage."""
-        rubric = QARubric()
-
-        coverage_data = {"covered": 80, "total": 100}
-        score = rubric.score_test_coverage(coverage_data)
-        assert isinstance(score, (int, float))
-
-    def test_score_documentation(self):
-        """Test scoring documentation."""
-        rubric = QARubric()
-
-        code = "def func(): pass"
-        score = rubric.score_documentation(code)
-        assert isinstance(score, (int, float))
-
-    def test_aggregate_scores(self):
-        """Test aggregating multiple scores."""
-        rubric = QARubric()
-
-        scores = {
-            "code_quality": 0.8,
-            "test_coverage": 0.75,
-            "documentation": 0.7,
-        }
-
-        aggregated = rubric.aggregate_scores(scores)
-        assert isinstance(aggregated, (int, float))
-        assert 0 <= aggregated <= 1, "0 is not valid"
+    def test_criterion_requires_fields(self):
+        with pytest.raises(ValidationError):
+            RubricCriterion(id="x", description="missing max score")
 
 
-class TestRubricEvaluation:
-    """Test rubric evaluation."""
+class TestLoadRubric:
+    """Test loading rubric definitions."""
 
-    def test_evaluate_code_sample(self):
-        """Test evaluating a code sample."""
-        rubric = QARubric()
+    def test_load_csv(self, tmp_path):
+        path = tmp_path / "my_rubric.csv"
+        path.write_text(
+            "id,description,max_score\n code_quality , Quality ,5\ndocumentation,Docs,\n",
+            encoding="utf-8",
+        )
+        rubric = load_rubric(path)
+        assert rubric.name == "my_rubric"
+        assert [(c.id, c.description, c.max_score) for c in rubric.criteria] == [
+            ("code_quality", "Quality", 5.0),
+            ("documentation", "Docs", 0.0),
+        ]
 
-        code = """
-def calculate(a, b):
-    '''Calculate sum.'''
-    return a + b
-"""
-        result = rubric.evaluate(code)
-        assert result is not None, "result must be initialized"
+    def test_load_json(self, tmp_path, rubric):
+        path = tmp_path / "rubric.json"
+        path.write_text(rubric.model_dump_json(), encoding="utf-8")
+        assert load_rubric(path) == rubric
 
-    def test_evaluate_with_threshold(self):
-        """Test evaluation against threshold."""
-        rubric = QARubric()
-
-        code = "pass"
-        result = rubric.evaluate(code, threshold=0.5)
-        assert True, "True is not valid"
-
-    def test_evaluation_result_format(self):
-        """Test evaluation result format."""
-        rubric = QARubric()
-
-        code = "def f(): pass"
-        result = rubric.evaluate(code)
-        # Result should contain score
-        assert result is not None, "result must be initialized"
+    def test_load_invalid_json_raises(self, tmp_path):
+        path = tmp_path / "rubric.json"
+        path.write_text("this is not json {", encoding="utf-8")
+        with pytest.raises(json.JSONDecodeError):
+            load_rubric(path)
 
 
-class TestErrorHandling:
-    """Test error handling."""
+class TestGenerateScores:
+    """Test score generation."""
 
-    def test_empty_code_handling(self):
-        """Test handling empty code."""
-        rubric = QARubric()
+    def _run(self, tmp_path, rubric, csv_text):
+        src = tmp_path / "input.csv"
+        src.write_text(csv_text, encoding="utf-8")
+        out = tmp_path / "scores.jsonl"
+        generate_scores(src, rubric, out)
+        return [json.loads(line) for line in out.read_text(encoding="utf-8").splitlines()]
 
-        score = rubric.score_code_quality("")
-        # Should handle gracefully
-        assert isinstance(score, (int, float))
+    def test_scores_and_totals(self, tmp_path, rubric):
+        rows = self._run(
+            tmp_path,
+            rubric,
+            "id,code_quality,documentation\nr1,4,2.5\nr2,1,0\n",
+        )
+        assert rows == [
+            {"id": "r1", "scores": {"code_quality": 4.0, "documentation": 2.5}, "total_score": 6.5},
+            {"id": "r2", "scores": {"code_quality": 1.0, "documentation": 0.0}, "total_score": 1.0},
+        ]
 
-    def test_invalid_code_handling(self):
-        """Test handling invalid code."""
-        rubric = QARubric()
+    def test_missing_and_invalid_values(self, tmp_path, rubric):
+        rows = self._run(
+            tmp_path,
+            rubric,
+            "record_id,code_quality,documentation\nr1,,abc\n",
+        )
+        assert rows == [
+            {
+                "id": "r1",
+                "scores": {"code_quality": None, "documentation": None},
+                "total_score": 0.0,
+            }
+        ]
 
-        try:
-            score = rubric.score_code_quality("this is not code {")
-            # May handle gracefully or raise
-            assert True, "True is not valid"
-        except SyntaxError:
-            assert True, "True is not valid"
-
-    def test_none_code_handling(self):
-        """Test handling None code."""
-        rubric = QARubric()
-
-        try:
-            score = rubric.score_code_quality(None)
-        except (TypeError, AttributeError):
-            assert True, "True is not valid"
+    def test_empty_input(self, tmp_path, rubric):
+        assert self._run(tmp_path, rubric, "id,code_quality\n") == []
 
 
 if __name__ == "__main__":
