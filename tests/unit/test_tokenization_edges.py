@@ -254,9 +254,13 @@ class TestTokenizationErrorRecovery:
             pytest.skip("Could not load tokenizer")
 
         # Act & Assert
-        with pytest.raises((TypeError, AttributeError)):
+        # transformers rejects non-text input with a ValueError naming the
+        # accepted types; older releases raised TypeError/AttributeError.
+        with pytest.raises((TypeError, AttributeError, ValueError)) as exc_info:
             # Should raise error, not silently fail
             tokenizer(12345)
+        if isinstance(exc_info.value, ValueError):
+            assert "text input must be of type" in str(exc_info.value)
 
     def test_tokenize_none_input_raises_error(self):
         """Verify clear error when None is passed."""

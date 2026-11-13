@@ -14,10 +14,28 @@ pytest.importorskip("pydantic_settings")
 
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
+from pydantic import BaseModel
 
 from services.msp_gateway.middleware import RateLimitMiddleware, TenantContextMiddleware
 from services.msp_gateway.middleware import tenant_context as tc_module
 from services.msp_gateway.middleware.tenant_context import TenantRegistry
+
+
+class DataRequest(BaseModel):
+    """Request body model.
+
+    Defined at module scope: with ``from __future__ import annotations`` FastAPI
+    resolves endpoint annotations from module globals, so a function-local model
+    would be misread as a query parameter (HTTP 422).
+    """
+
+    item: str
+    value: int
+
+
+def _auth(api_key: str) -> dict[str, str]:
+    """Build the ``Authorization`` header TenantContextMiddleware expects."""
+    return {"Authorization": "Bearer " + api_key}
 
 
 def test_tenant_context_propagation_basic(
@@ -49,7 +67,7 @@ def test_tenant_context_propagation_basic(
     with TestClient(app) as client:
         response = client.get(
             "/v1/context/check",
-            headers={"Authorization": "******"},
+            headers=_auth("key-test"),
         )
 
     assert response.status_code == 200, "Endpoint must return successfully"
@@ -99,7 +117,7 @@ def test_tenant_context_propagation_through_middleware_stack(
     with TestClient(app) as client:
         response = client.get(
             "/v1/propagate",
-            headers={"Authorization": "******"},
+            headers=_auth("key-propagate"),
         )
 
     assert response.status_code == 200, "Request must succeed"
@@ -146,7 +164,7 @@ def test_tenant_context_propagation_with_nested_calls(
     with TestClient(app) as client:
         response = client.post(
             "/v1/nested",
-            headers={"Authorization": "******"},
+            headers=_auth("key-nested"),
         )
 
     assert response.status_code == 200, "Request must succeed"
@@ -180,10 +198,10 @@ def test_tenant_context_propagation_across_multiple_requests(
 
     with TestClient(app) as client:
         # Sequential requests from different tenants
-        r1 = client.get("/v1/track", headers={"Authorization": "******"})
-        r2 = client.get("/v1/track", headers={"Authorization": "******"})
-        r3 = client.get("/v1/track", headers={"Authorization": "******"})
-        r4 = client.get("/v1/track", headers={"Authorization": "******"})
+        r1 = client.get("/v1/track", headers=_auth("key-a"))
+        r2 = client.get("/v1/track", headers=_auth("key-b"))
+        r3 = client.get("/v1/track", headers=_auth("key-c"))
+        r4 = client.get("/v1/track", headers=_auth("key-a"))
 
     assert len(received_tenants) == 4, "All requests must be tracked"
     assert received_tenants == ["track-a", "track-b", "track-c", "track-a"], "Condition must be true"
@@ -220,7 +238,7 @@ def test_tenant_context_propagation_in_error_handlers(
     with TestClient(app, raise_server_exceptions=False) as client:
         response = client.get(
             "/v1/error",
-            headers={"Authorization": "******"},
+            headers=_auth("key-error"),
         )
 
     assert response.status_code == 500, "Error must be caught"
@@ -234,12 +252,6 @@ def test_tenant_context_propagation_with_request_body(
     """Test that tenant context persists through request body parsing."""
     app = FastAPI()
     app.add_middleware(TenantContextMiddleware)
-
-    from pydantic import BaseModel
-
-    class DataRequest(BaseModel):
-        item: str
-        value: int
 
     @app.post("/v1/process")
     async def process(request: Request, data: DataRequest):
@@ -263,7 +275,7 @@ def test_tenant_context_propagation_with_request_body(
         response = client.post(
             "/v1/process",
             json={"item": "test-item", "value": 42},
-            headers={"Authorization": "******"},
+            headers=_auth("key-body"),
         )
 
     assert response.status_code == 200, "Request must succeed"
@@ -312,7 +324,7 @@ def test_tenant_context_propagation_logging_integration(
     with TestClient(app) as client:
         response = client.get(
             "/v1/logged",
-            headers={"Authorization": "******"},
+            headers=_auth("key-log"),
         )
 
     assert response.status_code == 200, "Request must succeed"
@@ -349,8 +361,8 @@ def test_tenant_context_propagation_state_isolation(
     monkeypatch.setattr(tc_module.settings, "api_key_required", True)
 
     with TestClient(app) as client:
-        r1 = client.get("/v1/state", headers={"Authorization": "******"})
-        r2 = client.get("/v1/state", headers={"Authorization": "******"})
+        r1 = client.get("/v1/state", headers=_auth("key-a"))
+        r2 = client.get("/v1/state", headers=_auth("key-b"))
 
     assert len(request_states) == 2, "Both requests must be tracked"
     assert request_states[0]["tenant_id"] == "state-a", "First request is from tenant-a"
@@ -396,7 +408,7 @@ def test_tenant_context_propagation_with_dependencies(
     with TestClient(app) as client:
         response = client.get(
             "/v1/with-deps",
-            headers={"Authorization": "******"},
+            headers=_auth("key-dep"),
         )
 
     assert response.status_code == 200, "Request must succeed"

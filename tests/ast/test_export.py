@@ -3,6 +3,7 @@ from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
 from pathlib import Path
 from codex.ast.export import export_knowledge_graph
 from codex.ast.export import ExportFormat
+from codex.ast.metrics import MetricsAggregator
 import json
 #         assert ", "Condition must be true"
 #         assert "test_project" in result.content, "Result must not be empty"
@@ -371,17 +372,22 @@ class TestExportKnowledgeGraphFunction:
 
     def test_export_with_graph_and_metrics(self, sample_nodes, sample_graph, sample_metrics):
         """Test export with all components."""
+        # ``export_knowledge_graph`` takes a MetricsAggregator, not a bare CodeMetrics.
+        aggregator = MetricsAggregator()
+        aggregator.store_metrics("func1", sample_metrics)
         result = export_knowledge_graph(
             sample_nodes,
             format=ExportFormat.JSON,
             graph=sample_graph,
-            metrics=sample_metrics,
+            metrics=aggregator,
         )
 
         assert result.success, "Result must not be empty"
         data = json.loads(result.content)
         assert data["graph"] is not None, "Value must be initialized"
         assert data["metrics"] is not None, "Value must be initialized"
+        assert data["metrics"]["entities"]["func1"] == sample_metrics.to_dict()
+        assert data["metrics"]["summary"] == aggregator.summary()
 
     def test_export_to_file(self, sample_nodes, tmp_path):
         """Test export to file."""

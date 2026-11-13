@@ -190,8 +190,7 @@ class TestOfflineCapability:
             embeddings = provider.encode(texts)
 
             # Verify embeddings
-            assert embeddings.shape[0] == len(chunks, "Collection must not be empty"
-            ), "Embeddings must have valid shape"
+            assert embeddings.shape[0] == len(chunks), "Embeddings must have valid shape"
             assert embeddings.shape[1] <= 384, "Condition must be true"
             assert embeddings.shape[1] > 0, "Value must be greater than zero"
 
