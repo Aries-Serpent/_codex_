@@ -96,6 +96,9 @@ class TokenManager:
     """
 
     # Token expiration times (in seconds)
+    # Only tokens minted for this audience are accepted.
+    EXPECTED_AUDIENCE = "codex-api"
+
     ACCESS_TOKEN_EXPIRY = 900  # 15 minutes
     REFRESH_TOKEN_EXPIRY = 604800  # 7 days
     SESSION_TOKEN_EXPIRY = 2592000  # 30 days
@@ -232,9 +235,24 @@ class TokenManager:
             payload_bytes = base64.urlsafe_b64decode(payload_b64_padded)
             payload = json.loads(payload_bytes.decode())
 
-            # Create claims
+            if not isinstance(payload, dict):
+                raise ValueError("Invalid token payload")
+
+            # Audience must match when present (missing aud defaults to ours).
+            if payload.get("aud", self.EXPECTED_AUDIENCE) != self.EXPECTED_AUDIENCE:
+                raise ValueError("Invalid token audience")
+
+            # Reject tokens that are not yet valid.
+            nbf = payload.get("nbf")
+            if nbf is not None and float(nbf) > time.time():
+                raise ValueError("Token not yet valid")
+
+            # Create claims (missing required claims -> KeyError -> ValueError)
             return TokenClaims.from_dict(payload)
 
+        except KeyError as e:
+            # Fail closed with the documented exception type; do not echo claims.
+            raise ValueError(f"Token missing required claim: {e.args[0]!s}") from e
         except (ValueError, TypeError) as e:
             error_msg = sanitize_log_message(f"Token decode failed: {e!s}")
             raise ValueError(error_msg) from e

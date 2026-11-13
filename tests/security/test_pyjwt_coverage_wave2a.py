@@ -23,7 +23,9 @@ import os
 import time
 
 import pytest
-from codex.auth.token_manager import TokenManager
+from codex.auth.token_manager import TokenManager, TokenType
+
+_TEST_SECRET = os.environ.get("TEST_JWT_SECRET", "test-secret-key-for-testing-only")
 
 # codeql[py/hardcoded-credentials,py/clear-text-logging-sensitive-data] - False positive: These are test secrets
 # nosemgrep: python.jwt.security.jwt-hardcode - Intentional: Test-only hardcoded secrets
@@ -37,14 +39,14 @@ class TestPyJWTTokenValidation:
         """Create token manager with test secret."""
         # lgtm[py/hardcoded-credentials] - False positive: Test secret only
         # nosemgrep: python.jwt.security.jwt-hardcode
-        return TokenManager(secret_key=os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'))
+        return TokenManager(secret_key=_TEST_SECRET)
 
     def test_jwt_valid_token_validation(self, token_manager):
         """Test valid JWT token validation."""
         # Create a token
         token = token_manager.create_token(
             user_id="test-user",
-            secret_key=os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'),
+            token_type=TokenType.ACCESS,
             expires_in=3600,
         )
 
@@ -59,7 +61,7 @@ class TestPyJWTTokenValidation:
         # Create token
         token = token_manager.create_token(
             user_id="test-user",
-            secret_key=os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'),
+            token_type=TokenType.ACCESS,
             expires_in=3600,
         )
 
@@ -96,6 +98,8 @@ class TestPyJWTTokenValidation:
         # Create already-expired token
         past_time = datetime.datetime.utcnow() - datetime.timedelta(hours=1)
         payload = {
+            "type": "access",
+            "iat": int(time.time()),
             "sub": "test-user",
             "aud": "codex-api",
             "exp": int(past_time.timestamp()),
@@ -103,10 +107,10 @@ class TestPyJWTTokenValidation:
 
         import jwt
 
-        token = jwt.encode(payload, os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'), algorithm="HS256")
+        token = jwt.encode(payload, _TEST_SECRET, algorithm="HS256")
 
         # Validation should fail
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="expired"):
             token_manager.validate_token(token)
 
     def test_jwt_missing_required_claims(self, token_manager):
@@ -114,11 +118,16 @@ class TestPyJWTTokenValidation:
         import jwt
 
         # Token without required 'sub' claim
-        payload = {"aud": "codex-api", "exp": int(time.time()) + 3600}
+        payload = {
+            "aud": "codex-api",
+            "iat": int(time.time()),
+            "exp": int(time.time()) + 3600,
+            "type": "access",
+        }
 
-        token = jwt.encode(payload, os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'), algorithm="HS256")
+        token = jwt.encode(payload, _TEST_SECRET, algorithm="HS256")
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="sub"):
             token_manager.validate_token(token)
 
     def test_jwt_malformed_token_rejection(self, token_manager):
@@ -131,6 +140,8 @@ class TestPyJWTTokenValidation:
         import jwt
 
         payload = {
+            "type": "access",
+            "iat": int(time.time()),
             "sub": "test-user",
             "aud": "codex-api",
             "exp": int(time.time()) + 3600,
@@ -140,7 +151,7 @@ class TestPyJWTTokenValidation:
         token = jwt.encode(payload, "different-secret-key", algorithm="HS256")
 
         # Validation should fail
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="signature"):
             token_manager.validate_token(token)
 
     def test_jwt_scope_parsing(self, token_manager):
@@ -148,8 +159,8 @@ class TestPyJWTTokenValidation:
         # Create token with scopes
         token = token_manager.create_token(
             user_id="test-user",
+            token_type=TokenType.ACCESS,
             scope="read write delete",
-            secret_key=os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'),
             expires_in=3600,
         )
 
@@ -161,6 +172,8 @@ class TestPyJWTTokenValidation:
         import jwt
 
         custom_claims = {
+            "type": "access",
+            "iat": int(time.time()),
             "sub": "test-user",
             "aud": "codex-api",
             "exp": int(time.time()) + 3600,
@@ -168,7 +181,7 @@ class TestPyJWTTokenValidation:
             "org_id": "org-123",
         }
 
-        token = jwt.encode(custom_claims, os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'), algorithm="HS256")
+        token = jwt.encode(custom_claims, _TEST_SECRET, algorithm="HS256")
 
         claims = token_manager.validate_token(token)
         assert claims.sub == "test-user", "sub is not valid"
@@ -179,15 +192,17 @@ class TestPyJWTTokenValidation:
 
         # Token with wrong audience
         payload = {
+            "type": "access",
+            "iat": int(time.time()),
             "sub": "test-user",
             "aud": "different-api",
             "exp": int(time.time()) + 3600,
         }
 
-        token = jwt.encode(payload, os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'), algorithm="HS256")
+        token = jwt.encode(payload, _TEST_SECRET, algorithm="HS256")
 
         # Validation should fail due to wrong audience
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="audience"):
             token_manager.validate_token(token)
 
     def test_jwt_iss_claim_handling(self, token_manager):
@@ -195,13 +210,15 @@ class TestPyJWTTokenValidation:
         import jwt
 
         payload = {
+            "type": "access",
+            "iat": int(time.time()),
             "sub": "test-user",
             "aud": "codex-api",
             "iss": "codex-auth-service",
             "exp": int(time.time()) + 3600,
         }
 
-        token = jwt.encode(payload, os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'), algorithm="HS256")
+        token = jwt.encode(payload, _TEST_SECRET, algorithm="HS256")
 
         claims = token_manager.validate_token(token)
         # Should not raise
@@ -213,16 +230,18 @@ class TestPyJWTTokenValidation:
 
         future_time = int(time.time()) + 3600
         payload = {
+            "type": "access",
+            "iat": int(time.time()),
             "sub": "test-user",
             "aud": "codex-api",
             "nbf": future_time,
             "exp": int(time.time()) + 7200,
         }
 
-        token = jwt.encode(payload, os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'), algorithm="HS256")
+        token = jwt.encode(payload, _TEST_SECRET, algorithm="HS256")
 
         # Token not yet valid
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="not yet valid"):
             token_manager.validate_token(token)
 
     def test_jwt_iat_issued_at_validation(self, token_manager):
@@ -231,13 +250,14 @@ class TestPyJWTTokenValidation:
 
         current_time = int(time.time())
         payload = {
+            "type": "access",
             "sub": "test-user",
             "aud": "codex-api",
             "iat": current_time,
             "exp": current_time + 3600,
         }
 
-        token = jwt.encode(payload, os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'), algorithm="HS256")
+        token = jwt.encode(payload, _TEST_SECRET, algorithm="HS256")
 
         claims = token_manager.validate_token(token)
         assert claims.sub == "test-user", "sub is not valid"
@@ -247,13 +267,15 @@ class TestPyJWTTokenValidation:
         import jwt
 
         payload = {
+            "type": "access",
+            "iat": int(time.time()),
             "sub": "test-user",
             "aud": "codex-api",
             "jti": "unique-token-id-123",
             "exp": int(time.time()) + 3600,
         }
 
-        token = jwt.encode(payload, os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'), algorithm="HS256")
+        token = jwt.encode(payload, _TEST_SECRET, algorithm="HS256")
 
         claims = token_manager.validate_token(token)
         # Token validation should succeed
@@ -264,13 +286,15 @@ class TestPyJWTTokenValidation:
         import jwt
 
         payload = {
+            "type": "access",
+            "iat": int(time.time()),
             "sub": "test-user",
             "aud": "codex-api",
             "exp": int(time.time()) + 3600,
             "large_data": "x" * 10000,  # 10KB of data
         }
 
-        token = jwt.encode(payload, os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'), algorithm="HS256")
+        token = jwt.encode(payload, _TEST_SECRET, algorithm="HS256")
 
         claims = token_manager.validate_token(token)
         assert claims.sub == "test-user", "sub is not valid"
@@ -280,13 +304,15 @@ class TestPyJWTTokenValidation:
         import jwt
 
         payload = {
+            "type": "access",
+            "iat": int(time.time()),
             "sub": "test-user@example.com",
             "aud": "codex-api",
             "exp": int(time.time()) + 3600,
             "special": "!@#$%^&*()",
         }
 
-        token = jwt.encode(payload, os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'), algorithm="HS256")
+        token = jwt.encode(payload, _TEST_SECRET, algorithm="HS256")
 
         claims = token_manager.validate_token(token)
         assert claims.sub == "test-user@example.com", "sub is not valid"
