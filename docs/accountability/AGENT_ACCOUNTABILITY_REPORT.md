@@ -1,3 +1,47 @@
+## Session: PR #5781 RAG runner and CodeQL classification repair
+
+### Agents Used
+
+- Autonomous Test Healer lanes `rag-lane-a`, `rag-lane-b` and `rag-lane-c`:
+  independent, bounded RAG failure groups; tenant/FAISS/stress, retriever/model
+  helpers and embedding/offline-provider repairs respectively.
+- Rubber-duck lane `codeql-gate-duck`: adversarial classifier review identified
+  score-precedence, invalid-score and malformed-tag fail-open cases; parent
+  repaired all three before publication.
+- Parent maintainer: infinite-loop reproduction, security-source fixes,
+  classifier regression tests, workflow validation and integration.
+
+### Evidence and boundaries
+
+- The original inline chunking loop timed out; the repaired loop terminates.
+  Hosted #5781 run at `d8a5c90235` completed without runner shutdown:
+  1,643 passed, 180 skipped, 23 failed and 17 errors in 408.11 seconds.
+  This verifies the runner-loss fix, not complete RAG readiness.
+- Nine affected hostname/permission tests passed locally. The classifier tests
+  executed 29 passing cases; three Node-dependent cases skipped on this host.
+  Ruff, classifier Black and mypy passed. Other touched Python lines were
+  Black-formatted without reformatting their pre-existing style backlog.
+  actionlint 1.7.12 passed with shellcheck unavailable; the scoped secret scan
+  reported zero findings.
+- Reclassification of the original hosted SARIF retained all six security-high
+  findings and reported 2,784 quality results separately. Fresh scanner output
+  on the repaired commit is still required to verify source-finding clearance.
+- Neither thresholds, scanner scope, workflow permissions nor owner-approval
+  controls were relaxed. Empty protected approval secrets remain owner actions.
+- The earlier integrated-tree score was 85/100, not a new measurement of this
+  patch. No promotion readiness or current green CI is claimed.
+- Parent combined all three RAG lanes with a local model stand-in and the
+  hosted random seed: 204 passed, 17 skipped. Without the stand-in, combined
+  lanes A/B passed 83 with 44 dependency skips. These results do not establish
+  real Torch/SentenceTransformer validation on this musl host.
+- Production change is limited to catching missing optional GPT4All during
+  auto-provider fallback. Source mypy reports seven errors on both the
+  unmodified base and repaired file; no new type error was introduced.
+- Fixed CI latency tolerance scales only average/P99 budgets by three; local
+  budgets and reliability targets remain unchanged. No unlimited override was
+  introduced. A focused regression checks the observed 702ms sample and
+  verifies that an error/timeout still fails under CI.
+
 ## Session: PR #5766 bounded readiness repair - 2026-11-13
 
 ### Consolidation follow-up

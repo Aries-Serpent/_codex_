@@ -145,6 +145,50 @@ def mock_rag_dependencies(monkeypatch):
     yield
 
 
+@pytest.fixture
+def mock_sentence_transformer(mock_rag_dependencies, monkeypatch):
+    """Offline SentenceTransformer double used by every embed_chunks() call.
+
+    ``embed_chunks`` imports ``safe_load_sentence_transformer`` from
+    ``aries_serpent_core.rag._model_utils``.  The ``codex.rag`` shim aliases the
+    package (and ``indexer``) but ``codex.rag._model_utils`` can be loaded as a
+    *separate* module object, so patching only the legacy path leaves the real
+    loader active and triggers a HuggingFace download on CI.  Patch every
+    loaded alias plus ``sentence_transformers.SentenceTransformer`` so no
+    network or model load can happen, and return the model so tests can assert
+    the mock was actually used.
+    """
+    import importlib
+
+    mock_model = MagicMock(name="SentenceTransformer")
+
+    def _encode(texts, **_kwargs):
+        if isinstance(texts, str):
+            texts = [texts]
+        return np.zeros((len(texts), 384), dtype=np.float32)
+
+    mock_model.encode.side_effect = _encode
+    mock_model.get_sentence_embedding_dimension.return_value = 384
+    # safe_model_to_device chains .to()/.to_empty()/.eval(); keep the same mock.
+    mock_model.to.return_value = mock_model
+    mock_model.to_empty.return_value = mock_model
+    mock_model.eval.return_value = mock_model
+
+    def _loader(*_args, **_kwargs):
+        return mock_model
+
+    for mod_name in ("aries_serpent_core.rag._model_utils", "codex.rag._model_utils"):
+        try:
+            mod = importlib.import_module(mod_name)
+        except ImportError:
+            continue
+        monkeypatch.setattr(mod, "safe_load_sentence_transformer", _loader)
+
+    st_module = sys.modules["sentence_transformers"]  # mock injected by mock_rag_dependencies
+    monkeypatch.setattr(st_module, "SentenceTransformer", MagicMock(return_value=mock_model))
+    return mock_model
+
+
 class TestManageTenantIndices:
     """Tests for manage_tenant_indices function"""
 
@@ -195,6 +239,8 @@ class TestManageTenantIndices:
         assert "docs" in result.index_names, "Result must not be empty"
         assert "Successfully created" in result.message, "Result must not be empty"
         assert "created_indices" in result.details, "Result must not be empty"
+        # Embeddings must come from the offline mock, not a real/fallback model.
+        assert mock_sentence_transformer.encode.called, "mock model must be used"
 
     def test_create_operation_multiple_indices(
         self, temp_index_dir, sample_files, mock_sentence_transformer

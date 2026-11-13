@@ -42,8 +42,18 @@ The active repository gate for CodeQL analysis and enforcement. This workflow is
 ## SARIF Contract
 
 - Valid SARIF is required for the gate to count alerts.
-- The workflow validates generated SARIF before counting severities.
-- Empty or malformed SARIF falls back to a minimal valid SARIF payload so the gate remains deterministic.
+- Missing, empty or malformed scanner output fails the analysis; no synthetic
+  no-alert payload substitutes for scanner evidence.
+- Rule descriptors, including extension references, determine security severity.
+  A finite `security-severity` score in `(0, 10]` takes precedence over tags:
+  critical is at least 9, high at least 7, and medium at least 4.
+  Invalid scores fail analysis rather than becoming low-severity findings.
+- Explicitly tagged non-security quality diagnostics remain visible in
+  `quality_count` and the summary, but are not vulnerability counts.
+  Missing or conflicting classification metadata uses the existing SARIF
+  level/severity fallback, not a quality exemption.
+- The default security threshold remains `high`. Fresh SARIF from the repaired
+  commit is necessary to verify that source fixes clear security findings.
 
 ## Maintenance
 
