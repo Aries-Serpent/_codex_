@@ -270,7 +270,7 @@ class TestCircuitBreakerIntegration:
 
     def test_circuit_breaker_on_predict(self):
         """Test real circuit breaker behavior during prediction failures"""
-        resilience = pytest.importorskip("src.codex_ml.serving.resilience")
+        resilience = pytest.importorskip("codex_ml.serving.resilience")
         circuit_breaker_config = resilience.CircuitBreakerConfig
 
         config = ModelConfig(model_name="test-model", model_type="stub")
@@ -282,7 +282,7 @@ class TestCircuitBreakerIntegration:
 
         # Force model inference failures while keeping the real CircuitBreaker in place.
         with patch(
-            "src.codex_ml.serving.inference_server.ModelServer.predict",
+            "codex_ml.serving.inference_server.ModelServer.predict",
             side_effect=Exception("forced model failure"),
         ):
             failure_threshold = circuit_breaker_config().failure_threshold
@@ -306,7 +306,7 @@ class TestCircuitBreakerIntegration:
 
         # Simulate circuit breaker open by mocking predict method
         with patch(
-            "src.codex_ml.serving.inference_server.ModelServer.predict_with_circuit_breaker"
+            "codex_ml.serving.inference_server.ModelServer.predict_with_circuit_breaker"
         ) as mock_predict:
             mock_predict.side_effect = Exception("Circuit breaker is open, request rejected")
 

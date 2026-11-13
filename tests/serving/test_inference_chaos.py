@@ -41,7 +41,7 @@ class TestModelFailures:
 
     def test_random_model_failure_injection(self, chaos_client):
         """Test inference server handles random model failures gracefully."""
-        with patch("src.codex_ml.serving.inference_server.ModelServer.predict") as mock_predict:
+        with patch("codex_ml.serving.inference_server.ModelServer.predict") as mock_predict:
             # Simulate intermittent failures (50% failure rate)
             call_count = [0]
 
@@ -64,7 +64,7 @@ class TestModelFailures:
 
     def test_model_oom_scenario(self, chaos_client):
         """Test handling of out-of-memory errors during inference."""
-        with patch("src.codex_ml.serving.inference_server.ModelServer.predict") as mock_predict:
+        with patch("codex_ml.serving.inference_server.ModelServer.predict") as mock_predict:
             mock_predict.side_effect = RuntimeError("CUDA out of memory - memory pressure")
 
             response = chaos_client.post(
@@ -76,7 +76,7 @@ class TestModelFailures:
 
     def test_model_corruption_detection(self, chaos_client):
         """Test detection of corrupted model weights."""
-        with patch("src.codex_ml.serving.inference_server.ModelServer.predict") as mock_predict:
+        with patch("codex_ml.serving.inference_server.ModelServer.predict") as mock_predict:
             mock_predict.side_effect = RuntimeError("Invalid checkpoint format detected")
 
             response = chaos_client.post(
@@ -89,7 +89,7 @@ class TestModelFailures:
 
     def test_circuit_breaker_triggers_after_failures(self, chaos_client):
         """Test circuit breaker opens after consecutive failures."""
-        with patch("src.codex_ml.serving.inference_server.ModelServer.predict") as mock_predict:
+        with patch("codex_ml.serving.inference_server.ModelServer.predict") as mock_predict:
             mock_predict.side_effect = RuntimeError("Model inference failed")
 
             # Trigger circuit breaker with consecutive failures
@@ -107,7 +107,7 @@ class TestNetworkFailures:
 
     def test_request_timeout_handling(self, chaos_client):
         """Test handling of errors that would arise from slow/hung inference."""
-        with patch("src.codex_ml.serving.inference_server.ModelServer.predict") as mock_predict:
+        with patch("codex_ml.serving.inference_server.ModelServer.predict") as mock_predict:
             mock_predict.side_effect = RuntimeError("Inference timed out")
 
             response = chaos_client.post(
@@ -137,7 +137,7 @@ class TestResourcePressure:
 
     def test_memory_pressure_graceful_degradation(self, chaos_client):
         """Test graceful degradation under memory pressure."""
-        with patch("src.codex_ml.serving.model_loader.ModelLoader.get_cache_stats") as mock_stats:
+        with patch("codex_ml.serving.model_loader.ModelLoader.get_cache_stats") as mock_stats:
             # Simulate high memory usage
             mock_stats.return_value = {"size": 3, "maxsize": 3, "hits": 100, "misses": 10}
 
@@ -215,7 +215,7 @@ class TestCircuitBreakerRecovery:
 
     def test_half_open_state_recovery(self, chaos_client):
         """Test circuit breaker half-open state allows recovery."""
-        with patch("src.codex_ml.serving.inference_server.ModelServer.predict") as mock_predict:
+        with patch("codex_ml.serving.inference_server.ModelServer.predict") as mock_predict:
             # First 5 requests fail (open circuit)
             fail_count = [0]
 
@@ -250,7 +250,9 @@ class TestCircuitBreakerRecovery:
         assert response.status_code == 200, "Response must not be empty"
         # Should contain circuit breaker metrics
         content = response.text
-        assert "circuit_breaker" in content or "request_count" in content, "Content must not be empty"
+        assert (
+            "circuit_breaker" in content or "request_count" in content
+        ), "Content must not be empty"
 
 
 class TestFailoverScenarios:

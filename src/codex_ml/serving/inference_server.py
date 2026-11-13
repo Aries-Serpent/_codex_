@@ -69,6 +69,16 @@ else:
 
 logger = logging.getLogger(__name__)
 
+
+def _is_circuit_open_error(exc: BaseException) -> bool:
+    """Return True when *exc* signals a circuit-breaker rejection."""
+    try:
+        from codex_ml.serving.resilience import CircuitBreakerOpenError
+    except ImportError:  # pragma: no cover - resilience is in-tree
+        CircuitBreakerOpenError = ()  # type: ignore[assignment,misc]
+    return isinstance(exc, CircuitBreakerOpenError) or "Circuit breaker" in str(exc)
+
+
 MAX_BATCH_SIZE = 100
 MAX_INPUT_LENGTH = 10000
 _MAX_EMBEDDING_SEED = 2**32
@@ -733,14 +743,15 @@ if FASTAPI_AVAILABLE:
             # Use circuit breaker if available
             try:
                 preds = server.predict_with_circuit_breaker(request.inputs)
-            except RuntimeError as e:
-                raise HTTPException(status_code=500, detail=str(e)) from e
-            except (ConnectionError, TimeoutError) as e:
-                type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")
-                if "Circuit breaker" in str(e):
-                    raise HTTPException(status_code=503, detail=str(e)) from e
+            except HTTPException:
                 raise
+            except Exception as e:
+                logger.debug("Prediction failed: %s", type(e).__name__)
+                if _is_circuit_open_error(e):
+                    raise HTTPException(status_code=503, detail=str(e)) from e
+                if isinstance(e, RuntimeError):
+                    raise HTTPException(status_code=500, detail=str(e)) from e
+                raise HTTPException(status_code=500, detail="Prediction failed") from e
 
             return PredictionResponse(
                 predictions=preds,

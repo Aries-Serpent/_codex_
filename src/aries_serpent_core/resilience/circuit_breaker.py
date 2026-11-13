@@ -9,8 +9,10 @@ Implements the classic three-state circuit-breaker pattern:
 * **HALF_OPEN** — calls are allowed; ``success_threshold`` successful
   completions close the circuit, while a counted failure re-opens it.
 
-Only ``OSError`` (including ``IOError``), ``ModuleNotFoundError``, and
-``ImportError`` count as failures. Other exceptions propagate without updating
+By default every :class:`Exception` raised by the protected callable counts
+as a failure (``BaseException`` subclasses such as ``KeyboardInterrupt`` never
+do). Pass ``failure_exceptions`` to restrict counting to specific types, e.g.
+``(OSError, ImportError)``; other exceptions then propagate without updating
 the counters. State is lock-protected, but calls run outside the lock and
 HALF_OPEN does not limit the number of concurrent probes.
 
@@ -75,6 +77,9 @@ class CircuitBreaker:
         success_threshold: Number of consecutive successes in HALF_OPEN state
             required to close the circuit again.  Defaults to ``2``.
         name: Optional label used in log messages.
+        failure_exceptions: Exception types that count as failures. Defaults
+            to ``(Exception,)``. Non-matching exceptions are re-raised without
+            updating the counters.
 
     Thread safety:
         All state mutations are protected by an internal :class:`threading.Lock`.
@@ -98,6 +103,7 @@ class CircuitBreaker:
         recovery_timeout: float = 60,
         success_threshold: int = 2,
         name: str = "circuit_breaker",
+        failure_exceptions: tuple[type[BaseException], ...] = (Exception,),
     ) -> None:
         if failure_threshold < 1:
             raise ValueError("failure_threshold must be >= 1")
@@ -110,6 +116,7 @@ class CircuitBreaker:
         self.recovery_timeout = recovery_timeout
         self.success_threshold = success_threshold
         self.name = name
+        self.failure_exceptions = tuple(failure_exceptions)
 
         self._state: CircuitState = CircuitState.CLOSED
         self._failure_count: int = 0
@@ -145,11 +152,10 @@ class CircuitBreaker:
         Raises:
             CircuitOpenError: When the circuit is OPEN and the recovery timeout
                 has not yet elapsed.
-            OSError: Counted as a failure and re-raised, including ``IOError``.
-            ImportError: Counted as a failure and re-raised, including
-                ``ModuleNotFoundError``.
+            Exception: Any exception from *fn* is re-raised unchanged; it is
+                counted as a failure when it matches ``failure_exceptions``.
 
-        Other exceptions propagate without counting as failures. A successful
+        Non-matching exceptions propagate without counting as failures. A successful
         CLOSED call clears the failure count; HALF_OPEN successes accumulate
         toward ``success_threshold``. An OPEN rejection never invokes *fn*,
         does not increment the failure count, and supplies an approximate
@@ -173,9 +179,10 @@ class CircuitBreaker:
         # Execute outside the lock so we don't block other threads during I/O.
         try:
             result = fn(*args, **kwargs)
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
-            self._on_failure()
-            raise exc from exc
+        except Exception as exc:
+            if isinstance(exc, self.failure_exceptions):
+                self._on_failure()
+            raise
         else:
             self._on_success()
             return result

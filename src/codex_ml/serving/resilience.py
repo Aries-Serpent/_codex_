@@ -20,6 +20,15 @@ from typing import Any, Optional
 logger = logging.getLogger(__name__)
 
 
+class CircuitBreakerOpenError(Exception):
+    """Raised by :meth:`CircuitBreaker.call` when a request is rejected.
+
+    Subclasses :class:`Exception` (and keeps the historical
+    ``"Circuit breaker is <state>, request rejected"`` message) so existing
+    ``except Exception`` handlers keep working.
+    """
+
+
 class CircuitState(Enum):
     """Circuit breaker states"""
 
@@ -45,6 +54,9 @@ class CircuitBreakerConfig:
         health_probe_func: Optional health check function
         persist_state: Enable state persistence across restarts
         state_file: File path for state persistence
+        failure_exceptions: Exception types raised by the protected function
+            that count as failures (default: any ``Exception``). Others are
+            re-raised without updating the circuit state.
     """
 
     failure_threshold: int = 5
@@ -59,6 +71,7 @@ class CircuitBreakerConfig:
     health_probe_func: Optional[Callable[[], bool]] = None
     persist_state: bool = False
     state_file: Optional[str] = None
+    failure_exceptions: tuple[type[BaseException], ...] = (Exception,)
 
 
 class CircuitBreaker:
@@ -145,7 +158,9 @@ class CircuitBreaker:
             # Check if we should allow the call
             if not self._should_allow_request():
                 self.metrics["rejected_calls"] += 1
-                raise Exception(f"Circuit breaker is {self.state.value}, request rejected")
+                raise CircuitBreakerOpenError(
+                    f"Circuit breaker is {self.state.value}, request rejected"
+                )
 
             # Perform health probe if enabled and in half-open state
             if (
@@ -171,11 +186,12 @@ class CircuitBreaker:
         # Execute function
         try:
             result = func(*args, **kwargs)
-            self._on_success()
-            return result
-        except (ConnectionError, TimeoutError):
-            self._on_failure()
+        except Exception as exc:
+            if isinstance(exc, tuple(self.config.failure_exceptions)):
+                self._on_failure()
             raise
+        self._on_success()
+        return result
 
     def _should_allow_request(self) -> bool:
         """Check if request should be allowed"""
