@@ -15,7 +15,22 @@ import pytest
 
 pytest.importorskip("torch")
 
-pytest.importorskip("torch")
+
+@pytest.fixture
+def disable_torch_profiler(monkeypatch):
+    """Disable PyTorch profiler record hooks to avoid Protocol isinstance issues.
+
+    Defined locally: the shared fixture lives in ``tests/checkpointing/conftest.py``
+    and is not visible to this package.
+    """
+    try:
+        import torch.profiler as profiler_module
+    except (ImportError, AttributeError):
+        return
+    for name in ("_record_function_enter", "_record_function_exit"):
+        if hasattr(profiler_module, name):
+            monkeypatch.setattr(profiler_module, name, lambda *args, **kwargs: None)
+
 
 # Apply disable_torch_profiler fixture to all tests in this module
 # to avoid profiler type errors
@@ -400,7 +415,6 @@ if __name__ == "__main__":
         logger.info(f"CUDA Available: {torch.cuda.is_available()}")
         logger.info(f"Number of GPUs: {harness.num_gpus}")
         logger.info(f"Distributed Available: {harness.distributed_available}")
-
 
     # Run tests
     result = run_multi_gpu_tests()
