@@ -2,19 +2,41 @@
 
 from __future__ import annotations
 
+import importlib.util
+import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import click
 import pytest
 
-try:
-    import cli
-except ImportError:
-    cli = None
+_SRC_CLI_PATH = Path(__file__).resolve().parents[3] / "src" / "cli.py"
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
+def _load_src_cli_module():
+    """Load ``src/cli.py`` by path.
+
+    ``import cli`` resolves to the ``src/cli/`` package, which shadows this
+    module, so it must be loaded from its file under a private name.  The module
+    rewrites ``sys.path`` at import time (script bootstrap); restore it so the
+    rest of the session is unaffected.
+    """
+    import tokenization  # noqa: F401  - real package first; cli.py reuses it
+
+    saved_path = list(sys.path)
+    spec = importlib.util.spec_from_file_location("_codex_src_cli", _SRC_CLI_PATH)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(module)
+    finally:
+        sys.path[:] = saved_path
+    return module
+
+
+cli = _load_src_cli_module()
+
+
 class TestCliConstants:
     """Test module constants."""
 
@@ -31,7 +53,6 @@ class TestCliConstants:
         assert isinstance(cli.TOKENIZATION_DIR, Path)
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliHelperFunctions:
     """Test helper functions."""
 
@@ -59,7 +80,6 @@ class TestCliHelperFunctions:
         assert result == {}, "Result must not be empty"
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliSimpleSyntheticData:
     """Test simple_synthetic_data function."""
 
@@ -69,14 +89,14 @@ class TestCliSimpleSyntheticData:
 
     def test_simple_synthetic_data_returns_tuple(self) -> None:
         """Test that function returns tuple."""
-        with patch("data.registry.build") as mock_build:
+        with patch.object(cli, "build_registered_dataset") as mock_build:
             mock_build.return_value = ([], None)
             result = cli.simple_synthetic_data(num_samples=100)
             assert isinstance(result, tuple)
             assert len(result) == 2, "Result must not be empty"
+            mock_build.assert_called_once_with("synthetic_classification", num_samples=100)
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliMetricFunctions:
     """Test metric functions."""
 
@@ -98,7 +118,6 @@ class TestCliMetricFunctions:
             pytest.skip("numpy not available")
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliResolutionFunctions:
     """Test configuration resolution functions."""
 
@@ -128,7 +147,6 @@ class TestCliResolutionFunctions:
             cli._resolve_callable("NoModulePath")
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliInstantiators:
     """Test instantiator functions."""
 
@@ -140,7 +158,7 @@ class TestCliInstantiators:
     def test_instantiate_model_with_target(self) -> None:
         """Test _instantiate_model with valid target."""
         model_cfg = {"target": "torch.nn.Linear", "params": {"in_features": 10, "out_features": 5}}
-        with patch("cli._resolve_callable") as mock_resolve:
+        with patch.object(cli, "_resolve_callable") as mock_resolve:
             mock_linear = MagicMock()
             mock_resolve.return_value = mock_linear
             result = cli._instantiate_model(model_cfg)
@@ -161,7 +179,7 @@ class TestCliInstantiators:
     def test_resolve_loss_with_custom_target(self) -> None:
         """Test _resolve_loss with custom target."""
         loss_cfg = {"target": "torch.nn.CrossEntropyLoss"}
-        with patch("cli._resolve_callable") as mock_resolve:
+        with patch.object(cli, "_resolve_callable") as mock_resolve:
             mock_loss = MagicMock()
             mock_resolve.return_value = mock_loss
             result = cli._resolve_loss(loss_cfg)
@@ -179,7 +197,6 @@ class TestCliInstantiators:
         assert callable(result), "Result must not be empty"
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliDataloaderResolution:
     """Test dataloader resolution."""
 
@@ -191,7 +208,7 @@ class TestCliDataloaderResolution:
     def test_resolve_dataloaders_with_target(self) -> None:
         """Test _resolve_dataloaders with target."""
         data_cfg = {"target": "torch.utils.data.DataLoader"}
-        with patch("cli._resolve_callable") as mock_resolve:
+        with patch.object(cli, "_resolve_callable") as mock_resolve:
             mock_loader_builder = MagicMock(return_value=([1, 2, 3], [4, 5, 6]))
             mock_resolve.return_value = mock_loader_builder
             result = cli._resolve_dataloaders(data_cfg)
@@ -200,13 +217,13 @@ class TestCliDataloaderResolution:
     def test_resolve_dataloaders_with_name(self) -> None:
         """Test _resolve_dataloaders with name."""
         data_cfg = {"name": "synthetic_classification"}
-        with patch("data.registry.build") as mock_build:
+        with patch.object(cli, "build_registered_dataset") as mock_build:
             mock_build.return_value = ([1, 2, 3], None)
             result = cli._resolve_dataloaders(data_cfg)
-            assert isinstance(result, tuple)
+            assert result == ([1, 2, 3], None)
+            mock_build.assert_called_once_with("synthetic_classification")
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliMainFunction:
     """Test main CLI function."""
 
@@ -234,10 +251,10 @@ trainer:
 """
         )
 
-        with patch("cli._instantiate_model"):
-            with patch("cli._instantiate_optimizer"):
-                with patch("cli._resolve_dataloaders"):
-                    with patch("training.trainer.Trainer"):
+        with patch.object(cli, "_instantiate_model"):
+            with patch.object(cli, "_instantiate_optimizer"):
+                with patch.object(cli, "_resolve_dataloaders"):
+                    with patch.object(cli, "Trainer"):
                         try:
                             result = cli.main(["--config-path", str(temp_config_dir)])
                         except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
@@ -245,18 +262,17 @@ trainer:
                             pass
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliArgumentParsing:
     """Test argument parsing."""
 
     def test_parse_config_path_argument(self) -> None:
         """Test parsing --config-path argument."""
-        with patch("cli.initialize_config_dir"):
-            with patch("cli.compose"):
-                with patch("cli._instantiate_model"):
-                    with patch("cli._instantiate_optimizer"):
-                        with patch("cli._resolve_dataloaders"):
-                            with patch("training.trainer.Trainer"):
+        with patch.object(cli, "initialize_config_dir"):
+            with patch.object(cli, "compose"):
+                with patch.object(cli, "_instantiate_model"):
+                    with patch.object(cli, "_instantiate_optimizer"):
+                        with patch.object(cli, "_resolve_dataloaders"):
+                            with patch.object(cli, "Trainer"):
                                 try:
                                     cli.main(["--config-path", "/tmp"])
                                 except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
@@ -264,12 +280,12 @@ class TestCliArgumentParsing:
 
     def test_parse_config_name_argument(self) -> None:
         """Test parsing --config-name argument."""
-        with patch("cli.initialize_config_dir"):
-            with patch("cli.compose"):
-                with patch("cli._instantiate_model"):
-                    with patch("cli._instantiate_optimizer"):
-                        with patch("cli._resolve_dataloaders"):
-                            with patch("training.trainer.Trainer"):
+        with patch.object(cli, "initialize_config_dir"):
+            with patch.object(cli, "compose"):
+                with patch.object(cli, "_instantiate_model"):
+                    with patch.object(cli, "_instantiate_optimizer"):
+                        with patch.object(cli, "_resolve_dataloaders"):
+                            with patch.object(cli, "Trainer"):
                                 try:
                                     cli.main(
                                         ["--config-path", "/tmp", "--config-name", "custom_train"]
@@ -279,12 +295,12 @@ class TestCliArgumentParsing:
 
     def test_parse_overrides(self) -> None:
         """Test parsing Hydra-style overrides."""
-        with patch("cli.initialize_config_dir"):
-            with patch("cli.compose"):
-                with patch("cli._instantiate_model"):
-                    with patch("cli._instantiate_optimizer"):
-                        with patch("cli._resolve_dataloaders"):
-                            with patch("training.trainer.Trainer"):
+        with patch.object(cli, "initialize_config_dir"):
+            with patch.object(cli, "compose"):
+                with patch.object(cli, "_instantiate_model"):
+                    with patch.object(cli, "_instantiate_optimizer"):
+                        with patch.object(cli, "_resolve_dataloaders"):
+                            with patch.object(cli, "Trainer"):
                                 try:
                                     cli.main(
                                         [
