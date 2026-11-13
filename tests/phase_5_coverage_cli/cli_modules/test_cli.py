@@ -241,15 +241,13 @@ class TestCliMainFunction:
         """Test main with valid config path."""
         # Create a minimal config structure
         config_file = temp_config_dir / "train.yaml"
-        config_file.write_text(
-            """
+        config_file.write_text("""
 model:
   target: pathlib.Path
 device: cpu
 trainer:
   epochs: 1
-"""
-        )
+""")
 
         with patch.object(cli, "_instantiate_model"):
             with patch.object(cli, "_instantiate_optimizer"):
@@ -257,7 +255,13 @@ trainer:
                     with patch.object(cli, "Trainer"):
                         try:
                             result = cli.main(["--config-path", str(temp_config_dir)])
-                        except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
+                        except (
+                            ValueError,
+                            TypeError,
+                            RuntimeError,
+                            click.ClickException,
+                            SystemExit,
+                        ):
                             # May fail due to mocking, but function should be callable
                             pass
 
@@ -275,7 +279,13 @@ class TestCliArgumentParsing:
                             with patch.object(cli, "Trainer"):
                                 try:
                                     cli.main(["--config-path", "/tmp"])
-                                except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
+                                except (
+                                    ValueError,
+                                    TypeError,
+                                    RuntimeError,
+                                    click.ClickException,
+                                    SystemExit,
+                                ):
                                     pass
 
     def test_parse_config_name_argument(self) -> None:
@@ -290,7 +300,13 @@ class TestCliArgumentParsing:
                                     cli.main(
                                         ["--config-path", "/tmp", "--config-name", "custom_train"]
                                     )
-                                except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
+                                except (
+                                    ValueError,
+                                    TypeError,
+                                    RuntimeError,
+                                    click.ClickException,
+                                    SystemExit,
+                                ):
                                     pass
 
     def test_parse_overrides(self) -> None:

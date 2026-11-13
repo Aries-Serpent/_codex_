@@ -267,7 +267,9 @@ class TestRuntimeComponents:
         result = manager.execute(script)
 
         assert result.exit_code != 0, "Result must not be empty"
-        assert "ValueError" in result.stderr or "error" in result.stderr.lower(), "Result must not be empty"
+        assert (
+            "ValueError" in result.stderr or "error" in result.stderr.lower()
+        ), "Result must not be empty"
 
     def test_sandbox_execute_nonexistent(self, tmp_path: Path):
         """Test executing nonexistent script."""

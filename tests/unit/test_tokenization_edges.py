@@ -1,4 +1,5 @@
 import pytest
+
 #             assert (
 #
 #         """Verify null bytes don't cause crashes or silent failures."""
@@ -185,8 +186,7 @@ class TestTokenizationConsistency:
         try:
             from transformers import AutoTokenizer
         except ImportError:
-            pytest.skip("transformers not available"
-        ), "Condition must be true"
+            pytest.skip("transformers not available"), "Condition must be true"
 
         try:
             tokenizer = AutoTokenizer.from_pretrained(

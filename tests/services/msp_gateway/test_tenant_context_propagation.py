@@ -91,11 +91,13 @@ def test_tenant_context_propagation_through_middleware_stack(
     class VerifyContextMiddleware(BaseHTTPMiddleware):
         async def dispatch(self, request: Request, call_next):
             tenant = getattr(request.state, "tenant", None)
-            middleware_checks.append({
-                "layer": "verify",
-                "has_tenant": tenant is not None,
-                "tenant_id": tenant["tenant_id"] if tenant else None,
-            })
+            middleware_checks.append(
+                {
+                    "layer": "verify",
+                    "has_tenant": tenant is not None,
+                    "tenant_id": tenant["tenant_id"] if tenant else None,
+                }
+            )
             return await call_next(request)
 
     app.add_middleware(VerifyContextMiddleware)
@@ -204,7 +206,12 @@ def test_tenant_context_propagation_across_multiple_requests(
         r4 = client.get("/v1/track", headers=_auth("key-a"))
 
     assert len(received_tenants) == 4, "All requests must be tracked"
-    assert received_tenants == ["track-a", "track-b", "track-c", "track-a"], "Condition must be true"
+    assert received_tenants == [
+        "track-a",
+        "track-b",
+        "track-c",
+        "track-a",
+    ], "Condition must be true"
 
 
 def test_tenant_context_propagation_in_error_handlers(
@@ -219,10 +226,12 @@ def test_tenant_context_propagation_in_error_handlers(
     @app.exception_handler(Exception)
     async def exception_handler(request: Request, exc: Exception):
         tenant = getattr(request.state, "tenant", None)
-        error_context.append({
-            "has_tenant": tenant is not None,
-            "tenant_id": tenant["tenant_id"] if tenant else None,
-        })
+        error_context.append(
+            {
+                "has_tenant": tenant is not None,
+                "tenant_id": tenant["tenant_id"] if tenant else None,
+            }
+        )
         return {"error": str(exc)}
 
     @app.get("/v1/error")
@@ -298,10 +307,12 @@ def test_tenant_context_propagation_logging_integration(
     class TenantAwareHandler(logging.Handler):
         def emit(self, record):
             # Simulate accessing tenant from context
-            logged_requests.append({
-                "message": record.getMessage(),
-                "level": record.levelname,
-            })
+            logged_requests.append(
+                {
+                    "message": record.getMessage(),
+                    "level": record.levelname,
+                }
+            )
 
     @app.get("/v1/logged")
     async def logged_endpoint(request: Request):
@@ -346,10 +357,12 @@ def test_tenant_context_propagation_state_isolation(
         tenant = getattr(request.state, "tenant", None)
 
         # Store the state for verification
-        request_states.append({
-            "tenant_id": tenant["tenant_id"] if tenant else None,
-            "state_id": id(request.state),
-        })
+        request_states.append(
+            {
+                "tenant_id": tenant["tenant_id"] if tenant else None,
+                "state_id": id(request.state),
+            }
+        )
 
         return {"tenant_id": tenant["tenant_id"] if tenant else None}
 
@@ -368,7 +381,9 @@ def test_tenant_context_propagation_state_isolation(
     assert request_states[0]["tenant_id"] == "state-a", "First request is from tenant-a"
     assert request_states[1]["tenant_id"] == "state-b", "Second request is from tenant-b"
     # State objects should be different (different per request)
-    assert request_states[0]["state_id"] != request_states[1]["state_id"], "State objects must be different"
+    assert (
+        request_states[0]["state_id"] != request_states[1]["state_id"]
+    ), "State objects must be different"
 
 
 def test_tenant_context_propagation_with_dependencies(
@@ -383,11 +398,13 @@ def test_tenant_context_propagation_with_dependencies(
     def get_tenant(request: Request):
         """Dependency to get tenant from request."""
         tenant = getattr(request.state, "tenant", None)
-        dependency_calls.append({
-            "called": True,
-            "has_tenant": tenant is not None,
-            "tenant_id": tenant["tenant_id"] if tenant else None,
-        })
+        dependency_calls.append(
+            {
+                "called": True,
+                "has_tenant": tenant is not None,
+                "tenant_id": tenant["tenant_id"] if tenant else None,
+            }
+        )
         return tenant
 
     @app.get("/v1/with-deps")

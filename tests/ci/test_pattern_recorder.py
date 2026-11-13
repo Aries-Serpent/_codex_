@@ -2,6 +2,7 @@ import subprocess
 import sys
 import json
 import importlib
+
 #         assert fixer.fix_missing_newline_at_eof() ==
 #         assert target.read_bytes() == b"logger.info('sample')\n", "Condition must be true"
 #         assert empty.read_bytes() == b"", "Condition must be true"
@@ -104,8 +105,12 @@ def _compute_merge_readiness_score():
 
         fixer.run_all_patterns()
 
-        assert "fix_unused_imports" in called, "Pattern 1 (fix_unused_imports) should have been called"
-        assert "fix_merge_readiness_dims" not in called, "Pattern 30 (fix_merge_readiness_dims) should have been skipped"
+        assert (
+            "fix_unused_imports" in called
+        ), "Pattern 1 (fix_unused_imports) should have been called"
+        assert (
+            "fix_merge_readiness_dims" not in called
+        ), "Pattern 30 (fix_merge_readiness_dims) should have been skipped"
 
     def test_pattern_30_skips_auto_fix_self_reference_dimension(self, tmp_path):
         """S178: Pattern 30 must NOT report the ``auto_fix`` self-reference
@@ -173,8 +178,12 @@ def fix_pda_entry_today(pr_number, sha, run_url, dry_run):
         pda_called_file = scripts_ci / "pda_called.txt"
         fixer = mod.CommonIssueFixer(repo_root)
         assert fixer.fix_merge_readiness_dims() == [], "Condition must be true"
-        assert import_count_file.read_text(encoding="utf-8").strip() == "1", "Count must be greater than zero"
-        assert pda_called_file.read_text(encoding="utf-8").strip() == "called", "Condition must be true"
+        assert (
+            import_count_file.read_text(encoding="utf-8").strip() == "1"
+        ), "Count must be greater than zero"
+        assert (
+            pda_called_file.read_text(encoding="utf-8").strip() == "called"
+        ), "Condition must be true"
 
 
 class TestResolveAcctDiffBase:
@@ -311,7 +320,9 @@ class TestResolveAcctDiffBase:
         # HEAD~2   = init              ← parent of agent commit
         base = mod._resolve_acct_diff_base(repo)
         expected_parent = self._git(repo, "rev-parse", "HEAD~2").strip()
-        assert base == expected_parent, f"expected parent SHA {expected_parent!r} for rebase commit, got {base!r}"
+        assert (
+            base == expected_parent
+        ), f"expected parent SHA {expected_parent!r} for rebase commit, got {base!r}"
 
     def test_skips_dependabot_deps_bump_commits(self, tmp_path):
         """``chore(deps): bump`` commit subjects (dependabot PR creation commits)
@@ -332,7 +343,9 @@ class TestResolveAcctDiffBase:
         # HEAD~2   = init              ← parent
         base = mod._resolve_acct_diff_base(repo)
         expected_parent = self._git(repo, "rev-parse", "HEAD~2").strip()
-        assert base == expected_parent, f"expected parent SHA {expected_parent!r} for deps-bump commit, got {base!r}"
+        assert (
+            base == expected_parent
+        ), f"expected parent SHA {expected_parent!r} for deps-bump commit, got {base!r}"
 
 
 class TestFindKwargRemovalSpan:
@@ -362,7 +375,9 @@ class TestFindKwargRemovalSpan:
         # Second kwarg named 'x'
         kw = call.keywords[1]
         span = fixer._find_kwarg_removal_span("f(x=1, x=2)", kw)
-        assert span is not None, "_find_kwarg_removal_span must return a (start, end) tuple for a valid kwarg"
+        assert (
+            span is not None
+        ), "_find_kwarg_removal_span must return a (start, end) tuple for a valid kwarg"
         start, end = span
         result = "f(x=1, x=2)"[:start] + "f(x=1, x=2)"[end:]
         assert "x=2" not in result, "Result must not be empty"
@@ -429,7 +444,9 @@ class TestCiPatternPipeline:
             text=True,
         )
         assert result.returncode == 0, "Result must not be empty"
-        assert "detect" in result.stdout.lower() or "pipeline" in result.stdout.lower(), "Result must not be empty"
+        assert (
+            "detect" in result.stdout.lower() or "pipeline" in result.stdout.lower()
+        ), "Result must not be empty"
 
     @pytest.mark.slow
     @pytest.mark.timeout(300)
