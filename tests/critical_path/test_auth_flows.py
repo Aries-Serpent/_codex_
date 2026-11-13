@@ -125,16 +125,10 @@ class TestTokenValidationExpiration:
 
     def test_expired_token_rejected(self):
         """Test expired token is rejected."""
-        manager = TokenManager(secret_key="test-secret-key")
-
-        # Temporarily reduce expiry
-        original_expiry = manager.ACCESS_TOKEN_EXPIRY
-        manager.ACCESS_TOKEN_EXPIRY = -1  # Already expired
+        # Expiry is fixed at construction time via ``access_token_timeout``.
+        manager = TokenManager(secret_key="test-secret-key", access_token_timeout=-1)
 
         token = manager.generate_access_token("user123")
-
-        # Restore expiry
-        manager.ACCESS_TOKEN_EXPIRY = original_expiry
 
         with pytest.raises(ValueError, match="Token expired"):
             manager.validate_token(token)
