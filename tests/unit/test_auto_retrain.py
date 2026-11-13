@@ -209,16 +209,6 @@ def _drifted(js_div: float = 0.10, reasons: list[str] | None = None) -> _FakeDri
     )
 
 
-@dataclass
-class _FakeDriftResult:
-    """Minimal stand-in for DriftResult used in tests."""
-
-    drift_detected: bool
-    js_divergence: Optional[float] = None
-    confidence_stats: object = None
-    reasons: list[str] = field(default_factory=list)
-
-
 def test_should_retrain_false_when_min_samples_not_met():
     """T-07: drift present but insufficient samples ⇒ should_retrain=False."""
     pipeline = AutoRetrainPipeline(drift_threshold=0.05, min_samples=500)

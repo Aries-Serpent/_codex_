@@ -316,7 +316,12 @@ jobs:
       - name: Stage unit coverage data
         if: always()
         run: |
-          cp ".coverage.unit-${{ matrix.shard }}" reports/
+          # Missing data still fails closed in ml-slow-aggregate; staging keeps JUnit evidence uploadable.
+          if [ -f ".coverage.unit-${{ matrix.shard }}" ]; then
+            cp ".coverage.unit-${{ matrix.shard }}" reports/
+          else
+            echo "::warning::.coverage.unit-${{ matrix.shard }} was not produced; aggregate will fail closed"
+          fi
 
       - name: Upload unit coverage and JUnit
         if: always()

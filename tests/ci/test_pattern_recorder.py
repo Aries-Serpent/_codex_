@@ -44,9 +44,6 @@ def _load_auto_fix():
     return mod
 
 
-_ROOT = Path(__file__).parent.parent.parent
-
-
 pipeline = _load("scripts/ci/ci_pattern_pipeline.py")
 
 

@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+### Fixed - ML coverage shard collection error on PR #5784
+- Import Ray Serve explicitly (`from ray import serve`); `ray.serve` attribute
+  access raised AttributeError under Ray 2.60, which `importorskip` cannot skip,
+  aborting collection in all four coverage shards.
+- Migrate `hhg_logistics.serve.app` to the Ray 2.x Serve API: build
+  `LLMServiceDeployment` from the plain `LLMService` class, pass `route_prefix`
+  to `serve.run` and use `proxy_location`; add stub-Ray regression tests.
+- Stage unit coverage data only when produced, keeping JUnit evidence
+  uploadable while the aggregate still fails closed on missing shard data.
+- Align the development SBOM with pyasn1 0.6.5 (supersedes Dependabot #5786).
+
 ### Fixed - ML coverage shard test-suite damage surfaced by PR #5784
 - Restore real torch modules after any test that drops or replaces them; torch
   forbids re-import, which cascaded into ~580 shard-4 failures.

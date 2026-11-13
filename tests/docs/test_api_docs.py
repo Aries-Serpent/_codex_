@@ -163,9 +163,6 @@ REPO_ROOT = Path(__file__).parents[2]
 DOCS_DIR = REPO_ROOT / "docs"
 
 
-REPO_ROOT = Path(__file__).parents[2]
-
-
 class TestCLIDocumentation:
     """Tests for CLI documentation."""
 
