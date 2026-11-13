@@ -6,11 +6,18 @@ import hashlib
 import html
 import json
 import os
+import re
+from collections.abc import Mapping
 from pathlib import Path
+from typing import Any
 
 import pytest
 
 _REPORTED_FAILURES = pytest.StashKey[int]()
+
+QUARANTINE_FIELDS = ("nodeid", "cluster", "issue", "owner", "reason", "added_sha")
+_ISSUE = re.compile(r"#[1-9][0-9]*|https://[^\s]+")
+_SHA = re.compile(r"[0-9a-f]{7,40}")
 
 
 def pytest_exception_interact(
@@ -38,6 +45,46 @@ def collection_digest(nodeids: list[str]) -> str:
     return hashlib.sha256(json.dumps(sorted(nodeids)).encode()).hexdigest()
 
 
+def parse_quarantine(data: Any) -> dict[str, dict[str, str]]:
+    """Strictly validate a quarantine manifest and index its entries by node ID.
+
+    Entries must name test items (``path::test``); collection errors have no
+    item ID and can therefore never be quarantined.
+    """
+    if not isinstance(data, Mapping) or set(data) != {"version", "entries"}:
+        raise ValueError("quarantine manifest must contain exactly 'version' and 'entries'")
+    if data["version"] != 1 or isinstance(data["version"], bool):
+        raise ValueError("quarantine manifest version must be 1")
+    if not isinstance(data["entries"], list):
+        raise ValueError("quarantine manifest 'entries' must be a list")
+    entries: dict[str, dict[str, str]] = {}
+    for index, entry in enumerate(data["entries"]):
+        where = f"quarantine entry {index}"
+        if not isinstance(entry, Mapping) or set(entry) != set(QUARANTINE_FIELDS):
+            raise ValueError(f"{where}: fields must be exactly {', '.join(QUARANTINE_FIELDS)}")
+        if any(not isinstance(entry[key], str) or not entry[key].strip() for key in entry):
+            raise ValueError(f"{where}: every field must be a non-empty string")
+        nodeid = entry["nodeid"]
+        if "::" not in nodeid or nodeid != nodeid.strip():
+            raise ValueError(f"{where}: nodeid must be a test item ID (path::test)")
+        if nodeid in entries:
+            raise ValueError(f"{where}: duplicate nodeid {nodeid}")
+        if not _ISSUE.fullmatch(entry["issue"]):
+            raise ValueError(f"{where}: issue must be an https URL or #<number>")
+        if not _SHA.fullmatch(entry["added_sha"]):
+            raise ValueError(f"{where}: added_sha must be a 7-40 character hex commit")
+        entries[nodeid] = dict(entry)
+    return entries
+
+
+def load_quarantine(path: Path) -> dict[str, dict[str, str]]:
+    return parse_quarantine(json.loads(path.read_text(encoding="utf-8")))
+
+
+def quarantine_digest(entries: Mapping[str, Any]) -> str:
+    return collection_digest(list(entries))
+
+
 def file_shard(nodeid: str, count: int) -> int:
     filename = nodeid.split("::", 1)[0]
     return int.from_bytes(hashlib.sha256(filename.encode()).digest()[:8], "big") % count + 1
@@ -48,6 +95,11 @@ def pytest_addoption(parser: pytest.Parser) -> None:
     group.addoption("--ml-shards", type=int, default=1)
     group.addoption("--ml-shard", type=int, default=1)
     group.addoption("--ml-shard-report", type=Path)
+    group.addoption(
+        "--ml-quarantine",
+        type=Path,
+        help="JSON manifest of known-failing test IDs to run as strict xfail.",
+    )
 
 
 @pytest.hookimpl(trylast=True)
@@ -63,6 +115,23 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     deselected = [item for item in items if file_shard(item.nodeid, count) != shard]
     items[:] = selected
     config.hook.pytest_deselected(items=deselected)
+    quarantine_path = config.getoption("ml_quarantine")
+    quarantine: dict[str, dict[str, str]] | None = None
+    if quarantine_path is not None:
+        try:
+            quarantine = load_quarantine(quarantine_path)
+        except (OSError, ValueError) as exc:
+            raise pytest.UsageError(f"invalid --ml-quarantine manifest: {exc}") from exc
+        for item in selected:
+            entry = quarantine.get(item.nodeid)
+            if entry is not None:
+                # strict: an unexpected pass fails the run so the manifest must shrink.
+                item.add_marker(
+                    pytest.mark.xfail(
+                        strict=True,
+                        reason=f"quarantined: {entry['issue']} {entry['cluster']}",
+                    )
+                )
     report = config.getoption("ml_shard_report")
     if report is not None:
         report.parent.mkdir(parents=True, exist_ok=True)
@@ -77,8 +146,22 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
                     "eligible_count": len(nodeids),
                     "collection_digest": collection_digest(nodeids),
                     "selected": sorted(item.nodeid for item in selected),
+                    **quarantine_report(quarantine, selected),
                 },
                 indent=2,
             ),
             encoding="utf-8",
         )
+
+
+def quarantine_report(
+    quarantine: Mapping[str, Any] | None, selected: list[pytest.Item]
+) -> dict[str, Any]:
+    if quarantine is None:
+        return {}
+    selected_ids = {item.nodeid for item in selected}
+    return {
+        "quarantine_digest": quarantine_digest(quarantine),
+        "quarantined": sorted(selected_ids & set(quarantine)),
+        "quarantine_not_selected": sorted(set(quarantine) - selected_ids),
+    }

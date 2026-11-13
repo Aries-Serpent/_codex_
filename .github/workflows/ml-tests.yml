@@ -293,6 +293,9 @@ jobs:
           set -euo pipefail
           export PYTHONPATH="$PWD/scripts/ci:$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
           mkdir -p reports
+          # Test failures (exit 1) are judged by ml-slow-aggregate against the
+          # quarantine manifest; infrastructure problems still fail this job.
+          set +e
           pytest tests/ \
             -p ml_pytest_shards \
             -rfE \
@@ -305,13 +308,26 @@ jobs:
             --cov=training \
             --cov-report= \
             --cov-fail-under=0 \
+            --ml-quarantine .codex/baselines/ml_unit_quarantine.json \
             -m "not slow and not integration"
+          rc=$?
+          set -e
+          echo "$rc" > reports/pytest-exit-code
+          if [ ! -s reports/junit.xml ]; then
+            echo "::error::pytest exited ${rc} without writing reports/junit.xml"
+            exit 1
+          fi
+          case "$rc" in
+            0) ;;
+            1) echo "::warning::Shard has test failures; ml-slow-aggregate gates them against the quarantine manifest" ;;
+            *) echo "::error::pytest exited ${rc} (interrupted, collection or internal error)"; exit "$rc" ;;
+          esac
 
       - name: Summarize coverage shard
         if: always()
         run: |
           "${VENV_PYTHON:-python3}" scripts/ci/ml_slow_aggregate.py summarize \
-            --reports reports --label "Coverage shard ${{ matrix.shard }}"
+            --report-only --reports reports --label "Coverage shard ${{ matrix.shard }}"
 
       - name: Stage unit coverage data
         if: always()
@@ -345,6 +361,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+          # On pull_request the merge commit's first parent is the base commit.
+          fetch-depth: 2
 
       - name: Set up aggregate Python
         uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
@@ -373,7 +391,24 @@ jobs:
         env:
           NEEDS_JSON: ${{ toJSON(needs) }}
         run: |
-          python scripts/ci/ml_slow_aggregate.py aggregate --reports reports
+          python scripts/ci/ml_slow_aggregate.py aggregate --reports reports \
+            --floor-file .codex/baselines/ml_unit_coverage_floor.json \
+            --quarantine .codex/baselines/ml_unit_quarantine.json
+
+      - name: Ratchet quarantine and coverage floor against PR base
+        if: always() && github.event_name == 'pull_request'
+        env:
+          ML_QUARANTINE_GROWTH_APPROVED: ${{ contains(github.event.pull_request.labels.*.name, 'quarantine-approved') && '1' || '0' }}
+        run: |
+          set -euo pipefail
+          parents="$(git rev-list --parents -n 1 HEAD | wc -w)"
+          if [ "$parents" -ne 3 ]; then
+            echo "::error::Expected the pull_request merge commit; cannot identify the base"
+            exit 1
+          fi
+          python scripts/ci/ml_slow_aggregate.py ratchet --base-ref HEAD^1 \
+            --floor-file .codex/baselines/ml_unit_coverage_floor.json \
+            --quarantine .codex/baselines/ml_unit_quarantine.json
 
       - name: Upload aggregate reports
         if: always()

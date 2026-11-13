@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 import coverage
@@ -10,9 +12,18 @@ import pytest
 from defusedxml import ElementTree as ET
 
 from scripts.ci import ml_pytest_shards as shards
-from scripts.ci.ml_slow_aggregate import aggregate, junit_summary, validate_selections
+from scripts.ci import ml_slow_aggregate
+from scripts.ci.ml_slow_aggregate import (
+    aggregate,
+    junit_summary,
+    parse_floor,
+    ratchet,
+    validate_selections,
+)
 
 pytest_plugins = ["pytester"]
+
+FLOOR = {"floor": 70, "target": 70, "measured_sha": "abc1234"}
 
 
 @pytest.fixture(autouse=True)
@@ -75,7 +86,8 @@ def test_slow(): pass
         assert len(all_selected) == len(set(all_selected))
 
 
-def make_reports(root: Path) -> None:
+def make_reports(root: Path, quarantine: dict | None = None) -> None:
+    quarantine = quarantine or {}
     for folder, prefix, count, marker, arg in (
         ("integration", "int-junit", 4, "integration", "tests/integration/"),
         ("unit", "unit-cov", 4, "not slow and not integration", "tests/"),
@@ -85,9 +97,18 @@ def make_reports(root: Path) -> None:
             directory = root / folder / f"{prefix}-{index}"
             directory.mkdir(parents=True)
             selected = [nodeid for nodeid in nodeids if shards.file_shard(nodeid, count) == index]
+            extra = {}
+            if folder == "unit":
+                (directory / "pytest-exit-code").write_text("0\n")
+                extra = {
+                    "quarantine_digest": shards.quarantine_digest(quarantine),
+                    "quarantined": sorted(set(quarantine) & set(selected)),
+                    "quarantine_not_selected": sorted(set(quarantine) - set(selected)),
+                }
             (directory / "selection.json").write_text(
                 json.dumps(
                     {
+                        **extra,
                         "shard": index,
                         "shards": count,
                         "args": [arg],
@@ -157,7 +178,7 @@ def test_aggregate_rejects_junit_dtd(tmp_path):
         for name in ("test-ml-components", "integration-shard", "coverage-shard")
     }
 
-    summary, exit_code = aggregate(tmp_path, needs)
+    summary, exit_code = aggregate(tmp_path, needs, floor=FLOOR, quarantine={})
 
     assert exit_code == 1
     assert "Forbidden" in summary
@@ -296,7 +317,7 @@ def test_gate_combines_only_unit_data_and_never_masks_shard_failure(
         )
     else:
         needs["integration-shard"]["result"] = job_result
-    summary, exit_code = aggregate(reports, needs)
+    summary, exit_code = aggregate(reports, needs, floor=FLOOR, quarantine={})
     assert exit_code == expected, summary
     assert "coverage report" in summary
     assert (tmp_path / "htmlcov/index.html").is_file(), summary
@@ -317,6 +338,298 @@ def test_missing_unit_coverage_fails_even_with_green_needs(tmp_path):
         name: {"result": "success"}
         for name in ("test-ml-components", "integration-shard", "coverage-shard")
     }
-    summary, exit_code = aggregate(tmp_path, needs)
+    summary, exit_code = aggregate(tmp_path, needs, floor=FLOOR, quarantine={})
     assert exit_code == 1
     assert "missing unit shard data" in summary
+
+
+QUARANTINE_TESTS = """
+def test_fails():
+    assert False, "known failure"
+def test_passes():
+    pass
+"""
+
+
+def write_manifest(path: Path, nodeids: list[str]) -> Path:
+    path.write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "entries": [
+                    {
+                        "nodeid": nodeid,
+                        "cluster": "api-drift",
+                        "issue": "#5784",
+                        "owner": "ml",
+                        "reason": "pre-existing",
+                        "added_sha": "2865b571ab",
+                    }
+                    for nodeid in nodeids
+                ],
+            }
+        )
+    )
+    return path
+
+
+@pytest.mark.parametrize(
+    ("quarantined", "expected"),
+    [
+        (["test_q.py::test_fails"], pytest.ExitCode.OK),
+        (["test_q.py::test_fails", "test_q.py::test_passes"], pytest.ExitCode.TESTS_FAILED),
+        ([], pytest.ExitCode.TESTS_FAILED),
+    ],
+    ids=["quarantined-failure", "quarantined-xpass-strict", "unquarantined-failure"],
+)
+def test_quarantine_runs_entries_as_strict_xfail(pytester, quarantined, expected):
+    pytester.makepyfile(ml_pytest_shards=Path(shards.__file__).read_text(), test_q=QUARANTINE_TESTS)
+    manifest = write_manifest(pytester.path / "quarantine.json", quarantined)
+    report = pytester.path / "selection.json"
+    result = pytester.runpytest_subprocess(
+        "test_q.py",
+        "-p",
+        "ml_pytest_shards",
+        "-p",
+        "no:randomly",
+        f"--ml-quarantine={manifest}",
+        f"--ml-shard-report={report}",
+        "--junitxml=junit.xml",
+    )
+    assert result.ret == expected
+    selection = json.loads(report.read_text())
+    assert selection["quarantined"] == sorted(quarantined)
+    assert selection["quarantine_not_selected"] == []
+    summary, failed = junit_summary(pytester.path, "unit")
+    assert failed is (expected != pytest.ExitCode.OK)
+    if quarantined:
+        assert "Quarantined (strict xfail): 1." in summary
+    if len(quarantined) == 2:
+        assert "XPASS(strict)" in (pytester.path / "junit.xml").read_text()
+
+
+def test_quarantine_never_hides_collection_errors(pytester):
+    pytester.makepyfile(
+        ml_pytest_shards=Path(shards.__file__).read_text(),
+        test_broken='raise ImportError("gone")\ndef test_x(): pass\n',
+    )
+    manifest = write_manifest(pytester.path / "quarantine.json", ["test_broken.py::test_x"])
+    result = pytester.runpytest_subprocess(
+        "-p", "ml_pytest_shards", f"--ml-quarantine={manifest}", "--junitxml=junit.xml"
+    )
+    assert result.ret == pytest.ExitCode.INTERRUPTED
+    summary, failed = junit_summary(pytester.path, "unit")
+    assert failed is True
+    assert "Collection errors (never quarantinable):** 1" in summary
+    with pytest.raises(ValueError, match="test item ID"):
+        shards.parse_quarantine(
+            {"version": 1, "entries": [{**_entry(), "nodeid": "tests/test_broken.py"}]}
+        )
+
+
+def test_invalid_quarantine_is_a_usage_error(pytester):
+    pytester.makepyfile(ml_pytest_shards=Path(shards.__file__).read_text(), test_q=QUARANTINE_TESTS)
+    (pytester.path / "quarantine.json").write_text('{"version": 1, "entries": [{}]}')
+    result = pytester.runpytest_subprocess(
+        "-p", "ml_pytest_shards", "--ml-quarantine=quarantine.json"
+    )
+    assert result.ret == pytest.ExitCode.USAGE_ERROR
+
+
+def _entry(**changes: object) -> dict:
+    return {
+        "nodeid": "tests/test_a.py::test_b",
+        "cluster": "api-drift",
+        "issue": "https://github.com/Aries-Serpent/_codex_/issues/1",
+        "owner": "ml",
+        "reason": "pre-existing",
+        "added_sha": "2865b571ab",
+        **changes,
+    }
+
+
+@pytest.mark.parametrize(
+    "data",
+    [
+        {"entries": []},
+        {"version": 2, "entries": []},
+        {"version": 1, "entries": {}},
+        {"version": 1, "entries": [], "extra": 1},
+        {"version": 1, "entries": [{k: v for k, v in _entry().items() if k != "owner"}]},
+        {"version": 1, "entries": [{**_entry(), "extra": "x"}]},
+        {"version": 1, "entries": [_entry(reason=" ")]},
+        {"version": 1, "entries": [_entry(issue="issue 12")]},
+        {"version": 1, "entries": [_entry(issue="http://example.com/1")]},
+        {"version": 1, "entries": [_entry(added_sha="main")]},
+        {"version": 1, "entries": [_entry(), _entry()]},
+    ],
+)
+def test_quarantine_schema_violations_are_rejected(data):
+    with pytest.raises(ValueError):
+        shards.parse_quarantine(data)
+
+
+def test_committed_baselines_are_valid():
+    root = Path(__file__).resolve().parents[2] / ".codex/baselines"
+    shards.load_quarantine(root / "ml_unit_quarantine.json")
+    assert ml_slow_aggregate.load_floor(root / "ml_unit_coverage_floor.json")["target"] == 70
+
+
+@pytest.mark.parametrize(
+    "data",
+    [
+        {"floor": 54, "target": 70},
+        {"floor": "54", "target": 70, "measured_sha": "abc"},
+        {"floor": 71, "target": 70, "measured_sha": "abc"},
+        {"floor": True, "target": 70, "measured_sha": "abc"},
+        {"floor": 54, "target": 70, "measured_sha": ""},
+    ],
+)
+def test_floor_schema_violations_are_rejected(data):
+    with pytest.raises(ValueError):
+        parse_floor(data)
+
+
+def _green_coverage(tmp_path: Path, reports: Path, percent_lines: range) -> dict:
+    source = tmp_path / "sample.py"
+    source.write_text("\n".join(f"x = {i}" for i in range(10)) + "\n")
+    for index in range(1, 5):
+        write_coverage(
+            reports / "unit" / f"unit-cov-{index}" / f".coverage.unit-{index}",
+            source,
+            percent_lines if index == 1 else range(0),
+        )
+    return {
+        name: {"result": "success"}
+        for name in ("test-ml-components", "integration-shard", "coverage-shard")
+    }
+
+
+@pytest.mark.parametrize(
+    ("floor", "expected", "message"),
+    [
+        (61, 1, "below the floor"),
+        (60, 0, "Combined unit coverage: 60.00%"),
+        (54, 0, "consider raising floor"),
+    ],
+)
+def test_coverage_floor_ratchet(tmp_path, monkeypatch, floor, expected, message):
+    monkeypatch.chdir(tmp_path)
+    reports = tmp_path / "reports"
+    make_reports(reports)
+    needs = _green_coverage(tmp_path, reports, range(0, 6))
+    summary, exit_code = aggregate(reports, needs, floor={**FLOOR, "floor": floor}, quarantine={})
+    assert exit_code == expected, summary
+    assert message in summary
+    assert ("consider raising" in summary) is (floor == 54)
+
+
+@pytest.mark.parametrize(
+    ("selected", "expected"), [(True, 0), (False, 1)], ids=["collected", "stale"]
+)
+def test_quarantine_entries_must_be_collected_by_some_shard(
+    tmp_path, monkeypatch, selected, expected
+):
+    monkeypatch.chdir(tmp_path)
+    nodeid = "tests/test_3.py::test_example" if selected else "tests/test_gone.py::test_x"
+    quarantine = {nodeid: _entry(nodeid=nodeid)}
+    reports = tmp_path / "reports"
+    make_reports(reports, quarantine)
+    needs = _green_coverage(tmp_path, reports, range(0, 10))
+    summary, exit_code = aggregate(reports, needs, floor=FLOOR, quarantine=quarantine)
+    assert exit_code == expected, summary
+    assert ("Stale quarantine entries" in summary) is not selected
+    # Shards that ran without (or with a different) manifest are rejected.
+    summary, exit_code = aggregate(reports, needs, floor=FLOOR, quarantine={})
+    assert exit_code == 1
+    assert "did not apply the quarantine manifest" in summary
+
+
+@pytest.mark.parametrize("code", ["2", "1", None])
+def test_recorded_pytest_exit_code_is_checked(tmp_path, monkeypatch, code):
+    monkeypatch.chdir(tmp_path)
+    reports = tmp_path / "reports"
+    make_reports(reports)
+    needs = _green_coverage(tmp_path, reports, range(0, 10))
+    exit_file = reports / "unit/unit-cov-2/pytest-exit-code"
+    if code is None:
+        exit_file.unlink()
+    else:
+        exit_file.write_text(code)
+    summary, exit_code = aggregate(reports, needs, floor=FLOOR, quarantine={})
+    assert exit_code == 1
+    assert "unit-cov-2: " in summary
+
+
+def test_summarize_report_only_does_not_gate_test_failures(tmp_path):
+    (tmp_path / "junit.xml").write_text(
+        '<testsuite><testcase classname="a" name="b"><failure>x</failure></testcase></testsuite>'
+    )
+    script = Path(ml_slow_aggregate.__file__)
+    for extra, expected in (([], 1), (["--report-only"], 0)):
+        proc = subprocess.run(
+            [sys.executable, str(script), "summarize", "--reports", str(tmp_path), *extra],
+            capture_output=True,
+            text=True,
+            env={"PATH": "", "PYTHONPATH": str(script.parent)},
+        )
+        assert proc.returncode == expected, proc.stderr
+
+
+def _git(repo: Path, *args: str) -> None:
+    subprocess.run(
+        ["git", "-c", "user.name=t", "-c", "user.email=t@example.com", *args],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+    )
+
+
+@pytest.mark.parametrize(
+    ("base", "head", "approved", "expected"),
+    [
+        (([], 54), (["tests/a.py::t"], 54), False, 1),
+        (([], 54), (["tests/a.py::t"], 54), True, 0),
+        ((["tests/a.py::t"], 54), ([], 55), False, 0),
+        ((["tests/a.py::t"], 54), (["tests/b.py::t"], 54), False, 1),
+        (([], 54), ([], 53), False, 1),
+        (([], 54), ([], 53), True, 0),
+        (None, (["tests/a.py::t"], 40), False, 0),
+    ],
+    ids=[
+        "growth",
+        "growth-approved",
+        "shrink-raise",
+        "swap",
+        "floor-down",
+        "floor-approved",
+        "no-base",
+    ],
+)
+def test_ratchet_against_base(tmp_path, monkeypatch, base, head, approved, expected):
+    monkeypatch.chdir(tmp_path)
+    if approved:
+        monkeypatch.setenv(ml_slow_aggregate.APPROVAL_ENV, "1")
+    else:
+        monkeypatch.delenv(ml_slow_aggregate.APPROVAL_ENV, raising=False)
+    _git(tmp_path, "init", "-q")
+    baselines = tmp_path / "baselines"
+    baselines.mkdir()
+    quarantine, floor = baselines / "q.json", baselines / "floor.json"
+
+    def write(state):
+        write_manifest(quarantine, state[0])
+        floor.write_text(json.dumps({"floor": state[1], "target": 70, "measured_sha": "abc"}))
+
+    if base is None:
+        (tmp_path / "README").write_text("base")
+        _git(tmp_path, "add", "README")
+    else:
+        write(base)
+        _git(tmp_path, "add", "baselines")
+    _git(tmp_path, "commit", "-q", "-m", "base")
+    write(head)
+    summary, exit_code = ratchet("HEAD", Path("baselines/q.json"), Path("baselines/floor.json"))
+    assert exit_code == expected, summary
+    with pytest.raises(ValueError, match="not an available commit"):
+        ratchet("no-such-ref", Path("baselines/q.json"), Path("baselines/floor.json"))

@@ -67,6 +67,19 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
     assert '-m "not slow and not integration"' in coverage["run"]
     assert "--cov=src" in coverage["run"] and "--cov=training" in coverage["run"]
     assert "--cov-fail-under=0" in coverage["run"]  # Partial shards are not the gate.
+    # Test failures are gated by the aggregate against the quarantine manifest;
+    # missing JUnit or non-test exit codes still fail the shard job.
+    assert "--ml-quarantine .codex/baselines/ml_unit_quarantine.json" in coverage["run"]
+    assert "set +e" in coverage["run"] and "rc=$?" in coverage["run"]
+    assert "reports/pytest-exit-code" in coverage["run"]
+    assert "[ ! -s reports/junit.xml ]" in coverage["run"]
+    assert '*) echo "::error::pytest exited' in coverage["run"]
+    summarize = next(
+        step["run"]
+        for step in jobs["coverage-shard"]["steps"]
+        if step.get("name") == "Summarize coverage shard"
+    )
+    assert "--report-only" in summarize
     assert coverage["env"]["COVERAGE_FILE"] == ".coverage.unit-${{ matrix.shard }}"
     for name, count in (("integration-shard", 4), ("coverage-shard", 4)):
         job = jobs[name]
@@ -92,6 +105,24 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
         step["run"] for step in aggregate["steps"] if step.get("name") == "Install report tooling"
     )
     assert "defusedxml>=0.7.1" in tooling
+    steps = {step.get("name"): step for step in aggregate["steps"]}
+    gate = steps["Validate shards and enforce combined unit coverage"]["run"]
+    assert "--fail-under" not in gate
+    assert "--floor-file .codex/baselines/ml_unit_coverage_floor.json" in gate
+    assert "--quarantine .codex/baselines/ml_unit_quarantine.json" in gate
+    assert aggregate["steps"][0]["with"]["fetch-depth"] == 2
+    ratchet = steps["Ratchet quarantine and coverage floor against PR base"]
+    assert ratchet["if"] == "always() && github.event_name == 'pull_request'"
+    assert "ratchet --base-ref HEAD^1" in ratchet["run"]
+    assert (
+        "contains(github.event.pull_request.labels.*.name, 'quarantine-approved')"
+        in ratchet["env"]["ML_QUARANTINE_GROWTH_APPROVED"]
+    )
+    for job in jobs.values():
+        assert job["timeout-minutes"] <= 60
+        for step in job["steps"]:
+            uses = step.get("uses", "")
+            assert not uses or uses.startswith("./") or len(uses.split("@", 1)[1]) == 40
 
 
 def test_ml_repairs_can_be_validated_on_staging_sub_prs():
