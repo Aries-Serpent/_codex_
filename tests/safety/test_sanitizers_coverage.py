@@ -226,17 +226,22 @@ class TestSanitizePrompt:
 
     def test_policy_yaml_override(self):
         """Test sanitize_prompt with policy YAML override."""
+        # Single-quoted YAML scalars keep regex backslashes literal; in
+        # double quotes ``\\d`` is an invalid YAML escape and the override is
+        # (correctly) rejected, falling back to the default patterns.
         yaml_content = """
 secrets:
-  - "SECRET-\\d{8}"
+  - 'SECRET-\\d{8}'
 pii:
-  - "\\b\\d{5}\\b"
+  - '\\b\\d{5}\\b'
 """
         text = "Code: SECRET-12345678"
         result = sanitize_prompt(text, policy_yaml=yaml_content)
 
-        # Should detect the custom pattern
-        assert result["flags"]["secrets"], "Result must not be empty"
+        # Should detect and redact the custom pattern
+        assert result["flags"]["secrets"], "custom secret pattern must be flagged"
+        assert "SECRET-12345678" not in result["text"]
+        assert result["redactions"]["secrets"] >= 1
 
     def test_empty_text(self):
         """Test sanitizing empty text."""
