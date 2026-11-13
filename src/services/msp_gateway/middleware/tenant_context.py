@@ -303,6 +303,15 @@ class TenantRegistry:
                     auth_manager.revoke_api_key_hash(pbkdf2_hash)
                 auth_manager.revoke_api_key_hash(legacy_sha256_hash)
                 return tenant_data
+        else:
+            # Non-persistent backends: deactivation revokes the credential, so
+            # the auth cache no longer resolves it. Mirror the SQLite path and
+            # return the inactive record (middleware answers 403) without
+            # re-registering the revoked credential.
+            current_hash = hash_api_key(api_key)
+            for tenant in self.tenants.values():
+                if tenant.get("api_key_hash") == current_hash and not tenant.get("active", True):
+                    return tenant
 
         return None
 
