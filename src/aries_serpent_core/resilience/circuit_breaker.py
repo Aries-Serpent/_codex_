@@ -9,11 +9,10 @@ Implements the classic three-state circuit-breaker pattern:
 * **HALF_OPEN** — calls are allowed; ``success_threshold`` successful
   completions close the circuit, while a counted failure re-opens it.
 
-By default every :class:`Exception` raised by the protected callable counts
-as a failure (``BaseException`` subclasses such as ``KeyboardInterrupt`` never
-do). Pass ``failure_exceptions`` to restrict counting to specific types, e.g.
-``(OSError, ImportError)``; other exceptions then propagate without updating
-the counters. State is lock-protected, but calls run outside the lock and
+By default only ``OSError`` (including ``IOError``), ``ModuleNotFoundError``,
+and ``ImportError`` count as failures. Other exceptions propagate without
+updating the counters. Pass ``failure_exceptions`` (e.g. ``(Exception,)``) to
+count a different set of exception types. State is lock-protected, but calls run outside the lock and
 HALF_OPEN does not limit the number of concurrent probes.
 
 Usage::
@@ -78,7 +77,7 @@ class CircuitBreaker:
             required to close the circuit again.  Defaults to ``2``.
         name: Optional label used in log messages.
         failure_exceptions: Exception types that count as failures. Defaults
-            to ``(Exception,)``. Non-matching exceptions are re-raised without
+            to ``(OSError, ImportError)``. Non-matching exceptions are re-raised without
             updating the counters.
 
     Thread safety:
@@ -103,7 +102,7 @@ class CircuitBreaker:
         recovery_timeout: float = 60,
         success_threshold: int = 2,
         name: str = "circuit_breaker",
-        failure_exceptions: tuple[type[BaseException], ...] = (Exception,),
+        failure_exceptions: tuple[type[BaseException], ...] = (OSError, ImportError),
     ) -> None:
         if failure_threshold < 1:
             raise ValueError("failure_threshold must be >= 1")

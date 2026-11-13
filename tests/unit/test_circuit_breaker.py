@@ -29,7 +29,7 @@ from codex.resilience import CircuitBreaker, CircuitOpenError, CircuitState
 # ---------------------------------------------------------------------------
 
 
-def _make_failing(exc: type[Exception] = RuntimeError, msg: str = "boom") -> MagicMock:
+def _make_failing(exc: type[Exception] = ConnectionError, msg: str = "boom") -> MagicMock:
     fn = MagicMock(side_effect=exc(msg))
     return fn
 
@@ -72,7 +72,7 @@ def test_failures_below_threshold_keep_circuit_closed():
     cb = CircuitBreaker(failure_threshold=5)
     fn = _make_failing()
     for _ in range(4):
-        with pytest.raises(RuntimeError):
+        with pytest.raises(ConnectionError):
             cb.call(fn)
     assert cb.state is CircuitState.CLOSED, "state is not valid"
 
@@ -81,7 +81,7 @@ def test_failures_at_threshold_open_circuit():
     cb = CircuitBreaker(failure_threshold=3)
     fn = _make_failing()
     for _ in range(3):
-        with pytest.raises(RuntimeError):
+        with pytest.raises(ConnectionError):
             cb.call(fn)
     assert cb.state is CircuitState.OPEN, "state is not valid"
 
@@ -95,7 +95,7 @@ def test_open_circuit_raises_circuit_open_error():
     cb = CircuitBreaker(failure_threshold=2)
     fn = _make_failing()
     for _ in range(2):
-        with pytest.raises(RuntimeError):
+        with pytest.raises(ConnectionError):
             cb.call(fn)
 
     with pytest.raises(CircuitOpenError):
@@ -104,7 +104,7 @@ def test_open_circuit_raises_circuit_open_error():
 
 def test_circuit_open_error_has_retry_after():
     cb = CircuitBreaker(failure_threshold=1, recovery_timeout=30)
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ConnectionError):
         cb.call(_make_failing())
 
     with pytest.raises(CircuitOpenError) as exc_info:
@@ -127,7 +127,7 @@ def test_circuit_open_error_is_exception():
 
 def test_open_transitions_to_half_open_after_timeout(monkeypatch):
     cb = CircuitBreaker(failure_threshold=1, recovery_timeout=0.05)
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ConnectionError):
         cb.call(_make_failing())
     assert cb.state is CircuitState.OPEN, "state is not valid"
 
@@ -142,7 +142,7 @@ def test_open_transitions_to_half_open_after_timeout(monkeypatch):
 
 def test_half_open_closes_after_consecutive_successes():
     cb = CircuitBreaker(failure_threshold=1, recovery_timeout=0.05, success_threshold=2)
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ConnectionError):
         cb.call(_make_failing())
 
     time.sleep(0.06)
@@ -162,13 +162,13 @@ def test_half_open_closes_after_consecutive_successes():
 
 def test_half_open_failure_reopens_circuit():
     cb = CircuitBreaker(failure_threshold=1, recovery_timeout=0.05, success_threshold=3)
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ConnectionError):
         cb.call(_make_failing())
 
     time.sleep(0.06)
     assert cb.state is CircuitState.HALF_OPEN, "state is not valid"
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ConnectionError):
         cb.call(_make_failing())
     assert cb.state is CircuitState.OPEN, "state is not valid"
 
@@ -180,7 +180,7 @@ def test_half_open_failure_reopens_circuit():
 
 def test_reset_closes_open_circuit():
     cb = CircuitBreaker(failure_threshold=1)
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ConnectionError):
         cb.call(_make_failing())
     assert cb.state is CircuitState.OPEN, "state is not valid"
 
@@ -191,7 +191,7 @@ def test_reset_closes_open_circuit():
 
 def test_reset_allows_calls_again():
     cb = CircuitBreaker(failure_threshold=1)
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ConnectionError):
         cb.call(_make_failing())
 
     cb.reset()
@@ -210,7 +210,7 @@ def test_success_resets_failure_count_in_closed():
     fn_ok = _make_success()
 
     for _ in range(2):
-        with pytest.raises(RuntimeError):
+        with pytest.raises(ConnectionError):
             cb.call(fn_fail)
 
     cb.call(fn_ok)  # success should reset count
@@ -260,3 +260,22 @@ def test_concurrent_calls_do_not_corrupt_state():
 
     assert not errors, "Error should be raised or set"
     assert cb.state is CircuitState.CLOSED, "state is not valid"
+
+
+# ---------------------------------------------------------------------------
+# Failure classification (documented contract, #5719)
+# ---------------------------------------------------------------------------
+
+
+def test_non_io_exceptions_are_not_counted_by_default():
+    cb = CircuitBreaker(failure_threshold=1)
+    with pytest.raises(RuntimeError):
+        cb.call(_make_failing(RuntimeError))
+    assert cb.state is CircuitState.CLOSED, "RuntimeError must not trip the circuit"
+
+
+def test_failure_exceptions_kwarg_widens_counting():
+    cb = CircuitBreaker(failure_threshold=1, failure_exceptions=(Exception,))
+    with pytest.raises(RuntimeError):
+        cb.call(_make_failing(RuntimeError))
+    assert cb.state is CircuitState.OPEN, "configured exception types must count"
