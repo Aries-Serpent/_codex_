@@ -58,10 +58,6 @@ class _DummyTokenizer:
         return {"input_ids": _DummyTensor(len(text))}
 
 
-@pytest.mark.xfail(
-    reason="RecursionError under investigation - may be related to mock object handling",
-    strict=False,
-)
 def test_evaluate_records_losses(tmp_path: Path) -> None:
     model = _DummyModel()
     tokenizer = _DummyTokenizer()
