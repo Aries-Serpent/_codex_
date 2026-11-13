@@ -168,7 +168,7 @@ class TestPublishPackages:
     def test_publish_docker_image_endpoint(self):
         """Test Docker image publishing endpoint."""
         endpoint = "https://ghcr.io"
-        assert endpoint.startswith("https://ghcr.io"), "Condition must be true"
+        assert urlparse(endpoint).hostname == "ghcr.io", "Condition must be true"
 
     def test_package_publication_payload_npm(self):
         """Test npm package publication payload."""

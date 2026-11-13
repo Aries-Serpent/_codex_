@@ -488,7 +488,7 @@ class TestFileIOEdgeCases:
                 with open(temp_path, 'r') as f:
                     f.read()
         finally:
-            os.chmod(temp_path, 0o644)
+            os.chmod(temp_path, 0o600)
             os.unlink(temp_path)
 
     def test_file_not_found_handling(self):

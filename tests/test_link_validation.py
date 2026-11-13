@@ -349,7 +349,7 @@ class TestBrokenReferenceDetection:
         content = "[text(https://bad[link)) and [good](https://example.com)"
         links = validator.extract_links(content)
         # Should extract at least the valid link
-        assert any(url.startswith("https://example.com") for _, url, _ in links)
+        assert any(urlparse(url).hostname == "example.com" for _, url, _ in links)
 
     def test_circular_reference_detection(self, validator):
         """Test detection of potential circular references."""

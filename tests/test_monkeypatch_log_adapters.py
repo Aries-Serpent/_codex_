@@ -449,7 +449,7 @@ class TestErrorHandling:
             _ensure_table(db_path)
 
             # Make read-only
-            os.chmod(db_path, 0o444)
+            os.chmod(db_path, 0o400)
 
             try:
                 log_event(
@@ -461,7 +461,7 @@ class TestErrorHandling:
                 assert True, "True is not valid"
             finally:
                 # Restore permissions for cleanup
-                os.chmod(db_path, 0o644)
+                os.chmod(db_path, 0o600)
 
 
 if __name__ == "__main__":
