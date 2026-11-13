@@ -27,11 +27,22 @@
 - The old slow ML job was cancelled after 65 minutes; its integration step
   had failed earlier. Individual logs were unavailable through MCP/REST, and
   the run archive lacked this job. Its root cause remains unverified.
+- Final hosted RAG on `119c4db30c` passed 1,688 tests with 180 skips and
+  generated XML/HTML coverage. Its measured line coverage was 92.14 percent,
+  above the unchanged 90 percent gate, not above the 95 percent roadmap target.
+  Fast Validation and both CodeQL language checks also passed. Only token
+  delegation failed and one duplicate deferral run was cancelled.
+- Recreated Dependabot #5782 was retargeted to staging and normally merged at
+  `2c25c3118d`. A complete-history merge-tree check confirmed identical staging
+  content because #5774 had already integrated the same pyasn1 0.6.5 update.
+- Latest-head isolated scorecard at `119c4db30c` remained 85/100, AAIS 91.72/100.
 - Fresh hosted RAG at `4557c000f7` passed 1,688 tests with 180 skips and no
   test failures. The job failed only because coverage still targeted the
   compatibility shim and produced no XML/HTML data. Pointed the existing
   coverage configuration and command at the runtime implementation package,
-  retaining all existing omissions and the 95 percent threshold.
+  retaining all existing omissions and the configured 90 percent threshold.
+  Earlier references to a current 95 percent gate were inaccurate: the workflow
+  explicitly retains 90 percent since S295, with 95 percent as its roadmap target.
 - Exact-head scorecard at `4557c000f7` measured 85/100 and AAIS 91.72/100
   using the supported validation interpreter and a complete tracked snapshot.
   Export-ignored tracked files were restored before measurement; the initial

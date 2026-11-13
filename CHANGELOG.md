@@ -5,7 +5,8 @@
 ### Fixed - PR #5781 RAG runner and CodeQL classification repair
 - Measure RAG coverage against the runtime implementation package rather than
   its compatibility shim. Hosted tests passed all 1,688 cases but generated no
-  coverage artifacts with the old scope; the 95 percent threshold is unchanged.
+  coverage artifacts with the old scope; the configured 90 percent threshold
+  is unchanged (95 percent remains the documented roadmap target).
 - Preserve concurrent manifest/baseline automation through normal integration;
   keep hosted validation enabled on the repair commit.
 - Stop the RAG test chunker after its final chunk; the unbounded overlap loop

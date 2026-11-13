@@ -43,4 +43,5 @@ show_missing = True
 skip_empty = True
 precision = 2
 # fail_under is intentionally absent here; the gate is enforced
-# by the explicit threshold check in test-rag.yml (currently 95 %).
+# by the explicit threshold check in test-rag.yml (currently 90 %;
+# the documented roadmap target remains 95 %).
