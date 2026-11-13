@@ -12,6 +12,7 @@ Features:
 AAIS Contribution: +3.0 points (Runtime Introspection)
 """
 
+from collections.abc import Iterator
 from typing import Any, Generic, Optional, TypeVar
 
 from aries_serpent_core.logging.structured_logger import logger
@@ -144,33 +145,35 @@ class RobinHoodHashTable(Generic[K, V]):
             key: Key to insert
             value: Value to associate with key
         """
+        # Key already exists - update value in place (search first so that
+        # Robin Hood displacement can never create a duplicate entry).
+        existing = self._find_index(key)
+        if existing is not None:
+            self.table[existing] = (key, value, self.table[existing][2])  # type: ignore[index]
+            return
+
         # Check if resize needed
         if self.size / self.capacity >= self.max_load_factor:
             self._resize()
 
         idx = self._hash(key)
-        psl = 0  # Probe sequence length
-        entry = (key, value, psl)
+        psl = 0  # Probe sequence length of the entry currently being placed
+        cur_key, cur_value = key, value
 
         while True:
             current = self.table[idx]
 
-            # Empty slot - insert here
+            # Empty slot - insert here, recording the entry's actual PSL
             if current is None:
-                self.table[idx] = entry
+                self.table[idx] = (cur_key, cur_value, psl)
                 self.size += 1
                 return
 
-            # Key already exists - update value
-            if current[0] == key:
-                self.table[idx] = (key, value, current[2])
-                return
-
-            # Robin Hood: if our PSL > current PSL, swap and continue
+            # Robin Hood: if our PSL > current PSL, swap and keep placing the
+            # displaced entry from its own PSL
             if psl > current[2]:
-                self.table[idx] = entry
-                entry = current
-                psl = entry[2]
+                self.table[idx] = (cur_key, cur_value, psl)
+                cur_key, cur_value, psl = current
                 self.total_collisions += 1
 
             # Move to next slot
@@ -270,6 +273,49 @@ class RobinHoodHashTable(Generic[K, V]):
             "avg_probes_per_lookup": self.total_probes / max(1, self.total_lookups),
             "collision_rate": self.total_collisions / max(1, self.size),
         }
+
+    # ------------------------------------------------------------------
+    # Mapping protocol (keeps the ``HashTable`` alias usable as a dict-like)
+    # ------------------------------------------------------------------
+    def _find_index(self, key: K) -> Optional[int]:
+        """Return the slot index holding *key*, or ``None`` when absent."""
+        idx = self._hash(key)
+        psl = 0
+        for _ in range(self.capacity):
+            entry = self.table[idx]
+            if entry is None or psl > entry[2]:
+                return None
+            if entry[0] == key:
+                return idx
+            idx = (idx + 1) % self.capacity
+            psl += 1
+        return None
+
+    def __len__(self) -> int:
+        return self.size
+
+    def __contains__(self, key: object) -> bool:
+        return self._find_index(key) is not None  # type: ignore[arg-type]
+
+    def __getitem__(self, key: K) -> V:
+        idx = self._find_index(key)
+        if idx is None:
+            raise KeyError(key)
+        entry = self.table[idx]
+        assert entry is not None
+        return entry[1]
+
+    def __setitem__(self, key: K, value: V) -> None:
+        self.insert(key, value)
+
+    def __delitem__(self, key: K) -> None:
+        if not self.delete(key):
+            raise KeyError(key)
+
+    def __iter__(self) -> Iterator[K]:
+        for entry in list(self.table):
+            if entry is not None:
+                yield entry[0]
 
 
 class CuckooHashTable(Generic[K, V]):

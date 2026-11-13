@@ -133,7 +133,7 @@ class TestHashTableCollisions:
 
     def test_hash_table_collision_resolution(self) -> None:
         """Test that collisions are handled properly."""
-        ht = HashTable(capacity=4)  # Small capacity to force collisions
+        ht = HashTable(initial_capacity=4)  # Small capacity to force collisions
         # Insert items that may collide
         for i in range(8):
             ht[f"key_{i}"] = f"value_{i}"
@@ -144,7 +144,7 @@ class TestHashTableCollisions:
 
     def test_hash_table_many_collisions(self) -> None:
         """Test many items with potential collisions."""
-        ht = HashTable(capacity=2)  # Very small to force collisions
+        ht = HashTable(initial_capacity=2)  # Very small to force collisions
         items = {f"k{i}": f"v{i}" for i in range(20)}
 
         for k, v in items.items():
@@ -159,13 +159,14 @@ class TestHashTableResize:
 
     def test_hash_table_resize_on_growth(self) -> None:
         """Test hash table resizes when load factor exceeded."""
-        ht = HashTable(capacity=4)
-        initial_capacity = ht._capacity if hasattr(ht, "_capacity") else 4
+        ht = HashTable(initial_capacity=4)
+        initial_capacity = ht.capacity
 
         # Add many items to trigger resize
         for i in range(20):
             ht[f"key_{i}"] = f"value_{i}"
 
+        assert ht.capacity > initial_capacity, "Table must grow past its initial capacity"
         # Verify all items still accessible
         for i in range(20):
             assert ht[f"key_{i}"] == f"value_{i}", "Value must be initialized"
