@@ -23,6 +23,7 @@ import os
 import time
 
 import pytest
+
 from codex.auth.token_manager import TokenManager, TokenType
 
 _TEST_SECRET = os.environ.get("TEST_JWT_SECRET", "test-secret-key-for-testing-only")
@@ -186,7 +187,8 @@ class TestPyJWTTokenValidation:
         claims = token_manager.validate_token(token)
         assert claims.sub == "test-user", "sub is not valid"
 
-    def test_jwt_aud_claim_validation(self, token_manager):
+    @pytest.mark.parametrize("audience", [None, "", "different-api", ["codex-api"]])
+    def test_jwt_aud_claim_validation(self, token_manager, audience):
         """Test audience claim validation."""
         import jwt
 
@@ -195,9 +197,10 @@ class TestPyJWTTokenValidation:
             "type": "access",
             "iat": int(time.time()),
             "sub": "test-user",
-            "aud": "different-api",
             "exp": int(time.time()) + 3600,
         }
+        if audience is not None:
+            payload["aud"] = audience
 
         token = jwt.encode(payload, _TEST_SECRET, algorithm="HS256")
 
@@ -243,6 +246,42 @@ class TestPyJWTTokenValidation:
         # Token not yet valid
         with pytest.raises(ValueError, match="not yet valid"):
             token_manager.validate_token(token)
+
+    @pytest.mark.parametrize(
+        "nbf",
+        [float("nan"), float("inf"), float("-inf"), None, True, "0", "nan", [], {}],
+    )
+    def test_jwt_invalid_nbf_rejection(self, token_manager, nbf):
+        import jwt
+
+        payload = {
+            "type": "access",
+            "iat": int(time.time()),
+            "sub": "test-user",
+            "aud": "codex-api",
+            "nbf": nbf,
+            "exp": int(time.time()) + 3600,
+        }
+        token = jwt.encode(payload, _TEST_SECRET, algorithm="HS256")
+
+        with pytest.raises(ValueError, match="not before"):
+            token_manager.validate_token(token)
+
+    @pytest.mark.parametrize("nbf", [0, 0.5])
+    def test_jwt_elapsed_nbf_accepted(self, token_manager, nbf):
+        import jwt
+
+        payload = {
+            "type": "access",
+            "iat": int(time.time()),
+            "sub": "test-user",
+            "aud": "codex-api",
+            "nbf": nbf,
+            "exp": int(time.time()) + 3600,
+        }
+        token = jwt.encode(payload, _TEST_SECRET, algorithm="HS256")
+
+        assert token_manager.validate_token(token).sub == "test-user"
 
     def test_jwt_iat_issued_at_validation(self, token_manager):
         """Test 'issued at' claim."""

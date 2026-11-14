@@ -8,6 +8,7 @@ Minimum Python version: 3.9+ (uses built-in generic types)
 """
 
 import json
+import math
 import secrets
 import time
 from dataclasses import dataclass
@@ -93,6 +94,9 @@ class TokenManager:
 
     Provides JWT-like token generation and validation without external
     dependencies. In production, consider using PyJWT library.
+
+    Validation requires the codex-api audience. When present, not-before
+    claims must be finite JSON numbers and must not be in the future.
     """
 
     # Token expiration times (in seconds)
@@ -238,14 +242,19 @@ class TokenManager:
             if not isinstance(payload, dict):
                 raise ValueError("Invalid token payload")
 
-            # Audience must match when present (missing aud defaults to ours).
-            if payload.get("aud", self.EXPECTED_AUDIENCE) != self.EXPECTED_AUDIENCE:
+            if payload.get("aud") != self.EXPECTED_AUDIENCE:
                 raise ValueError("Invalid token audience")
 
-            # Reject tokens that are not yet valid.
-            nbf = payload.get("nbf")
-            if nbf is not None and float(nbf) > time.time():
-                raise ValueError("Token not yet valid")
+            if "nbf" in payload:
+                nbf = payload["nbf"]
+                if (
+                    isinstance(nbf, bool)
+                    or not isinstance(nbf, (int, float))
+                    or (isinstance(nbf, float) and not math.isfinite(nbf))
+                ):
+                    raise ValueError("Invalid token not before claim")
+                if nbf > time.time():
+                    raise ValueError("Token not yet valid")
 
             # Create claims (missing required claims -> KeyError -> ValueError)
             return TokenClaims.from_dict(payload)
