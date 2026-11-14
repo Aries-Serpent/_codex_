@@ -2,19 +2,87 @@
 
 from __future__ import annotations
 
+import importlib.util
+import sys
 from pathlib import Path
+from types import ModuleType, SimpleNamespace
 from unittest.mock import MagicMock, patch
 
-import click
 import pytest
 
-try:
-    import cli
-except ImportError:
-    cli = None
+_CLI_MODULE_PATH = Path(__file__).resolve().parents[3] / "src" / "cli.py"
+cli: ModuleType | None = None
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
+@pytest.fixture(scope="module", autouse=True)
+def load_standalone_cli():
+    """Load the module under test by file path because ``cli`` resolves to a package."""
+    global cli
+    saved_path = list(sys.path)
+    sentinel = object()
+    module_names = ("cli", "cli.train_codex", "tokenization", "tokenization.loader")
+    saved_modules = {name: sys.modules.get(name, sentinel) for name in module_names}
+    spec = importlib.util.spec_from_file_location("_codex_standalone_cli", _CLI_MODULE_PATH)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["cli"] = module
+    cli = module
+    try:
+        spec.loader.exec_module(module)
+        yield module
+    finally:
+        sys.path[:] = saved_path
+        cli = None
+        for name, previous in saved_modules.items():
+            if previous is sentinel:
+                sys.modules.pop(name, None)
+            else:
+                sys.modules[name] = previous
+
+
+@pytest.fixture
+def cli_main_mocks(monkeypatch):
+    """Prepare a complete, deterministic configuration for ``cli.main``."""
+    from contextlib import nullcontext
+
+    config = {
+        "model": {"target": "model.Factory"},
+        "optimizer": {"target": "optimizer.Factory"},
+        "data": {"name": "synthetic_classification"},
+        "loss": {},
+        "metric": {},
+        "trainer": {"epochs": 2},
+        "logging": {},
+        "device": "cpu",
+    }
+    calls = SimpleNamespace(
+        initialize=MagicMock(return_value=nullcontext()),
+        compose=MagicMock(return_value=object()),
+        to_container=MagicMock(return_value=config),
+        model=MagicMock(return_value=object()),
+        optimizer=MagicMock(return_value=object()),
+        loaders=MagicMock(return_value=("train-loader", "validation-loader")),
+        loss=MagicMock(return_value="loss-function"),
+        metric=MagicMock(return_value="metric-function"),
+        trainer_config=MagicMock(),
+        logging_config=MagicMock(),
+    )
+    trainer = MagicMock()
+    monkeypatch.setattr(cli, "initialize_config_dir", calls.initialize)
+    monkeypatch.setattr(cli, "compose", calls.compose)
+    monkeypatch.setattr(cli.OmegaConf, "to_container", calls.to_container)
+    monkeypatch.setattr(cli, "_instantiate_model", calls.model)
+    monkeypatch.setattr(cli, "_instantiate_optimizer", calls.optimizer)
+    monkeypatch.setattr(cli, "_resolve_dataloaders", calls.loaders)
+    monkeypatch.setattr(cli, "_resolve_loss", calls.loss)
+    monkeypatch.setattr(cli, "_resolve_metric", calls.metric)
+    monkeypatch.setattr(cli, "TrainerConfig", calls.trainer_config)
+    monkeypatch.setattr(cli, "LoggingConfig", calls.logging_config)
+    monkeypatch.setattr(cli, "Trainer", MagicMock(return_value=trainer))
+    calls.trainer = trainer
+    return calls
+
+
 class TestCliConstants:
     """Test module constants."""
 
@@ -31,7 +99,6 @@ class TestCliConstants:
         assert isinstance(cli.TOKENIZATION_DIR, Path)
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliHelperFunctions:
     """Test helper functions."""
 
@@ -59,7 +126,6 @@ class TestCliHelperFunctions:
         assert result == {}, "Result must not be empty"
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliSimpleSyntheticData:
     """Test simple_synthetic_data function."""
 
@@ -69,14 +135,13 @@ class TestCliSimpleSyntheticData:
 
     def test_simple_synthetic_data_returns_tuple(self) -> None:
         """Test that function returns tuple."""
-        with patch("data.registry.build") as mock_build:
+        with patch.object(cli, "build_registered_dataset") as mock_build:
             mock_build.return_value = ([], None)
             result = cli.simple_synthetic_data(num_samples=100)
-            assert isinstance(result, tuple)
-            assert len(result) == 2, "Result must not be empty"
+        assert result == ([], None)
+        mock_build.assert_called_once_with("synthetic_classification", num_samples=100)
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliMetricFunctions:
     """Test metric functions."""
 
@@ -86,19 +151,13 @@ class TestCliMetricFunctions:
 
     def test_classification_accuracy_with_numpy_arrays(self) -> None:
         """Test classification_accuracy with numpy arrays."""
-        try:
-            import numpy as np
+        import numpy as np
 
-            logits = np.array([[0.1, 0.9], [0.8, 0.2], [0.3, 0.7]])
-            labels = np.array([1, 0, 1])
-            result = cli.classification_accuracy(logits, labels)
-            assert isinstance(result, float)
-            assert 0.0 <= result <= 1.0, "Result must not be empty"
-        except ImportError:
-            pytest.skip("numpy not available")
+        logits = np.array([[0.1, 0.9], [0.8, 0.2], [0.3, 0.7]])
+        labels = np.array([1, 0, 1])
+        assert cli.classification_accuracy(logits, labels) == 1.0
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliResolutionFunctions:
     """Test configuration resolution functions."""
 
@@ -128,7 +187,6 @@ class TestCliResolutionFunctions:
             cli._resolve_callable("NoModulePath")
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliInstantiators:
     """Test instantiator functions."""
 
@@ -140,12 +198,13 @@ class TestCliInstantiators:
     def test_instantiate_model_with_target(self) -> None:
         """Test _instantiate_model with valid target."""
         model_cfg = {"target": "torch.nn.Linear", "params": {"in_features": 10, "out_features": 5}}
-        with patch("cli._resolve_callable") as mock_resolve:
-            mock_linear = MagicMock()
+        with patch.object(cli, "_resolve_callable") as mock_resolve:
+            mock_linear = MagicMock(return_value="model")
             mock_resolve.return_value = mock_linear
             result = cli._instantiate_model(model_cfg)
-            assert result is not None, "result must be initialized"
+            assert result == "model"
             mock_resolve.assert_called_once_with("torch.nn.Linear")
+            mock_linear.assert_called_once_with(in_features=10, out_features=5)
 
     def test_instantiate_optimizer_requires_target(self) -> None:
         """Test _instantiate_optimizer requires target."""
@@ -155,17 +214,33 @@ class TestCliInstantiators:
 
     def test_resolve_loss_with_default(self) -> None:
         """Test _resolve_loss with default."""
-        result = cli._resolve_loss(None)
-        assert callable(result), "Result must not be empty"
+        torch_module = ModuleType("torch")
+        torch_module.__path__ = []
+        nn_module = ModuleType("torch.nn")
+        nn_module.__path__ = []
+        functional_module = ModuleType("torch.nn.functional")
+        cross_entropy = MagicMock(name="cross_entropy")
+        functional_module.cross_entropy = cross_entropy
+        with patch.dict(
+            sys.modules,
+            {
+                "torch": torch_module,
+                "torch.nn": nn_module,
+                "torch.nn.functional": functional_module,
+            },
+        ):
+            result = cli._resolve_loss(None)
+        assert result is cross_entropy
 
     def test_resolve_loss_with_custom_target(self) -> None:
         """Test _resolve_loss with custom target."""
         loss_cfg = {"target": "torch.nn.CrossEntropyLoss"}
-        with patch("cli._resolve_callable") as mock_resolve:
-            mock_loss = MagicMock()
+        with patch.object(cli, "_resolve_callable") as mock_resolve:
+            mock_loss = MagicMock(name="loss")
             mock_resolve.return_value = mock_loss
             result = cli._resolve_loss(loss_cfg)
-            assert callable(result), "Result must not be empty"
+            assert result is mock_loss
+            mock_resolve.assert_called_once_with("torch.nn.CrossEntropyLoss")
 
     def test_resolve_metric_with_none(self) -> None:
         """Test _resolve_metric with None."""
@@ -179,7 +254,6 @@ class TestCliInstantiators:
         assert callable(result), "Result must not be empty"
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliDataloaderResolution:
     """Test dataloader resolution."""
 
@@ -191,108 +265,68 @@ class TestCliDataloaderResolution:
     def test_resolve_dataloaders_with_target(self) -> None:
         """Test _resolve_dataloaders with target."""
         data_cfg = {"target": "torch.utils.data.DataLoader"}
-        with patch("cli._resolve_callable") as mock_resolve:
+        with patch.object(cli, "_resolve_callable") as mock_resolve:
             mock_loader_builder = MagicMock(return_value=([1, 2, 3], [4, 5, 6]))
             mock_resolve.return_value = mock_loader_builder
             result = cli._resolve_dataloaders(data_cfg)
-            assert len(result) == 2, "Result must not be empty"
+        assert result == ([1, 2, 3], [4, 5, 6])
+        mock_resolve.assert_called_once_with("torch.utils.data.DataLoader")
+        mock_loader_builder.assert_called_once_with()
 
     def test_resolve_dataloaders_with_name(self) -> None:
         """Test _resolve_dataloaders with name."""
         data_cfg = {"name": "synthetic_classification"}
-        with patch("data.registry.build") as mock_build:
+        with patch.object(cli, "build_registered_dataset") as mock_build:
             mock_build.return_value = ([1, 2, 3], None)
             result = cli._resolve_dataloaders(data_cfg)
-            assert isinstance(result, tuple)
+        assert result == ([1, 2, 3], None)
+        mock_build.assert_called_once_with("synthetic_classification")
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliMainFunction:
     """Test main CLI function."""
 
     def test_main_requires_config_path(self) -> None:
         """Test main requires --config-path argument."""
-        with pytest.raises(SystemExit):
+        with pytest.raises(SystemExit) as exc_info:
             cli.main([])
+        assert exc_info.value.code == 2
 
     def test_main_help_argument(self) -> None:
         """Test main --help shows help."""
-        with pytest.raises(SystemExit):
+        with pytest.raises(SystemExit) as exc_info:
             cli.main(["--help"])
+        assert exc_info.value.code == 0
 
-    def test_main_with_valid_config_path(self, temp_config_dir: Path) -> None:
-        """Test main with valid config path."""
-        # Create a minimal config structure
-        config_file = temp_config_dir / "train.yaml"
-        config_file.write_text(
-            """
-model:
-  target: pathlib.Path
-device: cpu
-trainer:
-  epochs: 1
-"""
+    def test_main_with_valid_config_path(self, temp_config_dir: Path, cli_main_mocks) -> None:
+        """Test main composes the selected config, runs training, and closes the trainer."""
+        assert cli.main(["--config-path", str(temp_config_dir)]) == 0
+        cli_main_mocks.initialize.assert_called_once_with(
+            version_base=None, config_dir=str(temp_config_dir)
         )
-
-        with patch("cli._instantiate_model"):
-            with patch("cli._instantiate_optimizer"):
-                with patch("cli._resolve_dataloaders"):
-                    with patch("training.trainer.Trainer"):
-                        try:
-                            result = cli.main(["--config-path", str(temp_config_dir)])
-                        except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
-                            # May fail due to mocking, but function should be callable
-                            pass
+        cli_main_mocks.compose.assert_called_once_with(config_name="train", overrides=[])
+        cli_main_mocks.to_container.assert_called_once()
+        cli_main_mocks.trainer.train.assert_called_once_with()
+        cli_main_mocks.trainer.close.assert_called_once_with()
 
 
-@pytest.mark.skipif(cli is None, reason="cli module not importable")
 class TestCliArgumentParsing:
     """Test argument parsing."""
 
-    def test_parse_config_path_argument(self) -> None:
-        """Test parsing --config-path argument."""
-        with patch("cli.initialize_config_dir"):
-            with patch("cli.compose"):
-                with patch("cli._instantiate_model"):
-                    with patch("cli._instantiate_optimizer"):
-                        with patch("cli._resolve_dataloaders"):
-                            with patch("training.trainer.Trainer"):
-                                try:
-                                    cli.main(["--config-path", "/tmp"])
-                                except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
-                                    pass
+    def test_parse_config_path_argument(self, cli_main_mocks) -> None:
+        """Test --config-path reaches Hydra initialization."""
+        assert cli.main(["--config-path", "/tmp/configs"]) == 0
+        cli_main_mocks.initialize.assert_called_once_with(
+            version_base=None, config_dir="/tmp/configs"
+        )
 
-    def test_parse_config_name_argument(self) -> None:
-        """Test parsing --config-name argument."""
-        with patch("cli.initialize_config_dir"):
-            with patch("cli.compose"):
-                with patch("cli._instantiate_model"):
-                    with patch("cli._instantiate_optimizer"):
-                        with patch("cli._resolve_dataloaders"):
-                            with patch("training.trainer.Trainer"):
-                                try:
-                                    cli.main(
-                                        ["--config-path", "/tmp", "--config-name", "custom_train"]
-                                    )
-                                except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
-                                    pass
+    def test_parse_config_name_argument(self, cli_main_mocks) -> None:
+        """Test --config-name reaches the config composition call."""
+        assert cli.main(["--config-path", "/tmp", "--config-name", "custom_train"]) == 0
+        cli_main_mocks.compose.assert_called_once_with(config_name="custom_train", overrides=[])
 
-    def test_parse_overrides(self) -> None:
-        """Test parsing Hydra-style overrides."""
-        with patch("cli.initialize_config_dir"):
-            with patch("cli.compose"):
-                with patch("cli._instantiate_model"):
-                    with patch("cli._instantiate_optimizer"):
-                        with patch("cli._resolve_dataloaders"):
-                            with patch("training.trainer.Trainer"):
-                                try:
-                                    cli.main(
-                                        [
-                                            "--config-path",
-                                            "/tmp",
-                                            "trainer.epochs=5",
-                                            "trainer.batch_size=64",
-                                        ]
-                                    )
-                                except (AssertionError, ValueError, TypeError, RuntimeError):
-                                    pass
+    def test_parse_overrides(self, cli_main_mocks) -> None:
+        """Test Hydra-style overrides reach the config composition call."""
+        overrides = ["trainer.epochs=5", "trainer.batch_size=64"]
+        assert cli.main(["--config-path", "/tmp", *overrides]) == 0
+        cli_main_mocks.compose.assert_called_once_with(config_name="train", overrides=overrides)
