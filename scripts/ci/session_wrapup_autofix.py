@@ -1348,9 +1348,10 @@ def update_pr_description(
 
     Returns True if an update was made (or would be made in dry_run), False otherwise.
     """
+    view_command = ["gh", "pr", "view", pr_number, "--json", "body", "--jq", ".body"]
     try:
         result = subprocess.run(
-            ["gh", "pr", "view", pr_number, "--json", "body", "--jq", ".body"],
+            view_command,
             capture_output=True, text=True, check=True,
         )
         pr_body = result.stdout.strip()
@@ -1382,15 +1383,28 @@ def update_pr_description(
 
     new_body = _build_meaningful_pr_body(pr_number, existing_state, pr_body)
     try:
+        current = subprocess.run(view_command, capture_output=True, text=True, check=True)
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print(f"⚠  Could not revalidate PR #{pr_number} body; refusing description update")
+        return False
+    if current.stdout.strip() != pr_body:
+        print(f"⚠  PR #{pr_number} body changed during scoring; refusing stale description update")
+        return False
+    try:
         subprocess.run(
             ["gh", "pr", "edit", pr_number, "--body", new_body],
-            check=True, capture_output=True, text=True,
+            check=True,
+            capture_output=True,
+            text=True,
         )
-        print(f"✅ PR #{pr_number} description updated: summary + scorecard + follow-up + WEC")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"✅ PR #{pr_number} description updated: summary + scorecard + follow-up + WEC"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return True
     except subprocess.CalledProcessError as exc:
-        print(f"⚠  Could not update PR #{pr_number} description: {exc.stderr or exc}",
-              file=sys.stderr)
+        print(
+            f"⚠  Could not update PR #{pr_number} description: {exc.stderr or exc}", file=sys.stderr
+        )
         return False
 
 

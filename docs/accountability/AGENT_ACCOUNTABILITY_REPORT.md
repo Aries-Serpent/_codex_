@@ -39,6 +39,14 @@
   Combined DAL, adapter and description regressions pass 87 tests with three
   genuine missing-SentencePiece skips;
   Ruff and mypy for both source modules also pass.
+- A later hosted scorecard write erased the restored PR body again. Reproduce
+  the concurrent-edit race independently: description generation could overwrite
+  evidence changed during scoring. Revalidate the live body immediately before
+  editing and refuse a stale update with an explicit diagnostic; unchanged-body
+  refresh remains supported. This is a guarded reread, not an atomic GitHub
+  compare-and-swap, and does not claim to exclude all external body writers.
+  Combined regressions now pass 89 tests with the same three genuine skips;
+  scoped Black/Ruff/mypy, compilation and diff checks pass.
 - Preserve the 70 percent combined unit coverage gate. PR #5787's proposed
   54 percent floor/quarantine change is not silently integrated. The remaining
   order is #5794, #5784, #5783, then review of #5766, gated on fresh checks.

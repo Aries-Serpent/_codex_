@@ -251,3 +251,25 @@ def test_agent_attestation_preserves_non_separator_content(suffix):
     attestation = "## 🤖 Agents Used\n- `real-agent`\n" + suffix
     generated = swa._preserve_agent_attestation(swa._REQUIRED_PR_CHECKBOXES, attestation)
     assert attestation + "\n\n---\n\n" + swa._WEC_MARKER in generated
+
+
+@pytest.mark.parametrize("concurrent_edit", [False, True])
+def test_description_refresh_revalidates_body_before_edit(monkeypatch, concurrent_edit, capsys):
+    original = "## Description\nOriginal scope."
+    current = original + ("\n\n## Testing\nNew maintainer evidence." if concurrent_edit else "")
+    snapshots = iter([original, current])
+    edits = []
+
+    def fake_run(command, **kwargs):
+        if command[:3] == ["gh", "pr", "view"]:
+            return swa.subprocess.CompletedProcess(command, 0, stdout=next(snapshots))
+        edits.append(command)
+        return swa.subprocess.CompletedProcess(command, 0, stdout="")
+
+    monkeypatch.setattr(swa.subprocess, "run", fake_run)
+    monkeypatch.setattr(swa, "_build_meaningful_pr_body", lambda *args: "Generated body")
+
+    assert swa.update_pr_description("42") is not concurrent_edit
+    assert bool(edits) is not concurrent_edit
+    if concurrent_edit:
+        assert "changed" in capsys.readouterr().out

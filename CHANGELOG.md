@@ -16,6 +16,8 @@
 - Normalize MariaDB DSN autocommit options while retaining transactional mode;
   report incomplete SentencePiece trainers explicitly before new-model training
   without requiring a trainer to load an existing model.
+- Revalidate the live PR body after score calculation and refuse stale
+  description writes rather than overwrite concurrently authored review evidence.
 
 ### Fixed - ML coverage shard collection error on PR #5784
 - Import Ray Serve explicitly (`from ray import serve`); `ray.serve` attribute
