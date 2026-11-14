@@ -11,6 +11,8 @@
   preserving permissions, triggers and the 70 percent combined coverage gate.
 - Record actual validation limits and satisfy the failed accountability gate
   without changing credentials or its denied documentation commit-back control.
+- Preserve authored PR template sections and validation evidence during
+  automated description refresh; repeated refreshes do not duplicate content.
 
 ### Fixed - ML coverage shard collection error on PR #5784
 - Import Ray Serve explicitly (`from ray import serve`); `ray.serve` attribute

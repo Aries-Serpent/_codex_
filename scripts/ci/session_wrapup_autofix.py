@@ -781,7 +781,7 @@ def _build_recent_changes_md(n: int = 8) -> str:
 def _build_meaningful_pr_body(
     pr_number: str, existing_wec_state: dict, existing_pr_body: str = ""
 ) -> str:
-    """Build a complete, meaningful PR description.
+    """Refresh generated sections without discarding authored review evidence.
 
     Structure:
       ## Summary of Changes        ← What was done (git log)
@@ -789,8 +789,7 @@ def _build_meaningful_pr_body(
       ## 🔄 Follow-Up Prompt
       ## 🔄 Workflow Execution Checklist   ← WEC (maintainer state preserved)
 
-    This function is called whenever the PR body is detected to be the generic
-    Pull Request Template or is missing either the scorecard or a real summary.
+    Preserve template sections, comments, attestations and existing WEC choices.
     """
     score_data = _compute_merge_readiness_score()
     changes_md = _build_recent_changes_md()
@@ -818,7 +817,23 @@ def _build_meaningful_pr_body(
 
 ---
 """
-    return header + wec_block
+    managed_sections = (
+        "## Summary of Changes — PR #",
+        _SCORECARD_MARKER,
+        "## 🔄 Follow-Up Prompt",
+    )
+    preserved = "".join(
+        section
+        for section in re.split(r"(?m)(?=^## )", existing_pr_body)
+        if not section.startswith(managed_sections)
+    )
+    if not preserved.strip():
+        return header + wec_block
+    if _WEC_MARKER not in preserved and _WEC_MARKER_LEGACY not in preserved:
+        if "## 🤖 Agents Used" in preserved:
+            wec_block = wec_block[wec_block.index(_WEC_MARKER) :]
+        preserved += "\n\n" + wec_block
+    return header + preserved
 
 
 # ---------------------------------------------------------------------------
@@ -1316,12 +1331,12 @@ def update_pr_description(
     pr_number: str,
     dry_run: bool = False,
 ) -> bool:
-    """Replace a generic or scorecard-free PR description with meaningful content.
+    """Refresh generated PR content while preserving authored template sections.
 
     Use only for an authorized PR-body update, not every session completion.
     Read-only/local/no-PR preparation needs no public status update.
 
-    Detects two conditions and rebuilds the entire non-WEC portion when either fires:
+    Detects two conditions and refreshes the generated sections:
       1. Body still contains ``# Pull Request Template`` — the default GitHub template.
       2. Body is missing the ``## 🎯 Merge-Readiness Scorecard`` section.
 

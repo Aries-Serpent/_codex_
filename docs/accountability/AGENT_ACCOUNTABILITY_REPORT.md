@@ -24,6 +24,12 @@
   check; its documentation self-heal could not push as github-actions[bot]
   (403). This report and changelog satisfy the actual documentation requirement
   without widening credentials, changing permissions or weakening that gate.
+- The signed documentation follow-up `9ff0aaf481` passed both hosted checks in
+  job `132394180611`, run `43577281425`. Automation then exposed a separate
+  review blocker: description refresh discarded the template and validation
+  evidence. Refresh now replaces only generated sections and preserves authored
+  content, comments, WEC choices and attestations; 31 focused tests and scoped
+  Ruff/mypy passed. Fresh-head hosted checks remain required after this fix.
 - Preserve the 70 percent combined unit coverage gate. PR #5787's proposed
   54 percent floor/quarantine change is not silently integrated. The remaining
   order is #5794, #5784, #5783, then review of #5766, gated on fresh checks.
