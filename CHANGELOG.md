@@ -13,6 +13,9 @@
   without changing credentials or its denied documentation commit-back control.
 - Preserve authored PR template sections and validation evidence during
   automated description refresh; repeated refreshes do not duplicate content.
+- Normalize MariaDB DSN autocommit options while retaining transactional mode;
+  report incomplete SentencePiece trainers explicitly before new-model training
+  without requiring a trainer to load an existing model.
 
 ### Fixed - ML coverage shard collection error on PR #5784
 - Import Ray Serve explicitly (`from ray import serve`); `ray.serve` attribute

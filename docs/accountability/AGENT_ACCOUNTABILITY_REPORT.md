@@ -30,6 +30,15 @@
   evidence. Refresh now replaces only generated sections and preserves authored
   content, comments, WEC choices and attestations; 31 focused tests and scoped
   Ruff/mypy passed. Fresh-head hosted checks remain required after this fix.
+- Native Copilot review of `0876bf5cdf` then identified two reproducible defects.
+  Five counterfactual cases fail before correction: DSN autocommit values cause
+  duplicate connection kwargs, and incomplete SentencePiece trainer interfaces
+  raise incidental exceptions. Normalize forced-false autocommit and require a
+  callable trainer only before training; existing processor-only loads remain
+  supported. These follow-ups are direct execution, not new delegated agents.
+  Combined DAL, adapter and description regressions pass 87 tests with three
+  genuine missing-SentencePiece skips;
+  Ruff and mypy for both source modules also pass.
 - Preserve the 70 percent combined unit coverage gate. PR #5787's proposed
   54 percent floor/quarantine change is not silently integrated. The remaining
   order is #5794, #5784, #5783, then review of #5766, gated on fresh checks.

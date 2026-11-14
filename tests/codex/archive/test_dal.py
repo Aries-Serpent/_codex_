@@ -319,7 +319,8 @@ class TestArchiveDALFactory:
                     pytest.skip("psycopg not installed")
                 raise
 
-    def test_archive_dal_from_env_mariadb(self):
+    @pytest.mark.parametrize("autocommit_option", ["", "&autocommit=true", "&autocommit=false"])
+    def test_archive_dal_from_env_mariadb(self, autocommit_option):
         """Test ArchiveDAL.from_env with mariadb backend."""
         from codex.archive.dal import ArchiveDAL
 
@@ -327,7 +328,9 @@ class TestArchiveDALFactory:
             "os.environ",
             {
                 "CODEX_ARCHIVE_BACKEND": "mariadb",
-                "CODEX_ARCHIVE_URL": "mysql://archivist@db.internal:3307/test?charset=utf8mb4",
+                "CODEX_ARCHIVE_URL": (
+                    f"mysql://archivist@db.internal:3307/test?charset=utf8mb4{autocommit_option}"
+                ),
             },
             clear=True,
         ):

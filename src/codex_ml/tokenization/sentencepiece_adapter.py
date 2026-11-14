@@ -167,11 +167,17 @@ class SentencePieceAdapter:
         character_coverage: float = 0.9995,
         model_type: str = "bpe",
     ) -> SentencePieceAdapter:
-        """Train a new model or load an existing one."""
+        """Train or load, raising ImportError if training needs a broken trainer."""
         module = _get_sentencepiece()
         if self.model_path.exists():
             return self.load()
-        module.SentencePieceTrainer.train(
+        train = getattr(getattr(module, "SentencePieceTrainer", None), "train", None)
+        if not callable(train):
+            raise ImportError(
+                "sentencepiece module is missing callable SentencePieceTrainer.train. "
+                "Try reinstalling: pip install --force-reinstall sentencepiece"
+            )
+        train(
             input=str(input_path),
             model_prefix=str(self.model_prefix),
             vocab_size=vocab_size,

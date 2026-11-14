@@ -246,6 +246,27 @@ def test_fallback_does_not_shadow_later_import(monkeypatch):
     assert mod.spm is None
 
 
+@pytest.mark.parametrize(
+    "trainer",
+    [
+        pytest.param(None, id="missing-trainer"),
+        pytest.param(SimpleNamespace(), id="missing-train"),
+        pytest.param(SimpleNamespace(train=None), id="non-callable-train"),
+    ],
+)
+def test_training_rejects_broken_trainer_interface(monkeypatch, tmp_path, trainer):
+    mod = _get_adapter_module()
+    imported = SimpleNamespace(SentencePieceProcessor=object)
+    if trainer is not None:
+        imported.SentencePieceTrainer = trainer
+    monkeypatch.setitem(sys.modules, "sentencepiece", imported)
+    monkeypatch.setattr(mod, "spm", None)
+    adapter = mod.SentencePieceAdapter(tmp_path / "toy.model")
+
+    with pytest.raises(ImportError, match=r"SentencePieceTrainer\.train"):
+        adapter.train_or_load(tmp_path / "corpus.txt")
+
+
 def test_train_and_reload_roundtrip(tmp_path):
     """
     This test exercises an end-to-end flow using the real sentencepiece package.
@@ -305,7 +326,8 @@ def test_train_or_load_trains_and_loads(tmp_path, monkeypatch):
     assert model_file == str(model), "model_file is not valid"
 
 
-def test_train_or_load_loads_existing_model(tmp_path, monkeypatch):
+@pytest.mark.parametrize("with_trainer", [True, False])
+def test_train_or_load_loads_existing_model(tmp_path, monkeypatch, with_trainer):
     """
     If the model file exists, trainer should not be called and the adapter should
     load the existing model.
@@ -316,6 +338,8 @@ def test_train_or_load_loads_existing_model(tmp_path, monkeypatch):
     corpus.write_text("hello", encoding="utf-8")
 
     calls, _sp_stub = _stub_sp(monkeypatch, model, vocab_size=7)
+    if not with_trainer:
+        del _sp_stub.SentencePieceTrainer
     mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
     SentencePieceAdapter = mod.SentencePieceAdapter
 

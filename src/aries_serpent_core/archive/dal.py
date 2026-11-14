@@ -898,6 +898,8 @@ class PostgresDAL(BaseDAL):
 
 
 class MariaDbDAL(BaseDAL):
+    """MariaDB backend with autocommit disabled regardless of DSN options."""
+
     def __init__(self, dsn: str):
         self.dsn = dsn
         try:
@@ -905,7 +907,9 @@ class MariaDbDAL(BaseDAL):
         except ImportError as e:  # pragma: no cover - import guard
             raise RuntimeError("pymysql is required for mariadb backend") from e
         self.mysql = pymysql
-        self.conn = self.mysql.connect(**self._parse_dsn(self.dsn), autocommit=False)
+        config = self._parse_dsn(self.dsn)
+        config["autocommit"] = False
+        self.conn = self.mysql.connect(**config)
         self.ensure_schema()
 
     @staticmethod
