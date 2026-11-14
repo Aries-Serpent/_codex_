@@ -25243,3 +25243,15 @@ path. Local: failure reproduced, then all 19 file tests pass; Black/Ruff/isort
 clean. GA gate on the head reported 641/358/1,791 and failed as expected
 (Security/CI owner); RAG exit 143 (RAG/CI owner); protected approval
 (repository admin) remains open. #5766 stays NOT READY.
+
+## Session: 2026-11-14T10:30Z — Fold open PRs into #5766 (direct execution)
+
+Folded the 4 non-overlapping #5793 files in signed `39a578e14b`. Merged #5794 into
+#5784, #5784 into #5783, and squash-merged #5783 into `0D_base_` as `f4315389d4`.
+#5788-#5791 and #5793 were closed as superseded after trial 3-way merges.
+Six #5783 threads were verified fixed and resolved. #5787 (70% to 54% coverage gate)
+is held for a maintainer decision. Hosted `39a578e14b`: unit failures went from 1,180 to 836.
+The combined gate still fails at 54.90%, as it did before (ML/CI owner). #5795
+clears 4 Semgrep alerts in changed tests (local: 36 passed, 9 skipped). The Trivy
+`uv.lock` CVEs are in pre-existing, unchanged packages, several with no fix released
+(dependency owner).

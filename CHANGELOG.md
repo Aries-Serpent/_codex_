@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5795 Semgrep follow-up for #5766 (2026-11-14)
+- Generate the mismatched JWT test signing key at runtime and justify the
+  loopback-only urllib and test-owned pickle stand-ins flagged by Semgrep OSS.
+
 ### Fixed - PR #5794 consolidated recovery (2026-11-14)
 - Require the expected JWT audience and reject non-finite or non-numeric
   not-before claims, retaining optional not-before and valid elapsed dates.
