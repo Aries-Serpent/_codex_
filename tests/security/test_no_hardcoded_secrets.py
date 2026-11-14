@@ -50,7 +50,7 @@ def test_private_key_pattern_detects_pem_material() -> None:
     """The PEM pattern must still flag real key blocks of every common type."""
     body = "MIIEowIBAAKCAQEA" + "A" * 48
     pem_pattern = SUSPICIOUS_PATTERNS[0]
-    for kind in ("RSA ", "EC ", "OPENSSH ", ""):
+    for kind in ("RSA ", "EC ", "DSA ", "OPENSSH ", "ENCRYPTED ", ""):
         block = f"-----BEGIN {kind}PRIVATE KEY-----\n{body}\n"  # pragma: allowlist secret
         assert pem_pattern.search(block), kind
         escaped = f'KEY = "-----BEGIN {kind}PRIVATE KEY-----\\n{body}"'  # pragma: allowlist secret
