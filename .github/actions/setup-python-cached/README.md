@@ -153,6 +153,10 @@ Examples:
 - `common-pip-Linux-py3.11-a1b2c3d4e5f6`
 - `ephemeral-pip-Linux-py3.12-x9y8z7w6v5u4`
 
+The L3 installed-venv key uses a SHA-256 fingerprint of the exact `extras` input.
+Comma-separated extras remain unchanged for installation while their cache key
+and restore prefixes use the delimiter-safe fingerprint.
+
 ## Cache Fallback Strategy
 
 The action implements intelligent fallback:

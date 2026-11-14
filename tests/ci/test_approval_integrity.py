@@ -2,6 +2,7 @@
 
 import json
 from copy import deepcopy
+from datetime import datetime, timezone
 from urllib.parse import parse_qs, urlsplit
 
 import pytest
@@ -217,7 +218,7 @@ def test_denied_and_dry_paths_preserve_once_labels(offline, monkeypatch, dry_run
         "head": {"sha": SHA},
         "user": {"login": "author"},
         "labels": [{"name": "wec:auto-approve-once"}],
-        "created_at": approval.datetime.now(approval.timezone.utc).isoformat(),
+        "created_at": "2020-01-01T00:00:00Z",
     }
     run = {
         "id": 7,
@@ -233,6 +234,18 @@ def test_denied_and_dry_paths_preserve_once_labels(offline, monkeypatch, dry_run
             return 200, {"login": "independent-maintainer", "type": "User"}
         if path == "/repos/o/r/pulls/1":
             return 200, deepcopy(pr)
+        if path == "/repos/o/r/issues/1":
+            return 200, deepcopy(pr)
+        if "/events?" in path:
+            return 200, [
+                {
+                    "id": 1,
+                    "event": "labeled",
+                    "label": {"name": "wec:auto-approve-once"},
+                    "actor": {"login": "maintainer", "type": "User"},
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                }
+            ]
         if path == "/repos/o/r/actions/runs/7":
             return 200, deepcopy(run)
         if "/reviews?" in path:

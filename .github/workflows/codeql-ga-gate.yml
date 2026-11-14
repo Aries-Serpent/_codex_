@@ -55,16 +55,16 @@ jobs:
         fetch-depth: 0
         persist-credentials: false
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@311b4ee155dcdab395044f00946f664bd51ff173
+      uses: github/codeql-action/init@0911ee96d2d6c8def97122c36c5cadd93829a4b4
       with:
         languages: python, javascript
         queries: security-extended, security-and-quality
         config-file: ./.github/codeql/codeql-config.yml
     - name: Autobuild
-      uses: github/codeql-action/autobuild@311b4ee155dcdab395044f00946f664bd51ff173
+      uses: github/codeql-action/autobuild@0911ee96d2d6c8def97122c36c5cadd93829a4b4
     - name: Perform CodeQL Analysis
       if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-      uses: github/codeql-action/analyze@311b4ee155dcdab395044f00946f664bd51ff173
+      uses: github/codeql-action/analyze@0911ee96d2d6c8def97122c36c5cadd93829a4b4
       with:
         category: python-security-gate-${{ github.run_id }}-${{ github.run_attempt }}
         # Default CodeQL setup is enabled for this repository, so SARIF upload from
@@ -106,6 +106,7 @@ jobs:
         set +e
         python - <<'PY'
         import json
+        import math
         import os
         from pathlib import Path
 
@@ -114,9 +115,89 @@ jobs:
         critical = 0
         high = 0
         medium = 0
+        quality = 0
 
         def normalize(value: object) -> str:
             return str(value or '').strip().lower()
+
+        def resolve_rule(run, result):
+            reference = result.get('rule') or {}
+            tool = run.get('tool') or {}
+            component = tool.get('driver') or {}
+            component_ref = reference.get('toolComponent') or {}
+            extensions = tool.get('extensions') or []
+            if 'index' in component_ref:
+                index = component_ref['index']
+                if type(index) is not int or not 0 <= index < len(extensions):
+                    raise ValueError('Invalid SARIF rule toolComponent index')
+                component = extensions[index]
+            elif component_ref:
+                matches = [
+                    candidate for candidate in [component, *extensions]
+                    if all(candidate.get(key) == value for key, value in component_ref.items())
+                ]
+                if len(matches) != 1:
+                    raise ValueError('Unresolved SARIF rule toolComponent')
+                component = matches[0]
+            rules = component.get('rules') or []
+            rule_id = reference.get('id') or result.get('ruleId')
+            index = reference.get('index', result.get('ruleIndex'))
+            if index is not None:
+                if type(index) is not int or not 0 <= index < len(rules):
+                    raise ValueError('Invalid SARIF rule index')
+                rule = rules[index]
+                if rule_id is not None and rule.get('id') != rule_id:
+                    raise ValueError('SARIF rule ID/index mismatch')
+            else:
+                rule = next((item for item in rules if item.get('id') == rule_id), {})
+            return rule
+
+        def effective_level(rule, result):
+            if 'level' in result:
+                return normalize(result['level'])
+            # SARIF defaults an omitted level to the rule configuration, then warning.
+            return normalize((rule.get('defaultConfiguration') or {}).get('level', 'warning'))
+
+        def security_bucket(rule, result):
+            # GitHub ranks security alerts by security-severity, not SARIF level.
+            properties = rule.get('properties') or {}
+            result_properties = result.get('properties') or {}
+            tags = properties.get('tags', [])
+            result_tags = result_properties.get('tags', [])
+            if 'security-severity' not in properties:
+                if any(
+                    not isinstance(collection, list)
+                    or any(not isinstance(tag, str) for tag in collection)
+                    for collection in (tags, result_tags)
+                ):
+                    return None
+                security_hint = (
+                    'security-severity' in result_properties
+                    or 'security' in tags
+                    or any(
+                        isinstance(tag, str) and (
+                            tag == 'security' or 'cwe-' in tag.lower()
+                        )
+                        for tag in result_tags
+                    )
+                )
+                if isinstance(tags, list) and tags and not security_hint:
+                    return 'quality'
+                return None
+            raw_score = properties['security-severity']
+            try:
+                score = float(raw_score)
+            except (TypeError, ValueError) as exc:
+                raise ValueError('Invalid SARIF security-severity') from exc
+            if isinstance(raw_score, bool) or not math.isfinite(score) or not 0 < score <= 10:
+                raise ValueError('Invalid SARIF security-severity')
+            if score >= 9.0:
+                return 'critical'
+            if score >= 7.0:
+                return 'high'
+            if score >= 4.0:
+                return 'medium'
+            return 'low'
 
         if not sarif_files:
             print(
@@ -146,7 +227,23 @@ jobs:
                 for result in run.get('results') or []:
                     if not isinstance(result, dict):
                         continue
-                    level = normalize(result.get('level'))
+                    rule = resolve_rule(run, result)
+                    bucket = security_bucket(rule, result)
+                    if bucket == 'quality':
+                        quality += 1
+                        continue
+                    if bucket == 'critical':
+                        critical += 1
+                        continue
+                    if bucket == 'high':
+                        high += 1
+                        continue
+                    if bucket == 'medium':
+                        medium += 1
+                        continue
+                    if bucket == 'low':
+                        continue
+                    level = effective_level(rule, result)
                     severity = normalize((result.get('properties') or {}).get('severity'))
                     if level in {'error', 'fatal', 'fatal-error'} or severity in {'error', 'fatal', 'critical'}:
                         critical += 1
@@ -167,6 +264,7 @@ jobs:
             fh.write(f'critical_count={critical}\n')
             fh.write(f'high_count={high}\n')
             fh.write(f'medium_count={medium}\n')
+            fh.write(f'quality_count={quality}\n')
 
         summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
         if summary_path:
@@ -177,10 +275,11 @@ jobs:
                 f'| Critical | {critical} |',
                 f'| High | {high} |',
                 f'| Medium | {medium} |',
+                f'| Code quality (non-security, not gated) | {quality} |',
             ]
             with open(summary_path, 'a', encoding='utf-8') as fh:
                 fh.write('\n'.join(lines) + '\n')
-        print(f'critical={critical} high={high} medium={medium}')
+        print(f'critical={critical} high={high} medium={medium} quality={quality}')
         PY
     - name: Upload CodeQL results artifact
       if: always()
