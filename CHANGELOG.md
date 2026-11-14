@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5794 consolidated recovery (2026-11-14)
+- Require the expected JWT audience and reject non-finite or non-numeric
+  not-before claims, retaining optional not-before and valid elapsed dates.
+- Consolidate validated L2/L3b/L4 and CLI repairs; bind shard/JUnit evidence to
+  completed execution, exact test identities, repository, SHA, run and attempt.
+- Require dependency consistency and real CPU Torch in ML preflight while
+  preserving permissions, triggers and the 70 percent combined coverage gate.
+- Record actual validation limits and satisfy the failed accountability gate
+  without changing credentials or its denied documentation commit-back control.
+
 ### Fixed - ML coverage shard collection error on PR #5784
 - Import Ray Serve explicitly (`from ray import serve`); `ray.serve` attribute
   access raised AttributeError under Ray 2.60, which `importorskip` cannot skip,
