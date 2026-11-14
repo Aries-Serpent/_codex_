@@ -13,7 +13,7 @@ pytest.importorskip("numpy", reason="numpy required")
 import json
 from pathlib import Path
 
-from training.evaluate import evaluate
+from training.evaluate import _loss_to_float, evaluate
 
 
 class _DummyTensor:
@@ -83,3 +83,14 @@ def test_evaluate_skips_empty_samples(tmp_path: Path) -> None:
 
     metrics = evaluate(model, tokenizer, dataset, output_path=out_file)
     assert metrics["count"] == 1, "Count must be greater than zero"
+
+
+def test_loss_conversion_propagates_scalar_conversion_errors():
+    class NonScalar:
+        def item(self):
+            raise ValueError("not scalar")
+
+    with pytest.raises(ValueError, match="not scalar"):
+        _loss_to_float(NonScalar())
+    with pytest.raises(TypeError, match="Cannot convert loss"):
+        _loss_to_float(object())

@@ -117,6 +117,38 @@ class TestShouldRetrain:
 class TestTriggerRetrain:
     """Tests for ContinuousLearningPipeline.trigger_retrain and RetrainingTrigger."""
 
+    def test_job_ids_are_unique_with_frozen_timestamp(self, monkeypatch):
+        from datetime import UTC, datetime
+        from uuid import UUID
+
+        from codex_ml.continuous_learning import pipeline as pipeline_module
+
+        class FrozenDatetime(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return cls(2026, 1, 1, tzinfo=UTC)
+
+        monkeypatch.setattr(pipeline_module, "datetime", FrozenDatetime)
+        pipeline = ContinuousLearningPipeline()
+        jobs = [pipeline.trigger_retrain() for _ in range(100)]
+        ids = {job.job_id for job in jobs}
+        assert len(ids) == len(jobs)
+        for job_id in ids:
+            prefix, timestamp, suffix = job_id.split("_")
+            assert prefix == "retrain"
+            assert timestamp == "20260101T000000"
+            assert len(suffix) == 32
+            assert UUID(hex=suffix).version == 4
+
+    def test_manual_job_serializes_absent_trigger(self):
+        job = RetrainingJob(job_id="manual", trigger=None, config={"epochs": 3})
+        assert job.to_dict() == {
+            "job_id": "manual",
+            "trigger": None,
+            "config": {"epochs": 3},
+            "status": "pending",
+        }
+
     # Test 6 — returns a properly formed RetrainingJob
     def test_trigger_retrain_returns_retraining_job(self):
         pipeline = _make_pipeline()
@@ -134,26 +166,6 @@ class TestTriggerRetrain:
         assert job.config == cfg, "config is not valid"
         assert job.trigger.config_snapshot == cfg, "config_snapshot is not valid"
 
-    def test_job_ids_are_unique_with_frozen_timestamp(self, monkeypatch):
-        from uuid import UUID
-
-        from codex_ml.continuous_learning import pipeline as pipeline_module
-
-        class FrozenDatetime(datetime):
-            @classmethod
-            def now(cls, tz=None):
-                return cls(2026, 1, 1, tzinfo=UTC)
-
-        monkeypatch.setattr(pipeline_module, "datetime", FrozenDatetime)
-        pipeline = ContinuousLearningPipeline()
-        jobs = [pipeline.trigger_retrain() for _ in range(100)]
-
-        assert len({job.job_id for job in jobs}) == len(jobs)
-        for job in jobs:
-            suffix = job.job_id.rsplit("_", 1)[1]
-            assert len(suffix) == 32
-            assert UUID(hex=suffix).version == 4
-
     # Test 8 — RetrainingTrigger round-trip serialisation
     def test_retraining_trigger_round_trip(self):
         ts = datetime(2024, 6, 1, 12, 0, 0, tzinfo=UTC)
@@ -170,7 +182,9 @@ class TestTriggerRetrain:
 
         restored = RetrainingTrigger.from_dict(d)
         assert restored.reason == trigger.reason, "reason is not valid"
-        assert restored.drift_score == pytest.approx(trigger.drift_score), "drift_score is not valid"
+        assert restored.drift_score == pytest.approx(
+            trigger.drift_score
+        ), "drift_score is not valid"
         assert restored.config_snapshot == trigger.config_snapshot, "config_snapshot is not valid"
 
 
@@ -348,16 +362,6 @@ class TestPipelineEndToEnd:
         assert d["job_id"].startswith("retrain_"), "Condition must be true"
         assert "trigger" in d, "Condition must be true"
         assert d["config"] == {"param": "value"}, "Value must be initialized"
-
-    def test_manual_job_serializes_absent_trigger(self):
-        job = RetrainingJob(job_id="manual", trigger=None, config={"epochs": 3})
-
-        assert job.to_dict() == {
-            "job_id": "manual",
-            "trigger": None,
-            "config": {"epochs": 3},
-            "status": "pending",
-        }
 
     def test_pipeline_last_trigger_populated_after_trigger_retrain(self):
         pipeline = _make_pipeline()
