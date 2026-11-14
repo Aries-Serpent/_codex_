@@ -50,14 +50,15 @@ def inspect_access(repo: str, environment: str, branch: str) -> dict[str, Any]:
     ]
     app_status = "incomplete-configuration" if any(app_values) else "not-configured"
     if all(app_values):
+        ambient_repo = os.environ.get("REPO") or os.environ.get("GITHUB_REPOSITORY")
         if not app_values[1].lstrip().startswith("-----BEGIN "):
             app_status = "private-key-not-pem"
-        elif (os.environ.get("REPO") or os.environ.get("GITHUB_REPOSITORY")) != repo:
+        elif ambient_repo and ambient_repo != repo:
             app_status = "repository-scope-mismatch"
         else:
             try:
                 with redirect_stdout(sys.stderr):
-                    app_token = _mint_app_token(*app_values)
+                    app_token = _mint_app_token(*app_values, repo=repo)
                 app_status = "verified-installation" if app_token else "mint-failed"
                 if app_token:
                     candidates.insert(0, ("cognitive-brain-app", app_token))

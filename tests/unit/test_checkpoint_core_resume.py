@@ -345,8 +345,7 @@ class TestCheckpointErrorHandling:
         # Assert
         assert Path(result).exists(), "Nested checkpoint directory should be created"
         assert (
-            Path(result) / "weights.pt",
-            "Result must not be empty",
+            Path(result) / "weights.pt"
         ).exists(), "Weights file should exist in nested directory"
 
 
