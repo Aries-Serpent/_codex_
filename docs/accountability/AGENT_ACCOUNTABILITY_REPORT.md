@@ -19,6 +19,11 @@
   `ml-tests.yml`; `git diff --check` clean. Local `mypy_baseline.py` reports
   964 errors on both this branch and unmodified `0D_base_` (environment
   limit; no `src/` changes), so hosted CI remains authoritative.
+- Copilot review on `6008a40dcf` raised two valid threads, both fixed: the
+  aggregate now requires an `xfailed` outcome for every selected quarantined
+  item (new parametrized test fails on the previous check), and the torch
+  restore fixture drops the never-assigned `_torch_import_started` guard,
+  matching `0D_base_`. 83 shard tests plus tracking/integration torch tests pass.
 
 ## Session: PR #5794 consolidated recovery (2026-11-14)
 

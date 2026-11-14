@@ -317,8 +317,6 @@ def _restore_real_torch_modules():
     namespace = getattr(real, "__dict__", {})
     if namespace.get("IS_CODEX_STUB") or namespace.get("__codex_stub__"):
         return
-    if not getattr(_sys, "_torch_import_started", False):
-        return
     after = _torch_module_entries()
     if all(after.get(key) is module for key, module in before.items()):
         return

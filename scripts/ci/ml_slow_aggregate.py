@@ -211,7 +211,7 @@ def validate_selections(
         ):
             raise ValueError(f"{prefix}-{index}: shard did not apply the quarantine manifest")
         results = manifest.get("quarantine_results")
-        if not isinstance(results, dict) or not set(results) <= set(quarantined):
+        if not isinstance(results, dict) or set(results) != set(quarantined):
             raise ValueError(f"{prefix}-{index}: missing quarantine outcomes")
         # Defense in depth: JUnit may record a non-strict XPASS as a plain pass.
         xpassed = sorted(nodeid for nodeid, outcome in results.items() if outcome == "xpassed")
@@ -219,6 +219,15 @@ def validate_selections(
             raise ValueError(
                 f"{prefix}-{index}: quarantined tests passed (XPASS), remove them from "
                 f"the manifest: {', '.join(xpassed)}"
+            )
+        # Fail closed: only the expected strict-xfail body failure keeps an entry.
+        unexpected = sorted(
+            f"{nodeid} ({outcome})" for nodeid, outcome in results.items() if outcome != "xfailed"
+        )
+        if unexpected:
+            raise ValueError(
+                f"{prefix}-{index}: quarantined tests did not fail as expected: "
+                f"{', '.join(unexpected)}"
             )
         stale &= set(not_selected)
     return sorted(stale)

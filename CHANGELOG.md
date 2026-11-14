@@ -10,6 +10,9 @@
   (`.codex/baselines/ml_unit_quarantine.json`, empty) may only shrink; growth
   or a lower floor requires the `quarantine-approved` PR label and never
   applies on push. Quarantined XPASS, collection errors and stale entries fail.
+- Review follow-up: every selected quarantined item must report the strict `xfailed`
+  body outcome (missing or skipped outcomes fail closed), and the torch restore
+  fixture no longer depends on the never-set `sys._torch_import_started` flag.
 
 ### Fixed - #5766 CodeQL ReDoS follow-up
 

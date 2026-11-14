@@ -105,7 +105,9 @@ def make_reports(root: Path, quarantine: dict | None = None) -> None:
                     "quarantine_digest": shards.quarantine_digest(quarantine),
                     "quarantined": sorted(set(quarantine) & set(selected)),
                     "quarantine_not_selected": sorted(set(quarantine) - set(selected)),
-                    "quarantine_results": {},
+                    "quarantine_results": {
+                        nodeid: "xfailed" for nodeid in sorted(set(quarantine) & set(selected))
+                    },
                 }
             (directory / "selection.json").write_text(
                 json.dumps(
@@ -826,6 +828,25 @@ def test_quarantined_xpass_fails_despite_non_strict_xfail(pytester, tmp_path, mo
     summary, exit_code = aggregate(reports, needs, floor=FLOOR, quarantine=quarantine)
     assert exit_code == 1
     assert "quarantined tests passed (XPASS)" in summary
+
+
+@pytest.mark.parametrize("results", [{}, {"tests/test_3.py::test_example": "skipped"}])
+def test_aggregate_requires_xfailed_outcome_for_quarantined_items(tmp_path, monkeypatch, results):
+    """A selected quarantined item that was skipped or not reported fails closed."""
+    monkeypatch.chdir(tmp_path)
+    unit = "tests/test_3.py::test_example"
+    quarantine = {unit: _entry(nodeid=unit)}
+    reports = tmp_path / "reports"
+    make_reports(reports, quarantine)
+    for selection_path in (reports / "unit").glob("unit-cov-*/selection.json"):
+        selection = json.loads(selection_path.read_text())
+        if unit in selection["quarantined"]:
+            selection["quarantine_results"] = results
+            selection_path.write_text(json.dumps(selection))
+    needs = _green_coverage(tmp_path, reports, range(0, 10))
+    summary, exit_code = aggregate(reports, needs, floor=FLOOR, quarantine=quarantine)
+    assert exit_code == 1
+    assert "missing quarantine outcomes" in summary or "did not fail as expected" in summary
 
 
 def test_quarantined_setup_error_stays_an_error(pytester):
