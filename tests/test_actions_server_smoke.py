@@ -14,7 +14,8 @@ import pytest
 
 def _get(port: int, path: str):
     url = f"http://127.0.0.1:{port}{path}"
-    with urllib.request.urlopen(url, timeout=10) as r:  # nosec B310 -- loopback test server
+    # Fixed http://127.0.0.1 scheme/host; only the test-owned port and path vary.
+    with urllib.request.urlopen(url, timeout=10) as r:  # nosec B310  # nosemgrep
         return r.status, json.loads(r.read().decode("utf-8"))
 
 
