@@ -217,16 +217,20 @@ jobs:
             if not isinstance(data, dict):
                 print(f'::error::SARIF document at {sarif_path} is not a JSON object.')
                 raise SystemExit(1)
-            runs = data.get('runs') or []
+            runs = data.get('runs')
             if not isinstance(runs, list) or not runs:
-                continue
+                print(f'::error::SARIF document at {sarif_path} has no runs list.')
+                raise SystemExit(1)
+            for run in runs:
+                if not isinstance(run, dict) or not isinstance(run.get('results'), list):
+                    print(f'::error::SARIF run in {sarif_path} lacks a results list.')
+                    raise SystemExit(1)
+                if any(not isinstance(result, dict) for result in run['results']):
+                    print(f'::error::SARIF run in {sarif_path} has a non-object result.')
+                    raise SystemExit(1)
             valid_sarif_count += 1
             for run in runs:
-                if not isinstance(run, dict):
-                    continue
-                for result in run.get('results') or []:
-                    if not isinstance(result, dict):
-                        continue
+                for result in run['results']:
                     rule = resolve_rule(run, result)
                     bucket = security_bucket(rule, result)
                     if bucket == 'quality':

@@ -21,7 +21,7 @@ def test_github_script_does_not_interpolate_github_context():
                 assert not re.search(r"\$\{\{\s*github\.", step["with"]["script"])
 
 
-def _parse_sarif(tmp_path, run):
+def _parse_sarif(tmp_path, run, document=None):
     workflow = yaml.safe_load(_WORKFLOW.read_text())
     script = next(
         step["run"]
@@ -30,7 +30,9 @@ def _parse_sarif(tmp_path, run):
     )
     results = tmp_path / "results"
     results.mkdir()
-    (results / "test.sarif").write_text(json.dumps({"runs": [run]}))
+    (results / "test.sarif").write_text(
+        json.dumps({"runs": [run]} if document is None else document)
+    )
     output = tmp_path / "outputs"
     result = subprocess.run(
         ["bash"],
@@ -138,6 +140,26 @@ def test_parser_rejects_invalid_rule_component_without_zero_counts(tmp_path):
     )
     assert result.returncode != 0
     assert "Invalid SARIF rule toolComponent index" in result.stderr
+    assert not output.exists()
+
+
+@pytest.mark.parametrize(
+    "document",
+    [
+        {},
+        {"runs": []},
+        {"runs": {}},
+        {"runs": [{}]},
+        {"runs": ["run"]},
+        {"runs": [{"results": {}}]},
+        {"runs": [{"results": []}, {"results": None}]},
+        {"runs": [{"results": ["result"]}]},
+    ],
+)
+def test_parser_rejects_malformed_runs_without_zero_counts(tmp_path, document):
+    result, output = _parse_sarif(tmp_path, None, document)
+    assert result.returncode != 0
+    assert "::error::SARIF" in result.stdout
     assert not output.exists()
 
 
