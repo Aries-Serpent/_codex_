@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 import importlib.util
 import sys
 import types

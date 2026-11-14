@@ -1,5 +1,4 @@
 import pytest
-
 #         assert result.exit_code in [, "Result must not be empty"
 #             0,
 #             1,

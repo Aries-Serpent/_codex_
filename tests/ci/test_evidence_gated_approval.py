@@ -574,24 +574,23 @@ def test_app_token_is_scoped_to_approval_repository_and_permissions(monkeypatch)
                 "issues": "write",
             },
         }
-
     monkeypatch.setattr(approval, "_gh", request)
     assert approval._mint_app_token("1", "fixture", "2", repo="o/r") == "scoped-fixture"
-    assert calls == [
-        (
-            "POST",
-            "/app/installations/2/access_tokens",
-            {
-                "repositories": ["r"],
-                "permissions": {
-                    "actions": "write",
-                    "contents": "read",
-                    "pull_requests": "read",
-                    "issues": "write",
-                },
+    assert approval._mint_app_token("1", "fixture", "2", repo="o/r") == "scoped-fixture"
+    expected = (
+        "POST",
+        "/app/installations/2/access_tokens",
+        {
+            "repositories": ["r"],
+            "permissions": {
+                "actions": "write",
+                "contents": "read",
+                "pull_requests": "read",
+                "issues": "write",
             },
-        ),
-    ]
+        },
+    )
+    assert calls == [expected, expected]
 
 
 @pytest.fixture

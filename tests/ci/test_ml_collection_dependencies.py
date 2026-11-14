@@ -62,9 +62,14 @@ def test_ml_jobs_install_and_preflight_collection_dependencies(job_name):
         == {
             "test-ml-components": 60,
             "integration-shard": 25,
-            "coverage-shard": 40,
+            "coverage-shard": 60,
         }[job_name]
     )
+    if job_name == "coverage-shard":
+        coverage_step = next(
+            step for step in job["steps"] if step.get("name") == "Run non-integration coverage tests"
+        )
+        assert coverage_step["timeout-minutes"] == 50
 
 
 @pytest.mark.parametrize("job_name", ["test-ml-components", "integration-shard", "coverage-shard"])
@@ -116,6 +121,19 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
     assert '-m "not slow and not integration"' in coverage["run"]
     assert "--cov=src" in coverage["run"] and "--cov=training" in coverage["run"]
     assert "--cov-fail-under=0" in coverage["run"]  # Partial shards are not the gate.
+    # Test failures are gated by the aggregate against the quarantine manifest;
+    # missing JUnit or non-test exit codes still fail the shard job.
+    assert "--ml-quarantine .codex/baselines/ml_unit_quarantine.json" in coverage["run"]
+    assert "set +e" in coverage["run"] and "rc=$?" in coverage["run"]
+    assert "reports/pytest-exit-code" in coverage["run"]
+    assert "[ ! -s reports/junit.xml ]" in coverage["run"]
+    assert '*) echo "::error::pytest exited' in coverage["run"]
+    summarize = next(
+        step["run"]
+        for step in jobs["coverage-shard"]["steps"]
+        if step.get("name") == "Summarize coverage shard"
+    )
+    assert "--report-only" in summarize
     assert coverage["env"]["COVERAGE_FILE"] == ".coverage.unit-${{ matrix.shard }}"
     for name, count in (("integration-shard", 4), ("coverage-shard", 4)):
         job = jobs[name]
@@ -141,14 +159,48 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
         step["run"] for step in aggregate["steps"] if step.get("name") == "Install report tooling"
     )
     assert "defusedxml>=0.7.1" in tooling
+    steps = {step.get("name"): step for step in aggregate["steps"]}
+    gate = steps["Validate shards and enforce combined unit coverage"]["run"]
+    assert "--fail-under" not in gate
+    assert "--floor-file .codex/baselines/ml_unit_coverage_floor.json" in gate
+    assert "--quarantine .codex/baselines/ml_unit_quarantine.json" in gate
+    assert aggregate["steps"][0]["with"]["fetch-depth"] == 2
+    ratchet = steps["Ratchet quarantine and coverage floor against PR base"]
+    assert ratchet["if"] == "always() && github.event_name == 'pull_request'"
+    assert "ratchet --base-ref HEAD^1" in ratchet["run"]
+    assert (
+        "contains(github.event.pull_request.labels.*.name, 'quarantine-approved')"
+        in ratchet["env"]["ML_QUARANTINE_GROWTH_APPROVED"]
+    )
+    push_base = steps["Check out push base baselines"]
+    assert "github.event_name == 'push'" in push_base["if"]
+    assert "0000000000000000000000000000000000000000" in push_base["if"]
+    assert push_base["with"]["ref"] == "${{ github.event.before }}"
+    assert push_base["with"]["persist-credentials"] is False
+    push_ratchet = steps["Ratchet quarantine and coverage floor against push base"]
+    assert push_ratchet["if"] == "always() && github.event_name == 'push'"
+    # Approval is never available on push; untrusted values reach the shell via env only.
+    assert push_ratchet["env"] == {"PUSH_BEFORE": "${{ github.event.before }}"}
+    assert "unset ML_QUARANTINE_GROWTH_APPROVED" in push_ratchet["run"]
+    assert '--no-approval --base-ref "${PUSH_BEFORE}"' in push_ratchet["run"]
+    assert "::notice::" in push_ratchet["run"]
+    for step in aggregate["steps"]:
+        assert "${{" not in step.get("run", "")
+    assert (
+        ".codex/baselines/ml_unit_*.json"
+        in yaml.safe_load(workflow_path.read_text())["on"]["push"]["paths"]
+    )
+    for job in jobs.values():
+        assert job["timeout-minutes"] <= 60
+        for step in job["steps"]:
+            uses = step.get("uses", "")
+            assert not uses or uses.startswith("./") or len(uses.split("@", 1)[1]) == 40
 
 
 def test_ml_repairs_can_be_validated_on_staging_sub_prs():
     workflow_path = Path(__file__).resolve().parents[2] / ".github/workflows/ml-tests.yml"
     workflow = yaml.safe_load(workflow_path.read_text())
     assert "0D_base_" in workflow["on"]["pull_request"]["branches"]
-
-
 def test_coverage_shard_installs_and_preflights_optional_test_integrations():
     """Unit shards must install optional integrations their tests exercise."""
     import tomllib
