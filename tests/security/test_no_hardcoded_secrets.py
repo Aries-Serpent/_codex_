@@ -17,9 +17,12 @@ SUSPICIOUS_PATTERNS = [
     re.compile(
         r"-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED )?PRIVATE KEY-----"  # pragma: allowlist secret
         # Optional RFC 1421 headers (Proc-Type, DEK-Info) precede encrypted bodies.
-        # Separators exclude newlines so each line break has exactly one match path (no ReDoS).
-        r"(?:[ \t\r]*(?:\\n|\n)[A-Za-z][A-Za-z0-9-]*:[^\n\\]*)*"
-        r"(?:[ \t\r]*(?:\\n|\n))+[ \t\r]*[A-Za-z0-9+/=]{40,}"
+        # Whitespace is only matched after a line break (or once after the BEGIN line);
+        # header values own their trailing whitespace, so each character has exactly
+        # one match path and backtracking stays polynomial (CodeQL py/redos).
+        r"[ \t\r]*"
+        r"(?:(?:\\n|\n)[ \t\r]*[A-Za-z][A-Za-z0-9-]*:[^\n\\]*)*"
+        r"(?:(?:\\n|\n)[ \t\r]*)+[A-Za-z0-9+/=]{40,}"
     ),
     # Match aws_secret_access_key when assigned to a hardcoded value (not os.getenv)
     # This allows legitimate config key usage but catches actual secrets
@@ -83,3 +86,17 @@ def test_private_key_pattern_is_linear_on_repeated_newlines() -> None:
         started = time.perf_counter()
         assert not pem_pattern.search(begin + separator * 5000 + "!")
         assert time.perf_counter() - started < 1.0
+
+
+def test_private_key_pattern_is_linear_on_whitespace_terminated_headers() -> None:
+    """CodeQL py/redos input: headers ending in tabs must not be split two ways."""
+    begin = "-----BEGIN PRIVATE KEY-----"  # pragma: allowlist secret
+    pem_pattern = SUSPICIOUS_PATTERNS[0]
+    for whitespace in ("\t", " ", "\r"):
+        hostile = begin + "\nA:" + (whitespace + "\nA:") * 5000 + "!"
+        started = time.perf_counter()
+        assert not pem_pattern.search(hostile)
+        assert time.perf_counter() - started < 1.0
+    body = "MIIEowIBAAKCAQEA" + "A" * 48
+    crlf = "\r\n".join([begin, "Proc-Type: 4,ENCRYPTED\t", "", body])
+    assert pem_pattern.search(crlf)

@@ -122,6 +122,7 @@ class TestEventIntegrationLifecycle:
         assert es1.best == 1.0 and es2.best == 2.0
 
 
+@pytest.mark.requires_torch
 class TestCheckpointResumeIntegration:
     """Integration tests for checkpoint save and resume workflow."""
 
@@ -245,6 +246,7 @@ class TestCheckpointResumeIntegration:
             shutil.rmtree(tmpdir, ignore_errors=True)
 
 
+@pytest.mark.requires_torch
 class TestTrainingLoopIntegration:
     """Integration tests for full training loop with callbacks and checkpoints."""
 

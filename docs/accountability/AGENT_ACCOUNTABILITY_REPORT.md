@@ -1,3 +1,30 @@
+## Session: fold PR #5787 into `0D_base_` and close #5766 CodeQL ReDoS (2026-11-14)
+
+### Execution and evidence
+
+- Direct execution (no delegated agents). Live state via signed-in GraphQL:
+  #5766 had one unresolved thread (CodeQL `py/redos`, whitespace-terminated PEM
+  headers); #5787 had no review threads, only automated pre-flight/CI-rescue comments.
+- Maintainer decision recorded: integrate the #5787 ratchet with floor 54 and
+  target 70 (measured combined unit coverage 54.5-54.9%). The floor may only
+  rise; the quarantine may only shrink; growth needs `quarantine-approved`.
+- ReDoS fix: whitespace is matched only after a line break (or once after the
+  BEGIN line) so header values own trailing whitespace. The new timing test with
+  the CodeQL input hangs against the previous pattern and passes in milliseconds now.
+- Removed unrelated churn from #5787 (duplicate/unused imports, blank-line
+  deletions, timestamp-only startup-packet change) and applied Black.
+- Validation: Ruff, Black, isort clean on changed Python; 186 focused tests
+  passed (ML shards/aggregate/quarantine, collection dependencies, approval,
+  Ray Serve API, secrets); yamllint and actionlint 1.7.7 clean on
+  `ml-tests.yml`; `git diff --check` clean. Local `mypy_baseline.py` reports
+  964 errors on both this branch and unmodified `0D_base_` (environment
+  limit; no `src/` changes), so hosted CI remains authoritative.
+- Copilot review on `6008a40dcf` raised two valid threads, both fixed: the
+  aggregate now requires an `xfailed` outcome for every selected quarantined
+  item (new parametrized test fails on the previous check), and the torch
+  restore fixture drops the never-assigned `_torch_import_started` guard,
+  matching `0D_base_`. 83 shard tests plus tracking/integration torch tests pass.
+
 ## Session: PR #5794 consolidated recovery (2026-11-14)
 
 ### Execution and evidence
@@ -48,7 +75,9 @@
   Combined regressions now pass 89 tests with the same three genuine skips;
   scoped Black/Ruff/mypy, compilation and diff checks pass.
 - Preserve the 70 percent combined unit coverage gate. PR #5787's proposed
-  54 percent floor/quarantine change is not silently integrated. The remaining
+  54 percent floor/quarantine change is not silently integrated. (Superseded:
+  the maintainer approved the ratchet, floor 54 and target 70, and #5787 was
+  folded into `0D_base_`; see the fold-in session below.) The remaining
   order is #5794, #5784, #5783, then review of #5766, gated on fresh checks.
   No protected approval, manual CI dispatch or merge is claimed.
 

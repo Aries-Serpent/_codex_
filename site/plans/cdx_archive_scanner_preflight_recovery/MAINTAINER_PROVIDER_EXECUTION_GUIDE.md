@@ -350,8 +350,9 @@ python -m pytest tests/integration/ -v -m integration --timeout=600
 Prefer the evidenced failing node IDs first. Do not replace failures with skips,
 lower thresholds or treat local Torch stubs/mocked tests as hosted ML proof.
 The workflow now uploads integration JUnit before coverage, caps integration
-and coverage steps below the job's total budget and retains the unchanged 70%
-coverage threshold. Staging sub-PRs now trigger ML checks as well as promotion
+and coverage steps below the job's total budget and gates combined unit
+coverage on the ratchet floor in `.codex/baselines/ml_unit_coverage_floor.json`
+(floor 54%, target 70%; the floor may only rise). Staging sub-PRs now trigger ML checks as well as promotion
 PRs, so the repair can be tested before default-branch integration. Per-test timeouts require fresh
 hosted validation; a timed-out step remains failure, never a success fallback.
 
