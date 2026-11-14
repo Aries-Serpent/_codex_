@@ -94,7 +94,6 @@ class _ShadowedDependencyFinder(importlib.abc.MetaPathFinder):
         )
 
 
-
 def _strip_shadow_roots() -> None:
     """Keep project subtrees like ``scripts``/``tests`` from masking canonical src packages."""
 
@@ -157,7 +156,10 @@ def _strip_shadow_roots() -> None:
             origin_path = Path(origin).resolve()
         except (OSError, RuntimeError, TypeError, ValueError):
             continue
-        if any(origin_path == root or origin_path.is_relative_to(root) for root in dependency_shadow_roots):
+        if any(
+            origin_path == root or origin_path.is_relative_to(root)
+            for root in dependency_shadow_roots
+        ):
             sys.modules.pop(shadow_name, None)
             for key in list(sys.modules):
                 if key == shadow_name or key.startswith(f"{shadow_name}."):
@@ -196,9 +198,15 @@ def _install_optional_stub(module_name: str, *, attrs: dict[str, object] | None 
     if module_name in sys.modules:
         return
 
+    # Probe availability WITHOUT importing: this hook runs at startup of every
+    # Python process launched with the repo on PYTHONPATH (including test
+    # subprocesses).  Eagerly importing torch/transformers here added ~8s to
+    # each interpreter start and made subprocess-based tests time out.
     try:
-        __import__(module_name)
-    except (ImportError, ModuleNotFoundError):  # only stub genuinely missing modules
+        missing = importlib.util.find_spec(module_name) is None
+    except (ImportError, ValueError):  # broken/odd installs: treat as missing
+        missing = True
+    if missing:  # only stub genuinely missing modules
         stub = ModuleType(module_name)
         stub.__spec__ = importlib.machinery.ModuleSpec(module_name, loader=None)
         stub.__loader__ = None

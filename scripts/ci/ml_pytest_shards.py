@@ -11,6 +11,28 @@ from pathlib import Path
 import pytest
 
 _REPORTED_FAILURES = pytest.StashKey[int]()
+_SELECTION = pytest.StashKey[dict[str, object]]()
+
+
+def execution_context() -> dict[str, str | None]:
+    return {
+        key: os.environ.get(key)
+        for key in ("GITHUB_REPOSITORY", "GITHUB_SHA", "GITHUB_RUN_ID", "GITHUB_RUN_ATTEMPT")
+    }
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_runtest_logreport(report: pytest.TestReport) -> None:
+    report.user_properties.append(("codex_ml_nodeid", report.nodeid))
+
+
+def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
+    manifest = session.config.stash.get(_SELECTION, None)
+    if manifest is not None:
+        manifest["exitstatus"] = int(exitstatus)
+        session.config.getoption("ml_shard_report").write_text(
+            json.dumps(manifest, indent=2), encoding="utf-8"
+        )
 
 
 def pytest_exception_interact(
@@ -66,19 +88,18 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     report = config.getoption("ml_shard_report")
     if report is not None:
         report.parent.mkdir(parents=True, exist_ok=True)
-        report.write_text(
-            json.dumps(
-                {
-                    "shard": shard,
-                    "shards": count,
-                    "args": config.args,
-                    "marker": config.getoption("markexpr"),
-                    "keyword": config.getoption("keyword"),
-                    "eligible_count": len(nodeids),
-                    "collection_digest": collection_digest(nodeids),
-                    "selected": sorted(item.nodeid for item in selected),
-                },
-                indent=2,
-            ),
-            encoding="utf-8",
-        )
+        manifest: dict[str, object] = {
+            "shard": shard,
+            "shards": count,
+            "args": config.args,
+            "marker": config.getoption("markexpr"),
+            "keyword": config.getoption("keyword"),
+            "eligible_count": len(nodeids),
+            "collection_digest": collection_digest(nodeids),
+            "selected": sorted(item.nodeid for item in selected),
+            "context": execution_context(),
+            "collect_only": config.getoption("collectonly"),
+            "exitstatus": None,
+        }
+        config.stash[_SELECTION] = manifest
+        report.write_text(json.dumps(manifest, indent=2), encoding="utf-8")

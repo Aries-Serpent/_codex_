@@ -54,7 +54,7 @@ jobs:
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ matrix.python-version }}
-          extras: runtime
+          extras: runtime,test-ml-integrations
           install-torch: true
           install-preflight-extras: false
           cache-tier: common
@@ -73,12 +73,13 @@ jobs:
           set -euo pipefail
           PYTHON_BIN="${VENV_PYTHON:-python3}"
           "$PYTHON_BIN" -m pip install --upgrade pip
-          "$PYTHON_BIN" -m pip install -e '.[runtime]'
+          "$PYTHON_BIN" -m pip install -e '.[runtime,test-ml-integrations]'
           # Marker filtering still imports all selected modules during collection.
           "$PYTHON_BIN" -m pip install \
             "detect-secrets>=1.5.0" \
             "hypothesis>=6.165.10,<7.0.0" \
             "freezegun>=1.5.1"
+          "$PYTHON_BIN" -m pip check
           export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
           if [ -d "$PWD/agents/codex_client" ]; then
             export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
@@ -93,12 +94,17 @@ jobs:
               "datasets",
               "accelerate",
               "peft",
+              "sqlparse", "nox", "mypy", "ruff", "black", "isort",
+              "pymysql", "imageio", "skimage", "pywt", "cv2", "ray",
               "pytest",
               "detect_secrets",
               "hypothesis",
               "freezegun",
           ]:
               importlib.import_module(name)
+          torch = importlib.import_module("torch")
+          if getattr(torch, "IS_CODEX_STUB", False) or torch.tensor([1.0, 2.0]).sum().item() != 3.0:
+              raise RuntimeError("Real CPU PyTorch is required for ML validation")
           print("ML dependency preflight OK")
           PY
 
@@ -149,7 +155,7 @@ jobs:
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
-          extras: runtime
+          extras: runtime,test-ml-integrations
           install-torch: true
           install-preflight-extras: false
           cache-tier: common
@@ -168,12 +174,13 @@ jobs:
           set -euo pipefail
           PYTHON_BIN="${VENV_PYTHON:-python3}"
           "$PYTHON_BIN" -m pip install --upgrade pip
-          "$PYTHON_BIN" -m pip install -e '.[runtime]'
+          "$PYTHON_BIN" -m pip install -e '.[runtime,test-ml-integrations]'
           # The coverage step collects tests/ before applying its marker filter.
           "$PYTHON_BIN" -m pip install \
             "detect-secrets>=1.5.0" \
             "hypothesis>=6.165.10,<7.0.0" \
             "freezegun>=1.5.1"
+          "$PYTHON_BIN" -m pip check
           export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
           if [ -d "$PWD/agents/codex_client" ]; then
             export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
@@ -188,12 +195,17 @@ jobs:
               "datasets",
               "accelerate",
               "peft",
+              "sqlparse", "nox", "mypy", "ruff", "black", "isort",
+              "pymysql", "imageio", "skimage", "pywt", "cv2", "ray",
               "pytest",
               "detect_secrets",
               "hypothesis",
               "freezegun",
           ]:
               importlib.import_module(name)
+          torch = importlib.import_module("torch")
+          if getattr(torch, "IS_CODEX_STUB", False) or torch.tensor([1.0, 2.0]).sum().item() != 3.0:
+              raise RuntimeError("Real CPU PyTorch is required for ML validation")
           print("ML dependency preflight OK")
           PY
 
@@ -252,7 +264,7 @@ jobs:
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
-          extras: runtime
+          extras: runtime,test-ml-integrations
           install-torch: true
           install-preflight-extras: false
           cache-tier: common
@@ -268,11 +280,13 @@ jobs:
       - name: Install project and ML runtime dependencies
         run: |
           set -euo pipefail
-          "${VENV_PYTHON}" -m pip install -e '.[runtime]'
+          # Optional integrations exercised by the unit suite (pyproject extra).
+          "${VENV_PYTHON}" -m pip install -e '.[runtime,test-ml-integrations]'
           "${VENV_PYTHON}" -m pip install \
             "detect-secrets>=1.5.0" \
             "hypothesis>=6.165.10,<7.0.0" \
             "freezegun>=1.5.1"
+          "${VENV_PYTHON}" -m pip check
           export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
           "${VENV_PYTHON}" - <<'PY'
           import importlib
@@ -280,8 +294,13 @@ jobs:
               "numpy", "torch", "transformers", "sentencepiece", "datasets",
               "accelerate", "peft", "pytest", "pytest_cov", "coverage",
               "detect_secrets", "hypothesis", "freezegun",
+              "sqlparse", "nox", "mypy", "ruff", "black", "isort",
+              "pymysql", "imageio", "skimage", "pywt", "cv2", "ray",
           ]:
               importlib.import_module(name)
+          torch = importlib.import_module("torch")
+          if getattr(torch, "IS_CODEX_STUB", False) or torch.tensor([1.0, 2.0]).sum().item() != 3.0:
+              raise RuntimeError("Real CPU PyTorch is required for ML validation")
           print("ML dependency preflight OK")
           PY
 

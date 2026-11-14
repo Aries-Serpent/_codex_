@@ -8,6 +8,7 @@ Minimum Python version: 3.9+ (uses built-in generic types)
 """
 
 import json
+import math
 import secrets
 import time
 from dataclasses import dataclass
@@ -93,9 +94,15 @@ class TokenManager:
 
     Provides JWT-like token generation and validation without external
     dependencies. In production, consider using PyJWT library.
+
+    Validation requires the codex-api audience. When present, not-before
+    claims must be finite JSON numbers and must not be in the future.
     """
 
     # Token expiration times (in seconds)
+    # Only tokens minted for this audience are accepted.
+    EXPECTED_AUDIENCE = "codex-api"
+
     ACCESS_TOKEN_EXPIRY = 900  # 15 minutes
     REFRESH_TOKEN_EXPIRY = 604800  # 7 days
     SESSION_TOKEN_EXPIRY = 2592000  # 30 days
@@ -232,9 +239,29 @@ class TokenManager:
             payload_bytes = base64.urlsafe_b64decode(payload_b64_padded)
             payload = json.loads(payload_bytes.decode())
 
-            # Create claims
+            if not isinstance(payload, dict):
+                raise ValueError("Invalid token payload")
+
+            if payload.get("aud") != self.EXPECTED_AUDIENCE:
+                raise ValueError("Invalid token audience")
+
+            if "nbf" in payload:
+                nbf = payload["nbf"]
+                if (
+                    isinstance(nbf, bool)
+                    or not isinstance(nbf, (int, float))
+                    or (isinstance(nbf, float) and not math.isfinite(nbf))
+                ):
+                    raise ValueError("Invalid token not before claim")
+                if nbf > time.time():
+                    raise ValueError("Token not yet valid")
+
+            # Create claims (missing required claims -> KeyError -> ValueError)
             return TokenClaims.from_dict(payload)
 
+        except KeyError as e:
+            # Fail closed with the documented exception type; do not echo claims.
+            raise ValueError(f"Token missing required claim: {e.args[0]!s}") from e
         except (ValueError, TypeError) as e:
             error_msg = sanitize_log_message(f"Token decode failed: {e!s}")
             raise ValueError(error_msg) from e

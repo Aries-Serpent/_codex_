@@ -4,14 +4,12 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
-import tempfile
 from pathlib import Path
 from typing import Any
 
 from codex.deep_research.contracts import ResearchBundle
 from codex.deep_research.pipeline import ExecutionLimits, run_research
-from codex.deep_research.storage import TopicResearchStore
+from codex.deep_research.storage import TopicResearchStore, write_bytes_atomic
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -108,7 +106,7 @@ def _read_json(path: Path) -> Any:
 def _write_bundle(output_dir: Path, bundle: ResearchBundle) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     for name, content in _bundle_artifacts(bundle).items():
-        _atomic_write(output_dir / name, content)
+        write_bytes_atomic(output_dir / name, content)
 
 
 def _bundle_artifacts(bundle: ResearchBundle) -> dict[str, bytes]:
@@ -136,23 +134,6 @@ def _jsonl_bytes(values: list[dict[str, Any]]) -> bytes:
         (json.dumps(value, ensure_ascii=False, sort_keys=True) + "\n").encode("utf-8")
         for value in values
     )
-
-
-def _atomic_write(path: Path, content: bytes) -> None:
-    descriptor, temp_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
-    try:
-        with os.fdopen(descriptor, "wb") as stream:
-            stream.write(content)
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.replace(temp_name, path)
-    except OSError:
-        try:
-            os.unlink(temp_name)
-        except OSError:
-            # Cleanup is best-effort; keep the original exception visible.
-            pass
-        raise
 
 
 if __name__ == "__main__":
