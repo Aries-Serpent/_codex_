@@ -64,12 +64,14 @@ Options:
 import argparse
 import ast
 import importlib.util
+import io
 import json
 import logging
 import os
 import re
 import subprocess
 import sys
+import tokenize
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -83,6 +85,23 @@ from scripts.ci._token_resolver import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _lines_inside_string_literals(content: str) -> set[int]:
+    """Return zero-based lines after the start of multiline string tokens."""
+    inside: set[int] = set()
+    fstring_starts: list[int] = []
+    for token in tokenize.generate_tokens(io.StringIO(content).readline):
+        if token.type == tokenize.STRING:
+            inside.update(range(token.start[0], token.end[0]))
+        elif token.type == getattr(tokenize, "FSTRING_START", -1):
+            fstring_starts.append(token.start[0])
+        elif token.type == getattr(tokenize, "FSTRING_END", -1):
+            inside.update(range(fstring_starts.pop(), token.end[0]))
+        elif token.type == tokenize.ERRORTOKEN and token.string in ("'", '"'):
+            raise tokenize.TokenError("unterminated string", token.start)
+    return inside
+
 
 # ---------------------------------------------------------------------------
 # Shared utility: triple-quoted string tracker
@@ -3976,59 +3995,61 @@ class CommonIssueFixer:
         Async tests without timeouts can hang indefinitely, blocking the entire
         CI pipeline. This pattern injects @pytest.mark.timeout(30) decorator.
         """
-        issues = []
+        issues: list[str] = []
         tests_dir = self.repo_root / "tests"
         if not tests_dir.exists():
             return issues
 
-        ASYNCIO_DECORATOR_RE = re.compile(r'^\s*@pytest\.mark\.asyncio\s*$')
-        TIMEOUT_DECORATOR_RE = re.compile(r'@pytest\.mark\.timeout')
-        ASYNC_DEF_RE = re.compile(r'^\s*async\s+def\s+\w+')
-        PYTEST_MARK_RE = re.compile(r'^\s*@pytest\.mark\.')
+        ASYNCIO_DECORATOR_RE = re.compile(r"^\s*@pytest\.mark\.asyncio\s*$")
+        TIMEOUT_DECORATOR_RE = re.compile(r"^\s*@pytest\.mark\.timeout\b")
+        ASYNC_DEF_RE = re.compile(r"^\s*async\s+def\s+\w+")
+        PYTEST_MARK_RE = re.compile(r"^\s*@pytest\.mark\.")
         DEFAULT_TIMEOUT_SECONDS = 30
 
         for py_file in tests_dir.rglob("*.py"):
-            content = py_file.read_text(encoding='utf-8', errors='ignore')
-            lines = content.split('\n')
+            content = py_file.read_text(encoding="utf-8")
+            try:
+                string_lines = _lines_inside_string_literals(content)
+            except (tokenize.TokenError, IndentationError, SyntaxError) as exc:
+                raise ValueError(
+                    f"Cannot safely scan {py_file.relative_to(self.repo_root)}"
+                ) from exc
+            src_lines = content.split("\n")
+            lines: list[str] = []
             modified = False
 
-            i = 0
-            while i < len(lines):
-                line = lines[i]
-
-                if ASYNCIO_DECORATOR_RE.match(line):
-                    has_timeout = False
-                    j = i + 1
-
-                    while j < len(lines) and j < i + 10:
-                        next_line = lines[j]
-
-                        if ASYNC_DEF_RE.match(next_line):
-                            if not has_timeout:
-                                indent = len(line) - len(line.lstrip())
-                                timeout_line = ' ' * indent + f'@pytest.mark.timeout({DEFAULT_TIMEOUT_SECONDS})'
-                                lines.insert(i + 1, timeout_line)
-                                modified = True
-                                issues.append(
-                                    f"{py_file.relative_to(self.repo_root)}:{i + 2} - "
-                                    f"Async test missing timeout decorator"
-                                )
-                                i += 1
-                            break
-
-                        if TIMEOUT_DECORATOR_RE.match(next_line):
-                            has_timeout = True
-
-                        if not PYTEST_MARK_RE.match(next_line):
-                            break
-
-                        j += 1
-
-                i += 1
+            for i, line in enumerate(src_lines):
+                lines.append(line)
+                if i in string_lines or not ASYNCIO_DECORATOR_RE.match(line):
+                    continue
+                has_timeout = False
+                for previous in range(i - 1, -1, -1):
+                    if previous in string_lines or not PYTEST_MARK_RE.match(src_lines[previous]):
+                        break
+                    if TIMEOUT_DECORATOR_RE.match(src_lines[previous]):
+                        has_timeout = True
+                for j in range(i + 1, min(len(src_lines), i + 10)):
+                    next_line = src_lines[j]
+                    if j in string_lines:
+                        break
+                    if ASYNC_DEF_RE.match(next_line):
+                        if not has_timeout:
+                            indent = line[: len(line) - len(line.lstrip())]
+                            lines.append(f"{indent}@pytest.mark.timeout({DEFAULT_TIMEOUT_SECONDS})")
+                            modified = True
+                            issues.append(
+                                f"{py_file.relative_to(self.repo_root)}:{len(lines)} - "
+                                "Async test missing timeout decorator"
+                            )
+                        break
+                    if TIMEOUT_DECORATOR_RE.match(next_line):
+                        has_timeout = True
+                    if not PYTEST_MARK_RE.match(next_line):
+                        break
 
             if modified:
                 if not self.check_only and not self.dry_run:
-                    py_file.write_text('\n'.join(lines), encoding='utf-8')
+                    py_file.write_text("\n".join(lines), encoding="utf-8")
                 self.fixes_applied.setdefault("Async Timeouts", 0)
                 self.fixes_applied["Async Timeouts"] += 1
 
@@ -4036,7 +4057,9 @@ class CommonIssueFixer:
             print("  ✅ All async tests have timeout decorators")
         else:
             action = "Would add" if self.check_only else "Added"
-            print(f"  {'⚠' if self.check_only else '✅'} {action} {len(issues)} timeout decorator(s)")
+            print(
+                f"  {'⚠' if self.check_only else '✅'} {action} {len(issues)} timeout decorator(s)"
+            )
 
         return issues
 

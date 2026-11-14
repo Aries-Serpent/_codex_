@@ -120,9 +120,10 @@ def init_db(db_path: Optional[Path] = None) -> Path:
         pending.wait()
     if leader_event is None:
         raise RuntimeError("leader_event not initialized; init_db synchronization failed")
-    p.parent.mkdir(parents=True, exist_ok=True)
+    succeeded = False
     conn: Optional[sqlite3.Connection] = None
     try:
+        p.parent.mkdir(parents=True, exist_ok=True)
         conn = sqlite3.connect(p)
         try:
             conn.execute("PRAGMA journal_mode=WAL;")
@@ -153,18 +154,17 @@ def init_db(db_path: Optional[Path] = None) -> Path:
             conn.commit()
         finally:
             conn.close()
-    except (IOError, OSError, ModuleNotFoundError, ImportError):
+        succeeded = True
+    except (OSError, sqlite3.Error, ImportError):
         logger.warning("init_db failed", exc_info=True)
-        with _DB_LOCK:
-            _INITIALIZING_PATHS.pop(key, None)
-        leader_event.set()
         raise
-    else:
+    finally:
         with _DB_LOCK:
-            INITIALIZED_PATHS.add(key)
+            if succeeded:
+                INITIALIZED_PATHS.add(key)
             _INITIALIZING_PATHS.pop(key, None)
         leader_event.set()
-        return p
+    return p
 
 
 def _fallback_log_event(

@@ -38,3 +38,14 @@ def test_repository_contains_no_obvious_secrets() -> None:
         text = path.read_text(encoding="utf-8", errors="ignore")
         for pattern in SUSPICIOUS_PATTERNS:
             assert not pattern.search(text), f"Potential secret found in {path}"
+
+
+def test_secret_pattern_still_detects_synthetic_negative_control() -> None:
+    """Keep the secret-shaped check meaningful without storing a real credential."""
+    repo_root = Path(__file__).resolve().parents[2]
+    target = repo_root / "src/security/crypto_review.py"
+    source = target.read_text(encoding="utf-8")
+    negative_control = source + '\napi_key = "synthetic_canary_value"\n'
+
+    assert not any(pattern.search(source) for pattern in SUSPICIOUS_PATTERNS)
+    assert any(pattern.search(negative_control) for pattern in SUSPICIOUS_PATTERNS)

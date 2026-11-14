@@ -33,10 +33,9 @@ class TestRP032AsyncTimeout:
 
         test_file = tests_dir / "test_async.py"
         test_file.write_text("""
-        import pytest
+import pytest
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(30)
 async def test_something():
     await asyncio.sleep(0)
 """)
@@ -129,15 +128,13 @@ def test_regular():
 
         test_file = tests_dir / "test_async.py"
         test_file.write_text("""
-        import pytest
+import pytest
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(30)
 async def test_one():
     pass
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(30)
 async def test_two():
     pass
 
@@ -165,15 +162,6 @@ async def test_three():
         test_file.write_text("""
 class TestAsync:
     @pytest.mark.asyncio
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
     async def test_method(self):
         pass
 """)
@@ -192,6 +180,67 @@ class TestAsync:
         timeout_indent = len(timeout_line) - len(timeout_line.lstrip())
 
         assert asyncio_indent == timeout_indent, "asyncio_indent is not valid"
+        assert content.count("@pytest.mark.timeout") == 1
+        assert len(issues) == 1
+
+    def test_idempotent_for_indented_methods(self, tmp_repo):
+        repo_root, tests_dir = tmp_repo
+        test_file = tests_dir / "test_async.py"
+        test_file.write_text(
+            "class TestAsync:\n"
+            "    @pytest.mark.asyncio\n"
+            "    async def test_method(self):\n"
+            "        pass\n"
+        )
+        fixer = CommonIssueFixer(repo_root, check_only=False, dry_run=False)
+        assert len(fixer.fix_async_tests_without_timeout()) == 1
+        first = test_file.read_text()
+        assert fixer.fix_async_tests_without_timeout() == []
+        assert test_file.read_text() == first
+        assert first.count("@pytest.mark.timeout(30)") == 1
+
+    def test_existing_timeout_before_asyncio_is_preserved(self, tmp_repo):
+        repo_root, tests_dir = tmp_repo
+        test_file = tests_dir / "test_async.py"
+        original = (
+            "@pytest.mark.timeout(60)\n"
+            "@pytest.mark.asyncio\n"
+            "async def test_method():\n"
+            "    pass\n"
+        )
+        test_file.write_text(original)
+        fixer = CommonIssueFixer(repo_root, check_only=False, dry_run=False)
+        assert fixer.fix_async_tests_without_timeout() == []
+        assert test_file.read_text() == original
+
+    @pytest.mark.parametrize("prefix", ["", "f"])
+    def test_multiline_string_fixtures_untouched(self, tmp_repo, prefix):
+        repo_root, tests_dir = tmp_repo
+        test_file = tests_dir / "test_fixture_writer.py"
+        original = (
+            "def test_writer(tmp_path):\n"
+            f'    (tmp_path / "t.py").write_text({prefix}"""\n'
+            "@pytest.mark.asyncio\n"
+            "async def test_inner():\n"
+            "    pass\n"
+            '""")\n'
+        )
+        test_file.write_text(original)
+        fixer = CommonIssueFixer(repo_root, check_only=False, dry_run=False)
+        assert fixer.fix_async_tests_without_timeout() == []
+        assert test_file.read_text() == original
+
+    def test_unparseable_string_is_reported_without_rewrite(self, tmp_repo):
+        repo_root, tests_dir = tmp_repo
+        test_file = tests_dir / "test_broken.py"
+        original = (
+            'payload = """unclosed\n@pytest.mark.asyncio\nasync def test_inner():\n    pass\n'
+        )
+        test_file.write_text(original)
+        fixer = CommonIssueFixer(repo_root, check_only=False, dry_run=False)
+        with pytest.raises(ValueError, match=r"Cannot safely scan tests/test_broken.py"):
+            fixer.fix_async_tests_without_timeout()
+        assert test_file.read_text() == original
 
     def test_dry_run_mode(self, tmp_repo):
         """Test that dry-run doesn't modify files."""
@@ -295,7 +344,6 @@ def test_sync():
     assert True, "True is not valid"
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(30)
 async def test_async():
     await asyncio.sleep(0)
 

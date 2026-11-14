@@ -32,11 +32,11 @@ from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Optional
+from typing import Any, Optional, cast
 
 import click
 import yaml
-from omegaconf import OmegaConf
+from omegaconf import OmegaConf, open_dict
 
 from codex_ml.cli.status_report import build_status_report
 from codex_ml.codex_structured_logging import (
@@ -56,6 +56,16 @@ _ = (ArgparseJSONParser, run_cmd)
 
 DEFAULT_TOKENIZER_CONFIG = "configs/training/tokenization/base.yaml"
 DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/default/tokenizer.json"
+
+_STRUCTURED_CLI_OVERRIDE_TYPES = {
+    "resume_from": str,
+    "mlflow_enable": bool,
+    "mlflow_tracking_uri": str,
+    "logging.mlflow_enable": bool,
+    "logging.mlflow_tracking_uri": str,
+    "logging.mlflow_run_name": str,
+    "logging.mlflow_experiment": str,
+}
 
 
 @lru_cache(maxsize=1)
@@ -77,7 +87,33 @@ def _csv_list(text: str) -> list[str]:
     return [part.strip() for part in text.split(",") if part.strip()]
 
 
-def _update_path(target: object, dotted_path: str, value: object) -> None:
+def _update_path(
+    target: object,
+    dotted_path: str,
+    value: object,
+    *,
+    allow_structured_override: bool = False,
+) -> None:
+    if allow_structured_override:
+        expected_type = _STRUCTURED_CLI_OVERRIDE_TYPES.get(dotted_path)
+        if expected_type is None:
+            raise ValueError(f"Unsupported structured CLI override: {dotted_path}")
+        if type(value) is not expected_type:
+            raise TypeError(
+                f"{dotted_path} must be {expected_type.__name__}, " f"not {type(value).__name__}"
+            )
+
+    if OmegaConf.is_config(target):
+        config_target = cast(Any, target)
+        if allow_structured_override:
+            # Only known, typed CLI runtime keys may extend a structured config.
+            # open_dict does not disable OmegaConf's read-only protection.
+            with open_dict(config_target):
+                OmegaConf.update(config_target, dotted_path, value)
+        else:
+            OmegaConf.update(config_target, dotted_path, value)
+        return
+
     parts = dotted_path.split(".")
     current: object = target
     for part in parts[:-1]:
@@ -457,24 +493,42 @@ def train(
 
     if mlflow_toggle is not None:
         for target in (cfg_obj.training, training_cfg):
-            _update_path(target, "logging.mlflow_enable", mlflow_toggle)
-            _update_path(target, "mlflow_enable", mlflow_toggle)
+            _update_path(
+                target, "logging.mlflow_enable", mlflow_toggle, allow_structured_override=True
+            )
+            _update_path(target, "mlflow_enable", mlflow_toggle, allow_structured_override=True)
 
     if mlflow_tracking_uri:
         for target in (cfg_obj.training, training_cfg):
-            _update_path(target, "logging.mlflow_tracking_uri", mlflow_tracking_uri)
-            _update_path(target, "mlflow_tracking_uri", mlflow_tracking_uri)
+            _update_path(
+                target,
+                "logging.mlflow_tracking_uri",
+                mlflow_tracking_uri,
+                allow_structured_override=True,
+            )
+            _update_path(
+                target, "mlflow_tracking_uri", mlflow_tracking_uri, allow_structured_override=True
+            )
 
     if mlflow_run_name:
-        _update_path(training_cfg, "logging.mlflow_run_name", mlflow_run_name)
+        _update_path(
+            training_cfg,
+            "logging.mlflow_run_name",
+            mlflow_run_name,
+            allow_structured_override=True,
+        )
 
     if mlflow_experiment:
-        _update_path(training_cfg, "logging.mlflow_experiment", mlflow_experiment)
+        _update_path(
+            training_cfg,
+            "logging.mlflow_experiment",
+            mlflow_experiment,
+            allow_structured_override=True,
+        )
 
     if resume_from:
-        if hasattr(cfg_obj.training, "resume_from"):
-            cfg_obj.training.resume_from = resume_from
-        training_cfg.resume_from = resume_from
+        _update_path(cfg_obj.training, "resume_from", resume_from, allow_structured_override=True)
+        _update_path(training_cfg, "resume_from", resume_from, allow_structured_override=True)
         resume = True
 
     metrics_logger: Optional[SystemMetricsLogger] = None
@@ -541,19 +595,34 @@ def resume(
         raise click.ClickException(str(exc)) from exc
 
     training_cfg = getattr(raw_cfg, "training", raw_cfg)
-    if hasattr(training_cfg, "resume_from"):
-        training_cfg.resume_from = checkpoint
+    _update_path(training_cfg, "resume_from", checkpoint, allow_structured_override=True)
 
     if mlflow_toggle is not None:
-        _update_path(training_cfg, "logging.mlflow_enable", mlflow_toggle)
-        _update_path(training_cfg, "mlflow_enable", mlflow_toggle)
+        _update_path(
+            training_cfg, "logging.mlflow_enable", mlflow_toggle, allow_structured_override=True
+        )
+        _update_path(training_cfg, "mlflow_enable", mlflow_toggle, allow_structured_override=True)
     if mlflow_tracking_uri:
-        _update_path(training_cfg, "logging.mlflow_tracking_uri", mlflow_tracking_uri)
-        _update_path(training_cfg, "mlflow_tracking_uri", mlflow_tracking_uri)
+        _update_path(
+            training_cfg,
+            "logging.mlflow_tracking_uri",
+            mlflow_tracking_uri,
+            allow_structured_override=True,
+        )
+        _update_path(
+            training_cfg, "mlflow_tracking_uri", mlflow_tracking_uri, allow_structured_override=True
+        )
     if mlflow_run_name:
-        _update_path(training_cfg, "logging.mlflow_run_name", mlflow_run_name)
+        _update_path(
+            training_cfg, "logging.mlflow_run_name", mlflow_run_name, allow_structured_override=True
+        )
     if mlflow_experiment:
-        _update_path(training_cfg, "logging.mlflow_experiment", mlflow_experiment)
+        _update_path(
+            training_cfg,
+            "logging.mlflow_experiment",
+            mlflow_experiment,
+            allow_structured_override=True,
+        )
     try:
         run_functional_training(config=training_cfg, resume=True)
         provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
