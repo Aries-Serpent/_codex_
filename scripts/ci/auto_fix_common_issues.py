@@ -70,6 +70,7 @@ import os
 import re
 import subprocess
 import sys
+import tokenize
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -83,6 +84,7 @@ from scripts.ci._token_resolver import (
 )
 
 logger = logging.getLogger(__name__)
+
 
 # ---------------------------------------------------------------------------
 # Shared utility: triple-quoted string tracker
@@ -332,25 +334,21 @@ class CascadeDetector:
 
 
 
-def _lines_inside_string_literals(content: str) -> Optional[set[int]]:
-    """Return 0-based line indices that lie inside multi-line string literals.
-
-    Text-based fixers must not rewrite source that is merely *data* (e.g. test
-    fixtures written via ``write_text(\"\"\"...\"\"\")``).  Lines after the opening
-    line of a multi-line string token, up to and including its closing line,
-    are reported.  Returns ``None`` when the content cannot be tokenized.
-    """
+def _lines_inside_string_literals(content: str) -> set[int]:
+    """Return 0-based lines contained in multi-line string and f-string tokens."""
     import io
-    import tokenize
 
     inside: set[int] = set()
-    try:
-        for tok in tokenize.generate_tokens(io.StringIO(content).readline):
-            if tok.type == tokenize.STRING or tok.type == getattr(tokenize, "FSTRING_MIDDLE", -1):
-                (start_row, _), (end_row, _) = tok.start, tok.end
-                inside.update(range(start_row, end_row))  # rows are 1-based
-    except (tokenize.TokenError, IndentationError, SyntaxError):
-        return None
+    fstring_starts: list[int] = []
+    for token in tokenize.generate_tokens(io.StringIO(content).readline):
+        if token.type == tokenize.STRING:
+            inside.update(range(token.start[0], token.end[0]))
+        elif token.type == getattr(tokenize, "FSTRING_START", -1):
+            fstring_starts.append(token.start[0])
+        elif token.type == getattr(tokenize, "FSTRING_END", -1):
+            inside.update(range(fstring_starts.pop(), token.end[0]))
+        elif token.type == tokenize.ERRORTOKEN and token.string in ("'", '"'):
+            raise tokenize.TokenError("unterminated string", token.start)
     return inside
 
 class CommonIssueFixer:
@@ -4014,11 +4012,12 @@ class CommonIssueFixer:
 
         for py_file in tests_dir.rglob("*.py"):
             content = py_file.read_text(encoding='utf-8', errors='ignore')
-            string_lines = _lines_inside_string_literals(content)
-            if string_lines is None:
-                # Not tokenizable: we cannot tell code from string data, so
-                # never rewrite it (avoids corrupting fixtures/templates).
-                continue
+            try:
+                string_lines = _lines_inside_string_literals(content)
+            except (tokenize.TokenError, IndentationError, SyntaxError) as exc:
+                raise ValueError(
+                    f"Cannot safely scan {py_file.relative_to(self.repo_root)}"
+                ) from exc
             src_lines = content.split('\n')
             lines: list[str] = []
             modified = False
@@ -4029,6 +4028,11 @@ class CommonIssueFixer:
                     continue
 
                 has_timeout = False
+                for previous in range(i - 1, -1, -1):
+                    if previous in string_lines or not PYTEST_MARK_RE.match(src_lines[previous]):
+                        break
+                    if TIMEOUT_DECORATOR_RE.match(src_lines[previous]):
+                        has_timeout = True
                 for j in range(i + 1, min(len(src_lines), i + 10)):
                     next_line = src_lines[j]
                     if j in string_lines:

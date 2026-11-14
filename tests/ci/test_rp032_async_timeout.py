@@ -227,6 +227,37 @@ class TestAsync:
         assert test_file.read_text() == original, "string literal content was modified"
         assert issues == [], "no issues expected for decorators inside strings"
 
+    def test_existing_timeout_before_asyncio_is_preserved(self, tmp_repo):
+        repo_root, tests_dir = tmp_repo
+        test_file = tests_dir / "test_async.py"
+        original = (
+            "@pytest.mark.timeout(60)\n"
+            "@pytest.mark.asyncio\n"
+            "async def test_method():\n"
+            "    pass\n"
+        )
+        test_file.write_text(original)
+
+        issues = CommonIssueFixer(
+            repo_root, check_only=False, dry_run=False
+        ).fix_async_tests_without_timeout()
+
+        assert test_file.read_text() == original
+        assert issues == []
+
+    def test_unterminated_string_fails_closed(self, tmp_repo):
+        repo_root, tests_dir = tmp_repo
+        test_file = tests_dir / "test_async.py"
+        original = "fixture = '''\n@pytest.mark.asyncio\nasync def test_inner():\n    pass\n"
+        test_file.write_text(original)
+
+        with pytest.raises(ValueError, match="Cannot safely scan tests/test_async.py"):
+            CommonIssueFixer(
+                repo_root, check_only=False, dry_run=False
+            ).fix_async_tests_without_timeout()
+
+        assert test_file.read_text() == original
+
     def test_dry_run_mode(self, tmp_repo):
         """Test that dry-run doesn't modify files."""
         repo_root, tests_dir = tmp_repo

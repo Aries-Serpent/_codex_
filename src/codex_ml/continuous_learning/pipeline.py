@@ -193,7 +193,7 @@ class ContinuousLearningPipeline:
             timestamp=datetime.now(UTC),
             config_snapshot=cfg,
         )
-        job_id = f"retrain_{trigger.timestamp.strftime('%Y%m%dT%H%M%S')}_{uuid.uuid4().hex[:8]}"
+        job_id = f"retrain_{trigger.timestamp.strftime('%Y%m%dT%H%M%S')}_{uuid.uuid4().hex}"
         job = RetrainingJob(job_id=job_id, trigger=trigger, config=cfg)
         self._last_trigger = trigger
         self._last_job = job
