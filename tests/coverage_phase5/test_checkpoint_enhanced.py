@@ -8,6 +8,8 @@ Modules: checkpoint_manager, saas_integration
 Pattern: 100% semantic assertions, 5+ per test, comprehensive edge cases
 """
 
+import os
+
 import tempfile
 from dataclasses import dataclass
 from datetime import datetime

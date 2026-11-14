@@ -6,6 +6,8 @@ Test module for model registry helpers.
 
 from __future__ import annotations
 
+import os
+
 import tempfile
 import types
 from collections.abc import Sequence
@@ -90,6 +92,7 @@ def test_get_model_applies_lora_config(
 
     # Use object-based patching to avoid string-path resolution issues.
 
+    import codex_ml.model_registry as _mr_mod
     monkeypatch.setattr(_mr_mod, "apply_lora_if_available", _fake_apply)
 
     cfg = {

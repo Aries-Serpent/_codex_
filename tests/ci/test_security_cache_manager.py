@@ -4,6 +4,7 @@ Unit tests for Security Cache Manager
 """
 
 import json
+import re
 from datetime import datetime, timezone
 
 import pytest
@@ -15,7 +16,7 @@ from scripts.ci.security_findings_trend_analyzer import SecurityFindingsTrendAna
 @pytest.fixture
 def temp_cache_dir(tmp_path):
     """Create temporary cache directory"""
-    return tmp_path / "security-cache" # pragma: allowlist secret
+    return tmp_path / "security-cache"  # pragma: allowlist secret
 
 
 @pytest.fixture
@@ -62,7 +63,7 @@ def sample_findings_json(tmp_path):
             },
         ],
     }
-    
+
     json_file = tmp_path / "findings.json"
     json_file.write_text(json.dumps(findings, indent=2))
     return json_file
@@ -90,7 +91,7 @@ class TestSecurityCacheManager:
 
         assert cache_path is not None
         assert cache_path.exists()
-        
+
         # Verify cache content
         cache_data = json.loads(cache_path.read_text())
         assert cache_data["metadata"]["run_id"] == "12345"
@@ -207,7 +208,7 @@ class TestSecurityFindingsTrendAnalyzer:
         # Now analyze
         analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
         report = analyzer.analyze()
-        
+
         assert report is not None
         assert report.runs_analyzed >= 2
         assert report.total_findings_span[0] > 0
@@ -217,7 +218,7 @@ class TestSecurityFindingsTrendAnalyzer:
         analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
         data = [("Item A", 10), ("Item B", 25), ("Item C", 15)]
         chart = analyzer._generate_ascii_bar_chart(data, max_width=40)
-        
+
         assert "Item A" in chart
         assert "Item B" in chart
         assert "█" in chart
@@ -233,17 +234,19 @@ class TestSecurityFindingsTrendAnalyzer:
         )
 
         analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
-        run_list = analyzer._parse_run_metadata([
-            {
-                "run_id": "12345",
-                "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-                "findings_count": 10,
-                "critical_count": 2,
-                "high_count": 3,
-                "medium_count": 4,
-                "low_count": 1,
-            }
-        ])
+        run_list = analyzer._parse_run_metadata(
+            [
+                {
+                    "run_id": "12345",
+                    "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "findings_count": 10,
+                    "critical_count": 2,
+                    "high_count": 3,
+                    "medium_count": 4,
+                    "low_count": 1,
+                }
+            ]
+        )
 
         distribution = analyzer._generate_severity_distribution(run_list)
         assert "CRITICAL" in distribution
@@ -256,14 +259,16 @@ class TestSecurityFindingsTrendAnalyzer:
         analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
         counts = [10, 15, 12, 18, 14, 20, 16, 22, 19, 25]
         sparkline = analyzer._generate_trend_sparkline(counts, width=30)
-        
+
         assert len(sparkline) > 0
         assert any(c in sparkline for c in "▁▂▃▄▅▆▇█")
 
     def test_generate_dashboard_markdown_no_data(self, temp_cache_dir):
         """Test dashboard generation with no data"""
         analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
-        dashboard = analyzer.generate_dashboard_markdown(temp_cache_dir, temp_cache_dir / "dashboard.md")
+        dashboard = analyzer.generate_dashboard_markdown(
+            temp_cache_dir, temp_cache_dir / "dashboard.md"
+        )
         assert dashboard is None
 
     def test_generate_dashboard_markdown_with_data(self, temp_cache_dir, sample_findings_json):
@@ -281,7 +286,7 @@ class TestSecurityFindingsTrendAnalyzer:
         analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
         dashboard_path = temp_cache_dir / "dashboard.md"
         dashboard = analyzer.generate_dashboard_markdown(temp_cache_dir, dashboard_path)
-        
+
         assert dashboard is not None
         assert "Security Findings Dashboard" in dashboard
         assert "7-Day Trend" in dashboard
@@ -302,7 +307,7 @@ class TestSecurityFindingsTrendAnalyzer:
         analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
         dashboard_path = temp_cache_dir / "dashboard.md"
         dashboard = analyzer.generate_dashboard_markdown(temp_cache_dir, dashboard_path)
-        
+
         # Verify all required sections
         required_sections = [
             "Security Findings Dashboard",
@@ -314,7 +319,7 @@ class TestSecurityFindingsTrendAnalyzer:
             "Remediation Velocity",
             "Top CWEs",
         ]
-        
+
         for section in required_sections:
             assert section in dashboard, f"Missing section: {section}"
 
@@ -330,11 +335,16 @@ class TestSecurityFindingsTrendAnalyzer:
         analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
         dashboard_path = temp_cache_dir / "dashboard.md"
         dashboard = analyzer.generate_dashboard_markdown(temp_cache_dir, dashboard_path)
-        
+
         # Verify markdown structure
         assert dashboard.startswith("# 🛡️")
         assert "---" in dashboard
-        assert dashboard.endswith("*Generated:")
+        # Footer is the final line and carries an ISO-8601 UTC timestamp.
+        assert re.fullmatch(
+            r"\*Dashboard generated: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z\*",
+            dashboard.splitlines()[-1],
+        ), dashboard.splitlines()[-1]
+        assert dashboard_path.read_text() == dashboard
 
     def test_generate_markdown_report(self, temp_cache_dir, sample_findings_json):
         """Test traditional markdown report generation"""
@@ -352,9 +362,9 @@ class TestSecurityFindingsTrendAnalyzer:
 
         analyzer = SecurityFindingsTrendAnalyzer(temp_cache_dir)
         report = analyzer.analyze()
-        
+
         assert report is not None
-        
+
         md_report = analyzer.generate_markdown_report(report)
         assert md_report is not None
         assert "Security Findings Trend Analysis Report" in md_report

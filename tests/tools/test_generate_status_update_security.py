@@ -9,7 +9,8 @@ from pathlib import Path
 
 def _load_module():
     repo_root = Path(__file__).resolve().parents[2]
-    module_path = repo_root / "tools" / "status" / "generate_status_update.py"
+    # tools/ moved under src/tools/ in the canonical src layout.
+    module_path = repo_root / "src" / "tools" / "status" / "generate_status_update.py"
     spec = importlib.util.spec_from_file_location("status_gen", module_path)
     assert spec and spec.loader, "spec is not valid"
     module = importlib.util.module_from_spec(spec)

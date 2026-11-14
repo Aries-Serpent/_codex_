@@ -53,7 +53,7 @@ def test_detect_default_branch_in_apply_mode(monkeypatch):
     monkeypatch.setenv("CODEX_ALLOWLIST_HOSTS", "api.github.com")
     monkeypatch.setenv("GITHUB_TOKEN", "x" * 40)
 
-    mod.GitHubSession._request = fake_request  # type: ignore[method-assign]
+    monkeypatch.setattr(m.GitHubSession, "_request", fake_request)
 
     rc = m.main(["--owner", "o", "--repo", "r", "--apply", "--detect-default-branch"])
     assert rc == 0, "rc is not valid"

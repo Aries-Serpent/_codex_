@@ -511,6 +511,8 @@ def main() -> int:
             )
         else:
             result = check_package_py312_support(package)
+            if time.monotonic() >= online_deadline:
+                budget_exhausted = True
         results.append(result)
 
         if result["error"]:

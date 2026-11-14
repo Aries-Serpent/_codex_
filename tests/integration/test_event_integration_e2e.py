@@ -199,8 +199,7 @@ class TestCheckpointResumeIntegration:
             # The checkpoint should be independent of training config
             # Assert
             assert (
-                loaded_state["step"] == 100,
-                "Condition must be true",
+                loaded_state["step"] == 100
             ), "Checkpoint step should be preserved regardless of config"
 
         finally:

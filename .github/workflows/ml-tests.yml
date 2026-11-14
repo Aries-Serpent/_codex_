@@ -13,16 +13,16 @@ name: ML Components Test Suite
     branches:
       - main
       - 0D_base_
+      - copilot/session-*
   schedule:
     - cron: '0 2 * * *'
 
 permissions:
   contents: read
-  checks: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test-ml-components:
@@ -54,7 +54,7 @@ jobs:
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ matrix.python-version }}
-          extras: runtime
+          extras: runtime,test-ml-integrations
           install-torch: true
           install-preflight-extras: false
           cache-tier: common
@@ -73,12 +73,13 @@ jobs:
           set -euo pipefail
           PYTHON_BIN="${VENV_PYTHON:-python3}"
           "$PYTHON_BIN" -m pip install --upgrade pip
-          "$PYTHON_BIN" -m pip install -e '.[runtime]'
+          "$PYTHON_BIN" -m pip install -e '.[runtime,test-ml-integrations]'
           # Marker filtering still imports all selected modules during collection.
           "$PYTHON_BIN" -m pip install \
             "detect-secrets>=1.5.0" \
             "hypothesis>=6.165.10,<7.0.0" \
             "freezegun>=1.5.1"
+          "$PYTHON_BIN" -m pip check
           export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
           if [ -d "$PWD/agents/codex_client" ]; then
             export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
@@ -93,12 +94,17 @@ jobs:
               "datasets",
               "accelerate",
               "peft",
+              "sqlparse", "nox", "mypy", "ruff", "black", "isort",
+              "pymysql", "imageio", "skimage", "pywt", "cv2", "ray",
               "pytest",
               "detect_secrets",
               "hypothesis",
               "freezegun",
           ]:
               importlib.import_module(name)
+          torch = importlib.import_module("torch")
+          if getattr(torch, "IS_CODEX_STUB", False) or torch.tensor([1.0, 2.0]).sum().item() != 3.0:
+              raise RuntimeError("Real CPU PyTorch is required for ML validation")
           print("ML dependency preflight OK")
           PY
 
@@ -129,11 +135,16 @@ jobs:
           fail_ci_if_error: false
     timeout-minutes: 60
 
-  test-integration-slow:
+  integration-shard:
     permissions:
       contents: read
     runs-on: ubuntu-latest
     needs: test-ml-components
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -144,7 +155,7 @@ jobs:
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
-          extras: runtime
+          extras: runtime,test-ml-integrations
           install-torch: true
           install-preflight-extras: false
           cache-tier: common
@@ -163,12 +174,13 @@ jobs:
           set -euo pipefail
           PYTHON_BIN="${VENV_PYTHON:-python3}"
           "$PYTHON_BIN" -m pip install --upgrade pip
-          "$PYTHON_BIN" -m pip install -e '.[runtime]'
+          "$PYTHON_BIN" -m pip install -e '.[runtime,test-ml-integrations]'
           # The coverage step collects tests/ before applying its marker filter.
           "$PYTHON_BIN" -m pip install \
             "detect-secrets>=1.5.0" \
             "hypothesis>=6.165.10,<7.0.0" \
             "freezegun>=1.5.1"
+          "$PYTHON_BIN" -m pip check
           export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
           if [ -d "$PWD/agents/codex_client" ]; then
             export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
@@ -183,62 +195,212 @@ jobs:
               "datasets",
               "accelerate",
               "peft",
+              "sqlparse", "nox", "mypy", "ruff", "black", "isort",
+              "pymysql", "imageio", "skimage", "pywt", "cv2", "ray",
               "pytest",
               "detect_secrets",
               "hypothesis",
               "freezegun",
           ]:
               importlib.import_module(name)
+          torch = importlib.import_module("torch")
+          if getattr(torch, "IS_CODEX_STUB", False) or torch.tensor([1.0, 2.0]).sum().item() != 3.0:
+              raise RuntimeError("Real CPU PyTorch is required for ML validation")
           print("ML dependency preflight OK")
           PY
 
       - name: Run integration tests
-        # Step budgets keep the job below its 60-minute limit; a job-level
-        # timeout cancels the job and GitHub may then discard its step logs.
-        timeout-minutes: 20
+        timeout-minutes: 18
         run: |
           set -euo pipefail
-          export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
+          export PYTHONPATH="$PWD/scripts/ci:$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
           if [ -d "$PWD/agents/codex_client" ]; then
             export PYTHONPATH="$PWD/agents/codex_client${PYTHONPATH:+:$PYTHONPATH}"
           fi
           mkdir -p reports
           pytest tests/integration/ \
+            -p ml_pytest_shards \
             -v \
             -rfE \
             -m "integration" \
+            --durations=30 \
             --timeout=600 \
-            --junitxml=reports/integration-junit.xml
+            --ml-shards=4 --ml-shard=${{ matrix.shard }} \
+            --ml-shard-report=reports/selection.json \
+            --junitxml=reports/junit.xml
+
+      - name: Summarize integration shard
+        if: always()
+        run: |
+          "${VENV_PYTHON:-python3}" scripts/ci/ml_slow_aggregate.py summarize \
+            --reports reports --label "Integration shard ${{ matrix.shard }}"
 
       - name: Upload integration test report
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
-          path: reports/integration-junit.xml
-          name: integration-junit
+          path: reports/
+          name: int-junit-${{ matrix.shard }}
           retention-days: 30
           if-no-files-found: warn
 
-      - name: Run all tests with coverage
-        if: always()
-        timeout-minutes: 30
+  coverage-shard:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    needs: test-ml-components
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python with caching
+        id: setup-python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          extras: runtime,test-ml-integrations
+          install-torch: true
+          install-preflight-extras: false
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v3' }}
+
+      - name: Export venv interpreter
         run: |
-          set -e
+          set -euo pipefail
+          VENV_PYTHON="${{ steps.setup-python.outputs.venv-python }}"
+          echo "VENV_PYTHON=${VENV_PYTHON}" >> "$GITHUB_ENV"
+          "${VENV_PYTHON}" --version
+
+      - name: Install project and ML runtime dependencies
+        run: |
+          set -euo pipefail
+          # Optional integrations exercised by the unit suite (pyproject extra).
+          "${VENV_PYTHON}" -m pip install -e '.[runtime,test-ml-integrations]'
+          "${VENV_PYTHON}" -m pip install \
+            "detect-secrets>=1.5.0" \
+            "hypothesis>=6.165.10,<7.0.0" \
+            "freezegun>=1.5.1"
+          "${VENV_PYTHON}" -m pip check
+          export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
+          "${VENV_PYTHON}" - <<'PY'
+          import importlib
+          for name in [
+              "numpy", "torch", "transformers", "sentencepiece", "datasets",
+              "accelerate", "peft", "pytest", "pytest_cov", "coverage",
+              "detect_secrets", "hypothesis", "freezegun",
+              "sqlparse", "nox", "mypy", "ruff", "black", "isort",
+              "pymysql", "imageio", "skimage", "pywt", "cv2", "ray",
+          ]:
+              importlib.import_module(name)
+          torch = importlib.import_module("torch")
+          if getattr(torch, "IS_CODEX_STUB", False) or torch.tensor([1.0, 2.0]).sum().item() != 3.0:
+              raise RuntimeError("Real CPU PyTorch is required for ML validation")
+          print("ML dependency preflight OK")
+          PY
+
+      - name: Run non-integration coverage tests
+        timeout-minutes: 30
+        env:
+          COVERAGE_FILE: .coverage.unit-${{ matrix.shard }}
+        run: |
+          set -euo pipefail
+          export PYTHONPATH="$PWD/scripts/ci:$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
+          mkdir -p reports
           pytest tests/ \
+            -p ml_pytest_shards \
             -rfE \
+            --durations=30 \
             --timeout=300 \
+            --ml-shards=4 --ml-shard=${{ matrix.shard }} \
+            --ml-shard-report=reports/selection.json \
+            --junitxml=reports/junit.xml \
             --cov=src \
             --cov=training \
-            --cov-report=term \
-            --cov-report=html \
-            --cov-fail-under=70 \
+            --cov-report= \
+            --cov-fail-under=0 \
             -m "not slow and not integration"
 
-      - name: Upload coverage report
+      - name: Summarize coverage shard
+        if: always()
+        run: |
+          "${VENV_PYTHON:-python3}" scripts/ci/ml_slow_aggregate.py summarize \
+            --reports reports --label "Coverage shard ${{ matrix.shard }}"
+
+      - name: Stage unit coverage data
+        if: always()
+        run: |
+          # Missing data still fails closed in ml-slow-aggregate; staging keeps JUnit evidence uploadable.
+          if [ -f ".coverage.unit-${{ matrix.shard }}" ]; then
+            cp ".coverage.unit-${{ matrix.shard }}" reports/
+          else
+            echo "::warning::.coverage.unit-${{ matrix.shard }} was not produced; aggregate will fail closed"
+          fi
+
+      - name: Upload unit coverage and JUnit
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
-          path: htmlcov/
-          name: coverage-report
-          retention-days: 90
-    timeout-minutes: 60
+          path: reports/
+          name: unit-cov-${{ matrix.shard }}
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: warn
+
+  ml-slow-aggregate:
+    name: ml-slow-aggregate
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    needs: [test-ml-components, integration-shard, coverage-shard]
+    if: always()
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Set up aggregate Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12'
+
+      - name: Install report tooling
+        run: python -m pip install "coverage>=7.10.6,<8" "pytest>=9,<10" "defusedxml>=0.7.1,<1"
+
+      - name: Download integration reports only
+        if: always()
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          pattern: int-junit-*
+          path: reports/integration
+
+      - name: Download unit coverage only
+        if: always()
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          pattern: unit-cov-*
+          path: reports/unit
+
+      - name: Validate shards and enforce combined unit coverage
+        if: always()
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          python scripts/ci/ml_slow_aggregate.py aggregate --reports reports
+
+      - name: Upload aggregate reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          path: |
+            reports/*-merged.xml
+            htmlcov/
+          name: ml-slow-reports
+          retention-days: 30
+          if-no-files-found: warn

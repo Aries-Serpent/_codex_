@@ -15,10 +15,12 @@ import pytest
 
 
 def _require_checkpoint_torch() -> None:
-    """Skip when the local torch shim lacks checkpoint I/O helpers."""
+    """Skip checkpoint I/O tests when real PyTorch is unavailable."""
     import torch
 
-    if not all(hasattr(torch, attr) for attr in ("save", "load")):
+    if getattr(torch, "IS_CODEX_STUB", False) or not all(
+        callable(getattr(torch, attr, None)) for attr in ("save", "load")
+    ):
         pytest.skip("PyTorch save/load is unavailable in this environment")
 
 
@@ -345,8 +347,7 @@ class TestCheckpointErrorHandling:
         # Assert
         assert Path(result).exists(), "Nested checkpoint directory should be created"
         assert (
-            Path(result) / "weights.pt",
-            "Result must not be empty",
+            Path(result) / "weights.pt"
         ).exists(), "Weights file should exist in nested directory"
 
 

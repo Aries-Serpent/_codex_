@@ -1,3 +1,7 @@
+from cognitive_brain.quantum.compression import PatternCompressor
+import numpy as np
+import pytest
+import time
 #         assert (
 #             assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
 #         ), "Condition must be true"
@@ -604,6 +608,24 @@
 # ============================================================================
 # Category 5: Compression Tests (5 tests)
 # ============================================================================
+
+
+@pytest.fixture
+def sample_features():
+    """Create sample feature dict."""
+    return {
+        "score": 0.75,
+        "risk": 0.5,
+        "cost_normalized": 0.3,
+        "impact": 0.8,
+        "violation_count": 0.2,
+    }
+
+
+@pytest.fixture
+def pattern_compressor():
+    """Create pattern compressor for testing."""
+    return PatternCompressor(target_dimensions=5)
 
 
 class TestCompression:

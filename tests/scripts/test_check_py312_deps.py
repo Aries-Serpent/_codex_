@@ -258,6 +258,39 @@ class TestMain:
 class TestOnlineBudget:
     """The PyPI query phase is bounded so the checker cannot run unbounded."""
 
+    def test_deadline_expiring_during_final_query_is_inconclusive_and_uncached(self, monkeypatch):
+        monkeypatch.setenv("CODEX_PY312_DEPS_BUDGET_SECONDS", "1")
+        monkeypatch.setattr(
+            check_py312_deps, "load_dependencies_from_active_manifests", lambda: ["pytest"]
+        )
+        monkeypatch.setattr(check_py312_deps, "_cache_load", lambda _fingerprint: None)
+        monkeypatch.setattr(
+            check_py312_deps,
+            "check_package_py312_support",
+            lambda package: {
+                "name": package,
+                "version": "9.0.0",
+                "python_requires": ">=3.9",
+                "supports_312": True,
+                "error": None,
+                "warning": None,
+            },
+        )
+        monkeypatch.setattr(
+            check_py312_deps,
+            "_cache_save",
+            lambda *_args: pytest.fail("expired online results must not be cached"),
+        )
+        monotonic_values = iter((10.0, 10.5, 11.1))
+        monkeypatch.setattr(check_py312_deps.time, "monotonic", lambda: next(monotonic_values))
+
+        with patch("builtins.print") as mock_print:
+            exit_code = check_py312_deps.main()
+
+        assert exit_code == 2
+        output = " ".join(str(call.args[0]) for call in mock_print.call_args_list if call.args)
+        assert "INCONCLUSIVE" in output
+
     @patch("check_py312_deps._cache_save")
     @patch("check_py312_deps._cache_load", return_value=None)
     @patch("check_py312_deps.load_dependencies_from_active_manifests")

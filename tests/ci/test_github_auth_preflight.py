@@ -84,23 +84,38 @@ def test_missing_bootstrap_credential_fails_without_values(credentials, capsys):
 
 
 def test_preflight_supports_documented_app_aliases(credentials, monkeypatch):
-    monkeypatch.setenv("REPO", "o/r")
+    monkeypatch.delenv("REPO", raising=False)
+    monkeypatch.delenv("GITHUB_REPOSITORY", raising=False)
     monkeypatch.setenv("_GITHUB_APP_ID", "1")
     monkeypatch.setenv("_GITHUB_APP_PRIVATE_KEY", "-----BEGIN FIXTURE-----")
     monkeypatch.setenv("_GITHUB_APP_INSTALLATION_ID", "2")
     calls = []
 
-    def mint(*args):
-        calls.append(args)
+    def mint(*args, **kwargs):
+        calls.append((args, kwargs))
         return "temporary-fixture"
 
     monkeypatch.setattr(preflight, "_mint_app_token", mint)
     monkeypatch.setattr(preflight, "_gh", lambda *args: (200, {}))
     result = preflight.inspect_access("o/r", "owner-approval", "main")
-    assert calls == [("1", "-----BEGIN FIXTURE-----", "2")]
+    assert calls == [(("1", "-----BEGIN FIXTURE-----", "2"), {"repo": "o/r"})]
     assert result["app_route"] == "verified-installation"
     assert result["routes"][0]["source"] == "cognitive-brain-app"
     assert "temporary-fixture" not in json.dumps(result)
+
+
+def test_preflight_rejects_conflicting_ambient_repository(credentials, monkeypatch):
+    monkeypatch.setenv("REPO", "other/repository")
+    monkeypatch.setenv("_GITHUB_APP_ID", "1")
+    monkeypatch.setenv("_GITHUB_APP_PRIVATE_KEY", "-----BEGIN FIXTURE-----")
+    monkeypatch.setenv("_GITHUB_APP_INSTALLATION_ID", "2")
+    monkeypatch.setattr(
+        preflight, "_mint_app_token", lambda *args, **kwargs: pytest.fail("must not mint")
+    )
+
+    result = preflight.inspect_access("o/r", "owner-approval", "main")
+
+    assert result["app_route"] == "repository-scope-mismatch"
 
 
 def test_bad_app_key_fails_before_mint(credentials, monkeypatch):

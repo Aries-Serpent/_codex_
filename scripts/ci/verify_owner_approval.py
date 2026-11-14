@@ -21,6 +21,13 @@ else:
     _gh = script_request
 
 
+def _valid_reviewer(entry: object) -> bool:
+    if not isinstance(entry, dict) or entry.get("type") not in {"User", "Team"}:
+        return False
+    reviewer = entry.get("reviewer")
+    return isinstance(reviewer, dict) and type(reviewer.get("id")) is int and reviewer["id"] > 0
+
+
 def protection_error(environment: dict[str, Any], marker: str) -> str | None:
     if marker != "true":
         return "missing-or-invalid-environment-marker"
@@ -39,6 +46,8 @@ def protection_error(environment: dict[str, Any], marker: str) -> str | None:
         or not reviewers[0]["reviewers"]
     ):
         return "missing-independent-environment-review"
+    if any(not _valid_reviewer(entry) for entry in reviewers[0]["reviewers"]):
+        return "invalid-environment-reviewer"
     if environment.get("can_admins_bypass") is not False:
         return "environment-allows-administrator-bypass"
     policy = environment.get("deployment_branch_policy")

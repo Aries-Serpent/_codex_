@@ -47,6 +47,7 @@ def test_load_plugins_monkeypatched(monkeypatch):
         registered.append(SimpleNamespace(name=name, fn=fn))
 
 
+    from codex_ml.plugins.loader import load_plugins
     count = load_plugins("codex_ml.metrics", register=register)
     assert count == 1, "Count must be greater than zero"
     assert calls == {"hook": 1, "registered": 1}
