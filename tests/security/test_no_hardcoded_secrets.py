@@ -7,6 +7,7 @@ Test module for no hardcoded secrets.
 from __future__ import annotations
 
 import re
+import time
 from pathlib import Path
 
 SUSPICIOUS_PATTERNS = [
@@ -16,8 +17,9 @@ SUSPICIOUS_PATTERNS = [
     re.compile(
         r"-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED )?PRIVATE KEY-----"  # pragma: allowlist secret
         # Optional RFC 1421 headers (Proc-Type, DEK-Info) precede encrypted bodies.
-        r"(?:\s*(?:\\n|\n)[A-Za-z][A-Za-z0-9-]*:[^\n\\]*)*"
-        r"(?:\s*(?:\\n|\n))+\s*[A-Za-z0-9+/=]{40,}"
+        # Separators exclude newlines so each line break has exactly one match path (no ReDoS).
+        r"(?:[ \t\r]*(?:\\n|\n)[A-Za-z][A-Za-z0-9-]*:[^\n\\]*)*"
+        r"(?:[ \t\r]*(?:\\n|\n))+[ \t\r]*[A-Za-z0-9+/=]{40,}"
     ),
     # Match aws_secret_access_key when assigned to a hardcoded value (not os.getenv)
     # This allows legitimate config key usage but catches actual secrets
@@ -71,3 +73,13 @@ def test_private_key_pattern_detects_encrypted_pem_headers() -> None:
         assert pem_pattern.search(literal), kind
         escaped = "\\n".join([begin, *headers, "", body])
         assert pem_pattern.search(f'KEY = "{escaped}"'), kind
+
+
+def test_private_key_pattern_is_linear_on_repeated_newlines() -> None:
+    """Many blank lines without key material must fail fast (no exponential backtracking)."""
+    begin = "-----BEGIN PRIVATE KEY-----"  # pragma: allowlist secret
+    pem_pattern = SUSPICIOUS_PATTERNS[0]
+    for separator in ("\n", " \n", "\\n"):
+        started = time.perf_counter()
+        assert not pem_pattern.search(begin + separator * 5000 + "!")
+        assert time.perf_counter() - started < 1.0

@@ -25265,3 +25265,10 @@ Local results: 26 passed in the focused tests and 42 passed (11 skipped) in the 
 tests. actionlint passed. Open, unchanged: the coverage gate is at 54.90% against 70%
 (the #5787 decision is pending), and the Trivy `uv.lock` CVEs are in pre-existing
 dependencies.
+
+## Session: #5766 CodeQL ReDoS follow-up (2026-11-14)
+
+Direct execution. CodeQL on #5766 head `e41e549ec5` flagged a high-severity ReDoS in the
+PEM pattern added in #5796. Its `\s*` overlapped with `\n`; the old pattern took 0.46 s
+at only 22 newlines and roughly quadrupled with every two more. The separators are now
+`[ \t\r]*`. Local: 4 passed, including a 5,000-newline timing guard.

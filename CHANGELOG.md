@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed - #5766 CodeQL ReDoS follow-up
+
+- `tests/security/test_no_hardcoded_secrets.py`: the PEM header pattern uses newline-free
+  separators to remove exponential backtracking (CodeQL `py/redos`), with a timing regression test.
+
 ### Fixed - #5766 Copilot review follow-up
 
 - `src/data/loaders.py`: nested dict keys now pass JSON-mode pollution validation.
