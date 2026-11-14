@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### Security - PR #5812 review: fail-closed SARIF, approval windows and owner-approval branches
+
+- `codeql-ga-gate.yml` rejects SARIF documents whose `runs` list is missing or
+  empty, or whose runs/results are not objects or lists, before writing alert counts.
+- `owner_approval_guard.sh` honors `OWNER_APPROVED_UNTIL`/`OWNER_APPROVED_DURATION`
+  only when `OWNER_APPROVAL_PROTECTED=true`; otherwise it denies with `env-unprotected`.
+- `verify_owner_approval.py` runs in script mode (repository root on `sys.path`)
+  and requires custom deployment branch policies listing exactly `main` and `0D_base_`.
+
 ### Changed - PR #5787 ML coverage ratchet folded into `0D_base_`
 
 - `ml-slow-aggregate` gates combined unit coverage on the ratchet floor in

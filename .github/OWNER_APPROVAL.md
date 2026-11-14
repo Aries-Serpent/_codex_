@@ -34,6 +34,12 @@ gh variable set OWNER_APPROVED_DURATION -b "24h"
 gh variable set OWNER_APPROVED_UNTIL -b "2025-10-21T00:00:00Z"
 ```text
 
+The guard honors these windows only inside the protected `owner-approval`
+environment, where the environment secret sets `OWNER_APPROVAL_PROTECTED=true`.
+Without that marker a window is denied (`env-unprotected`). The environment must
+use custom deployment branch policies listing exactly `main` and `0D_base_`;
+`scripts/ci/verify_owner_approval.py` rejects any other configuration.
+
 Auto-disable behavior
 - On each push, .github/workflows/workflow-expiry-enforcer.yml checks window expiry.
 - If expired, it moves every workflow YAML except itself into .github/_workflows_disabled/ and commits the change.
