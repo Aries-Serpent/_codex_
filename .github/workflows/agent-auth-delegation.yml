@@ -1116,8 +1116,12 @@ jobs:
           echo "No changes to commit"
         else
           git commit -m "chore(auth): write provenance session token [skip ci]"
-          git pull --rebase --autostash origin "${TARGET_BRANCH}" || true
-          git push origin HEAD:refs/heads/${TARGET_BRANCH}
+          # The trusted checkout persists no credentials; authenticate only these commands.
+          AUTH_HEADER=$(printf 'x-access-token:%s' "${GH_TOKEN}" | base64 -w0)
+          echo "::add-mask::${AUTH_HEADER}"
+          GIT_AUTH=(-c "http.https://github.com/.extraheader=AUTHORIZATION: basic ${AUTH_HEADER}")
+          git "${GIT_AUTH[@]}" pull --rebase --autostash origin "${TARGET_BRANCH}" || true
+          git "${GIT_AUTH[@]}" push origin HEAD:refs/heads/${TARGET_BRANCH}
         fi
 
     - name: Dispatch GitHub Guru (maintainer verification)
@@ -1165,7 +1169,9 @@ jobs:
         \nelse\n  git add .codex/session_context_latest.md .codex/session_context_latest.json\
         \ 2>/dev/null || true\n  _commit_ok=false\n  _push_ok=false\n  if git commit\
         \ -m \"chore(d00): update session context digest [skip ci]\" 2>/dev/null;\
-        \ then\n    _commit_ok=true\n    if git push origin HEAD 2>/dev/null; then\n\
+        \ then\n    _commit_ok=true\n    _auth=$(printf 'x-access-token:%s' \"$GITHUB_TOKEN\" | base64 -w0)\n\
+        \    echo \"::add-mask::${_auth}\"\n    if git -c \"http.https://github.com/.extraheader=AUTHORIZATION:\
+        \ basic ${_auth}\" push origin HEAD 2>/dev/null; then\n\
         \      _push_ok=true\n    fi\n  fi\n  if [ \"$_commit_ok\" = \"true\" ] &&\
         \ [ \"$_push_ok\" = \"true\" ]; then\n    echo \"\u2705 Context digest committed\
         \ and pushed.\" | tee -a \"$GITHUB_STEP_SUMMARY\"\n  elif [ \"$_commit_ok\"\

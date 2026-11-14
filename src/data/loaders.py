@@ -21,6 +21,11 @@ def safe_line_loader(path: str | Path) -> Iterator[str]:
             yield sanitized
 
 
+def _validate_json_key(key: object) -> str:
+    """Reject prototype-pollution names and control characters in keys."""
+    return validate_input(validate_input(cast(str, key), input_type="json"), input_type="text")
+
+
 def _validate_json_value(value: object) -> object:
     """Validate string leaves and keys while preserving JSON scalar types."""
     if isinstance(value, str):
@@ -28,10 +33,7 @@ def _validate_json_value(value: object) -> object:
     if value is None or isinstance(value, (bool, int, float)):
         return value
     if isinstance(value, dict):
-        return {
-            validate_input(key, input_type="text"): _validate_json_value(item)
-            for key, item in value.items()
-        }
+        return {_validate_json_key(key): _validate_json_value(item) for key, item in value.items()}
     if isinstance(value, (list, tuple)):
         return [_validate_json_value(item) for item in value]
     raise SecurityError(f"Unsupported JSON value type: {type(value)}")
