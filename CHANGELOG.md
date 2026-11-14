@@ -10,6 +10,10 @@
 - Restore the dev lock's MCP pin to 1.29.0, required exactly by Semgrep 1.175.0; MCP 2.3.0 cannot be safely substituted even with its missing transitive dependencies added.
 - Record PR #5752's verified artifact hashes, isolated compatibility checks, current PDA/accountability evidence and explicit full-lock, setup and hosted-CI continuation checkpoints.
 
+### Fixed — Main hotfix sync of corrected governance workflows (2026-11-14)
+- Sync 26 workflow, action, script and test files byte-identically from `0D_base_` to `main` ahead of #5766 promotion (PR #5812, issue #5809): owner approval is environment-only and the committed session file is evidence-only; auto-approve is WEC-gated; cost-gate callers grant `issues: write`; CodeQL pins/config; credential-free fork `cargo audit`; hashed extras cache keys.
+- Owner-approval paths fail closed on `main` until the protected `owner-approval` environment and `OWNER_APPROVAL_PROTECTED` are configured (#5806). `ml-tests.yml` and the RAG coverage path stay with #5766.
+
 ### Changed — Evidence-gated recovery draft continuation (2026-11-02)
 - Add read-only merged observations and calibration diagnostics, durable cancellation, explicit append-only learning reconciliation, cooperating-writer snapshots and separate retained-evidence human handoffs; default live transport/recovery and genuine owner evidence remain gated.
 - Retain Enterprise CodeQL SARIF and analyzed-source/run metadata, expose informational scanner exits and report actual job outcomes without implying a clean scan from job success.

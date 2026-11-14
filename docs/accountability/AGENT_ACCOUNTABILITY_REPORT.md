@@ -24,6 +24,18 @@
 
 ---
 
+## Session: PR #5812 main hotfix sync — 2026-11-14
+
+### Agents Used
+
+- None — direct execution (no delegated agents).
+
+### Evidence and outcome
+
+- Copied 26 files byte-identically from `origin/0D_base_` @ `095ac1ff6a` onto a branch cut from `origin/main` (`git diff --quiet origin/0D_base_ -- <paths>` clean); excluded `ml-tests.yml`, `test-rag.yml`, `tests/rag/.coveragerc` and the `0D_base_` `test_workflow_validation.py`.
+- Local only (not hosted CI): focused `tests/ci` pytest 306 passed / 3 skipped; actionlint 1.7.12 0 findings; yamllint 0 errors; ruff/mypy pass; `git diff --check` clean. Black flags three files already unformatted on `main` (#5802).
+- This CHANGELOG/report entry is placed outside `0D_base_`'s changed hunks; `git merge-tree` confirms #5766 still merges cleanly. Merge is human-only.
+
 ## Session: PR #5761 review-thread follow-up — 2026-11-07
 
 ### Agents Used
