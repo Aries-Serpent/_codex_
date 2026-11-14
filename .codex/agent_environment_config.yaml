@@ -1,5 +1,5 @@
-environment_type: ml-heavy
-reason: "Detected ML/RAG signal: 'ml'"
+environment_type: standard
+reason: No ML/RAG/security/docs signal detected; defaulting to standard environment.
 lfs_mode: none
 lfs_include_paths: []
 local_sandbox_policy:
