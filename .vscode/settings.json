@@ -1,5 +1,7 @@
 {
-  "python.analysis.extraPaths": ["${workspaceFolder}/src"],
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/src"
+  ],
   "python.analysis.typeCheckingMode": "basic",
   "python.testing.cwd": "${workspaceFolder}",
   "python.testing.pytestEnabled": true,
@@ -18,7 +20,15 @@
   "black-formatter.importStrategy": "fromEnvironment",
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
-    "editor.rulers": [100]
+    "editor.rulers": [
+      100
+    ]
   },
-  "files.insertFinalNewline": true
+  "files.insertFinalNewline": true,
+  "chat.mcp.assisted.nuget.enabled": true,
+  "chat.unifiedAgentsBar.enabled": true,
+  "chat.restoreLastPanelSession": true,
+  "chat.agentSessionProjection.enabled": true,
+  "chat.tools.terminal.outputCompaction": true,
+  "chat.tools.terminal.outputDeltas": true
 }
