@@ -131,6 +131,7 @@ def test_runner_handles_rouge_float_return(tmp_path: Path, monkeypatch):
 
     # Register mock metric in registry instead of patching module
 
+    from codex_ml.metrics import registry
     monkeypatch.setitem(registry._METRIC_REGISTRY, "rouge_l", mock_rouge_l)
 
     output_dir = tmp_path / "output"
@@ -163,6 +164,7 @@ def test_runner_handles_rouge_dict_return(tmp_path: Path, monkeypatch):
         return {"rougeL_f": 0.88, "rougeL": 0.88}
 
 
+    import codex_ml.eval.metrics as metrics_module
     monkeypatch.setattr(metrics_module, "rouge_l", mock_rouge_l)
 
     output_dir = tmp_path / "output"

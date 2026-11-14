@@ -6,6 +6,8 @@ Test module for resume and retention.
 
 from __future__ import annotations
 
+import os
+
 import json
 import tempfile
 from pathlib import Path

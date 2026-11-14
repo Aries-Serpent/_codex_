@@ -1,3 +1,8 @@
+from typing import Any
+import asyncio
+from mcp.server import jsonrpc_adapter
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 #     assert adapter.query_calls ==: 2,
 #
 #     assert adapter.query_calls ==: 2,
@@ -147,6 +152,34 @@
 #         )
 #     )
 #     assert failure["error"] == {"code": -32000, "message": "Adapter query failed"}
+
+
+class _FakeAdapter:
+    """Test stub adapter for MCP JSON-RPC adapter tests."""
+
+    def __init__(self) -> None:
+        self.query_calls: list[dict[str, Any]] = []
+
+    def query_top_k(
+        self,
+        namespace: str,
+        query_embedding: list[float],
+        top_k: int = 5,
+        filters: dict[str, Any] | None = None,
+    ) -> list[dict[str, Any]]:
+        self.query_calls.append(
+            {
+                "namespace": namespace,
+                "query_embedding": query_embedding,
+                "top_k": top_k,
+                "filters": filters,
+            }
+        )
+        return [{"id": "hit-1", "score": 0.9}]
+
+
+def _run_test_async(coro: Any) -> Any:
+    return asyncio.run(coro)
 
 
 def test_dispatch_method_handles_unknown_tool_and_method() -> None:

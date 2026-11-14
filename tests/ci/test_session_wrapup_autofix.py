@@ -203,6 +203,34 @@ def test_pr_generator_keeps_recorded_direct_execution(monkeypatch):
     assert swa.check_pr_body_agents_used(generated)[0]
 
 
+@pytest.mark.parametrize("with_wec", [False, True])
+def test_description_refresh_preserves_review_evidence_and_is_repeatable(monkeypatch, with_wec):
+    monkeypatch.setattr(swa, "_compute_merge_readiness_score", lambda: {"dimensions": []})
+    monkeypatch.setattr(swa, "_build_recent_changes_md", lambda: "Latest repair")
+    monkeypatch.setattr(
+        swa, "_build_scorecard_md", lambda data: swa._SCORECARD_MARKER + "\nLocal only."
+    )
+    monkeypatch.setattr(
+        swa, "_build_followup_prompt_md", lambda data: "## 🔄 Follow-Up Prompt\nNo new authority."
+    )
+    monkeypatch.setattr(swa, "_short_sha", lambda: "current")
+    monkeypatch.setattr(swa, "_now_iso", lambda: "2026-11-14T00:00:00Z")
+    wec = swa._build_wec_block({"auth-tests.yml": True}) if with_wec else ""
+    body = (
+        "## Description\nMaintainer scope.\n\n" + wec + "\n## Type of Change\n- [x] Bug fix\n"
+        "## Testing\nExact command: passed; real adapter unavailable.\n"
+        "<!-- Keep reviewer instructions. -->\n"
+        "## Reviewers\nMaintainer.\n"
+    )
+
+    refreshed = swa._build_meaningful_pr_body("42", {"auth-tests.yml": True}, body)
+
+    assert body in refreshed
+    assert refreshed.count(swa._WEC_MARKER) == 1
+    assert "- [x] auth-tests.yml" in refreshed
+    assert swa._build_meaningful_pr_body("42", {"auth-tests.yml": True}, refreshed) == refreshed
+
+
 @pytest.mark.parametrize(
     "suffix",
     ["", "\n---", "\n \t--- \t\n\n---", "\n---" + "\n\n---" * 10000],
@@ -223,3 +251,25 @@ def test_agent_attestation_preserves_non_separator_content(suffix):
     attestation = "## 🤖 Agents Used\n- `real-agent`\n" + suffix
     generated = swa._preserve_agent_attestation(swa._REQUIRED_PR_CHECKBOXES, attestation)
     assert attestation + "\n\n---\n\n" + swa._WEC_MARKER in generated
+
+
+@pytest.mark.parametrize("concurrent_edit", [False, True])
+def test_description_refresh_revalidates_body_before_edit(monkeypatch, concurrent_edit, capsys):
+    original = "## Description\nOriginal scope."
+    current = original + ("\n\n## Testing\nNew maintainer evidence." if concurrent_edit else "")
+    snapshots = iter([original, current])
+    edits = []
+
+    def fake_run(command, **kwargs):
+        if command[:3] == ["gh", "pr", "view"]:
+            return swa.subprocess.CompletedProcess(command, 0, stdout=next(snapshots))
+        edits.append(command)
+        return swa.subprocess.CompletedProcess(command, 0, stdout="")
+
+    monkeypatch.setattr(swa.subprocess, "run", fake_run)
+    monkeypatch.setattr(swa, "_build_meaningful_pr_body", lambda *args: "Generated body")
+
+    assert swa.update_pr_description("42") is not concurrent_edit
+    assert bool(edits) is not concurrent_edit
+    if concurrent_edit:
+        assert "changed" in capsys.readouterr().out

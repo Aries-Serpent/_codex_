@@ -2,6 +2,94 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5794 consolidated recovery (2026-11-14)
+- Require the expected JWT audience and reject non-finite or non-numeric
+  not-before claims, retaining optional not-before and valid elapsed dates.
+- Consolidate validated L2/L3b/L4 and CLI repairs; bind shard/JUnit evidence to
+  completed execution, exact test identities, repository, SHA, run and attempt.
+- Require dependency consistency and real CPU Torch in ML preflight while
+  preserving permissions, triggers and the 70 percent combined coverage gate.
+- Record actual validation limits and satisfy the failed accountability gate
+  without changing credentials or its denied documentation commit-back control.
+- Preserve authored PR template sections and validation evidence during
+  automated description refresh; repeated refreshes do not duplicate content.
+- Normalize MariaDB DSN autocommit options while retaining transactional mode;
+  report incomplete SentencePiece trainers explicitly before new-model training
+  without requiring a trainer to load an existing model.
+- Revalidate the live PR body after score calculation and refuse stale
+  description writes rather than overwrite concurrently authored review evidence.
+
+### Fixed - ML coverage shard collection error on PR #5784
+- Import Ray Serve explicitly (`from ray import serve`); `ray.serve` attribute
+  access raised AttributeError under Ray 2.60, which `importorskip` cannot skip,
+  aborting collection in all four coverage shards.
+- Migrate `hhg_logistics.serve.app` to the Ray 2.x Serve API: build
+  `LLMServiceDeployment` from the plain `LLMService` class, pass `route_prefix`
+  to `serve.run` and use `proxy_location`; add stub-Ray regression tests.
+- Stage unit coverage data only when produced, keeping JUnit evidence
+  uploadable while the aggregate still fails closed on missing shard data.
+- Align the development SBOM with pyasn1 0.6.5 (supersedes Dependabot #5786).
+
+### Fixed - ML coverage shard test-suite damage surfaced by PR #5784
+- Restore real torch modules after any test that drops or replaces them; torch
+  forbids re-import, which cascaded into ~580 shard-4 failures.
+- Restore imports, helpers and fixtures deleted from 76 test files by earlier
+  bulk sweeps, using git history as the source; undo `print`→`logger` identifier
+  mangling (`fingerprint` → `fingerlogger.info`) and four always-true tuple asserts.
+
+### Changed - Parallel ML slow-test follow-up to PR #5783
+- Split integration pass/fail into four stable file-path shards and the existing
+  non-slow/non-integration coverage selection into four independent shards.
+  Enforce the unchanged 70 percent gate only on combined unit shard data.
+- Add one stable aggregate job, selection-completeness checks, merged JUnit and
+  readable job summaries. Retain failures, cancellation and missing evidence as
+  failures regardless of coverage percentage.
+- Report the slowest 30 tests per shard, keep direct workflow permissions
+  read-only and cancel superseded PR runs rather than push/nightly runs.
+  Required-check configuration remains an administrator action.
+- Distinguish repeated module-level collection skips from selected JUnit cases;
+  preserve missing-test and collection-error failures while merging skips once.
+- Stream bounded, escaped test/collection failures into the running step summary
+  so diagnostics survive a timeout before final JUnit generation.
+- Increase coverage from two to four shards after both original shards exhausted
+  their hosted test budgets; keep the same selection and aggregate threshold.
+- Retain the original 30-minute coverage-step allowance after the four-way
+  hosted trial also timed out; reserve setup/reporting time in a 40-minute job.
+  Keep the 300-second per-test limit unchanged.
+- Integrate concurrent Copilot XML hardening and install its required defusedxml
+  dependency in the lightweight aggregate job; preserve proper XML element types.
+
+### Fixed - Delegated agent-maintainer authentication
+- Accept a server-verified, active, repository-scoped GitHub App as an agent
+  maintainer instead of requiring an installation token to impersonate a human.
+  Preserve genuine current-head review, actor separation, token expiry, exact
+  run/PR binding, GitHub rejection and the separate protected deployment gate.
+- Add credential-route preflight with real endpoint results, no credential
+  output and no repository mutations. Repair the existing App bootstrap's
+  undefined token resolver and unreachable administrative fallback.
+- Reject malformed success-response JSON as an explicit protocol error, not
+  successful capability evidence, and never echo its unparsed response body.
+- Document sole-owner agent-maintainer operation without requiring a second
+  human or treating labels, role metadata or token names as granted API scopes.
+
+### Fixed - PR #5783 protected approval and ML integration repair
+- Bind workflow-run approval to trusted workflow source and verified human
+  activation/session evidence; distinguish it from protected deployment review.
+  Verify live environment protection and grant only the environment-read scope
+  needed by the activation verifier.
+- Repair reproduced stale integration contracts, archived-document references,
+  OODA enum persistence and blocking observation, and checkpoint-sidecar schema
+  validation. Bound dependency inspection with an explicit INCONCLUSIVE exit
+  instead of treating partial inspection as successful readiness.
+- Preserve integration JUnit before coverage and cap test steps within the
+  existing job timeout; enable staging sub-PR ML validation without reducing
+  coverage thresholds. Hosted slow ML and administrator-controlled approval
+  remain acceptance requirements.
+- Record the actual three repair lanes and local/hosted evidence required by
+  the fresh delegation preflight; do not weaken its failed auto-fix push control.
+- Preserve concurrent manifest and secret-baseline automation through normal
+  integration rather than discarding its update or rewriting branch history.
+
 ### Fixed - PR #5781 RAG runner and CodeQL classification repair
 - Measure RAG coverage against the runtime implementation package rather than
   its compatibility shim. Hosted tests passed all 1,688 cases but generated no

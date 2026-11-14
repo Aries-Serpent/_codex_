@@ -166,6 +166,18 @@ def load_checkpoint(
             UserWarning,
             stacklevel=2,
         )
+    # Validate the sidecar independently of the weights payload.
+    meta_version = meta.get("_schema_version")
+    if meta_version is not None:
+        meta_version = str(meta_version)
+        if meta_version not in (SCHEMA_VERSION, checkpoint_version):
+            warnings.warn(
+                f"Checkpoint metadata declares schema v{meta_version}, "
+                f"current schema is v{SCHEMA_VERSION}. "
+                f"This may indicate compatibility issues.",
+                UserWarning,
+                stacklevel=2,
+            )
 
     state = payload.get("state", payload)
     return state, meta

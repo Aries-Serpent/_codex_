@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Any
 
 # Constants
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]  # src/tools/<this file> -> repo root
 SCHEMA_PATH = REPO_ROOT / "schemas" / "codex_status_update.schema.json"
 STATUS_DIR = REPO_ROOT / ".codex" / "status"
 

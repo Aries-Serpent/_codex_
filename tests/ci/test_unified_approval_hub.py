@@ -199,6 +199,16 @@ class TestWecLabelGateGuard:
     def test_require_wec_auto_approve_accepts_one_session_label_within_ttl(self, monkeypatch):
         def fake_gh(method, path, token, body=None):
             assert path.startswith("/repos/owner/repo/issues/123"), "Condition must be true"
+            if "/events?" in path:
+                return 200, [
+                    {
+                        "id": 1,
+                        "event": "labeled",
+                        "label": {"name": "wec:auto-approve-once"},
+                        "actor": {"login": "maintainer", "type": "User"},
+                        "created_at": (datetime.utcnow() - timedelta(minutes=30)).isoformat() + "Z",
+                    }
+                ]
             return (
                 200,
                 {
@@ -210,24 +220,46 @@ class TestWecLabelGateGuard:
         monkeypatch.setattr(require_wec_auto_approve, "_gh", fake_gh)
         assert require_wec_auto_approve.has_wec_auto_approve("token", "owner/repo", 123) is True
 
-    def test_require_wec_auto_approve_blocks_when_label_missing(self, monkeypatch):
+    def test_require_wec_auto_approve_blocks_when_label_missing(self, monkeypatch, tmp_path):
+        monkeypatch.chdir(tmp_path)
         monkeypatch.setattr(
             require_wec_auto_approve,
             "_gh",
             lambda *args, **kwargs: (
                 200,
-                {"labels": [], "created_at": (datetime.utcnow() - timedelta(hours=2)).isoformat() + "Z"},
+                {
+                    "labels": [],
+                    "created_at": (datetime.utcnow() - timedelta(hours=2)).isoformat() + "Z",
+                },
             ),
         )
         monkeypatch.setattr(
             sys,
             "argv",
-            ["require_wec_auto_approve.py", "--pr-number", "123", "--repo", "owner/repo", "--token", "token"],
+            [
+                "require_wec_auto_approve.py",
+                "--pr-number",
+                "123",
+                "--repo",
+                "owner/repo",
+                "--token",
+                "token",
+            ],
         )
         assert require_wec_auto_approve.main() == 1, "Condition must be true"
 
     def test_pending_run_gate_accepts_one_session_label_within_ttl(self, monkeypatch):
         def fake_gh(method, path, token, body=None):
+            if "/events?" in path:
+                return 200, [
+                    {
+                        "id": 1,
+                        "event": "labeled",
+                        "label": {"name": "wec:auto-approve-once"},
+                        "actor": {"login": "maintainer", "type": "User"},
+                        "created_at": (datetime.utcnow() - timedelta(minutes=30)).isoformat() + "Z",
+                    }
+                ]
             return (
                 200,
                 {
@@ -367,8 +399,12 @@ class TestAuditTrailLogging:
         final_lines = len(audit_log.read_all())
 
         assert final_lines == initial_lines + 1, "final_lines is not valid"
-        assert json.loads(audit_log.read_all()[0])["approval_id"] == "id-1", "Condition must be true"
-        assert json.loads(audit_log.read_all()[1])["approval_id"] == "id-2", "Condition must be true"
+        assert (
+            json.loads(audit_log.read_all()[0])["approval_id"] == "id-1"
+        ), "Condition must be true"
+        assert (
+            json.loads(audit_log.read_all()[1])["approval_id"] == "id-2"
+        ), "Condition must be true"
 
     def test_audit_entry_no_token_leakage(self, tmp_path):
         """Test: Token not included in audit log."""
@@ -386,7 +422,9 @@ class TestAuditTrailLogging:
 
         # Verify token not in output
         assert "token" not in logged, "Condition must be true"
-        assert logged["token_chain_resolution"]["token_source"] == "CODEX_MASTER_KEY", "Condition must be true"
+        assert (
+            logged["token_chain_resolution"]["token_source"] == "CODEX_MASTER_KEY"
+        ), "Condition must be true"
 
     def _create_audit_log(self, path):
         """Helper: Create audit log instance."""

@@ -1,5 +1,5 @@
-environment_type: standard
-reason: No ML/RAG/security/docs signal detected; defaulting to standard environment.
+environment_type: ml-heavy
+reason: "Detected ML/RAG signal: 'ml'"
 lfs_mode: none
 lfs_include_paths: []
 local_sandbox_policy:
@@ -8,7 +8,7 @@ local_sandbox_policy:
 runtime:
   python: 3.12
   required_dependencies:
-    - pandas>=3.0.5,<4
+    - pandas>=3.0.5,<3.1
     - numpy>=2.5.2,<3
     - scikit-learn>=1.9.0,<2
     - sentencepiece>=0.2.2
@@ -31,7 +31,7 @@ runtime:
     - chromadb>=1.5.9
     - faiss-cpu>=1.15.0,<2.0.0
   missing_dependencies:
-    - pandas>=3.0.5,<4
+    - pandas>=3.0.5,<3.1
     - numpy>=2.5.2,<3
     - scikit-learn>=1.9.0,<2
     - sentencepiece>=0.2.2

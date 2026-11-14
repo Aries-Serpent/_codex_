@@ -1,6 +1,21 @@
+import asyncio
+import builtins
+import os
+import sys
+import types
+from typing import Any
+
 import pytest
 
 pytest.importorskip("charset_normalizer")
+_app = pytest.importorskip("hhg_logistics.serve.app")
+GenConfig = _app.GenConfig
+LLMService = _app.LLMService
+_TorchInferenceContext = _app._TorchInferenceContext
+_config_fingerprint = _app._config_fingerprint
+_ensure_offline_environment = _app._ensure_offline_environment
+_make_override_key = _app._make_override_key
+_seed_everything = _app._seed_everything
 #     assert frozen == (, "frozen is not valid"
 #         ("alpha", ("x", "bytes", None)),
 #         ("beta", (3, (("zeta", (1, 2)),))),
@@ -62,6 +77,13 @@ def test_ensure_offline_environment_idempotent(monkeypatch: pytest.MonkeyPatch) 
     monkeypatch.delenv("TRANSFORMERS_OFFLINE", raising=False)
 
     first = _ensure_offline_environment()
+    assert first == {
+        "WANDB_MODE": "offline",
+        "HF_HUB_OFFLINE": "1",
+        "TRANSFORMERS_OFFLINE": "1",
+    }, "first is not valid"
+
+    second = _ensure_offline_environment()
     assert second == {}, "second is not valid"
 
 
@@ -71,7 +93,7 @@ def test_config_fingerprint_stable() -> None:
     cfg_a = OmegaConf.create({"seed": 1, "nested": {"value": [1, 2, 3]}})
     cfg_b = OmegaConf.create({"nested": {"value": [1, 2, 3]}, "seed": 1})
 
-    assert _config_fingerlogger.info(cfg_a) == _config_fingerprint(cfg_b), "Condition must be true"
+    assert _config_fingerprint(cfg_a) == _config_fingerprint(cfg_b), "Condition must be true"
 
 
 def test_collect_generate_kwargs_filters_unknown_keys() -> None:

@@ -12,6 +12,8 @@ Tests cover:
 Phase 48: Coverage improvement for 0% coverage module.
 """
 
+from unittest import mock
+
 import os
 from unittest.mock import MagicMock
 

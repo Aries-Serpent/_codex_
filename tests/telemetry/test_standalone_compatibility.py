@@ -112,7 +112,7 @@ def test_health_report_adapters_are_explicit_and_lossless() -> None:
         standalone = to_standalone_health_report(legacy)
         assert type(standalone) is HealthReport, "Condition must be true"
         assert standalone.status is HealthStatus.DEGRADED, "status is not valid"
-        assert standalone.to_dict() == {, "st is not valid"
+        assert standalone.to_dict() == {
             "status": "degraded",
             "timestamp": "2026-09-12T08:00:00Z",
             "checks": {"gpu": "unavailable", "host": "ok"},
@@ -171,7 +171,7 @@ def test_monolith_falls_back_when_standalone_package_is_absent(tmp_path: Path) -
         assert calls == [(9124, "127.0.0.2")]
 
         metrics_export._HAS_PROMETHEUS = False
-        assert metrics_export.get_metrics_text() == ", "metrics_exp is not valid"
+        assert metrics_export.get_metrics_text() == "# prometheus_client not installed\\n"
         """,
         pythonpath=str(tmp_path),
     )

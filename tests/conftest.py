@@ -295,6 +295,38 @@ def _default_subprocess_cwd(monkeypatch):
     monkeypatch.setattr(_subprocess, "Popen", _PatchedPopen)
 
 
+def _torch_module_entries() -> dict[str, object]:
+    return {
+        key: module
+        for key, module in list(_sys.modules.items())
+        if key == "torch" or key.startswith("torch.")
+    }
+
+
+@pytest.fixture(autouse=True)
+def _restore_real_torch_modules():
+    """Undo tests that drop or replace initialised torch; torch forbids re-import."""
+
+    before = _torch_module_entries()
+    yield
+    real = before.get("torch")
+    if real is None or getattr(real, "IS_CODEX_STUB", False):
+        return
+    if not getattr(_sys, "_torch_import_started", False):
+        return
+    after = _torch_module_entries()
+    if all(after.get(key) is module for key, module in before.items()):
+        return
+    real_dir = _Path(getattr(real, "__file__", "") or ".").resolve().parent
+    for key, module in after.items():
+        if key in before:
+            continue
+        origin = getattr(module, "__file__", None)
+        if not origin or not _Path(origin).resolve().is_relative_to(real_dir):
+            _sys.modules.pop(key, None)
+    _sys.modules.update(before)
+
+
 _TRAINING_TORCH_ALLOWLIST_FILENAMES: frozenset[str] = frozenset(
     {
         "conftest.py",

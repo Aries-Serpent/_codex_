@@ -16,6 +16,7 @@ import uuid
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass
 from datetime import datetime
+from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
@@ -140,6 +141,10 @@ class CycleRecorder:
         """Convert object to JSON-serializable dict."""
         if isinstance(obj, datetime):
             return obj.isoformat()
+        elif isinstance(obj, Enum):
+            return self._to_serializable_dict(obj.value)
+        elif isinstance(obj, Path):
+            return str(obj)
         elif isinstance(obj, (list, tuple)):
             return [self._to_serializable_dict(item) for item in obj]
         elif isinstance(obj, dict):
@@ -407,25 +412,33 @@ class OODAOrchestrator:
         """Print a metrics dashboard."""
         metrics = self.get_metrics()
 
-        logger.info("\n" + "=" * 60)
-        logger.info("OODA LOOP ORCHESTRATION METRICS")
-        logger.info("=" * 60)
-        logger.info(
+        lines = [
+            "",
+            "=" * 60,
+            "OODA LOOP ORCHESTRATION METRICS",
+            "=" * 60,
             f"Cycles: {metrics.total_cycles} "
-            f"(✓{metrics.successful_cycles} ✗{metrics.failed_cycles})"
-        )
-        logger.info(f"Uptime: {metrics.uptime_percent:.1f}%")
-        logger.info("\nLatency (ms):")
-        logger.info(f"  Average: {metrics.avg_cycle_latency_ms:.0f}")
-        logger.info(f"  p95: {metrics.p95_cycle_latency_ms:.0f}")
-        logger.info(f"  p99: {metrics.p99_cycle_latency_ms:.0f}")
-        logger.info("\nQuality:")
-        logger.info(f"  Avg Confidence: {metrics.avg_decision_confidence:.2%}")
-        logger.info(f"  Avg Success Rate: {metrics.avg_execution_success_rate:.2%}")
-        logger.info("\nResources:")
-        logger.info(f"  Agents Involved: {metrics.total_agents_invoked}")
-        logger.info(f"  Side Effects: {metrics.total_side_effects}")
-        logger.info("=" * 60 + "\n")
+            f"(✓{metrics.successful_cycles} ✗{metrics.failed_cycles})",
+            f"Uptime: {metrics.uptime_percent:.1f}%",
+            "",
+            "Latency (ms):",
+            f"  Average: {metrics.avg_cycle_latency_ms:.0f}",
+            f"  p95: {metrics.p95_cycle_latency_ms:.0f}",
+            f"  p99: {metrics.p99_cycle_latency_ms:.0f}",
+            "",
+            "Quality:",
+            f"  Avg Confidence: {metrics.avg_decision_confidence:.2%}",
+            f"  Avg Success Rate: {metrics.avg_execution_success_rate:.2%}",
+            "",
+            "Resources:",
+            f"  Agents Involved: {metrics.total_agents_invoked}",
+            f"  Side Effects: {metrics.total_side_effects}",
+            "=" * 60,
+            "",
+        ]
+        dashboard = "\n".join(lines)
+        logger.info(dashboard)
+        print(dashboard)
 
 
 class ParallelOODAOrchestrator(OODAOrchestrator):

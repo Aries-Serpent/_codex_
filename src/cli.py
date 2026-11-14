@@ -28,7 +28,8 @@ except ImportError as e:
     logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     from config_legacy import compose, initialize_config_dir
 
-CLI_PACKAGE_PATH = Path(__file__).resolve().parent.parent / "cli"
+# This module lives at src/cli.py beside src/cli/ and src/tokenization/.
+CLI_PACKAGE_PATH = Path(__file__).resolve().parent / "cli"
 PROJECT_ROOT = CLI_PACKAGE_PATH.parent
 # Keep project root importable but avoid shadowing installed third-party packages.
 # Remove cwd aliases to prevent local stub packages from shadowing site-packages.

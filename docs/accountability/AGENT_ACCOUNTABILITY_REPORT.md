@@ -1,3 +1,180 @@
+## Session: PR #5794 consolidated recovery (2026-11-14)
+
+### Execution and evidence
+
+- Direct recovery in the existing consolidated worktree, with one CI Testing
+  Agent for L4 integration and one read-only Workflow Monitoring Agent.
+  The dirty primary workspace and other worktrees were not edited.
+- Closed the reproduced JWT audience/not-before gaps before publication:
+  require the expected audience and finite numeric optional not-before claims.
+  Auth/JWT compatibility passed 1,304 tests; combined CLI/preflight/L3b passed
+  203; shard/JWT regressions passed 79; parent review regressions passed 125.
+- L4 batches passed 141 and 85 tests (seven deselected), and 52 adapter/offline
+  tests with three genuine missing-SentencePiece skips. Real Torch serialization
+  and uncached GPT-2 assets remain local environment limits, not passing results.
+  Three CLI mypy findings reproduce unchanged in the original baseline.
+- Published 15 exact existing signed commits through the Git Data API after
+  ordinary Git push could not acquire credentials. Every uploaded tree/commit
+  identity and signature was verified before the non-forced ref update.
+  PR #5794 initially contained 36 GitHub-verified signed commits at `0a226c743f`.
+- Preserve concurrent bot commit `0876bf5cdf` by fast-forward, including its
+  manifest/baseline metadata; its original unsigned signature state is not
+  represented as a signed commit. No reset, rebase or force push was used.
+- Initial delegation run `43576967785`, attempt 1, failed the accountability
+  check; its documentation self-heal could not push as github-actions[bot]
+  (403). This report and changelog satisfy the actual documentation requirement
+  without widening credentials, changing permissions or weakening that gate.
+- The signed documentation follow-up `9ff0aaf481` passed both hosted checks in
+  job `132394180611`, run `43577281425`. Automation then exposed a separate
+  review blocker: description refresh discarded the template and validation
+  evidence. Refresh now replaces only generated sections and preserves authored
+  content, comments, WEC choices and attestations; 31 focused tests and scoped
+  Ruff/mypy passed. Fresh-head hosted checks remain required after this fix.
+- Native Copilot review of `0876bf5cdf` then identified two reproducible defects.
+  Five counterfactual cases fail before correction: DSN autocommit values cause
+  duplicate connection kwargs, and incomplete SentencePiece trainer interfaces
+  raise incidental exceptions. Normalize forced-false autocommit and require a
+  callable trainer only before training; existing processor-only loads remain
+  supported. These follow-ups are direct execution, not new delegated agents.
+  Combined DAL, adapter and description regressions pass 87 tests with three
+  genuine missing-SentencePiece skips;
+  Ruff and mypy for both source modules also pass.
+- A later hosted scorecard write erased the restored PR body again. Reproduce
+  the concurrent-edit race independently: description generation could overwrite
+  evidence changed during scoring. Revalidate the live body immediately before
+  editing and refuse a stale update with an explicit diagnostic; unchanged-body
+  refresh remains supported. This is a guarded reread, not an atomic GitHub
+  compare-and-swap, and does not claim to exclude all external body writers.
+  Combined regressions now pass 89 tests with the same three genuine skips;
+  scoped Black/Ruff/mypy, compilation and diff checks pass.
+- Preserve the 70 percent combined unit coverage gate. PR #5787's proposed
+  54 percent floor/quarantine change is not silently integrated. The remaining
+  order is #5794, #5784, #5783, then review of #5766, gated on fresh checks.
+  No protected approval, manual CI dispatch or merge is claimed.
+
+## Session: ML sharding follow-up stacked on PR #5783
+
+### Execution and evidence
+
+- Direct implementation: four file-hashed integration shards, four independent
+  unit coverage shards and the fixed `ml-slow-aggregate` job. No additional
+  agents, xdist workers, duration database or reduced PR selection.
+- Preserve `tests/integration/ -m integration` pass/fail independently of
+  `tests/ -m "not slow and not integration"` coverage. Only the four unit data
+  files enter the unchanged aggregate 70 percent gate.
+- Selection manifests bind each shard to its eligible collection and marker
+  expression. The aggregate rejects disagreement, overlap, missing data or
+  reports and failed/cancelled/skipped upstream jobs.
+- Focused sharding/workflow tests: 49 passed with two existing pytest config
+  warnings. Real coverage fixtures verify complementary partial data combines
+  above 70 percent, insufficient unit coverage still fails despite complete
+  integration data, and green coverage cannot mask failed shards.
+- Black, Ruff, mypy (two helpers), compile and actionlint passed. The workflow's
+  jobs retain explicit timeouts and contents-read permissions; direct actions are
+  pinned and the existing setup composite is unchanged. Required-check settings read returned 403. Administrator configuration
+  of the stable check and fresh hosted shard execution remain separate evidence.
+- This follow-up does not claim that sharding repairs the outstanding real
+  integration failures or proves #5783's protected deployment functionality.
+- Hosted run `43375618710` at `3a3e4757f2` passed all four integration shards.
+  Artifact inspection found three module-level skips repeated by every
+  collector, which must not count as selected tests. The aggregate correction
+  deduplicates those skips while retaining completeness and error checks.
+  Replaying the actual artifacts validates the complete/disjoint manifests and
+  1,794 merged JUnit cases with zero failures/errors and 24 skips.
+  The parent run's integration step passed; its separate coverage step timed
+  out after 30 minutes. Neither observation establishes full ML acceptance.
+- Both initial coverage shards timed out after 18 minutes without final JUnit or
+  coverage data. Add bounded, escaped failure summaries at report time so a
+  later timeout cannot erase already observed test/collection failures.
+  Increase coverage to four shards while retaining the same selected tests,
+  isolated data and 70 percent aggregate gate. Fresh hosted execution is required.
+- Corrected run `43379728206` at `bdf8e0cd7d` passed all integration shards;
+  the aggregate confirmed 1,794 cases, zero failures/errors and 24 skips.
+  All four coverage shards exhausted the shorter 18-minute allowance, with
+  one reaching 95%. Restore the original 30-minute coverage-step allowance
+  inside a 40-minute job, preserving the 300-second per-test limit.
+  The aggregate failed closed on missing unit reports/data; no coverage pass
+  or completed ML acceptance is claimed.
+- Preserve concurrent Copilot commits `6d8a04b839` and `a903de5f8e` through a
+  normal merge, including their XML hardening and coverage-data fixture changes.
+  Add the newly required defusedxml dependency to the isolated aggregate job;
+  focused validation initially proved it was missing, then passed all 49 cases
+  after installation. No branch history or concurrent metadata is discarded.
+## Session: delegated agent-maintainer authentication follow-up
+
+### Execution and evidence
+
+- Direct execution; no new agents were launched or attributed to this repair.
+  The isolated `copilot/session-5766-agent-maintainer` worktree preserves the
+  separately published ML follow-up and concurrent Copilot changes.
+- Replaced the App installation token's impossible human `/user` requirement
+  with signed App identity, active installation, repository owner, minted scope
+  and expiry checks. Agent review remains a genuine exact-head GitHub review
+  by an independently attributed maintainer, not a label or synthetic approval.
+- Approval decisions retain the actual Bot identity, credential source and
+  expiry; the token is excluded. No environment marker, reviewer setting,
+  self-review protection, trusted checkout or platform rejection is bypassed.
+- Added operation-specific credential discovery and repaired the existing App
+  bootstrap resolver. Live probes still return 401 for the three CODEX keys,
+  a non-PEM App key, and 403 for administration/environment-secret reads using
+  the otherwise working integration credential. Owner authorization is
+  accepted; these are credential capability failures, not missing consent.
+- Final focused approval, workflow and preflight validation: 213 passed, with
+  two existing pytest configuration warnings. Black/Ruff, compilation, relevant
+  actionlint and mypy for all three changed source files passed.
+- Preserve concurrent bot commit `6a0a98bf6e` by fast-forward, without discarding
+  its manifest/baseline metadata. Reject malformed HTTP-200 JSON as a protocol
+  error rather than reporting it as successful access or echoing its raw body.
+- Fresh authorized environment PUT again returned 403. Hosted delegation run
+  `43386873908` passed preflight but skipped activation and approval jobs; its
+  green workflow is not evidence that protected approval succeeded.
+- Protected deployment success and exact-SHA hosted agent-maintainer approval
+  remain unverified. No second human or false human identity is prescribed.
+
+## Session: PR #5783 protected approval and ML integration repair
+
+### Agents Used
+
+- `ml-lane-readiness`: archived-document successors and meaningful routing tests.
+- `ml-lane-session-ooda`: session imports/assertions, OODA persistence/latency and
+  stress-generator repairs.
+- `ml-lane-e2e-checkpoint`: current brain/session contracts, early stopping,
+  metadata-schema warnings and bounded dependency inspection.
+- Parent: approval repair verification, job-scoped environment-read permission,
+  integration of all lanes, durable ML diagnostics, validation and publication.
+
+### Evidence and boundaries
+
+- Published draft #5783 against `0D_base_`, code SHA
+  `3c73028b08e6d3f592330ae1f39e96d91716694f`, with verified signed commits.
+- Preserved concurrent bot commit `0ae0c66d35` (manifest and secret-baseline
+  metadata) by normal merge after a non-fast-forward push rejection. No reset,
+  rebase or force push; the integration commit records this actual evidence.
+- Focused approval tests: 231 passed, one skip. Focused ML tests: 210 passed.
+  Local Torch is a stub; these results do not prove real-Torch serialization.
+  Black, Ruff, compile, actionlint and staged Gitleaks passed. Approval mypy
+  passed; 13 ML-module type errors reproduce in unchanged baseline lines.
+- Requested run `43358318768`, attempt 1, slow job `131670399212` finalized
+  cancelled. Its log blob is unavailable and run archive omits that job.
+  Earlier completed job `131011045588` supplied 59 failures at `3cee1ffea0`;
+  reproduced causes were repaired without claiming that earlier log is the
+  requested run's exact traceback.
+- Fresh run `43370108972`, attempt 1, at the published code SHA passed all six
+  component jobs; slow integration/coverage remained in progress at inspection.
+  This is not full hosted ML acceptance.
+- Fresh delegation run `43370108841` failed its accountability check; auto-fix
+  push returned 403 for `github-actions[bot]`. This entry and the changelog
+  address the real bookkeeping requirement without changing credentials,
+  signing, permissions or gate logic. Fresh validation is still required.
+- Environment configuration PUT returned 403 requiring `administration=write`;
+  environment secret inventory/public-key reads also returned 403. The sole
+  visible admin, @mbaetiong, must configure protected independent review and
+  the environment-only marker. The current token acts as the PR author and
+  cannot supply independent approval. No settings changes, approval or merge
+  is claimed.
+- The maintainer guide retains exact administrator CLI/UI actions and the
+  post-merge hotfix handoff. Readiness scores and labels are not acceptance.
+
 ## Session: PR #5781 RAG runner and CodeQL classification repair
 
 ### Agents Used

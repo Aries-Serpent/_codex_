@@ -594,17 +594,27 @@ class SafetyPolicy:
                 action = str(item.get("action", "block")).lower().strip()
                 if action not in {"block", "allow", "redact", "flag"}:
                     continue
-                match_spec = item.get("match") or {}
+                match_spec = item.get("match") or _flat_match_spec(item)
                 metadata: dict[str, Any] = {}
                 if "reason" in item:
                     metadata["reason"] = item["reason"]
-                applies_to = _parse_applies_to(item.get("applies_to"))
+                applies_to = _parse_applies_to(
+                    item["applies_to"] if "applies_to" in item else item.get("stage")
+                )
                 replacement = item.get("replacement")
                 description = item.get("description")
                 severity = item.get("severity")
                 rule_id = str(item.get("id") or item.get("rule_id") or f"rule_{idx}")
 
-                for kind, pattern, flags in _iter_match_specs(match_spec):
+                specs = list(_iter_match_specs(match_spec))
+                if not specs:
+                    # A rule that compiles to no pattern can never fire; surface it
+                    # instead of silently weakening the policy.
+                    logger.warning(
+                        "Safety rule %r has no usable match pattern and will be ignored",
+                        rule_id,
+                    )
+                for kind, pattern, flags in specs:
                     rules.append(
                         PolicyRule(
                             rule_id=rule_id,
@@ -711,6 +721,27 @@ def _iter_match_specs(match_spec: Any) -> Iterator[tuple[str, str, int]]:
                 yield "regex", str(item), 0
 
 
+def _flat_match_spec(item: Mapping[str, Any]) -> dict[str, Any]:
+    """Map the flat rule schema used by ``default_policy.yaml`` onto a match spec.
+
+    The shipped policy files declare rules as ``{pattern: <regex>, stage: ...}``
+    rather than ``{match: {regex: ...}}``. Without this mapping every such rule
+    was silently dropped, leaving the default policy empty (fail-open).
+    """
+    spec: dict[str, Any] = {}
+    for key in ("pattern", "regex"):
+        value = item.get(key)
+        if value not in (None, ""):
+            spec["regex"] = value
+            if "flags" in item:
+                spec["flags"] = item["flags"]
+            break
+    for key in ("literal", "literals", "patterns"):
+        if key in item:
+            spec[key] = item[key]
+    return spec
+
+
 def _build_allow_rules(spec: Any) -> list[PolicyRule]:
     rules: list[PolicyRule] = []
     if not isinstance(spec, dict):
@@ -745,7 +776,7 @@ def _parse_applies_to(value: Any) -> tuple[str, ...]:
         stage = item.strip().lower()
         if stage in {"prompt", "output"}:
             stages.append(stage)
-        elif stage in {"all", "*"}:
+        elif stage in {"all", "*", "both"}:
             return ("prompt", "output")
     return tuple(stages) if stages else ("prompt", "output")
 
