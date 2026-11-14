@@ -9,7 +9,8 @@
 - `owner_approval_guard.sh` honors `OWNER_APPROVED_UNTIL`/`OWNER_APPROVED_DURATION`
   only when `OWNER_APPROVAL_PROTECTED=true`; otherwise it denies with `env-unprotected`.
 - `verify_owner_approval.py` runs in script mode (repository root on `sys.path`)
-  and requires custom deployment branch policies listing exactly `main` and `0D_base_`.
+  and requires custom deployment branch policies listing exactly `main` and `0D_base_`,
+  each with an explicit `type: branch`.
 
 ### Changed - PR #5787 ML coverage ratchet folded into `0D_base_`
 

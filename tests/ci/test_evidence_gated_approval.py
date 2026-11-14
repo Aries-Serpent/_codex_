@@ -377,6 +377,7 @@ def test_once_activation_requires_complete_history(case):
         ("missing-branch", "unexpected-environment-deployment-branches"),
         ("wildcard-branch", "unexpected-environment-deployment-branches"),
         ("tag-policy", "unexpected-environment-deployment-branches"),
+        ("untyped-policy", "unexpected-environment-deployment-branches"),
         ("truncated-listing", "unexpected-environment-deployment-branches"),
         ("unlisted", "unexpected-environment-deployment-branches"),
     ],
@@ -417,6 +418,8 @@ def test_owner_marker_never_substitutes_for_protection(case, error):
     policies = _branch_policies(*names)
     if case == "tag-policy":
         policies["branch_policies"][1]["type"] = "tag"
+    elif case == "untyped-policy":
+        del policies["branch_policies"][0]["type"]
     elif case == "truncated-listing":
         policies["total_count"] = 3
     elif case == "unlisted":

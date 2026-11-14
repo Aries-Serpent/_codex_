@@ -13,6 +13,9 @@
   New tests fail against the previous sources and pass now.
 - The live `owner-approval` environment has no protection rules yet, so the
   verifier keeps failing closed until the owner work in #5806 is done.
+- Copilot review 5907947944 on #5813: a policy entry without `type` was
+  treated as a branch. Now every entry must state `type: branch`; the new
+  `untyped-policy` test fails against the previous check.
 
 ## Session: fold PR #5787 into `0D_base_` and close #5766 CodeQL ReDoS (2026-11-14)
 
