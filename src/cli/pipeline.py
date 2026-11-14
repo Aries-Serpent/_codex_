@@ -4,6 +4,7 @@ CLI Pipeline Module
 Pipeline orchestration for CLI commands.
 """
 
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, Optional
 
@@ -12,12 +13,12 @@ class PipelineValidationError(Exception):
     """Raised when pipeline configuration validation fails."""
 
 
-def validate_pipeline_config(config: dict[str, Any]) -> None:
+def validate_pipeline_config(config: Mapping[str, Any]) -> None:
     """
     Validate pipeline configuration.
 
     Args:
-        config: Pipeline configuration dictionary
+        config: Pipeline configuration mapping (including OmegaConf DictConfig)
 
     Raises:
         KeyError: If required configuration keys are missing
@@ -35,7 +36,7 @@ def validate_pipeline_config(config: dict[str, Any]) -> None:
         raise KeyError("data configuration is required")
 
     # Validate checkpoint if provided
-    if "trainer" in config and isinstance(config["trainer"], dict):
+    if "trainer" in config and isinstance(config["trainer"], Mapping):
         checkpoint = config["trainer"].get("checkpoint")
         if checkpoint is not None:
             # If checkpoint is a string, it should be a valid path
@@ -43,8 +44,8 @@ def validate_pipeline_config(config: dict[str, Any]) -> None:
                 ckpt_path = Path(checkpoint)
                 if not ckpt_path.exists():
                     raise ValueError(f"checkpoint file not found: {checkpoint}")
-            # If checkpoint is not a dict, it's invalid
-            elif not isinstance(checkpoint, dict):
+            # OmegaConf represents checkpoint settings as a mapping, not a dict.
+            elif not isinstance(checkpoint, Mapping):
                 raise ValueError(
                     f"checkpoint must be a dict or path string, got {type(checkpoint).__name__}"
                 )

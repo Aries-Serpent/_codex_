@@ -524,7 +524,7 @@ def create_embedding_provider(
             if use_cache:
                 return CachedEmbeddingProvider(provider, cache_dir)
             return provider
-        except (ValueError, TypeError, RuntimeError) as e:
+        except (ImportError, ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
             logger.debug(
                 "GPT4All unavailable: <ERROR_TYPE>"

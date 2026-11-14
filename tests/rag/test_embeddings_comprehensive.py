@@ -502,6 +502,15 @@ class TestEmbeddingModel:
             assert model._provider is not None, "_provider must be initialized"
 
 
+def _missing_gpt4all_module() -> MagicMock:
+    """Stand-in provider module whose class raises like a missing ``gpt4all`` package."""
+    module = MagicMock()
+    module.GPT4AllEmbeddingProvider = MagicMock(
+        side_effect=ImportError("gpt4all not installed. Install with: pip install gpt4all")
+    )
+    return module
+
+
 class TestCreateEmbeddingProvider:
     """Tests for create_embedding_provider factory function (covers lines 394-521)."""
 
@@ -549,12 +558,18 @@ class TestCreateEmbeddingProvider:
                 "codex.rag.embeddings.LocalSentenceTransformerProvider",
                 side_effect=RuntimeError("no model"),
             ),
-            patch.dict(sys.modules, {"codex.rag.providers.ollama_provider": mock_ollama_module}),
+            patch.dict(
+                sys.modules,
+                {
+                    "codex.rag.providers.ollama_provider": mock_ollama_module,
+                    "codex.rag.providers.gpt4all_provider": _missing_gpt4all_module(),
+                },
+            ),
         ):
             provider = create_embedding_provider(provider_type="auto", use_cache=False)
-        # Ollama skipped (health check failed) → falls through to TF-IDF
-        assert provider is not None, "provider must be initialized"
-        assert not isinstance(provider, type(mock_ollama_instance))
+        # Ollama skipped (health check failed), GPT4All not installed → TF-IDF
+        mock_ollama_class.assert_called_once()
+        assert isinstance(provider, TfidfEmbeddingProvider)
 
     def test_auto_uses_llamacpp_when_st_and_ollama_fail(self):
         """Test auto mode reaches llamacpp branch (lines 427-439)."""
@@ -565,7 +580,9 @@ class TestCreateEmbeddingProvider:
         mock_llamacpp_module = MagicMock()
         mock_llamacpp_module.LlamaCppEmbeddingProvider = mock_llamacpp_class
         mock_ollama_module = MagicMock()
-        mock_ollama_module.OllamaEmbeddingProvider = MagicMock(side_effect=RuntimeError("ollama"))
+        mock_ollama_module.OllamaEmbeddingProvider = MagicMock(
+            side_effect=ConnectionError("ollama")
+        )
         with (
             patch(
                 "codex.rag.embeddings.LocalSentenceTransformerProvider",
@@ -594,7 +611,9 @@ class TestCreateEmbeddingProvider:
         mock_gpt4all_module = MagicMock()
         mock_gpt4all_module.GPT4AllEmbeddingProvider = mock_gpt4all_class
         mock_ollama_module = MagicMock()
-        mock_ollama_module.OllamaEmbeddingProvider = MagicMock(side_effect=RuntimeError("ollama"))
+        mock_ollama_module.OllamaEmbeddingProvider = MagicMock(
+            side_effect=ConnectionError("ollama")
+        )
         with (
             patch(
                 "codex.rag.embeddings.LocalSentenceTransformerProvider",
@@ -614,13 +633,27 @@ class TestCreateEmbeddingProvider:
     def test_auto_fallbacks_to_tfidf_when_st_unavailable(self):
         """Test auto mode falls back to TF-IDF when all other providers fail (lines 455-459)."""
         pytest.importorskip("sklearn")
-        with patch(
-            "codex.rag.embeddings.LocalSentenceTransformerProvider",
-            side_effect=RuntimeError("no model"),
+        import sys
+
+        mock_ollama_module = MagicMock()
+        mock_ollama_module.OllamaEmbeddingProvider = MagicMock(
+            side_effect=ConnectionError("ollama server down")
+        )
+        with (
+            patch(
+                "codex.rag.embeddings.LocalSentenceTransformerProvider",
+                side_effect=RuntimeError("no model"),
+            ),
+            patch.dict(
+                sys.modules,
+                {
+                    "codex.rag.providers.ollama_provider": mock_ollama_module,
+                    "codex.rag.providers.gpt4all_provider": _missing_gpt4all_module(),
+                },
+            ),
         ):
             provider = create_embedding_provider(provider_type="auto", use_cache=False)
-            # Should fall back to TF-IDF or another provider
-            assert provider is not None, "provider must be initialized"
+        assert isinstance(provider, TfidfEmbeddingProvider)
 
     def test_auto_with_cache_wraps_in_cached_provider(self, mock_sentence_transformer, tmp_path):
         """Test auto mode with use_cache=True wraps result in CachedEmbeddingProvider."""

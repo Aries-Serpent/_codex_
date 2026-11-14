@@ -142,6 +142,48 @@ def test_wec_repair_preserves_existing_actual_agent_attestation(monkeypatch):
     assert edited[0].count("- `real-agent`") == 1
 
 
+def test_wec_repair_keeps_template_sections_after_checklist(monkeypatch):
+    body = (
+        "## Description\nScoped repair.\n"
+        + swa._REQUIRED_PR_CHECKBOXES.replace("Delegation: not recorded.", "- `real-agent`")
+        .replace("deferral-language-gate.yml", "old-gate.yml")
+        .replace("- [ ] auth-tests.yml", "- [x] auth-tests.yml")
+        + "\n\n## Type of Change\n- [x] Bug fix\n"
+        "## Testing\nExact command: passed.\n## Reviewers\nMaintainers.\n"
+    )
+    edits = []
+
+    def fake_run(command, **kwargs):
+        if command[:3] == ["gh", "pr", "view"]:
+            return swa.subprocess.CompletedProcess(command, 0, stdout=body)
+        edits.append(command[command.index("--body") + 1])
+        return swa.subprocess.CompletedProcess(command, 0, stdout="")
+
+    monkeypatch.setattr(swa.subprocess, "run", fake_run)
+    monkeypatch.setattr(swa, "_detect_human_grants", lambda *args: {})
+    monkeypatch.setattr(swa, "_record_agent_wec_write", lambda *args, **kwargs: None)
+    monkeypatch.setattr(swa, "_load_registered_agent_ids", lambda: frozenset({"real-agent"}))
+    assert swa.fix_pr_body_checkboxes("42")
+    body = edits[0]
+    assert "Exact command: passed." in body
+    headings = [
+        body.index(name)
+        for name in (
+            "## Description",
+            swa._WEC_MARKER,
+            "## Type of Change",
+            "## Testing",
+            "## Reviewers",
+        )
+    ]
+    assert headings == sorted(headings)
+    assert body.count("- `real-agent`") == 1
+    assert "- [x] auth-tests.yml" in body
+    assert swa.check_pr_body_agents_used(body)[0]
+    assert not swa.fix_pr_body_checkboxes("42")
+    assert len(edits) == 1
+
+
 @pytest.mark.parametrize("ok", [True, False])
 def test_generated_handoff_does_not_ping_or_invent_workflow_tasks(ok):
     handoff = swa._build_followup_prompt_md({"dimensions": [("local lint", 1, "result", ok)]})
@@ -159,6 +201,34 @@ def test_pr_generator_keeps_recorded_direct_execution(monkeypatch):
     body = f"## 🤖 Agents Used\n{swa._DIRECT_EXECUTION_DECLARATION}\n"
     generated = swa._build_meaningful_pr_body("42", {}, body)
     assert swa.check_pr_body_agents_used(generated)[0]
+
+
+@pytest.mark.parametrize("with_wec", [False, True])
+def test_description_refresh_preserves_review_evidence_and_is_repeatable(monkeypatch, with_wec):
+    monkeypatch.setattr(swa, "_compute_merge_readiness_score", lambda: {"dimensions": []})
+    monkeypatch.setattr(swa, "_build_recent_changes_md", lambda: "Latest repair")
+    monkeypatch.setattr(
+        swa, "_build_scorecard_md", lambda data: swa._SCORECARD_MARKER + "\nLocal only."
+    )
+    monkeypatch.setattr(
+        swa, "_build_followup_prompt_md", lambda data: "## 🔄 Follow-Up Prompt\nNo new authority."
+    )
+    monkeypatch.setattr(swa, "_short_sha", lambda: "current")
+    monkeypatch.setattr(swa, "_now_iso", lambda: "2026-11-14T00:00:00Z")
+    wec = swa._build_wec_block({"auth-tests.yml": True}) if with_wec else ""
+    body = (
+        "## Description\nMaintainer scope.\n\n" + wec + "\n## Type of Change\n- [x] Bug fix\n"
+        "## Testing\nExact command: passed; real adapter unavailable.\n"
+        "<!-- Keep reviewer instructions. -->\n"
+        "## Reviewers\nMaintainer.\n"
+    )
+
+    refreshed = swa._build_meaningful_pr_body("42", {"auth-tests.yml": True}, body)
+
+    assert body in refreshed
+    assert refreshed.count(swa._WEC_MARKER) == 1
+    assert "- [x] auth-tests.yml" in refreshed
+    assert swa._build_meaningful_pr_body("42", {"auth-tests.yml": True}, refreshed) == refreshed
 
 
 @pytest.mark.parametrize(
@@ -181,3 +251,25 @@ def test_agent_attestation_preserves_non_separator_content(suffix):
     attestation = "## 🤖 Agents Used\n- `real-agent`\n" + suffix
     generated = swa._preserve_agent_attestation(swa._REQUIRED_PR_CHECKBOXES, attestation)
     assert attestation + "\n\n---\n\n" + swa._WEC_MARKER in generated
+
+
+@pytest.mark.parametrize("concurrent_edit", [False, True])
+def test_description_refresh_revalidates_body_before_edit(monkeypatch, concurrent_edit, capsys):
+    original = "## Description\nOriginal scope."
+    current = original + ("\n\n## Testing\nNew maintainer evidence." if concurrent_edit else "")
+    snapshots = iter([original, current])
+    edits = []
+
+    def fake_run(command, **kwargs):
+        if command[:3] == ["gh", "pr", "view"]:
+            return swa.subprocess.CompletedProcess(command, 0, stdout=next(snapshots))
+        edits.append(command)
+        return swa.subprocess.CompletedProcess(command, 0, stdout="")
+
+    monkeypatch.setattr(swa.subprocess, "run", fake_run)
+    monkeypatch.setattr(swa, "_build_meaningful_pr_body", lambda *args: "Generated body")
+
+    assert swa.update_pr_description("42") is not concurrent_edit
+    assert bool(edits) is not concurrent_edit
+    if concurrent_edit:
+        assert "changed" in capsys.readouterr().out

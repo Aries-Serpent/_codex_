@@ -33,10 +33,9 @@ class TestRP032AsyncTimeout:
 
         test_file = tests_dir / "test_async.py"
         test_file.write_text("""
-        import pytest
+import pytest
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(30)
 async def test_something():
     await asyncio.sleep(0)
 """)
@@ -61,7 +60,7 @@ async def test_async_func():
         issues = fixer.fix_async_tests_without_timeout()
 
         content = test_file.read_text()
-        assert '@pytest.mark.timeout(30)' in content, "Content must not be empty"
+        assert "@pytest.mark.timeout(30)" in content, "Content must not be empty"
         assert len(issues) > 0, "Issues must not be empty"
 
     def test_timeout_injected_after_asyncio(self, tmp_repo):
@@ -78,11 +77,11 @@ async def test_func():
         issues = fixer.fix_async_tests_without_timeout()
 
         content = test_file.read_text()
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         # Find indices of decorators
-        asyncio_line = next(i for i, l in enumerate(lines) if '@pytest.mark.asyncio' in l)
-        timeout_line = next(i for i, l in enumerate(lines) if '@pytest.mark.timeout' in l)
+        asyncio_line = next(i for i, l in enumerate(lines) if "@pytest.mark.asyncio" in l)
+        timeout_line = next(i for i, l in enumerate(lines) if "@pytest.mark.timeout" in l)
 
         # Timeout should come after asyncio
         assert timeout_line == asyncio_line + 1, "timeout_line is not valid"
@@ -120,7 +119,7 @@ def test_regular():
         issues = fixer.fix_async_tests_without_timeout()
 
         content = test_file.read_text()
-        assert '@pytest.mark.timeout' not in content, "Content must not be empty"
+        assert "@pytest.mark.timeout" not in content, "Content must not be empty"
         assert len(issues) == 0, "Issues must not be empty"
 
     def test_multiple_async_tests(self, tmp_repo):
@@ -129,15 +128,13 @@ def test_regular():
 
         test_file = tests_dir / "test_async.py"
         test_file.write_text("""
-        import pytest
+import pytest
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(30)
 async def test_one():
     pass
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(30)
 async def test_two():
     pass
 
@@ -152,7 +149,7 @@ async def test_three():
 
         content = test_file.read_text()
         # Count timeout decorators
-        timeout_count = content.count('@pytest.mark.timeout(30)')
+        timeout_count = content.count("@pytest.mark.timeout(30)")
         # Should have added 2 (test_one and test_two, but not test_three)
         assert timeout_count >= 2, "timeout_count must be positive"
         assert len(issues) >= 2, "Issues must not be empty"
@@ -165,15 +162,6 @@ async def test_three():
         test_file.write_text("""
 class TestAsync:
     @pytest.mark.asyncio
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
-    @pytest.mark.timeout(30)
     async def test_method(self):
         pass
 """)
@@ -182,16 +170,93 @@ class TestAsync:
         issues = fixer.fix_async_tests_without_timeout()
 
         content = test_file.read_text()
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         # Check that timeout decorator has same indentation as asyncio
-        asyncio_line = next(l for l in lines if '@pytest.mark.asyncio' in l)
-        timeout_line = next(l for l in lines if '@pytest.mark.timeout' in l)
+        asyncio_line = next(l for l in lines if "@pytest.mark.asyncio" in l)
+        timeout_line = next(l for l in lines if "@pytest.mark.timeout" in l)
 
         asyncio_indent = len(asyncio_line) - len(asyncio_line.lstrip())
         timeout_indent = len(timeout_line) - len(timeout_line.lstrip())
 
         assert asyncio_indent == timeout_indent, "asyncio_indent is not valid"
+        assert content.count("@pytest.mark.timeout") == 1, "exactly one timeout expected"
+        assert len(issues) == 1, "one issue expected"
+
+    def test_idempotent_for_indented_methods(self, tmp_repo):
+        """Running the fixer twice must not stack duplicate timeout decorators."""
+        repo_root, tests_dir = tmp_repo
+
+        test_file = tests_dir / "test_async.py"
+        test_file.write_text(
+            "class TestAsync:\n"
+            "    @pytest.mark.asyncio\n"
+            "    async def test_method(self):\n"
+            "        pass\n"
+        )
+
+        CommonIssueFixer(
+            repo_root, check_only=False, dry_run=False
+        ).fix_async_tests_without_timeout()
+        second = CommonIssueFixer(
+            repo_root, check_only=False, dry_run=False
+        ).fix_async_tests_without_timeout()
+
+        assert test_file.read_text().count("@pytest.mark.timeout(30)") == 1, "decorator stacked"
+        assert second == [], "second run must report nothing"
+
+    def test_string_literal_fixtures_untouched(self, tmp_repo):
+        """Decorators inside string literals are data and must not be rewritten."""
+        repo_root, tests_dir = tmp_repo
+
+        test_file = tests_dir / "test_fixture_writer.py"
+        original = (
+            "def test_writer(tmp_path):\n"
+            '    (tmp_path / "t.py").write_text("""\n'
+            "@pytest.mark.asyncio\n"
+            "async def test_inner():\n"
+            "    pass\n"
+            '""")\n'
+        )
+        test_file.write_text(original)
+
+        issues = CommonIssueFixer(
+            repo_root, check_only=False, dry_run=False
+        ).fix_async_tests_without_timeout()
+
+        assert test_file.read_text() == original, "string literal content was modified"
+        assert issues == [], "no issues expected for decorators inside strings"
+
+    def test_existing_timeout_before_asyncio_is_preserved(self, tmp_repo):
+        repo_root, tests_dir = tmp_repo
+        test_file = tests_dir / "test_async.py"
+        original = (
+            "@pytest.mark.timeout(60)\n"
+            "@pytest.mark.asyncio\n"
+            "async def test_method():\n"
+            "    pass\n"
+        )
+        test_file.write_text(original)
+
+        issues = CommonIssueFixer(
+            repo_root, check_only=False, dry_run=False
+        ).fix_async_tests_without_timeout()
+
+        assert test_file.read_text() == original
+        assert issues == []
+
+    def test_unterminated_string_fails_closed(self, tmp_repo):
+        repo_root, tests_dir = tmp_repo
+        test_file = tests_dir / "test_async.py"
+        original = "fixture = '''\n@pytest.mark.asyncio\nasync def test_inner():\n    pass\n"
+        test_file.write_text(original)
+
+        with pytest.raises(ValueError, match="Cannot safely scan tests/test_async.py"):
+            CommonIssueFixer(
+                repo_root, check_only=False, dry_run=False
+            ).fix_async_tests_without_timeout()
+
+        assert test_file.read_text() == original
 
     def test_dry_run_mode(self, tmp_repo):
         """Test that dry-run doesn't modify files."""
@@ -242,7 +307,7 @@ async def test_func():
         issues = fixer.fix_async_tests_without_timeout()
 
         content = test_file.read_text()
-        assert '@pytest.mark.timeout(30)' in content, "Content must not be empty"
+        assert "@pytest.mark.timeout(30)" in content, "Content must not be empty"
 
     def test_custom_timeout_preserved(self, tmp_repo):
         """Test that custom timeout values are preserved."""
@@ -260,8 +325,8 @@ async def test_slow():
 
         content = test_file.read_text()
         # Should not add another timeout
-        assert content.count('@pytest.mark.timeout') == 1, "Content must not be empty"
-        assert '@pytest.mark.timeout(60)' in content, "Content must not be empty"
+        assert content.count("@pytest.mark.timeout") == 1, "Content must not be empty"
+        assert "@pytest.mark.timeout(60)" in content, "Content must not be empty"
         assert len(issues) == 0, "Issues must not be empty"
 
     def test_handles_empty_tests_dir(self, tmp_repo):
@@ -295,7 +360,6 @@ def test_sync():
     assert True, "True is not valid"
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(30)
 async def test_async():
     await asyncio.sleep(0)
 
@@ -308,7 +372,7 @@ def test_sync_2():
 
         content = test_file.read_text()
         # Should add timeout only to async test
-        assert content.count('@pytest.mark.timeout') == 1, "Content must not be empty"
+        assert content.count("@pytest.mark.timeout") == 1, "Content must not be empty"
         assert len(issues) == 1, "Issues must not be empty"
 
 

@@ -9,10 +9,10 @@ import pytest
 np = pytest.importorskip("numpy")
 pytest.importorskip("sentence_transformers")
 
-from codex.rag.indexer import chunk_text, embed_chunks, persist_index
-from codex.rag.postprocess import postprocess_output
-from codex.rag.prompt import build_prompt
-from codex.rag.retriever import Retriever
+from aries_serpent_core.rag.indexer import chunk_text, embed_chunks, persist_index
+from aries_serpent_core.rag.postprocess import postprocess_output
+from aries_serpent_core.rag.prompt import build_prompt
+from aries_serpent_core.rag.retriever import Retriever
 
 
 @pytest.fixture
@@ -68,7 +68,7 @@ class TestEndToEndRAGPipeline:
         mock_index = MagicMock()
         mock_index.ntotal = len(chunks)
 
-        with patch("codex.rag.indexer.faiss") as mock_faiss:
+        with patch("aries_serpent_core.rag.indexer.faiss") as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
 
@@ -95,7 +95,7 @@ class TestEndToEndRAGPipeline:
         mock_index.ntotal = len(chunks)
         mock_index.search.return_value = (np.array([[0.5, 1.0]]), np.array([[0, 1]]))
 
-        with patch("codex.rag.indexer.faiss") as mock_faiss:
+        with patch("aries_serpent_core.rag.indexer.faiss") as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
             mock_faiss.read_index.return_value = mock_index
@@ -176,7 +176,7 @@ class TestRAGCaching:
 
     def test_embedding_cache_integration(self, temp_rag_workspace):
         """Test embedding cache in pipeline."""
-        from codex.rag.embeddings import CachedEmbeddingProvider
+        from aries_serpent_core.rag.embeddings import CachedEmbeddingProvider
 
         mock_provider = MagicMock()
         mock_provider.encode.return_value = np.random.randn(2, 384).astype(np.float32)
@@ -227,7 +227,7 @@ class TestRAGErrorHandling:
         mock_index = MagicMock()
         mock_model = MagicMock()
 
-        with patch("codex.rag.indexer.load_index", return_value=(mock_index, [], {})):
+        with patch("aries_serpent_core.rag.indexer.load_index", return_value=(mock_index, [], {})):
             with patch("sentence_transformers.SentenceTransformer", return_value=mock_model):
                 retriever = Retriever(index_dir=str(temp_rag_workspace["index_dir"]))
                 results = retriever.query("", top_k=5)
@@ -238,7 +238,7 @@ class TestRAGErrorHandling:
         """Test retriever when index doesn't exist."""
         mock_model = MagicMock()
 
-        with patch("codex.rag.indexer.load_index", side_effect=FileNotFoundError):
+        with patch("aries_serpent_core.rag.indexer.load_index", side_effect=FileNotFoundError):
             with patch("sentence_transformers.SentenceTransformer", return_value=mock_model):
                 retriever = Retriever(
                     index_dir=str(temp_rag_workspace["index_dir"]), index_name="nonexistent"
@@ -260,7 +260,7 @@ class TestRAGMultiTenancy:
         mock_index = MagicMock()
         mock_index.ntotal = 1
 
-        with patch("codex.rag.indexer.faiss") as mock_faiss:
+        with patch("aries_serpent_core.rag.indexer.faiss") as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
 
@@ -332,7 +332,9 @@ class TestRAGPerformance:
         mock_model = MagicMock()
         mock_model.encode.return_value = np.random.randn(1, 384).astype(np.float32)
 
-        with patch("codex.rag.indexer.load_index", return_value=(mock_index, chunks, {})):
+        with patch(
+            "aries_serpent_core.rag.indexer.load_index", return_value=(mock_index, chunks, {})
+        ):
             with patch("sentence_transformers.SentenceTransformer", return_value=mock_model):
                 retriever = Retriever(index_dir=str(temp_rag_workspace["index_dir"]))
                 results = retriever.query("test", top_k=10)
@@ -380,7 +382,7 @@ class TestRAGDataConsistency:
         mock_index = MagicMock()
         mock_index.ntotal = 1
 
-        with patch("codex.rag.indexer.faiss") as mock_faiss:
+        with patch("aries_serpent_core.rag.indexer.faiss") as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
 

@@ -18,7 +18,7 @@ import json
 import sqlite3
 from pathlib import Path
 from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -38,7 +38,9 @@ def registry(tmp_path: Path):
     mock_settings.tenant_registry_backend = "sqlite"
     mock_settings.api_key_required = True
 
-    mock_auth = MagicMock()
+    from services.msp_gateway.security import AuthManager
+
+    mock_auth = MagicMock(spec=AuthManager)
     mock_auth.verify_api_key.return_value = "test-tenant"
     mock_auth.register_api_key.return_value = None
     mock_auth.revoke_api_key.return_value = None
@@ -60,11 +62,12 @@ def registry(tmp_path: Path):
         reg.create_tenant(
             tenant_id="t1",
             name="Initial Name",
-            api_key="key-001",
+            api_key="key-001",  # pragma: allowlist secret
             quota={"requests": 100},
             policies=["read"],
             metadata={"env": "test"},
         )
+        mock_auth.reset_mock()
         yield reg, mock_auth
 
 
@@ -138,10 +141,15 @@ class TestUpdateTenantSQLPath:
         result = reg.update_tenant("t1", active=active_value)
         assert result is not None, "result must be initialized"
         assert result["active"] == active_value, "Result must not be empty"
+        stored_hash = result["api_key_hash"]
         if active_value:
-            mock_auth.register_api_key.assert_called()
+            mock_auth.register_api_key_hash.assert_called_once_with(stored_hash, "t1")
+            mock_auth.revoke_api_key_hash.assert_not_called()
         else:
-            mock_auth.revoke_api_key.assert_called()
+            mock_auth.revoke_api_key_hash.assert_called_once_with(stored_hash)
+            mock_auth.register_api_key_hash.assert_not_called()
+        assert _read_row(reg._db_path, "t1")["active"] is active_value
+        assert result["api_key"] is None
 
     # ── multiple fields at once ─────────────────────────────────────────────
 
@@ -186,7 +194,7 @@ class TestUpdateTenantSQLPath:
         tenant = reg.get_tenant("t1")
         assert tenant is not None, "tenant must be initialized"
         assert tenant["active"] is False, "Condition must be true"
-        mock_auth.revoke_api_key.assert_called()
+        mock_auth.revoke_api_key_hash.assert_called_once_with(tenant["api_key_hash"])
 
     # ── no-op update (no fields) doesn't crash ──────────────────────────────
 
@@ -196,3 +204,50 @@ class TestUpdateTenantSQLPath:
         # Should return the tenant unchanged (updated_at only)
         assert result is not None, "result must be initialized"
         assert result["name"] == "Initial Name", "Result must not be empty"
+
+
+@pytest.mark.parametrize("backend", ["memory", "sqlite"])
+@pytest.mark.parametrize("stale_auth", [False, True])
+@pytest.mark.asyncio
+async def test_deactivation_revokes_real_auth_and_denies_requests(
+    tmp_path, monkeypatch, backend, stale_auth
+):
+    """Revocation must survive SQL lookup/reload without re-authorizing the key."""
+    from fastapi import Request
+
+    from services.msp_gateway.middleware import tenant_context
+    from services.msp_gateway.security import AuthManager
+
+    auth = AuthManager()
+    monkeypatch.setattr(tenant_context, "auth_manager", auth)
+    monkeypatch.setattr(tenant_context.settings, "db_path", str(tmp_path / "tenants.db"))
+    monkeypatch.setattr(tenant_context.settings, "api_key_required", True)
+    registry = tenant_context.TenantRegistry(backend=backend)
+    registry.create_tenant("t1", "Tenant", "test-key")
+    assert auth.verify_api_key("test-key") == "t1"
+
+    assert registry.deactivate_tenant("t1")
+    assert auth.verify_api_key("test-key") is None
+    if stale_auth:
+        auth.register_api_key("test-key", "t1")
+    if backend == "sqlite":
+        registry = tenant_context.TenantRegistry(backend=backend)
+    monkeypatch.setattr(tenant_context, "tenant_registry", registry)
+    request = Request(
+        {
+            "type": "http",
+            "method": "GET",
+            "path": "/v1/resource",
+            "headers": [(b"authorization", b"Bearer test-key")],
+        }
+    )
+    downstream = AsyncMock()
+    middleware = tenant_context.TenantContextMiddleware(app=downstream)
+    response = await middleware.dispatch(request, downstream)
+
+    assert response.status_code == (403 if backend == "sqlite" or stale_auth else 401)
+    downstream.assert_not_awaited()
+    assert auth.verify_api_key("test-key") is None
+
+    registry.update_tenant("t1", active=True)
+    assert auth.verify_api_key("test-key") == "t1"

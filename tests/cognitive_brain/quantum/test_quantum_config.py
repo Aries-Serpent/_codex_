@@ -1,3 +1,4 @@
+from cognitive_brain.quantum.config import QuantumConfig
 #         assert not any(, "Condition must be true"
 #             [
 #                 config.superposition,

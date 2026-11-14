@@ -163,7 +163,7 @@ class TestLog:
 
     def test_uses_custom_logger(self):
         mock_logger = MagicMock()
-        fp = EnvironmentFingerlogger.info(python_version="3.12.0", os_platform="Linux")
+        fp = EnvironmentFingerprint(python_version="3.12.0", os_platform="Linux")
         fp.log(logger=mock_logger)
         mock_logger.info.assert_called_once()
 

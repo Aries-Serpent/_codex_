@@ -13,6 +13,24 @@ from urllib.parse import urlparse
 
 import pytest
 
+from scripts.validate_and_fix_links import LinkValidator as RepositoryLinkValidator
+
+
+@pytest.mark.parametrize(
+    ("url", "valid"),
+    [
+        ("github.com/owner/repo", True),
+        ("github.com.evil.test/owner/repo", False),
+        ("[missing].md", False),
+    ],
+)
+def test_repository_validator_checks_schemeless_github_authority(tmp_path, url, valid):
+    result, message = RepositoryLinkValidator().validate_link(
+        {"url": url, "source": str(tmp_path / "source.md")}
+    )
+    assert result is valid
+    assert bool(message) is not valid
+
 
 class LinkValidator:
     """Validator for documentation links."""
@@ -107,7 +125,7 @@ class LinkValidator:
                             })
             except Exception as exc:
                             # Append structured error information for failure tracking
-                            issues.append({
+                issues.append({
                                 "file": str(md_file),
                                 "type": "processing_error",
                                 "message": str(exc)
@@ -349,7 +367,7 @@ class TestBrokenReferenceDetection:
         content = "[text(https://bad[link)) and [good](https://example.com)"
         links = validator.extract_links(content)
         # Should extract at least the valid link
-        assert any(url.startswith("https://example.com") for _, url, _ in links)
+        assert any(urlparse(url).hostname == "example.com" for _, url, _ in links)
 
     def test_circular_reference_detection(self, validator):
         """Test detection of potential circular references."""

@@ -10,6 +10,9 @@ Test module for workflow validation.
 
 from __future__ import annotations
 
+import re
+import subprocess
+import sys
 from fnmatch import fnmatchcase
 from pathlib import Path
 
@@ -52,6 +55,53 @@ def _load_workflow(filename: str) -> dict:
     path = WORKFLOWS_DIR / filename
     assert path.exists(), f"Workflow not found: {path}"
     return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
+def test_rag_workflow_coverage_records_runtime_implementation(tmp_path):
+    pytest.importorskip("coverage")
+    workflow = _load_workflow("test-rag.yml")
+    script = next(
+        step["run"]
+        for job in workflow["jobs"].values()
+        for step in job.get("steps", [])
+        if step.get("name") == "Run RAG tests with coverage"
+    )
+    match = re.search(r"--cov=(\S+)", script)
+    assert match is not None
+    script = """
+import runpy
+import sys
+from coverage import Coverage
+
+source, config, implementation, destination = sys.argv[1:]
+collector = Coverage(config_file=config, data_file=None, source=[source])
+collector.start()
+try:
+    namespace = runpy.run_path(implementation)
+    assert namespace["OutputProcessor"].scrub_output(" answer ") == "answer"
+finally:
+    collector.stop()
+assert implementation in collector.get_data().measured_files()
+collector.xml_report(outfile=destination)
+"""
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            script,
+            match.group(1),
+            str(REPO_ROOT / "tests/rag/.coveragerc"),
+            str(REPO_ROOT / "src/aries_serpent_core/rag/postprocess.py"),
+            str(tmp_path / "coverage.xml"),
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert (tmp_path / "coverage.xml").is_file()
 
 
 @pytest.mark.parametrize("filename", _FLAGGED_WORKFLOWS)
@@ -138,3 +188,153 @@ def test_rust_swarm_ignores_only_metadata_codex_changes(event: str) -> None:
         ".github/workflows/rust_swarm_ci.yml",
     ):
         assert not any(fnmatchcase(trigger_path, pattern) for pattern in ignored_paths)
+
+
+@pytest.mark.parametrize(
+    ("event_name", "head_repository", "publishes_check"),
+    [
+        ("pull_request", "Aries-Serpent/_codex_", True),
+        ("pull_request", "contributor/_codex_", False),
+        ("push", None, True),
+    ],
+)
+def test_rust_swarm_audit_selects_trusted_or_fork_path(
+    event_name: str, head_repository: str | None, publishes_check: bool
+) -> None:
+    workflow = _load_workflow("rust_swarm_ci.yml")
+    job = workflow["jobs"]["security_audit"]
+    steps = job["steps"]
+    publisher = next(s for s in steps if s.get("uses", "").startswith("rustsec/audit-check@"))
+    installer = next(s for s in steps if s.get("run") == "cargo install cargo-audit --locked")
+    auditor = next(s for s in steps if s.get("run") == "cargo audit")
+    trusted_condition = (
+        "github.event_name != 'pull_request' || "
+        "github.event.pull_request.head.repo.full_name == github.repository"
+    )
+    fork_condition = (
+        "github.event_name == 'pull_request' && "
+        "github.event.pull_request.head.repo.full_name != github.repository"
+    )
+    predicates = {
+        "github.event_name != 'pull_request'": event_name != "pull_request",
+        "github.event_name == 'pull_request'": event_name == "pull_request",
+        "github.event.pull_request.head.repo.full_name == github.repository": (
+            head_repository == "Aries-Serpent/_codex_"
+        ),
+        "github.event.pull_request.head.repo.full_name != github.repository": (
+            head_repository != "Aries-Serpent/_codex_"
+        ),
+    }
+    selected = []
+    for step, expected_condition in (
+        (publisher, trusted_condition),
+        (installer, fork_condition),
+        (auditor, fork_condition),
+    ):
+        condition = " ".join(step["if"].removeprefix("${{").removesuffix("}}").split())
+        assert condition == expected_condition
+        selected.append(
+            any(
+                all(predicates[atom.strip()] for atom in branch.split("&&"))
+                for branch in condition.split("||")
+            )
+        )
+    assert selected == [publishes_check, not publishes_check, not publishes_check]
+    assert publisher["with"]["token"] == "${{ github.token }}"
+    assert job["permissions"] == {"contents": "read", "checks": "write"}
+    assert "with" not in installer and "with" not in auditor
+    assert "env" not in installer and "env" not in auditor
+
+
+def test_docker_approval_requires_protected_environment() -> None:
+    workflow = _load_workflow("docker-build-push.yml")
+    dispatch_inputs = workflow["on"]["workflow_dispatch"]["inputs"]
+    assert "approval_duration" not in dispatch_inputs
+    assert "approval_until" not in dispatch_inputs
+    assert workflow["env"]["OWNER_APPROVED_DURATION"] == "${{ vars.OWNER_APPROVED_DURATION }}"
+    assert workflow["env"]["OWNER_APPROVED_UNTIL"] == "${{ vars.OWNER_APPROVED_UNTIL }}"
+
+    for job_name in ("approval-check", "build-and-smoke", "push"):
+        job = workflow["jobs"][job_name]
+        assert job["environment"] == "owner-approval"
+        guard = next(
+            step
+            for step in job["steps"]
+            if step.get("run") == "bash scripts/ci/owner_approval_guard.sh"
+        )
+        assert guard["env"]["OWNER_APPROVAL_PROTECTED"] == "${{ secrets.OWNER_APPROVAL_PROTECTED }}"
+
+
+_PERMISSION_LEVELS = {"none": 0, "read": 1, "write": 2}
+
+
+def _permission_grants(permissions: object) -> dict[str, int] | None:
+    """Normalize a permissions block; return ``None`` for write on every scope.
+
+    An omitted block (``None``) falls back to the repository's default token
+    permissions, which may be read-only, so it guarantees no grant.
+    """
+    if permissions == "write-all":
+        return None
+    if permissions is None:
+        return {}
+    if permissions == "read-all":
+        return {"*": _PERMISSION_LEVELS["read"]}
+    assert isinstance(permissions, dict), f"Unexpected permissions: {permissions!r}"
+    return {scope: _PERMISSION_LEVELS[level] for scope, level in permissions.items()}
+
+
+def _granted_level(grants: dict[str, int] | None, scope: str) -> int:
+    if grants is None:
+        return _PERMISSION_LEVELS["write"]
+    return grants.get(scope, grants.get("*", 0))
+
+
+def test_cost_gate_callers_grant_called_workflow_permissions() -> None:
+    """Callers must grant everything cost-gate.yml requests.
+
+    A reusable workflow cannot exceed its caller's grant; GitHub rejects the
+    run at startup with zero jobs instead of failing an individual job.
+    """
+    called = _load_workflow("cost-gate.yml")
+    required: dict[str, int] = {}
+    blocks = [called.get("permissions")] + [
+        job.get("permissions") for job in called["jobs"].values()
+    ]
+    for block in blocks:
+        for scope, level in (_permission_grants(block) or {}).items():
+            required[scope] = max(required.get(scope, 0), level)
+    assert required.get("issues") == _PERMISSION_LEVELS["write"]
+
+    callers = []
+    for path in sorted(WORKFLOWS_DIR.glob("*.y*ml")):
+        workflow = yaml.safe_load(path.read_text(encoding="utf-8"))
+        if not isinstance(workflow, dict):
+            continue
+        for job_name, job in (workflow.get("jobs") or {}).items():
+            if isinstance(job, dict) and str(job.get("uses", "")).endswith("/cost-gate.yml"):
+                block = job.get("permissions", workflow.get("permissions"))
+                grants = _permission_grants(block)
+                missing = {
+                    scope: level
+                    for scope, level in required.items()
+                    if _granted_level(grants, scope) < level
+                }
+                assert not missing, f"{path.name}:{job_name} lacks {missing}"
+                callers.append(path.name)
+    assert "data-quality-suite.yml" in callers
+
+
+def test_agent_delegation_requires_protected_environment() -> None:
+    workflow = _load_workflow("agent-auth-delegation.yml")
+    activation = workflow["jobs"]["activate-delegation"]
+    assert activation["environment"] == "owner-approval"
+    provenance_check = next(
+        step
+        for step in activation["steps"]
+        if step.get("name") == "Verify protected owner approval"
+    )
+    assert (
+        provenance_check["env"]["OWNER_APPROVAL_PROTECTED"]
+        == "${{ secrets.OWNER_APPROVAL_PROTECTED }}"
+    )

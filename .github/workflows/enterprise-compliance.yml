@@ -103,16 +103,16 @@ jobs:
           PY
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@c20e34f438d671fc35777cc9820dd7adf8252874
+        uses: github/codeql-action/init@0911ee96d2d6c8def97122c36c5cadd93829a4b4
         with:
           languages: ${{ matrix.language }}
           config-file: ./.github/codeql/codeql-config.yml
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@c20e34f438d671fc35777cc9820dd7adf8252874
+        uses: github/codeql-action/autobuild@0911ee96d2d6c8def97122c36c5cadd93829a4b4
 
       - name: Analyze code
-        uses: github/codeql-action/analyze@c20e34f438d671fc35777cc9820dd7adf8252874
+        uses: github/codeql-action/analyze@0911ee96d2d6c8def97122c36c5cadd93829a4b4
         with:
           category: /language:${{ matrix.language }}
           upload: never

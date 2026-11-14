@@ -23,8 +23,8 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
-from evidently.metric_preset import DataDriftPreset
-from evidently.report import Report
+from evidently.legacy.metric_preset import DataDriftPreset
+from evidently.legacy.report import Report
 
 
 def _ensure_dir(path: Path) -> None:
@@ -51,7 +51,9 @@ def build_data_drift(
             ref_df = ref_df[keep_cols]
             cur_df = cur_df[keep_cols]
 
-    report = Report(metrics=[DataDriftPreset()])
+    # The gate consumes p-values, not distance scores: use p-value based tests
+    # explicitly rather than allowing Evidently to switch with dataset size.
+    report = Report(metrics=[DataDriftPreset(num_stattest="ks", cat_stattest="chisquare")])
     report.run(reference_data=ref_df, current_data=cur_df)
 
     _ensure_dir(out_html.parent)
@@ -62,20 +64,23 @@ def build_data_drift(
     with out_json.open("w", encoding="utf-8") as handle:
         json.dump(report_dict, handle, indent=2, sort_keys=True)
 
-    dataset_result = report_dict.get("metrics", [{}])[0].get("result", {})
-    drift_share = dataset_result.get("dataset_drift", {}).get("share_of_drifted_columns", 0.0)
-    per_feature = dataset_result.get("drift_by_columns", {})
+    # Evidently 0.7's legacy preset returns two metrics. dataset_drift is a
+    # boolean, not a nested summary. Require the real results rather than
+    # silently reporting zero drift when the schema changes.
+    metrics = {metric["metric"]: metric["result"] for metric in report_dict["metrics"]}
+    drift_share = metrics["DatasetDriftMetric"]["share_of_drifted_columns"]
+    per_feature = metrics["DataDriftTable"]["drift_by_columns"]
 
     p_values: list[float] = []
     for meta in per_feature.values():
-        score = meta.get("drift_score")
-        if isinstance(score, int | float):
-            p_values.append(float(score))
+        p_values.append(float(meta["drift_score"]))
 
-    p_value_mean = float(sum(p_values) / max(len(p_values), 1)) if p_values else 0.0
+    if not p_values:
+        raise ValueError("Data drift report contains no column test results")
+    p_value_mean = sum(p_values) / len(p_values)
 
     return {
-        "drift_share": float(drift_share) if drift_share is not None else 0.0,
+        "drift_share": float(drift_share),
         "p_value_mean": p_value_mean,
         "columns": list(per_feature.keys()),
         "per_feature": per_feature,

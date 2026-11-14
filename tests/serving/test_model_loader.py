@@ -4,6 +4,8 @@ Tests for Model Loader
 Tests model loading with caching, device placement, and validation
 """
 
+import os
+
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch

@@ -1,3 +1,9 @@
+from codex.cognitive.quantum_planset_engine import PlanStep
+from codex.cognitive.quantum_planset_engine import PhysicsParams
+from codex.cognitive.quantum_planset_engine import QuantumPlanset
+from codex.cognitive.quantum_planset_engine import StepStatus
+import math
+import json
 
 import pytest
 from codex.cognitive.quantum_planset_engine import (
@@ -227,6 +233,39 @@ from codex.cognitive.quantum_planset_engine import (
 # ---------------------------------------------------------------------------
 # QuantumPlansetEngine — generate
 # ---------------------------------------------------------------------------
+
+
+def _make_step(
+    step_id: str = "S-01",
+    agent: str = "test-agent",
+    action: str = "do something",
+    impact: float = 0.8,
+    confidence: float = 0.9,
+    momentum: float = 5.0,
+    energy: float = 10.0,
+    risk: float = 0.1,
+    friction: float = 0.1,
+    decoherence_sessions: int = 0,
+    status: StepStatus = StepStatus.PENDING,
+    entangled_with: list | None = None,
+) -> PlanStep:
+    return PlanStep(
+        step_id=step_id,
+        agent=agent,
+        action=action,
+        description="test step",
+        physics=PhysicsParams(
+            impact=impact,
+            confidence=confidence,
+            momentum=momentum,
+            energy=energy,
+            risk=risk,
+            friction=friction,
+        ),
+        decoherence_sessions=decoherence_sessions,
+        status=status,
+        entangled_with=entangled_with or [],
+    )
 
 
 class TestGenerate:
@@ -580,8 +619,7 @@ class TestQITesting:
         ]
         for child_id, parent_id in pairs:
             child = step_by_id[child_id]
-            assert (parent_id in child.entangled_with, "Condition must be true"
-            ), f"{child_id} should be entangled with {parent_id}"
+            assert parent_id in child.entangled_with, f"{child_id} should be entangled with {parent_id}"
 
     def test_collapse_starts_with_highest_amplitude_step(self, engine):
         """Without context, QI-02 leads (energy=5 < QI-01 energy=8 → higher score).
@@ -601,8 +639,7 @@ class TestQITesting:
         path = engine.collapse(ps)
         ids = [s.step_id for s in path]
         qi02_idx = ids.index("QI-02")
-        assert (ids[qi02_idx + 1] == "QI-01", "Condition must be true"
-        ), f"Expected QI-01 after QI-02 (entanglement promotion), got {ids[qi02_idx + 1]}"
+        assert ids[qi02_idx + 1] == "QI-01", f"Expected QI-01 after QI-02 (entanglement promotion), got {ids[qi02_idx + 1]}"
 
     def test_qi_planset_serialise_round_trip(self, tmp_path, engine):
         ps = engine.generate(

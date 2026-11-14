@@ -1,3 +1,493 @@
+## Session: PR #5794 consolidated recovery (2026-11-14)
+
+### Execution and evidence
+
+- Direct recovery in the existing consolidated worktree, with one CI Testing
+  Agent for L4 integration and one read-only Workflow Monitoring Agent.
+  The dirty primary workspace and other worktrees were not edited.
+- Closed the reproduced JWT audience/not-before gaps before publication:
+  require the expected audience and finite numeric optional not-before claims.
+  Auth/JWT compatibility passed 1,304 tests; combined CLI/preflight/L3b passed
+  203; shard/JWT regressions passed 79; parent review regressions passed 125.
+- L4 batches passed 141 and 85 tests (seven deselected), and 52 adapter/offline
+  tests with three genuine missing-SentencePiece skips. Real Torch serialization
+  and uncached GPT-2 assets remain local environment limits, not passing results.
+  Three CLI mypy findings reproduce unchanged in the original baseline.
+- Published 15 exact existing signed commits through the Git Data API after
+  ordinary Git push could not acquire credentials. Every uploaded tree/commit
+  identity and signature was verified before the non-forced ref update.
+  PR #5794 initially contained 36 GitHub-verified signed commits at `0a226c743f`.
+- Preserve concurrent bot commit `0876bf5cdf` by fast-forward, including its
+  manifest/baseline metadata; its original unsigned signature state is not
+  represented as a signed commit. No reset, rebase or force push was used.
+- Initial delegation run `43576967785`, attempt 1, failed the accountability
+  check; its documentation self-heal could not push as github-actions[bot]
+  (403). This report and changelog satisfy the actual documentation requirement
+  without widening credentials, changing permissions or weakening that gate.
+- The signed documentation follow-up `9ff0aaf481` passed both hosted checks in
+  job `132394180611`, run `43577281425`. Automation then exposed a separate
+  review blocker: description refresh discarded the template and validation
+  evidence. Refresh now replaces only generated sections and preserves authored
+  content, comments, WEC choices and attestations; 31 focused tests and scoped
+  Ruff/mypy passed. Fresh-head hosted checks remain required after this fix.
+- Native Copilot review of `0876bf5cdf` then identified two reproducible defects.
+  Five counterfactual cases fail before correction: DSN autocommit values cause
+  duplicate connection kwargs, and incomplete SentencePiece trainer interfaces
+  raise incidental exceptions. Normalize forced-false autocommit and require a
+  callable trainer only before training; existing processor-only loads remain
+  supported. These follow-ups are direct execution, not new delegated agents.
+  Combined DAL, adapter and description regressions pass 87 tests with three
+  genuine missing-SentencePiece skips;
+  Ruff and mypy for both source modules also pass.
+- A later hosted scorecard write erased the restored PR body again. Reproduce
+  the concurrent-edit race independently: description generation could overwrite
+  evidence changed during scoring. Revalidate the live body immediately before
+  editing and refuse a stale update with an explicit diagnostic; unchanged-body
+  refresh remains supported. This is a guarded reread, not an atomic GitHub
+  compare-and-swap, and does not claim to exclude all external body writers.
+  Combined regressions now pass 89 tests with the same three genuine skips;
+  scoped Black/Ruff/mypy, compilation and diff checks pass.
+- Preserve the 70 percent combined unit coverage gate. PR #5787's proposed
+  54 percent floor/quarantine change is not silently integrated. The remaining
+  order is #5794, #5784, #5783, then review of #5766, gated on fresh checks.
+  No protected approval, manual CI dispatch or merge is claimed.
+
+## Session: ML sharding follow-up stacked on PR #5783
+
+### Execution and evidence
+
+- Direct implementation: four file-hashed integration shards, four independent
+  unit coverage shards and the fixed `ml-slow-aggregate` job. No additional
+  agents, xdist workers, duration database or reduced PR selection.
+- Preserve `tests/integration/ -m integration` pass/fail independently of
+  `tests/ -m "not slow and not integration"` coverage. Only the four unit data
+  files enter the unchanged aggregate 70 percent gate.
+- Selection manifests bind each shard to its eligible collection and marker
+  expression. The aggregate rejects disagreement, overlap, missing data or
+  reports and failed/cancelled/skipped upstream jobs.
+- Focused sharding/workflow tests: 49 passed with two existing pytest config
+  warnings. Real coverage fixtures verify complementary partial data combines
+  above 70 percent, insufficient unit coverage still fails despite complete
+  integration data, and green coverage cannot mask failed shards.
+- Black, Ruff, mypy (two helpers), compile and actionlint passed. The workflow's
+  jobs retain explicit timeouts and contents-read permissions; direct actions are
+  pinned and the existing setup composite is unchanged. Required-check settings read returned 403. Administrator configuration
+  of the stable check and fresh hosted shard execution remain separate evidence.
+- This follow-up does not claim that sharding repairs the outstanding real
+  integration failures or proves #5783's protected deployment functionality.
+- Hosted run `43375618710` at `3a3e4757f2` passed all four integration shards.
+  Artifact inspection found three module-level skips repeated by every
+  collector, which must not count as selected tests. The aggregate correction
+  deduplicates those skips while retaining completeness and error checks.
+  Replaying the actual artifacts validates the complete/disjoint manifests and
+  1,794 merged JUnit cases with zero failures/errors and 24 skips.
+  The parent run's integration step passed; its separate coverage step timed
+  out after 30 minutes. Neither observation establishes full ML acceptance.
+- Both initial coverage shards timed out after 18 minutes without final JUnit or
+  coverage data. Add bounded, escaped failure summaries at report time so a
+  later timeout cannot erase already observed test/collection failures.
+  Increase coverage to four shards while retaining the same selected tests,
+  isolated data and 70 percent aggregate gate. Fresh hosted execution is required.
+- Corrected run `43379728206` at `bdf8e0cd7d` passed all integration shards;
+  the aggregate confirmed 1,794 cases, zero failures/errors and 24 skips.
+  All four coverage shards exhausted the shorter 18-minute allowance, with
+  one reaching 95%. Restore the original 30-minute coverage-step allowance
+  inside a 40-minute job, preserving the 300-second per-test limit.
+  The aggregate failed closed on missing unit reports/data; no coverage pass
+  or completed ML acceptance is claimed.
+- Preserve concurrent Copilot commits `6d8a04b839` and `a903de5f8e` through a
+  normal merge, including their XML hardening and coverage-data fixture changes.
+  Add the newly required defusedxml dependency to the isolated aggregate job;
+  focused validation initially proved it was missing, then passed all 49 cases
+  after installation. No branch history or concurrent metadata is discarded.
+## Session: delegated agent-maintainer authentication follow-up
+
+### Execution and evidence
+
+- Direct execution; no new agents were launched or attributed to this repair.
+  The isolated `copilot/session-5766-agent-maintainer` worktree preserves the
+  separately published ML follow-up and concurrent Copilot changes.
+- Replaced the App installation token's impossible human `/user` requirement
+  with signed App identity, active installation, repository owner, minted scope
+  and expiry checks. Agent review remains a genuine exact-head GitHub review
+  by an independently attributed maintainer, not a label or synthetic approval.
+- Approval decisions retain the actual Bot identity, credential source and
+  expiry; the token is excluded. No environment marker, reviewer setting,
+  self-review protection, trusted checkout or platform rejection is bypassed.
+- Added operation-specific credential discovery and repaired the existing App
+  bootstrap resolver. Live probes still return 401 for the three CODEX keys,
+  a non-PEM App key, and 403 for administration/environment-secret reads using
+  the otherwise working integration credential. Owner authorization is
+  accepted; these are credential capability failures, not missing consent.
+- Final focused approval, workflow and preflight validation: 213 passed, with
+  two existing pytest configuration warnings. Black/Ruff, compilation, relevant
+  actionlint and mypy for all three changed source files passed.
+- Preserve concurrent bot commit `6a0a98bf6e` by fast-forward, without discarding
+  its manifest/baseline metadata. Reject malformed HTTP-200 JSON as a protocol
+  error rather than reporting it as successful access or echoing its raw body.
+- Fresh authorized environment PUT again returned 403. Hosted delegation run
+  `43386873908` passed preflight but skipped activation and approval jobs; its
+  green workflow is not evidence that protected approval succeeded.
+- Protected deployment success and exact-SHA hosted agent-maintainer approval
+  remain unverified. No second human or false human identity is prescribed.
+
+## Session: PR #5783 protected approval and ML integration repair
+
+### Agents Used
+
+- `ml-lane-readiness`: archived-document successors and meaningful routing tests.
+- `ml-lane-session-ooda`: session imports/assertions, OODA persistence/latency and
+  stress-generator repairs.
+- `ml-lane-e2e-checkpoint`: current brain/session contracts, early stopping,
+  metadata-schema warnings and bounded dependency inspection.
+- Parent: approval repair verification, job-scoped environment-read permission,
+  integration of all lanes, durable ML diagnostics, validation and publication.
+
+### Evidence and boundaries
+
+- Published draft #5783 against `0D_base_`, code SHA
+  `3c73028b08e6d3f592330ae1f39e96d91716694f`, with verified signed commits.
+- Preserved concurrent bot commit `0ae0c66d35` (manifest and secret-baseline
+  metadata) by normal merge after a non-fast-forward push rejection. No reset,
+  rebase or force push; the integration commit records this actual evidence.
+- Focused approval tests: 231 passed, one skip. Focused ML tests: 210 passed.
+  Local Torch is a stub; these results do not prove real-Torch serialization.
+  Black, Ruff, compile, actionlint and staged Gitleaks passed. Approval mypy
+  passed; 13 ML-module type errors reproduce in unchanged baseline lines.
+- Requested run `43358318768`, attempt 1, slow job `131670399212` finalized
+  cancelled. Its log blob is unavailable and run archive omits that job.
+  Earlier completed job `131011045588` supplied 59 failures at `3cee1ffea0`;
+  reproduced causes were repaired without claiming that earlier log is the
+  requested run's exact traceback.
+- Fresh run `43370108972`, attempt 1, at the published code SHA passed all six
+  component jobs; slow integration/coverage remained in progress at inspection.
+  This is not full hosted ML acceptance.
+- Fresh delegation run `43370108841` failed its accountability check; auto-fix
+  push returned 403 for `github-actions[bot]`. This entry and the changelog
+  address the real bookkeeping requirement without changing credentials,
+  signing, permissions or gate logic. Fresh validation is still required.
+- Environment configuration PUT returned 403 requiring `administration=write`;
+  environment secret inventory/public-key reads also returned 403. The sole
+  visible admin, @mbaetiong, must configure protected independent review and
+  the environment-only marker. The current token acts as the PR author and
+  cannot supply independent approval. No settings changes, approval or merge
+  is claimed.
+- The maintainer guide retains exact administrator CLI/UI actions and the
+  post-merge hotfix handoff. Readiness scores and labels are not acceptance.
+
+## Session: PR #5781 RAG runner and CodeQL classification repair
+
+### Agents Used
+
+- Autonomous Test Healer lanes `rag-lane-a`, `rag-lane-b` and `rag-lane-c`:
+  independent, bounded RAG failure groups; tenant/FAISS/stress, retriever/model
+  helpers and embedding/offline-provider repairs respectively.
+- Rubber-duck lane `codeql-gate-duck`: adversarial classifier review identified
+  score-precedence, invalid-score and malformed-tag fail-open cases; parent
+  repaired all three before publication.
+- Parent maintainer: infinite-loop reproduction, security-source fixes,
+  classifier regression tests, workflow validation and integration.
+
+### Evidence and boundaries
+
+- Fresh Python/JavaScript CodeQL analysis succeeded. Python SARIF from run
+  `43354317081`, bound to `4557c000f7`, contains zero security findings and
+  2,784 quality results. All six prior security findings are absent.
+- The adversarial reviewer accepted that descriptor CWE tags alone are not
+  security severity: CodeQL uses them on correctness rules too. Security scores
+  still override tags; malformed scores/tags and conflicting metadata retain
+  conservative handling.
+- Combined classifier/workflow regression suite passed 52 cases with three
+  Node-dependent skips. The runtime-coverage test records actual implementation
+  execution and generates XML; it fails with the original compatibility-only
+  scope. Scoped mypy, Ruff and actionlint passed for this follow-up.
+- The old slow ML job was cancelled after 65 minutes; its integration step
+  had failed earlier. Individual logs were unavailable through MCP/REST, and
+  the run archive lacked this job. Its root cause remains unverified.
+- Final hosted RAG on `119c4db30c` passed 1,688 tests with 180 skips and
+  generated XML/HTML coverage. Its measured line coverage was 92.14 percent,
+  above the unchanged 90 percent gate, not above the 95 percent roadmap target.
+  Fast Validation and both CodeQL language checks also passed. Only token
+  delegation failed and one duplicate deferral run was cancelled.
+- Recreated Dependabot #5782 was retargeted to staging and normally merged at
+  `2c25c3118d`. A complete-history merge-tree check confirmed identical staging
+  content because #5774 had already integrated the same pyasn1 0.6.5 update.
+- Latest-head isolated scorecard at `119c4db30c` remained 85/100, AAIS 91.72/100.
+- Fresh hosted RAG at `4557c000f7` passed 1,688 tests with 180 skips and no
+  test failures. The job failed only because coverage still targeted the
+  compatibility shim and produced no XML/HTML data. Pointed the existing
+  coverage configuration and command at the runtime implementation package,
+  retaining all existing omissions and the configured 90 percent threshold.
+  Earlier references to a current 95 percent gate were inaccurate: the workflow
+  explicitly retains 90 percent since S295, with 95 percent as its roadmap target.
+- Exact-head scorecard at `4557c000f7` measured 85/100 and AAIS 91.72/100
+  using the supported validation interpreter and a complete tracked snapshot.
+  Export-ignored tracked files were restored before measurement; the initial
+  incomplete archive was not valid scorecard evidence.
+- Hosted Fast Validation passed its security, workflow and type-check hooks
+  but failed on existing trailing whitespace in the permission-test file now
+  touched by this repair. Removed that whitespace; fresh validation is needed.
+- Preserved concurrent bot manifest/baseline commit `081ef98174` through a
+  normal merge after the first push was rejected; no force push, reset or
+  history rewrite was used. The integration commit deliberately contains no
+  CI-skip marker.
+- The original inline chunking loop timed out; the repaired loop terminates.
+  Hosted #5781 run at `d8a5c90235` completed without runner shutdown:
+  1,643 passed, 180 skipped, 23 failed and 17 errors in 408.11 seconds.
+  This verifies the runner-loss fix, not complete RAG readiness.
+- Nine affected hostname/permission tests passed locally. The classifier tests
+  executed 29 passing cases; three Node-dependent cases skipped on this host.
+  Ruff, classifier Black and mypy passed. Other touched Python lines were
+  Black-formatted without reformatting their pre-existing style backlog.
+  actionlint 1.7.12 passed with shellcheck unavailable; the scoped secret scan
+  reported zero findings.
+- Reclassification of the original hosted SARIF retained all six security-high
+  findings and reported 2,784 quality results separately. Fresh scanner output
+  on the repaired commit is still required to verify source-finding clearance.
+- Neither thresholds, scanner scope, workflow permissions nor owner-approval
+  controls were relaxed. Empty protected approval secrets remain owner actions.
+- The earlier integrated-tree score was 85/100, not a new measurement of this
+  patch. No promotion readiness or current green CI is claimed.
+- Parent combined all three RAG lanes with a local model stand-in and the
+  hosted random seed: 204 passed, 17 skipped. Without the stand-in, combined
+  lanes A/B passed 83 with 44 dependency skips. These results do not establish
+  real Torch/SentenceTransformer validation on this musl host.
+- Production change is limited to catching missing optional GPT4All during
+  auto-provider fallback. Source mypy reports seven errors on both the
+  unmodified base and repaired file; no new type error was introduced.
+- Fixed CI latency tolerance scales only average/P99 budgets by three; local
+  budgets and reliability targets remain unchanged. No unlimited override was
+  introduced. A focused regression checks the observed 702ms sample and
+  verifies that an error/timeout still fails under CI.
+
+## Session: PR #5766 bounded readiness repair - 2026-11-13
+
+### Consolidation follow-up
+
+- Normal SHA-guarded squash merges integrated #5774 at `7eeddbe0c0` and #5779
+  at `f8bde84f4d`; only #5766 remains open. No admin bypass or CI-skip body was used.
+- Exact integrated-tree score is 85/100, AAIS 91.72/100; 32 focused regression
+  cases pass. Hosted checks remain the authority, not the diagnostic score.
+- `ci-testing-agent` lane `pr5766-rust-docs` removed the unused direct PyO3 build
+  dependency, reconciled Cargo without upgrades and passed documentation with
+  warnings denied. Parent transferred the minimal patch to a staging sub-branch.
+- Built-in rubber-duck lane `pr5766-integration-challenge` challenged stability
+  claims. Token delegation fails with an empty protected approval secret;
+  environment secret access returns 403. No approval guard was weakened.
+
+### Agents Used
+
+- `ci-testing-agent` (CI Testing Agent, runtime lane `pr5766-ci`) - RAG/slow-ML diagnosis and
+  focused dependency/workflow repairs.
+- `packaging-validation-agent` (runtime lane `pr5766-dependabot`) - all open Dependabot
+  inventory and scoped pyasn1 lock consistency.
+- Rubber-duck agent (`pr5766-readiness-challenge`) - independent adversarial
+  challenge of readiness claims and protected integration decisions.
+- Parent maintainer - review regression, scoped validation, permission checks,
+  evidence integrity and protected publication.
+
+### Evidence and boundaries
+
+- Verified #5766 remains open at staging head `3cee1ffea0ae1af698384930629d886ba8797a56`
+  with `UNSTABLE` merge state. Failed contexts are CodeQL GA, RAG, slow ML
+  integration and token delegation; successful/skipped auxiliary checks do not
+  establish merge readiness.
+- Strengthened the logging compliance test to capture an actual INFO record
+  and assert exactly `Redaction result: [REDACTED]`. Three related security
+  tests pass. Three disposable counterfactual tests pass: the original test
+  passed with empty capture, the repair captures the exact message, and a
+  missing-log mutation is rejected. Scoped Ruff, Black, isort, mypy,
+  compilation and detect-secrets baseline checks pass.
+- Sole open Dependabot candidate #5774 updates pyasn1 0.6.3 to 0.6.5.
+  Its current delegation/preflight failures prohibit blind integration; align
+  the coupled ML and canonical uv locks rather than allowing export to revert
+  the security update.
+- Combined affected tests pass **5 cases** (three logging/security and two ML
+  workflow regressions); the original four ML collection-blocker modules now
+  collect **90 cases** without those import errors. The fuzz module retains an
+  existing missing-tensorboard skip. RAG dependency-backed execution remains
+  unverified: installation resolution cannot satisfy Torch on this shared host.
+- Workflow YAML, embedded Python and seven shell blocks parse; actionlint
+  **1.7.12** passes for the changed ML workflow. Scoped secret scanning passes.
+  Permissions, concurrency and 60-minute timeouts are unchanged.
+- Pyasn1 hash-checked isolated installation and DER round-trip pass; frozen
+  exports include 0.6.5. Bounded online `uv lock --check` fails on both the
+  unmodified base and proposed lock; broader inherited lock freshness is not
+  claimed or repaired by regenerating unrelated packages.
+- The installed-tool scorecard in an isolated dirty snapshot measures
+  **85/100**, with AAIS **91.72/100**. Full-source Ruff genuinely passes.
+  This meets the user's numerical floor but the scorer verdict remains
+  **NOT READY**. Its failed 15-point auto-fix dimension reports 5,708 issues
+  and 895 auto-fixable items; no unrelated bulk auto-fix was performed.
+- Requested rubber-duck/adversarial review rejects promotion merge, premature
+  Dependabot closure and scanner-thread resolution without hosted evidence.
+  Publish only a bounded draft for exact-head CI; internal agent validation is
+  not an independent protected approval.
+- Published GitHub-verified signed commit `ad4bb86a33` in draft #5779 against
+  staging. Automatic WEC restoration then truncated the template's testing and
+  agent sections; repair section boundaries, preserve maintainer selections and
+  verify the existing wrapup suite before restoring the full live template.
+  The wrapup suite passes **29 cases**, including suffix preservation, sticky
+  checkbox state and repeat-call idempotence. Actual invoked profile identifiers
+  now pass the registry-aware REQ-14 check; the built-in reviewer is not falsely
+  registered as a custom agent.
+- Initial draft-head Build Documentation job `131609804407` failed because Cargo
+  denies an existing unused `pyo3-build-config` build dependency warning. This
+  is separate from Python documentation changes and remains a Rust-maintainer
+  handoff; no warning policy was weakened.
+- The hosted GA gate correctly reports 641 critical-policy, 358 high-policy
+  and 1791 medium-policy results. These buckets include reliability/quality
+  findings and are not counts of confirmed exploitable vulnerabilities.
+  No thresholds, query suites or exclusions were weakened.
+- Repository metadata advertises administration, but actual environment-secret,
+  Actions-permission, classic-protection and alert-detail endpoints return 403.
+  The owner-approval environment has no reviewer protection rules. Preserve the
+  fail-closed owner guard; configuration flags cannot supply independent approval.
+
+**Owners and next actions:** Security/CI maintainers must remediate or formally
+disposition the unchanged GA gate backlog and prove exact-head RAG/ML jobs.
+Repository administrators must establish genuine protected review and scoped
+access. The PR maintainer must verify protected staging inclusion and fresh
+promotion checks. A numerical scorecard, local test or user authorization does
+not replace these controls. No promotion merge readiness is claimed.
+
+---
+
+## Session: PR #5773 bounded final validation recovery — 2026-11-11
+
+### Agents Used
+
+- `recover-validation` — prior timed-out run identification and recovery research.
+- `harness-review` — read-only harness review and verification of scoped corrections.
+- `exact-head-security` — read-only security review and dependency-advisory triage.
+- `frontend-gates` — installed dependency tree, unit, lint, compiler and audit gates.
+- `extension-final` — clean extension install, lint and real HTTP regression tests.
+- Parent agent — authenticated job-log recovery, scoped edits, browser matrices,
+  source-consumption checks and publication.
+
+### Evidence and outcome
+
+- Recovered authenticated logs for run `42769032330`, job `129672232718`.
+  The prior session exceeded GitHub's 59-minute limit. Historical reported
+  373 CDX tests, 19 fresh-wheel FFI tests and Rust gates are carried forward,
+  not represented as fresh exact-head executions in this session.
+- Published harness correction `cc0088199696`: require exactly one new infer
+  request for each generation, await completion rather than stale output,
+  attach request/error evidence, retain both teardown boundary failures, and
+  correct the ten-port upper boundary. Added a schema-invalid HTTP 200 response
+  regression without changing production fallback behavior.
+- Development, root-production and GitHub Actions base-path affected-feature
+  matrices each passed **21 tests**, covering Chromium, Firefox and WebKit:
+  **63 passed, zero failures/skips/retries**. Matching browser prerequisites
+  were installed only after the installed CLI reported them missing.
+- Corrected lazy-init development, root-production and optional base-path
+  production each passed **87 tests, zero failures/skips/retries** (29 scenarios
+  across three engines): **261 passed**. Each run had a fixed upper bound.
+- A disposable wrong-endpoint mutation failed as expected, proving exact API
+  matching is enforced. All ten owned variant servers were closed after that
+  intentional failure, and all fixture ports were closed after the final run.
+- Fresh frontend unit tests passed **197 tests in 19 files**. Changed-file lint
+  passed. Full lint remains **44 errors / 65 warnings**, matching the exact
+  pre-fix baseline after root/alignment normalization. The explicit compiler
+  still fails with **62 diagnostics**, byte-identical to that baseline.
+- Fresh extension clean install, lint and **three real HTTP tests** passed,
+  with zero skips. Source-consumption checks cover all nine dependency files:
+  zero missing source changes; source lockfiles and non-JSON blobs match.
+  Staging still lacks the upgrades; inclusion here does not establish inclusion
+  in PR #5766. The original local startup-packet change remains uncommitted.
+- Static security review found no high-confidence exploitable issue in the
+  scoped changes; changed-file secret scanning found no secrets. CodeQL on
+  `cc0088199696` reported zero Actions alerts, skipped Python for database size,
+  and timed out before all languages completed. Do not retry that operation or
+  describe it as full security clearance.
+- Today's PDA JSON entry is valid and the existing PDA integrity suite passed
+  **68 tests**. Existing ledger records and scanner suppressions are preserved.
+
+**Open findings, owners and next steps:**
+
+- **Frontend maintainers:** both browser matrices, including their separate
+  base-path builds, are complete. Preserve existing lint/compiler diagnostics until
+  separately scoped remediation is authorized.
+- **Dependency/API-client maintainers:** frontend audit reports ten moderate
+  findings and one existing high Zod finding, GHSA-mrhx-c7xc-m3w5 (`<4.6.6`).
+  Establish vulnerable constrained-collection reachability and evaluate a
+  compatible upgrade separately. Extension audit retains four moderate findings.
+- **Security/CI maintainers:** complete an authorized, resource-appropriate
+  exact-head analysis; the local checker cannot establish Python/JavaScript
+  clearance. No scanner limits, exclusions or execution approvals were weakened.
+- **PR maintainer:** obtain actual hosted checks/reviews and decide protected
+  staging integration. The recorded maintainer approval binds to `15ad5cc8`,
+  not the newer harness correction. No approval, workflow retry/dispatch, merge, or source-PR
+  state mutation was performed in this session. Local success is not merge
+  readiness.
+
+---
+
+## Session: PR #5765 Fast Validation PDA correction - 2026-11-09
+
+### Agents Used
+
+- None - direct execution (no delegated agents).
+
+### Evidence and outcome
+
+- Reviewed the linked rescue comment and Fast Validation job `128953375716`,
+  run `42552926204`, attempt 2, head `0e9485540f63`. Only detect-secrets failed;
+  the five findings were four public Git IDs and a session-label false positive.
+- Verified historical commit identities through GitHub commit metadata and the
+  current PR's local commit object. Added exactly five filename/type/value
+  fingerprints; no ledger history, scanner configuration or exclusions changed.
+- Added five regressions proving baseline values are detected and changed values
+  are not covered. PDA integrity suite: 68 passed. Ruff, Black, isort, scoped
+  mypy and compilation passed.
+- Replayed the configured detect-secrets hook on the PDA ledger and changed test,
+  suppression registry and changelog: passed. Missing declared quality tools
+  were restored into the existing validation venv; no dependency files changed.
+- Created signed correction `3662f3814f`; signature verification passed. The
+  push was rejected because automation concurrently published `eb9efc3063`,
+  changing only authentication provenance metadata. Integrated that commit
+  through a conflict-free local merge, without rebasing or force-pushing.
+  The staged patch Gitleaks stdin scan covered 11,542 bytes and found no leaks.
+- A second push was rejected after metadata-only update `3debf49453`.
+  Preserved it through another conflict-free local merge. The integrated
+  regression rerun passed 68 tests and the configured secret hook passed.
+  No remote-history overwrite or workflow retry was used.
+- Integrated peer review commit `2d73a00715` and packet update `c3c29bee20`.
+  Peer changes add fail-fast publication examples and remove runtime SHA-1
+  from the existing context fixture; the scoped PDA correction is retained.
+- Combined PDA/context validation passed 87 tests. The peer's precomputed
+  fixture digest introduced two detector hits; annotated that exact synthetic
+  assertion and retained all configured scanner plugins and filters.
+
+**Owner:** PR security reviewer for exact suppression review; maintainer for
+current-head CI approvals and protected merge.
+**Limits:** Local hook success is not hosted CI or archive clearance. No workflow
+retry/dispatch, CodeQL operation, merge, hosted activation or real-source scan.
+
+---
+
+## Session: PR #5765 current-head readiness follow-up — 2026-11-09
+
+### Agents Used
+
+- None — direct execution for this work. Copilot run `42551835437` was already in progress at initial inspection; no work or result is attributed to it.
+
+### Evidence and outcome
+
+- The branch initially pointed at `a07e9f2f` (`chore(auth): write provenance session token [skip ci]`). The PR head check query returned zero checks; this commit-level skip marker explains the empty status response. Empty status is not a pass.
+- Agent Token Delegation run `42549219821`, attempt 2, evaluated head `1111b7c2` and synthetic merge SHA `70ee1a06`. Cognitive Pre-flight job `128944417019` failed REQ-4 because the accountability report was not updated in the last commit. Auto-repair appended a report entry but its push failed with HTTP 403 for `github-actions[bot]`; no hosted repair was published.
+- Validation Pipeline run `42548943691`, attempt 2, evaluated head `1111b7c2`. Fast Validation job `128944406690` failed only because `trailing-whitespace` modified `docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md`. The private run artifact `13644774730` records SHA-256 `21b411afd902f6e28a87031249f91b3a320270f3fcdf0f29d4fc5aade260e629`; the guide was corrected locally.
+- Data Quality run `42548943801`, attempt 2, evaluated the same head but ended `startup_failure` with zero jobs. This is runner/workflow startup evidence, not a source-level defect.
+- The Rust security-audit review identified that fork pull requests receive a read-only token for `rustsec/audit-check`. The workflow now confines that check-publishing action to push and same-repository PR events, while fork PRs install and run `cargo audit` directly. No live fork execution is claimed.
+- Focused local validation passed: trailing-whitespace and end-of-file hooks; yamllint; repository workflow validation (52 files); action-version policy (63 files); fork/trusted-path assertions; PDA record integrity (19 tests); workflow YAML tests (63 tests); Markdown link and internal-link checks; and `git diff --check`. `actionlint` is unavailable, and the task prohibits the CodeQL operation.
+- Progress commit `8725eab6` captured the pre-existing startup-packet timestamp-only edit because the progress operation commits pending work. It was not altered further. The WEC selections were not changed.
+- At the latest check, workflows on `8725eab6` were `action_required`; the PR check query returned no check runs. No workflow was approved, dispatched, or retried. The latest review has no approval, and the reported agent-capability boundary remains unverified because `.github/agents/` is not available for inspection in this environment.
+
+**Owner:** PR maintainer for action-required workflow approvals and review/merge decisions; agent-profile maintainer for the capability-boundary finding.
+**Next decision:** Run naturally triggered checks after the scoped fixes, resolve the profile-boundary finding through authorized access, and obtain maintainer review. No clean hosted status, CodeQL result, or merge readiness is claimed.
+
+---
+
 ## Session: PR #5763 archive review follow-up — 2026-11-08
 
 ### Agents Used
@@ -24604,3 +25094,181 @@ On 2026-11-08, evidence-based replies were posted to all eight open review threa
 and verified in the PR thread listing. The threads remain open; the CodeQL alert
 was not dismissed because its detail API returned 403 and owner-side disposition
 has not been recorded.
+
+## Session: 2026-11-12T03:30Z — PR #5766 merge readiness and Data Quality startup fix
+
+**Status:** Partial. The Data Quality startup failure is fixed in sub-PR #5775,
+which targets `0D_base_`, and the fix passed on hosted runs for that PR. The
+promotion of PR #5766 still depends on owner-only settings actions recorded
+below. Agents: none. This was direct execution with no delegated agents.
+
+### Evidence and impact
+
+- `data-quality-suite.yml` called the reusable `cost-gate.yml` without
+  job-level permissions. The `rescue-comment` job in `cost-gate.yml` requests
+  `issues: write`, which exceeded the caller's grant, so GitHub rejected every
+  run at startup with zero jobs. This affected `main`, `0D_base_`, and the
+  PR #5766 attempt-2 run `42962244177`. The caller now grants
+  `contents: read`, `issues: write` and `pull-requests: write`.
+  `docker-build-push.yml` had the same latent defect; it is manually disabled
+  and now gets the same grant. `cost-gate.yml` was not changed.
+- Hosted results on head `389f82a8`:
+  - Data Quality & Determinism Suite run `43146712483` succeeded with six
+    jobs.
+  - Code Quality, Validation Pipeline, Status Gate, Strict No-Deferral,
+    Template Lint, Workflow Execution Gate, Deferral Language Gate, Semgrep
+    and the Rust swarm also succeeded.
+- Local results:
+  - 69 tests passed across the cost-gate, owner-approval guard, workflow YAML
+    and workflow validation suites.
+  - The new caller test failed against the unfixed workflow.
+  - actionlint 1.7.12 passed.
+  - The workflow compliance matrix was unchanged.
+- Copilot review comment `4545792398` was valid: an omitted permissions block
+  no longer counts as a write grant in the regression test.
+
+### Ownership and next action
+
+- **Agent Token Delegation (repository admin):** the run still fails closed at
+  `Verify protected owner approval`. The `owner-approval` environment has no
+  protection rules, so configure its required reviewers and the
+  `OWNER_APPROVAL_PROTECTED` secret. The gate was not weakened.
+- **Auto-approve sweep (repository admin):** the sweep could not approve
+  Copilot-authored runs. Replace the non-PEM GitHub App private key and rotate
+  the rejected fallback PATs.
+- **ML Components integration failures (ML/CI maintainers):** these failures
+  also occur on `main`. The intermittent `test_gap23_boundaries` failures are
+  order-dependent.
+- **Still open:** the scorecard `auto_fix` backlog, CodeQL artifact binding,
+  the `copilot/extension` scope decision, the Zod advisory, and the
+  compiler/lint backlog.
+
+## Session: 2026-11-12 — PR #5766 assurance repair
+
+**Status: NOT READY.** Technical mergeability is not promotion readiness.
+Data Quality run `43149315400` succeeded on candidate `285a0090`; protected
+approval and ML integration still fail. The direct execution lane handles
+CodeQL evidence/scope and publication. The invoked **CI Testing Agent** handles
+only ML integration diagnosis and local repair; no independent approval is
+claimed from that delegation.
+
+- Recovered all four original artifacts from run `42955914698`, attempt 2.
+  Every downloaded archive matches its API SHA-256. Both source records bind
+  to synthetic checkout `5e3fd6b8`, whose tree matches old PR head `aafbc726`,
+  not current staging. Their upload times fall within the respective
+  attempt-2 jobs. Authenticated API requests and signed storage downloads
+  use separate requests; credentials are not forwarded to storage.
+- Actual SARIF: 2,794 Python results (six security-tagged), zero JavaScript
+  results, CodeQL 2.27.4. Neither language's extraction evidence includes
+  `copilot/extension/`. This does not reconcile the earlier 35-result claim.
+  Full candidate triage/acceptance remains open.
+- Prepared the smallest coverage expansion in the shared configuration.
+  All three consumers were inspected; query suites, filters, existing paths
+  and permissions remain unchanged. Completed hosted extraction for the
+  extension and exact candidate is still required.
+- Local validation: 43 passed across enterprise scan reporting, CodeQL gate
+  script security and owner-approval tests. The initial run skipped three
+  Node-dependent cases; all three passed after installing a user-local
+  Alpine Node runtime. Two existing pytest configuration warnings remain.
+  actionlint passed for all three shared-config consumers; scoped
+  detect-secrets returned zero findings and `git diff --check` passed.
+- Installed checksum-verified official GitHub/Copilot CLI releases in user
+  scope. Native VS Code runtime diagnostics confirmed terminal IPC.
+  The native Actions MCP still fails with a missing owner-header error;
+  authenticated REST/`gh` works for the verified read operations.
+- `owner-approval` has no protection rules and no pending deployment review.
+  The environment secrets public-key and workflow-permission endpoints
+  return HTTP 403. **Owner: repository/security administrator**, to configure
+  genuine independent reviewers and the protected secret through an
+  authorized account. The fail-closed guard is unchanged; no self-approval,
+  scanner weakening, promotion merge or deployment is permitted by these
+  local results.
+  Bounded capability checks of both already-known fallback token routes
+  returned HTTP 401; neither provides an alternative authorized secret path.
+
+The tracked staging continuation contains archive/file digests, provisional
+security-result classifications, remaining ownership and exact next steps.
+
+### Hosted coverage proof and silent gate-count defect
+
+Draft #5776 is published to `0D_base_`. Hosted JavaScript job `130966429104`
+in run `43153020206` succeeded on `809d2824`; verified SARIF extraction
+diagnostics include all three extension JavaScript files. The SARIF contains
+zero results. Its verified source record binds synthetic checkout `15667f6c`
+to that exact head/base; Git confirms the synthetic and head trees match.
+This is coverage proof for that revision, not the eventual promotion candidate.
+The Python job and full run subsequently succeeded; its verified Python/source
+artifacts contain 2,794 results and the same six security-tagged locations.
+The source binding is identical in both languages. Run success is not a clean
+security inventory.
+
+Replaying the original Python artifact exposed a tightly related gate defect:
+all 2,794 results omit `result.level`, inheriting levels from CodeQL rule
+descriptors. The old GA parser returned zero/zero/zero. The repair resolves
+driver/extension descriptors and SARIF's default warning level, preserves
+explicit levels, and rejects invalid indexed references. The same artifact
+now yields existing-policy buckets **644 critical, 358 high, 1,792 medium**.
+These are severity-label buckets including quality findings, **not 644 critical
+vulnerabilities**. No query filter, threshold or backlog waiver was changed.
+
+Validation: 45 focused tests passed, including two new parser regressions;
+Black/Ruff/isort, mypy on the changed test and actionlint on all consumers
+passed. Actual-artifact before/after replay verified both count triples.
+Extension `npm test` passed all three tests and `npm run lint` passed.
+**Security/CI owner:** review the exposed result inventory and gate semantics;
+a previous green GA run is not valid zero-finding assurance.
+
+**ML integration repair (delegated: CI Testing Agent, reviewed by parent).**
+Changed pandas runtime bounds, Evidently drift parsing, pipeline mapping
+validation, perf-log parsing, API-doc root resolution and inactive-tenant
+key revocation, with matching integration tests. Local focused run: all
+changed tests pass except two that fail identically on unmodified HEAD
+because the repository-root `torch/` stub shadows real Torch on this Alpine
+host. Secret-hook false positives in pre-existing dummy fixtures were marked
+inline. **Owner:** ML Components/CI maintainers; hosted ML integration on
+the PR #5766 head remains the authority.
+
+**Post-merge follow-up (direct execution).** #5776 merged as `a801ed41`; its
+inherited `[skip ci]` squash line suppressed all #5766 PR workflows. This
+documentation-only follow-up records the cause and is merged with an explicit
+clean message to obtain genuine hosted evidence on #5766's head.
+Cognitive pre-flight REQ-5 required `CHANGELOG.md` in the last commit; the
+changelog entry was added in a follow-up commit (bot auto-fix push was denied).
+
+**#5766 head `46699c4a` follow-up (direct execution).** Hosted ML integration
+failed only in five `test_gap23_boundaries.py` API tests: `monitoring`
+resolved to `src/monitoring` (no `dashboard_api`) due to `src/`-first path
+order. The test now loads the root `monitoring/dashboard_api.py` by explicit
+path. Local: failure reproduced, then all 19 file tests pass; Black/Ruff/isort
+clean. GA gate on the head reported 641/358/1,791 and failed as expected
+(Security/CI owner); RAG exit 143 (RAG/CI owner); protected approval
+(repository admin) remains open. #5766 stays NOT READY.
+
+## Session: 2026-11-14T10:30Z — Fold open PRs into #5766 (direct execution)
+
+Folded the 4 non-overlapping #5793 files in signed `39a578e14b`. Merged #5794 into
+#5784, #5784 into #5783, and squash-merged #5783 into `0D_base_` as `f4315389d4`.
+#5788-#5791 and #5793 were closed as superseded after trial 3-way merges.
+Six #5783 threads were verified fixed and resolved. #5787 (70% to 54% coverage gate)
+is held for a maintainer decision. Hosted `39a578e14b`: unit failures went from 1,180 to 836.
+The combined gate still fails at 54.90%, as it did before (ML/CI owner). #5795
+clears 4 Semgrep alerts in changed tests (local: 36 passed, 9 skipped). The Trivy
+`uv.lock` CVEs are in pre-existing, unchanged packages, several with no fix released
+(dependency owner).
+
+## Session: #5766 Copilot review follow-up (2026-11-14)
+
+Direct execution; no custom agents were invoked. This session addresses the 6 Copilot
+review findings on #5766 head `f4315389d4`: loader key pollution, GC state leaks, the
+WAL waiter race, encrypted PEM headers, Torch stub detection, and workflow push auth.
+Local results: 26 passed in the focused tests and 42 passed (11 skipped) in the Torch
+tests. actionlint passed. Open, unchanged: the coverage gate is at 54.90% against 70%
+(the #5787 decision is pending), and the Trivy `uv.lock` CVEs are in pre-existing
+dependencies.
+
+## Session: #5766 CodeQL ReDoS follow-up (2026-11-14)
+
+Direct execution. CodeQL on #5766 head `e41e549ec5` flagged a high-severity ReDoS in the
+PEM pattern added in #5796. Its `\s*` overlapped with `\n`; the old pattern took 0.46 s
+at only 22 newlines and roughly quadrupled with every two more. The separators are now
+`[ \t\r]*`. Local: 4 passed, including a 5,000-newline timing guard.

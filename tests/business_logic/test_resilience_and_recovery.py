@@ -218,12 +218,16 @@ class TestFallbackMechanisms:
 
     def test_fallback_preserves_partial_results(self):
         """Test fallback preserves partial results."""
-        partial_result = {"processed": 50, "failed": 50}
 
-        if sum(partial_result.values()) < 100:
-            fallback = "use_partial_result"
+        def choose_strategy(result: dict[str, int]) -> str:
+            # Some items failed: keep what succeeded instead of discarding it.
+            return "use_partial_result" if result["failed"] > 0 else "use_full_result"
+
+        partial_result = {"processed": 50, "failed": 50}
+        fallback = choose_strategy(partial_result)
 
         assert fallback == "use_partial_result", "Result must not be empty"
+        assert choose_strategy({"processed": 100, "failed": 0}) == "use_full_result"
 
 
 class TestFailureRecovery:

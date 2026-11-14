@@ -1,7 +1,13 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-11-06T07:18:16Z",
+  "generated_at": "2026-11-14T11:01:27Z",
   "agents": [
+    {
+      "name": "cdx-archive-lifecycle",
+      "role": "specialist",
+      "enforcement_tier": "SOFT",
+      "autonomy_model": "E"
+    },
     {
       "name": "deep-research-analysis-agent",
       "role": "specialist",
@@ -761,7 +767,7 @@
     },
     {
       "name": "auto-approve-workflows",
-      "enforcement_tier": "GROUNDED",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -813,6 +819,11 @@
       "name": "container-scan",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
+    },
+    {
+      "name": "copilot-code-review",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": false
     },
     {
       "name": "copilot-evolution-suite",
@@ -876,7 +887,7 @@
     },
     {
       "name": "ml-tests",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1375,5 +1386,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "8707f1340d54a90c670041bd4e6fd815f2bbc618b3c13a4e3fc2147e6c974570"
+  "integrity_sha256": "420644534c0084d4e46ccfff192b3ada3bd2440e35e7f1a55d7104a126319719"
 }
