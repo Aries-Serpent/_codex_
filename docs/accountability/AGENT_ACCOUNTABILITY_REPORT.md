@@ -25255,3 +25255,13 @@ The combined gate still fails at 54.90%, as it did before (ML/CI owner). #5795
 clears 4 Semgrep alerts in changed tests (local: 36 passed, 9 skipped). The Trivy
 `uv.lock` CVEs are in pre-existing, unchanged packages, several with no fix released
 (dependency owner).
+
+## Session: #5766 Copilot review follow-up (2026-11-14)
+
+Direct execution; no custom agents were invoked. This session addresses the 6 Copilot
+review findings on #5766 head `f4315389d4`: loader key pollution, GC state leaks, the
+WAL waiter race, encrypted PEM headers, Torch stub detection, and workflow push auth.
+Local results: 26 passed in the focused tests and 42 passed (11 skipped) in the Torch
+tests. actionlint passed. Open, unchanged: the coverage gate is at 54.90% against 70%
+(the #5787 decision is pending), and the Trivy `uv.lock` CVEs are in pre-existing
+dependencies.

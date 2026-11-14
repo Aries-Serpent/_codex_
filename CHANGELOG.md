@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixed - #5766 Copilot review follow-up
+
+- `src/data/loaders.py`: nested dict keys now pass JSON-mode pollution validation.
+- Tests: GC state restore in `measure_time`, deterministic WAL waiter handshake,
+  encrypted-PEM header detection, and namespace-based Torch stub detection in conftest.
+- `agent-auth-delegation.yml`: per-command masked Git auth for the push steps while the
+  trusted checkout stays credential-free.
+
 ### Fixed - PR #5795 Semgrep follow-up for #5766 (2026-11-14)
 - Generate the mismatched JWT test signing key at runtime and justify the
   loopback-only urllib and test-owned pickle stand-ins flagged by Semgrep OSS.

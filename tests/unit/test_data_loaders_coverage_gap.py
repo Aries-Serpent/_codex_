@@ -298,6 +298,13 @@ class TestValidateRecords:
         with pytest.raises(SecurityError):
             validate_records([{"tags": ["ok", {"inner": "__proto__"}]}])
 
+    @pytest.mark.parametrize("key", ["__proto__", "constructor", "prototype"])
+    def test_validate_records_rejects_nested_pollution_keys(self, key):
+        from security import SecurityError
+
+        with pytest.raises(SecurityError, match="Prototype pollution"):
+            validate_records([{"nested": {key: {"polluted": True}}}])
+
     def test_validate_records_rejects_non_json_values(self):
         from security import SecurityError
 

@@ -310,9 +310,12 @@ def _restore_real_torch_modules():
     before = _torch_module_entries()
     yield
     real = before.get("torch")
-    if real is None or getattr(real, "IS_CODEX_STUB", False):
+    if real is None:
         return
-    if not getattr(_sys, "_torch_import_started", False):
+    # Read markers from the namespace directly: the sitecustomize stub's
+    # dynamic attribute handler raises for unknown names such as IS_CODEX_STUB.
+    namespace = getattr(real, "__dict__", {})
+    if namespace.get("IS_CODEX_STUB") or namespace.get("__codex_stub__"):
         return
     after = _torch_module_entries()
     if all(after.get(key) is module for key, module in before.items()):

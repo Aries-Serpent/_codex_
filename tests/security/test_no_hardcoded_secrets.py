@@ -15,7 +15,9 @@ SUSPICIOUS_PATTERNS = [
     # is not key material and is intentionally not flagged.
     re.compile(
         r"-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED )?PRIVATE KEY-----"  # pragma: allowlist secret
-        r"\s*(?:\\n|\n)\s*[A-Za-z0-9+/=]{40,}"
+        # Optional RFC 1421 headers (Proc-Type, DEK-Info) precede encrypted bodies.
+        r"(?:\s*(?:\\n|\n)[A-Za-z][A-Za-z0-9-]*:[^\n\\]*)*"
+        r"(?:\s*(?:\\n|\n))+\s*[A-Za-z0-9+/=]{40,}"
     ),
     # Match aws_secret_access_key when assigned to a hardcoded value (not os.getenv)
     # This allows legitimate config key usage but catches actual secrets
@@ -56,3 +58,16 @@ def test_private_key_pattern_detects_pem_material() -> None:
         escaped = f'KEY = "-----BEGIN {kind}PRIVATE KEY-----\\n{body}"'  # pragma: allowlist secret
         assert pem_pattern.search(escaped), kind
     assert not pem_pattern.search('"patterns": ["BEGIN RSA PRIVATE KEY"]')
+
+
+def test_private_key_pattern_detects_encrypted_pem_headers() -> None:
+    """Traditional encrypted PEM keys carry metadata headers before the body."""
+    body = "MIIEowIBAAKCAQEA" + "A" * 48
+    headers = ["Proc-Type: 4,ENCRYPTED", "DEK-Info: AES-128-CBC,0123456789ABCDEF"]
+    pem_pattern = SUSPICIOUS_PATTERNS[0]
+    for kind in ("RSA ", "EC "):
+        begin = f"-----BEGIN {kind}PRIVATE KEY-----"  # pragma: allowlist secret
+        literal = "\n".join([begin, *headers, "", body])
+        assert pem_pattern.search(literal), kind
+        escaped = "\\n".join([begin, *headers, "", body])
+        assert pem_pattern.search(f'KEY = "{escaped}"'), kind

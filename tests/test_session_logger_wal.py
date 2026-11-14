@@ -88,8 +88,20 @@ def test_init_db_failed_leader_releases_concurrent_waiter(monkeypatch, tmp_path)
         t_leader = threading.Thread(target=leader)
         t_leader.start()
         assert leader_inside.wait(timeout=10), "leader never started initialising"
+        waiter_blocked = threading.Event()
+        leader_pending = sl._INITIALIZING_PATHS[key]
+
+        class _ObservedPending:
+            def wait(self, timeout=None):
+                waiter_blocked.set()
+                return leader_pending.wait(timeout)
+
+        # Replace only the waiter-visible entry; the leader keeps and sets the
+        # original event, so the handshake proves the waiter is blocked on it.
+        sl._INITIALIZING_PATHS[key] = _ObservedPending()
         t_waiter = threading.Thread(target=waiter)
         t_waiter.start()
+        assert waiter_blocked.wait(timeout=10), "waiter never blocked on the leader"
         release_leader.set()
         t_leader.join(timeout=10)
         t_waiter.join(timeout=10)
