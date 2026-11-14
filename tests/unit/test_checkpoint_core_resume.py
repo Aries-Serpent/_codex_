@@ -212,11 +212,11 @@ def test_checkpoint_metadata_schema_mismatch_warns(
 
     def _save(obj, path, **_kwargs):
         with open(path, "wb") as f:
-            pickle.dump(obj, f)
+            pickle.dump(obj, f)  # nosemgrep: test-owned temp file stands in for torch.save
 
     def _load(path, **_kwargs):
         with open(path, "rb") as f:
-            return pickle.load(f)  # nosec B301 - test-owned file
+            return pickle.load(f)  # nosec B301  # nosemgrep: reads only the test-owned file
 
     io = {"save": _save, "load": _load}
     monkeypatch.setattr(checkpoint_core, "_require_torch_attr", io.__getitem__)

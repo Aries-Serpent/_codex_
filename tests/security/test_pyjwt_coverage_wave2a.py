@@ -20,6 +20,7 @@ Code coverage: CWE-522 (Hardcoded Secrets), CWE-347 (Improper Verification)
 import datetime  # pragma: allowlist secret
 import json
 import os
+import secrets
 import time
 
 import pytest
@@ -149,7 +150,7 @@ class TestPyJWTTokenValidation:
         }
 
         # Create token with different secret
-        token = jwt.encode(payload, "different-secret-key", algorithm="HS256")
+        token = jwt.encode(payload, secrets.token_urlsafe(32), algorithm="HS256")
 
         # Validation should fail
         with pytest.raises(ValueError, match="signature"):
