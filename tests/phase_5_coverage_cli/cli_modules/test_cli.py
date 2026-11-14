@@ -8,7 +8,6 @@ from pathlib import Path
 from types import ModuleType, SimpleNamespace
 from unittest.mock import MagicMock, patch
 
-import click
 import pytest
 
 _CLI_MODULE_PATH = Path(__file__).resolve().parents[3] / "src" / "cli.py"

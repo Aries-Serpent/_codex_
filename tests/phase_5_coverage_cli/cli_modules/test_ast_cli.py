@@ -12,7 +12,6 @@ import logging
 from pathlib import Path
 from typing import Any
 
-import click
 import pytest
 
 from codex.cli import ast_cli

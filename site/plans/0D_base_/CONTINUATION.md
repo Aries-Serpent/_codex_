@@ -665,3 +665,33 @@ the next #5766 head remains the authority.
 #5766 remains NOT READY: GA gate backlog disposition, RAG runner/test
 failures and genuine protected owner approval are open owner items, and the
 Zod advisory and compiler/lint backlog stay open.
+
+## ML unit coverage roadmap: 54% floor to 70% target — 2026-11-14
+
+PR #5787 (coverage ratchet, strict-xfail quarantine, floor file) is folded into
+`0D_base_`, so #5766 is the only open PR. The maintainer approved floor 54 and
+target 70; measured combined unit coverage was 54.5-54.9%.
+
+Invariants enforced by `scripts/ci/ml_slow_aggregate.py` (`aggregate` and
+`ratchet` modes in `.github/workflows/ml-tests.yml`):
+
+- `floor` in `.codex/baselines/ml_unit_coverage_floor.json` only rises; a
+  lower floor than the PR base or previous push fails the ratchet.
+- `.codex/baselines/ml_unit_quarantine.json` only shrinks (currently empty).
+  Adding an entry requires the `quarantine-approved` PR label; approval never
+  applies to pushes. Quarantined XPASS, collection errors and stale entries fail.
+- The aggregate prints a notice when coverage is at least one point above the
+  floor; raising the floor is a deliberate commit, never automatic.
+
+Follow-up coverage tasks (each a reviewable `copilot/session-*` sub-PR into
+`0D_base_`):
+
+1. Read the per-module report from the latest `ml-slow-aggregate` run and
+   list the largest uncovered `src/` modules exercised by the unit selection.
+2. Add focused tests for the top uncovered modules in batches; after each
+   merged batch raise `floor` to the suggested value (floor of measured − 0.5).
+3. Milestones: 58% → 62% → 66% → 70%. At 70% the floor equals the target and
+   the ratchet notice stops.
+4. Keep the quarantine empty: fix any test before adding it, and if one must be
+   quarantined, link an issue and owner in the entry and remove it when fixed.
+5. Do not lower the floor or broaden coverage omissions to meet a milestone.

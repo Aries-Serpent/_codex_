@@ -574,6 +574,7 @@ def test_app_token_is_scoped_to_approval_repository_and_permissions(monkeypatch)
                 "issues": "write",
             },
         }
+
     monkeypatch.setattr(approval, "_gh", request)
     assert approval._mint_app_token("1", "fixture", "2", repo="o/r") == "scoped-fixture"
     assert approval._mint_app_token("1", "fixture", "2", repo="o/r") == "scoped-fixture"

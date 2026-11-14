@@ -2,10 +2,22 @@
 
 ## [Unreleased]
 
+### Changed - PR #5787 ML coverage ratchet folded into `0D_base_`
+
+- `ml-slow-aggregate` gates combined unit coverage on the ratchet floor in
+  `.codex/baselines/ml_unit_coverage_floor.json` (floor 54, target 70) instead
+  of a hard 70 percent. The floor may only rise and the strict-xfail quarantine
+  (`.codex/baselines/ml_unit_quarantine.json`, empty) may only shrink; growth
+  or a lower floor requires the `quarantine-approved` PR label and never
+  applies on push. Quarantined XPASS, collection errors and stale entries fail.
+
 ### Fixed - #5766 CodeQL ReDoS follow-up
 
 - `tests/security/test_no_hardcoded_secrets.py`: the PEM header pattern uses newline-free
   separators to remove exponential backtracking (CodeQL `py/redos`), with a timing regression test.
+- Second alert (whitespace-terminated headers): whitespace is now matched only after a line
+  break or once after the BEGIN line, so header values own trailing tabs/spaces/CR; the
+  CodeQL input (`\nA:` followed by repeated `\t\nA:`) is covered by a timing test.
 
 ### Fixed - #5766 Copilot review follow-up
 
@@ -57,7 +69,8 @@
 ### Changed - Parallel ML slow-test follow-up to PR #5783
 - Split integration pass/fail into four stable file-path shards and the existing
   non-slow/non-integration coverage selection into four independent shards.
-  Enforce the unchanged 70 percent gate only on combined unit shard data.
+  Enforce the coverage gate only on combined unit shard data (later replaced by
+  the PR #5787 ratchet floor; target remains 70 percent).
 - Add one stable aggregate job, selection-completeness checks, merged JUnit and
   readable job summaries. Retain failures, cancellation and missing evidence as
   failures regardless of coverage percentage.

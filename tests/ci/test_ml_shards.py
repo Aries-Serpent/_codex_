@@ -26,6 +26,7 @@ pytest_plugins = ["pytester"]
 
 FLOOR = {"floor": 70, "target": 70, "measured_sha": "abc1234"}
 
+
 @pytest.fixture(autouse=True)
 def _default_subprocess_cwd():
     """Keep pytester subprocesses in their isolated temporary directory."""

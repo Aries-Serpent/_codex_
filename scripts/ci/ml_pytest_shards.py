@@ -220,7 +220,6 @@ def pytest_runtest_makereport(
     return report
 
 
-
 def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
     config = session.config
     manifest = config.stash.get(_SELECTION, None)

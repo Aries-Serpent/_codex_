@@ -67,7 +67,9 @@ def test_ml_jobs_install_and_preflight_collection_dependencies(job_name):
     )
     if job_name == "coverage-shard":
         coverage_step = next(
-            step for step in job["steps"] if step.get("name") == "Run non-integration coverage tests"
+            step
+            for step in job["steps"]
+            if step.get("name") == "Run non-integration coverage tests"
         )
         assert coverage_step["timeout-minutes"] == 50
 
@@ -201,6 +203,8 @@ def test_ml_repairs_can_be_validated_on_staging_sub_prs():
     workflow_path = Path(__file__).resolve().parents[2] / ".github/workflows/ml-tests.yml"
     workflow = yaml.safe_load(workflow_path.read_text())
     assert "0D_base_" in workflow["on"]["pull_request"]["branches"]
+
+
 def test_coverage_shard_installs_and_preflights_optional_test_integrations():
     """Unit shards must install optional integrations their tests exercise."""
     import tomllib
