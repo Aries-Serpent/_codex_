@@ -1,6 +1,8 @@
 """Ensure ML jobs install dependencies needed before pytest marker filtering."""
 
 import ast
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -25,6 +27,10 @@ def test_ml_jobs_install_and_preflight_collection_dependencies(job_name):
     ):
         assert requirement in install
     assert install.index("-m pip install") < install.index("import importlib")
+    assert ".[runtime,test-ml-integrations]" in install
+    assert "-m pip check" in install
+    setup = next(step for step in job["steps"] if step.get("id") == "setup-python")
+    assert setup["with"]["extras"] == "runtime,test-ml-integrations"
 
     preflight = install.split("<<'PY'\n", 1)[1].rsplit("\nPY", 1)[0]
     tree = ast.parse(preflight)
@@ -33,16 +39,64 @@ def test_ml_jobs_install_and_preflight_collection_dependencies(job_name):
         for node in ast.walk(tree)
         if isinstance(node, ast.Constant) and isinstance(node.value, str)
     }
-    assert {"detect_secrets", "hypothesis", "freezegun"} <= imports
+    assert {
+        "detect_secrets",
+        "hypothesis",
+        "freezegun",
+        "sqlparse",
+        "nox",
+        "mypy",
+        "ruff",
+        "black",
+        "isort",
+        "pymysql",
+        "imageio",
+        "skimage",
+        "pywt",
+        "cv2",
+        "ray",
+    } <= imports
     assert job["permissions"] == {"contents": "read"}
     assert (
         job["timeout-minutes"]
         == {
             "test-ml-components": 60,
             "integration-shard": 25,
-            "coverage-shard": 40,
+            "coverage-shard": 60,
         }[job_name]
     )
+    if job_name == "coverage-shard":
+        coverage_step = next(
+            step for step in job["steps"] if step.get("name") == "Run non-integration coverage tests"
+        )
+        assert coverage_step["timeout-minutes"] == 50
+
+
+@pytest.mark.parametrize("job_name", ["test-ml-components", "integration-shard", "coverage-shard"])
+def test_ml_preflight_rejects_repo_torch_stub(tmp_path, job_name):
+    workflow_path = Path(__file__).resolve().parents[2] / ".github/workflows/ml-tests.yml"
+    job = yaml.safe_load(workflow_path.read_text())["jobs"][job_name]
+    install = next(
+        step["run"]
+        for step in job["steps"]
+        if step.get("name") == "Install project and ML runtime dependencies"
+    )
+    preflight = install.split("<<'PY'\n", 1)[1].rsplit("\nPY", 1)[0]
+    script = tmp_path / "preflight.py"
+    script.write_text(
+        "import importlib\nfrom types import SimpleNamespace\n"
+        "importlib.import_module = lambda name: SimpleNamespace(IS_CODEX_STUB=True)\n" + preflight
+    )
+    process = subprocess.run(
+        [sys.executable, str(script)],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        timeout=15,
+        check=False,
+    )
+    assert process.returncode == 1
+    assert "Real CPU PyTorch is required" in process.stderr
 
 
 def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
@@ -147,3 +201,53 @@ def test_ml_repairs_can_be_validated_on_staging_sub_prs():
     workflow_path = Path(__file__).resolve().parents[2] / ".github/workflows/ml-tests.yml"
     workflow = yaml.safe_load(workflow_path.read_text())
     assert "0D_base_" in workflow["on"]["pull_request"]["branches"]
+def test_coverage_shard_installs_and_preflights_optional_test_integrations():
+    """Unit shards must install optional integrations their tests exercise."""
+    import tomllib
+
+    root = Path(__file__).resolve().parents[2]
+    extras = tomllib.loads((root / "pyproject.toml").read_text())["project"][
+        "optional-dependencies"
+    ]
+    integration_reqs = extras["test-ml-integrations"]
+    distributions = {
+        req.split(">", 1)[0].split("<", 1)[0].split("=", 1)[0].strip().lower()
+        for req in integration_reqs
+    }
+    expected_dists = {
+        "sqlparse",
+        "nox",
+        "mypy",
+        "pymysql",
+        "imageio",
+        "scikit-image",
+        "pywavelets",
+        "opencv-python-headless",
+    }
+    assert expected_dists <= distributions
+    # Every pin must carry a lower bound so CI never resolves an ancient release.
+    assert all(">=" in req for req in integration_reqs)
+
+    workflow = yaml.safe_load((root / ".github/workflows/ml-tests.yml").read_text())
+    install = next(
+        step["run"]
+        for step in workflow["jobs"]["coverage-shard"]["steps"]
+        if step.get("name") == "Install project and ML runtime dependencies"
+    )
+    assert "-m pip install -e '.[runtime,test-ml-integrations]'" in install
+    preflight = install.split("<<'PY'\n", 1)[1].rsplit("\nPY", 1)[0]
+    imports = {
+        node.value
+        for node in ast.walk(ast.parse(preflight))
+        if isinstance(node, ast.Constant) and isinstance(node.value, str)
+    }
+    assert {
+        "sqlparse",
+        "nox",
+        "mypy",
+        "pymysql",
+        "imageio",
+        "skimage",
+        "pywt",
+        "cv2",
+    } <= imports

@@ -310,7 +310,12 @@ def _restore_real_torch_modules():
     before = _torch_module_entries()
     yield
     real = before.get("torch")
-    if real is None or getattr(real, "IS_CODEX_STUB", False):
+    if real is None:
+        return
+    # Read markers from the namespace directly: the sitecustomize stub's
+    # dynamic attribute handler raises for unknown names such as IS_CODEX_STUB.
+    namespace = getattr(real, "__dict__", {})
+    if namespace.get("IS_CODEX_STUB") or namespace.get("__codex_stub__"):
         return
     if not getattr(_sys, "_torch_import_started", False):
         return
@@ -401,7 +406,10 @@ def _needs_pydantic(item: pytest.Item) -> bool:
 
 def _torch_available() -> bool:
     try:
-        importlib.import_module("torch")
+        torch_mod = importlib.import_module("torch")
+        namespace = getattr(torch_mod, "__dict__", {})
+        if namespace.get("IS_CODEX_STUB") or namespace.get("__codex_stub__"):
+            return False
         nn_mod = importlib.import_module("torch.nn")
         optim_mod = importlib.import_module("torch.optim")
     except Exception as _err:  # pragma: no cover - defensive guard for import errors

@@ -396,6 +396,32 @@ def test_owner_marker_never_substitutes_for_protection(case, error):
     assert owner_gate.protection_error(environment, marker) == error
 
 
+@pytest.mark.parametrize(
+    "reviewers",
+    [
+        [None],
+        [{"type": "Unknown", "reviewer": {"id": 1}}],
+        [{"type": "User", "reviewer": {"id": 0}}],
+        [{"type": "Team", "reviewer": {"id": "1"}}],
+        [{"type": "User", "reviewer": {"id": True}}],
+        [{"type": "User", "reviewer": None}],
+    ],
+)
+def test_owner_marker_rejects_malformed_or_unknown_reviewers(reviewers):
+    environment = {
+        "protection_rules": [
+            {
+                "type": "required_reviewers",
+                "prevent_self_review": True,
+                "reviewers": reviewers,
+            }
+        ],
+        "can_admins_bypass": False,
+        "deployment_branch_policy": {"protected_branches": True, "custom_branch_policies": False},
+    }
+    assert owner_gate.protection_error(environment, "true") == "invalid-environment-reviewer"
+
+
 def test_environment_api_denial_is_not_approval(monkeypatch, capsys):
     monkeypatch.setenv("GITHUB_REPOSITORY", "o/r")
     monkeypatch.setenv("GITHUB_TOKEN", "fixture")
@@ -525,7 +551,8 @@ def test_app_token_is_scoped_to_approval_repository_and_permissions(monkeypatch)
     import sys
     from types import SimpleNamespace
 
-    monkeypatch.setenv("REPO", "o/r")
+    monkeypatch.delenv("REPO", raising=False)
+    monkeypatch.delenv("GITHUB_REPOSITORY", raising=False)
     monkeypatch.setattr(approval, "_app_identity", None)
     monkeypatch.setitem(
         sys.modules, "jwt", SimpleNamespace(encode=lambda *args, **kwargs: "fixture")
@@ -541,26 +568,29 @@ def test_app_token_is_scoped_to_approval_repository_and_permissions(monkeypatch)
         return 201, {
             "token": "scoped-fixture",
             "expires_at": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
-            "permissions": {"actions": "write", "pull_requests": "read"},
-        }
-
-    monkeypatch.setattr(approval, "_gh", request)
-    assert approval._mint_app_token("1", "fixture", "2") == "scoped-fixture"
-    assert calls == [
-        (
-            "POST",
-            "/app/installations/2/access_tokens",
-            {
-                "repositories": ["r"],
-                "permissions": {
-                    "actions": "write",
-                    "contents": "read",
-                    "pull_requests": "read",
-                    "issues": "write",
-                },
+            "permissions": {
+                "actions": "write",
+                "pull_requests": "read",
+                "issues": "write",
             },
-        ),
-    ]
+        }
+    monkeypatch.setattr(approval, "_gh", request)
+    assert approval._mint_app_token("1", "fixture", "2", repo="o/r") == "scoped-fixture"
+    assert approval._mint_app_token("1", "fixture", "2", repo="o/r") == "scoped-fixture"
+    expected = (
+        "POST",
+        "/app/installations/2/access_tokens",
+        {
+            "repositories": ["r"],
+            "permissions": {
+                "actions": "write",
+                "contents": "read",
+                "pull_requests": "read",
+                "issues": "write",
+            },
+        },
+    )
+    assert calls == [expected, expected]
 
 
 @pytest.fixture
@@ -583,7 +613,11 @@ def delegated_app(api, monkeypatch):
         "token": {
             "token": "delegated-app-fixture",
             "expires_at": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
-            "permissions": {"actions": "write", "pull_requests": "read"},
+            "permissions": {
+                "actions": "write",
+                "pull_requests": "read",
+                "issues": "write",
+            },
         },
         "review": {
             "user": {"login": "codex-maintainer[bot]", "type": "Bot"},
@@ -619,7 +653,9 @@ def test_verified_agent_maintainer_needs_no_second_human(delegated_app, monkeypa
     assert "delegated-app-fixture" not in repr(approval._app_identity)
 
 
-@pytest.mark.parametrize("case", ["owner", "suspended", "app-id", "permissions", "expiry"])
+@pytest.mark.parametrize(
+    "case", ["owner", "suspended", "app-id", "permissions", "issues-permission", "expiry"]
+)
 def test_agent_credentials_require_live_installation_evidence(delegated_app, case):
     evidence, _ = delegated_app
     if case == "owner":
@@ -630,6 +666,8 @@ def test_agent_credentials_require_live_installation_evidence(delegated_app, cas
         evidence["app"]["id"] = 9
     elif case == "permissions":
         evidence["token"]["permissions"]["actions"] = "read"
+    elif case == "issues-permission":
+        evidence["token"]["permissions"]["issues"] = "read"
     else:
         evidence["token"]["expires_at"] = "2000-01-01T00:00:00Z"
     assert approval._mint_app_token("1", "fixture", "2") is None

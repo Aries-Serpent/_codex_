@@ -59,7 +59,7 @@ metadata:
     result = subprocess.run(
         [
             sys.executable,
-            str(ROOT / "tools/generate_schema.py"),
+            str(ROOT / "src/tools/generate_schema.py"),
             str(cfg),
             "--output",
             str(output),

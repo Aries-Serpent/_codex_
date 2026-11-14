@@ -16,10 +16,23 @@ import pytest
 _REPORTED_FAILURES = pytest.StashKey[int]()
 _QUARANTINED = pytest.StashKey[set[str]]()
 _QUARANTINE_RESULTS = pytest.StashKey[dict[str, str]]()
+_SELECTION = pytest.StashKey[dict[str, object]]()
 
 QUARANTINE_FIELDS = ("nodeid", "cluster", "issue", "owner", "reason", "added_sha")
 _ISSUE = re.compile(r"#[1-9][0-9]*|https://[^\s]+")
 _SHA = re.compile(r"[0-9a-f]{7,40}")
+
+
+def execution_context() -> dict[str, str | None]:
+    return {
+        key: os.environ.get(key)
+        for key in ("GITHUB_REPOSITORY", "GITHUB_SHA", "GITHUB_RUN_ID", "GITHUB_RUN_ATTEMPT")
+    }
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_runtest_logreport(report: pytest.TestReport) -> None:
+    report.user_properties.append(("codex_ml_nodeid", report.nodeid))
 
 
 def pytest_exception_interact(
@@ -141,23 +154,22 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     report = config.getoption("ml_shard_report")
     if report is not None:
         report.parent.mkdir(parents=True, exist_ok=True)
-        report.write_text(
-            json.dumps(
-                {
-                    "shard": shard,
-                    "shards": count,
-                    "args": config.args,
-                    "marker": config.getoption("markexpr"),
-                    "keyword": config.getoption("keyword"),
-                    "eligible_count": len(nodeids),
-                    "collection_digest": collection_digest(nodeids),
-                    "selected": sorted(item.nodeid for item in selected),
-                    **quarantine_report(quarantine, selected),
-                },
-                indent=2,
-            ),
-            encoding="utf-8",
-        )
+        manifest: dict[str, object] = {
+            "shard": shard,
+            "shards": count,
+            "args": config.args,
+            "marker": config.getoption("markexpr"),
+            "keyword": config.getoption("keyword"),
+            "eligible_count": len(nodeids),
+            "collection_digest": collection_digest(nodeids),
+            "selected": sorted(item.nodeid for item in selected),
+            "context": execution_context(),
+            "collect_only": config.getoption("collectonly"),
+            "exitstatus": None,
+            **quarantine_report(quarantine, selected),
+        }
+        config.stash[_SELECTION] = manifest
+        report.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
 
 def quarantine_report(
@@ -208,11 +220,15 @@ def pytest_runtest_makereport(
     return report
 
 
-def pytest_sessionfinish(session: pytest.Session) -> None:
+
+def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
     config = session.config
-    report = config.getoption("ml_shard_report")
-    if report is None or _QUARANTINE_RESULTS not in config.stash or not report.is_file():
+    manifest = config.stash.get(_SELECTION, None)
+    if manifest is None:
         return
-    data = json.loads(report.read_text(encoding="utf-8"))
-    data["quarantine_results"] = dict(sorted(config.stash[_QUARANTINE_RESULTS].items()))
-    report.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    manifest["exitstatus"] = int(exitstatus)
+    if _QUARANTINE_RESULTS in config.stash:
+        manifest["quarantine_results"] = dict(sorted(config.stash[_QUARANTINE_RESULTS].items()))
+    report = config.getoption("ml_shard_report")
+    if report is not None:
+        report.write_text(json.dumps(manifest, indent=2), encoding="utf-8")

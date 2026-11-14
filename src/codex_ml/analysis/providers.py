@@ -221,9 +221,11 @@ class ExternalWebSearch(SearchProvider):
         try:
             response = http_get(self.endpoint, params=params, timeout=self.timeout)
         except (
-            ConnectionError,
-            TimeoutError,
-        ) as exc:  # pragma: no cover - network failures via mocks
+            OSError,  # Includes builtin connection/timeouts and requests.RequestException.
+            RuntimeError,
+            ValueError,
+            TypeError,
+        ) as exc:
             result["status"] = "error"
             result["error"] = str(exc)
             return result

@@ -81,12 +81,20 @@ integration shards and four non-integration coverage shards after the component
 jobs. Tests within a file stay together; SHA-256 of the relative file path
 selects the shard, independent of collection order or `pytest-randomly` seeds.
 No durations file, pytest-split or xdist is required.
+ML jobs install `.[runtime,test-ml-integrations]` and run `pip check`; the
+test-only extra does not expand production runtime requirements. Scanner/dev
+dependencies resolve separately rather than forcing their OpenTelemetry API
+constraint into the ML runtime environment. Supported-runner installation and
+imports must pass on Ubuntu/glibc; cross-platform resolution or downloaded
+wheels alone do not qualify the runtime. Preflight rejects the repository's
+optional Torch stub and requires a real CPU tensor round trip.
 Two coverage shards both exceeded their 18-minute test budgets in the first
 hosted run, so the coverage partition was increased to four without changing
 the selection or threshold.
-The four-way trial still timed out (one shard reached 95%), so coverage test
-steps retain the original 30-minute allowance inside a 40-minute job budget
-for setup and reporting. The 300-second per-test timeout is unchanged.
+The four-way trial still timed out (one shard reached 95%), and the latest run
+timed out at 61% after 30 minutes. Coverage test steps now allow 50 minutes
+inside a 60-minute job budget for setup and reporting. The 300-second per-test
+timeout is unchanged.
 
 From the repository root, reproduce an integration shard:
 
@@ -111,6 +119,12 @@ final JUnit generation, so a later timeout does not erase the first failures.
 
 Every shard records JUnit, its selected IDs and a digest of the entire eligible
 collection. The aggregate rejects differing collections, overlap, missing
+collection. Each JUnit test case carries its canonical pytest node ID; matching
+counts alone cannot substitute different tests. Manifests also record completion,
+pytest exit status, and the repository, SHA, workflow run and attempt. The aggregate
+rejects collect-only/incomplete/failed producers and evidence from another context.
+After a workflow rerun, rerun all shard producers rather than mixing artifacts
+from previous attempts.
 selections/reports/data, and failed/cancelled/skipped upstream jobs. It writes
 merged JUnit, coverage HTML and readable failure summaries; shards also write
 summaries to GitHub's job summary. Empty or unavailable evidence is failure,

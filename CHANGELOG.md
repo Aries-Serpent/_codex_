@@ -2,6 +2,40 @@
 
 ## [Unreleased]
 
+### Fixed - #5766 CodeQL ReDoS follow-up
+
+- `tests/security/test_no_hardcoded_secrets.py`: the PEM header pattern uses newline-free
+  separators to remove exponential backtracking (CodeQL `py/redos`), with a timing regression test.
+
+### Fixed - #5766 Copilot review follow-up
+
+- `src/data/loaders.py`: nested dict keys now pass JSON-mode pollution validation.
+- Tests: GC state restore in `measure_time`, deterministic WAL waiter handshake,
+  encrypted-PEM header detection, and namespace-based Torch stub detection in conftest.
+- `agent-auth-delegation.yml`: per-command masked Git auth for the push steps while the
+  trusted checkout stays credential-free.
+
+### Fixed - PR #5795 Semgrep follow-up for #5766 (2026-11-14)
+- Generate the mismatched JWT test signing key at runtime and justify the
+  loopback-only urllib and test-owned pickle stand-ins flagged by Semgrep OSS.
+
+### Fixed - PR #5794 consolidated recovery (2026-11-14)
+- Require the expected JWT audience and reject non-finite or non-numeric
+  not-before claims, retaining optional not-before and valid elapsed dates.
+- Consolidate validated L2/L3b/L4 and CLI repairs; bind shard/JUnit evidence to
+  completed execution, exact test identities, repository, SHA, run and attempt.
+- Require dependency consistency and real CPU Torch in ML preflight while
+  preserving permissions, triggers and the 70 percent combined coverage gate.
+- Record actual validation limits and satisfy the failed accountability gate
+  without changing credentials or its denied documentation commit-back control.
+- Preserve authored PR template sections and validation evidence during
+  automated description refresh; repeated refreshes do not duplicate content.
+- Normalize MariaDB DSN autocommit options while retaining transactional mode;
+  report incomplete SentencePiece trainers explicitly before new-model training
+  without requiring a trainer to load an existing model.
+- Revalidate the live PR body after score calculation and refuse stale
+  description writes rather than overwrite concurrently authored review evidence.
+
 ### Fixed - ML coverage shard collection error on PR #5784
 - Import Ray Serve explicitly (`from ray import serve`); `ray.serve` attribute
   access raised AttributeError under Ray 2.60, which `importorskip` cannot skip,

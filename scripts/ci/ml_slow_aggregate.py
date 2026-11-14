@@ -152,17 +152,33 @@ def validate_selections(
     quarantine: Mapping[str, Any] | None = None,
 ) -> list[str]:
     """Validate shard selections; return quarantine entries no shard selected (stale)."""
+    expected = {f"{prefix}-{index}" for index in range(1, count + 1)}
+    if {entry.name for entry in root.iterdir()} != expected:
+        raise ValueError(f"{prefix}: missing or unexpected shard artifacts")
+    context = shards.execution_context()
+    if os.environ.get("GITHUB_ACTIONS") == "true" and not all(context.values()):
+        raise ValueError("Incomplete hosted ML execution context")
     manifests = [
         json.loads((root / f"{prefix}-{index}" / "selection.json").read_text())
         for index in range(1, count + 1)
     ]
+    if not manifests or type(manifests[0]["eligible_count"]) is not int:
+        raise ValueError(f"{prefix}: invalid eligible collection size")
+    if manifests[0]["eligible_count"] < 1:
+        raise ValueError(f"{prefix}: empty eligible collection")
     selected: list[str] = []
     for index, manifest in enumerate(manifests, 1):
+        exitstatus = manifest.get("exitstatus")
+        allowed_exitstatuses = (0, 1) if quarantine is not None else (0,)
         if (
             manifest["shard"] != index
             or manifest["shards"] != count
             or manifest["marker"] != marker
             or manifest["keyword"]
+            or manifest["context"] != context
+            or manifest["collect_only"] is not False
+            or type(exitstatus) is not int
+            or exitstatus not in allowed_exitstatuses
             or [arg.rstrip("/") for arg in manifest["args"]] != [path]
             or manifest["collection_digest"] != manifests[0]["collection_digest"]
             or manifest["eligible_count"] != manifests[0]["eligible_count"]
@@ -335,6 +351,15 @@ def aggregate(
                     problem = pytest_exit_problem(directory, f"{prefix}-{index}", shard_failed)
                     if problem:
                         raise ValueError(problem)
+                reported: list[str] = []
+                for case in selected_cases:
+                    properties = case.findall("./properties/property[@name='codex_ml_nodeid']")
+                    nodeid = properties[0].get("value") if len(properties) == 1 else None
+                    if not nodeid:
+                        raise ValueError(f"{prefix}-{index}: missing or ambiguous pytest node ID")
+                    reported.append(nodeid)
+                if sorted(reported) != sorted(manifest["selected"]):
+                    raise ValueError(f"{prefix}-{index}: mismatched JUnit test identities")
         except (
             OSError,
             ValueError,

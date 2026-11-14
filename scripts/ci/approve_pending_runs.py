@@ -152,7 +152,13 @@ def _gh(
         return exc.code, err_body
 
 
-def _mint_app_token(app_id: str, private_key_pem: str, installation_id: str) -> str | None:
+def _mint_app_token(
+    app_id: str,
+    private_key_pem: str,
+    installation_id: str,
+    *,
+    repo: str | None = None,
+) -> str | None:
     """Mint a short-lived GitHub App installation token.
 
     Returns the token string, or None if minting fails.
@@ -179,8 +185,12 @@ def _mint_app_token(app_id: str, private_key_pem: str, installation_id: str) -> 
         print("App JWT signing failed", file=sys.stderr)
         return None
 
-    repo = os.environ.get("REPO") or os.environ.get("GITHUB_REPOSITORY", "")
-    parts = repo.split("/")
+    repo_slug = (
+        repo
+        if repo is not None
+        else (os.environ.get("REPO") or os.environ.get("GITHUB_REPOSITORY", ""))
+    )
+    parts = repo_slug.split("/")
     if len(parts) != 2 or not all(parts):
         print("App token requires an explicit repository scope", file=sys.stderr)
         return None
@@ -236,6 +246,7 @@ def _mint_app_token(app_id: str, private_key_pem: str, installation_id: str) -> 
             and isinstance(permissions, dict)
             and permissions.get("actions") == "write"
             and permissions.get("pull_requests") in {"read", "write"}
+            and permissions.get("issues") == "write"
         ):
             _app_identity = _AppIdentity(token, app["slug"] + "[bot]", expires_at.timestamp())
             return token

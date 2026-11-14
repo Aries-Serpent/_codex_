@@ -8,6 +8,7 @@ Tests ensure that:
 3. Code injection via unsafe __import__ is prevented (validate_test_env.py)
 """
 
+import ast
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -234,23 +235,22 @@ class TestSubprocessSecurityPatterns:
                 continue
 
             content = file_path.read_text()
-            lines = content.split("\n")
-
-            # Check each line
-            for i, line in enumerate(lines, 1):
-                # Skip comments and docstrings
-                if line.strip().startswith("#") or line.strip().startswith('"""'):
+            # AST-based: flags any call passing shell=<truthy/non-False> as a real
+            # keyword argument (including multi-line calls), while ignoring prose in
+            # docstrings/comments that merely mentions "shell=True".
+            for node in ast.walk(ast.parse(content)):
+                if not isinstance(node, ast.Call):
                     continue
-
-                # Check for shell=True (should not be there, except in comments/docs)
-                if "shell=True" in line:
-                    # This is a violation - shell=True should not be in production code
-                    if "nosec" not in line and "shell=False" not in line:
-                        pytest.fail(
-                            f"SECURITY: Found shell=True in {file_path.name}:{i}\n"
-                            f"Line: {line}\n"
-                            f"This enables command injection!"
-                        )
+                for kw in node.keywords:
+                    if kw.arg != "shell":
+                        continue
+                    if isinstance(kw.value, ast.Constant) and kw.value.value is False:
+                        continue
+                    pytest.fail(
+                        f"SECURITY: Found shell={ast.unparse(kw.value)} in "
+                        f"{file_path.name}:{node.lineno}\n"
+                        f"This enables command injection!"
+                    )
 
     def test_list_based_subprocess_calls(self):
         """SECURITY: All subprocess calls must use list-based commands."""

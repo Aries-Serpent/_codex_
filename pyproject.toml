@@ -560,6 +560,29 @@ test-core = [
     "yamllint>=1.38.0,<2.0.0",
     "detect-secrets>=1.5.0",
 ]
+# Optional integrations exercised by the ML unit-coverage suite
+# (.github/workflows/ml-tests.yml `coverage-shard`). Installed on top of
+# `runtime` so supported-but-optional integrations are tested instead of
+# failing with ModuleNotFoundError. Kept out of `runtime` to keep production
+# images lean. All entries publish Python 3.12 wheels.
+test-ml-integrations = [
+    # SQL AST adapter (codex AST tooling; also part of `core`)
+    "sqlparse>=0.6.0",
+    # noxfile.py helpers and tooling checks in tests/full/test_dev_tools.py
+    "nox>=2026.8.17",
+    "mypy>=2.3.1,<3.0.0",
+    "ruff>=0.16.5,<1.0.0",
+    "black>=24.0.0,<27.0.0",
+    "isort>=9.0.1",
+    # aries_serpent_core.archive DAL MariaDB/MySQL backend
+    "PyMySQL>=1.1.1,<2",
+    # src/restore_pipeline (see src/restore_pipeline/requirements.txt);
+    # headless OpenCV avoids GUI/system libs, <5 keeps the 4.x API surface.
+    "imageio>=2.37.0,<3",
+    "scikit-image>=0.25.2,<1",
+    "PyWavelets>=1.8.0,<2",
+    "opencv-python-headless>=4.12.0.88,<5",
+]
 rag = [
     "pandas>=3.0.5,<3.1",
     "numpy>=2.5.2,<3",

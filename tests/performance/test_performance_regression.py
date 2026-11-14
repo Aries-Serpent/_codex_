@@ -272,13 +272,19 @@ def measure_time(func: Callable, iterations: int = 100) -> dict[str, float]:
         func()
 
     # Actual measurements
-    for _ in range(iterations):
-        gc.disable()
-        start = time.perf_counter()
-        func()
-        end = time.perf_counter()
-        gc.enable()
-        times.append((end - start) * 1000)  # Convert to ms
+    gc_was_enabled = gc.isenabled()
+    try:
+        for _ in range(iterations):
+            gc.disable()
+            start = time.perf_counter()
+            func()
+            end = time.perf_counter()
+            if gc_was_enabled:
+                gc.enable()
+            times.append((end - start) * 1000)  # Convert to ms
+    finally:
+        if gc_was_enabled:
+            gc.enable()
 
     return {
         "mean_ms": statistics.mean(times),
@@ -316,7 +322,9 @@ class TestAgentMemoryPerformance:
             stats = measure_time(store_decision, iterations=50)
 
             # Should be able to store at least 10 decisions per second
-            assert stats["ops_per_sec"] >= 10, f"Decision storage too slow: {stats['ops_per_sec']:.1f} ops/sec"
+            assert (
+                stats["ops_per_sec"] >= 10
+            ), f"Decision storage too slow: {stats['ops_per_sec']:.1f} ops/sec"
 
     def test_retrieve_context_performance(self):
         """Test context retrieval performance."""

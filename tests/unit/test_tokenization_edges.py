@@ -185,8 +185,7 @@ class TestTokenizationConsistency:
         try:
             from transformers import AutoTokenizer
         except ImportError:
-            pytest.skip("transformers not available"
-        ), "Condition must be true"
+            pytest.skip("transformers not available")
 
         try:
             tokenizer = AutoTokenizer.from_pretrained(
@@ -254,9 +253,12 @@ class TestTokenizationErrorRecovery:
             pytest.skip("Could not load tokenizer")
 
         # Act & Assert
-        with pytest.raises((TypeError, AttributeError)):
+        # transformers now uses ValueError naming the accepted input types.
+        with pytest.raises((TypeError, AttributeError, ValueError)) as exc_info:
             # Should raise error, not silently fail
             tokenizer(12345)
+        if isinstance(exc_info.value, ValueError):
+            assert "text input must be of type" in str(exc_info.value)
 
     def test_tokenize_none_input_raises_error(self):
         """Verify clear error when None is passed."""
