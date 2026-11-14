@@ -1,6 +1,8 @@
 import importlib.util
 from pathlib import Path
 
+import pytest
+
 # Load by path: ``tests/data`` can shadow the top-level ``data`` package during collection.
 _LOADERS_PATH = Path(__file__).resolve().parents[2] / "src" / "data" / "loaders.py"
 _spec = importlib.util.spec_from_file_location("_src_data_loaders", _LOADERS_PATH)
@@ -285,3 +287,31 @@ class TestValidateRecords:
         assert isinstance(record["number"], int)
         assert isinstance(record["float"], float)
         assert isinstance(record["bool"], bool)
+        assert record["none"] is None
+        assert record["list"] == [1, 2, 3]
+        assert record["dict"] == {"nested": "value"}
+
+    def test_validate_records_rejects_nested_pollution_string(self):
+        """Nested string leaves are still validated."""
+        from security import SecurityError
+
+        with pytest.raises(SecurityError):
+            validate_records([{"tags": ["ok", {"inner": "__proto__"}]}])
+
+    def test_validate_records_rejects_non_json_values(self):
+        from security import SecurityError
+
+        with pytest.raises(SecurityError):
+            validate_records([{"bad": object()}])
+
+    def test_validate_records_rejects_non_dict_records(self):
+        from security import SecurityError
+
+        with pytest.raises(SecurityError, match="Expected dict record"):
+            validate_records([["not", "a", "record"]])
+
+    def test_validate_records_rejects_non_string_keys(self):
+        from security import SecurityError
+
+        with pytest.raises(SecurityError, match="Expected string"):
+            validate_records([{"nested": {1: "value"}}])

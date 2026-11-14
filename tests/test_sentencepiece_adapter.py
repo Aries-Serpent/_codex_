@@ -221,6 +221,31 @@ def _get_model_file_from_adapter(adapter):
     return getattr(sp, "model_file", None)
 
 
+def test_explicit_override_precedes_imported_sentencepiece(monkeypatch):
+    mod = _get_adapter_module()
+    imported = SimpleNamespace(SentencePieceProcessor=object)
+    override = SimpleNamespace(SentencePieceProcessor=object)
+    monkeypatch.setitem(sys.modules, "sentencepiece", imported)
+    monkeypatch.setattr(mod, "spm", override)
+    assert mod._get_sentencepiece() is override
+
+
+def test_fallback_does_not_shadow_later_import(monkeypatch):
+    mod = _get_adapter_module()
+    monkeypatch.setattr(mod, "spm", None)
+    monkeypatch.setattr(mod, "_FALLBACK_SPM", None)
+    monkeypatch.setitem(sys.modules, "sentencepiece", None)
+    fallback = mod._get_sentencepiece()
+    assert mod._get_sentencepiece() is fallback
+    assert mod.spm is None
+
+    imported = SimpleNamespace(SentencePieceProcessor=object)
+    monkeypatch.setitem(sys.modules, "sentencepiece", imported)
+    assert mod._get_sentencepiece() is imported
+    assert imported is not fallback
+    assert mod.spm is None
+
+
 def test_train_and_reload_roundtrip(tmp_path):
     """
     This test exercises an end-to-end flow using the real sentencepiece package.
@@ -247,7 +272,9 @@ def test_train_and_reload_roundtrip(tmp_path):
     else:
         # If not available, ensure sp attribute was set
         model_file = _get_model_file_from_adapter(adapter2)
-        assert model_file is not None and model_file.endswith(".model"), "model_file must be initialized"
+        assert model_file is not None and model_file.endswith(
+            ".model"
+        ), "model_file must be initialized"
 
 
 def test_train_or_load_trains_and_loads(tmp_path, monkeypatch):
@@ -303,10 +330,8 @@ def test_train_or_load_loads_existing_model(tmp_path, monkeypatch):
 
 def test_train_or_load_requires_sentencepiece(tmp_path, monkeypatch):
     """
-    When the adapter no longer has a valid spm object, calling train_or_load
-    should raise an AttributeError (adapter expects methods on the spm object).
+    An importable module without a processor is broken, not absent.
     """
-    pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
     model = tmp_path / "toy.model"
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("x", encoding="utf-8")
@@ -319,16 +344,15 @@ def test_train_or_load_requires_sentencepiece(tmp_path, monkeypatch):
 
     SentencePieceAdapter = mod.SentencePieceAdapter
     adapter = SentencePieceAdapter(model)
-    with pytest.raises(AttributeError):
+    with pytest.raises(ImportError, match="missing SentencePieceProcessor"):
         adapter.train_or_load(corpus)
+    assert not model.exists()
 
 
 def test_load_requires_sentencepiece(tmp_path, monkeypatch):
     """
-    When spm is None, load() should raise AttributeError because library functionality
-    is missing.
+    A broken installed module must not send a real model to the JSON fallback.
     """
-    pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
     model = tmp_path / "toy.model"
     model.write_text("model", encoding="utf-8")
 
@@ -338,8 +362,9 @@ def test_load_requires_sentencepiece(tmp_path, monkeypatch):
 
     SentencePieceAdapter = mod.SentencePieceAdapter
     adapter = SentencePieceAdapter(model)
-    with pytest.raises(AttributeError):
+    with pytest.raises(ImportError, match="missing SentencePieceProcessor"):
         adapter.load()
+    assert adapter.sp is None
 
 
 def test_add_special_tokens_returns_mapping(tmp_path, monkeypatch):

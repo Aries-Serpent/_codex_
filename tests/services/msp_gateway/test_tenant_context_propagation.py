@@ -14,10 +14,23 @@ pytest.importorskip("pydantic_settings")
 
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
+from pydantic import BaseModel
 
 from services.msp_gateway.middleware import RateLimitMiddleware, TenantContextMiddleware
 from services.msp_gateway.middleware import tenant_context as tc_module
 from services.msp_gateway.middleware.tenant_context import TenantRegistry
+
+
+class DataRequest(BaseModel):
+    """Module-scoped so FastAPI can resolve postponed endpoint annotations."""
+
+    item: str
+    value: int
+
+
+def _auth(api_key: str) -> dict[str, str]:
+    """Build the bearer header expected by TenantContextMiddleware."""
+    return {"Authorization": "Bearer " + api_key}
 
 
 def test_tenant_context_propagation_basic(
@@ -49,7 +62,7 @@ def test_tenant_context_propagation_basic(
     with TestClient(app) as client:
         response = client.get(
             "/v1/context/check",
-            headers={"Authorization": "******"},
+            headers=_auth("key-test"),
         )
 
     assert response.status_code == 200, "Endpoint must return successfully"
@@ -73,11 +86,13 @@ def test_tenant_context_propagation_through_middleware_stack(
     class VerifyContextMiddleware(BaseHTTPMiddleware):
         async def dispatch(self, request: Request, call_next):
             tenant = getattr(request.state, "tenant", None)
-            middleware_checks.append({
-                "layer": "verify",
-                "has_tenant": tenant is not None,
-                "tenant_id": tenant["tenant_id"] if tenant else None,
-            })
+            middleware_checks.append(
+                {
+                    "layer": "verify",
+                    "has_tenant": tenant is not None,
+                    "tenant_id": tenant["tenant_id"] if tenant else None,
+                }
+            )
             return await call_next(request)
 
     app.add_middleware(VerifyContextMiddleware)
@@ -99,7 +114,7 @@ def test_tenant_context_propagation_through_middleware_stack(
     with TestClient(app) as client:
         response = client.get(
             "/v1/propagate",
-            headers={"Authorization": "******"},
+            headers=_auth("key-propagate"),
         )
 
     assert response.status_code == 200, "Request must succeed"
@@ -146,7 +161,7 @@ def test_tenant_context_propagation_with_nested_calls(
     with TestClient(app) as client:
         response = client.post(
             "/v1/nested",
-            headers={"Authorization": "******"},
+            headers=_auth("key-nested"),
         )
 
     assert response.status_code == 200, "Request must succeed"
@@ -180,13 +195,18 @@ def test_tenant_context_propagation_across_multiple_requests(
 
     with TestClient(app) as client:
         # Sequential requests from different tenants
-        r1 = client.get("/v1/track", headers={"Authorization": "******"})
-        r2 = client.get("/v1/track", headers={"Authorization": "******"})
-        r3 = client.get("/v1/track", headers={"Authorization": "******"})
-        r4 = client.get("/v1/track", headers={"Authorization": "******"})
+        r1 = client.get("/v1/track", headers=_auth("key-a"))
+        r2 = client.get("/v1/track", headers=_auth("key-b"))
+        r3 = client.get("/v1/track", headers=_auth("key-c"))
+        r4 = client.get("/v1/track", headers=_auth("key-a"))
 
     assert len(received_tenants) == 4, "All requests must be tracked"
-    assert received_tenants == ["track-a", "track-b", "track-c", "track-a"], "Condition must be true"
+    assert received_tenants == [
+        "track-a",
+        "track-b",
+        "track-c",
+        "track-a",
+    ], "Condition must be true"
 
 
 def test_tenant_context_propagation_in_error_handlers(
@@ -201,10 +221,12 @@ def test_tenant_context_propagation_in_error_handlers(
     @app.exception_handler(Exception)
     async def exception_handler(request: Request, exc: Exception):
         tenant = getattr(request.state, "tenant", None)
-        error_context.append({
-            "has_tenant": tenant is not None,
-            "tenant_id": tenant["tenant_id"] if tenant else None,
-        })
+        error_context.append(
+            {
+                "has_tenant": tenant is not None,
+                "tenant_id": tenant["tenant_id"] if tenant else None,
+            }
+        )
         return {"error": str(exc)}
 
     @app.get("/v1/error")
@@ -220,7 +242,7 @@ def test_tenant_context_propagation_in_error_handlers(
     with TestClient(app, raise_server_exceptions=False) as client:
         response = client.get(
             "/v1/error",
-            headers={"Authorization": "******"},
+            headers=_auth("key-error"),
         )
 
     assert response.status_code == 500, "Error must be caught"
@@ -234,12 +256,6 @@ def test_tenant_context_propagation_with_request_body(
     """Test that tenant context persists through request body parsing."""
     app = FastAPI()
     app.add_middleware(TenantContextMiddleware)
-
-    from pydantic import BaseModel
-
-    class DataRequest(BaseModel):
-        item: str
-        value: int
 
     @app.post("/v1/process")
     async def process(request: Request, data: DataRequest):
@@ -263,7 +279,7 @@ def test_tenant_context_propagation_with_request_body(
         response = client.post(
             "/v1/process",
             json={"item": "test-item", "value": 42},
-            headers={"Authorization": "******"},
+            headers=_auth("key-body"),
         )
 
     assert response.status_code == 200, "Request must succeed"
@@ -286,10 +302,12 @@ def test_tenant_context_propagation_logging_integration(
     class TenantAwareHandler(logging.Handler):
         def emit(self, record):
             # Simulate accessing tenant from context
-            logged_requests.append({
-                "message": record.getMessage(),
-                "level": record.levelname,
-            })
+            logged_requests.append(
+                {
+                    "message": record.getMessage(),
+                    "level": record.levelname,
+                }
+            )
 
     @app.get("/v1/logged")
     async def logged_endpoint(request: Request):
@@ -312,7 +330,7 @@ def test_tenant_context_propagation_logging_integration(
     with TestClient(app) as client:
         response = client.get(
             "/v1/logged",
-            headers={"Authorization": "******"},
+            headers=_auth("key-log"),
         )
 
     assert response.status_code == 200, "Request must succeed"
@@ -334,10 +352,12 @@ def test_tenant_context_propagation_state_isolation(
         tenant = getattr(request.state, "tenant", None)
 
         # Store the state for verification
-        request_states.append({
-            "tenant_id": tenant["tenant_id"] if tenant else None,
-            "state_id": id(request.state),
-        })
+        request_states.append(
+            {
+                "tenant_id": tenant["tenant_id"] if tenant else None,
+                "state_id": id(request.state),
+            }
+        )
 
         return {"tenant_id": tenant["tenant_id"] if tenant else None}
 
@@ -349,14 +369,16 @@ def test_tenant_context_propagation_state_isolation(
     monkeypatch.setattr(tc_module.settings, "api_key_required", True)
 
     with TestClient(app) as client:
-        r1 = client.get("/v1/state", headers={"Authorization": "******"})
-        r2 = client.get("/v1/state", headers={"Authorization": "******"})
+        r1 = client.get("/v1/state", headers=_auth("key-a"))
+        r2 = client.get("/v1/state", headers=_auth("key-b"))
 
     assert len(request_states) == 2, "Both requests must be tracked"
     assert request_states[0]["tenant_id"] == "state-a", "First request is from tenant-a"
     assert request_states[1]["tenant_id"] == "state-b", "Second request is from tenant-b"
     # State objects should be different (different per request)
-    assert request_states[0]["state_id"] != request_states[1]["state_id"], "State objects must be different"
+    assert (
+        request_states[0]["state_id"] != request_states[1]["state_id"]
+    ), "State objects must be different"
 
 
 def test_tenant_context_propagation_with_dependencies(
@@ -371,11 +393,13 @@ def test_tenant_context_propagation_with_dependencies(
     def get_tenant(request: Request):
         """Dependency to get tenant from request."""
         tenant = getattr(request.state, "tenant", None)
-        dependency_calls.append({
-            "called": True,
-            "has_tenant": tenant is not None,
-            "tenant_id": tenant["tenant_id"] if tenant else None,
-        })
+        dependency_calls.append(
+            {
+                "called": True,
+                "has_tenant": tenant is not None,
+                "tenant_id": tenant["tenant_id"] if tenant else None,
+            }
+        )
         return tenant
 
     @app.get("/v1/with-deps")
@@ -396,7 +420,7 @@ def test_tenant_context_propagation_with_dependencies(
     with TestClient(app) as client:
         response = client.get(
             "/v1/with-deps",
-            headers={"Authorization": "******"},
+            headers=_auth("key-dep"),
         )
 
     assert response.status_code == 200, "Request must succeed"

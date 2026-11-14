@@ -1,5 +1,6 @@
-import pytest
 from pathlib import Path
+
+import pytest
 
 #         assert _sanitize_branch_name("special!@, "Condition must be true"
 #         assert _sanitize_branch_name("---multiple---dashes---") == "multiple-dashes", "Condition must be true"
@@ -247,7 +248,7 @@ class TestRuntimeComponents:
         from codex.analyze.runtime.sandbox import SandboxManager
 
         script = tmp_path / "test.py"
-        script.write_text("logger.info('hello')\n", encoding="utf-8")
+        script.write_text("print('hello')\n", encoding="utf-8")
 
         manager = SandboxManager()
         result = manager.execute(script)
@@ -267,7 +268,9 @@ class TestRuntimeComponents:
         result = manager.execute(script)
 
         assert result.exit_code != 0, "Result must not be empty"
-        assert "ValueError" in result.stderr or "error" in result.stderr.lower(), "Result must not be empty"
+        assert (
+            "ValueError" in result.stderr or "error" in result.stderr.lower()
+        ), "Result must not be empty"
 
     def test_sandbox_execute_nonexistent(self, tmp_path: Path):
         """Test executing nonexistent script."""
@@ -283,7 +286,7 @@ class TestRuntimeComponents:
         from codex.analyze.runtime.sandbox import SandboxManager
 
         script = tmp_path / "test.py"
-        script.write_text("logger.info('test')\n", encoding="utf-8")
+        script.write_text("print('test')\n", encoding="utf-8")
 
         manager = SandboxManager()
         result = manager.execute(script)
@@ -292,6 +295,7 @@ class TestRuntimeComponents:
         assert "exit_code" in data, "Data must not be empty"
         assert "stdout_snapshot" in data, "Data must not be empty"
         assert "duration_ms" in data, "Data must not be empty"
+        assert data["exit_code"] == 0
 
     def test_runtime_tracer_initialization(self):
         """Test RuntimeTracer initialization."""
