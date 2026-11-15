@@ -172,6 +172,11 @@ def _mint_app_token(
     if not app_id.isdecimal() or not installation_id.isdecimal():
         print("App and installation IDs must be numeric", file=sys.stderr)
         return None
+    if permissions is not None and (
+        not permissions or any(value != "read" for value in permissions.values())
+    ):
+        print("Explicit app token permissions must be a non-empty read-only set", file=sys.stderr)
+        return None
     try:
         import jwt as _jwt
     except ImportError:
@@ -225,21 +230,34 @@ def _mint_app_token(
         app_jwt,
         {
             "repositories": [parts[1]],
-            "permissions": permissions
-            or {
-                "actions": "write",
-                "contents": "read",
-                "pull_requests": "read",
-                "issues": "write",
-            },
+            "permissions": (
+                permissions
+                if permissions is not None
+                else {
+                    "actions": "write",
+                    "contents": "read",
+                    "pull_requests": "read",
+                    "issues": "write",
+                }
+            ),
         },
     )
     if status == 201 and isinstance(resp_body, dict):
         token = resp_body.get("token")
+
+        def _reject_read_only(message: str) -> None:
+            # A rejected explicit-scope token may carry broader grants; revoke it.
+            if permissions is not None and isinstance(token, str) and token:
+                try:
+                    _gh("DELETE", "/installation/token", token)
+                except Exception:
+                    print("Rejected app token revocation failed", file=sys.stderr)
+            print(message, file=sys.stderr)
+
         try:
             expires_at = datetime.fromisoformat(resp_body["expires_at"].replace("Z", "+00:00"))
         except (KeyError, TypeError, ValueError, AttributeError):
-            print("App token expiry is unavailable", file=sys.stderr)
+            _reject_read_only("App token expiry is unavailable")
             return None
         granted = resp_body.get("permissions")
         if permissions is not None:
@@ -253,7 +271,7 @@ def _mint_app_token(
                 and all(value == "read" for value in granted.values())
             ):
                 return token
-            print("App token is not limited to the requested read scopes", file=sys.stderr)
+            _reject_read_only("App token is not limited to the requested read scopes")
             return None
         if (
             isinstance(token, str)

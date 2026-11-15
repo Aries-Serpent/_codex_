@@ -120,7 +120,9 @@ def _backup_token() -> str:
         t = os.environ.get("CODEX_ADMIN_KEY", "").strip()
     if not t:
         print(
-            "ERROR: Set CODEX_BACKUP_KEY (needs admin:org_hook + read:org scopes).", file=sys.stderr
+            "ERROR: Set CODEX_BACKUP_KEY or CODEX_ADMIN_KEY "
+            "(needs admin:org_hook + read:org scopes).",
+            file=sys.stderr,
         )
         sys.exit(1)
     return t
