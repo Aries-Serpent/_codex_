@@ -198,63 +198,21 @@ python -c "from codex_ml import __version__; print(__version__)"
 
 ### Visual Studio Code
 
-**Recommended Extensions**:
-1. [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python) - Official Python support
-2. [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance) - Type checking
-3. [Black Formatter](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter) - Code formatting
-4. [Ruff](https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff) - Linting
-5. [Python Test Explorer](https://marketplace.visualstudio.com/items?itemName=littlefoxteam.vscode-python-test-adapter) - Test running
+The repository includes [extension recommendations](../.vscode/extensions.json),
+[settings](../.vscode/settings.json), [validation tasks](../.vscode/tasks.json)
+and [debugpy launches](../.vscode/launch.json). Use these maintained files instead
+of deprecated `python.linting.*` or `python.formatting.*` settings.
 
-**Settings** (`.vscode/settings.json`):
-```json
-{
- "[python]": {
- "editor.defaultFormatter": "ms-python.black-formatter",
- "editor.formatOnSave": true,
- "editor.codeActionsOnSave": {
- "source.organizeImports": "explicit",
- "source.fixAll": "explicit"
- },
- "editor.rulers": [100]
- },
- "python.linting.enabled": true,
- "python.linting.ruffEnabled": true,
- "python.linting.ruffArgs": ["--line-length=100"],
- "python.linting.mypyEnabled": true,
- "python.linting.mypyArgs": [
- "--strict",
- "--ignore-missing-imports"
- ],
- "python.testing.pytestEnabled": true,
- "python.testing.pytestArgs": [
- "tests"
- ]
-}
-```
+Select your supported Python 3.12 environment with **Python: Select Interpreter**.
+Use **Tasks: Run Task** for scoped validation and F5 for the selected development
+file or CDX context tests. The Testing panel defaults to the five CDX files and
+discovery on save is disabled; configure other affected paths explicitly rather
+than loading the entire large suite accidentally.
+Black/Ruff/mypy use their dedicated extensions and project configuration.
 
-**Launch configurations** (`.vscode/launch.json`):
-```json
-{
- "version": "0.2.0",
- "configurations": [
- {
- "name": "Python: Current File",
- "type": "python",
- "request": "launch",
- "program": "${file}",
- "console": "integratedTerminal"
- },
- {
- "name": "Python: pytest",
- "type": "python",
- "request": "launch",
- "module": "pytest",
- "args": ["tests/", "-v"],
- "console": "integratedTerminal"
- }
- ]
-}
-```
+See [the native workspace guide](./agent/CODESPACE_COPILOT_AGENT_GUIDE.md#existing-remote-vs-code-workspace)
+for interpreter/scanner task inputs, actual Copilot task IDs, agent selection,
+and the distinction between local tooling and hosted permissions/activation.
 
 ### PyCharm / IntelliJ IDEA
 

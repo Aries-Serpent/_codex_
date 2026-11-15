@@ -1,0 +1,24 @@
+{
+  "python.analysis.extraPaths": ["${workspaceFolder}/src"],
+  "python.analysis.typeCheckingMode": "basic",
+  "python.testing.cwd": "${workspaceFolder}",
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestArgs": [
+    "--confcutdir=tests/archive",
+    "-o",
+    "addopts=--strict-markers --import-mode=importlib",
+    "tests/archive/test_cdx_context.py",
+    "tests/archive/test_cdx_preflight.py",
+    "tests/archive/test_cdx_review.py",
+    "tests/archive/test_cdx_adapter.py",
+    "tests/archive/test_cdx_sqlite_archive.py"
+  ],
+  "python.testing.autoTestDiscoverOnSaveEnabled": false,
+  "black-formatter.importStrategy": "fromEnvironment",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.rulers": [100]
+  },
+  "files.insertFinalNewline": true
+}
