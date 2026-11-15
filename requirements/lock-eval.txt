@@ -409,7 +409,7 @@ pyarrow==24.0.0 ; python_full_version < '3.13' and sys_platform == 'linux'
     # via
     #   datasets
     #   pandas
-pyasn1==0.6.3 ; python_full_version < '3.13' and sys_platform == 'linux'
+pyasn1==0.6.5 ; python_full_version < '3.13' and sys_platform == 'linux'
     # via pyasn1-modules
 pyasn1-modules==0.4.2 ; python_full_version < '3.13' and sys_platform == 'linux'
     # via google-auth
