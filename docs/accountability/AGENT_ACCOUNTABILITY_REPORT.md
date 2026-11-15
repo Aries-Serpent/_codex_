@@ -1,3 +1,22 @@
+## Session: PR #5812 review findings fixed on `0D_base_` first (2026-11-14)
+
+### Execution and evidence
+
+- Direct execution (no delegated agents). Copilot review 5907911730 on hotfix
+  PR #5812 raised four high-severity findings on files that are byte-identical
+  to `0D_base_`; all four were reproduced before fixing:
+  malformed SARIF runs counted as zero alerts, repository-variable approval
+  windows approved without the protected marker, `verify_owner_approval.py`
+  failed with `ModuleNotFoundError` in script mode, and `protected_branches`
+  satisfied the branch check without restricting it to `main`/`0D_base_`.
+- Fixes land on `0D_base_` first so the #5812 copies stay byte-identical.
+  New tests fail against the previous sources and pass now.
+- The live `owner-approval` environment has no protection rules yet, so the
+  verifier keeps failing closed until the owner work in #5806 is done.
+- Copilot review 5907947944 on #5813: a policy entry without `type` was
+  treated as a branch. Now every entry must state `type: branch`; the new
+  `untyped-policy` test fails against the previous check.
+
 ## Session: fold PR #5787 into `0D_base_` and close #5766 CodeQL ReDoS (2026-11-14)
 
 ### Execution and evidence

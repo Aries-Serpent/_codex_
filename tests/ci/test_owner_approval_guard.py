@@ -9,6 +9,7 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 GUARD = REPO_ROOT / "scripts/ci/owner_approval_guard.sh"
+_PROTECTED = {"OWNER_APPROVAL_PROTECTED": "true"}
 
 
 @pytest.mark.parametrize(
@@ -16,26 +17,29 @@ GUARD = REPO_ROOT / "scripts/ci/owner_approval_guard.sh"
     [
         ({}, 2, "env-missing"),
         ({"OWNER_APPROVAL_PROTECTED": "true"}, 2, "env-missing"),
+        # Repository-variable windows never approve outside the protected environment.
+        ({"OWNER_APPROVED_UNTIL": "2100-01-01T00:00:00Z"}, 2, "env-unprotected"),
+        ({"OWNER_APPROVED_DURATION": "24h"}, 2, "env-unprotected"),
+        ({"OWNER_APPROVED_UNTIL": "invalid"}, 2, "env-unprotected"),
+        ({**_PROTECTED, "OWNER_APPROVED_UNTIL": "invalid"}, 2, "env-until-invalid"),
+        ({**_PROTECTED, "OWNER_APPROVED_UNTIL": "2000-01-01T00:00:00Z"}, 2, "env-until-expired"),
         (
-            {"OWNER_APPROVED_UNTIL": "2100-01-01T00:00:00Z"},
-            0,
-            "env-until",
-        ),
-        ({"OWNER_APPROVED_UNTIL": "invalid"}, 2, "env-until-invalid"),
-        ({"OWNER_APPROVED_UNTIL": "2000-01-01T00:00:00Z"}, 2, "env-until-expired"),
-        (
-            {"OWNER_APPROVED_UNTIL": "invalid", "OWNER_APPROVED_DURATION": "2h"},
+            {**_PROTECTED, "OWNER_APPROVED_UNTIL": "invalid", "OWNER_APPROVED_DURATION": "2h"},
             2,
             "env-until-invalid",
         ),
         (
-            {"OWNER_APPROVED_UNTIL": "2000-01-01T00:00:00Z", "OWNER_APPROVED_DURATION": "2h"},
+            {
+                **_PROTECTED,
+                "OWNER_APPROVED_UNTIL": "2000-01-01T00:00:00Z",
+                "OWNER_APPROVED_DURATION": "2h",
+            },
             2,
             "env-until-expired",
         ),
-        ({"OWNER_APPROVED_UNTIL": "2100-01-01T00:00:00Z"}, 0, "env-until"),
-        ({"OWNER_APPROVED_DURATION": "invalid"}, 2, "env-duration-invalid"),
-        ({"OWNER_APPROVED_DURATION": "2h"}, 0, "env-duration"),
+        ({**_PROTECTED, "OWNER_APPROVED_UNTIL": "2100-01-01T00:00:00Z"}, 0, "env-until"),
+        ({**_PROTECTED, "OWNER_APPROVED_DURATION": "invalid"}, 2, "env-duration-invalid"),
+        ({**_PROTECTED, "OWNER_APPROVED_DURATION": "2h"}, 0, "env-duration"),
         (
             {
                 "COPILOT_AGENT_AUTH_ENABLED": "true",

@@ -1,7 +1,11 @@
 """Negative approval tests use offline REST fixtures, never credentials."""
 
+import os
+import subprocess
+import sys
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 import pytest
 import yaml
@@ -368,6 +372,14 @@ def test_once_activation_requires_complete_history(case):
         ("self-review", "missing-independent-environment-review"),
         ("bypass", "environment-allows-administrator-bypass"),
         ("unrestricted", "unrestricted-environment-deployment-branches"),
+        ("protected-branches-only", "unrestricted-environment-deployment-branches"),
+        ("extra-branch", "unexpected-environment-deployment-branches"),
+        ("missing-branch", "unexpected-environment-deployment-branches"),
+        ("wildcard-branch", "unexpected-environment-deployment-branches"),
+        ("tag-policy", "unexpected-environment-deployment-branches"),
+        ("untyped-policy", "unexpected-environment-deployment-branches"),
+        ("truncated-listing", "unexpected-environment-deployment-branches"),
+        ("unlisted", "unexpected-environment-deployment-branches"),
     ],
 )
 def test_owner_marker_never_substitutes_for_protection(case, error):
@@ -380,7 +392,7 @@ def test_owner_marker_never_substitutes_for_protection(case, error):
             }
         ],
         "can_admins_bypass": False,
-        "deployment_branch_policy": {"protected_branches": True, "custom_branch_policies": False},
+        "deployment_branch_policy": {"protected_branches": False, "custom_branch_policies": True},
     }
     marker = "true"
     if case == "missing-marker":
@@ -393,7 +405,26 @@ def test_owner_marker_never_substitutes_for_protection(case, error):
         environment["can_admins_bypass"] = True
     elif case == "unrestricted":
         environment["deployment_branch_policy"] = None
-    assert owner_gate.protection_error(environment, marker) == error
+    elif case == "protected-branches-only":
+        environment["deployment_branch_policy"] = {
+            "protected_branches": True,
+            "custom_branch_policies": False,
+        }
+    names = {
+        "extra-branch": ["main", "0D_base_", "release"],
+        "missing-branch": ["main"],
+        "wildcard-branch": ["main", "0D_base_*"],
+    }.get(case, ["main", "0D_base_"])
+    policies = _branch_policies(*names)
+    if case == "tag-policy":
+        policies["branch_policies"][1]["type"] = "tag"
+    elif case == "untyped-policy":
+        del policies["branch_policies"][0]["type"]
+    elif case == "truncated-listing":
+        policies["total_count"] = 3
+    elif case == "unlisted":
+        policies = None
+    assert owner_gate.protection_error(environment, marker, policies) == error
 
 
 @pytest.mark.parametrize(
@@ -417,9 +448,66 @@ def test_owner_marker_rejects_malformed_or_unknown_reviewers(reviewers):
             }
         ],
         "can_admins_bypass": False,
-        "deployment_branch_policy": {"protected_branches": True, "custom_branch_policies": False},
+        "deployment_branch_policy": {"protected_branches": False, "custom_branch_policies": True},
     }
-    assert owner_gate.protection_error(environment, "true") == "invalid-environment-reviewer"
+    assert (
+        owner_gate.protection_error(environment, "true", _branch_policies("main", "0D_base_"))
+        == "invalid-environment-reviewer"
+    )
+
+
+def _branch_policies(*names):
+    return {
+        "total_count": len(names),
+        "branch_policies": [{"name": name, "type": "branch"} for name in names],
+    }
+
+
+def test_owner_verifier_checks_branch_policies_listing(monkeypatch, capsys):
+    environment = {
+        "protection_rules": [
+            {
+                "type": "required_reviewers",
+                "prevent_self_review": True,
+                "reviewers": [{"type": "User", "reviewer": {"id": 1}}],
+            }
+        ],
+        "can_admins_bypass": False,
+        "deployment_branch_policy": {"protected_branches": False, "custom_branch_policies": True},
+    }
+    responses = {
+        "/repos/o/r/environments/owner-approval": (200, environment),
+        "/repos/o/r/environments/owner-approval/deployment-branch-policies?per_page=100": (
+            200,
+            _branch_policies("main", "0D_base_"),
+        ),
+    }
+    monkeypatch.setenv("GITHUB_REPOSITORY", "o/r")
+    monkeypatch.setenv("GITHUB_TOKEN", "fixture")
+    monkeypatch.setenv("OWNER_APPROVAL_PROTECTED", "true")
+    monkeypatch.setattr(owner_gate, "_gh", lambda method, path, token: responses[path])
+    assert owner_gate.main() == 0
+    responses["/repos/o/r/environments/owner-approval/deployment-branch-policies?per_page=100"] = (
+        403,
+        {},
+    )
+    assert owner_gate.main() == 1
+    assert "unexpected-environment-deployment-branches" in capsys.readouterr().out
+
+
+def test_owner_verifier_runs_as_workflow_script(tmp_path):
+    script = Path(__file__).resolve().parents[2] / "scripts/ci/verify_owner_approval.py"
+    result = subprocess.run(
+        [sys.executable, str(script)],
+        cwd=tmp_path,
+        env={"PATH": os.environ["PATH"]},
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    assert result.returncode == 1
+    assert "ModuleNotFoundError" not in result.stderr
+    assert "without repository access" in result.stdout
 
 
 def test_environment_api_denial_is_not_approval(monkeypatch, capsys):

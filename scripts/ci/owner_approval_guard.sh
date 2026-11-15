@@ -4,8 +4,9 @@
 # Inputs:
 #   - TOOL_KEY (string): logical workflow key e.g., "docker-build-push" (default), "security-scans", "all"
 #   - OWNER_APPROVAL_PROTECTED ("true") — required for agent-auth bypass and
-#     supplied only by the protected owner-approval environment
+#     approval windows; supplied only by the protected owner-approval environment
 #   - OWNER_APPROVED_UNTIL (ISO8601 UTC) or OWNER_APPROVED_DURATION ("2h", "4h", "1d", "3w")
+#     — honored only when OWNER_APPROVAL_PROTECTED=true
 #   - COPILOT_AGENT_AUTH_ENABLED ("true") — requires OWNER_APPROVAL_PROTECTED=true;
 #     retains the environment bypass for cost-gated workflows (S112).
 #   - COPILOT_AGENT_AUTH_BYPASS_TOOLS (comma-separated, optional, S113) — allowlist of TOOL_KEYs
@@ -14,7 +15,8 @@
 # Behavior:
 #   - If COPILOT_AGENT_AUTH_ENABLED=true, OWNER_APPROVAL_PROTECTED=true, and TOOL_KEY
 #     is in COPILOT_AGENT_AUTH_BYPASS_TOOLS (or the allowlist is unset/empty), bypass is granted.
-#   - Else evaluate explicit environment approval windows; missing approval denies.
+#   - Else evaluate explicit environment approval windows (protected marker
+#     required); missing approval denies.
 #   - Worktree JSON/YAML files are evidence only, never approval authority.
 # In CI, run this guard from trusted code before executing PR content. The
 # owner-approval environment must require independent maintainer approval.
@@ -122,6 +124,16 @@ approve_via_env() {
       return 0
     else
       echo "[approval] COPILOT_AGENT_AUTH_ENABLED=true but TOOL_KEY=${TOOL_KEY} not in COPILOT_AGENT_AUTH_BYPASS_TOOLS allowlist (${bypass_tools}); falling through" >&2
+    fi
+  fi
+
+  # Approval windows come from repository variables, so they only count inside
+  # the protected owner-approval environment (marker set by its secret).
+  if [ -n "${OWNER_APPROVED_UNTIL:-}" ] || [ -n "${OWNER_APPROVED_DURATION:-}" ]; then
+    if [ "${OWNER_APPROVAL_PROTECTED:-}" != "true" ]; then
+      echo "[approval] Approval window requires the protected owner-approval environment" >&2
+      evidence "denied" "env-unprotected" ""
+      return 2
     fi
   fi
 
