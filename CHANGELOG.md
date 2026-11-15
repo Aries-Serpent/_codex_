@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixed - #5766 merge conflicts after #5812 landed on `main`
+
+- Merge `main` (`195427c333`, hotfix #5812) into `0D_base_` (`83dd0fb099`, after #5813).
+  Only the generated `CODEX_MANIFEST.json` and `.secrets.baseline` conflicted; both keep
+  the `0D_base_` version, whose manifest is a superset with a consistent `integrity_sha256`.
+  The #5812 CHANGELOG and accountability entries merge in unchanged; all other #5812 files
+  were already byte-identical to `0D_base_`.
+
 ### Security - PR #5812 review: fail-closed SARIF, approval windows and owner-approval branches
 
 - `codeql-ga-gate.yml` rejects SARIF documents whose `runs` list is missing or
@@ -192,6 +200,11 @@
 ### Fixed — MCP dependency compatibility review (2026-11-03)
 - Restore the dev lock's MCP pin to 1.29.0, required exactly by Semgrep 1.175.0; MCP 2.3.0 cannot be safely substituted even with its missing transitive dependencies added.
 - Record PR #5752's verified artifact hashes, isolated compatibility checks, current PDA/accountability evidence and explicit full-lock, setup and hosted-CI continuation checkpoints.
+
+### Fixed — Main hotfix sync of corrected governance workflows (2026-11-14)
+- Sync 26 workflow, action, script and test files byte-identically from `0D_base_` to `main` ahead of #5766 promotion (PR #5812, issue #5809): owner approval is environment-only and the committed session file is evidence-only; auto-approve is WEC-gated; cost-gate callers grant `issues: write`; CodeQL pins/config; credential-free fork `cargo audit`; hashed extras cache keys.
+- Review follow-up (Copilot review 5907911730): re-sync 7 files from `0D_base_` sub-PR #5813. Malformed SARIF runs now fail the gate. Approval windows require `OWNER_APPROVAL_PROTECTED=true`. The owner-approval verifier runs in script mode and requires custom branch policies of exactly `main` and `0D_base_`, each with an explicit `type: branch` (#5813 review 5907947944).
+- Owner-approval paths fail closed on `main` until the protected `owner-approval` environment and `OWNER_APPROVAL_PROTECTED` are configured (#5806). `ml-tests.yml` and the RAG coverage path stay with #5766.
 
 ### Changed — Evidence-gated recovery draft continuation (2026-11-02)
 - Add read-only merged observations and calibration diagnostics, durable cancellation, explicit append-only learning reconciliation, cooperating-writer snapshots and separate retained-evidence human handoffs; default live transport/recovery and genuine owner evidence remain gated.
