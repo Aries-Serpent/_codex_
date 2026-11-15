@@ -30,3 +30,10 @@ def test_frontend_typecheck_requires_installed_typescript(tmp_path: Path) -> Non
     assert result.returncode != 0
     assert "MODULE_NOT_FOUND" in result.stderr
     assert not list(frontend.iterdir())
+
+
+def test_rust_advisory_task_never_fetches() -> None:
+    tasks = json.loads((REPO_ROOT / ".vscode/tasks.json").read_text())["tasks"]
+    task = next(task for task in tasks if task["label"].startswith("Codex: Rust advisory check"))
+    assert task["type"] == "process"
+    assert task["args"][:2] == ["deny", "--frozen"]
