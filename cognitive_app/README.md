@@ -52,10 +52,15 @@ GITHUB_ACTIONS='' npm run build -- --config e2e/vite.config.ts
 GITHUB_ACTIONS='' E2E_PRODUCTION=1 E2E_PORT=5187 \
   node node_modules/@playwright/test/cli.js test e2e/dependency-behavior.spec.ts
 GITHUB_ACTIONS=true npm run build -- --config e2e/vite.config.ts
+GITHUB_ACTIONS=true npm run preview -- --host 127.0.0.1 --port 5187 --strictPort
+# In a second terminal, while that preview server runs:
 GITHUB_ACTIONS=true E2E_PRODUCTION=1 E2E_PORT=5187 \
   BASE_URL=http://127.0.0.1:5187/_codex_/cognitive_app/ \
   node node_modules/@playwright/test/cli.js test e2e/dependency-behavior.spec.ts
 ```
+
+Setting `BASE_URL` tells the configuration to use an existing server, so it
+does not start one; stop the preview server after the base-path run.
 
 ### Lazy initialization browser regression matrix
 
