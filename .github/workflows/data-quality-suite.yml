@@ -47,6 +47,12 @@ jobs:
   cost-gate:
     name: 💰 Cost Gate
     uses: ./.github/workflows/cost-gate.yml
+    # The called workflow's rescue-comment job requests issues: write; a caller
+    # grant below that ceiling makes every run fail at startup with zero jobs.
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     with:
       workflow_name: Data Quality & Determinism Suite
       runner: ubuntu-latest

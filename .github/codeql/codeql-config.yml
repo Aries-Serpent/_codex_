@@ -15,6 +15,7 @@ paths:
   - .github/
   - tools/
   - cognitive_app/
+  - copilot/extension/
 
 paths-ignore:
   - "**/__pycache__/"

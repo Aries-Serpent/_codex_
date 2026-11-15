@@ -544,6 +544,17 @@ def _build_wec_block(
     for fname, label, _ in active_workflows_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
+    lines += ["", "### 🚫 Never auto-checked / legacy-disabled workflow entries"]
+    for fname, label in (
+        ("comment-review-gate.yml", "Comment review gate"),
+        ("iterative-self-healing-ci.yml", "Iterative self-healing CI"),
+        ("pre-merge-validation.yml", "Pre-merge validation"),
+        ("unified-copilot-management.yml", "Unified Copilot management"),
+    ):
+        lines.append(
+            f"- [{_checked(fname)}] {fname} — {label} (legacy / disabled in active baseline)"
+        )
+
     lines += [
         "",
         "> **⚠️ HARDENED AGENT INSTRUCTION (non-negotiable):** This entire WEC block MUST be",
@@ -770,7 +781,7 @@ def _build_recent_changes_md(n: int = 8) -> str:
 def _build_meaningful_pr_body(
     pr_number: str, existing_wec_state: dict, existing_pr_body: str = ""
 ) -> str:
-    """Build a complete, meaningful PR description.
+    """Refresh generated sections without discarding authored review evidence.
 
     Structure:
       ## Summary of Changes        ← What was done (git log)
@@ -778,8 +789,7 @@ def _build_meaningful_pr_body(
       ## 🔄 Follow-Up Prompt
       ## 🔄 Workflow Execution Checklist   ← WEC (maintainer state preserved)
 
-    This function is called whenever the PR body is detected to be the generic
-    Pull Request Template or is missing either the scorecard or a real summary.
+    Preserve template sections, comments, attestations and existing WEC choices.
     """
     score_data = _compute_merge_readiness_score()
     changes_md = _build_recent_changes_md()
@@ -807,7 +817,23 @@ def _build_meaningful_pr_body(
 
 ---
 """
-    return header + wec_block
+    managed_sections = (
+        "## Summary of Changes — PR #",
+        _SCORECARD_MARKER,
+        "## 🔄 Follow-Up Prompt",
+    )
+    preserved = "".join(
+        section
+        for section in re.split(r"(?m)(?=^## )", existing_pr_body)
+        if not section.startswith(managed_sections)
+    )
+    if not preserved.strip():
+        return header + wec_block
+    if _WEC_MARKER not in preserved and _WEC_MARKER_LEGACY not in preserved:
+        if "## 🤖 Agents Used" in preserved:
+            wec_block = wec_block[wec_block.index(_WEC_MARKER) :]
+        preserved += "\n\n" + wec_block
+    return header + preserved
 
 
 # ---------------------------------------------------------------------------
@@ -1305,12 +1331,12 @@ def update_pr_description(
     pr_number: str,
     dry_run: bool = False,
 ) -> bool:
-    """Replace a generic or scorecard-free PR description with meaningful content.
+    """Refresh generated PR content while preserving authored template sections.
 
     Use only for an authorized PR-body update, not every session completion.
     Read-only/local/no-PR preparation needs no public status update.
 
-    Detects two conditions and rebuilds the entire non-WEC portion when either fires:
+    Detects two conditions and refreshes the generated sections:
       1. Body still contains ``# Pull Request Template`` — the default GitHub template.
       2. Body is missing the ``## 🎯 Merge-Readiness Scorecard`` section.
 
@@ -1322,9 +1348,10 @@ def update_pr_description(
 
     Returns True if an update was made (or would be made in dry_run), False otherwise.
     """
+    view_command = ["gh", "pr", "view", pr_number, "--json", "body", "--jq", ".body"]
     try:
         result = subprocess.run(
-            ["gh", "pr", "view", pr_number, "--json", "body", "--jq", ".body"],
+            view_command,
             capture_output=True, text=True, check=True,
         )
         pr_body = result.stdout.strip()
@@ -1356,15 +1383,28 @@ def update_pr_description(
 
     new_body = _build_meaningful_pr_body(pr_number, existing_state, pr_body)
     try:
+        current = subprocess.run(view_command, capture_output=True, text=True, check=True)
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print(f"⚠  Could not revalidate PR #{pr_number} body; refusing description update")
+        return False
+    if current.stdout.strip() != pr_body:
+        print(f"⚠  PR #{pr_number} body changed during scoring; refusing stale description update")
+        return False
+    try:
         subprocess.run(
             ["gh", "pr", "edit", pr_number, "--body", new_body],
-            check=True, capture_output=True, text=True,
+            check=True,
+            capture_output=True,
+            text=True,
         )
-        print(f"✅ PR #{pr_number} description updated: summary + scorecard + follow-up + WEC")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"✅ PR #{pr_number} description updated: summary + scorecard + follow-up + WEC"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return True
     except subprocess.CalledProcessError as exc:
-        print(f"⚠  Could not update PR #{pr_number} description: {exc.stderr or exc}",
-              file=sys.stderr)
+        print(
+            f"⚠  Could not update PR #{pr_number} description: {exc.stderr or exc}", file=sys.stderr
+        )
         return False
 
 
@@ -1417,10 +1457,13 @@ def fix_pr_body_checkboxes(
             print(f"⚠  PR #{pr_number} _build_wec_block() returned block without marker — forcing rebuild")  # codeql[py/clear-text-logging-sensitive-data]
         else:
             canon_from_marker = canonical_block[canonical_block.index(_WEC_MARKER):]
-            body_from_marker  = pr_body[pr_body.index(_WEC_MARKER):]
+            body_from_marker = pr_body[pr_body.index(_WEC_MARKER) :]
+            next_section = re.search(r"\n## ", body_from_marker[len(_WEC_MARKER) :])
+            if next_section:
+                body_from_marker = body_from_marker[: len(_WEC_MARKER) + next_section.start()]
             if canon_from_marker.strip() == body_from_marker.strip():
                 n_checked = sum(1 for v in existing_state.values() if v)
-                n_grants  = sum(1 for g in human_grants.values() if g.get("status") == "active")
+                n_grants = sum(1 for g in human_grants.values() if g.get("status") == "active")
                 print(
                     f"✅ PR #{pr_number} WEC is already canonical "
                     f"({n_checked} item(s) checked, {n_grants} human grant(s)) — no repair needed"
@@ -1440,27 +1483,55 @@ def fix_pr_body_checkboxes(
         agents_ok, agents_reason = check_pr_body_agents_used(pr_body)
         if not agents_ok:
             missing.append(f"Agents Used ({agents_reason})")
-        print(f"⚠  PR #{pr_number} missing: {', '.join(missing)} — restoring...")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"⚠  PR #{pr_number} missing: {', '.join(missing)} — restoring..."
+        )  # codeql[py/clear-text-logging-sensitive-data]
     else:
-        print(f"⚠  PR #{pr_number} has legacy WEC format — migrating to canonical heading format")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"⚠  PR #{pr_number} has legacy WEC format — migrating to canonical heading format"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
-    # Strip old WEC blocks (both new heading format and legacy bold-text format)
-    stripped_body = pr_body
-    for marker in (_WEC_MARKER, _WEC_MARKER_LEGACY,
-                   "\n### 💰 Cost Governance", "\n### 🔐 Agent Token Delegation",
-                   "\n---\n\n**🔄 Workflow Execution Checklist", "\n## 🤖 Agents Used"):
-        if marker in stripped_body:
-            idx = stripped_body.index(marker)
-            while idx > 0 and stripped_body[idx - 1] == "\n":
-                idx -= 1
-            stripped_body = stripped_body[:idx]
+    insertion = min(
+        (
+            pr_body.index(marker)
+            for marker in (_WEC_MARKER, _WEC_MARKER_LEGACY)
+            if marker in pr_body
+        ),
+        default=len(pr_body),
+    )
+    prefix, suffix = pr_body[:insertion], pr_body[insertion:]
+    # Remove only governance sections, not subsequent template/evidence sections.
+    for marker in (
+        _WEC_MARKER,
+        _WEC_MARKER_LEGACY,
+        "\n### 💰 Cost Governance",
+        "\n### 🔐 Agent Token Delegation",
+        "\n---\n\n**🔄 Workflow Execution Checklist",
+        "\n## 🤖 Agents Used",
+    ):
+        parts = [prefix, suffix]
+        for index, part in enumerate(parts):
+            while marker in part:
+                start = part.index(marker)
+                depth = 3 if marker.startswith("\n### ") else 2
+                next_section = re.search(
+                    rf"(?m)^#{{1,{depth}}}\s",
+                    part[start + len(marker) :],
+                )
+                end = start + len(marker) + next_section.start() if next_section else len(part)
+                part = part[:start] + part[end:]
+            parts[index] = part
+        prefix, suffix = parts
 
     new_wec = (
         _build_wec_block(existing_state, human_grants=human_grants)
-        if existing_state else _REQUIRED_PR_CHECKBOXES
+        if existing_state
+        else _REQUIRED_PR_CHECKBOXES
     )
     new_wec = _preserve_agent_attestation(new_wec, pr_body)
-    new_body = stripped_body.rstrip() + new_wec
+    new_body = prefix.rstrip() + new_wec
+    if suffix.strip():
+        new_body += "\n\n" + suffix.strip()
 
     if dry_run:
         n_checked = sum(1 for v in existing_state.values() if v)

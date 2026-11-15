@@ -931,8 +931,16 @@ jobs:
     - await-approval
     - cognitive-preflight
     runs-on: ubuntu-latest
+    environment: owner-approval
+    permissions:
+      actions: read
+      contents: write
+      pull-requests: write
+      issues: write
     timeout-minutes: 30
     if: 'always() &&
+
+      endsWith(github.workflow_ref, format(''@refs/heads/{0}'', github.event.repository.default_branch)) &&
 
       github.event.action != ''closed'' &&
 
@@ -952,6 +960,18 @@ jobs:
 
       '
     steps:
+    - name: Checkout trusted delegation code
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        ref: ${{ github.workflow_sha }}
+        persist-credentials: false
+        fetch-depth: 1
+    - name: Verify protected owner approval
+      env:
+        OWNER_APPROVAL_PROTECTED: ${{ secrets.OWNER_APPROVAL_PROTECTED }}
+        GITHUB_TOKEN: ${{ github.token }}
+      run: |
+        python3 scripts/ci/verify_owner_approval.py
     - name: Cache Python dependencies (Layer 1)
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       with:
@@ -961,11 +981,6 @@ jobs:
         restore-keys: '${{ runner.os }}-pip-
 
           '
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      with:
-        fetch-depth: 1
-        ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name
-          }}
     - name: Validate/Refresh Session ID (CAPI Readiness Check)
       id: session_validation
       env:
@@ -1101,8 +1116,12 @@ jobs:
           echo "No changes to commit"
         else
           git commit -m "chore(auth): write provenance session token [skip ci]"
-          git pull --rebase --autostash origin "${TARGET_BRANCH}" || true
-          git push origin HEAD:refs/heads/${TARGET_BRANCH}
+          # The trusted checkout persists no credentials; authenticate only these commands.
+          AUTH_HEADER=$(printf 'x-access-token:%s' "${GH_TOKEN}" | base64 -w0)
+          echo "::add-mask::${AUTH_HEADER}"
+          GIT_AUTH=(-c "http.https://github.com/.extraheader=AUTHORIZATION: basic ${AUTH_HEADER}")
+          git "${GIT_AUTH[@]}" pull --rebase --autostash origin "${TARGET_BRANCH}" || true
+          git "${GIT_AUTH[@]}" push origin HEAD:refs/heads/${TARGET_BRANCH}
         fi
 
     - name: Dispatch GitHub Guru (maintainer verification)
@@ -1150,7 +1169,9 @@ jobs:
         \nelse\n  git add .codex/session_context_latest.md .codex/session_context_latest.json\
         \ 2>/dev/null || true\n  _commit_ok=false\n  _push_ok=false\n  if git commit\
         \ -m \"chore(d00): update session context digest [skip ci]\" 2>/dev/null;\
-        \ then\n    _commit_ok=true\n    if git push origin HEAD 2>/dev/null; then\n\
+        \ then\n    _commit_ok=true\n    _auth=$(printf 'x-access-token:%s' \"$GITHUB_TOKEN\" | base64 -w0)\n\
+        \    echo \"::add-mask::${_auth}\"\n    if git -c \"http.https://github.com/.extraheader=AUTHORIZATION:\
+        \ basic ${_auth}\" push origin HEAD 2>/dev/null; then\n\
         \      _push_ok=true\n    fi\n  fi\n  if [ \"$_commit_ok\" = \"true\" ] &&\
         \ [ \"$_push_ok\" = \"true\" ]; then\n    echo \"\u2705 Context digest committed\
         \ and pushed.\" | tee -a \"$GITHUB_STEP_SUMMARY\"\n  elif [ \"$_commit_ok\"\
