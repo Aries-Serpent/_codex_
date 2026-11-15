@@ -36,6 +36,7 @@
 - Local only (not hosted CI): focused `tests/ci` pytest 306 passed / 3 skipped; actionlint 1.7.12 0 findings; yamllint 0 errors; ruff/mypy pass; `git diff --check` clean. Black flags three files already unformatted on `main` (#5802).
 - This CHANGELOG/report entry is placed outside `0D_base_`'s changed hunks; `git merge-tree` confirms #5766 still merges cleanly. Merge is human-only.
 - Review 5907911730 (four high findings, all reproduced): fixed once on `0D_base_` in sub-PR #5813 (`cd58600f8d`) and re-copied byte-identically here (7 files). The new tests fail against the previous sources and pass locally. The live `owner-approval` environment remains unconfigured, so the verifier fails closed until #5806.
+- #5813 review 5907947944: branch-policy entries without `type` are now rejected (`0e34c96d27`), re-copied here byte-identically.
 
 ## Session: PR #5761 review-thread follow-up — 2026-11-07
 

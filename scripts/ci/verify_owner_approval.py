@@ -82,7 +82,7 @@ def branch_policy_names(payload: object) -> frozenset[str] | None:
         return None
     names: set[str] = set()
     for entry in policies:
-        if not isinstance(entry, dict) or entry.get("type", "branch") != "branch":
+        if not isinstance(entry, dict) or entry.get("type") != "branch":
             return None
         name = entry.get("name")
         if not isinstance(name, str) or any(char in name for char in "*?[]"):

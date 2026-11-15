@@ -12,7 +12,7 @@
 
 ### Fixed — Main hotfix sync of corrected governance workflows (2026-11-14)
 - Sync 26 workflow, action, script and test files byte-identically from `0D_base_` to `main` ahead of #5766 promotion (PR #5812, issue #5809): owner approval is environment-only and the committed session file is evidence-only; auto-approve is WEC-gated; cost-gate callers grant `issues: write`; CodeQL pins/config; credential-free fork `cargo audit`; hashed extras cache keys.
-- Review follow-up (Copilot review 5907911730): re-sync 7 files from `0D_base_` sub-PR #5813. Malformed SARIF runs now fail the gate. Approval windows require `OWNER_APPROVAL_PROTECTED=true`. The owner-approval verifier runs in script mode and requires custom branch policies of exactly `main` and `0D_base_`.
+- Review follow-up (Copilot review 5907911730): re-sync 7 files from `0D_base_` sub-PR #5813. Malformed SARIF runs now fail the gate. Approval windows require `OWNER_APPROVAL_PROTECTED=true`. The owner-approval verifier runs in script mode and requires custom branch policies of exactly `main` and `0D_base_`, each with an explicit `type: branch` (#5813 review 5907947944).
 - Owner-approval paths fail closed on `main` until the protected `owner-approval` environment and `OWNER_APPROVAL_PROTECTED` are configured (#5806). `ml-tests.yml` and the RAG coverage path stay with #5766.
 
 ### Changed — Evidence-gated recovery draft continuation (2026-11-02)
