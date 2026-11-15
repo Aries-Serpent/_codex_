@@ -212,3 +212,54 @@ def test_explicit_mint_rejects_empty_or_write_scopes_before_request(monkeypatch,
     )
     monkeypatch.setattr(approval, "_gh", lambda *args, **kwargs: pytest.fail("must not call"))
     assert approval._mint_app_token("1", "fixture", "2", repo="o/r", permissions=requested) is None
+
+
+def test_cli_fails_closed_when_app_token_revocation_fails(monkeypatch, capsys):
+    reads = {"workflow_runs": True}
+    monkeypatch.setattr(
+        preflight,
+        "inspect_access",
+        lambda *args: {"app_route": "verified-installation-revoke-failed", "verified_reads": reads},
+    )
+    monkeypatch.setattr("sys.argv", ["github_auth_preflight", "--repo", "o/r"])
+    assert preflight.main() == 1
+    assert "revoke-failed" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("revoke", [(403, {}), OSError("offline")])
+def test_rejected_token_unsuccessful_revocation_is_reported(monkeypatch, capsys, revoke):
+    import sys
+    from datetime import datetime, timedelta, timezone
+    from types import SimpleNamespace
+
+    from scripts.ci import approve_pending_runs as approval
+
+    monkeypatch.setitem(
+        sys.modules, "jwt", SimpleNamespace(encode=lambda *args, **kwargs: "jwt-fixture")
+    )
+
+    def request(method, path, token, body=None):
+        if path == "/app":
+            return 200, {"id": 1, "slug": "codex-maintainer"}
+        if path == "/app/installations/2":
+            return 200, {"id": 2, "app_id": 1, "account": {"login": "o"}}
+        if method == "DELETE":
+            if isinstance(revoke, Exception):
+                raise revoke
+            return revoke
+        return 201, {
+            "token": "broad-fixture",
+            "expires_at": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
+            "permissions": {"actions": "write"},
+        }
+
+    monkeypatch.setattr(approval, "_gh", request)
+    requested = {"actions": "read"}
+    assert approval._mint_app_token("1", "fixture", "2", repo="o/r", permissions=requested) is None
+    assert "Rejected app token revocation failed" in capsys.readouterr().err
+
+
+def test_bootstrap_manifest_grants_preflight_read_permissions():
+    granted = bootstrap.APP_MANIFEST["default_permissions"]
+    for permission in preflight.READ_ONLY_APP_PERMISSIONS:
+        assert granted.get(permission) in {"read", "write"}

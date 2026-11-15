@@ -249,8 +249,10 @@ def _mint_app_token(
             # A rejected explicit-scope token may carry broader grants; revoke it.
             if permissions is not None and isinstance(token, str) and token:
                 try:
-                    _gh("DELETE", "/installation/token", token)
+                    revoke_status, _ = _gh("DELETE", "/installation/token", token)
                 except Exception:
+                    revoke_status = None
+                if revoke_status != 204:
                     print("Rejected app token revocation failed", file=sys.stderr)
             print(message, file=sys.stderr)
 
