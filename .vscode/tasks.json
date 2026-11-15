@@ -137,7 +137,7 @@
       "label": "Codex: Rust advisory check (user-local toolchain)",
       "type": "process",
       "command": "${env:HOME}/.cargo/bin/cargo",
-      "args": ["deny", "check", "advisories"],
+      "args": ["deny", "--frozen", "check", "advisories"],
       "options": {
         "env": {
           "CARGO_HOME": "${env:HOME}/.cache/codex-cargo",

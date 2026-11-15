@@ -53,7 +53,9 @@ debugging do not require administrative PATs or webhook activation.
 5. The offline Go tasks use `${env:HOME}/.local/opt/go1.27.3/bin/go` and the
    verified `${env:HOME}/.cache/codex-gomodcache` module cache; they disable online
    fetching. The Rust advisory task uses the user-local Cargo toolchain with
-   `stable-x86_64-unknown-linux-musl` and requires installed cargo-deny.
+   `stable-x86_64-unknown-linux-musl`, requires installed cargo-deny and runs
+   `cargo deny --frozen` (locked and offline), so the advisory database and crate
+   cache must already be populated.
    Recheck these environment-specific prerequisites before use; tasks do not
    provision tools. The frontend typecheck
    task requires the installed cognitive_app dependencies. Missing tools are
