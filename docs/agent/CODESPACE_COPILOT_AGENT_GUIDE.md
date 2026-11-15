@@ -84,7 +84,7 @@ the same task command/arguments in the existing integrated terminal or authorize
 CLI environment and report that limitation. The remote CLI needs its genuine
 VS Code terminal IPC context; an error printed with exit zero is still failure.
 Do not guess IPC values, launch another server or rewrite global PATH.
-See the [human continuation plan](../../site/plans/cdx_archive_scanner_preflight_recovery/human_continuation_plan.md)
+See the [CDX continuation plan](../../site/plans/cdx_archive_scanner_preflight_recovery/CONTINUATION.md)
 for minimal account/UI/administrative handbacks and the unchanged archive gates.
 
 ## Overview
