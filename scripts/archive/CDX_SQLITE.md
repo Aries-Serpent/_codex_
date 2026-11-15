@@ -18,8 +18,10 @@ without changing health data or its timestamp; `--validate` rejects missing/stal
 CDX catalogs while allowing unrelated skills/candidates and registry metadata.
 Context refresh retains those unrelated registry extensions.
 Normal generation also includes the CDX fields.
-The holding profile `.github/agents-holding/cdx-archive-lifecycle.agent.md` is
-discoverable as a staged candidate, never proof of hosted activation or authority.
+The repository profile `.github/agents/cdx-archive-lifecycle.agent.md` is
+registered locally, never proof of hosted activation or authority. Its explicit
+read/search/execute/edit tools support inspection, lifecycle commands and
+task-authorized same-scope fixes, not blanket filesystem or network isolation.
 `python -m scripts.archive.cdx_preflight --preflight-summary --json` exposes
 the shared read-only summary without scanning a selected source. The common
 public API also exports `inspect_and_pack_blob`, `validate_safe_rel_path`,
@@ -27,7 +29,19 @@ public API also exports `inspect_and_pack_blob`, `validate_safe_rel_path`,
 `validate_inventory`, with lazy delegation to existing implementations.
 Their exact locations, and preflight `assess_acquired_batch`, are catalogued.
 The candidate ID is `cdx-archive-lifecycle`; both `agent_candidates` and `skills`
-expose it as `staged_candidate`, not a runnable/hosted activation.
+expose it as `local_profile`, not a runtime/hosted activation. The compatibility
+container `agent_candidates` retains its name; its status describes local
+registration only. Refresh removes the old holding-path record while preserving
+unrelated candidates. `hosted_activation` remains `not_established`, and
+`authorization` remains `none_granted`: catalog generation grants no authority.
+Verify actual discovery, selection, effective tools and bounded invocation
+separately in VS Code/Copilot SDK and GitHub's hosted runtime. GitHub's documented
+repository route integrates the profile into the default branch before selector
+discovery; a local test or feature-branch entry cannot establish hosted activation.
+The generated JSON compatibility-alias description has one exact detect-secrets
+baseline entry because JSON cannot carry the source's line-scoped pragma.
+This does not exclude the packet, change scanners or regenerate a broad baseline;
+changed values remain detectable and archive-finding approval rules are unchanged.
 `cdx_common_preflight.functions` explicitly maps `inspect_text`,
 `compute_merkle_root`, `_canonical_scanner_finding`, `_validate_external_path`,
 `run_secret_scanners`, `pack_archive`, `CodexArchiveQuery`, `rehydrate_archive`,

@@ -1,7 +1,13 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-11-14T23:32:21Z",
+  "generated_at": "2026-11-15T22:41:24Z",
   "agents": [
+    {
+      "name": "cdx-archive-lifecycle",
+      "role": "specialist",
+      "enforcement_tier": "SOFT",
+      "autonomy_model": "E"
+    },
     {
       "name": "deep-research-analysis-agent",
       "role": "specialist",
@@ -1380,5 +1386,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "99b72c9baf51ec3e6194ba7f7c4bb8a7a5d04982540308eaa569ec6cdde6f2e0"
+  "integrity_sha256": "47119a17fb2f57059245810089b23bfa3782e3275cb7fdedf21523f1ed89acbe"
 }
