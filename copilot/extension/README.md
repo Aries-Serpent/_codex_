@@ -17,9 +17,33 @@ npm install
 export ITA_URL=http://localhost:8080
 export ITA_API_KEY=... # issued by services/ita/scripts/issue_api_key.py
 npm start
-```text
+```
 Once the server is running, configure the Copilot extension to target the exposed endpoints (default port `3978`). Each incoming
 request is validated, logged, and replayed to the ITA with the required headers. Add authentication secrets via environment
 variables rather than source control.
 
 > **Note:** Fill in your GitHub App credentials and deploy `server/` to an accessible URL when promoting beyond local testing.
+
+## Regression checks
+
+Run `npm ci`, `npm run lint`, and `npm test` from this directory. The Node
+built-in test runner starts the real CommonJS server and an ITA stub on
+OS-assigned loopback ports, with synthetic configuration and an isolated working
+directory. It checks forwarding, request IDs, error responses, missing
+configuration, and the existing 1 MiB JSON limit. No production service or API
+key is required. `HOST=127.0.0.1 PORT=0` can also be used for manual local checks;
+the startup message reports the actual bound port.
+
+## CodeQL coverage
+
+The shared [CodeQL configuration](../../.github/codeql/codeql-config.yml)
+includes this directory, including `server/` and its regression tests. Its
+consumers are Enterprise Compliance, the CodeQL GA gate, and the manual/reusable
+CodeQL lane in the Security Scanning Suite. Existing query suites and exclusions
+are unchanged.
+
+Configuration is not completed-analysis evidence. For a candidate revision,
+verify the hosted JavaScript SARIF's successfully-extracted-file diagnostics
+include the extension source and tests. Bind the SARIF and source-identity
+artifacts to the run attempt and actual checkout SHA before relying on results;
+a successful older scan that omitted this directory does not establish coverage.
