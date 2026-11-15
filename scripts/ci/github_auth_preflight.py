@@ -19,6 +19,12 @@ from urllib.parse import quote
 from scripts.ci._token_resolver import CANONICAL_HIERARCHY
 from scripts.ci.approve_pending_runs import _gh, _mint_app_token
 
+READ_ONLY_APP_PERMISSIONS = {
+    "actions": "read",
+    "administration": "read",
+    "environments": "read",
+}
+
 
 def inspect_access(repo: str, environment: str, branch: str) -> dict[str, Any]:
     if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repo):
@@ -58,15 +64,48 @@ def inspect_access(repo: str, environment: str, branch: str) -> dict[str, Any]:
         else:
             try:
                 with redirect_stdout(sys.stderr):
-                    app_token = _mint_app_token(*app_values, repo=repo)
+                    app_token = _mint_app_token(
+                        *app_values, repo=repo, permissions=READ_ONLY_APP_PERMISSIONS
+                    )
                 app_status = "verified-installation" if app_token else "mint-failed"
                 if app_token:
                     candidates.insert(0, ("cognitive-brain-app", app_token))
             except (urllib.error.URLError, TimeoutError, OSError):
                 app_status = "transport-error"
-    routes = []
-    seen = set()
+    routes: list[dict[str, Any]] = []
+    seen: set[str] = set()
     verified_reads = {name: False for name in endpoints}
+    app_token_value = candidates[0][1] if candidates[0][0] == "cognitive-brain-app" else ""
+    try:
+        _probe_routes(candidates, prefix, endpoints, routes, seen, verified_reads)
+    finally:
+        if app_token_value:
+            try:
+                status, _ = _gh("DELETE", "/installation/token", app_token_value)
+                app_revoked = status == 204
+            except (urllib.error.URLError, TimeoutError, OSError):
+                app_revoked = False
+            app_status = app_status if app_revoked else "verified-installation-revoke-failed"
+    return {
+        "repository": repo,
+        "environment": environment,
+        "branch": branch,
+        "app_route": app_status,
+        "routes": routes,
+        "verified_reads": verified_reads,
+        "write_authority": "unverified; no repository mutations performed",
+        "protected_approval": "unverified; requires protected runtime evidence",
+    }
+
+
+def _probe_routes(
+    candidates: list[tuple[str, str]],
+    prefix: str,
+    endpoints: dict[str, tuple[str, str]],
+    routes: list[dict[str, Any]],
+    seen: set[str],
+    verified_reads: dict[str, bool],
+) -> None:
     for source, token in candidates:
         if not token or token in seen:
             continue
@@ -90,16 +129,6 @@ def inspect_access(repo: str, environment: str, branch: str) -> dict[str, Any]:
         except (urllib.error.URLError, TimeoutError, OSError):
             route["transport_error"] = True
         routes.append(route)
-    return {
-        "repository": repo,
-        "environment": environment,
-        "branch": branch,
-        "app_route": app_status,
-        "routes": routes,
-        "verified_reads": verified_reads,
-        "write_authority": "unverified; no repository mutations performed",
-        "protected_approval": "unverified; requires protected runtime evidence",
-    }
 
 
 def main() -> int:
