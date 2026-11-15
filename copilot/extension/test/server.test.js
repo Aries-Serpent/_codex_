@@ -22,7 +22,7 @@ async function startChild(t, configuration) {
   let output = "";
   child.stdout.on("data", (chunk) => { output += chunk; });
   child.stderr.on("data", (chunk) => { output += chunk; });
-  const exited = once(child, "exit");
+  const exited = once(child, "close");
   t.after(async () => {
     const timer = setTimeout(() => child.kill("SIGKILL"), 2000);
     try {
@@ -136,3 +136,19 @@ for (const missing of ["ITA_URL", "ITA_API_KEY"]) {
     assert.doesNotMatch(process.output(), /listening on port/);
   });
 }
+
+test("startup fails cleanly when the port is unavailable", { timeout: 10_000 }, async (t) => {
+  const blocker = http.createServer();
+  blocker.listen(0, "127.0.0.1");
+  await once(blocker, "listening");
+  t.after(() => blocker.close());
+  const process = await startChild(t, {
+    ITA_URL: "http://127.0.0.1:1",
+    ITA_API_KEY: syntheticKey,
+    PORT: String(blocker.address().port),
+  });
+  const [code] = await process.exited;
+  assert.equal(code, 1);
+  assert.match(process.output(), /failed to listen: EADDRINUSE/);
+  assert.doesNotMatch(process.output(), /listening on port|TypeError/);
+});
