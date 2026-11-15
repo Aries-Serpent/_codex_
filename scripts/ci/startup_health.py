@@ -10,9 +10,21 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 if __package__:
-    from scripts.ci.cdx_context import CANDIDATE, build_cdx_context, refresh_cdx_context
+    from scripts.ci.cdx_context import (
+        CANDIDATE,
+        CANDIDATE_ID,
+        LEGACY_CANDIDATE,
+        build_cdx_context,
+        refresh_cdx_context,
+    )
 else:
-    from cdx_context import CANDIDATE, build_cdx_context, refresh_cdx_context
+    from cdx_context import (
+        CANDIDATE,
+        CANDIDATE_ID,
+        LEGACY_CANDIDATE,
+        build_cdx_context,
+        refresh_cdx_context,
+    )
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / ".codex" / "session_access_manifest.json"
@@ -108,7 +120,8 @@ def validate_packet(packet: dict) -> None:
         actual["skills_registry"]["agent_candidates"] = [
             row
             for row in registry["agent_candidates"]
-            if isinstance(row, dict) and row.get("path") == CANDIDATE
+            if isinstance(row, dict)
+            and (row.get("id") == CANDIDATE_ID or row.get("path") in {CANDIDATE, LEGACY_CANDIDATE})
         ]
         actual_json = json.dumps(actual, sort_keys=True, allow_nan=False)
     except (ValueError, TypeError, KeyError) as exc:

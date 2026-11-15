@@ -137,6 +137,12 @@ def test_refresh_removes_stale_cdx_candidate_identity():
         {"id": cdx_context.CANDIDATE_ID, "path": "other/location.agent.md"},
         {"path": cdx_context.LEGACY_CANDIDATE, "status": "staged_candidate"},
     ]
+    startup_health.validate_packet(packet)
+    for row in stale:
+        altered = copy.deepcopy(packet)
+        altered["skills_registry"]["agent_candidates"].append(row)
+        with pytest.raises(ValueError, match="missing or stale"):
+            startup_health.validate_packet(altered)
     packet["skills_registry"]["agent_candidates"].extend(stale)
     cdx_context.refresh_cdx_context(packet)
     startup_health.validate_packet(packet)
