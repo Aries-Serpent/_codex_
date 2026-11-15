@@ -80,7 +80,8 @@ def test_missing_bootstrap_credential_fails_without_values(credentials, capsys):
     with pytest.raises(SystemExit) as exc:
         bootstrap._backup_token()
     assert exc.value.code == 1
-    assert "ERROR" in capsys.readouterr().err
+    err = capsys.readouterr().err
+    assert "CODEX_BACKUP_KEY" in err and "CODEX_ADMIN_KEY" in err
 
 
 def test_preflight_supports_documented_app_aliases(credentials, monkeypatch):
@@ -180,7 +181,9 @@ def test_read_only_app_mint_requests_and_requires_read_scopes(monkeypatch, grant
             return 200, {"id": 1, "slug": "codex-maintainer"}
         if path == "/app/installations/2":
             return 200, {"id": 2, "app_id": 1, "account": {"login": "o"}}
-        bodies.append(body)
+        bodies.append((method, path, body))
+        if method == "DELETE":
+            return 204, {}
         return 201, {
             "token": "read-fixture",
             "expires_at": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
@@ -191,4 +194,21 @@ def test_read_only_app_mint_requests_and_requires_read_scopes(monkeypatch, grant
     requested = {"actions": "read", "administration": "read"}
     token = approval._mint_app_token("1", "fixture", "2", repo="o/r", permissions=requested)
     assert token == expected
-    assert bodies == [{"repositories": ["r"], "permissions": requested}]
+    mint_request = ("POST", "/app/installations/2/access_tokens")
+    assert bodies[0] == (*mint_request, {"repositories": ["r"], "permissions": requested})
+    revocations = [("DELETE", "/installation/token", None)] if expected is None else []
+    assert bodies[1:] == revocations
+
+
+@pytest.mark.parametrize("requested", [{}, {"actions": "write"}])
+def test_explicit_mint_rejects_empty_or_write_scopes_before_request(monkeypatch, requested):
+    import sys
+    from types import SimpleNamespace
+
+    from scripts.ci import approve_pending_runs as approval
+
+    monkeypatch.setitem(
+        sys.modules, "jwt", SimpleNamespace(encode=lambda *args, **kwargs: "jwt-fixture")
+    )
+    monkeypatch.setattr(approval, "_gh", lambda *args, **kwargs: pytest.fail("must not call"))
+    assert approval._mint_app_token("1", "fixture", "2", repo="o/r", permissions=requested) is None
