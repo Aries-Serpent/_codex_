@@ -95,10 +95,24 @@ def test_preflight_supports_documented_app_aliases(credentials, monkeypatch):
         calls.append((args, kwargs))
         return "temporary-fixture"
 
+    requests = []
+
+    def request(method, path, token):
+        requests.append((method, path, token))
+        return (204, {}) if method == "DELETE" else (200, {})
+
     monkeypatch.setattr(preflight, "_mint_app_token", mint)
-    monkeypatch.setattr(preflight, "_gh", lambda *args: (200, {}))
+    monkeypatch.setattr(preflight, "_gh", request)
     result = preflight.inspect_access("o/r", "owner-approval", "main")
-    assert calls == [(("1", "-----BEGIN FIXTURE-----", "2"), {"repo": "o/r"})]
+    assert calls == [
+        (
+            ("1", "-----BEGIN FIXTURE-----", "2"),
+            {"repo": "o/r", "permissions": preflight.READ_ONLY_APP_PERMISSIONS},
+        )
+    ]
+    assert set(preflight.READ_ONLY_APP_PERMISSIONS.values()) == {"read"}
+    assert requests[-1] == ("DELETE", "/installation/token", "temporary-fixture")
+    assert all(method == "GET" for method, _, _ in requests[:-1])
     assert result["app_route"] == "verified-installation"
     assert result["routes"][0]["source"] == "cognitive-brain-app"
     assert "temporary-fixture" not in json.dumps(result)
@@ -125,3 +139,56 @@ def test_bad_app_key_fails_before_mint(credentials, monkeypatch):
     monkeypatch.setattr(preflight, "_mint_app_token", lambda *args: pytest.fail("must not mint"))
     result = preflight.inspect_access("o/r", "owner-approval", "main")
     assert result["app_route"] == "private-key-not-pem"
+
+
+def test_app_token_revocation_failure_is_reported(credentials, monkeypatch):
+    monkeypatch.delenv("REPO", raising=False)
+    monkeypatch.delenv("GITHUB_REPOSITORY", raising=False)
+    monkeypatch.setenv("_GITHUB_APP_ID", "1")
+    monkeypatch.setenv("_GITHUB_APP_PRIVATE_KEY", "-----BEGIN FIXTURE-----")
+    monkeypatch.setenv("_GITHUB_APP_INSTALLATION_ID", "2")
+    monkeypatch.setattr(preflight, "_mint_app_token", lambda *args, **kwargs: "fixture")
+    monkeypatch.setattr(
+        preflight, "_gh", lambda method, *args: (500, {}) if method == "DELETE" else (200, {})
+    )
+    result = preflight.inspect_access("o/r", "owner-approval", "main")
+    assert result["app_route"] == "verified-installation-revoke-failed"
+
+
+@pytest.mark.parametrize(
+    ("granted", "expected"),
+    [
+        ({"actions": "read", "administration": "read", "metadata": "read"}, "read-fixture"),
+        ({"actions": "write", "administration": "read"}, None),
+        ({"actions": "read"}, None),
+    ],
+)
+def test_read_only_app_mint_requests_and_requires_read_scopes(monkeypatch, granted, expected):
+    import sys
+    from datetime import datetime, timedelta, timezone
+    from types import SimpleNamespace
+
+    from scripts.ci import approve_pending_runs as approval
+
+    monkeypatch.setitem(
+        sys.modules, "jwt", SimpleNamespace(encode=lambda *args, **kwargs: "jwt-fixture")
+    )
+    bodies = []
+
+    def request(method, path, token, body=None):
+        if path == "/app":
+            return 200, {"id": 1, "slug": "codex-maintainer"}
+        if path == "/app/installations/2":
+            return 200, {"id": 2, "app_id": 1, "account": {"login": "o"}}
+        bodies.append(body)
+        return 201, {
+            "token": "read-fixture",
+            "expires_at": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
+            "permissions": granted,
+        }
+
+    monkeypatch.setattr(approval, "_gh", request)
+    requested = {"actions": "read", "administration": "read"}
+    token = approval._mint_app_token("1", "fixture", "2", repo="o/r", permissions=requested)
+    assert token == expected
+    assert bodies == [{"repositories": ["r"], "permissions": requested}]
