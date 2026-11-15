@@ -143,6 +143,8 @@ def main() -> int:
     except ValueError as exc:
         parser.error(str(exc))
     print(json.dumps(result, indent=2))
+    if result["app_route"] == "verified-installation-revoke-failed":
+        return 1
     return 0 if all(result["verified_reads"].values()) else 1
 
 

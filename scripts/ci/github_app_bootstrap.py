@@ -95,6 +95,7 @@ APP_MANIFEST = {
         "actions": "write",
         "metadata": "read",
         "administration": "read",
+        "environments": "read",
     },
     "default_events": [
         "push",
