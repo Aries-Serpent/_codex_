@@ -695,3 +695,44 @@ Follow-up coverage tasks (each a reviewable `copilot/session-*` sub-PR into
 4. Keep the quarantine empty: fix any test before adding it, and if one must be
    quarantined, link an issue and owner in the entry and remove it when fixed.
 5. Do not lower the floor or broaden coverage omissions to meet a milestone.
+
+## PR5766-SPLIT: drain #5766 into reviewable slice PRs to `main` — 2026-11-15
+
+Baseline (verified live, not historical): #5766 head `e97d536d`, `main`
+`195427c3` (merge base; `0D_base_` is 29 commits ahead, 0 behind), 291 files,
++14,558/−4,556. Only 9 check runs exist on `e97d536d` (all success); the
+earlier Trivy / `ml-slow-aggregate` failures belong to older heads. `main`
+rules: deletion protection and Copilot code review on PR open (ruleset
+11369401). #5766 stays open and unmerged; `0D_base_` is never reset,
+rebased or force-pushed. #5798 and its child issues stay open.
+
+Method per slice: topic branch `split/pr5766-<slice>` from the latest
+`main` in a separate worktree; `git checkout origin/0D_base_ -- <paths>` (or
+selected hunks for shared files); focused tests, lint and `git diff --check`;
+an independent AI reviewer (the code-review agent, plus the Copilot
+reviewer requested by the ruleset) must account for every changed file;
+the PR to `main` uses the template, references #5798 without closing it,
+and carries a generated-files side panel. Merge only when GitHub reports
+`mergeable_state=clean` (no admin bypass), then re-compare `main...0D_base_`.
+
+Slices (dependency order; `→` = must land first):
+
+| # | Slice | Paths (from #5766) | Source commits | Depends |
+|---|---|---|---|---|
+| S01 | VS Code workspace + docs | `.vscode/{extensions,launch,settings,tasks}.json`, `.gitignore` (`.vscode` hunk), `tests/ci/test_vscode_tasks.py`, `.github/copilot-instructions.md` (VS Code hunk), `docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md`, `docs/DEVELOPMENT.md`, `docs/guides/local-development-setup.md` | 1f26e3fd, fec36206 | — |
+| S02 | Rust build-deps + gzip/FFI | `Cargo.toml`, `Cargo.lock` (generated), `rust_swarm/RUST_ENGINE_README.md`, `tests/rust_integration/test_phase4_boundary.py` | 0d185fa8, 13c07d77, 1f26e3fd | — |
+| S03 | Copilot extension server | `copilot/extension/{README.md,eslint.config.js,package.json,package-lock.json,server/index.js,test/server.test.js}` | 0d185fa8 | — |
+| S04 | pyasn1 0.6.5 | `requirements/lock-{eval,ml}.txt`, `configs/development/artifacts/sbom/packages.txt`, `uv.lock` (pyasn1 hunks) | 7eeddbe0, 6915261f, f8bde84f | — |
+| S05 | CDX profile promotion | `.github/agents{-holding→}/cdx-archive-lifecycle.agent.md`, `AGENT_REGISTRY.yaml`, `agents-holding/README.md`, `scripts/ci/cdx_context.py`, `tests/archive/test_cdx_context.py`, `scripts/archive/CDX_SQLITE.md`, CDX hunks of `.github/copilot-instructions.md`, generated `.codex/session_startup_packet.json` + manifest agent entry + its `.secrets.baseline`/`SUPPRESSIONS.md` entry, `site/plans/cdx_archive_scanner_preflight_recovery/*` + `.gitignore` site hunk | 1f26e3fd, f6d4223c | S01 (shared files) |
+| S06 | cognitive_app deps + E2E | `cognitive_app/**` (19 files; lockfile generated) | 0d185fa8 | — |
+| S07 | GitHub auth preflight/bootstrap | `scripts/ci/github_auth_preflight.py`, `scripts/ci/github_app_bootstrap.py`, tests | f4315389 | — |
+| S08 | JWT + SQLite auth | `token_manager.py`, `sqlite_user_repository.py`, JWT/auth tests | f4315389, 8eca11ce | — |
+| S09 | RAG readiness | `test-rag.yml`, `tests/rag/**`, `rag/embeddings.py`, RAG root tests, link validator | 34f9e6cf | — |
+| S10 | pandas <3.1 / Evidently | pandas bounds in `pyproject.toml`, `uv.lock`, `.codex/agent_environment_config.yaml`, `src/hhg_logistics/**`, related tests | a801ed41, f4315389 | S04 (`uv.lock`) |
+| S11 | ML sharding + coverage ratchet | `ml-tests.yml`, `scripts/ci/ml_{pytest_shards,slow_aggregate}.py`, `.codex/baselines/ml_unit_*`, `tests/ci/test_ml_*`, `test-ml-integrations` extra, `tests/integration/README.md`, manifest `ml-tests` tier | 095ac1ff, f4315389, f8bde84f | S10 |
+| S12+ | Test-repair batches by area (CLI, OODA/brain, checkpoint/training, security, integration, misc) | remaining `src/**` + `tests/**` from f4315389/a801ed41/3cee1ffe | as listed | S10/S11 where `conftest.py` or extras are needed |
+| — | Stays in #5766 | `CHANGELOG.md`, accountability reports, `.codex/aftermath/pda_iterations.jsonl` (+ its baseline entries), `.codex/plans/pr_5766_security/*`, this file | bookkeeping | — |
+
+Bookkeeping files are staging records of #5766 itself and are not
+independently testable behavior; they stay until the final promotion.
+Progress, PR links and residual diffs are recorded below as slices land.
