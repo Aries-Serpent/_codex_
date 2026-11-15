@@ -80,7 +80,9 @@ APP_MANIFEST = {
     "description": "Cognitive Brain autonomous agent for Aries-Serpent/_codex_",
     "url": f"https://github.com/{REPO}",
     "hook_attributes": {
-        "url": os.environ.get("WEBHOOK_RECEIVER_URL", "https://placeholder.example.com/github-hook"),
+        "url": os.environ.get(
+            "WEBHOOK_RECEIVER_URL", "https://placeholder.example.com/github-hook"
+        ),
         "active": True,
     },
     "redirect_url": f"https://github.com/{REPO}",
@@ -108,10 +110,18 @@ APP_MANIFEST = {
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
+
 def _backup_token() -> str:
-    t = get_token(required_elevated=True)[0] or os.environ.get("CODEX_ADMIN_KEY", "")
+    from scripts.ci._token_resolver import TokenResolutionError, get_token
+
+    try:
+        t = get_token(required_elevated=True)[0]
+    except TokenResolutionError:
+        t = os.environ.get("CODEX_ADMIN_KEY", "").strip()
     if not t:
-        print("ERROR: Set CODEX_BACKUP_KEY (needs admin:org_hook + read:org scopes).", file=sys.stderr)
+        print(
+            "ERROR: Set CODEX_BACKUP_KEY (needs admin:org_hook + read:org scopes).", file=sys.stderr
+        )
         sys.exit(1)
     return t
 
@@ -126,7 +136,7 @@ def _ensure_gitignore_excludes_pem() -> None:
         print(f"  ✅ Added {entry} to .gitignore")
 
 
-def _save_credentials(data: dict) -> None:
+def _save_credentials(data: dict) -> dict:
     APP_DIR.mkdir(parents=True, exist_ok=True)
     _ensure_gitignore_excludes_pem()
 
@@ -152,12 +162,16 @@ def _save_credentials(data: dict) -> None:
 
 def _load_credentials() -> dict:
     if not CREDENTIALS_FILE.exists():
-        print(f"ERROR: No credentials found at {CREDENTIALS_FILE}. Run --convert-code first.", file=sys.stderr)
+        print(
+            f"ERROR: No credentials found at {CREDENTIALS_FILE}. Run --convert-code first.",
+            file=sys.stderr,
+        )
         sys.exit(1)
     return json.loads(CREDENTIALS_FILE.read_text())
 
 
 # ── Commands ──────────────────────────────────────────────────────────────────
+
 
 def generate_manifest_url() -> None:
     """Print the URL the admin must open in a browser to register the app."""
@@ -214,10 +228,13 @@ def convert_code(code: str) -> None:
 
         try:
             import github_var_writer as vw
+
             vw.upsert_var("GITHUB_APP_ID", app_id, force=True)
         except Exception as e:
             print(f"  ⚠️  Could not auto-write variable: {e}. Run manually:")
-            print(f"     python scripts/ci/github_var_writer.py --set GITHUB_APP_ID={app_id} --force")
+            print(
+                f"     python scripts/ci/github_var_writer.py --set GITHUB_APP_ID={app_id} --force"
+            )
 
 
 def update_webhook(receiver_url: str) -> None:
@@ -235,9 +252,11 @@ def update_webhook(receiver_url: str) -> None:
     # Attempt to generate JWT using PyJWT if available, else advise manual
     try:
         import importlib.util as _ilu
+
         if _ilu.find_spec("jwt") is None:
             raise ImportError("PyJWT not installed")
-        import jwt as pyjwt  # type: ignore[import-not-found]
+        import jwt as pyjwt
+
         pem = PRIVATE_KEY_FILE.read_text()
         now = int(datetime.now(timezone.utc).timestamp())
         payload = {"iat": now - 60, "exp": now + 600, "iss": app_id}
@@ -248,11 +267,13 @@ def update_webhook(receiver_url: str) -> None:
         return
 
     url = "https://api.github.com/app/hook/config"
-    body = json.dumps({
-        "url": receiver_url,
-        "content_type": "json",
-        "insecure_ssl": "0",
-    }).encode()
+    body = json.dumps(
+        {
+            "url": receiver_url,
+            "content_type": "json",
+            "insecure_ssl": "0",
+        }
+    ).encode()
     req = urllib.request.Request(url, data=body, method="PATCH")
     req.add_header("Authorization", f"Bearer {token}")
     req.add_header("Accept", "application/vnd.github+json")
@@ -280,18 +301,23 @@ def show_app() -> None:
 
 # ── CLI ───────────────────────────────────────────────────────────────────────
 
+
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(
-        description="Bootstrap a GitHub App from CODEX_BACKUP_KEY."
+    parser = argparse.ArgumentParser(description="Bootstrap a GitHub App from CODEX_BACKUP_KEY.")
+    parser.add_argument(
+        "--generate-manifest-url",
+        action="store_true",
+        help="Print the browser URL to register the app (Step 1)",
     )
-    parser.add_argument("--generate-manifest-url", action="store_true",
-                        help="Print the browser URL to register the app (Step 1)")
-    parser.add_argument("--convert-code", metavar="CODE",
-                        help="Exchange one-time OAuth code for app credentials (Step 2)")
-    parser.add_argument("--update-webhook", metavar="URL",
-                        help="Update the app webhook URL (requires private key)")
-    parser.add_argument("--show", action="store_true",
-                        help="Show registered app credentials")
+    parser.add_argument(
+        "--convert-code",
+        metavar="CODE",
+        help="Exchange one-time OAuth code for app credentials (Step 2)",
+    )
+    parser.add_argument(
+        "--update-webhook", metavar="URL", help="Update the app webhook URL (requires private key)"
+    )
+    parser.add_argument("--show", action="store_true", help="Show registered app credentials")
     args = parser.parse_args(argv)
 
     if args.generate_manifest_url:
