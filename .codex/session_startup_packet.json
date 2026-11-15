@@ -154,13 +154,13 @@
       {
         "id": "cdx-archive-lifecycle",
         "name": "CDX Archive Lifecycle",
-        "path": ".github/agents-holding/cdx-archive-lifecycle.agent.md",
-        "status": "staged_candidate",
+        "path": ".github/agents/cdx-archive-lifecycle.agent.md",
+        "status": "local_profile",
         "discoverable": true,
         "hosted_activation": "not_established",
         "authorization": "none_granted",
-        "kind": "agent_candidate",
-        "availability": "staged_candidate",
+        "kind": "agent_profile",
+        "availability": "local_profile",
         "module_index_keys": [
           "common",
           "preflight",
@@ -177,8 +177,8 @@
       {
         "id": "cdx-archive-lifecycle",
         "name": "CDX Archive Lifecycle",
-        "path": ".github/agents-holding/cdx-archive-lifecycle.agent.md",
-        "status": "staged_candidate",
+        "path": ".github/agents/cdx-archive-lifecycle.agent.md",
+        "status": "local_profile",
         "discoverable": true,
         "hosted_activation": "not_established",
         "authorization": "none_granted"
