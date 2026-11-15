@@ -45,4 +45,17 @@ describe('resizable panels integration', () => {
     expect(screen.getByTestId('group')).toHaveStyle({ flexDirection: 'column' });
     expect(screen.getByRole('separator')).toHaveAttribute('aria-orientation', 'horizontal');
   });
+
+  it('gives explicit orientation precedence over legacy direction', () => {
+    render(
+      <ResizablePanelGroup direction="vertical" orientation="horizontal" data-testid="group">
+        <ResizablePanel>First panel</ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel>Second panel</ResizablePanel>
+      </ResizablePanelGroup>,
+    );
+
+    expect(screen.getByTestId('group')).toHaveStyle({ flexDirection: 'row' });
+    expect(screen.getByRole('separator')).toHaveAttribute('aria-orientation', 'vertical');
+  });
 });
