@@ -90,9 +90,11 @@ class SQLiteUserRepository(UserRepository):
                     conn.execute("PRAGMA journal_mode=WAL")
                     break
                 except sqlite3.OperationalError as exc:
-                    if "locked" not in str(exc).lower() or time.monotonic() >= deadline:
+                    remaining = deadline - time.monotonic()
+                    if "locked" not in str(exc).lower() or remaining <= 0:
                         raise
-                    time.sleep(retry_delay)
+                    # Never sleep past the deadline.
+                    time.sleep(min(retry_delay, remaining))
                     retry_delay = min(retry_delay * 2, 0.1)
             conn.execute("PRAGMA foreign_keys=ON")
             return conn

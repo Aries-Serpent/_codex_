@@ -268,6 +268,23 @@ class TestPyJWTTokenValidation:
         with pytest.raises(ValueError, match="not before"):
             token_manager.validate_token(token)
 
+    @pytest.mark.parametrize("payload", [["codex-api"], "codex-api", 1, None])
+    def test_signed_non_object_payload_rejected(self, token_manager, payload):
+        import base64
+        import hashlib
+        import hmac
+
+        def b64(raw: bytes) -> str:
+            return base64.urlsafe_b64encode(raw).decode().rstrip("=")
+
+        header = b64(json.dumps({"alg": "HS256", "typ": "JWT"}).encode())
+        body = b64(json.dumps(payload).encode())
+        message = f"{header}.{body}"
+        signature = b64(hmac.new(_TEST_SECRET.encode(), message.encode(), hashlib.sha256).digest())
+
+        with pytest.raises(ValueError, match="Invalid token payload"):
+            token_manager.validate_token(f"{message}.{signature}")
+
     @pytest.mark.parametrize("nbf", [0, 0.5])
     def test_jwt_elapsed_nbf_accepted(self, token_manager, nbf):
         import jwt

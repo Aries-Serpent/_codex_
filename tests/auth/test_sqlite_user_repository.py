@@ -314,3 +314,15 @@ class TestSQLiteUserRepositoryWALInitialization:
             _open_connection()
         assert conn.closed
         assert conn.statements == ["PRAGMA journal_mode=WAL"] * 2
+
+    def test_final_backoff_is_clamped_to_the_deadline(
+        self, scripted, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        install, sleeps = scripted
+        install(["database is locked"] * 100)
+        timeout = repository_module._SQLITE_LOCK_RETRY_TIMEOUT_SECONDS
+        clock = iter([0.0, timeout - 0.004, timeout])
+        monkeypatch.setattr(repository_module.time, "monotonic", lambda: next(clock))
+        with pytest.raises(sqlite3.OperationalError, match="locked"):
+            _open_connection()
+        assert sleeps == [pytest.approx(0.004)]
