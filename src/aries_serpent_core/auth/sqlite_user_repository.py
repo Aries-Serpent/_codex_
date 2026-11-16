@@ -40,6 +40,8 @@ CREATE INDEX IF NOT EXISTS idx_users_username ON users (username);
 CREATE INDEX IF NOT EXISTS idx_users_email    ON users (email);
 """
 
+_SQLITE_LOCK_RETRY_TIMEOUT_SECONDS = 30.0
+
 
 def _row_to_user(row: sqlite3.Row) -> User:
     """Convert a database row to a :class:`User` dataclass."""
@@ -80,9 +82,23 @@ class SQLiteUserRepository(UserRepository):
         """Create a new SQLite connection with WAL mode and row factory."""
         conn = sqlite3.connect(self._db_path, check_same_thread=False, timeout=30)
         conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA foreign_keys=ON")
-        return conn
+        deadline = time.monotonic() + _SQLITE_LOCK_RETRY_TIMEOUT_SECONDS
+        retry_delay = 0.01
+        try:
+            while True:
+                try:
+                    conn.execute("PRAGMA journal_mode=WAL")
+                    break
+                except sqlite3.OperationalError as exc:
+                    if "locked" not in str(exc).lower() or time.monotonic() >= deadline:
+                        raise
+                    time.sleep(retry_delay)
+                    retry_delay = min(retry_delay * 2, 0.1)
+            conn.execute("PRAGMA foreign_keys=ON")
+            return conn
+        except Exception:
+            conn.close()
+            raise
 
     def _get_conn(self) -> sqlite3.Connection:
         """Return the cached connection (same connection for the lifetime of this instance)."""

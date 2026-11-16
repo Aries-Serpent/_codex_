@@ -4,11 +4,14 @@ Tests for SQLiteUserRepository — all CRUD + thread-safety operations.
 
 from __future__ import annotations
 
+import sqlite3
 import threading
 import time
 from pathlib import Path
 
 import pytest
+
+import codex.auth.sqlite_user_repository as repository_module
 from codex.auth.sqlite_user_repository import SQLiteUserRepository
 from codex.auth.user_store import User
 
@@ -245,3 +248,69 @@ class TestSQLiteUserRepositoryTwoInstances:
         found = repo_b.get_by_id(user.user_id)
         assert found is not None, "found must be initialized"
         assert found.username == "shared", "username is not valid"
+
+
+class _ScriptedConnection:
+    """Connection whose WAL pragma raises scripted errors before succeeding."""
+
+    def __init__(self, errors: list[str]) -> None:
+        self.errors = list(errors)
+        self.statements: list[str] = []
+        self.closed = False
+
+    def execute(self, sql: str) -> None:
+        self.statements.append(sql)
+        if sql == "PRAGMA journal_mode=WAL" and self.errors:
+            raise sqlite3.OperationalError(self.errors.pop(0))
+
+    def close(self) -> None:
+        self.closed = True
+
+
+def _open_connection() -> sqlite3.Connection:
+    repository = SQLiteUserRepository.__new__(SQLiteUserRepository)
+    repository._db_path = "unused.db"
+    return repository._make_conn()
+
+
+class TestSQLiteUserRepositoryWALInitialization:
+    @pytest.fixture()
+    def scripted(self, monkeypatch: pytest.MonkeyPatch):
+        sleeps: list[float] = []
+        monkeypatch.setattr(repository_module.time, "sleep", sleeps.append)
+
+        def install(errors: list[str]) -> _ScriptedConnection:
+            conn = _ScriptedConnection(errors)
+            monkeypatch.setattr(repository_module.sqlite3, "connect", lambda *a, **k: conn)
+            return conn
+
+        return install, sleeps
+
+    def test_retries_locked_wal_pragma_until_it_succeeds(self, scripted) -> None:
+        install, sleeps = scripted
+        conn = install(["database is locked"] * 5)
+        assert _open_connection() is conn
+        assert conn.statements[:6] == ["PRAGMA journal_mode=WAL"] * 6
+        assert conn.statements[6:] == ["PRAGMA foreign_keys=ON"]
+        assert sleeps == [0.01, 0.02, 0.04, 0.08, 0.1]
+        assert not conn.closed
+
+    def test_non_lock_error_is_raised_and_closes_connection(self, scripted) -> None:
+        install, sleeps = scripted
+        conn = install(["disk I/O error"])
+        with pytest.raises(sqlite3.OperationalError, match="disk I/O error"):
+            _open_connection()
+        assert conn.closed
+        assert sleeps == []
+
+    def test_lock_after_deadline_is_raised_and_closes_connection(
+        self, scripted, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        install, _ = scripted
+        conn = install(["database is locked"] * 100)
+        clock = iter([0.0, 1.0, repository_module._SQLITE_LOCK_RETRY_TIMEOUT_SECONDS + 1])
+        monkeypatch.setattr(repository_module.time, "monotonic", lambda: next(clock))
+        with pytest.raises(sqlite3.OperationalError, match="locked"):
+            _open_connection()
+        assert conn.closed
+        assert conn.statements == ["PRAGMA journal_mode=WAL"] * 2
