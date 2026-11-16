@@ -1,7 +1,7 @@
 """Probe GitHub repository access without repository mutations or credential output.
 
-Run: python -m scripts.ci.github_auth_preflight --repo OWNER/REPO --json
-Successful reads never establish write authority or protected approval.
+Run: python -m scripts.ci.github_auth_preflight --repo OWNER/REPO
+Output is always JSON. Successful reads never establish write authority or protected approval.
 """
 
 from __future__ import annotations
@@ -27,10 +27,13 @@ READ_ONLY_APP_PERMISSIONS = {
 
 
 def inspect_access(repo: str, environment: str, branch: str) -> dict[str, Any]:
-    if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repo):
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repo) or any(
+        re.fullmatch(r"\.+", part) for part in repo.split("/")
+    ):
         raise ValueError("Expected an OWNER/REPO repository slug")
-    if not environment or not branch:
-        raise ValueError("Environment and branch must be nonempty")
+    # quote() leaves dot segments intact, which would redirect the API path.
+    if any(value in ("", ".", "..") for value in (environment, branch)):
+        raise ValueError("Environment and branch must be nonempty names, not dot segments")
     prefix = f"/repos/{repo}"
     env_path = f"{prefix}/environments/{quote(environment, safe='')}"
     endpoints = {
@@ -59,7 +62,7 @@ def inspect_access(repo: str, environment: str, branch: str) -> dict[str, Any]:
         ambient_repo = os.environ.get("REPO") or os.environ.get("GITHUB_REPOSITORY")
         if not app_values[1].lstrip().startswith("-----BEGIN "):
             app_status = "private-key-not-pem"
-        elif ambient_repo and ambient_repo != repo:
+        elif ambient_repo and ambient_repo.casefold() != repo.casefold():
             app_status = "repository-scope-mismatch"
         else:
             try:
@@ -143,7 +146,6 @@ def main() -> int:
     parser.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", ""))
     parser.add_argument("--environment", default="owner-approval")
     parser.add_argument("--branch", default="main")
-    parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
     try:
         result = inspect_access(args.repo, args.environment, args.branch)

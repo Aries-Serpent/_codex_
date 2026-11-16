@@ -69,6 +69,34 @@ def test_scope_and_transport_failures_are_explicit(credentials, monkeypatch):
         preflight.inspect_access("o/r/../../other", "owner-approval", "main")
 
 
+@pytest.mark.parametrize(
+    ("repo", "environment", "branch"),
+    [
+        ("../..", "owner-approval", "main"),
+        ("o/..", "owner-approval", "main"),
+        ("./r", "owner-approval", "main"),
+        ("o/r", "..", "main"),
+        ("o/r", "owner-approval", ".."),
+        ("o/r", "owner-approval", "."),
+    ],
+)
+def test_dot_segments_never_reach_the_api(credentials, monkeypatch, repo, environment, branch):
+    monkeypatch.setenv("GH_TOKEN", "fixture")
+    monkeypatch.setattr(preflight, "_gh", lambda *args: pytest.fail("must not request"))
+    with pytest.raises(ValueError):
+        preflight.inspect_access(repo, environment, branch)
+
+
+def test_ambient_repository_matches_case_insensitively(credentials, monkeypatch):
+    monkeypatch.setenv("REPO", "Owner/Repo")
+    monkeypatch.setenv("_GITHUB_APP_ID", "1")
+    monkeypatch.setenv("_GITHUB_APP_PRIVATE_KEY", "-----BEGIN FIXTURE-----")
+    monkeypatch.setenv("_GITHUB_APP_INSTALLATION_ID", "2")
+    monkeypatch.setattr(preflight, "_mint_app_token", lambda *args, **kwargs: None)
+    result = preflight.inspect_access("owner/repo", "owner-approval", "main")
+    assert result["app_route"] == "mint-failed"
+
+
 def test_existing_app_bootstrap_uses_canonical_and_admin_fallback(credentials, monkeypatch):
     monkeypatch.setenv("CODEX_ADMIN_KEY", "admin-fixture")
     assert bootstrap._backup_token() == "admin-fixture"
