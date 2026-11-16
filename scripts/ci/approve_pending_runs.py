@@ -152,22 +152,36 @@ def _gh(
         return exc.code, err_body
 
 
+class AppTokenRevocationError(RuntimeError):
+    """A rejected explicit-scope app token could not be revoked."""
+
+
 def _mint_app_token(
     app_id: str,
     private_key_pem: str,
     installation_id: str,
     *,
     repo: str | None = None,
+    permissions: dict[str, str] | None = None,
 ) -> str | None:
     """Mint a short-lived GitHub App installation token.
 
     Returns the token string, or None if minting fails.
     Requires existing PyJWT + cryptography; missing dependencies fail closed.
+    ``permissions`` requests an explicit read-only scope set instead of the
+    approval scopes; every granted permission must then be ``read``. If such a
+    rejected token cannot be revoked, ``AppTokenRevocationError`` is raised so
+    callers fail closed instead of treating it as an ordinary mint failure.
     """
     global _app_identity
     _app_identity = None
     if not app_id.isdecimal() or not installation_id.isdecimal():
         print("App and installation IDs must be numeric", file=sys.stderr)
+        return None
+    if permissions is not None and (
+        not permissions or any(value != "read" for value in permissions.values())
+    ):
+        print("Explicit app token permissions must be a non-empty read-only set", file=sys.stderr)
         return None
     try:
         import jwt as _jwt
@@ -222,31 +236,62 @@ def _mint_app_token(
         app_jwt,
         {
             "repositories": [parts[1]],
-            "permissions": {
-                "actions": "write",
-                "contents": "read",
-                "pull_requests": "read",
-                "issues": "write",
-            },
+            "permissions": (
+                permissions
+                if permissions is not None
+                else {
+                    "actions": "write",
+                    "contents": "read",
+                    "pull_requests": "read",
+                    "issues": "write",
+                }
+            ),
         },
     )
     if status == 201 and isinstance(resp_body, dict):
         token = resp_body.get("token")
+
+        def _reject_read_only(message: str) -> None:
+            # A rejected explicit-scope token may carry broader grants; revoke it.
+            if permissions is not None and isinstance(token, str) and token:
+                try:
+                    revoke_status, _ = _gh("DELETE", "/installation/token", token)
+                except Exception:
+                    revoke_status = None
+                if revoke_status != 204:
+                    print("Rejected app token revocation failed", file=sys.stderr)
+                    print(message, file=sys.stderr)
+                    raise AppTokenRevocationError(message)
+            print(message, file=sys.stderr)
+
         try:
             expires_at = datetime.fromisoformat(resp_body["expires_at"].replace("Z", "+00:00"))
         except (KeyError, TypeError, ValueError, AttributeError):
-            print("App token expiry is unavailable", file=sys.stderr)
+            _reject_read_only("App token expiry is unavailable")
             return None
-        permissions = resp_body.get("permissions")
+        granted = resp_body.get("permissions")
+        if permissions is not None:
+            if (
+                isinstance(token, str)
+                and token
+                and expires_at.tzinfo is not None
+                and expires_at.timestamp() > time.time()
+                and isinstance(granted, dict)
+                and all(granted.get(name) == "read" for name in permissions)
+                and all(value == "read" for value in granted.values())
+            ):
+                return token
+            _reject_read_only("App token is not limited to the requested read scopes")
+            return None
         if (
             isinstance(token, str)
             and token
             and expires_at.tzinfo is not None
             and expires_at.timestamp() > time.time()
-            and isinstance(permissions, dict)
-            and permissions.get("actions") == "write"
-            and permissions.get("pull_requests") in {"read", "write"}
-            and permissions.get("issues") == "write"
+            and isinstance(granted, dict)
+            and granted.get("actions") == "write"
+            and granted.get("pull_requests") in {"read", "write"}
+            and granted.get("issues") == "write"
         ):
             _app_identity = _AppIdentity(token, app["slug"] + "[bot]", expires_at.timestamp())
             return token
