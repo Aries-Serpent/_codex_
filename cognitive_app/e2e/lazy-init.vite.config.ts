@@ -7,11 +7,16 @@ const name = process.env.LAZY_VARIANT as Variant;
 if (!Object.hasOwn(variants, name)) throw new Error('LAZY_VARIANT must name a lazy-init build variant');
 const variant = variants[name];
 const literal = (value: string | undefined) => value === undefined ? 'undefined' : JSON.stringify(value);
-const outDir = resolve(import.meta.dirname, `../dist/lazy-init/${name}`);
+const port = Number(process.env.E2E_PORT);
+if (!Number.isInteger(port)) throw new Error('E2E_PORT must name the variant server port');
+// Key builds by port so concurrent runs (another LAZY_PORT range) never serve each other's output.
+const outDir = resolve(import.meta.dirname, `../dist/lazy-init/${port}/${name}`);
 
 export default mergeConfig(applicationConfig, {
-  // Never consume a developer's real credentials or permit environment inheritance.
+  // Never consume a developer's real credentials: no .env files, and no shell VITE_* variables
+  // (e.g. a Codespace VITE_GITHUB_TOKEN) reach import.meta.env; only the define entries below.
   envDir: false,
+  envPrefix: 'LAZY_INIT_SYNTHETIC_ONLY_',
   define: {
     'import.meta.env.VITE_CODEX_KEY': literal(variant.key),
     'import.meta.env.VITE_CODEX_API': literal(variant.api),

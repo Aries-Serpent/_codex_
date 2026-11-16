@@ -81,13 +81,15 @@ GITHUB_ACTIONS=true E2E_PRODUCTION=1 node node_modules/@playwright/test/cli.js t
   --config e2e/lazy-init.playwright.config.ts
 ```
 
-Production commands build each variant into `dist/lazy-init/<variant>` before
+Production commands build each variant into `dist/lazy-init/<port>/<variant>` before
 serving it with Vite preview. The final command verifies the real
 `/_codex_/cognitive_app/` base path. The default/keyless builds leave timing
 unset; fast/slow use 200/2000ms; zero/negative/excessive/invalid/nan compile
 `0`, `-500`, `20000`, `invalid`, `NaN`. API builds cover the unset
 `http://localhost:8000` default, explicit loopback, HTTPS and a custom host/port
-with `/v1` prefix. `.env` loading is disabled and credentials are synthetic.
+with `/v1` prefix. `.env` loading is disabled and no shell `VITE_*` variable
+reaches `import.meta.env`, so the only credentials are the synthetic ones
+compiled per variant.
 
 Install only missing browsers/prerequisites using the installed CLI as above.
 If using a repository-local browser cache, export

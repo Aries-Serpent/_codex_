@@ -1,3 +1,5 @@
+import { execFileSync } from 'node:child_process';
+import { resolve } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const defaultConfigPath = '../../../playwright.config';
@@ -76,5 +78,27 @@ describe('Playwright suite boundaries', () => {
       expect(server.cwd).not.toContain('%20');
       expect(server.reuseExistingServer).toBe(false);
     }
+  });
+
+  it('isolates lazy variant builds from shell credentials and from other port ranges', () => {
+    // Real Node + Vite config loading (esbuild cannot run inside the jsdom test environment).
+    const probe = `
+      import { loadConfigFromFile, loadEnv } from 'vite';
+      const { config } = await loadConfigFromFile(
+        { command: 'serve', mode: 'development' }, 'e2e/lazy-init.vite.config.ts', undefined, 'silent');
+      console.log(JSON.stringify({
+        envDir: config.envDir,
+        exposed: loadEnv('development', process.cwd(), config.envPrefix),
+        outDir: config.build.outDir,
+      }));`;
+    const output = execFileSync(process.execPath, ['--input-type=module', '-e', probe], {
+      cwd: resolve(__dirname, '../../..'),
+      env: { ...process.env, LAZY_VARIANT: 'default', E2E_PORT: '5410', VITE_GITHUB_TOKEN: 'shell-sentinel-token' },
+      encoding: 'utf8',
+    });
+    const result = JSON.parse(output.trim().split('\n').pop() ?? '');
+    expect(result.envDir).toBe(false);
+    expect(Object.values(result.exposed)).not.toContain('shell-sentinel-token');
+    expect(result.outDir).toMatch(/[/\\]dist[/\\]lazy-init[/\\]5410[/\\]default$/);
   });
 });
