@@ -250,18 +250,43 @@ class TestSQLiteUserRepositoryTwoInstances:
         assert found.username == "shared", "username is not valid"
 
 
-class _ScriptedConnection:
-    """Connection whose WAL pragma raises scripted errors before succeeding."""
+class _Clock:
+    """Deterministic monotonic clock advanced only by sleeps and busy waits."""
 
-    def __init__(self, errors: list[str]) -> None:
-        self.errors = list(errors)
+    def __init__(self) -> None:
+        self.now = 0.0
+        self.sleeps: list[float] = []
+
+    def monotonic(self) -> float:
+        return self.now
+
+    def sleep(self, seconds: float) -> None:
+        self.sleeps.append(seconds)
+        self.now += seconds
+
+
+class _ScriptedConnection:
+    """Connection whose WAL pragma fails as scripted before succeeding.
+
+    Each scripted failure is ``(message, cost)``. A ``None`` cost models SQLite's
+    busy handler: the attempt blocks for the whole current busy timeout first.
+    """
+
+    def __init__(self, failures: list[tuple[str, float | None]], clock: _Clock) -> None:
+        self.failures = list(failures)
+        self.clock = clock
+        self.busy_timeout_ms = 0
         self.statements: list[str] = []
         self.closed = False
 
     def execute(self, sql: str) -> None:
         self.statements.append(sql)
-        if sql == "PRAGMA journal_mode=WAL" and self.errors:
-            raise sqlite3.OperationalError(self.errors.pop(0))
+        if sql.startswith("PRAGMA busy_timeout="):
+            self.busy_timeout_ms = int(sql.partition("=")[2])
+        elif sql == "PRAGMA journal_mode=WAL" and self.failures:
+            message, cost = self.failures.pop(0)
+            self.clock.now += self.busy_timeout_ms / 1000 if cost is None else cost
+            raise sqlite3.OperationalError(message)
 
     def close(self) -> None:
         self.closed = True
@@ -273,56 +298,87 @@ def _open_connection() -> sqlite3.Connection:
     return repository._make_conn()
 
 
+TIMEOUT = repository_module._SQLITE_LOCK_RETRY_TIMEOUT_SECONDS
+WAL = "PRAGMA journal_mode=WAL"
+
+
 class TestSQLiteUserRepositoryWALInitialization:
     @pytest.fixture()
     def scripted(self, monkeypatch: pytest.MonkeyPatch):
-        sleeps: list[float] = []
-        monkeypatch.setattr(repository_module.time, "sleep", sleeps.append)
+        clock = _Clock()
+        monkeypatch.setattr(repository_module.time, "monotonic", clock.monotonic)
+        monkeypatch.setattr(repository_module.time, "sleep", clock.sleep)
 
-        def install(errors: list[str]) -> _ScriptedConnection:
-            conn = _ScriptedConnection(errors)
-            monkeypatch.setattr(repository_module.sqlite3, "connect", lambda *a, **k: conn)
+        def install(failures: list[tuple[str, float | None]]) -> _ScriptedConnection:
+            conn = _ScriptedConnection(failures, clock)
+
+            def connect(*args, **kwargs):
+                conn.busy_timeout_ms = int(kwargs["timeout"] * 1000)
+                return conn
+
+            monkeypatch.setattr(repository_module.sqlite3, "connect", connect)
             return conn
 
-        return install, sleeps
+        return install, clock
 
     def test_retries_locked_wal_pragma_until_it_succeeds(self, scripted) -> None:
-        install, sleeps = scripted
-        conn = install(["database is locked"] * 5)
+        install, clock = scripted
+        conn = install([("database is locked", 0.0)] * 5)
         assert _open_connection() is conn
-        assert conn.statements[:6] == ["PRAGMA journal_mode=WAL"] * 6
-        assert conn.statements[6:] == ["PRAGMA foreign_keys=ON"]
-        assert sleeps == [0.01, 0.02, 0.04, 0.08, 0.1]
+        assert conn.statements.count(WAL) == 6
+        assert clock.sleeps == [0.01, 0.02, 0.04, 0.08, 0.1]
+        assert conn.statements[-2:] == ["PRAGMA busy_timeout=30000", "PRAGMA foreign_keys=ON"]
         assert not conn.closed
 
     def test_non_lock_error_is_raised_and_closes_connection(self, scripted) -> None:
-        install, sleeps = scripted
-        conn = install(["disk I/O error"])
+        install, clock = scripted
+        conn = install([("disk I/O error", 0.0)])
         with pytest.raises(sqlite3.OperationalError, match="disk I/O error"):
             _open_connection()
         assert conn.closed
-        assert sleeps == []
+        assert clock.sleeps == []
 
-    def test_lock_after_deadline_is_raised_and_closes_connection(
-        self, scripted, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
-        install, _ = scripted
-        conn = install(["database is locked"] * 100)
-        clock = iter([0.0, 1.0, repository_module._SQLITE_LOCK_RETRY_TIMEOUT_SECONDS + 1])
-        monkeypatch.setattr(repository_module.time, "monotonic", lambda: next(clock))
+    def test_busy_wait_exhausting_the_deadline_raises_and_closes(self, scripted) -> None:
+        install, clock = scripted
+        conn = install([("database is locked", None)] * 100)
         with pytest.raises(sqlite3.OperationalError, match="locked"):
             _open_connection()
         assert conn.closed
-        assert conn.statements == ["PRAGMA journal_mode=WAL"] * 2
+        assert conn.statements == ["PRAGMA busy_timeout=30000", WAL]
+        assert clock.now == pytest.approx(TIMEOUT)
 
-    def test_final_backoff_is_clamped_to_the_deadline(
-        self, scripted, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
-        install, sleeps = scripted
-        install(["database is locked"] * 100)
-        timeout = repository_module._SQLITE_LOCK_RETRY_TIMEOUT_SECONDS
-        clock = iter([0.0, timeout - 0.004, timeout])
-        monkeypatch.setattr(repository_module.time, "monotonic", lambda: next(clock))
+    def test_late_retry_busy_wait_is_bounded_by_the_deadline(self, scripted) -> None:
+        install, clock = scripted
+        conn = install(
+            [("database is locked", TIMEOUT - 0.5)] + [("database is locked", None)] * 100
+        )
         with pytest.raises(sqlite3.OperationalError, match="locked"):
             _open_connection()
-        assert sleeps == [pytest.approx(0.004)]
+        assert conn.closed
+        assert clock.now <= TIMEOUT + 0.001
+
+    def test_final_backoff_is_clamped_to_the_deadline(self, scripted) -> None:
+        install, clock = scripted
+        install([("database is locked", TIMEOUT - 0.004)] + [("database is locked", None)] * 100)
+        with pytest.raises(sqlite3.OperationalError, match="locked"):
+            _open_connection()
+        assert clock.sleeps == [pytest.approx(0.004)]
+
+    def test_real_exclusive_lock_is_bounded_by_the_deadline(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        db_path = tmp_path / "locked.db"
+        holder = sqlite3.connect(db_path, isolation_level=None)
+        holder.execute("CREATE TABLE t (x INTEGER)")
+        holder.execute("BEGIN EXCLUSIVE")
+        monkeypatch.setattr(repository_module, "_SQLITE_LOCK_RETRY_TIMEOUT_SECONDS", 0.3)
+        repository = SQLiteUserRepository.__new__(SQLiteUserRepository)
+        repository._db_path = str(db_path)
+        started = time.monotonic()
+        try:
+            with pytest.raises(sqlite3.OperationalError, match="locked"):
+                repository._make_conn()
+        finally:
+            holder.rollback()
+            holder.close()
+        assert time.monotonic() - started < 5

@@ -41,6 +41,7 @@ CREATE INDEX IF NOT EXISTS idx_users_email    ON users (email);
 """
 
 _SQLITE_LOCK_RETRY_TIMEOUT_SECONDS = 30.0
+_SQLITE_BUSY_TIMEOUT_SECONDS = 30
 
 
 def _row_to_user(row: sqlite3.Row) -> User:
@@ -80,12 +81,17 @@ class SQLiteUserRepository(UserRepository):
 
     def _make_conn(self) -> sqlite3.Connection:
         """Create a new SQLite connection with WAL mode and row factory."""
-        conn = sqlite3.connect(self._db_path, check_same_thread=False, timeout=30)
+        conn = sqlite3.connect(
+            self._db_path, check_same_thread=False, timeout=_SQLITE_BUSY_TIMEOUT_SECONDS
+        )
         conn.row_factory = sqlite3.Row
         deadline = time.monotonic() + _SQLITE_LOCK_RETRY_TIMEOUT_SECONDS
         retry_delay = 0.01
         try:
             while True:
+                # Bound SQLite's own busy wait by the same deadline as the retries.
+                remaining_ms = max(1, int((deadline - time.monotonic()) * 1000))
+                conn.execute(f"PRAGMA busy_timeout={remaining_ms}")
                 try:
                     conn.execute("PRAGMA journal_mode=WAL")
                     break
@@ -96,6 +102,7 @@ class SQLiteUserRepository(UserRepository):
                     # Never sleep past the deadline.
                     time.sleep(min(retry_delay, remaining))
                     retry_delay = min(retry_delay * 2, 0.1)
+            conn.execute(f"PRAGMA busy_timeout={_SQLITE_BUSY_TIMEOUT_SECONDS * 1000}")
             conn.execute("PRAGMA foreign_keys=ON")
             return conn
         except Exception:
