@@ -89,8 +89,9 @@ class SQLiteUserRepository(UserRepository):
         retry_delay = 0.01
         try:
             while True:
-                # Bound SQLite's own busy wait by the same deadline as the retries.
-                remaining_ms = max(1, int((deadline - time.monotonic()) * 1000))
+                # Bound SQLite's own busy wait by the same deadline as the retries;
+                # a zero timeout (under 1 ms left) fails a locked attempt immediately.
+                remaining_ms = max(0, int((deadline - time.monotonic()) * 1000))
                 conn.execute(f"PRAGMA busy_timeout={remaining_ms}")
                 try:
                     conn.execute("PRAGMA journal_mode=WAL")

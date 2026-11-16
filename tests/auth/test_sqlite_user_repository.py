@@ -355,7 +355,19 @@ class TestSQLiteUserRepositoryWALInitialization:
         with pytest.raises(sqlite3.OperationalError, match="locked"):
             _open_connection()
         assert conn.closed
-        assert clock.now <= TIMEOUT + 0.001
+        assert clock.now <= TIMEOUT + 1e-9
+
+    def test_sub_millisecond_remainder_never_busy_waits_past_deadline(self, scripted) -> None:
+        install, clock = scripted
+        # The first backoff (10 ms) leaves 0.5 ms, which truncates to a 0 ms busy timeout.
+        conn = install(
+            [("database is locked", TIMEOUT - 0.0105)] + [("database is locked", None)] * 100
+        )
+        with pytest.raises(sqlite3.OperationalError, match="locked"):
+            _open_connection()
+        assert conn.closed
+        assert "PRAGMA busy_timeout=0" in conn.statements
+        assert clock.now <= TIMEOUT + 1e-9
 
     def test_final_backoff_is_clamped_to_the_deadline(self, scripted) -> None:
         install, clock = scripted
