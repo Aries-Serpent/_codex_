@@ -143,7 +143,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: externalServer ? undefined : {
     command: production
-      ? `npm run preview -- --host 127.0.0.1 --port ${port} --strictPort`
+      ? `npm run preview -- --config e2e/vite.config.ts --host 127.0.0.1 --port ${port} --strictPort`
       : `npm run dev -- --config e2e/vite.config.ts --host 127.0.0.1 --port ${port} --strictPort`,
     url: baseURL,
     reuseExistingServer: false,

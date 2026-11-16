@@ -11,6 +11,8 @@ export default mergeConfig(applicationConfig, {
       config.server.port = Number(process.env.E2E_PORT || 5173);
       config.server.strictPort = true;
       config.server.proxy = {};
+      // Vite resolves preview.proxy from server.proxy before this hook runs.
+      config.preview.proxy = {};
     },
   }],
   build: {
