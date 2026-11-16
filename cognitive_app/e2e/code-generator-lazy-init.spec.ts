@@ -65,6 +65,14 @@ const test = base.extend<{ harness: Harness }>({
       Object.defineProperty(navigator, 'clipboard', {
         configurable: true, value: { writeText: async (text: string) => { writes.push(text); } },
       });
+      // Record fetches when the page issues them; routed calls arrive asynchronously after clock jumps.
+      const fetches: string[] = [];
+      Object.defineProperty(window, '__lazyFetches', { value: fetches });
+      const nativeFetch = window.fetch.bind(window);
+      window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+        fetches.push(input instanceof Request ? input.url : String(input));
+        return nativeFetch(input, init);
+      };
     });
     await context.route('**/*', async route => {
       const request = route.request();
@@ -129,6 +137,8 @@ const prompt = (page: Page) => page.getByRole('textbox', { name: 'Describe the c
 const generateButton = (page: Page) => page.getByRole('button', { name: 'Generate Code', exact: true });
 const status = (page: Page) => page.getByText('Status:', { exact: true }).locator('..');
 const inferCalls = (harness: Harness) => harness.calls.filter(call => call.url.endsWith('/infer'));
+const issuedStatusFetches = (page: Page) => page.evaluate(() =>
+  (window as unknown as { __lazyFetches: string[] }).__lazyFetches.filter(url => url.endsWith('/status')).length);
 const statusCalls = (harness: Harness) => harness.calls.filter(call => call.url.endsWith('/status'));
 
 async function connected(page: Page) {
@@ -228,13 +238,16 @@ test('L08 status timer rechecks at 30000ms and cleans up on unmount', async ({ p
   await harness.open();
   await connected(page);
   expect(statusCalls(harness)).toHaveLength(1);
+  expect(await issuedStatusFetches(page)).toBe(1);
   await page.clock.runFor(29_999);
-  expect(statusCalls(harness)).toHaveLength(1);
+  expect(await issuedStatusFetches(page)).toBe(1);
   await page.clock.runFor(1);
+  expect(await issuedStatusFetches(page)).toBe(2);
   await expect.poll(() => statusCalls(harness).length).toBe(2);
   await connected(page);
   await page.getByRole('tab', { name: 'Demo', exact: true }).click();
   await page.clock.runFor(60_000);
+  expect(await issuedStatusFetches(page)).toBe(2);
   expect(statusCalls(harness)).toHaveLength(2);
 });
 
