@@ -255,8 +255,32 @@ def test_rejected_token_unsuccessful_revocation_is_reported(monkeypatch, capsys,
 
     monkeypatch.setattr(approval, "_gh", request)
     requested = {"actions": "read"}
-    assert approval._mint_app_token("1", "fixture", "2", repo="o/r", permissions=requested) is None
+    with pytest.raises(approval.AppTokenRevocationError):
+        approval._mint_app_token("1", "fixture", "2", repo="o/r", permissions=requested)
     assert "Rejected app token revocation failed" in capsys.readouterr().err
+
+
+def test_rejected_token_revocation_failure_never_falls_back(credentials, monkeypatch, capsys):
+    monkeypatch.delenv("REPO", raising=False)
+    monkeypatch.delenv("GITHUB_REPOSITORY", raising=False)
+    monkeypatch.setenv("GITHUB_TOKEN", "working-credential-fixture")
+    monkeypatch.setenv("_GITHUB_APP_ID", "1")
+    monkeypatch.setenv("_GITHUB_APP_PRIVATE_KEY", "-----BEGIN FIXTURE-----")
+    monkeypatch.setenv("_GITHUB_APP_INSTALLATION_ID", "2")
+
+    def mint(*args, **kwargs):
+        raise preflight.AppTokenRevocationError("not limited to read scopes")
+
+    monkeypatch.setattr(preflight, "_mint_app_token", mint)
+    monkeypatch.setattr(preflight, "_gh", lambda *args: pytest.fail("must not probe"))
+    result = preflight.inspect_access("o/r", "owner-approval", "main")
+    assert result["app_route"] == "rejected-token-revoke-failed"
+    assert result["routes"] == []
+    assert not any(result["verified_reads"].values())
+
+    monkeypatch.setattr("sys.argv", ["github_auth_preflight", "--repo", "o/r"])
+    assert preflight.main() == 1
+    assert "working-credential-fixture" not in capsys.readouterr().out
 
 
 def test_bootstrap_manifest_grants_preflight_read_permissions():

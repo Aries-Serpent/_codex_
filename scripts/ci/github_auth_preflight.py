@@ -17,7 +17,7 @@ from typing import Any
 from urllib.parse import quote
 
 from scripts.ci._token_resolver import CANONICAL_HIERARCHY
-from scripts.ci.approve_pending_runs import _gh, _mint_app_token
+from scripts.ci.approve_pending_runs import AppTokenRevocationError, _gh, _mint_app_token
 
 READ_ONLY_APP_PERMISSIONS = {
     "actions": "read",
@@ -70,12 +70,19 @@ def inspect_access(repo: str, environment: str, branch: str) -> dict[str, Any]:
                 app_status = "verified-installation" if app_token else "mint-failed"
                 if app_token:
                     candidates.insert(0, ("cognitive-brain-app", app_token))
+            except AppTokenRevocationError:
+                # Fail closed: never fall back to other credentials while a
+                # rejected broader-scope token may remain active.
+                app_status = "rejected-token-revoke-failed"
+                candidates = []
             except (urllib.error.URLError, TimeoutError, OSError):
                 app_status = "transport-error"
     routes: list[dict[str, Any]] = []
     seen: set[str] = set()
     verified_reads = {name: False for name in endpoints}
-    app_token_value = candidates[0][1] if candidates[0][0] == "cognitive-brain-app" else ""
+    app_token_value = (
+        candidates[0][1] if candidates and candidates[0][0] == "cognitive-brain-app" else ""
+    )
     try:
         _probe_routes(candidates, prefix, endpoints, routes, seen, verified_reads)
     finally:
@@ -143,7 +150,7 @@ def main() -> int:
     except ValueError as exc:
         parser.error(str(exc))
     print(json.dumps(result, indent=2))
-    if result["app_route"] == "verified-installation-revoke-failed":
+    if result["app_route"].endswith("revoke-failed"):
         return 1
     return 0 if all(result["verified_reads"].values()) else 1
 

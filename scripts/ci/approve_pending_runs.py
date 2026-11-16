@@ -152,6 +152,10 @@ def _gh(
         return exc.code, err_body
 
 
+class AppTokenRevocationError(RuntimeError):
+    """A rejected explicit-scope app token could not be revoked."""
+
+
 def _mint_app_token(
     app_id: str,
     private_key_pem: str,
@@ -165,7 +169,9 @@ def _mint_app_token(
     Returns the token string, or None if minting fails.
     Requires existing PyJWT + cryptography; missing dependencies fail closed.
     ``permissions`` requests an explicit read-only scope set instead of the
-    approval scopes; every granted permission must then be ``read``.
+    approval scopes; every granted permission must then be ``read``. If such a
+    rejected token cannot be revoked, ``AppTokenRevocationError`` is raised so
+    callers fail closed instead of treating it as an ordinary mint failure.
     """
     global _app_identity
     _app_identity = None
@@ -254,6 +260,8 @@ def _mint_app_token(
                     revoke_status = None
                 if revoke_status != 204:
                     print("Rejected app token revocation failed", file=sys.stderr)
+                    print(message, file=sys.stderr)
+                    raise AppTokenRevocationError(message)
             print(message, file=sys.stderr)
 
         try:
