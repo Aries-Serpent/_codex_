@@ -30,7 +30,7 @@ import * as fs from 'fs';
 // Config
 // ---------------------------------------------------------------------------
 
-const HAR_PATH = path.resolve(__dirname, '../public/har-cache/api-demo.har');
+const HAR_PATH = path.resolve(import.meta.dirname, '../public/har-cache/api-demo.har');
 const BASE     = process.env.BASE_URL ?? 'http://localhost:5173';
 
 // Routes we want to capture (localhost CLI server or any backend)
