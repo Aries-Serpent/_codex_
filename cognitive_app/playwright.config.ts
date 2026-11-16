@@ -30,7 +30,9 @@ const shouldUseHarReplay = !!(process.env.CI || process.env.PLAYWRIGHT_HAR_REPLA
 const harReplayConfig = shouldUseHarReplay ? { serviceWorkers: 'block' as const } : {};
 const production = process.env.E2E_PRODUCTION === '1';
 const port = process.env.E2E_PORT || '5173';
-const baseURL = process.env.BASE_URL || `http://127.0.0.1:${port}/`;
+// Matches vite.config.ts `base`; only the production server inherits GITHUB_ACTIONS.
+const basePath = production && process.env.GITHUB_ACTIONS ? '/_codex_/cognitive_app/' : '/';
+const baseURL = process.env.BASE_URL || `http://127.0.0.1:${port}${basePath}`;
 if (!/^\d+$/.test(port) || Number(port) < 1 || Number(port) > 65535) {
   throw new Error('E2E_PORT must be a TCP port');
 }

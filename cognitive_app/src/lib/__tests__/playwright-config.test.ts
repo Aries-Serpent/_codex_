@@ -47,6 +47,21 @@ describe('Playwright suite boundaries', () => {
     expect(config.webServer.command).toContain('--config e2e/vite.config.ts');
   });
 
+  it.each([
+    ['1', 'true', 'http://127.0.0.1:5173/_codex_/cognitive_app/'],
+    ['1', '', 'http://127.0.0.1:5173/'],
+    ['', 'true', 'http://127.0.0.1:5173/'],
+  ])(
+    'targets the base path its own server uses (E2E_PRODUCTION=%s, GITHUB_ACTIONS=%s)',
+    async (mode, actions, url) => {
+      vi.stubEnv('E2E_PRODUCTION', mode);
+      vi.stubEnv('GITHUB_ACTIONS', actions);
+      const config = await defaultConfig();
+      expect(config.use?.baseURL).toBe(url);
+      expect(config.webServer.url).toBe(url);
+    },
+  );
+
   it('keeps lazy discovery, metadata and owned-server directories together', async () => {
     vi.stubEnv('LAZY_PORT', '5410');
     const config = (await import(lazyConfigPath)).default;
