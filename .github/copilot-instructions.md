@@ -80,6 +80,25 @@ security owner/reason and execution gates remain intact.
 
 ## Local environment references
 
+### Native VS Code workspace
+
+Use the existing remote VS Code window and integrated terminal rather than
+assuming a broken PATH `code` wrapper means the editor is absent. Shared
+`.vscode/` files recommend relevant extensions, configure Python analysis/test
+discovery, provide explicit process-based validation tasks and debugpy launches.
+See [the workspace guide](../docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md#existing-remote-vs-code-workspace).
+Use native task, testing, debugging, Problems, code-intelligence and GitHub
+interfaces when actually exposed; otherwise run the equivalent scoped CLI.
+For the native runTask tool, use the task's type-qualified ID, for example
+`process: Codex: inspect worktree`, rather than its bare label.
+Select the existing validation interpreter, not a hard-coded session path.
+Tasks never provision dependencies, grant permissions or activate profiles.
+Record real-adapter skips separately from full adapter validation, and keep
+automatic broad discovery disabled in this large repository.
+Inspect and bind the actual custom-agent source/selection before invocation.
+Do not execute archived source through the current-file debugger, auto-dispatch
+CI, alter signing, or weaken tool/approval controls to enable native tooling.
+
 `CODEX_SESSION_ID`, `CODEX_SESSION_LOG_DIR`, `CODEX_LOG_DB_PATH`/`CODEX_DB_PATH`
 and `CODEX_SQLITE_POOL` configure local session/logging consumers when present.
 Language-version/runtime variables configure only documented consumers; no
