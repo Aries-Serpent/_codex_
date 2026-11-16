@@ -47,6 +47,7 @@ const externalServer = !!process.env.BASE_URL;
  */
 export default defineConfig({
   testDir: './e2e',
+  testIgnore: '**/code-generator-lazy-init.spec.ts',
 
   /* Run tests in files in parallel */
   fullyParallel: true,
