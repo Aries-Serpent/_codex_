@@ -41,6 +41,12 @@ describe('Playwright suite boundaries', () => {
     },
   );
 
+  it.each(['', '1'])('serves through the proxy-free e2e config (E2E_PRODUCTION=%s)', async mode => {
+    vi.stubEnv('E2E_PRODUCTION', mode);
+    const config = await defaultConfig();
+    expect(config.webServer.command).toContain('--config e2e/vite.config.ts');
+  });
+
   it('keeps lazy discovery, metadata and owned-server directories together', async () => {
     vi.stubEnv('LAZY_PORT', '5410');
     const config = (await import(lazyConfigPath)).default;
