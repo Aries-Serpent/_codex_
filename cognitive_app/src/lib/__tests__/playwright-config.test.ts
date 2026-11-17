@@ -1,6 +1,9 @@
+import { execFileSync } from 'node:child_process';
+import { resolve } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const defaultConfigPath = '../../../playwright.config';
+const lazyConfigPath = '../../../e2e/lazy-init.playwright.config';
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -14,8 +17,9 @@ async function defaultConfig(baseURL = '') {
 }
 
 describe('Playwright suite boundaries', () => {
-  it('owns a loopback development server by default', async () => {
+  it('excludes the dedicated lazy suite from default discovery', async () => {
     const config = await defaultConfig();
+    expect(config.testIgnore).toBe('**/code-generator-lazy-init.spec.ts');
     expect(config.webServer).toMatchObject({
       url: 'http://127.0.0.1:5173/',
       reuseExistingServer: false,
@@ -60,4 +64,47 @@ describe('Playwright suite boundaries', () => {
     },
   );
 
+  it('keeps lazy discovery, metadata and owned-server directories together', async () => {
+    vi.stubEnv('LAZY_PORT', '5410');
+    const config = (await import(lazyConfigPath)).default;
+    expect(config.testMatch).toBe('code-generator-lazy-init.spec.ts');
+    expect(Object.keys(config.metadata?.lazyURLs)).toHaveLength(10);
+    const servers = config.webServer;
+    expect(Array.isArray(servers)).toBe(true);
+    expect(servers).toHaveLength(10);
+    if (!Array.isArray(servers)) throw new Error('Expected variant servers');
+    for (const server of servers) {
+      expect(server.cwd).toMatch(/[/\\]cognitive_app$/);
+      expect(server.cwd).not.toContain('%20');
+      expect(server.reuseExistingServer).toBe(false);
+    }
+  });
+
+  it('isolates lazy variant builds from shell credentials and from other port ranges', () => {
+    // Real Node + Vite config loading (esbuild cannot run inside the jsdom test environment).
+    const probe = `
+      import { loadConfigFromFile, loadEnv } from 'vite';
+      const { config } = await loadConfigFromFile(
+        { command: 'serve', mode: 'development' }, 'e2e/lazy-init.vite.config.ts', undefined, 'silent');
+      console.log(JSON.stringify({
+        envDir: config.envDir,
+        exposed: loadEnv('development', process.cwd(), config.envPrefix),
+        outDir: config.build.outDir,
+      }));`;
+    const output = execFileSync(process.execPath, ['--input-type=module', '-e', probe], {
+      cwd: resolve(__dirname, '../../..'),
+      env: {
+        ...process.env,
+        LAZY_VARIANT: 'default',
+        E2E_PORT: '5410',
+        LAZY_INIT_SYNTHETIC_ONLY_TOKEN: 'prefix-sentinel-token',
+        VITE_GITHUB_TOKEN: 'shell-sentinel-token',
+      },
+      encoding: 'utf8',
+    });
+    const result = JSON.parse(output.trim().split('\n').pop() ?? '');
+    expect(result.envDir).toBe(false);
+    expect(result.exposed).toEqual({});
+    expect(result.outDir).toMatch(/[/\\]dist[/\\]lazy-init[/\\]5410[/\\]default$/);
+  });
 });
