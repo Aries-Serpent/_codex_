@@ -540,8 +540,45 @@ def test_manifest_tool_default_root_still_matches_script_repository(script: str)
     assert module.REPO_ROOT == REPO_ROOT
 
 
+def test_manifest_sync_reports_missing_scanner_without_scanning(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Optional no-scan reporting is distinct from exercising the real adapter."""
+    spec = importlib.util.spec_from_file_location("manifest_sync", REPO_ROOT / "scripts/ci/sync_tracked_files.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    module._set_repo_root(tmp_path)
+    module.MANIFEST_PATH.write_text('{"integrity_sha256": "fixture"}', encoding="utf-8")
+    module.SECRETS_BASELINE.write_text('{"results": {}}', encoding="utf-8")
+    module.AGENT_CONTEXT_PATH.parent.mkdir()
+    module.AGENT_CONTEXT_PATH.write_text("{}", encoding="utf-8")
+    module.AGENT_AUTH_SESSION_PATH.write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(module, "_detect_secrets_available", lambda: False)
+
+    def unexpected_scan(_path: Path) -> None:
+        pytest.fail("No scanner adapter should run when the optional dependency is absent")
+
+    monkeypatch.setattr(module, "_scan_baseline_file", unexpected_scan)
+    result = module.SyncResult()
+    module.check_secrets_baseline(result, fix=True)
+    module.check_agent_context_baseline(result, fix=True)
+    module.check_agent_auth_session_baseline(result, fix=True)
+    assert len(result.checks) == 3
+    assert all(
+        check["message"] == "detect-secrets unavailable in this env; baseline comparison skipped"
+        and not check["fixed"]
+        for check in result.checks
+    )
+    assert json.loads(module.SECRETS_BASELINE.read_text()) == {"results": {}}
+
+
 def test_manifest_trusted_tools_process_poisoned_target_as_data_only(tmp_path: Path) -> None:
     """Target Python/plugins/actions are inert even with a poisoned import path."""
+    pytest.importorskip(
+        "detect_secrets",
+        reason="Real scanner isolation exercise requires the optional detect-secrets package",
+        exc_type=ModuleNotFoundError,
+    )
     target = tmp_path / "target"
     registry = target / ".github/agents/AGENT_REGISTRY.yaml"
     registry.parent.mkdir(parents=True)
