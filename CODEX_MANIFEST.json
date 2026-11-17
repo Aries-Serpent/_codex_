@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-11-15T01:04:46Z",
+  "generated_at": "2026-11-17T08:40:39Z",
   "agents": [
     {
       "name": "cdx-archive-lifecycle",
@@ -797,7 +797,7 @@
     },
     {
       "name": "codex-manifest-refresh",
-      "enforcement_tier": "GROUNDED",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1386,5 +1386,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "9102bf2760489559aca27e5d3a1632e90b9a7e5b6669029f85b6ad53bd88efcd"
+  "integrity_sha256": "45feb259048a85c3b5de8865df755c9c5769300636a4f9892e2cc56b0b49a733"
 }
