@@ -31,8 +31,8 @@ from typing import Any
 import ray
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, PlainTextResponse
+from ray import serve
 
-serve = ray.serve
 logger = logging.getLogger(__name__)
 
 try:
@@ -177,8 +177,6 @@ class GenConfig:
 api = FastAPI(title="HHG LLM Service")
 
 
-@serve.deployment(route_prefix="/", num_replicas=1)
-@serve.ingress(api)
 class LLMService:
     def __init__(self, cfg: DictConfig):
         self.cfg = cfg
@@ -398,6 +396,10 @@ class LLMService:
         return result
 
 
+# Keep LLMService a plain class for direct unit testing; Serve route prefixes belong to serve.run().
+LLMServiceDeployment = serve.deployment(num_replicas=1)(serve.ingress(api)(LLMService))
+
+
 class _TorchInferenceContext:
     def __init__(self) -> None:
         try:
@@ -440,10 +442,10 @@ def _start_serve(cfg: DictConfig) -> None:
     )
 
     ray.init(ignore_reinit_error=True, include_dashboard=False)
-    serve.start(http_options={"host": host, "port": port, "location": "HeadOnly"})
+    serve.start(proxy_location="HeadOnly", http_options={"host": host, "port": port})
 
-    deployment = LLMService.options(num_replicas=num_replicas, route_prefix=route_prefix)  # type: ignore[attr-defined]
-    deployment.deploy(cfg)
+    application = LLMServiceDeployment.options(num_replicas=num_replicas).bind(cfg)
+    serve.run(application, route_prefix=route_prefix)
     logger.info("Serve deployment active at http://%s:%s%s", host, port, route_prefix)
 
     try:
