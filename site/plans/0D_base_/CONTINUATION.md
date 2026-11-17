@@ -739,35 +739,93 @@ Progress, PR links and residual diffs are recorded below as slices land.
 
 ## Session checkpoint - 2026-11-17
 
-- Refreshed refs: `main` is `e9441d29`; `origin/0D_base_` is `4122509c` (52
-  commits ahead, 0 behind). The local `0D_base_` has documentation-only
-  checkpoint commits beyond that ref. #5766 and tracking issue #5798 remain open.
-- S06b #5825 remains draft/open at `8e5c9957`, `mergeable_state=unstable`.
-  Copilot's unresolved high-severity environment-exposure comment is on the
-  earlier `df9f788b` commit, not the current PR head. A local candidate commit,
-  `af11d2a2`, sets Vite `envPrefix` to `[]` and tests shell variables matching
-  both the former synthetic prefix and `VITE_`; it has not been pushed or
-  independently reviewed. The focused Vitest file passed (13 tests), ESLint
-  passed for both changed files, and `git diff --check` passed. A default
-  production fixture build succeeded and neither shell-secret sentinel appeared
-  in its output; the build emitted CSS-parser and large-chunk warnings. A
-  Chromium rerun could not launch because the Playwright Ubuntu fallback lacks
-  required system libraries in this Alpine environment; the recorded 29/29
-  browser results remain historical, not freshly verified. The current PR also
-  has generated accountability/manifest/baseline churn absent from its stated
-  scope; no PR mutation was made.
-- S10 #5826 and S10b #5827 remain open/unstable with unresolved Copilot
-  threads. Their latest checks include successful CodeQL analysis but failed
-  workflow-approval checks; do not treat these as ready.
-- S09, S12 and S13 branches still exist on the refreshed origin; no PR was
-  found for those branch names.
-- Dependabot follow-up: four open PRs were found (#5828, #5829, #5830, #5831).
-  Inventory and review each diff, checks and compatibility with pending S10/S11
-  work before integrating into `0D_base_`. Verify each full change is present
-  before closing its source PR. No Dependabot PR has been consumed or closed.
-  Current heads are #5828 `f19801a9`, #5829 `c740f3be`, #5830 `c1d5ae6b`, and
-  #5831 `5e10dcbc`; all target `main` at `e9441d29`, report
-  `mergeable_state=unstable`, and returned no reviews. Their check runs include
-  failures in the ML integration shard, CodeQL gate, manifest refresh, and
-  independently reviewed workflow approval. Do not integrate or close them
-  until the normal checks and review gates are satisfied.
+- Verified `main` remains `e9441d29`. No slice was merged to main in this
+  continuation: inspected PRs were unstable, with failed or unfinished checks.
+  #5766 and #5798 remain open. No reset, rebase or force-push of staging occurred.
+- **Dependabot consumption completed:** #5828 Actions pins, #5829 Rust zstd,
+  #5830 extension npm and #5831 frontend npm were consumed as `52e99a16`,
+  `80252b37`, `b8f3a3bc` and `391e5c5e`. Before closing each source PR, verified
+  remote `0D_base_` at `391e5c5e482a`, commit ancestry, matching stable patch IDs,
+  and reverse application of the complete original patch. A subsequent complete
+  open-PR listing found **zero open Dependabot PRs**. Closure means consumed into
+  staging, not merged to main; source CI was not represented as green.
+  Validation: frontend **210 tests passed**, production build passed; extension
+  **4 tests passed**; Rust **39 passed, 1 ignored**. Frontend lint had the same
+  **44 errors / 65 warnings** as its pre-consumption baseline. Workflow pins
+  passed actionlint/version-policy checks; permissions were unchanged. The lazy
+  test script and existing staging commits were preserved.
+- **S06b #5825:** pushed `bbf3e423`, `84df0b6a` and `c154709a` normally onto
+  the actual remote head. Disabled all automatic Vite environment exposure,
+  tested both shell-secret prefixes, removed unrelated generated churn, and
+  declared Node 24 types required by the child-process regression. Independent
+  full/delta review completed with no significant issues. Copilot's exposure
+  thread and subsequent dependency-description thread were addressed and
+  resolved; a current-head Copilot review exists. PR remains **draft/unstable**.
+  Fresh validation: **13 unit tests**, ESLint, and **29 Chromium cases each**
+  in development, production and actual Actions base-path modes (**87 total**).
+  Both sentinels were absent from all ten variants in each production build set.
+  Native Alpine Chromium/libraries/fonts were provisioned privately; initial
+  missing-browser/font failures were environmental and the final runs passed.
+  Firefox/WebKit were not run. Full tsc remains red, but its output exactly
+  matches current-main source under matching Node declarations; all five new
+  Node-test diagnostics were fixed. A combined-staging probe with consumed
+  Vite 7.3.8 also passed the same **13 config tests**.
+- **S10 #5826:** pushed `59f51bb7`; the smoke test skips only genuine Evidently
+  absence and uses the legacy Report API otherwise. Four import-gate cases
+  passed; the initial real test skipped for missing Evidently. A private native
+  scientific dependency alternative subsequently enabled **4 real affected
+  tests, all passed with no skips**, using Evidently 0.7.23/pandas 3.0.6.
+  Native sklearn 1.5.2 is below the configured >=1.9 floor, so this is not full
+  configured-profile validation. Scoped lint/compile/mypy passed. Both earlier
+  Copilot threads were resolved; the inspected current-head review had no
+  unresolved threads. Hosted CI remains failing/unfinished, not merge-ready.
+- **S10b #5827:** pushed `1b7a25be`; unexpected application ImportError now
+  fails instead of skipping, with reliable fixture cleanup. **4 strict-stub
+  tests passed**, as did scoped lint/compile/mypy. Real Ray is absent and was
+  not validated. Both earlier Copilot threads were resolved; the inspected
+  current-head review had no unresolved threads. Hosted CI remains failing.
+- **CodeQL blocker repair #5833:** source patch `28511be0` repairs six concrete
+  URL/permission findings shared with main. **110 focused tests passed**;
+  Ruff/import checks, configured mypy, compilation and whitespace checks passed.
+  Four pre-existing full-file Black failures matched main. Parent independently
+  reviewed the patch. `96bebb97` removed subsequent bot manifest/baseline churn
+  and replaced its unsupported generated session claims with minimal truthful
+  accountability/changelog evidence; these two documentation paths are
+  intentional scope. The corresponding Copilot thread was resolved and a
+  fresh review requested. No local CodeQL CLI/rescan or alert closure is claimed.
+  Existing staging security repairs were preserved, not blindly overwritten.
+- **Manifest blocker repair #5832 (draft):** `01528897`/`cdcca392` separate
+  secret-free read-only PR validation from publication and validate subsequent
+  head pushes. Parent found a target-code execution boundary before merge;
+  `a466b641` keeps immutable trusted main tooling separate from target data,
+  adds explicit data-root support and preserves normal fast-forward publication.
+  Bounded independent security review found **no vulnerabilities**; it did not
+  validate deployed settings or runner configuration. `5b9cbb11` separates the
+  optional real-scanner prerequisite from no-scanner coverage; `adcb5ac8` formats
+  introduced ranges only. Candidate validation: **34 passed** with the scanner;
+  **33 passed, 1 explicit skip** without it. Combined staging:
+  **40 passed, 1 skipped**, Ruff, compile, actionlint and diff checks passed.
+  Existing always-true-assertion warning remains. Scoped mypy is baseline-
+  equivalent, not fully green: main and candidate have the same unused-ignore
+  diagnostic and unused configuration-section notes. Secrets scan passed.
+  No hosted run was manually dispatched and no approval gate was weakened.
+- **Actual remaining gates:** inspected S10/S10b checks included CodeQL,
+  RAG/ML integration, workflow approval and cognitive preflight failures plus
+  cancelled/pending runs. Their complete check lists exceed one 100-item page;
+  no all-green inference was made. New S06b preflight job `133772041690`
+  specifically failed accountability freshness; its automatic repair push
+  received **HTTP 403** for github-actions[bot]. Treat genuine current-head
+  independent approval/WEC and operation-specific credentials as real controls,
+  not something a local review, user authorization statement or cached flag
+  can manufacture. Repaired source findings are not proof that fresh hosted
+  checks have completed.
+- S09, S12 and S13 remote branches existed in the refreshed inventory, without
+  PRs. Their previously recorded baseline failures/reviews were **not rerun**
+  here. Next: finish current-head CI/review for the published repairs and
+  slices; merge only normally when clean, then merge updated main into staging
+  and verify promoted paths/content. S11 still waits for S10. Continue S09,
+  S13 and S12 using their focused failure comparisons, not broad reruns.
+- This checkpoint and reviewed fixes are published through normal staging
+  commits. The restored external history file remains outside the repository
+  and was never staged or committed. Temporary runtime downloads/copies were
+  cleaned without deleting source worktrees or unrelated work.
