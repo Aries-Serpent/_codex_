@@ -93,12 +93,18 @@ describe('Playwright suite boundaries', () => {
       }));`;
     const output = execFileSync(process.execPath, ['--input-type=module', '-e', probe], {
       cwd: resolve(__dirname, '../../..'),
-      env: { ...process.env, LAZY_VARIANT: 'default', E2E_PORT: '5410', VITE_GITHUB_TOKEN: 'shell-sentinel-token' },
+      env: {
+        ...process.env,
+        LAZY_VARIANT: 'default',
+        E2E_PORT: '5410',
+        LAZY_INIT_SYNTHETIC_ONLY_TOKEN: 'prefix-sentinel-token',
+        VITE_GITHUB_TOKEN: 'shell-sentinel-token',
+      },
       encoding: 'utf8',
     });
     const result = JSON.parse(output.trim().split('\n').pop() ?? '');
     expect(result.envDir).toBe(false);
-    expect(Object.values(result.exposed)).not.toContain('shell-sentinel-token');
+    expect(result.exposed).toEqual({});
     expect(result.outDir).toMatch(/[/\\]dist[/\\]lazy-init[/\\]5410[/\\]default$/);
   });
 });
