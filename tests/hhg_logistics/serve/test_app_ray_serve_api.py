@@ -90,12 +90,27 @@ def app_module(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setitem(sys.modules, "ray", ray)
     monkeypatch.setitem(sys.modules, "ray.serve", serve)
     monkeypatch.delitem(sys.modules, _MODULE, raising=False)
+    module = importlib.import_module(_MODULE)
     try:
-        module = importlib.import_module(_MODULE)
-    except ImportError as exc:  # optional ML dependencies of the app module
-        pytest.skip(f"hhg_logistics.serve.app dependencies unavailable: {exc}")
-    yield module, calls
-    sys.modules.pop(_MODULE, None)
+        yield module, calls
+    finally:
+        sys.modules.pop(_MODULE, None)
+
+
+@pytest.mark.parametrize("error_type", [ImportError, ModuleNotFoundError])
+def test_app_fixture_propagates_unexpected_import_errors(monkeypatch, error_type) -> None:
+    original_import = importlib.import_module
+
+    def broken_import(name, *args, **kwargs):
+        if name == _MODULE:
+            raise error_type("unexpected application import failure")
+        return original_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(importlib, "import_module", broken_import)
+
+    fixture = app_module.__wrapped__(monkeypatch)
+    with pytest.raises(error_type, match="unexpected application import failure"):
+        next(fixture)
 
 
 def test_import_uses_explicit_serve_import_and_plain_service_class(app_module) -> None:
