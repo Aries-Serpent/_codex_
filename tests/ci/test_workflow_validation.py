@@ -142,6 +142,15 @@ def test_rust_swarm_ignores_only_metadata_codex_changes(event: str) -> None:
         assert not any(fnmatchcase(trigger_path, pattern) for pattern in ignored_paths)
 
 
+def test_manifest_pr_validation_runs_for_new_head_pushes() -> None:
+    workflow = _load_workflow("codex-manifest-refresh.yml")
+    assert workflow["on"]["pull_request"]["types"] == [
+        "opened",
+        "reopened",
+        "synchronize",
+    ]
+
+
 def test_manifest_pr_validation_is_secret_free_and_read_only() -> None:
     workflow = _load_workflow("codex-manifest-refresh.yml")
     assert workflow["permissions"] == {}
