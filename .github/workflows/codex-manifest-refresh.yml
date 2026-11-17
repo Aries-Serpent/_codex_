@@ -65,61 +65,48 @@ jobs:
       uses: ./.github/actions/resolve-push-target
       with:
         ensure-exists: 'true'
-    - name: Checkout resolved target before generation
-      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      with:
-        persist-credentials: false
-        ref: ${{ steps.resolve-target.outputs.branch }}
-        fetch-depth: 1
-        token: ${{ github.token }}
     - name: Set up Python with caching
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
 
     - name: Install minimal deps
-      run: pip install pyyaml --quiet
-    - name: Regenerate CODEX_MANIFEST.json
+      run: python -I -m pip install pyyaml detect-secrets --quiet
+    - name: Checkout resolved target as data only
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        persist-credentials: false
+        ref: ${{ steps.resolve-target.outputs.branch }}
+        path: _manifest_target
+        fetch-depth: 1
+        token: ${{ github.token }}
+    - name: Generate and sync target data with trusted main tooling
       id: refresh
-      run: 'python scripts/ci/generate_manifest.py
-
-        python3 -c ''import json; d=json.load(open("CODEX_MANIFEST.json")); print("generated_at="+d["generated_at"])''
-        >> "$GITHUB_OUTPUT"
-
-        '
-    - name: Sync all tracked files (manifest integrity + .secrets.baseline + changelog)
+      env:
+        TARGET_ROOT: ${{ github.workspace }}/_manifest_target
+      # Keep cwd/tooling on the immutable main checkout, never the sub-PR.
+      # -I also prevents target PYTHONPATH/sitecustomize/module shadowing.
+      run: |
+        python -I scripts/ci/generate_manifest.py --repo-root "$TARGET_ROOT"
+        python -I scripts/ci/sync_tracked_files.py --repo-root "$TARGET_ROOT" --fix --manifest-only --quiet
+        python -I scripts/ci/generate_manifest.py --repo-root "$TARGET_ROOT" --verify-integrity
+    - name: Publish generated manifest paths
       env:
         TARGET_REF: ${{ steps.resolve-target.outputs.branch }}
+        TARGET_ROOT: ${{ github.workspace }}/_manifest_target
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
       run: |
-        # sync_tracked_files.py atomically:
-        #   1. Recomputes CODEX_MANIFEST.json integrity_sha256 after generate_manifest.py
-        #   2. Re-scans .secrets.baseline for the updated manifest hash
-        #   3. Validates CHANGELOG.md has a non-empty [Unreleased] section
-        #   4. Adds an auto-sync stub to AGENT_ACCOUNTABILITY_REPORT.md if needed
-        # This eliminates the manual "update .secrets.baseline" step that agents
-        # frequently forget, which was a recurring P-B / P-E cascade failure pattern.
-        if python -m detect_secrets --version >/dev/null 2>&1; then
-          python scripts/ci/sync_tracked_files.py --fix --manifest-only --quiet
-          echo "✅ sync_tracked_files.py applied manifest + baseline sync"
-        else
-          echo "ℹ️  detect-secrets not installed — skipping .secrets.baseline sync"
-          echo "   Install: pip install detect-secrets"
-        fi
-
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add \
+        git -C "$TARGET_ROOT" config user.name "github-actions[bot]"
+        git -C "$TARGET_ROOT" config user.email "github-actions[bot]@users.noreply.github.com"
+        git -C "$TARGET_ROOT" add -- \
           CODEX_MANIFEST.json \
-          .secrets.baseline \
-          docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md \
-          CHANGELOG.md
+          .secrets.baseline
 
         # Only commit if there are actual changes
-        if git diff --cached --quiet; then
+        if git -C "$TARGET_ROOT" diff --cached --quiet; then
           echo "All files already up-to-date — no commit needed"
         else
-          git commit -m "chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci]"
+          git -C "$TARGET_ROOT" commit -m "chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci]"
 
           # Generation and publication use the same resolved branch.
           echo "🔀 Push target: ${TARGET_REF}"
@@ -143,13 +130,13 @@ jobs:
             echo "⛔ Push skipped — active PR(s) detected on ${TARGET_REF}."
           else
             if [ -n "${GH_TOKEN:-}" ]; then
-              git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+              git -C "$TARGET_ROOT" remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
             else
               echo "::warning::GH_TOKEN unavailable; continuing without reconfiguring remote"
             fi
             # A concurrent target update must reject this normal fast-forward push.
             # Regenerate from the new tip on the next run; never rebase generated files.
-            git push origin "HEAD:${TARGET_REF}"
+            git -C "$TARGET_ROOT" push origin "HEAD:${TARGET_REF}"
             echo "✅ CODEX_MANIFEST.json + compliance files refreshed and pushed to ${TARGET_REF}"
 
             # Re-trigger MkDocs Pages build explicitly after the [skip ci] commit.
