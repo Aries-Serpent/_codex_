@@ -8,6 +8,7 @@ Usage:
   python scripts/ci/generate_manifest.py --update-enforcement-doc
   python scripts/ci/generate_manifest.py --verify-integrity
   python scripts/ci/generate_manifest.py --dump-safe-injection
+  python -I scripts/ci/generate_manifest.py --repo-root /path/to/data-checkout
 """
 
 from __future__ import annotations
@@ -32,6 +33,30 @@ WF_DIR = REPO_ROOT / ".github" / "workflows"
 AGENTS_DIR = REPO_ROOT / ".github" / "agents"
 DB_PATH = REPO_ROOT / ".codex" / "codex_corpus.db"
 EMBED_META = REPO_ROOT / ".codex" / "embeddings" / "codex_index_meta.json"
+
+
+def _set_repo_root(root: pathlib.Path) -> None:
+    """Select repository data without importing or executing code from that tree."""
+    root = root.resolve(strict=True)
+    if not root.is_dir():
+        raise ValueError("--repo-root must be a directory")
+    paths = {
+        "REPO_ROOT": root,
+        "REGISTRY": root / ".github/agents/AGENT_REGISTRY.yaml",
+        "MANIFEST": root / "CODEX_MANIFEST.json",
+        "GVS_DOC": root / ".codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md",
+        "WF_DIR": root / ".github/workflows",
+        "AGENTS_DIR": root / ".github/agents",
+        "DB_PATH": root / ".codex/codex_corpus.db",
+        "EMBED_META": root / ".codex/embeddings/codex_index_meta.json",
+    }
+    for path in paths.values():
+        if not path.resolve().is_relative_to(root):
+            raise ValueError(f"Repository data path escapes --repo-root: {path}")
+    if paths["MANIFEST"].is_symlink():
+        raise ValueError("Manifest output must not be a symlink")
+    globals().update(paths)
+
 
 # ── Security: fields safe for agent_context.json injection ──────────────────
 SAFE_INJECTION_FIELDS = {
@@ -113,6 +138,8 @@ def get_violation_rate_30d() -> float:
 def index_workflows() -> list[dict]:
     workflows = []
     for wf_path in sorted(WF_DIR.glob("*.yml")):
+        if not wf_path.resolve().is_relative_to(REPO_ROOT):
+            raise ValueError(f"Workflow data path escapes repository root: {wf_path}")
         text = wf_path.read_text(encoding="utf-8", errors="ignore")
         tier = (
             "GROUNDED"
@@ -274,6 +301,11 @@ if __name__ == "__main__":
         description="Generate CODEX_MANIFEST.json from AGENT_REGISTRY.yaml"
     )
     ap.add_argument(
+        "--repo-root",
+        type=pathlib.Path,
+        help="Read/write repository data here using this trusted generator (default: script repository)",
+    )
+    ap.add_argument(
         "--update-enforcement-doc",
         action="store_true",
         help="Auto-update GROUNDED_VS_SOFT_ENFORCEMENT.md reliability chart",
@@ -289,6 +321,11 @@ if __name__ == "__main__":
         help="Print sanitized manifest safe for agent_context.json injection",
     )
     args = ap.parse_args()
+    if args.repo_root is not None:
+        try:
+            _set_repo_root(args.repo_root)
+        except (OSError, ValueError) as exc:
+            ap.error(str(exc))
 
     if args.verify_integrity:
         if not MANIFEST.exists():
