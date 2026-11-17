@@ -13,10 +13,9 @@ if (!Number.isInteger(port)) throw new Error('E2E_PORT must name the variant ser
 const outDir = resolve(import.meta.dirname, `../dist/lazy-init/${port}/${name}`);
 
 export default mergeConfig(applicationConfig, {
-  // Never consume a developer's real credentials: no .env files, and no shell VITE_* variables
-  // (e.g. a Codespace VITE_GITHUB_TOKEN) reach import.meta.env; only the define entries below.
+  // Never consume developer credentials: disable .env loading and automatic shell-env exposure.
   envDir: false,
-  envPrefix: 'LAZY_INIT_SYNTHETIC_ONLY_',
+  envPrefix: [],
   define: {
     'import.meta.env.VITE_CODEX_KEY': literal(variant.key),
     'import.meta.env.VITE_CODEX_API': literal(variant.api),
