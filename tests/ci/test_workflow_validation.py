@@ -394,8 +394,7 @@ def test_manifest_publication_generates_from_resolved_target() -> None:
     assert resolve["with"]["ensure-exists"] == "true"
     assert steps[0]["with"]["ref"] == "main"
     target_index = next(
-        i for i, step in enumerate(steps)
-        if step.get("with", {}).get("path") == "_manifest_target"
+        i for i, step in enumerate(steps) if step.get("with", {}).get("path") == "_manifest_target"
     )
     target_checkout = steps[target_index]
     assert target_checkout["uses"].startswith("actions/checkout@")
@@ -408,12 +407,10 @@ def test_manifest_publication_generates_from_resolved_target() -> None:
     assert "path" not in steps[0]["with"]
     assert not job.get("defaults")
     assert all("working-directory" not in step for step in steps)
-    assert all(
-        not step.get("uses", "").startswith("./")
-        for step in steps[target_index + 1:]
-    )
+    assert all(not step.get("uses", "").startswith("./") for step in steps[target_index + 1 :])
     setup_index = next(
-        i for i, step in enumerate(steps)
+        i
+        for i, step in enumerate(steps)
         if step.get("uses") == "./.github/actions/setup-python-cached"
     )
     assert setup_index < target_index
@@ -426,7 +423,7 @@ def test_manifest_publication_generates_from_resolved_target() -> None:
     ]
 
     publish = steps[-1]
-    assert steps[target_index + 1:] == [generation, publish]
+    assert steps[target_index + 1 :] == [generation, publish]
     assert publish["env"]["TARGET_REF"] == target_checkout["with"]["ref"]
     assert publish["env"]["GH_TOKEN"] == (
         "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}"
@@ -434,7 +431,9 @@ def test_manifest_publication_generates_from_resolved_target() -> None:
     commands = publish["run"]
     assert publish["env"]["TARGET_ROOT"] == generation["env"]["TARGET_ROOT"]
     assert 'git -C "$TARGET_ROOT" push origin "HEAD:${TARGET_REF}"' in commands
-    assert 'git -C "$TARGET_ROOT" add -- \\\n  CODEX_MANIFEST.json \\\n  .secrets.baseline' in commands
+    assert (
+        'git -C "$TARGET_ROOT" add -- \\\n  CODEX_MANIFEST.json \\\n  .secrets.baseline' in commands
+    )
     for forbidden in ("python", "scripts/", "CHANGELOG.md", "AGENT_ACCOUNTABILITY_REPORT.md"):
         assert forbidden not in commands
     for forbidden in ("git pull", "git rebase", "--force", "HEAD_REF"):
@@ -534,17 +533,22 @@ def test_manifest_publication_guard_and_fast_forward_failure(
 
 @pytest.mark.parametrize("script", ["generate_manifest.py", "sync_tracked_files.py"])
 def test_manifest_tool_default_root_still_matches_script_repository(script: str) -> None:
-    spec = importlib.util.spec_from_file_location("manifest_tool", REPO_ROOT / "scripts/ci" / script)
+    spec = importlib.util.spec_from_file_location(
+        "manifest_tool", REPO_ROOT / "scripts/ci" / script
+    )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     assert module.REPO_ROOT == REPO_ROOT
 
 
 def test_manifest_sync_reports_missing_scanner_without_scanning(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Optional no-scan reporting is distinct from exercising the real adapter."""
-    spec = importlib.util.spec_from_file_location("manifest_sync", REPO_ROOT / "scripts/ci/sync_tracked_files.py")
+    spec = importlib.util.spec_from_file_location(
+        "manifest_sync", REPO_ROOT / "scripts/ci/sync_tracked_files.py"
+    )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     module._set_repo_root(tmp_path)
@@ -588,10 +592,14 @@ def test_manifest_trusted_tools_process_poisoned_target_as_data_only(tmp_path: P
     (workflows / "staging-only.yml").write_text("name: staging data\n", encoding="utf-8")
     context = target / ".codex/agent_context.json"
     context.parent.mkdir()
-    context.write_text(json.dumps({"hash": hashlib.sha256(b"fixture").hexdigest()}), encoding="utf-8")
+    context.write_text(
+        json.dumps({"hash": hashlib.sha256(b"fixture").hexdigest()}), encoding="utf-8"
+    )
     (target / ".codex/agent_auth_session.json").write_text(context.read_text(), encoding="utf-8")
     (target / ".secrets.baseline").write_text(
-        json.dumps({"results": {}, "plugins_used": [{"name": "TargetPlugin", "path": "target_plugin.py"}]}),
+        json.dumps(
+            {"results": {}, "plugins_used": [{"name": "TargetPlugin", "path": "target_plugin.py"}]}
+        ),
         encoding="utf-8",
     )
     marker = tmp_path / "target-code-executed"
@@ -615,7 +623,14 @@ def test_manifest_trusted_tools_process_poisoned_target_as_data_only(tmp_path: P
 
     def run(script: str, *args: str) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
-            [sys.executable, "-I", str(REPO_ROOT / "scripts/ci" / script), "--repo-root", str(target), *args],
+            [
+                sys.executable,
+                "-I",
+                str(REPO_ROOT / "scripts/ci" / script),
+                "--repo-root",
+                str(target),
+                *args,
+            ],
             cwd=target,
             env={"PATH": os.defpath, "PYTHONPATH": str(target)},
             capture_output=True,
@@ -633,7 +648,11 @@ def test_manifest_trusted_tools_process_poisoned_target_as_data_only(tmp_path: P
     assert manifest["agents"][0]["name"] == "data-only-agent"
     assert [item["name"] for item in manifest["workflows"]] == ["staging-only"]
     baseline = json.loads((target / ".secrets.baseline").read_text())
-    for relative in ("CODEX_MANIFEST.json", ".codex/agent_context.json", ".codex/agent_auth_session.json"):
+    for relative in (
+        "CODEX_MANIFEST.json",
+        ".codex/agent_context.json",
+        ".codex/agent_auth_session.json",
+    ):
         entries = baseline["results"][relative]
         assert entries
         assert all(entry["filename"] == relative for entry in entries)
@@ -648,7 +667,14 @@ def test_manifest_data_root_rejects_output_symlink_escape(tmp_path: Path, script
     (target / "CODEX_MANIFEST.json").symlink_to(outside)
     args = ["--check", "--manifest-only"] if script == "sync_tracked_files.py" else []
     result = subprocess.run(
-        [sys.executable, "-I", str(REPO_ROOT / "scripts/ci" / script), "--repo-root", str(target), *args],
+        [
+            sys.executable,
+            "-I",
+            str(REPO_ROOT / "scripts/ci" / script),
+            "--repo-root",
+            str(target),
+            *args,
+        ],
         capture_output=True,
         text=True,
         timeout=10,
@@ -666,11 +692,17 @@ def test_manifest_data_root_rejects_output_symlink_escape(tmp_path: Path, script
         ["--manifest-only", "--post-to-discussion", "3673"],
     ],
 )
-def test_manifest_external_sync_root_disallows_execution_modes(tmp_path: Path, args: list[str]) -> None:
+def test_manifest_external_sync_root_disallows_execution_modes(
+    tmp_path: Path, args: list[str]
+) -> None:
     result = subprocess.run(
         [
-            sys.executable, "-I", str(REPO_ROOT / "scripts/ci/sync_tracked_files.py"),
-            "--repo-root", str(tmp_path), *args,
+            sys.executable,
+            "-I",
+            str(REPO_ROOT / "scripts/ci/sync_tracked_files.py"),
+            "--repo-root",
+            str(tmp_path),
+            *args,
         ],
         capture_output=True,
         text=True,
