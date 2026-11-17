@@ -1,3 +1,10 @@
+## Session: PR #5833 baseline CodeQL repairs - 2026-11-17
+
+- CodeQL Alert Resolution Agent `218ed59f-e962-4519-af80-efe00a3dbfb4` implemented the five-path patch; the parent independently inspected the full diff.
+- Focused validation passed 110 tests, scoped Ruff/import checks, configured mypy, compilation and whitespace checks. Four existing full-file Black failures remain unchanged from main.
+- Removed the generated CI session block rather than retaining its unsupported review and approval claims. This entry and the changelog are intentional audit documentation.
+- Hosted CodeQL results, independent current-head approval and other CI gates remain separate requirements; no clean scan, approval, activation or merge is claimed.
+
 ## Session: PR #5763 archive review follow-up — 2026-11-08
 
 ### Agents Used

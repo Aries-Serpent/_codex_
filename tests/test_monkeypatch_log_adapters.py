@@ -442,26 +442,24 @@ class TestErrorHandling:
             except sqlite3.DatabaseError:
                 assert True, "True is not valid"
 
-    def test_permission_denied(self):
+    def test_permission_denied(self, monkeypatch):
         """Test handling permission denied."""
+        monkeypatch.setenv("CODEX_SQLITE_POOL", "0")
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "readonly.db"
             _ensure_table(db_path)
 
-            # Make read-only
-            os.chmod(db_path, 0o444)
+            # Only the owner needs read access to exercise a read-only database.
+            os.chmod(db_path, 0o400)
 
             try:
-                log_event(
-                    level="INFO",
-                    message="Test",
-                    db_path=db_path
-                )
-            except (OSError, sqlite3.Error, PermissionError):
-                assert True, "True is not valid"
+                with pytest.raises(sqlite3.OperationalError, match="readonly"):
+                    log_event(level="INFO", message="Test", db_path=db_path)
+                with sqlite3.connect(str(db_path)) as conn:
+                    assert conn.execute("SELECT COUNT(*) FROM app_log").fetchone()[0] == 0
             finally:
                 # Restore permissions for cleanup
-                os.chmod(db_path, 0o644)
+                os.chmod(db_path, 0o600)
 
 
 if __name__ == "__main__":

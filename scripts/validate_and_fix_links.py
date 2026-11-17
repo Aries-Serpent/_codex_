@@ -8,6 +8,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Set, Tuple
+from urllib.parse import urlparse
 
 # Configuration
 DOCS_DIRS = [
@@ -147,7 +148,12 @@ class LinkValidator:
                 return False, f"Missing anchor '{url}' in {source_file}"
             return True, ""
 
-        if url.startswith("github.com/"):
+        # Bare GitHub links are external; lookalike hosts remain local paths.
+        try:
+            hostname = urlparse(f"//{url}").hostname
+        except ValueError:
+            hostname = None
+        if hostname in {"github.com"}:
             return True, ""
 
         if url.startswith("@"):
