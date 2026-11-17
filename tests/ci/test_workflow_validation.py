@@ -10,6 +10,7 @@ Test module for workflow validation.
 
 from __future__ import annotations
 
+import os
 import re
 import subprocess
 import sys
@@ -338,3 +339,152 @@ def test_agent_delegation_requires_protected_environment() -> None:
         provenance_check["env"]["OWNER_APPROVAL_PROTECTED"]
         == "${{ secrets.OWNER_APPROVAL_PROTECTED }}"
     )
+
+
+def test_manifest_pr_validation_is_secret_free_and_read_only() -> None:
+    workflow = _load_workflow("codex-manifest-refresh.yml")
+    assert workflow["permissions"] == {}
+    assert "pull_request_target" not in workflow["on"]
+    job = workflow["jobs"]["validate-pr-manifest"]
+    assert job["if"] == "github.event_name == 'pull_request'"
+    assert job["permissions"] == {"contents": "read"}
+    assert job["timeout-minutes"] == 30
+    assert "secrets." not in yaml.safe_dump(job)
+
+    checkout = job["steps"][0]["with"]
+    assert checkout["token"] == "${{ github.token }}"
+    assert checkout["persist-credentials"] is False
+    assert checkout["repository"] == "${{ github.event.pull_request.head.repo.full_name }}"
+    assert checkout["ref"] == "${{ github.event.pull_request.head.sha }}"
+
+    commands = "\n".join(step.get("run", "") for step in job["steps"])
+    assert "python scripts/ci/generate_manifest.py\n" in commands
+    assert "python scripts/ci/generate_manifest.py --verify-integrity" in commands
+    for forbidden in ("git push", "git commit", "gh ", "session_wrapup_autofix.py"):
+        assert forbidden not in commands
+
+
+def test_manifest_publication_generates_from_resolved_target() -> None:
+    workflow = _load_workflow("codex-manifest-refresh.yml")
+    job = workflow["jobs"]["refresh-manifest"]
+    assert "github.event_name != 'pull_request'" in job["if"]
+    assert "github.actor != 'github-actions[bot]'" in job["if"]
+    assert job["permissions"] == {
+        "contents": "write",
+        "pull-requests": "read",
+        "actions": "write",
+    }
+
+    steps = job["steps"]
+    resolve_index = next(i for i, step in enumerate(steps) if step.get("id") == "resolve-target")
+    resolve = steps[resolve_index]
+    assert resolve["uses"] == "./.github/actions/resolve-push-target"
+    assert resolve["with"]["ensure-exists"] == "true"
+    assert steps[0]["with"]["ref"] == "main"
+    target_checkout = steps[resolve_index + 1]
+    assert target_checkout["uses"].startswith("actions/checkout@")
+    assert target_checkout["with"]["ref"] == "${{ steps.resolve-target.outputs.branch }}"
+    assert target_checkout["with"]["token"] == "${{ github.token }}"
+    assert target_checkout["with"]["persist-credentials"] is False
+    generation_index = next(i for i, step in enumerate(steps) if step.get("id") == "refresh")
+    assert resolve_index + 1 < generation_index
+
+    publish = steps[-1]
+    assert publish["env"]["TARGET_REF"] == target_checkout["with"]["ref"]
+    assert publish["env"]["GH_TOKEN"] == (
+        "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}"
+    )
+    commands = publish["run"]
+    assert 'git push origin "HEAD:${TARGET_REF}"' in commands
+    for forbidden in ("git pull", "git rebase", "--force", "HEAD_REF"):
+        assert forbidden not in commands
+    # Keep the existing downstream approval request; it grants no approval itself.
+    assert "-f approval_source=workflow-execution-gate" in commands
+    assert "-f approval_intent=auto_approve_action_required" in commands
+
+
+def test_manifest_rescue_preserves_same_repo_guard_without_dependabot_writes() -> None:
+    job = _load_workflow("codex-manifest-refresh.yml")["jobs"]["rescue-comment"]
+    assert job["needs"] == "validate-pr-manifest"
+    assert "failure()" in job["if"]
+    assert "github.event_name == 'pull_request'" in job["if"]
+    assert "github.actor != 'dependabot[bot]'" in job["if"]
+    assert "github.event.pull_request.head.repo.full_name == github.repository" in job["if"]
+    assert job["permissions"] == {
+        "contents": "read",
+        "pull-requests": "write",
+        "issues": "write",
+    }
+    assert "secrets." not in yaml.safe_dump(job)
+    assert job["steps"][0]["with"]["token"] == "${{ github.token }}"
+    assert job["steps"][0]["with"]["ref"] == "main"
+    assert job["steps"][0]["with"]["persist-credentials"] is False
+    assert job["steps"][1]["env"]["GH_TOKEN"] == "${{ github.token }}"
+
+
+@pytest.mark.parametrize(
+    ("target", "open_prs", "push_fails", "expected_push", "expected_dispatch"),
+    [
+        ("0D_base_", "1", False, False, False),
+        ("main", "1", False, False, False),
+        ("0D_base_", "0", False, True, False),
+        ("main", "0", False, True, True),
+        ("main", "0", True, True, False),
+        ("copilot/staging-tip", "0", False, True, False),
+    ],
+)
+def test_manifest_publication_guard_and_fast_forward_failure(
+    tmp_path: Path,
+    target: str,
+    open_prs: str,
+    push_fails: bool,
+    expected_push: bool,
+    expected_dispatch: bool,
+) -> None:
+    """Execute the actual publish shell with local stubs; never contact GitHub."""
+    job = _load_workflow("codex-manifest-refresh.yml")["jobs"]["refresh-manifest"]
+    script = job["steps"][-1]["run"]
+    script = script.replace("${{ github.repository }}", "example/repository")
+    script = script.replace("${{ github.event.pull_request.number }}", "")
+    assert "${{" not in script
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    stubs = {
+        "git": (
+            '#!/bin/sh\nprintf "git %s\\n" "$*" >> "$TRACE"\n'
+            '[ "$1" != diff ] || exit 1\n'
+            'if [ "$1" = push ] && [ "$PUSH_FAIL" = true ]; then exit 1; fi\n'
+        ),
+        "gh": (
+            '#!/bin/sh\nprintf "gh %s\\n" "$*" >> "$TRACE"\n'
+            'if [ "$1" = api ]; then printf "%s\\n" "$PR_COUNT"; fi\n'
+        ),
+        "python": "#!/bin/sh\nexit 1\n",
+    }
+    for name, body in stubs.items():
+        path = bin_dir / name
+        path.write_text(body, encoding="utf-8")
+        path.chmod(0o700)
+    trace = tmp_path / "trace"
+    result = subprocess.run(
+        ["bash", "--noprofile", "--norc", "-eo", "pipefail", "-c", script],
+        cwd=tmp_path,
+        env={
+            "PATH": str(bin_dir) + os.pathsep + os.defpath,
+            "TRACE": str(trace),
+            "TARGET_REF": target,
+            "GH_TOKEN": "local-test-placeholder",
+            "GITHUB_STEP_SUMMARY": str(tmp_path / "summary"),
+            "PUSH_FAIL": str(push_fails).lower(),
+            "PR_COUNT": open_prs,
+        },
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    assert (result.returncode != 0) == push_fails, result.stderr
+    calls = trace.read_text(encoding="utf-8")
+    assert (f"git push origin HEAD:{target}\n" in calls) == expected_push
+    assert ("gh workflow run " in calls) == expected_dispatch
+    for forbidden in ("git pull ", "git rebase ", "--force"):
+        assert forbidden not in calls
