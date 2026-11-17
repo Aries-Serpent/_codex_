@@ -740,7 +740,7 @@ Progress, PR links and residual diffs are recorded below as slices land.
 ## Session checkpoint - 2026-11-17
 
 - Refreshed refs: `main` is `e9441d29`; `origin/0D_base_` is `4122509c` (52
-  commits ahead, 0 behind). The local `0D_base_` has two documentation-only
+  commits ahead, 0 behind). The local `0D_base_` has documentation-only
   checkpoint commits beyond that ref. #5766 and tracking issue #5798 remain open.
 - S06b #5825 remains draft/open at `8e5c9957`, `mergeable_state=unstable`.
   Copilot's unresolved high-severity environment-exposure comment is on the
