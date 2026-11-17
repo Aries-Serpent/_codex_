@@ -23,8 +23,8 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
-from evidently.metric_preset import DataDriftPreset
-from evidently.report import Report
+from evidently.legacy.metric_preset import DataDriftPreset
+from evidently.legacy.report import Report
 
 from common.ndjson_tools import ndjson_to_csv
 

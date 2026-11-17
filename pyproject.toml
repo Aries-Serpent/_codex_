@@ -124,7 +124,9 @@ core = [
 # RUNTIME PROFILE (inference + pattern learning)
 runtime = [
     # Data processing & ML
-    "pandas>=3.0.5,<4",
+    # Evidently 0.7 uses infer_dtype_from_object, removed in pandas 3.1.
+    # Preserve the security floor while using its supported pandas API.
+    "pandas>=3.0.5,<3.1",
     "numpy>=2.5.2,<3",
     "scikit-learn>=1.9.0,<2",
     "sentencepiece>=0.2.2",
@@ -185,7 +187,7 @@ full = [
     "slowapi>=0.1.10",
     "httpx>=0.26,<1",
     "ray[serve]>=2.58.0,<3",  # Security: Issue #5299 - PYSEC-2026-2273 fix
-    "pandas>=3.0.5,<4",
+    "pandas>=3.0.5,<3.1",
     "numpy>=2.5.2,<3",
     "prometheus-client>=0.26.0",
     "psutil>=7.2.2",
@@ -252,14 +254,14 @@ eval = [
    "transformers>=5.16.1,<6",
    "sentencepiece>=0.2.2",
    "numpy>=2.5.2,<3",
-   "pandas>=3.0.5,<4",
+   "pandas>=3.0.5,<3.1",
 ]
 
 dataops = [
    "dvc==3.67.1",
    "duckdb>=1.5.5",
    "great_expectations>=1.21.0,<2",
-   "pandas>=3.0.5,<4",
+   "pandas>=3.0.5,<3.1",
    "numpy>=2.5.2,<3",
 ]
 
@@ -307,7 +309,7 @@ all = [
     "slowapi>=0.1.10",
     "httpx>=0.26,<1",
     "ray[serve]>=2.58.0,<3",
-    "pandas>=3.0.5,<4",
+    "pandas>=3.0.5,<3.1",
     "numpy>=2.5.2,<3",
     "prometheus-client>=0.26.0",
     "psutil>=7.2.2",
@@ -414,7 +416,7 @@ dev = [
     "coverage[toml]>=7.15.1,<8",
 ]
 ml = [
-    "pandas>=3.0.5,<4",
+    "pandas>=3.0.5,<3.1",
     "numpy>=2.5.2,<3",
     "scikit-learn>=1.9.0,<2",
     "sentencepiece>=0.2.2",
@@ -464,7 +466,7 @@ train = [
     "slowapi>=0.1.10",
     "httpx>=0.26,<1",
     "ray[serve]>=2.58.0,<3",
-    "pandas>=3.0.5,<4",
+    "pandas>=3.0.5,<3.1",
     "numpy>=2.5.2,<3",
     "prometheus-client>=0.26.0",
     "psutil>=7.2.2",
@@ -559,7 +561,7 @@ test-core = [
     "detect-secrets>=1.5.0",
 ]
 rag = [
-    "pandas>=3.0.5,<4",
+    "pandas>=3.0.5,<3.1",
     "numpy>=2.5.2,<3",
     "scikit-learn>=1.9.0,<2",
     "sentencepiece>=0.2.2",
