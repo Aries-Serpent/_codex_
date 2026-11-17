@@ -13,6 +13,37 @@ from urllib.parse import urlparse
 
 import pytest
 
+from scripts.validate_and_fix_links import LinkValidator as RepositoryLinkValidator
+
+
+class TestRepositoryLinkValidation:
+    """Regression coverage for the repository link-checking script."""
+
+    @pytest.mark.parametrize(
+        ("url", "expected"),
+        [
+            ("github.com/Aries-Serpent/_codex_", True),
+            ("GITHUB.COM/Aries-Serpent/_codex_", True),
+            ("github.com.evil.example/repo", False),
+            ("github.com@evil.example/repo", False),
+            ("evil.example/github.com/repo", False),
+            ("[invalid", False),
+        ],
+    )
+    def test_bare_github_hostname(self, tmp_path, url, expected):
+        validator = RepositoryLinkValidator()
+        valid, error = validator.validate_link({"url": url, "source": str(tmp_path / "README.md")})
+        assert valid is expected
+        assert (error == "") is expected
+
+    def test_existing_local_link(self, tmp_path):
+        target = tmp_path / "guide.md"
+        target.write_text("# Guide\n", encoding="utf-8")
+        validator = RepositoryLinkValidator()
+        assert validator.validate_link(
+            {"url": target.name, "source": str(tmp_path / "README.md")}
+        ) == (True, "")
+
 
 class LinkValidator:
     """Validator for documentation links."""
@@ -346,10 +377,22 @@ class TestBrokenReferenceDetection:
     @pytest.mark.edge_case
     def test_malformed_link_handling(self, validator):
         """Test handling of malformed links."""
-        content = "[text(https://bad[link)) and [good](https://example.com)"
+        content = (
+            "[text(https://bad[link)) and [lookalike](https://example.com.evil.example)"
+            " and [userinfo](https://example.com@evil.example)"
+            " and [good](https://example.com)"
+        )
         links = validator.extract_links(content)
         # Should extract at least the valid link
-        assert any(url.startswith("https://example.com") for _, url, _ in links)
+        matching_links = []
+        for text, url, _ in links:
+            try:
+                parsed = urlparse(url)
+            except ValueError:
+                continue
+            if parsed.scheme == "https" and parsed.hostname in {"example.com"}:
+                matching_links.append(text)
+        assert matching_links == ["good"]
 
     def test_circular_reference_detection(self, validator):
         """Test detection of potential circular references."""
