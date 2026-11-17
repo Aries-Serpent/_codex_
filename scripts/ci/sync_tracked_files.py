@@ -123,7 +123,8 @@ def _set_repo_root(root: Path) -> None:
         "MANIFEST_PATH": root / "CODEX_MANIFEST.json",
         "SECRETS_BASELINE": root / ".secrets.baseline",
         "CHANGELOG_PATH": root / "CHANGELOG.md",
-        "ACCOUNTABILITY_PATH": root / "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
+        "ACCOUNTABILITY_PATH": root
+        / "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
         "AGENT_CONTEXT_PATH": root / ".codex/agent_context.json",
         "AGENT_AUTH_SESSION_PATH": root / ".codex/agent_auth_session.json",
     }
@@ -153,6 +154,7 @@ def _scan_baseline_file(path: Path) -> list[dict[str, Any]]:
     for entry in entries:
         entry["filename"] = str(path.relative_to(REPO_ROOT))
     return entries
+
 
 # ---------------------------------------------------------------------------
 # Result dataclass (lightweight, no external deps)
@@ -1092,8 +1094,15 @@ def main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
     if args.repo_root is not None:
-        if not args.manifest_only or args.docs_only or args.pre_push or args.post_to_discussion is not None:
-            parser.error("--repo-root requires --manifest-only without pre-push or discussion operations")
+        if (
+            not args.manifest_only
+            or args.docs_only
+            or args.pre_push
+            or args.post_to_discussion is not None
+        ):
+            parser.error(
+                "--repo-root requires --manifest-only without pre-push or discussion operations"
+            )
         try:
             _set_repo_root(args.repo_root)
         except (OSError, ValueError) as exc:
