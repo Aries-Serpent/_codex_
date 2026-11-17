@@ -736,3 +736,29 @@ Slices (dependency order; `→` = must land first):
 Bookkeeping files are staging records of #5766 itself and are not
 independently testable behavior; they stay until the final promotion.
 Progress, PR links and residual diffs are recorded below as slices land.
+
+## Session checkpoint - 2026-11-17
+
+- Refreshed refs: `main` is `e9441d29`; `0D_base_` is `4122509c` (52 commits
+  ahead, 0 behind). #5766 and tracking issue #5798 remain open.
+- S06b #5825 remains draft/open at `8e5c9957`, `mergeable_state=unstable`.
+  Copilot's unresolved high-severity environment-exposure comment is on the
+  earlier `df9f788b` commit, not the current PR head. A local candidate commit,
+  `af11d2a2`, sets Vite `envPrefix` to `[]` and tests shell variables matching
+  both the former synthetic prefix and `VITE_`; it has not been pushed or
+  independently reviewed. The focused Vitest file passed (13 tests), ESLint
+  passed for both changed files, and `git diff --check` passed. A Chromium
+  rerun could not launch because the Playwright Ubuntu fallback lacks required
+  system libraries in this Alpine environment; the recorded 29/29 browser
+  results remain historical, not freshly verified. The current PR also has
+  generated accountability/manifest/baseline churn absent from its stated
+  scope; no PR mutation was made.
+- S10 #5826 and S10b #5827 remain open/unstable with unresolved Copilot
+  threads. Their latest checks include successful CodeQL analysis but failed
+  workflow-approval checks; do not treat these as ready.
+- S09, S12 and S13 branches still exist on the refreshed origin; no PR was
+  found for those branch names.
+- Dependabot follow-up: four open PRs were found (#5828, #5829, #5830, #5831).
+  Inventory and review each diff, checks and compatibility with pending S10/S11
+  work before integrating into `0D_base_`. Verify each full change is present
+  before closing its source PR. No Dependabot PR has been consumed or closed.
