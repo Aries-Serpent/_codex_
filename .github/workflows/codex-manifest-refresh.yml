@@ -37,7 +37,9 @@ jobs:
       run: pip install pyyaml --quiet
     - name: Validate manifest generation and integrity without publishing
       # PR validation must not invoke --fix-all compliance automation or PR-body updates.
+      # Verify the committed manifest first; regeneration rewrites its hash.
       run: |
+        python scripts/ci/generate_manifest.py --verify-integrity
         python scripts/ci/generate_manifest.py
         python scripts/ci/generate_manifest.py --verify-integrity
 
@@ -76,6 +78,7 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
+        repository: ${{ github.repository }}
         ref: ${{ steps.resolve-target.outputs.branch }}
         path: _manifest_target
         fetch-depth: 1
