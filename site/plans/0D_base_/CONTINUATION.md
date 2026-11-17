@@ -829,3 +829,32 @@ Progress, PR links and residual diffs are recorded below as slices land.
   commits. The restored external history file remains outside the repository
   and was never staged or committed. Temporary runtime downloads/copies were
   cleaned without deleting source worktrees or unrelated work.
+
+## Promotion checkpoint - 2026-11-17 (open PRs drained)
+
+Maintainer directive: merge ready slices to `main`; failing non-required checks are
+tracked by existing CI-resolution issues. All five open slice/repair PRs were
+mergeable (`unstable`, no unresolved threads) and squash-merged with explicit bodies:
+
+| PR | Slice | Squash commit on `main` |
+|---|---|---|
+| #5833 | baseline CodeQL URL/permission repairs | `54c35b5587` |
+| #5827 | S10b Ray Serve 2.x API | `7f19734e7b` |
+| #5826 | S10 Evidently 0.7 / pandas bound | `b64ca0b8e1` |
+| #5825 | S06b lazy-init Playwright matrix (marked ready) | `3dac0e5156` |
+| #5832 | manifest PR validation repair (marked ready) | `13851ac2ff` |
+
+- #5832 first received `390137be30`, resolving its two final Copilot threads: the read-only job
+  verifies the committed manifest before regenerating it, and `resolve-push-target` ignores
+  cross-repository PRs while the data checkout pins `repository: ${{ github.repository }}`.
+  actionlint clean; 34 focused workflow tests passed.
+- `main` (`13851ac2ff`) merged normally into `0D_base_` as `a285206614`. Ten conflicts:
+  main's reviewed versions taken for link-validation, registry, Ray Serve and SQLite-mode
+  hunks; staging-only tests, CHANGELOG entries, consumed Dependabot package/lock and staging
+  workflow tests preserved. Focused tests: 126 passed / 15 skipped (three runtime-profile
+  failures reproduce identically on `main`: torch stub and missing scipy), workflow tests
+  40 passed / 1 skipped, manifest integrity valid.
+- Promoted paths no longer appear in the #5766 diff except a pre-existing one-line staging
+  variant in `tests/test_phase12_tier2_lane4_edge_cases.py`.
+- Remaining open PR: #5766 only; #5798 open. Next slices: S11 (now unblocked by S10),
+  then S09/S13/S12 from their pushed branches, refreshing failures against current `main`.
