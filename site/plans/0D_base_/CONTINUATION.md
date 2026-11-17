@@ -739,19 +739,22 @@ Progress, PR links and residual diffs are recorded below as slices land.
 
 ## Session checkpoint - 2026-11-17
 
-- Refreshed refs: `main` is `e9441d29`; `0D_base_` is `4122509c` (52 commits
-  ahead, 0 behind). #5766 and tracking issue #5798 remain open.
+- Refreshed refs: `main` is `e9441d29`; `origin/0D_base_` is `4122509c` (52
+  commits ahead, 0 behind). The local `0D_base_` has one documentation-only
+  checkpoint commit beyond that ref. #5766 and tracking issue #5798 remain open.
 - S06b #5825 remains draft/open at `8e5c9957`, `mergeable_state=unstable`.
   Copilot's unresolved high-severity environment-exposure comment is on the
   earlier `df9f788b` commit, not the current PR head. A local candidate commit,
   `af11d2a2`, sets Vite `envPrefix` to `[]` and tests shell variables matching
   both the former synthetic prefix and `VITE_`; it has not been pushed or
   independently reviewed. The focused Vitest file passed (13 tests), ESLint
-  passed for both changed files, and `git diff --check` passed. A Chromium
-  rerun could not launch because the Playwright Ubuntu fallback lacks required
-  system libraries in this Alpine environment; the recorded 29/29 browser
-  results remain historical, not freshly verified. The current PR also has
-  generated accountability/manifest/baseline churn absent from its stated
+  passed for both changed files, and `git diff --check` passed. A default
+  production fixture build succeeded and neither shell-secret sentinel appeared
+  in its output; the build emitted CSS-parser and large-chunk warnings. A
+  Chromium rerun could not launch because the Playwright Ubuntu fallback lacks
+  required system libraries in this Alpine environment; the recorded 29/29
+  browser results remain historical, not freshly verified. The current PR also
+  has generated accountability/manifest/baseline churn absent from its stated
   scope; no PR mutation was made.
 - S10 #5826 and S10b #5827 remain open/unstable with unresolved Copilot
   threads. Their latest checks include successful CodeQL analysis but failed
@@ -762,3 +765,9 @@ Progress, PR links and residual diffs are recorded below as slices land.
   Inventory and review each diff, checks and compatibility with pending S10/S11
   work before integrating into `0D_base_`. Verify each full change is present
   before closing its source PR. No Dependabot PR has been consumed or closed.
+  Current heads are #5828 `f19801a9`, #5829 `c740f3be`, #5830 `c1d5ae6b`, and
+  #5831 `5e10dcbc`; all target `main` at `e9441d29`, report
+  `mergeable_state=unstable`, and returned no reviews. Their check runs include
+  failures in the ML integration shard, CodeQL gate, manifest refresh, and
+  independently reviewed workflow approval. Do not integrate or close them
+  until the normal checks and review gates are satisfied.
