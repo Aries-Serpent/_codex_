@@ -165,10 +165,21 @@ class TestPublishPackages:
         endpoint = "https://npm.pkg.github.com"
         assert "npm" in endpoint, "Condition must be true"
 
-    def test_publish_docker_image_endpoint(self):
-        """Test Docker image publishing endpoint."""
-        endpoint = "https://ghcr.io"
-        assert urlparse(endpoint).hostname == "ghcr.io", "Condition must be true"
+    @pytest.mark.parametrize(
+        ("endpoint", "expected"),
+        [
+            ("https://ghcr.io", True),
+            ("https://GHCR.IO/v2/", True),
+            ("https://ghcr.io.evil.example", False),
+            ("https://ghcr.io@evil.example", False),
+            ("https://evil.example/ghcr.io", False),
+            ("http://ghcr.io", False),
+        ],
+    )
+    def test_publish_docker_image_endpoint(self, endpoint, expected):
+        """Only HTTPS endpoints on the exact container registry host match."""
+        parsed = urlparse(endpoint)
+        assert (parsed.scheme == "https" and parsed.hostname in {"ghcr.io"}) is expected
 
     def test_package_publication_payload_npm(self):
         """Test npm package publication payload."""

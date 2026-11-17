@@ -12,6 +12,8 @@ description: |
   Resolution algorithm
   ────────────────────
   1. Query the GitHub API for open PRs whose BASE is 0D_base_.
+     Fork (cross-repository) PRs are ignored so a same-named branch in
+     this repository is never selected on a fork's behalf.
      Pick the one with the most recent update timestamp (the "hottest" branch
      in the pipeline).  If one exists, that is the push target.
   2. If no such sub-PR is open, check whether the 0D_base_ integration branch
@@ -97,8 +99,8 @@ runs:
             --repo   "$REPO" \
             --base   "0D_base_" \
             --state  open \
-            --json   headRefName,updatedAt \
-            --jq     'sort_by(.updatedAt) | reverse | .[0].headRefName // empty' \
+            --json   headRefName,updatedAt,isCrossRepository \
+            --jq     'map(select(.isCrossRepository | not)) | sort_by(.updatedAt) | reverse | .[0].headRefName // empty' \
             2>/dev/null || true)
           # Some versions of `gh` emit the literal string "null" instead of an
           # empty string when the jq expression returns JSON null (no open PRs).

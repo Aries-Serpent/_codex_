@@ -192,6 +192,9 @@
 ### Fixed — PR #5765 readiness follow-up (2026-11-09)
 - Remove the documented Codespace guide's trailing whitespace found by Fast Validation, and keep Rust advisory auditing available to fork pull requests without asking their read-only token to publish a check.
 - Record the verified preflight push denial and no-job startup failure separately from local checks; current hosted checks remain action-required and review approval is not established.
+### Fixed - baseline CodeQL URL and permission fixtures (2026-11-17)
+- Match parsed hostnames instead of URL prefixes and use owner-only fixture modes while preserving permission-denial coverage.
+- Record focused validation separately from pending hosted security analysis and independent approval.
 
 ### Fixed — CDX archive review and session context (2026-11-08)
 - Harden archive review paths, scanner suppression controls, and verification/extraction identity; add bounded batch discovery and source-located CDX session context.

@@ -148,12 +148,12 @@ class LinkValidator:
                 return False, f"Missing anchor '{url}' in {source_file}"
             return True, ""
 
-        authority, separator, _ = url.partition("/")
-        if (
-            authority == "github.com"
-            and separator
-            and urlparse(f"//{url}").hostname == "github.com"
-        ):
+        # Bare GitHub links are external; lookalike hosts remain local paths.
+        try:
+            hostname = urlparse(f"//{url}").hostname
+        except ValueError:
+            hostname = None
+        if hostname in {"github.com"}:
             return True, ""
 
         if url.startswith("@"):

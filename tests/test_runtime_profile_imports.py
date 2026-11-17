@@ -18,6 +18,10 @@ Coverage:
 - Monitoring (prometheus-client, psutil, evidently)
 """
 
+import builtins
+import importlib.util
+import types
+
 import pytest
 
 
@@ -260,13 +264,55 @@ class TestMonitoringDependencies:
             pytest.skip(f"psutil not installed: {e}")
 
     def test_evidently_import(self):
-        """Test evidently import."""
-        try:
-            from evidently import __version__
-            from evidently.report import Report
-            assert Report is not None, "Report must be initialized"
-        except ImportError as e:
-            pytest.skip(f"evidently not installed: {e}")
+        """Check the supported Report API whenever Evidently is installed."""
+        if importlib.util.find_spec("evidently") is None:
+            pytest.skip("evidently not installed")
+
+        from evidently.legacy.report import Report
+
+        assert Report is not None, "Report must be initialized"
+
+
+class TestEvidentlyImportGate:
+    """Only an absent optional package may skip the runtime smoke test."""
+
+    def test_absent_package_skips(self, monkeypatch):
+        monkeypatch.setattr(importlib.util, "find_spec", lambda _name: None)
+
+        with pytest.raises(pytest.skip.Exception, match="evidently not installed"):
+            TestMonitoringDependencies().test_evidently_import()
+
+    @pytest.mark.parametrize("error_type", [ImportError, ModuleNotFoundError])
+    def test_installed_package_import_errors_propagate(self, monkeypatch, error_type):
+        monkeypatch.setattr(importlib.util, "find_spec", lambda _name: object())
+        original_import = builtins.__import__
+
+        def broken_import(name, *args, **kwargs):
+            if name == "evidently.legacy.report":
+                raise error_type("broken installed Evidently API")
+            return original_import(name, *args, **kwargs)
+
+        monkeypatch.setattr(builtins, "__import__", broken_import)
+
+        with pytest.raises(error_type, match="broken installed Evidently API"):
+            TestMonitoringDependencies().test_evidently_import()
+
+    def test_installed_package_uses_legacy_report(self, monkeypatch):
+        monkeypatch.setattr(importlib.util, "find_spec", lambda _name: object())
+        original_import = builtins.__import__
+        imported = []
+
+        def legacy_import(name, *args, **kwargs):
+            if name == "evidently.legacy.report":
+                imported.append(name)
+                return types.SimpleNamespace(Report=object())
+            return original_import(name, *args, **kwargs)
+
+        monkeypatch.setattr(builtins, "__import__", legacy_import)
+
+        TestMonitoringDependencies().test_evidently_import()
+
+        assert imported == ["evidently.legacy.report"]
 
 
 class TestAPIClientDependencies:
