@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed - baseline CodeQL URL and permission fixtures (2026-11-17)
+- Match parsed hostnames instead of URL prefixes and use owner-only fixture modes while preserving permission-denial coverage.
+- Record focused validation separately from pending hosted security analysis and independent approval.
+
 ### Fixed — CDX archive review and session context (2026-11-08)
 - Harden archive review paths, scanner suppression controls, and verification/extraction identity; add bounded batch discovery and source-located CDX session context.
 - Give Copilot setup an explicit Python 3.12 input: the review runner's Ubuntu 26.04 image has no Python 3.12.10 build. Preserve approval controls and report hosted CI separately from local validation.
