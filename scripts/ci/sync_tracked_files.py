@@ -45,6 +45,9 @@ Usage
     # Fix only the manifest / secrets baseline:
     python scripts/ci/sync_tracked_files.py --fix --manifest-only
 
+    # Trusted tooling with a separate, data-only checkout:
+    python -I scripts/ci/sync_tracked_files.py --fix --manifest-only --repo-root /path/to/data-checkout
+
     # Fix only CHANGELOG / accountability:
     python scripts/ci/sync_tracked_files.py --fix --docs-only
 
@@ -108,6 +111,48 @@ _AUTO_SYNC_SENTINEL = "[auto-sync]"
 def _detect_secrets_available() -> bool:
     """Return True if detect_secrets is importable in the current interpreter."""
     return importlib.util.find_spec("detect_secrets") is not None
+
+
+def _set_repo_root(root: Path) -> None:
+    """Select data paths only; external-root CLI mode cannot run repo scripts."""
+    root = root.resolve(strict=True)
+    if not root.is_dir():
+        raise ValueError("--repo-root must be a directory")
+    paths = {
+        "REPO_ROOT": root,
+        "MANIFEST_PATH": root / "CODEX_MANIFEST.json",
+        "SECRETS_BASELINE": root / ".secrets.baseline",
+        "CHANGELOG_PATH": root / "CHANGELOG.md",
+        "ACCOUNTABILITY_PATH": root / "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
+        "AGENT_CONTEXT_PATH": root / ".codex/agent_context.json",
+        "AGENT_AUTH_SESSION_PATH": root / ".codex/agent_auth_session.json",
+    }
+    for path in paths.values():
+        if not path.resolve().is_relative_to(root):
+            raise ValueError(f"Repository data path escapes --repo-root: {path}")
+    for key in ("MANIFEST_PATH", "SECRETS_BASELINE"):
+        if paths[key].is_symlink():
+            raise ValueError(f"Generated data path must not be a symlink: {paths[key]}")
+    globals().update(paths)
+
+
+def _scan_baseline_file(path: Path) -> list[dict[str, Any]]:
+    """Scan a data copy, never Python modules/configuration in the target checkout."""
+    with tempfile.TemporaryDirectory(prefix="manifest-baseline-") as directory:
+        copy = Path(directory) / path.name
+        copy.write_bytes(path.read_bytes())
+        proc = subprocess.run(
+            [sys.executable, "-I", "-m", "detect_secrets", "scan", "--no-verify", copy.name],
+            cwd=directory,
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=True,
+        )
+        entries = json.loads(proc.stdout).get("results", {}).get(copy.name, [])
+    for entry in entries:
+        entry["filename"] = str(path.relative_to(REPO_ROOT))
+    return entries
 
 # ---------------------------------------------------------------------------
 # Result dataclass (lightweight, no external deps)
@@ -284,16 +329,7 @@ def check_secrets_baseline(result: SyncResult, *, fix: bool) -> None:
         )
         return
     try:
-        proc = subprocess.run(
-            [sys.executable, "-m", "detect_secrets", "scan", "--no-verify",
-             str(MANIFEST_PATH)],
-            capture_output=True,
-            text=True,
-            timeout=30,
-        )
-        if proc.returncode != 0:
-            raise RuntimeError(proc.stderr[:300])
-        scan: dict[str, Any] = json.loads(proc.stdout)
+        new_entries = _scan_baseline_file(MANIFEST_PATH)
     except Exception as exc:
         result.record(
             ".secrets.baseline",
@@ -303,7 +339,6 @@ def check_secrets_baseline(result: SyncResult, *, fix: bool) -> None:
         return
 
     manifest_key = str(MANIFEST_PATH.name)
-    new_entries = scan.get("results", {}).get(manifest_key, [])
     if not new_entries:
         result.record(
             ".secrets.baseline",
@@ -391,9 +426,7 @@ def check_agent_context_baseline(result: SyncResult, *, fix: bool) -> None:
         )
         return
 
-    # Run detect-secrets on agent_context.json only (fast targeted scan).
-    # Use cwd=REPO_ROOT and a repo-relative path so the result key in
-    # detect-secrets output matches what is stored in .secrets.baseline.
+    # Scan only copied data, then retain the repo-relative baseline key.
     agent_rel = str(AGENT_CONTEXT_PATH.relative_to(REPO_ROOT))
     if not _detect_secrets_available():
         result.record(
@@ -403,17 +436,7 @@ def check_agent_context_baseline(result: SyncResult, *, fix: bool) -> None:
         )
         return
     try:
-        proc = subprocess.run(
-            [sys.executable, "-m", "detect_secrets", "scan", "--no-verify",
-             agent_rel],
-            capture_output=True,
-            text=True,
-            timeout=30,
-            cwd=str(REPO_ROOT),
-        )
-        if proc.returncode != 0:
-            raise RuntimeError(proc.stderr[:300])
-        scan: dict[str, Any] = json.loads(proc.stdout)
+        new_entries = _scan_baseline_file(AGENT_CONTEXT_PATH)
     except Exception as exc:
         result.record(
             ".secrets.baseline (agent_context)",
@@ -421,9 +444,6 @@ def check_agent_context_baseline(result: SyncResult, *, fix: bool) -> None:
             message=f"detect-secrets scan failed: {exc}",
         )
         return
-
-    # detect-secrets keys results by the path passed to the scan command.
-    new_entries = scan.get("results", {}).get(agent_rel, [])
 
     try:
         with SECRETS_BASELINE.open(encoding="utf-8") as f:
@@ -529,16 +549,7 @@ def check_agent_auth_session_baseline(result: SyncResult, *, fix: bool) -> None:
         )
         return
     try:
-        proc = subprocess.run(
-            [sys.executable, "-m", "detect_secrets", "scan", "--no-verify", agent_rel],
-            capture_output=True,
-            text=True,
-            timeout=30,
-            cwd=str(REPO_ROOT),
-        )
-        if proc.returncode != 0:
-            raise RuntimeError(proc.stderr[:300])
-        scan: dict[str, Any] = json.loads(proc.stdout)
+        new_entries = _scan_baseline_file(AGENT_AUTH_SESSION_PATH)
     except Exception as exc:
         result.record(
             ".secrets.baseline (agent_auth_session)",
@@ -546,8 +557,6 @@ def check_agent_auth_session_baseline(result: SyncResult, *, fix: bool) -> None:
             message=f"detect-secrets scan failed: {exc}",
         )
         return
-
-    new_entries = scan.get("results", {}).get(agent_rel, [])
 
     try:
         with SECRETS_BASELINE.open(encoding="utf-8") as f:
@@ -1033,6 +1042,11 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     scope = p.add_argument_group("Scope")
     scope.add_argument(
+        "--repo-root",
+        type=Path,
+        help="Use a separate data-only checkout (requires --manifest-only; no pre-push/discussion operations)",
+    )
+    scope.add_argument(
         "--manifest-only",
         action="store_true",
         help="Only check/fix CODEX_MANIFEST.json and .secrets.baseline",
@@ -1077,6 +1091,13 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
+    if args.repo_root is not None:
+        if not args.manifest_only or args.docs_only or args.pre_push or args.post_to_discussion is not None:
+            parser.error("--repo-root requires --manifest-only without pre-push or discussion operations")
+        try:
+            _set_repo_root(args.repo_root)
+        except (OSError, ValueError) as exc:
+            parser.error(str(exc))
 
     # Layer 3 — pre-push rebase gate (fetch + rebase before any sync)
     if args.pre_push:
