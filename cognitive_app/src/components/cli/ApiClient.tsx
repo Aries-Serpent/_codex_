@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
+import { ensureBrainSession } from '@/lib/brain-session';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -95,8 +96,10 @@ export function ApiClient() {
     } catch { parsedBody = body.trim() || undefined; }
 
     try {
+      await ensureBrainSession(CLI_API);
       const resp = await fetch(`${CLI_API}/api/request`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           method, url,
@@ -138,15 +141,17 @@ export function ApiClient() {
     } catch (err) {
       // Backend proxy unreachable (e.g. static GitHub Pages deploy without local server).
       // Fall back to a direct browser fetch so public URLs like api.github.com still work.
-      if (err instanceof TypeError) {
+      if (err instanceof TypeError && (method === 'GET')) {
         try {
           const directUrl = new URL(url);
+          if (directUrl.protocol !== 'https:') throw new Error('Direct fallback requires HTTPS');
+          if (Object.keys(parsedHeaders).some(key => key.toLowerCase() === 'authorization')) {
+            throw new Error('Direct fallback does not forward credentials');
+          }
           for (const [k, v] of Object.entries(parsedParams)) directUrl.searchParams.set(k, v);
           const directResp = await fetch(directUrl.toString(), {
-            method,
+            method: 'GET',
             headers: Object.keys(parsedHeaders).length ? (parsedHeaders as HeadersInit) : undefined,
-            body: method !== 'GET' && method !== 'DELETE' && parsedBody !== undefined
-              ? JSON.stringify(parsedBody) : undefined,
           });
           const directData: unknown = await directResp.json().catch(async () => directResp.text());
           setEntries(prev => [{

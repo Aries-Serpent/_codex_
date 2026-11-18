@@ -5,6 +5,7 @@
  * Connects to the /ws/cli PTY endpoint on the FastAPI server at :8765.
  */
 import { useEffect, useRef } from 'react';
+import { ensureBrainSession } from '@/lib/brain-session';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
@@ -35,45 +36,49 @@ export function XtermTerminal() {
     fit.fit();
     termRef.current = term;
 
-    const ws = new WebSocket(`${WS_BASE}/ws/cli`);
-    wsRef.current = ws;
-
-    ws.onopen = () => {
-      // Send initial resize so the PTY matches the terminal dimensions
-      ws.send(JSON.stringify({ type: 'resize', cols: term.cols, rows: term.rows }));
-    };
-
-    ws.onmessage = (e) => {
-      try {
-        const msg = JSON.parse(e.data as string);
-        if (msg.type === 'output') term.write(msg.data as string);
-      } catch {
-        // Non-JSON frame — write raw (log for debugging)
-        console.warn('XtermTerminal: non-JSON message received');
-        term.write(e.data as string);
-      }
-    };
-
-    ws.onclose = () => term.write('\r\n\x1b[90m[connection closed]\x1b[0m\r\n');
-    ws.onerror = () => term.write('\r\n\x1b[31m[WebSocket error — is the server running?]\x1b[0m\r\n');
-
-    term.onData((data) => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ type: 'input', data }));
-      }
-    });
-
+    let cancelled = false;
     const handleResize = () => {
       fit.fit();
-      if (ws.readyState === WebSocket.OPEN) {
+      const ws = wsRef.current;
+      if (ws?.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ type: 'resize', cols: term.cols, rows: term.rows }));
       }
     };
     window.addEventListener('resize', handleResize);
 
+    void ensureBrainSession(API_BASE).then((authenticated) => {
+      if (cancelled) return;
+      if (!authenticated) {
+        term.write('\r\n\x1b[31m[session denied]\x1b[0m\r\n');
+        return;
+      }
+
+      const ws = new WebSocket(`${WS_BASE}/ws/cli`);
+      wsRef.current = ws;
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ type: 'resize', cols: term.cols, rows: term.rows }));
+      };
+      ws.onmessage = (e) => {
+        try {
+          const msg = JSON.parse(e.data as string);
+          if (msg.type === 'output') term.write(msg.data as string);
+        } catch {
+          term.write(e.data as string);
+        }
+      };
+      ws.onclose = () => term.write('\r\n\x1b[90m[connection closed]\x1b[0m\r\n');
+      ws.onerror = () => term.write('\r\n\x1b[31m[WebSocket error]\x1b[0m\r\n');
+      term.onData((data) => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ type: 'input', data }));
+        }
+      });
+    });
+
     return () => {
+      cancelled = true;
       window.removeEventListener('resize', handleResize);
-      ws.close();
+      wsRef.current?.close();
       term.dispose();
     };
   }, []);

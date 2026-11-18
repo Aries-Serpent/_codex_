@@ -6,16 +6,13 @@
  * Since Aries-Serpent/_codex_ is a PUBLIC repository, all read endpoints
  * work without authentication from any browser on GitHub Pages.
  *
- * Optional: set VITE_GITHUB_TOKEN to a fine-grained PAT (read:repo scope)
- * to raise the rate limit from 60 → 5,000 req/hr.  In Codespace this is
- * automatically populated from CODEX_MASTER_KEY via the devcontainer env.
- *
- * NEVER commit a real token value — use .env.local (git-ignored).
+ * Browser requests intentionally use unauthenticated public reads. Codespace
+ * authenticated operations are routed through the Cognitive Brain middleware;
+ * GitHub credentials must never be embedded in Vite environment variables.
  */
 
 const REPO   = (import.meta.env.VITE_GITHUB_REPO as string | undefined)
              ?? 'Aries-Serpent/_codex_';
-const TOKEN  = (import.meta.env.VITE_GITHUB_TOKEN as string | undefined) ?? '';
 const BASE   = 'https://api.github.com';
 
 function headers(): HeadersInit {
@@ -23,7 +20,6 @@ function headers(): HeadersInit {
     Accept: 'application/vnd.github+json',
     'X-GitHub-Api-Version': '2022-11-28',
   };
-  if (TOKEN) h['Authorization'] = `Bearer ${TOKEN}`;
   return h;
 }
 

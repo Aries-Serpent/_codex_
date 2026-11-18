@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { ensureBrainSession } from '@/lib/brain-session';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -59,7 +60,7 @@ export function CliTerminal() {
   const checkServer = useCallback(async () => {
     try {
       const r = await fetch(`${CLI_API}/api/health`, { signal: AbortSignal.timeout(2000) });
-      setServerOnline(r.ok);
+      setServerOnline(r.ok && await ensureBrainSession(CLI_API));
     } catch { setServerOnline(false); }
   }, []);
 
@@ -92,6 +93,7 @@ export function CliTerminal() {
     try {
       const resp = await fetch(`${CLI_API}/api/cli/run`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ command: trimmed, timeout: 30 }),
       });

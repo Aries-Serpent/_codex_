@@ -38,13 +38,20 @@ from pathlib import Path
 from urllib.parse import urlparse as _urlparse
 from urllib.parse import urlunparse as _urlunparse
 
-from scripts.ci._token_resolver import get_token
+from scripts.ci._token_resolver import TokenResolutionError, get_token
 
 # Safe JSON parser for external/untrusted inputs (sanitises C0 control chars).
 try:
     from codex.utils.json_safe import safe_json_loads as _safe_json_loads
 except ImportError:  # pragma: no cover — fallback when package not installed
     _safe_json_loads = json.loads  # type: ignore[assignment]
+
+from codex.cognitive_brain.routing import (
+    RouteRequest as _RouteRequest,
+    RouteState as _RouteState,
+    capability_catalog as _capability_catalog,
+    plan_route as _plan_route,
+)
 
 # Safe logging sanitizer to prevent log injection attacks
 try:
@@ -104,7 +111,7 @@ from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket, WebSock
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 def _find_repo_root() -> str:
@@ -314,6 +321,7 @@ app.add_middleware(
     allow_origins=_build_cors_origins(),
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_credentials=True,
 )
 
 # ── SAR-G05: Wire OTel FastAPI auto-instrumentation (no-op when SDK absent) ──
@@ -328,21 +336,49 @@ if _OTEL_ENABLED:
     except ImportError:
         log.debug("opentelemetry-instrumentation-fastapi not installed; per-request spans disabled")
 
-# ── Memory endpoint auth ──────────────────────────────────────────────────────
+# ── Operation endpoint auth ───────────────────────────────────────────────────
 _memory_bearer = HTTPBearer(auto_error=False)
+_UI_SESSION_COOKIE = "codex_ui_session"
+_UI_SESSION_TTL_SECONDS = 15 * 60
+_ui_sessions: dict[str, float] = {}
+
+
+def _session_digest(value: str) -> str:
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def _valid_ui_session(session_id: str) -> bool:
+    if not session_id:
+        return False
+    expires_at = _ui_sessions.get(_session_digest(session_id))
+    if expires_at is None or expires_at <= time.time():
+        if expires_at is not None:
+            _ui_sessions.pop(_session_digest(session_id), None)
+        return False
+    return True
+
+
+def _require_operation_auth(
+    request: Request,
+    creds: Optional[HTTPAuthorizationCredentials] = Depends(_memory_bearer),
+) -> None:
+    """Require a configured elevated bearer token for privileged operations."""
+    try:
+        expected = get_token(required_elevated=True)[0] or ""
+    except TokenResolutionError:
+        expected = ""
+    if _valid_ui_session(request.cookies.get(_UI_SESSION_COOKIE, "")):
+        return
+    if not expected:
+        raise HTTPException(status_code=503, detail="Operation auth not configured on server")
+    if creds is None or not secrets.compare_digest(creds.credentials, expected):
+        raise HTTPException(status_code=401, detail="Unauthorized")
 
 
 def _require_memory_auth(
-    creds: Optional[HTTPAuthorizationCredentials] = Depends(_memory_bearer),
+    _auth: None = Depends(_require_operation_auth),
 ) -> None:
-    """Require a valid Bearer token (CODEX_MASTER_KEY or CODEX_BACKUP_KEY) on
-    memory endpoints to prevent unauthorised access to potentially sensitive
-    STM/LTM data."""
-    expected = get_token(required_elevated=True)[0] or get_token(required_elevated=True)[0] or ""
-    if not expected:
-        raise HTTPException(status_code=503, detail="Memory auth not configured on server")
-    if creds is None or not secrets.compare_digest(creds.credentials, expected):
-        raise HTTPException(status_code=401, detail="Unauthorized")
+    """Backward-compatible name for protected memory endpoints."""
 
 
 # ── Sprint 2: SQLite-backed command history ───────────────────────────────────
@@ -537,6 +573,14 @@ class ApiProxyRequest(BaseModel):
     timeout: Optional[int] = 30
 
 
+class RoutePlanRequest(BaseModel):
+    capability: str
+    action: str
+    target: str
+    arguments: dict[str, Any] = Field(default_factory=dict)
+    idempotency_key: str = ""
+
+
 class CliRunResponse(BaseModel):
     command:     str
     stdout:      str
@@ -649,7 +693,33 @@ class WorkflowRateLimitResponse(BaseModel):
     percentage_used: float
 
 
-# ── Health ────────────────────────────────────────────────────────────────────
+# ── Health and middleware discovery ──────────────────────────────────────────
+
+def _observed_adapter_states() -> dict[str, str]:
+    """Discover server-observable routes without disclosing credentials."""
+    playwright_cli = Path(REPO_ROOT) / "cognitive_app" / "node_modules" / "@playwright" / "test"
+    return {
+        "github_mcp": _RouteState.UNAVAILABLE.value,
+        "vscode_github": _RouteState.UNAVAILABLE.value,
+        "vscode_actions": _RouteState.UNAVAILABLE.value,
+        "vscode_scm": _RouteState.EXPOSED.value,
+        "vscode_terminal": _RouteState.EXPOSED.value,
+        "gh": _RouteState.VERIFIED.value if shutil.which("gh") else _RouteState.UNAVAILABLE.value,
+        "rest_graphql": _RouteState.INSTALLED.value,
+        "playwright": (
+            _RouteState.INSTALLED.value if playwright_cli.is_dir() else _RouteState.UNAVAILABLE.value
+        ),
+        "playwright_mcp": _RouteState.UNAVAILABLE.value,
+        "playwright_cli": (
+            _RouteState.INSTALLED.value if playwright_cli.is_dir() else _RouteState.UNAVAILABLE.value
+        ),
+        "git": _RouteState.VERIFIED.value if shutil.which("git") else _RouteState.UNAVAILABLE.value,
+        "brain_cli": _RouteState.VERIFIED.value,
+        "brain_proxy": _RouteState.VERIFIED.value,
+        "brain_api": _RouteState.VERIFIED.value,
+        "shell": _RouteState.INSTALLED.value,
+    }
+
 
 @app.get("/api/health")
 async def health():
@@ -660,7 +730,64 @@ async def health():
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "history_db": _DB_PATH,
             "otel_enabled": _OTEL_ENABLED,
+            "startup_nonce": os.environ.get("CODEX_STARTUP_NONCE"),
         }
+
+
+@app.post("/api/session")
+async def create_ui_session(request: Request):
+    """Issue a short-lived HttpOnly session for an allowed Cognitive App origin."""
+    origin = request.headers.get("origin")
+    allowed_origins = set(_build_cors_origins())
+    if not origin or origin not in allowed_origins:
+        raise HTTPException(status_code=403, detail="Origin is not allowed for UI sessions")
+
+    raw_session_id = secrets.token_urlsafe(32)
+    _ui_sessions[_session_digest(raw_session_id)] = time.time() + _UI_SESSION_TTL_SECONDS
+    response = JSONResponse(
+        content={
+            "authenticated": True,
+            "expires_in_seconds": _UI_SESSION_TTL_SECONDS,
+            "credential_transport": "httponly_cookie",
+        }
+    )
+    response.set_cookie(
+        _UI_SESSION_COOKIE,
+        raw_session_id,
+        max_age=_UI_SESSION_TTL_SECONDS,
+        httponly=True,
+        secure=request.url.scheme == "https",
+        samesite="strict",
+        path="/",
+    )
+    return response
+
+
+@app.get("/api/capabilities")
+async def capabilities():
+    """Return the server-observed middleware capability and fallback catalog."""
+    return {
+        "routes": _capability_catalog(),
+        "adapter_states": _observed_adapter_states(),
+        "execution_enabled": False,
+    }
+
+
+@app.post("/api/routes/plan")
+async def plan_route(req: RoutePlanRequest):
+    """Plan a route without executing it; writes remain dry-run-only."""
+    plan = _plan_route(
+        _RouteRequest(
+            capability=req.capability,
+            action=req.action,
+            target=req.target,
+            arguments=req.arguments,
+            idempotency_key=req.idempotency_key,
+        ),
+        _observed_adapter_states(),
+        allow_writes=False,
+    )
+    return plan.to_dict()
 
 
 # ── Sprint 3: OODA loop endpoints — wire CognitiveAppMain to the React frontend
@@ -1053,7 +1180,10 @@ def _sanitize_cli_env(extra_env: Optional[dict[str, str]]) -> dict[str, str]:
 
 
 @app.post("/api/cli/run", response_model=CliRunResponse)
-async def cli_run(req: CliRunRequest):
+async def cli_run(
+    req: CliRunRequest,
+    _auth: None = Depends(_require_operation_auth),
+):
     """Execute a shell command and return stdout/stderr/returncode.
 
     Security note (CodeQL #12490 — Uncontrolled command line):
@@ -1151,14 +1281,19 @@ async def cli_run(req: CliRunRequest):
 
 
 @app.get("/api/cli/history")
-async def cli_history(limit: int = 50):
+async def cli_history(
+    limit: int = 50,
+    _auth: None = Depends(_require_operation_auth),
+):
     """Return the last N command executions (in-memory mirror; survives restarts via SQLite)."""
     items = list(_history)
     return {"items": items[-limit:], "total": len(items)}
 
 
 @app.delete("/api/cli/history")
-async def cli_clear_history():
+async def cli_clear_history(
+    _auth: None = Depends(_require_operation_auth),
+):
     """Clear command history (both in-memory and SQLite)."""
     _history.clear()
     try:
@@ -1438,88 +1573,22 @@ async def patterns_record(
 # Protected by the same CODEX_MASTER_KEY bearer guard used on memory routes.
 
 
-class _GithubTokenResponse(BaseModel):
-    token: str
-    expires_at: Optional[str] = None
-    source: str  # "app_installation" | "pat" | "github_token"
-    rate_limit: int  # expected req/hr
-
-
-@app.get("/api/github/token", response_model=_GithubTokenResponse)
-async def github_token(_auth: None = Depends(_require_memory_auth)):
-    """Return a short-lived GitHub API token for the frontend.
-
-    Priority:
-      1. GitHub App installation token (5 000 req/hr) — when App creds available
-      2. CODEX_MASTER_KEY / CODEX_BACKUP_KEY PAT (5 000 req/hr)
-      3. GITHUB_TOKEN (1 000 req/hr on Actions, 60 unauthenticated otherwise)
-    """
-    env = dict(os.environ)
-
-    # ── Map Codespace underscore-prefix secrets to plain names ────────────────
-    for cs_name, plain_name in (
-        ("_GITHUB_APP_ID",              "GITHUB_APP_ID"),
-        ("_GITHUB_APP_PRIVATE_KEY",     "GITHUB_APP_PRIVATE_KEY_PEM"),
-        ("_GITHUB_APP_INSTALLATION_ID", "GITHUB_APP_INSTALLATION_ID"),
-    ):
-        if cs_name in env and plain_name not in env:
-            env[plain_name] = env[cs_name]
-
-    # ── Try GitHub App installation token ─────────────────────────────────────
-    if env.get("GITHUB_APP_ID") and env.get("GITHUB_APP_INSTALLATION_ID"):
-        try:
-            from integrations.github_app_auth import (
-                exchange_installation_token,
-                mint_app_jwt,
-            )
-            # Temporarily set so _read_private_key() inside mint_app_jwt works
-            if "GITHUB_APP_PRIVATE_KEY_PEM" in env:
-                os.environ.setdefault("GITHUB_APP_PRIVATE_KEY_PEM", env["GITHUB_APP_PRIVATE_KEY_PEM"])
-            app_jwt = mint_app_jwt(env["GITHUB_APP_ID"])
-            inst_token, expires_at = exchange_installation_token(
-                app_jwt, env["GITHUB_APP_INSTALLATION_ID"]
-            )
-            log.info("GitHub auth: issued app installation grant")
-            return _GithubTokenResponse(
-                token=inst_token,
-                expires_at=expires_at,
-                source="app_installation",
-                rate_limit=5000,
-            )
-        except Exception as exc:
-            # nosemgrep: python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure -- only the exception TYPE NAME is logged (never the exception message or any token value)
-            log.warning(
-                "GitHub auth: app installation token failed (%s), falling back",
-                sanitize_for_log(type(exc).__name__),
-            )
-
-    # ── Fall back to PAT ──────────────────────────────────────────────────────
-    for var in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GITHUB_TOKEN"):
-        pat = env.get(var, "").strip()
-        if pat:
-            # nosemgrep: python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure -- logs only the env-var NAME (e.g. CODEX_MASTER_KEY), never the token value stored in it
-            log.info("github_token: using %s as PAT", var)
-            return _GithubTokenResponse(
-                token=pat,
-                expires_at=None,
-                source="pat",
-                rate_limit=5000 if var != "GITHUB_TOKEN" else 1000,
-            )
-
-    raise HTTPException(
-        status_code=503,
-        detail=(
-            "No GitHub credentials available. "
-            "Set _GITHUB_APP_ID + _GITHUB_APP_PRIVATE_KEY + _GITHUB_APP_INSTALLATION_ID "
-            "(Codespace secrets) or CODEX_MASTER_KEY (PAT)."
-        ),
+@app.get("/api/github/token")
+async def github_token():
+    """Reject legacy raw-token access; operations must run inside the middleware."""
+    return JSONResponse(
+        status_code=410,
+        content={
+            "detail": "Raw GitHub token export is disabled; use an authorized operation route",
+            "replacement": "/api/routes/plan",
+        },
     )
 
 
 # ── HTTP API proxy endpoint ───────────────────────────────────────────────────
 
 @app.post("/api/request", response_model=ApiProxyResponse)
-async def api_proxy(req: ApiProxyRequest):
+async def api_proxy(req: ApiProxyRequest, request: Request):
     """
     CLI API Client — secondary agent API mechanism (MCP/Playwright is primary).
 
@@ -1550,6 +1619,9 @@ async def api_proxy(req: ApiProxyRequest):
     # ``url`` parameter) breaks CodeQL's same-variable taint flow into the outbound
     # client.
     safe_url = _assert_safe_proxy_url(url)
+    target_host = (_urlparse(safe_url).hostname or "").lower()
+    if method not in {"GET", "HEAD", "OPTIONS"} or target_host == "api.github.com":
+        _require_operation_auth(request=request, creds=await _memory_bearer(request))
 
     headers = dict(req.headers or {})
     # P4.3: Auto-inject GitHub auth header when target is api.github.com
@@ -1575,7 +1647,7 @@ async def api_proxy(req: ApiProxyRequest):
 
     t0 = time.monotonic()
     try:
-        async with httpx.AsyncClient(timeout=req.timeout, follow_redirects=True) as client:
+        async with httpx.AsyncClient(timeout=req.timeout, follow_redirects=False) as client:
             resp = await client.request(
                 method=method,
                 url=safe_url,
@@ -1601,6 +1673,8 @@ async def api_proxy(req: ApiProxyRequest):
         raise HTTPException(status_code=500, detail="Upstream request failed (see server logs for details)")
 
     duration_ms = (time.monotonic() - t0) * 1000
+    if 300 <= resp.status_code < 400:
+        raise HTTPException(status_code=400, detail="Upstream redirects are not permitted")
 
     # Parse response body — JSON preferred, fall back to text
     try:
@@ -2055,6 +2129,23 @@ async def ws_cli(ws: WebSocket):
       { "type": "output", "data": "<terminal output>" }
       { "type": "exit",   "code": N }
     """
+    auth_header = ws.headers.get("authorization", "")
+    credential = auth_header[7:].strip() if auth_header.lower().startswith("bearer ") else ""
+    try:
+        expected = get_token(required_elevated=True)[0] or ""
+    except TokenResolutionError:
+        expected = ""
+    bearer_valid = bool(expected and credential and secrets.compare_digest(credential, expected))
+    session_valid = _valid_ui_session(ws.cookies.get(_UI_SESSION_COOKIE, ""))
+    if not bearer_valid and not session_valid:
+        await ws.close(code=4401)
+        return
+
+    origin = ws.headers.get("origin")
+    if origin and origin not in _build_cors_origins():
+        await ws.close(code=4403)
+        return
+
     await ws.accept()
     log.info("WS PTY session opened")
 
