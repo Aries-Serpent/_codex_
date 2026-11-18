@@ -3,7 +3,13 @@
 Checkpoint date: 2026-11-18
 Source branch at start: `0D_base_`
 Source HEAD: `f188b8277a897db4bc1fbe844270077854acf08d`
+Published branch: `session/cognitive-brain-autopilot-20261118`
+Published implementation commit: `1fe600a82ad8edf07b7f9e4ed478af9fe5f152c7`
 Primary plan: `docs/agent/COGNITIVE_BRAIN_MIDDLEWARE_AUTOPILOT_PLAN.md`
+
+This commit metadata is followed by a small checkpoint-metadata commit on the same
+published branch. Resume by fetching the branch and using its remote tip; do not depend
+on the first implementation commit alone.
 
 ## Session Progress
 
