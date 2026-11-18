@@ -62,6 +62,9 @@ echo "🐍 Installing Python dependencies…"
     "cryptography>=42.0.0,<47.0.0" \
     --quiet
 
+"$PYTHON_BIN" scripts/autonomous/install_gh_user.py
+export PATH="${HOME}/.local/bin:${PATH}"
+
 echo "  Python packages installed:"
 "$PYTHON_BIN" -m pip list --format=columns 2>/dev/null | grep -E "^(pytest|ruff|black|mypy|fastapi|uvicorn|httpx|cryptography|codex)" || true
 

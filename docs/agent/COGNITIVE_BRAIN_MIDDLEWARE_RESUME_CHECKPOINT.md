@@ -40,6 +40,12 @@ on the first implementation commit alone.
    - browser PAT export is disabled;
    - the Cognitive Brain UI uses a 15-minute HttpOnly session cookie for HTTP and
      WebSocket access.
+10. Added policy-bound, authenticated, idempotent `/api/routes/execute` with an
+    SQLite operation ledger, canonical request digest, crash-safe executing state,
+    completed-result replay, and idempotency-key conflict detection. A live local
+    capability read completed once and replayed on the second request.
+11. Added checksum-verified user-local `gh` installation during update-content so a
+    fresh/restarted Codespace restores the CLI instead of relying on session state.
 
 ## Current Verified State
 
@@ -58,7 +64,7 @@ on the first implementation commit alone.
 
 ## Validation at Checkpoint
 
-- 18 routing/UI-session/security tests passed.
+- 26 routing/execution/UI-session/security tests passed.
 - 5 azimuth permission tests passed.
 - 46 existing BrainClient tests passed.
 - Ruff passed for focused changed Python files.

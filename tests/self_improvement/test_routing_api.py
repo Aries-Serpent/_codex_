@@ -10,6 +10,7 @@ from starlette.websockets import WebSocketDisconnect
 
 from aries_serpent_core.agents.brain_client import BrainClient
 from cognitive_app.src.server.cli_api_server import app
+from codex.cognitive_brain.route_execution import RouteExecutionStore
 
 
 def test_capability_endpoint_uses_server_observed_state() -> None:
@@ -168,6 +169,114 @@ def test_cli_and_mutating_proxy_require_authentication() -> None:
     assert history.status_code == 401
 
 
+def test_route_execute_requires_authentication() -> None:
+    response = TestClient(app).post(
+        "/api/routes/execute",
+        json={
+            "capability": "brain.read",
+            "action": "capabilities",
+            "target": "local",
+            "idempotency_key": "auth-required",
+        },
+    )
+
+    assert response.status_code == 401
+
+
+def test_route_execute_replays_completed_operation(monkeypatch: Any, tmp_path: Any) -> None:
+    from cognitive_app.src.server import cli_api_server
+
+    calls = 0
+    store = RouteExecutionStore(tmp_path / "route.sqlite3")
+
+    def execute_operation(req: Any, adapter: str) -> dict[str, Any]:
+        nonlocal calls
+        calls += 1
+        return {"adapter": adapter, "action": req.action}
+
+    monkeypatch.setattr(cli_api_server, "_ROUTE_EXECUTION_STORE", store)
+    monkeypatch.setattr(cli_api_server, "_execute_route_operation", execute_operation)
+    payload = {
+        "capability": "brain.read",
+        "action": "capabilities",
+        "target": "local",
+        "idempotency_key": "replay-once",
+    }
+
+    with TestClient(app, base_url="http://localhost:8765") as client:
+        assert (
+            client.post("/api/session", headers={"Origin": "http://localhost:5173"}).status_code
+            == 200
+        )
+        first = client.post("/api/routes/execute", json=payload)
+        second = client.post("/api/routes/execute", json=payload)
+
+    assert first.status_code == 200
+    assert second.status_code == 200
+    assert first.json()["replayed"] is False
+    assert second.json()["replayed"] is True
+    assert calls == 1
+
+
+def test_route_execute_rejects_changed_request_for_reused_key(
+    monkeypatch: Any, tmp_path: Any
+) -> None:
+    from cognitive_app.src.server import cli_api_server
+
+    monkeypatch.setattr(
+        cli_api_server, "_ROUTE_EXECUTION_STORE", RouteExecutionStore(tmp_path / "route.sqlite3")
+    )
+    monkeypatch.setattr(cli_api_server, "_execute_route_operation", lambda req, adapter: {})
+    payload = {
+        "capability": "brain.read",
+        "action": "capabilities",
+        "target": "local",
+        "arguments": {"view": "summary"},
+        "idempotency_key": "single-request",
+    }
+
+    with TestClient(app, base_url="http://localhost:8765") as client:
+        client.post("/api/session", headers={"Origin": "http://localhost:5173"})
+        assert client.post("/api/routes/execute", json=payload).status_code == 200
+        changed = {**payload, "arguments": {"view": "full"}}
+        conflict = client.post("/api/routes/execute", json=changed)
+
+    assert conflict.status_code == 409
+    assert "different request" in conflict.json()["detail"]
+
+
+def test_route_execute_keeps_writes_disabled_without_opt_in(
+    monkeypatch: Any, tmp_path: Any
+) -> None:
+    from cognitive_app.src.server import cli_api_server
+
+    called = False
+    monkeypatch.setattr(
+        cli_api_server, "_ROUTE_EXECUTION_STORE", RouteExecutionStore(tmp_path / "route.sqlite3")
+    )
+
+    def execute_operation(req: Any, adapter: str) -> dict[str, Any]:
+        nonlocal called
+        called = True
+        return {}
+
+    monkeypatch.setattr(cli_api_server, "_execute_route_operation", execute_operation)
+    payload = {
+        "capability": "github.write",
+        "action": "create_dangling_blob",
+        "target": "Aries-Serpent/_codex_",
+        "arguments": {"content": "must-not-write"},
+        "idempotency_key": "write-disabled",
+    }
+
+    with TestClient(app, base_url="http://localhost:8765") as client:
+        client.post("/api/session", headers={"Origin": "http://localhost:5173"})
+        response = client.post("/api/routes/execute", json=payload)
+
+    assert response.status_code == 409
+    assert called is False
+
+
 def test_brain_client_delegates_discovery_and_planning(monkeypatch: Any) -> None:
     client = BrainClient(base_url="http://127.0.0.1:8765")
     calls: list[tuple[str, Any]] = []
@@ -190,6 +299,21 @@ def test_brain_client_delegates_discovery_and_planning(monkeypatch: Any) -> None
     assert calls[1][0] == "/api/routes/plan"
     assert "mutating" not in calls[1][1]
     assert calls[1][2] == {"authenticated": False}
+
+    monkeypatch.setattr(
+        client,
+        "_post",
+        lambda path, body, **kwargs: calls.append((path, body, kwargs)) or {"state": "completed"},
+    )
+    assert client.execute_route(
+        "brain.read",
+        "capabilities",
+        "local",
+        idempotency_key="client-execute",
+    ) == {"state": "completed"}
+    assert calls[2][0] == "/api/routes/execute"
+    assert calls[2][1]["allow_write"] is False
+    assert calls[2][2] == {}
 
 
 def test_brain_client_does_not_forward_token_to_unapproved_origin(monkeypatch: Any) -> None:

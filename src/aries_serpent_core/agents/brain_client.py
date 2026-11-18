@@ -340,6 +340,29 @@ class BrainClient:
             authenticated=False,
         )
 
+    def execute_route(
+        self,
+        capability: str,
+        action: str,
+        target: str,
+        *,
+        arguments: dict[str, Any] | None = None,
+        idempotency_key: str,
+        allow_write: bool = False,
+    ) -> dict[str, Any]:
+        """Execute a policy-bound route through the Cognitive Brain middleware."""
+        return self._post(
+            "/api/routes/execute",
+            {
+                "capability": capability,
+                "action": action,
+                "target": target,
+                "arguments": arguments or {},
+                "idempotency_key": idempotency_key,
+                "allow_write": allow_write,
+            },
+        )
+
     def run_command(
         self,
         command: str,
