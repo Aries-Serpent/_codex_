@@ -255,7 +255,7 @@ approved. The output is a clean transplanted branch with exact scope and evidenc
 |---|---|
 | Scope | staged file list exactly equals the 31 + 18 - 7 = 42 path union |
 | Base | `clone-main` remains based on the verified `origin/main` tip at task start |
-| Security | All negative auth/routing/SSRF/token/PID tests pass |
+| Security | All negative auth/routing/SSRF/credential/PID tests pass |
 | Python | Focused compile, Ruff, Black, pytest, and diff check pass |
 | Codespace | JSON/JSONC and shell syntax pass; startup uses dynamic workspace identity |
 | Frontend | No new TypeScript diagnostics in in-scope frontend files; available Vitest/build checks pass |
