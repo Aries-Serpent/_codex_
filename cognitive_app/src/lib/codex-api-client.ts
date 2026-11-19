@@ -151,6 +151,13 @@ export class CodexAPIClient {
   private baseURL: string;
   private apiKey: string;
 
+  private headers(extra: HeadersInit = {}): HeadersInit {
+    return {
+      ...(extra as Record<string, string>),
+      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
+    };
+  }
+
   constructor(baseURL: string, apiKey: string) {
     const factory = (this.constructor as typeof CodexAPIClient).__mockFactory;
     if (factory) {
@@ -168,11 +175,11 @@ export class CodexAPIClient {
 
     const response = await fetch(`${this.baseURL}/infer`, {
       method: 'POST',
-      headers: {
+      credentials: 'include',
+      headers: this.headers({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
         'X-Client-Version': '1.0.0',
-      },
+      }),
       body: JSON.stringify(validated),
     });
 
@@ -187,7 +194,8 @@ export class CodexAPIClient {
 
   async getStatus(): Promise<StatusResponse> {
     const response = await fetch(`${this.baseURL}/status`, {
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
+      credentials: 'include',
+      headers: this.headers(),
     });
 
     if (!response.ok) {
@@ -200,7 +208,8 @@ export class CodexAPIClient {
 
   async getQuantumState(): Promise<QuantumStateResponse> {
     const response = await fetch(`${this.baseURL}/api/cognitive/state`, {
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
+      credentials: 'include',
+      headers: this.headers(),
     });
 
     if (!response.ok) {
@@ -214,10 +223,8 @@ export class CodexAPIClient {
   async evaluateScenario(scenarios: unknown[]): Promise<unknown> {
     const response = await fetch(`${this.baseURL}/api/cognitive/evaluate`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
-      },
+      credentials: 'include',
+      headers: this.headers({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ scenarios }),
     });
 
@@ -231,10 +238,8 @@ export class CodexAPIClient {
   async collapseWaveFunction(scenarioId: string): Promise<unknown> {
     const response = await fetch(`${this.baseURL}/api/cognitive/collapse`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
-      },
+      credentials: 'include',
+      headers: this.headers({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ scenario_id: scenarioId }),
     });
 
@@ -247,7 +252,8 @@ export class CodexAPIClient {
 
   async getMemoryState(): Promise<MemoryStateResponse> {
     const response = await fetch(`${this.baseURL}/api/memory/state`, {
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
+      credentials: 'include',
+      headers: this.headers(),
     });
 
     if (!response.ok) {
@@ -260,7 +266,8 @@ export class CodexAPIClient {
 
   async searchMemories(query: string): Promise<MemoryEntry[]> {
     const response = await fetch(`${this.baseURL}/api/memory/search?q=${encodeURIComponent(query)}`, {
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
+      credentials: 'include',
+      headers: this.headers(),
     });
 
     if (!response.ok) {
@@ -273,7 +280,8 @@ export class CodexAPIClient {
 
   async getAgentState(): Promise<AgentStateResponse> {
     const response = await fetch(`${this.baseURL}/api/agents/state`, {
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
+      credentials: 'include',
+      headers: this.headers(),
     });
 
     if (!response.ok) {
@@ -287,10 +295,8 @@ export class CodexAPIClient {
   async orchestrateTask(taskDescription: string, workflowToken?: string): Promise<unknown> {
     const response = await fetch(`${this.baseURL}/api/agents/orchestrate`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
-      },
+      credentials: 'include',
+      headers: this.headers({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({
         task_description: taskDescription,
         workflow_token: workflowToken
@@ -306,7 +312,8 @@ export class CodexAPIClient {
 
   async getDashboardMetrics(): Promise<DashboardMetrics> {
     const response = await fetch(`${this.baseURL}/api/metrics/dashboard`, {
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
+      credentials: 'include',
+      headers: this.headers(),
     });
 
     if (!response.ok) {
@@ -320,7 +327,8 @@ export class CodexAPIClient {
   async consolidateMemory(): Promise<ConsolidateResponse> {
     const response = await fetch(`${this.baseURL}/api/memory/consolidate`, {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
+      credentials: 'include',
+      headers: this.headers(),
     });
 
     if (!response.ok) {

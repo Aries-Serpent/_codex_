@@ -7,12 +7,12 @@
  * ──────────────
  * 1. **Live CLI server** (localhost:8765 or VITE_CLI_API_URL)
  *    Full cognitive brain — memory, OODA, agent orchestration.
- *    Auth: VITE_CODEX_KEY bearer token (matches CODEX_MASTER_KEY on server).
+ *    Auth: short-lived HttpOnly middleware session. GitHub credentials stay server-side.
  *    Available in: Codespace, local dev, Docker Compose.
  *
  * 2. **GitHub Public API** (api.github.com — no auth needed, repo is public)
  *    Real live data: workflow runs, repo stats, releases, branch status.
- *    Rate limit: 60 req/hr unauthenticated | 5,000/hr with VITE_GITHUB_TOKEN.
+ *    Browser rate limit: 60 req/hr unauthenticated. Authenticated operations use the middleware.
  *    Available in: GitHub Pages, any browser, CI.
  *
  * 3. **HAR replay** (cognitive_app/public/har-cache/api-demo.har)
@@ -34,6 +34,7 @@ import { CodexAPIClient }    from './codex-api-client';
 import { MockCodexAPIClient } from './mock-api-client';
 import { loadHAR, harFetch }  from './har-replay-client';
 import * as GitHubAPI          from './github-public-api';
+import { ensureBrainSession }  from './brain-session';
 
 export type APIMode = 'live' | 'github' | 'har' | 'mock';
 
@@ -49,7 +50,7 @@ export interface SelectedAPI {
   brainIsLive:   boolean;
 }
 
-const CLI_URL  = (import.meta.env.VITE_CLI_API_URL  as string | undefined) ?? 'http://localhost:8765';
+const CLI_URL  = (import.meta.env.VITE_CLI_API_URL  as string | undefined) ?? 'http://127.0.0.1:8765';
 const CODEX_KEY = (import.meta.env.VITE_CODEX_KEY   as string | undefined) ?? '';
 
 let _cached: SelectedAPI | null = null;
@@ -59,8 +60,7 @@ async function probeLiveServer(): Promise<boolean> {
     const ctrl = new AbortController();
     const tid  = setTimeout(() => ctrl.abort(), 2500);
     const res  = await fetch(`${CLI_URL}/api/health`, {
-      signal:  ctrl.signal,
-      headers: CODEX_KEY ? { Authorization: `Bearer ${CODEX_KEY}` } : {},
+      signal: ctrl.signal,
     });
     clearTimeout(tid);
     return res.ok;
@@ -77,9 +77,10 @@ export async function selectAPIMode(force?: APIMode): Promise<SelectedAPI> {
   const targetMode: APIMode | undefined = force ?? envMode;
 
   // ── 2. Live server probe ───────────────────────────────────────────────────
-  const liveOK = (targetMode === 'live' || !targetMode)
+const serverOK = (targetMode === 'live' || !targetMode)
     ? await probeLiveServer()
     : false;
+  const liveOK = serverOK ? await ensureBrainSession(CLI_URL) : false;
 
   let mode: APIMode;
   if      (targetMode === 'mock')             mode = 'mock';

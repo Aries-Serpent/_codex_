@@ -8,7 +8,11 @@
       "label": "Codex: inspect worktree",
       "type": "process",
       "command": "git",
-      "args": ["--no-pager", "status", "--short"],
+      "args": [
+        "--no-pager",
+        "status",
+        "--short"
+      ],
       "problemMatcher": []
     },
     {
@@ -25,14 +29,20 @@
       "label": "Codex: native VS Code version",
       "type": "process",
       "command": "code",
-      "args": ["--version"],
+      "args": [
+        "--version"
+      ],
       "problemMatcher": []
     },
     {
       "label": "Codex: validate CDX catalog (workspace venv)",
       "type": "process",
       "command": "${workspaceFolder}/.venv/bin/python",
-      "args": ["-m", "scripts.ci.startup_health", "--validate"],
+      "args": [
+        "-m",
+        "scripts.ci.startup_health",
+        "--validate"
+      ],
       "problemMatcher": []
     },
     {
@@ -102,7 +112,10 @@
       "label": "Codex: offline Go module verification (Go 1.27.3)",
       "type": "process",
       "command": "${env:HOME}/.local/opt/go1.27.3/bin/go",
-      "args": ["mod", "verify"],
+      "args": [
+        "mod",
+        "verify"
+      ],
       "options": {
         "cwd": "${workspaceFolder}/scripts/archive/gitleaks_adapter",
         "env": {
@@ -119,7 +132,10 @@
       "label": "Codex: offline Go adapter tests (verified Go 1.27.3)",
       "type": "process",
       "command": "${env:HOME}/.local/opt/go1.27.3/bin/go",
-      "args": ["test", "./..."],
+      "args": [
+        "test",
+        "./..."
+      ],
       "options": {
         "cwd": "${workspaceFolder}/scripts/archive/gitleaks_adapter",
         "env": {
@@ -137,7 +153,12 @@
       "label": "Codex: Rust advisory check (user-local toolchain)",
       "type": "process",
       "command": "${env:HOME}/.cargo/bin/cargo",
-      "args": ["deny", "--frozen", "check", "advisories"],
+      "args": [
+        "deny",
+        "--frozen",
+        "check",
+        "advisories"
+      ],
       "options": {
         "env": {
           "CARGO_HOME": "${env:HOME}/.cache/codex-cargo",
@@ -166,18 +187,74 @@
       "label": "Codex: validate workflow with actionlint",
       "type": "process",
       "command": "${env:HOME}/.local/bin/actionlint",
-      "args": [".github/workflows/rust_swarm_ci.yml"],
+      "args": [
+        ".github/workflows/rust_swarm_ci.yml"
+      ],
       "problemMatcher": []
     },
     {
       "label": "Codex: frontend typecheck",
       "type": "process",
       "command": "node",
-      "args": ["${workspaceFolder}/cognitive_app/node_modules/typescript/bin/tsc", "--noEmit"],
+      "args": [
+        "${workspaceFolder}/cognitive_app/node_modules/typescript/bin/tsc",
+        "--noEmit"
+      ],
       "options": {
         "cwd": "${workspaceFolder}/cognitive_app"
       },
-      "problemMatcher": ["$tsc"]
+      "problemMatcher": [
+        "$tsc"
+      ]
+    },
+    {
+      "label": "Codex: maintainer capability probe",
+      "type": "process",
+      "command": "python3.12",
+      "args": [
+        "${workspaceFolder}/scripts/autonomous/maintainer_probe.py"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: GitHub credential capability probe",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "${workspaceFolder}/scripts/autonomous/credential_probe.py"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: local Codespace startup",
+      "type": "process",
+      "command": "bash",
+      "args": [
+        "${workspaceFolder}/.devcontainer/scripts/post-start.sh"
+      ],
+      "options": {
+        "env": {
+          "CODEX_SYNC_CODESPACE_WEBHOOKS": "false"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: middleware routing tests",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "-m",
+        "pytest",
+        "--confcutdir=tests/self_improvement",
+        "-o",
+        "addopts=--strict-markers --import-mode=importlib",
+        "-q",
+        "tests/self_improvement/test_routing.py",
+        "tests/self_improvement/test_routing_api.py"
+      ],
+      "group": "test",
+      "problemMatcher": []
     }
   ]
 }

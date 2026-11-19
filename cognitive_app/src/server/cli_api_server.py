@@ -34,11 +34,13 @@ import shutil
 import sqlite3
 import struct
 import subprocess  # nosec B404 — used only for PTY shell (ws_cli); Popen call has nosec B603
+import urllib.error
+import urllib.request
 from pathlib import Path
 from urllib.parse import urlparse as _urlparse
 from urllib.parse import urlunparse as _urlunparse
 
-from scripts.ci._token_resolver import get_token
+from scripts.ci._token_resolver import TokenResolutionError, get_token
 
 # Safe JSON parser for external/untrusted inputs (sanitises C0 control chars).
 try:
@@ -46,13 +48,27 @@ try:
 except ImportError:  # pragma: no cover — fallback when package not installed
     _safe_json_loads = json.loads  # type: ignore[assignment]
 
+from codex.cognitive_brain.route_execution import (
+    RouteExecutionConflict,
+    RouteExecutionStore,
+)
+from codex.cognitive_brain.routing import (
+    RouteDecision as _RouteDecision,
+    RouteRequest as _RouteRequest,
+    RouteState as _RouteState,
+    capability_catalog as _capability_catalog,
+    plan_route as _plan_route,
+)
+
 # Safe logging sanitizer to prevent log injection attacks
 try:
     from codex.logging_safe import sanitize_for_log
 except ImportError:  # pragma: no cover — fallback when package not installed
+
     def sanitize_for_log(value):  # type: ignore[no-untyped-def]
         """Fallback: simple string conversion."""
         return str(value) if value is not None else "None"
+
 
 # ── SAR-G05: OpenTelemetry distributed tracing stub ─────────────────────────
 # Full OTel SDK is optional; the stub is a no-op when the SDK is absent so the
@@ -69,11 +85,16 @@ try:
         from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (  # type: ignore[import]
             OTLPSpanExporter as _OTLPSpanExporter,
         )
+
         _provider = _TracerProvider()
-        _provider.add_span_processor(_BatchSpanProcessor(_OTLPSpanExporter(endpoint=_otel_endpoint)))
+        _provider.add_span_processor(
+            _BatchSpanProcessor(_OTLPSpanExporter(endpoint=_otel_endpoint))
+        )
         _otel_trace.set_tracer_provider(_provider)
 
-    tracer = _otel_trace.get_tracer("cognitive-brain.cli-api", schema_url="https://opentelemetry.io/schemas/1.24.0")
+    tracer = _otel_trace.get_tracer(
+        "cognitive-brain.cli-api", schema_url="https://opentelemetry.io/schemas/1.24.0"
+    )
     _OTEL_ENABLED = True
 except ImportError:  # pragma: no cover — OTel SDK not installed
     import contextlib as _contextlib
@@ -104,12 +125,13 @@ from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket, WebSock
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 def _find_repo_root() -> str:
     """Walk up from this file until we find a pyproject.toml or .git — repo root marker."""
     from pathlib import Path  # noqa: PLC0415 (module-level import order doesn't matter here)
+
     candidate = Path(__file__).resolve()
     for _ in range(8):  # max 8 levels up; avoids infinite loop on broken installs
         candidate = candidate.parent
@@ -118,11 +140,13 @@ def _find_repo_root() -> str:
     # Fallback: 4 levels up from this file (cognitive_app/src/server/ → repo root)
     return str(Path(__file__).resolve().parents[3])
 
+
 _repo_root_for_import = _find_repo_root()
 if _repo_root_for_import not in _sys.path:
     _sys.path.insert(0, _repo_root_for_import)
 try:
     from cognitive_app.src.orchestrator import get_cognitive_app as _get_cognitive_app
+
     _OODA_AVAILABLE = True
 except ImportError:
     _get_cognitive_app = None  # type: ignore[assignment]
@@ -131,6 +155,7 @@ except ImportError:
 # Also try to import Planner/MemoryInterface at module level for auto-init
 try:
     from cognitive_brain.base import Planner as _Planner  # noqa: E402
+
     _BRAIN_BASE_AVAILABLE = True
 except ImportError:
     _Planner = None  # type: ignore[assignment,misc]
@@ -169,20 +194,24 @@ def _hash_secret_for_storage(value: str) -> str:
 # are performed.  The server should be deployed with an egress firewall that
 # prevents connections to private ranges for full protection.
 
-_SSRF_BLOCKED_HOSTS = frozenset({
-    "localhost", "ip6-localhost", "ip6-loopback",
-})
-_SSRF_BLOCKED_PREFIXES = ("169.254.",)   # link-local / AWS metadata service
+_SSRF_BLOCKED_HOSTS = frozenset(
+    {
+        "localhost",
+        "ip6-localhost",
+        "ip6-loopback",
+    }
+)
+_SSRF_BLOCKED_PREFIXES = ("169.254.",)  # link-local / AWS metadata service
 _PRIVATE_NETWORKS = [
     ipaddress.ip_network("10.0.0.0/8"),
     ipaddress.ip_network("172.16.0.0/12"),
     ipaddress.ip_network("192.168.0.0/16"),
     ipaddress.ip_network("127.0.0.0/8"),
-    ipaddress.ip_network("169.254.0.0/16"),   # link-local / APIPA
-    ipaddress.ip_network("100.64.0.0/10"),    # shared address space (RFC 6598)
-    ipaddress.ip_network("::1/128"),           # IPv6 loopback
-    ipaddress.ip_network("fc00::/7"),          # IPv6 unique-local
-    ipaddress.ip_network("fe80::/10"),         # IPv6 link-local
+    ipaddress.ip_network("169.254.0.0/16"),  # link-local / APIPA
+    ipaddress.ip_network("100.64.0.0/10"),  # shared address space (RFC 6598)
+    ipaddress.ip_network("::1/128"),  # IPv6 loopback
+    ipaddress.ip_network("fc00::/7"),  # IPv6 unique-local
+    ipaddress.ip_network("fe80::/10"),  # IPv6 link-local
 ]
 
 
@@ -236,7 +265,9 @@ def _assert_safe_proxy_url(url: str) -> str:
 
     # 3. Block link-local prefixes (covers 169.254.x.x AWS/GCP metadata)
     if any(host.startswith(p) for p in _SSRF_BLOCKED_PREFIXES):
-        raise HTTPException(status_code=400, detail="Requests to link-local addresses are not permitted")
+        raise HTTPException(
+            status_code=400, detail="Requests to link-local addresses are not permitted"
+        )
 
     # 4. Block IP literals that fall in private/loopback ranges.
     # Strip IPv6 zone/scope ID (e.g. "fe80::1%eth0") before parsing so that
@@ -314,6 +345,7 @@ app.add_middleware(
     allow_origins=_build_cors_origins(),
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_credentials=True,
 )
 
 # ── SAR-G05: Wire OTel FastAPI auto-instrumentation (no-op when SDK absent) ──
@@ -322,27 +354,58 @@ if _OTEL_ENABLED:
         from opentelemetry.instrumentation.fastapi import (
             FastAPIInstrumentor,  # type: ignore[import]
         )
+
         FastAPIInstrumentor.instrument_app(app)
-        log.info("OpenTelemetry FastAPI auto-instrumentation enabled (endpoint=%s)",
-                 os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT", "<no endpoint>"))
+        log.info(
+            "OpenTelemetry FastAPI auto-instrumentation enabled (endpoint=%s)",
+            os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT", "<no endpoint>"),
+        )
     except ImportError:
         log.debug("opentelemetry-instrumentation-fastapi not installed; per-request spans disabled")
 
-# ── Memory endpoint auth ──────────────────────────────────────────────────────
+# ── Operation endpoint auth ───────────────────────────────────────────────────
 _memory_bearer = HTTPBearer(auto_error=False)
+_UI_SESSION_COOKIE = "codex_ui_session"
+_UI_SESSION_TTL_SECONDS = 15 * 60
+_ui_sessions: dict[str, float] = {}
+
+
+def _session_digest(value: str) -> str:
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def _valid_ui_session(session_id: str) -> bool:
+    if not session_id:
+        return False
+    expires_at = _ui_sessions.get(_session_digest(session_id))
+    if expires_at is None or expires_at <= time.time():
+        if expires_at is not None:
+            _ui_sessions.pop(_session_digest(session_id), None)
+        return False
+    return True
+
+
+def _require_operation_auth(
+    request: Request,
+    creds: Optional[HTTPAuthorizationCredentials] = Depends(_memory_bearer),
+) -> None:
+    """Require a configured elevated bearer token for privileged operations."""
+    try:
+        expected = get_token(required_elevated=True)[0] or ""
+    except TokenResolutionError:
+        expected = ""
+    if _valid_ui_session(request.cookies.get(_UI_SESSION_COOKIE, "")):
+        return
+    if not expected:
+        raise HTTPException(status_code=503, detail="Operation auth not configured on server")
+    if creds is None or not secrets.compare_digest(creds.credentials, expected):
+        raise HTTPException(status_code=401, detail="Unauthorized")
 
 
 def _require_memory_auth(
-    creds: Optional[HTTPAuthorizationCredentials] = Depends(_memory_bearer),
+    _auth: None = Depends(_require_operation_auth),
 ) -> None:
-    """Require a valid Bearer token (CODEX_MASTER_KEY or CODEX_BACKUP_KEY) on
-    memory endpoints to prevent unauthorised access to potentially sensitive
-    STM/LTM data."""
-    expected = get_token(required_elevated=True)[0] or get_token(required_elevated=True)[0] or ""
-    if not expected:
-        raise HTTPException(status_code=503, detail="Memory auth not configured on server")
-    if creds is None or not secrets.compare_digest(creds.credentials, expected):
-        raise HTTPException(status_code=401, detail="Unauthorized")
+    """Backward-compatible name for protected memory endpoints."""
 
 
 # ── Sprint 2: SQLite-backed command history ───────────────────────────────────
@@ -353,7 +416,9 @@ MEMORY_CAPACITY = int(os.environ.get("CODEX_MEMORY_CAPACITY", "1000"))
 # DB path: CODEX_DB_PATH env var → default ~/.codex/cli_history.db
 _DB_PATH = os.environ.get(
     "CODEX_DB_PATH",
-    os.path.join(os.path.expanduser("~"), ".codex", "cli_history.db"),  # codeql[py/uninitialized-local-variable]
+    os.path.join(
+        os.path.expanduser("~"), ".codex", "cli_history.db"
+    ),  # codeql[py/uninitialized-local-variable]
 )
 
 
@@ -362,8 +427,7 @@ def _init_history_db() -> sqlite3.Connection:
     os.makedirs(os.path.dirname(_DB_PATH), exist_ok=True)
     conn = sqlite3.connect(_DB_PATH, check_same_thread=False)
     conn.row_factory = sqlite3.Row  # enables named column access
-    conn.execute(
-        """
+    conn.execute("""
         CREATE TABLE IF NOT EXISTS cli_history (
             id        INTEGER PRIMARY KEY AUTOINCREMENT,
             command   TEXT NOT NULL,
@@ -374,11 +438,9 @@ def _init_history_db() -> sqlite3.Connection:
             cwd       TEXT,
             timestamp TEXT NOT NULL
         )
-        """
-    )
+        """)
     # P4.2: Short-term memory table (last 50 OODA executions / ad-hoc stores)
-    conn.execute(
-        """
+    conn.execute("""
         CREATE TABLE IF NOT EXISTS stm_entries (
             id           INTEGER PRIMARY KEY AUTOINCREMENT,
             key          TEXT NOT NULL UNIQUE,
@@ -387,11 +449,9 @@ def _init_history_db() -> sqlite3.Connection:
             timestamp    TEXT NOT NULL,
             access_count INTEGER DEFAULT 0
         )
-        """
-    )
+        """)
     # P4.2: Long-term memory table (consolidated patterns)
-    conn.execute(
-        """
+    conn.execute("""
         CREATE TABLE IF NOT EXISTS ltm_entries (
             id           INTEGER PRIMARY KEY AUTOINCREMENT,
             key          TEXT NOT NULL UNIQUE,
@@ -401,11 +461,9 @@ def _init_history_db() -> sqlite3.Connection:
             confidence   REAL DEFAULT 1.0,
             timestamp    TEXT NOT NULL
         )
-        """
-    )
+        """)
     # Inbound GitHub webhook event log
-    conn.execute(
-        """
+    conn.execute("""
         CREATE TABLE IF NOT EXISTS webhook_events (
             id           INTEGER PRIMARY KEY AUTOINCREMENT,
             delivery_id  TEXT,
@@ -414,11 +472,9 @@ def _init_history_db() -> sqlite3.Connection:
             signature    TEXT,
             timestamp    TEXT NOT NULL
         )
-        """
-    )
+        """)
     # P6: CI pattern occurrence log (Phase 6 — Cross-Session Pattern Knowledge Graph)
-    conn.execute(
-        """
+    conn.execute("""
         CREATE TABLE IF NOT EXISTS patterns (
             id           INTEGER PRIMARY KEY AUTOINCREMENT,
             pattern_id   INTEGER NOT NULL,
@@ -432,17 +488,11 @@ def _init_history_db() -> sqlite3.Connection:
             git_sha      TEXT,
             timestamp    TEXT NOT NULL
         )
-        """
-    )
-    conn.execute(
-        "CREATE INDEX IF NOT EXISTS idx_patterns_name ON patterns (pattern_name)"
-    )
-    conn.execute(
-        "CREATE INDEX IF NOT EXISTS idx_patterns_session ON patterns (session)"
-    )
+        """)
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_patterns_name ON patterns (pattern_name)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_patterns_session ON patterns (session)")
     # Phase 15: Decision Visualization table (decisions)
-    conn.execute(
-        """
+    conn.execute("""
         CREATE TABLE IF NOT EXISTS decisions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             decision_id TEXT NOT NULL UNIQUE,
@@ -456,17 +506,13 @@ def _init_history_db() -> sqlite3.Connection:
             outcome TEXT,
             outcome_at TEXT
         )
-        """
-    )
+        """)
     conn.execute(
         "CREATE INDEX IF NOT EXISTS idx_decisions_lane_timestamp ON decisions (lane_name, submitted_at)"
     )
-    conn.execute(
-        "CREATE INDEX IF NOT EXISTS idx_decisions_id ON decisions (decision_id)"
-    )
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_decisions_id ON decisions (decision_id)")
     # Phase 15: LTE Pattern table (lte_patterns)
-    conn.execute(
-        """
+    conn.execute("""
         CREATE TABLE IF NOT EXISTS lte_patterns (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             lane_name TEXT NOT NULL,
@@ -477,8 +523,7 @@ def _init_history_db() -> sqlite3.Connection:
             created_at TEXT NOT NULL,
             last_used_at TEXT
         )
-        """
-    )
+        """)
     conn.execute(
         "CREATE INDEX IF NOT EXISTS idx_lte_patterns_lane_type ON lte_patterns (lane_name, pattern_type)"
     )
@@ -500,25 +545,40 @@ try:
         (MAX_HISTORY,),
     ).fetchall()
     for _r in reversed(_rows):
-        _history.append({
-            "command": _r["command"], "stdout": _r["stdout"], "stderr": _r["stderr"],
-            "returncode": _r["returncode"], "duration_ms": _r["duration_ms"],
-            "cwd": _r["cwd"], "timestamp": _r["timestamp"],
-        })
+        _history.append(
+            {
+                "command": _r["command"],
+                "stdout": _r["stdout"],
+                "stderr": _r["stderr"],
+                "returncode": _r["returncode"],
+                "duration_ms": _r["duration_ms"],
+                "cwd": _r["cwd"],
+                "timestamp": _r["timestamp"],
+            }
+        )
     log.info("Loaded %d history entries from SQLite (%s)", len(_rows), _DB_PATH)
 except sqlite3.OperationalError as _e:
-    log.warning("SQLite schema error pre-loading history (DB corrupt or schema mismatch?): %s", sanitize_for_log(type(_e).__name__))
+    log.warning(
+        "SQLite schema error pre-loading history (DB corrupt or schema mismatch?): %s",
+        sanitize_for_log(type(_e).__name__),
+    )
 except sqlite3.DatabaseError as _e:
-    log.warning("SQLite database error pre-loading history (connection failure?): %s", sanitize_for_log(type(_e).__name__))
+    log.warning(
+        "SQLite database error pre-loading history (connection failure?): %s",
+        sanitize_for_log(type(_e).__name__),
+    )
 except Exception as _e:
-    log.warning("Unexpected error pre-loading history from SQLite: %s", sanitize_for_log(type(_e).__name__))
+    log.warning(
+        "Unexpected error pre-loading history from SQLite: %s", sanitize_for_log(type(_e).__name__)
+    )
 
 # Repo root (4 levels up from this file: server/ → src/ → cognitive_app/ → repo/)
-REPO_ROOT = str(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
-    os.path.abspath(__file__)
-)))))
+REPO_ROOT = str(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+)
 
 # ── Schemas ───────────────────────────────────────────────────────────────────
+
 
 class CliRunRequest(BaseModel):
     command: str
@@ -528,35 +588,48 @@ class CliRunRequest(BaseModel):
 
 
 class ApiProxyRequest(BaseModel):
-    method: str           # GET POST PUT PATCH DELETE HEAD OPTIONS
-    url: str              # full URL or path (resolved against base_url if relative)
+    method: str  # GET POST PUT PATCH DELETE HEAD OPTIONS
+    url: str  # full URL or path (resolved against base_url if relative)
     headers: Optional[dict[str, str]] = None
-    params:  Optional[dict[str, str]] = None
-    body:    Optional[Any] = None
+    params: Optional[dict[str, str]] = None
+    body: Optional[Any] = None
     base_url: Optional[str] = None
     timeout: Optional[int] = 30
 
 
+class RoutePlanRequest(BaseModel):
+    capability: str
+    action: str
+    target: str
+    arguments: dict[str, Any] = Field(default_factory=dict)
+    idempotency_key: str = ""
+
+
+class RouteExecuteRequest(RoutePlanRequest):
+    allow_write: bool = False
+
+
 class CliRunResponse(BaseModel):
-    command:     str
-    stdout:      str
-    stderr:      str
-    returncode:  int
+    command: str
+    stdout: str
+    stderr: str
+    returncode: int
     duration_ms: float
-    cwd:         str
-    timestamp:   str
+    cwd: str
+    timestamp: str
 
 
 class ApiProxyResponse(BaseModel):
     status_code: int
-    headers:     dict[str, str]
-    body:        Any
+    headers: dict[str, str]
+    body: Any
     duration_ms: float
-    url:         str
-    method:      str
+    url: str
+    method: str
 
 
 # ── Phase 15: Decision Visualization Models ────────────────────────────────────
+
 
 class DecisionSubmitRequest(BaseModel):
     lane_name: str
@@ -589,6 +662,7 @@ class DecisionHistoryResponse(BaseModel):
 
 # ── Phase 15: Memory Management Models ─────────────────────────────────────────
 
+
 class MemoryStoreRequest(BaseModel):
     lane_name: str
     pattern_type: str
@@ -618,6 +692,7 @@ class MemoryStatsResponse(BaseModel):
 
 
 # ── Phase 15: Workflow Monitoring Models ───────────────────────────────────────
+
 
 class WorkflowStatusResponse(BaseModel):
     status: str
@@ -649,7 +724,38 @@ class WorkflowRateLimitResponse(BaseModel):
     percentage_used: float
 
 
-# ── Health ────────────────────────────────────────────────────────────────────
+# ── Health and middleware discovery ──────────────────────────────────────────
+
+
+def _observed_adapter_states() -> dict[str, str]:
+    """Discover server-observable routes without disclosing credentials."""
+    playwright_cli = Path(REPO_ROOT) / "cognitive_app" / "node_modules" / "@playwright" / "test"
+    return {
+        "github_mcp": _RouteState.UNAVAILABLE.value,
+        "vscode_github": _RouteState.UNAVAILABLE.value,
+        "vscode_actions": _RouteState.UNAVAILABLE.value,
+        "vscode_scm": _RouteState.EXPOSED.value,
+        "vscode_terminal": _RouteState.EXPOSED.value,
+        "gh": _RouteState.VERIFIED.value if shutil.which("gh") else _RouteState.UNAVAILABLE.value,
+        "rest_graphql": _RouteState.INSTALLED.value,
+        "playwright": (
+            _RouteState.INSTALLED.value
+            if playwright_cli.is_dir()
+            else _RouteState.UNAVAILABLE.value
+        ),
+        "playwright_mcp": _RouteState.UNAVAILABLE.value,
+        "playwright_cli": (
+            _RouteState.INSTALLED.value
+            if playwright_cli.is_dir()
+            else _RouteState.UNAVAILABLE.value
+        ),
+        "git": _RouteState.VERIFIED.value if shutil.which("git") else _RouteState.UNAVAILABLE.value,
+        "brain_cli": _RouteState.VERIFIED.value,
+        "brain_proxy": _RouteState.VERIFIED.value,
+        "brain_api": _RouteState.VERIFIED.value,
+        "shell": _RouteState.INSTALLED.value,
+    }
+
 
 @app.get("/api/health")
 async def health():
@@ -660,12 +766,210 @@ async def health():
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "history_db": _DB_PATH,
             "otel_enabled": _OTEL_ENABLED,
+            "startup_nonce": os.environ.get("CODEX_STARTUP_NONCE"),
         }
+
+
+@app.post("/api/session")
+async def create_ui_session(request: Request):
+    """Issue a short-lived HttpOnly session for an allowed Cognitive App origin."""
+    origin = request.headers.get("origin")
+    allowed_origins = set(_build_cors_origins())
+    if not origin or origin not in allowed_origins:
+        raise HTTPException(status_code=403, detail="Origin is not allowed for UI sessions")
+
+    raw_session_id = secrets.token_urlsafe(32)
+    _ui_sessions[_session_digest(raw_session_id)] = time.time() + _UI_SESSION_TTL_SECONDS
+    response = JSONResponse(
+        content={
+            "authenticated": True,
+            "expires_in_seconds": _UI_SESSION_TTL_SECONDS,
+            "credential_transport": "httponly_cookie",
+        }
+    )
+    response.set_cookie(
+        _UI_SESSION_COOKIE,
+        raw_session_id,
+        max_age=_UI_SESSION_TTL_SECONDS,
+        httponly=True,
+        secure=request.url.scheme == "https",
+        samesite="strict",
+        path="/",
+    )
+    return response
+
+
+@app.get("/api/capabilities")
+async def capabilities():
+    """Return the server-observed middleware capability and fallback catalog."""
+    return {
+        "routes": _capability_catalog(),
+        "adapter_states": _observed_adapter_states(),
+        "execution_enabled": False,
+    }
+
+
+def _route_request_dict(req: RoutePlanRequest) -> dict[str, Any]:
+    return {
+        "capability": req.capability,
+        "action": req.action,
+        "target": req.target,
+        "arguments": req.arguments,
+        "idempotency_key": req.idempotency_key,
+    }
+
+
+def _route_plan_for(req: RoutePlanRequest, *, allow_writes: bool = False):
+    return _plan_route(
+        _RouteRequest(**_route_request_dict(req)),
+        _observed_adapter_states(),
+        allow_writes=allow_writes,
+    )
+
+
+@app.post("/api/routes/plan")
+async def plan_route(req: RoutePlanRequest):
+    """Plan a route without executing it; writes remain dry-run-only."""
+    return _route_plan_for(req).to_dict()
+
+
+_ROUTE_EXECUTION_STORE = RouteExecutionStore(
+    Path(REPO_ROOT) / ".codex" / "runtime" / "route_operations.sqlite3"
+)
+
+
+def _github_token_preflight() -> tuple[str, str]:
+    """Return the first live token and source; never include the value in output."""
+    for source in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GH_TOKEN", "GITHUB_TOKEN"):
+        token = os.environ.get(source, "").strip()
+        if not token:
+            continue
+        request = urllib.request.Request(
+            "https://api.github.com/user",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Accept": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+            },
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=10) as response:
+                if response.status == 200:
+                    return token, source
+        except (urllib.error.HTTPError, urllib.error.URLError, OSError):
+            continue
+    raise RouteExecutionConflict("no live GitHub credential is available")
+
+
+def _run_gh(args: list[str], token: str) -> dict[str, Any]:
+    gh = shutil.which("gh")
+    if not gh:
+        raise RouteExecutionConflict("gh adapter is unavailable")
+    env = {"PATH": os.environ.get("PATH", ""), "GH_TOKEN": token}
+    completed = subprocess.run(
+        [gh, "api", *args],
+        check=False,
+        capture_output=True,
+        text=True,
+        cwd=REPO_ROOT,
+        env=env,
+        timeout=30,
+    )
+    if completed.returncode != 0:
+        raise RouteExecutionConflict(
+            f"GitHub operation failed with exit code {completed.returncode}"
+        )
+    try:
+        return json.loads(completed.stdout)
+    except json.JSONDecodeError as exc:
+        raise RouteExecutionConflict("GitHub operation returned invalid JSON") from exc
+
+
+def _execute_route_operation(req: RouteExecuteRequest, adapter: str) -> dict[str, Any]:
+    if req.capability == "brain.read" and req.action == "capabilities":
+        return {"routes": _capability_catalog(), "adapter_states": _observed_adapter_states()}
+
+    if req.capability == "git.local" and req.action == "status":
+        completed = subprocess.run(
+            ["git", "--no-pager", "status", "--short"],
+            check=False,
+            capture_output=True,
+            text=True,
+            cwd=REPO_ROOT,
+            timeout=10,
+        )
+        if completed.returncode != 0:
+            raise RouteExecutionConflict("Git status operation failed")
+        return {"status": completed.stdout}
+
+    if adapter != "gh":
+        raise RouteExecutionConflict(f"adapter has no execution handler: {adapter}")
+
+    token, source = _github_token_preflight()
+    if req.action == "get_repository":
+        result = _run_gh([f"repos/{req.target}"], token)
+        return {"credential_source": source, "repository": result}
+    if req.action == "create_dangling_blob":
+        content = str(req.arguments.get("content", "")).strip()
+        if not content or len(content.encode("utf-8")) > 4096:
+            raise RouteExecutionConflict("blob content must contain 1-4096 bytes")
+        result = _run_gh(
+            [
+                "--method",
+                "POST",
+                f"repos/{req.target}/git/blobs",
+                "-f",
+                f"content={content}",
+                "-f",
+                "encoding=utf-8",
+            ],
+            token,
+        )
+        return {
+            "credential_source": source,
+            "status": 201,
+            "blob_sha": result.get("sha"),
+            "visible_ref_changed": False,
+        }
+    raise RouteExecutionConflict(f"operation is not executable: {req.capability}/{req.action}")
+
+
+@app.post("/api/routes/execute")
+async def execute_route(
+    req: RouteExecuteRequest,
+    _auth: None = Depends(_require_operation_auth),
+):
+    """Execute one authenticated, idempotent, policy-bound route operation."""
+    plan = _route_plan_for(req, allow_writes=req.allow_write)
+    if plan.decision is not _RouteDecision.ALLOW:
+        return JSONResponse(
+            status_code=409,
+            content={"detail": "Route is not executable", "plan": plan.to_dict()},
+        )
+    payload = {**_route_request_dict(req), "allow_write": req.allow_write}
+
+    try:
+        result = await asyncio.to_thread(
+            _ROUTE_EXECUTION_STORE.execute,
+            payload,
+            lambda: _execute_route_operation(req, plan.preferred_adapter or ""),
+        )
+    except RouteExecutionConflict as exc:
+        return JSONResponse(status_code=409, content={"detail": str(exc)})
+    return {
+        "operation_id": result.operation_id,
+        "request_digest": result.request_digest,
+        "idempotency_key": result.idempotency_key,
+        "state": result.state,
+        "replayed": result.replayed,
+        "result": result.result,
+    }
 
 
 # ── Sprint 3: OODA loop endpoints — wire CognitiveAppMain to the React frontend
 # The orchestrator.py global instance is imported lazily to avoid import errors
 # when the cognitive_brain.base deps are not installed (CI environment).
+
 
 @app.post("/api/ooda/process")
 async def ooda_process(req: dict[str, Any]):
@@ -701,7 +1005,10 @@ async def ooda_process(req: dict[str, Any]):
         }
     except Exception as exc:
         # CodeQL py/stack-trace-exposure: log full details server-side only.
-        log.warning("OODA process error (returning graceful fallback): %s", sanitize_for_log(type(exc).__name__))
+        log.warning(
+            "OODA process error (returning graceful fallback): %s",
+            sanitize_for_log(type(exc).__name__),
+        )
         return {
             "success": False,
             "output": None,
@@ -711,6 +1018,7 @@ async def ooda_process(req: dict[str, Any]):
 
 
 # ── P4.2: SQLiteMemory concrete class ────────────────────────────────────────
+
 
 class SQLiteMemory:
     """
@@ -724,16 +1032,19 @@ class SQLiteMemory:
             _db.execute(
                 "INSERT OR REPLACE INTO stm_entries (key, value, metadata, timestamp) "
                 "VALUES (?, ?, ?, ?)",
-                (key, json.dumps(value), json.dumps(metadata), datetime.now(timezone.utc).isoformat()),
+                (
+                    key,
+                    json.dumps(value),
+                    json.dumps(metadata),
+                    datetime.now(timezone.utc).isoformat(),
+                ),
             )
             _db.commit()
         return True
 
     def retrieve(self, key: str) -> Any:
         with _db_lock:
-            row = _db.execute(
-                "SELECT value FROM stm_entries WHERE key = ?", (key,)
-            ).fetchone()
+            row = _db.execute("SELECT value FROM stm_entries WHERE key = ?", (key,)).fetchone()
             if row is None:
                 return None
             _db.execute(
@@ -761,6 +1072,7 @@ class SQLiteMemory:
 
 # ── P4.2: Memory REST endpoints ───────────────────────────────────────────────
 
+
 @app.get("/api/memory/state")
 async def memory_state(_auth: None = Depends(_require_memory_auth)):
     """
@@ -778,7 +1090,9 @@ async def memory_state(_auth: None = Depends(_require_memory_auth)):
                 "SELECT COUNT(*) FROM stm_entries WHERE access_count >= 1"
             ).fetchone()[0]
         capacity = MEMORY_CAPACITY
-        compression_rate = ltm_count / (stm_count + ltm_count) if (stm_count + ltm_count) > 0 else 0.0
+        compression_rate = (
+            ltm_count / (stm_count + ltm_count) if (stm_count + ltm_count) > 0 else 0.0
+        )
         cache_hit_rate = warm_count / stm_count if stm_count > 0 else 0.0
         return {
             "stm_count": stm_count,
@@ -892,7 +1206,10 @@ async def memory_consolidate(_auth: None = Depends(_require_memory_auth)):
 
         log.info(
             "memory_consolidate: consolidated=%d pruned=%d stm=%d ltm=%d",
-            consolidated, pruned, stm_count, ltm_count,
+            consolidated,
+            pruned,
+            stm_count,
+            ltm_count,
         )
         return {
             "consolidated": consolidated,
@@ -920,16 +1237,22 @@ async def ooda_metrics():
     Sprint 3: drives MetricsDashboard K1 factor display.
     """
     if not _OODA_AVAILABLE or _get_cognitive_app is None:
-        return {"metrics": {}, "timestamp": datetime.now(timezone.utc).isoformat(),
-                "error": "Cognitive orchestrator not available"}
+        return {
+            "metrics": {},
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "error": "Cognitive orchestrator not available",
+        }
     try:
         metrics = _get_cognitive_app().get_metrics()
         return {"metrics": metrics, "timestamp": datetime.now(timezone.utc).isoformat()}
     except Exception as exc:
         # CodeQL py/stack-trace-exposure: log details server-side, return generic message.
         log.warning("OODA metrics error: %s", sanitize_for_log(type(exc).__name__))
-        return {"metrics": {}, "timestamp": datetime.now(timezone.utc).isoformat(),
-                "error": "OODA metrics unavailable (see server logs for details)"}
+        return {
+            "metrics": {},
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "error": "OODA metrics unavailable (see server logs for details)",
+        }
 
 
 # ── CLI one-shot endpoint ─────────────────────────────────────────────────────
@@ -939,11 +1262,11 @@ async def ooda_metrics():
 # prevent execution of arbitrary binaries in PATH.  The _BLOCKED denylist is a
 # best-effort guardrail; production deployments should additionally restrict this
 # endpoint to authenticated sessions and/or an allowlist of permitted commands.
-_BLOCKED = re.compile(
-    r'\b(rm\s+-rf\s+/|mkfs|dd\s+if=|shutdown|reboot|:(){ :|:& };:)\b'
-)
+_BLOCKED = re.compile(r"\b(rm\s+-rf\s+/|mkfs|dd\s+if=|shutdown|reboot|:(){ :|:& };:)\b")
 _CLI_ALLOWED_ENV_PREFIXES = ("CODEX_", "GITHUB_", "PYTHON", "PATH", "HOME", "TERM", "COLORTERM")
-_CLI_TRUSTED_BIN_DIRS = tuple(Path(path).resolve() for path in ("/usr/bin", "/usr/local/bin", "/bin"))
+_CLI_TRUSTED_BIN_DIRS = tuple(
+    Path(path).resolve() for path in ("/usr/bin", "/usr/local/bin", "/bin")
+)
 _DEFAULT_LOGIN_SHELL = "/bin/bash" if Path("/bin/bash").exists() else "/bin/sh"
 
 
@@ -986,7 +1309,7 @@ def _sanitize_cli_cwd(raw_cwd: Optional[str]) -> str:
 
             # Extract the relative part after repo_root
             # Use string slicing to get only the part after repo_root
-            relative_part = raw_cwd_normalized[len(repo_root_str):].lstrip(os.sep)
+            relative_part = raw_cwd_normalized[len(repo_root_str) :].lstrip(os.sep)
 
             # If empty, return repo_root
             if not relative_part:
@@ -1053,7 +1376,10 @@ def _sanitize_cli_env(extra_env: Optional[dict[str, str]]) -> dict[str, str]:
 
 
 @app.post("/api/cli/run", response_model=CliRunResponse)
-async def cli_run(req: CliRunRequest):
+async def cli_run(
+    req: CliRunRequest,
+    _auth: None = Depends(_require_operation_auth),
+):
     """Execute a shell command and return stdout/stderr/returncode.
 
     Security note (CodeQL #12490 — Uncontrolled command line):
@@ -1094,9 +1420,7 @@ async def cli_run(req: CliRunRequest):
             if timeout_s is None:
                 stdout, stderr = await proc.communicate()
             else:
-                stdout, stderr = await asyncio.wait_for(
-                    proc.communicate(), timeout=timeout_s
-                )
+                stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout_s)
             exit_code = proc.returncode
         except asyncio.TimeoutError:
             proc.kill()
@@ -1112,13 +1436,13 @@ async def cli_run(req: CliRunRequest):
 
     duration_ms = (time.monotonic() - t0) * 1000
     record: dict[str, Any] = {
-        "command":     req.command,
-        "stdout":      stdout.decode(errors="replace"),
-        "stderr":      stderr.decode(errors="replace"),
-        "returncode":  exit_code if exit_code is not None else (proc.returncode or 0),
+        "command": req.command,
+        "stdout": stdout.decode(errors="replace"),
+        "stderr": stderr.decode(errors="replace"),
+        "returncode": exit_code if exit_code is not None else (proc.returncode or 0),
         "duration_ms": round(duration_ms, 1),
-        "cwd":         cwd,
-        "timestamp":   datetime.utcnow().isoformat(),
+        "cwd": cwd,
+        "timestamp": datetime.utcnow().isoformat(),
     }
     _history.append(record)
     # Sprint 2: persist to SQLite for cross-session history
@@ -1127,12 +1451,21 @@ async def cli_run(req: CliRunRequest):
             _db.execute(
                 "INSERT INTO cli_history (command,stdout,stderr,returncode,duration_ms,cwd,timestamp) "
                 "VALUES (?,?,?,?,?,?,?)",
-                (record["command"], record["stdout"], record["stderr"],
-                 record["returncode"], record["duration_ms"], record["cwd"], record["timestamp"]),
+                (
+                    record["command"],
+                    record["stdout"],
+                    record["stderr"],
+                    record["returncode"],
+                    record["duration_ms"],
+                    record["cwd"],
+                    record["timestamp"],
+                ),
             )
             _db.commit()
     except Exception as _e:
-        log.debug("SQLite history write failed (non-blocking): %s", sanitize_for_log(type(_e).__name__))
+        log.debug(
+            "SQLite history write failed (non-blocking): %s", sanitize_for_log(type(_e).__name__)
+        )
 
     # Normalize before logging to avoid propagating request-influenced taint
     # into log sinks (defense-in-depth against log injection style findings).
@@ -1151,14 +1484,19 @@ async def cli_run(req: CliRunRequest):
 
 
 @app.get("/api/cli/history")
-async def cli_history(limit: int = 50):
+async def cli_history(
+    limit: int = 50,
+    _auth: None = Depends(_require_operation_auth),
+):
     """Return the last N command executions (in-memory mirror; survives restarts via SQLite)."""
     items = list(_history)
     return {"items": items[-limit:], "total": len(items)}
 
 
 @app.delete("/api/cli/history")
-async def cli_clear_history():
+async def cli_clear_history(
+    _auth: None = Depends(_require_operation_auth),
+):
     """Clear command history (both in-memory and SQLite)."""
     _history.clear()
     try:
@@ -1166,11 +1504,14 @@ async def cli_clear_history():
             _db.execute("DELETE FROM cli_history")
             _db.commit()
     except Exception as _e:
-        log.debug("SQLite history clear failed (non-blocking): %s", sanitize_for_log(type(_e).__name__))
+        log.debug(
+            "SQLite history clear failed (non-blocking): %s", sanitize_for_log(type(_e).__name__)
+        )
     return {"cleared": True}
 
 
 # ── Inbound GitHub webhook receiver ──────────────────────────────────────────
+
 
 @app.post("/webhook/github")
 async def webhook_github(request: Request):
@@ -1195,8 +1536,10 @@ async def webhook_github(request: Request):
     if secret:
         expected = "sha256=" + hmac.new(secret.encode(), raw_body, hashlib.sha256).hexdigest()
         if not sig_header or not hmac.compare_digest(expected, sig_header):
-            log.warning("Webhook HMAC verification failed (delivery=%s)",
-                        _sanitize_log_value(request.headers.get("X-GitHub-Delivery", "unknown")))
+            log.warning(
+                "Webhook HMAC verification failed (delivery=%s)",
+                _sanitize_log_value(request.headers.get("X-GitHub-Delivery", "unknown")),
+            )
             return JSONResponse(status_code=401, content={"error": "Invalid signature"})
 
     event_type = request.headers.get("X-GitHub-Event", "unknown")
@@ -1223,7 +1566,10 @@ async def webhook_github(request: Request):
             )
             _db.commit()
     except Exception as _e:
-        log.warning("webhook_events SQLite write failed (non-blocking): %s", sanitize_for_log(type(_e).__name__))
+        log.warning(
+            "webhook_events SQLite write failed (non-blocking): %s",
+            sanitize_for_log(type(_e).__name__),
+        )
 
     log.info(
         "webhook_github event=%r delivery=%r",
@@ -1250,18 +1596,19 @@ async def webhooks_recent(limit: int = 50):
                 parsed_payload = json.loads(row["payload"])
             except (json.JSONDecodeError, TypeError):
                 parsed_payload = {}
-            events.append({
-                "id": row["id"],
-                "delivery_id": row["delivery_id"],
-                "event_type": row["event_type"],
-                "payload": parsed_payload,
-                "timestamp": row["timestamp"],
-            })
+            events.append(
+                {
+                    "id": row["id"],
+                    "delivery_id": row["delivery_id"],
+                    "event_type": row["event_type"],
+                    "payload": parsed_payload,
+                    "timestamp": row["timestamp"],
+                }
+            )
         return {"events": events, "total": len(events)}
     except Exception as exc:
         log.warning("webhooks_recent error: %s", sanitize_for_log(type(exc).__name__))
         return {"events": [], "total": 0, "error": "Internal error retrieving webhook events"}
-
 
 
 # ── Phase 6: CI pattern knowledge graph endpoints ────────────────────────────
@@ -1352,8 +1699,7 @@ async def patterns_summary():
     """
     try:
         with _db_lock:
-            rows = _db.execute(
-                """
+            rows = _db.execute("""
                 SELECT pattern_name,
                        COUNT(*)      AS total,
                        SUM(fixed)    AS fixed_count,
@@ -1361,8 +1707,7 @@ async def patterns_summary():
                 FROM patterns
                 GROUP BY pattern_name
                 ORDER BY total DESC
-                """
-            ).fetchall()
+                """).fetchall()
         summary = []
         for r in rows:
             total = r["total"] or 0
@@ -1438,88 +1783,23 @@ async def patterns_record(
 # Protected by the same CODEX_MASTER_KEY bearer guard used on memory routes.
 
 
-class _GithubTokenResponse(BaseModel):
-    token: str
-    expires_at: Optional[str] = None
-    source: str  # "app_installation" | "pat" | "github_token"
-    rate_limit: int  # expected req/hr
-
-
-@app.get("/api/github/token", response_model=_GithubTokenResponse)
-async def github_token(_auth: None = Depends(_require_memory_auth)):
-    """Return a short-lived GitHub API token for the frontend.
-
-    Priority:
-      1. GitHub App installation token (5 000 req/hr) — when App creds available
-      2. CODEX_MASTER_KEY / CODEX_BACKUP_KEY PAT (5 000 req/hr)
-      3. GITHUB_TOKEN (1 000 req/hr on Actions, 60 unauthenticated otherwise)
-    """
-    env = dict(os.environ)
-
-    # ── Map Codespace underscore-prefix secrets to plain names ────────────────
-    for cs_name, plain_name in (
-        ("_GITHUB_APP_ID",              "GITHUB_APP_ID"),
-        ("_GITHUB_APP_PRIVATE_KEY",     "GITHUB_APP_PRIVATE_KEY_PEM"),
-        ("_GITHUB_APP_INSTALLATION_ID", "GITHUB_APP_INSTALLATION_ID"),
-    ):
-        if cs_name in env and plain_name not in env:
-            env[plain_name] = env[cs_name]
-
-    # ── Try GitHub App installation token ─────────────────────────────────────
-    if env.get("GITHUB_APP_ID") and env.get("GITHUB_APP_INSTALLATION_ID"):
-        try:
-            from integrations.github_app_auth import (
-                exchange_installation_token,
-                mint_app_jwt,
-            )
-            # Temporarily set so _read_private_key() inside mint_app_jwt works
-            if "GITHUB_APP_PRIVATE_KEY_PEM" in env:
-                os.environ.setdefault("GITHUB_APP_PRIVATE_KEY_PEM", env["GITHUB_APP_PRIVATE_KEY_PEM"])
-            app_jwt = mint_app_jwt(env["GITHUB_APP_ID"])
-            inst_token, expires_at = exchange_installation_token(
-                app_jwt, env["GITHUB_APP_INSTALLATION_ID"]
-            )
-            log.info("GitHub auth: issued app installation grant")
-            return _GithubTokenResponse(
-                token=inst_token,
-                expires_at=expires_at,
-                source="app_installation",
-                rate_limit=5000,
-            )
-        except Exception as exc:
-            # nosemgrep: python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure -- only the exception TYPE NAME is logged (never the exception message or any token value)
-            log.warning(
-                "GitHub auth: app installation token failed (%s), falling back",
-                sanitize_for_log(type(exc).__name__),
-            )
-
-    # ── Fall back to PAT ──────────────────────────────────────────────────────
-    for var in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GITHUB_TOKEN"):
-        pat = env.get(var, "").strip()
-        if pat:
-            # nosemgrep: python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure -- logs only the env-var NAME (e.g. CODEX_MASTER_KEY), never the token value stored in it
-            log.info("github_token: using %s as PAT", var)
-            return _GithubTokenResponse(
-                token=pat,
-                expires_at=None,
-                source="pat",
-                rate_limit=5000 if var != "GITHUB_TOKEN" else 1000,
-            )
-
-    raise HTTPException(
-        status_code=503,
-        detail=(
-            "No GitHub credentials available. "
-            "Set _GITHUB_APP_ID + _GITHUB_APP_PRIVATE_KEY + _GITHUB_APP_INSTALLATION_ID "
-            "(Codespace secrets) or CODEX_MASTER_KEY (PAT)."
-        ),
+@app.get("/api/github/token")
+async def github_token():
+    """Reject legacy raw-token access; operations must run inside the middleware."""
+    return JSONResponse(
+        status_code=410,
+        content={
+            "detail": "Raw GitHub token export is disabled; use an authorized operation route",
+            "replacement": "/api/routes/plan",
+        },
     )
 
 
 # ── HTTP API proxy endpoint ───────────────────────────────────────────────────
 
+
 @app.post("/api/request", response_model=ApiProxyResponse)
-async def api_proxy(req: ApiProxyRequest):
+async def api_proxy(req: ApiProxyRequest, request: Request):
     """
     CLI API Client — secondary agent API mechanism (MCP/Playwright is primary).
 
@@ -1550,23 +1830,29 @@ async def api_proxy(req: ApiProxyRequest):
     # ``url`` parameter) breaks CodeQL's same-variable taint flow into the outbound
     # client.
     safe_url = _assert_safe_proxy_url(url)
+    target_host = (_urlparse(safe_url).hostname or "").lower()
+    if method not in {"GET", "HEAD", "OPTIONS"} or target_host == "api.github.com":
+        _require_operation_auth(request=request, creds=await _memory_bearer(request))
 
     headers = dict(req.headers or {})
     # P4.3: Auto-inject GitHub auth header when target is api.github.com
     # Token priority: CODEX_MASTER_KEY > CODEX_BACKUP_KEY > AGENT_GITHUB_TOKEN > GITHUB_TOKEN
     if safe_url.startswith("https://api.github.com/") and "Authorization" not in headers:
-        master_key   = get_token(required_elevated=True)[0] or ""
-        backup_key   = get_token(required_elevated=True)[0] or ""
-        agent_token  = os.environ.get("AGENT_GITHUB_TOKEN") or ""
+        master_key = get_token(required_elevated=True)[0] or ""
+        backup_key = get_token(required_elevated=True)[0] or ""
+        agent_token = os.environ.get("AGENT_GITHUB_TOKEN") or ""
         github_token = os.environ.get("GITHUB_TOKEN") or ""
         token = master_key or backup_key or agent_token or github_token
         if token:
             headers["Authorization"] = f"Bearer {token}"
             source = (
-                "CODEX_MASTER_KEY" if master_key else
-                "CODEX_BACKUP_KEY" if backup_key else
-                "AGENT_GITHUB_TOKEN" if agent_token else
-                "GITHUB_TOKEN"
+                "CODEX_MASTER_KEY"
+                if master_key
+                else (
+                    "CODEX_BACKUP_KEY"
+                    if backup_key
+                    else "AGENT_GITHUB_TOKEN" if agent_token else "GITHUB_TOKEN"
+                )
             )
             log.debug("Auto-injected GitHub auth header (%s)", source)
     # Auto Content-Type for JSON body
@@ -1575,7 +1861,7 @@ async def api_proxy(req: ApiProxyRequest):
 
     t0 = time.monotonic()
     try:
-        async with httpx.AsyncClient(timeout=req.timeout, follow_redirects=True) as client:
+        async with httpx.AsyncClient(timeout=req.timeout, follow_redirects=False) as client:
             resp = await client.request(
                 method=method,
                 url=safe_url,
@@ -1598,9 +1884,13 @@ async def api_proxy(req: ApiProxyRequest):
             _sanitize_log_value(safe_host),
             sanitize_for_log(type(exc).__name__),
         )
-        raise HTTPException(status_code=500, detail="Upstream request failed (see server logs for details)")
+        raise HTTPException(
+            status_code=500, detail="Upstream request failed (see server logs for details)"
+        )
 
     duration_ms = (time.monotonic() - t0) * 1000
+    if 300 <= resp.status_code < 400:
+        raise HTTPException(status_code=400, detail="Upstream redirects are not permitted")
 
     # Parse response body — JSON preferred, fall back to text
     try:
@@ -1619,11 +1909,11 @@ async def api_proxy(req: ApiProxyRequest):
     )
     return {
         "status_code": resp.status_code,
-        "headers":     dict(resp.headers),
-        "body":        body,
+        "headers": dict(resp.headers),
+        "body": body,
         "duration_ms": round(duration_ms, 1),
-        "url":         str(resp.url),
-        "method":      method,
+        "url": str(resp.url),
+        "method": method,
     }
 
 
@@ -1634,6 +1924,7 @@ async def submit_decision(req: DecisionSubmitRequest):
     Stores decision in database for later visualization and analysis.
     """
     import uuid
+
     with tracer.start_as_current_span("submit_decision"):
         try:
             decision_id = str(uuid.uuid4())
@@ -1648,14 +1939,24 @@ async def submit_decision(req: DecisionSubmitRequest):
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
-                        decision_id, req.lane_name, req.candidate, req.confidence_score,
-                        req.k1_factor, req.coherence_metric, req.superposition_state, timestamp
+                        decision_id,
+                        req.lane_name,
+                        req.candidate,
+                        req.confidence_score,
+                        req.k1_factor,
+                        req.coherence_metric,
+                        req.superposition_state,
+                        timestamp,
                     ),
                 )
                 _db.commit()
 
-            log.info("Decision submitted: %s (lane=%s, confidence=%.2f)",  # lgtm[py/log-injection]
-                    decision_id, _sanitize_log_value(req.lane_name), req.confidence_score)
+            log.info(
+                "Decision submitted: %s (lane=%s, confidence=%.2f)",  # lgtm[py/log-injection]
+                decision_id,
+                _sanitize_log_value(req.lane_name),
+                req.confidence_score,
+            )
 
             return DecisionResponse(
                 decision_id=decision_id,
@@ -1810,6 +2111,7 @@ async def get_decision(decision_id: str):
 
 # ── Phase 15: Memory Management Endpoints ──────────────────────────────────────
 
+
 @app.post("/api/memory/store", status_code=201)
 async def store_memory(req: MemoryStoreRequest, _auth: None = Depends(_require_memory_auth)):
     """
@@ -1828,14 +2130,22 @@ async def store_memory(req: MemoryStoreRequest, _auth: None = Depends(_require_m
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
-                        req.lane_name, req.pattern_type, req.pattern_name,
-                        req.confidence or 1.0, 0, timestamp, timestamp
+                        req.lane_name,
+                        req.pattern_type,
+                        req.pattern_name,
+                        req.confidence or 1.0,
+                        0,
+                        timestamp,
+                        timestamp,
                     ),
                 )
                 _db.commit()
 
-            log.info("Memory stored: lane=%s, pattern_type=%s",  # lgtm[py/log-injection]
-                    _sanitize_log_value(req.lane_name), _sanitize_log_value(req.pattern_type))
+            log.info(
+                "Memory stored: lane=%s, pattern_type=%s",  # lgtm[py/log-injection]
+                _sanitize_log_value(req.lane_name),
+                _sanitize_log_value(req.pattern_type),
+            )
 
             return {"success": True, "message": "Pattern stored in LTE", "timestamp": timestamp}
         except Exception as exc:
@@ -1848,7 +2158,7 @@ async def retrieve_memory(
     lane_name: Optional[str] = None,
     pattern_type: Optional[str] = None,
     limit: int = 50,
-    _auth: None = Depends(_require_memory_auth)
+    _auth: None = Depends(_require_memory_auth),
 ):
     """
     Retrieve patterns from LTE by lane and/or pattern type.
@@ -1947,7 +2257,9 @@ async def get_memory_stats(_auth: None = Depends(_require_memory_auth)):
                 ).fetchone()[0]
 
             capacity = MEMORY_CAPACITY
-            compression_rate = ltm_count / (stm_count + ltm_count) if (stm_count + ltm_count) > 0 else 0.0
+            compression_rate = (
+                ltm_count / (stm_count + ltm_count) if (stm_count + ltm_count) > 0 else 0.0
+            )
             cache_hit_rate = warm_count / stm_count if stm_count > 0 else 0.0
 
             return MemoryStatsResponse(
@@ -1965,6 +2277,7 @@ async def get_memory_stats(_auth: None = Depends(_require_memory_auth)):
 
 
 # ── Phase 15: Workflow Monitoring Endpoints ────────────────────────────────────
+
 
 @app.get("/api/workflows/status", response_model=WorkflowStatusResponse)
 async def get_workflow_status():
@@ -2042,6 +2355,7 @@ async def get_rate_limit_status():
 
 # ── WebSocket PTY terminal ────────────────────────────────────────────────────
 
+
 @app.websocket("/ws/cli")
 async def ws_cli(ws: WebSocket):
     """
@@ -2055,20 +2369,39 @@ async def ws_cli(ws: WebSocket):
       { "type": "output", "data": "<terminal output>" }
       { "type": "exit",   "code": N }
     """
+    auth_header = ws.headers.get("authorization", "")
+    credential = auth_header[7:].strip() if auth_header.lower().startswith("bearer ") else ""
+    try:
+        expected = get_token(required_elevated=True)[0] or ""
+    except TokenResolutionError:
+        expected = ""
+    bearer_valid = bool(expected and credential and secrets.compare_digest(credential, expected))
+    session_valid = _valid_ui_session(ws.cookies.get(_UI_SESSION_COOKIE, ""))
+    if not bearer_valid and not session_valid:
+        await ws.close(code=4401)
+        return
+
+    origin = ws.headers.get("origin")
+    if origin and origin not in _build_cors_origins():
+        await ws.close(code=4403)
+        return
+
     await ws.accept()
     log.info("WS PTY session opened")
 
     master_fd, slave_fd = pty.openpty()
     shell = _DEFAULT_LOGIN_SHELL
 
-    proc = subprocess.Popen(  # nosec B603 — shell path and environment are sanitized before execution
-        [shell, "--login"],
-        stdin=slave_fd,
-        stdout=slave_fd,
-        stderr=slave_fd,
-        cwd=REPO_ROOT,
-        env=_sanitize_cli_env(None),
-        close_fds=True,
+    proc = (
+        subprocess.Popen(  # nosec B603 — shell path and environment are sanitized before execution
+            [shell, "--login"],
+            stdin=slave_fd,
+            stdout=slave_fd,
+            stderr=slave_fd,
+            cwd=REPO_ROOT,
+            env=_sanitize_cli_env(None),
+            close_fds=True,
+        )
     )
     os.close(slave_fd)
     loop = asyncio.get_event_loop()
@@ -2077,19 +2410,19 @@ async def ws_cli(ws: WebSocket):
         """Drain PTY output and forward to WebSocket."""
         try:
             while True:
-                r, _, _ = await loop.run_in_executor(
-                    None, select.select, [master_fd], [], [], 0.05
-                )
+                r, _, _ = await loop.run_in_executor(None, select.select, [master_fd], [], [], 0.05)
                 if r:
                     try:
                         data = os.read(master_fd, 4096)
                     except OSError:
                         break
                     if data:
-                        await ws.send_json({
-                            "type": "output",
-                            "data": data.decode(errors="replace"),
-                        })
+                        await ws.send_json(
+                            {
+                                "type": "output",
+                                "data": data.decode(errors="replace"),
+                            }
+                        )
                 if proc.poll() is not None:
                     # Drain remaining output
                     try:
@@ -2097,20 +2430,27 @@ async def ws_cli(ws: WebSocket):
                             chunk = os.read(master_fd, 4096)
                             if not chunk:
                                 break
-                            await ws.send_json({
-                                "type": "output",
-                                "data": chunk.decode(errors="replace"),
-                            })
+                            await ws.send_json(
+                                {
+                                    "type": "output",
+                                    "data": chunk.decode(errors="replace"),
+                                }
+                            )
                     except OSError as exc:
                         # Best-effort drain: PTY may already be closed; ignore and exit.
-                        log.debug("Ignoring OSError while draining PTY output: %s", sanitize_for_log(type(exc).__name__))
+                        log.debug(
+                            "Ignoring OSError while draining PTY output: %s",
+                            sanitize_for_log(type(exc).__name__),
+                        )
                     await ws.send_json({"type": "exit", "code": proc.returncode or 0})
                     break
         except WebSocketDisconnect:
             # Client disconnected — normal control flow; stop reading silently.
             _ = None  # suppressed: no action needed
         except RuntimeError as exc:
-            log.debug("Unexpected RuntimeError in read_pty: %s", sanitize_for_log(type(exc).__name__))
+            log.debug(
+                "Unexpected RuntimeError in read_pty: %s", sanitize_for_log(type(exc).__name__)
+            )
 
     async def write_pty() -> None:
         """Forward WebSocket keystrokes to the PTY."""
@@ -2130,7 +2470,9 @@ async def ws_cli(ws: WebSocket):
             # Client disconnected — normal control flow; stop writing silently.
             _ = None  # suppressed: no action needed
         except RuntimeError as exc:
-            log.debug("Unexpected RuntimeError in write_pty: %s", sanitize_for_log(type(exc).__name__))
+            log.debug(
+                "Unexpected RuntimeError in write_pty: %s", sanitize_for_log(type(exc).__name__)
+            )
 
     try:
         await asyncio.gather(read_pty(), write_pty())
@@ -2150,6 +2492,7 @@ async def ws_cli(ws: WebSocket):
 
 
 # ── WebSocket metrics streaming ────────────────────────────────────────────────
+
 
 @app.websocket("/ws/metrics")
 async def ws_metrics(ws: WebSocket):

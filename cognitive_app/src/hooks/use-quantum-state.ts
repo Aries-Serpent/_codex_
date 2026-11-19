@@ -4,7 +4,7 @@ import { MockCodexAPIClient } from '@/lib/mock-api-client';
 
 const API_URL = import.meta.env.VITE_CLI_API_URL
              ?? import.meta.env.VITE_CODEX_API
-             ?? 'http://localhost:8765';
+             ?? 'http://127.0.0.1:8765';
 const API_KEY = import.meta.env.VITE_CODEX_KEY || 'demo-key';
 
 const client = new CodexAPIClient(API_URL, API_KEY);

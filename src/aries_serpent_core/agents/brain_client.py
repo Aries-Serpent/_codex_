@@ -169,6 +169,18 @@ class BrainClient:
 
     # ── Internal helpers ──────────────────────────────────────────────────────
 
+    def _is_approved_credential_origin(self) -> bool:
+        """Return whether this Codespace-local client origin may receive tokens."""
+        parsed = urllib.parse.urlparse(self.base_url)
+        if parsed.scheme not in {"http", "https"}:
+            return False
+        hostname = (parsed.hostname or "").lower()
+        if hostname in {"127.0.0.1", "localhost", "::1"}:
+            return True
+        configured = os.environ.get("CODEX_ALLOWED_CLI_API_ORIGINS", "")
+        origins = {value.strip().rstrip("/") for value in configured.split(",") if value.strip()}
+        return parsed.scheme == "https" and self.base_url in origins
+
     @staticmethod
     def _safe_urlopen(req: urllib.request.Request, timeout: int) -> HTTPResponse:
         """Validate the request URL scheme is http/https then call urlopen.
@@ -204,6 +216,9 @@ class BrainClient:
         The local server enforces endpoint authorization. Requests without
         credentials can still check health and receive its HTTP auth errors.
         """
+        if not self._is_approved_credential_origin():
+            logger.warning("BrainClient credential forwarding blocked for unapproved origin")
+            return {}
         try:
             token = (get_token(required_elevated=True)[0] or "").strip()
         except TokenResolutionError:
@@ -219,12 +234,19 @@ class BrainClient:
             logger.debug("No configured BrainClient credentials; server authorization applies")
         return {"Authorization": f"Bearer {token}"} if token else {}
 
-    def _get(self, path: str, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
+    def _get(
+        self,
+        path: str,
+        params: Optional[dict[str, str]] = None,
+        *,
+        authenticated: bool = True,
+    ) -> dict[str, Any]:
         url = f"{self.base_url}{path}"
         if params:
             url = f"{url}?{urllib.parse.urlencode(params)}"
         headers = {"Accept": "application/json"}
-        headers.update(self._auth_header())
+        if authenticated:
+            headers.update(self._auth_header())
         req = urllib.request.Request(url, headers=headers)
         try:
             with self._safe_urlopen(req, timeout=self.timeout) as resp:
@@ -235,12 +257,18 @@ class BrainClient:
             raise BrainClientError(f"GET {path} unreachable: {exc}") from exc
 
     def _post(
-        self, path: str, body: Any, extra_headers: Optional[dict[str, str]] = None
+        self,
+        path: str,
+        body: Any,
+        extra_headers: Optional[dict[str, str]] = None,
+        *,
+        authenticated: bool = True,
     ) -> dict[str, Any]:
         url = f"{self.base_url}{path}"
         data = json.dumps(body).encode()
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
-        headers.update(self._auth_header())
+        if authenticated:
+            headers.update(self._auth_header())
         if extra_headers:
             headers.update(extra_headers)
         req = urllib.request.Request(url, data=data, headers=headers, method="POST")
@@ -275,7 +303,7 @@ class BrainClient:
         -------
         dict with keys: status, repo_root, timestamp, history_db.
         """
-        return self._get("/api/health")
+        return self._get("/api/health", authenticated=False)
 
     def is_available(self) -> bool:
         """Return True if the CLI API server is reachable and healthy."""
@@ -284,6 +312,56 @@ class BrainClient:
             return data.get("status") == "ok"
         except BrainClientError:
             return False
+
+    def capabilities(self) -> dict[str, Any]:
+        """Return server-observed middleware routes and adapter states."""
+        return self._get("/api/capabilities", authenticated=False)
+
+    def plan_route(
+        self,
+        capability: str,
+        action: str,
+        target: str,
+        *,
+        mutating: bool = False,
+        arguments: dict[str, Any] | None = None,
+        idempotency_key: str = "",
+    ) -> dict[str, Any]:
+        """Ask the Cognitive Brain to plan a route without executing it."""
+        return self._post(
+            "/api/routes/plan",
+            {
+                "capability": capability,
+                "action": action,
+                "target": target,
+                "arguments": arguments or {},
+                "idempotency_key": idempotency_key,
+            },
+            authenticated=False,
+        )
+
+    def execute_route(
+        self,
+        capability: str,
+        action: str,
+        target: str,
+        *,
+        arguments: dict[str, Any] | None = None,
+        idempotency_key: str,
+        allow_write: bool = False,
+    ) -> dict[str, Any]:
+        """Execute a policy-bound route through the Cognitive Brain middleware."""
+        return self._post(
+            "/api/routes/execute",
+            {
+                "capability": capability,
+                "action": action,
+                "target": target,
+                "arguments": arguments or {},
+                "idempotency_key": idempotency_key,
+                "allow_write": allow_write,
+            },
+        )
 
     def run_command(
         self,

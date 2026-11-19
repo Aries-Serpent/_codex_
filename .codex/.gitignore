@@ -40,3 +40,5 @@ agent_token_*.json
 # Runtime / ephemeral files that must never be committed:
 session_token.json
 live_token.json
+cli_api_server.pid
+.copilot-agent-environment-report.txt
