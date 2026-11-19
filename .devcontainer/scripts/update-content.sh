@@ -63,7 +63,10 @@ echo "🐍 Installing Python dependencies…"
     --quiet
 
 "$PYTHON_BIN" scripts/autonomous/install_gh_user.py
+bash scripts/autonomous/install_node_user.sh
+bash scripts/autonomous/install_chromium_user.sh
 export PATH="${HOME}/.local/bin:${PATH}"
+export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH="${HOME}/.local/bin/chromium"
 
 echo "  Python packages installed:"
 "$PYTHON_BIN" -m pip list --format=columns 2>/dev/null | grep -E "^(pytest|ruff|black|mypy|fastapi|uvicorn|httpx|cryptography|codex)" || true

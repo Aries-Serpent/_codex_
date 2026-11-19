@@ -11,7 +11,7 @@ import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import 'xterm/css/xterm.css';
 
-const API_BASE = import.meta.env.VITE_CLI_API_URL ?? 'http://localhost:8765';
+const API_BASE = import.meta.env.VITE_CLI_API_URL ?? 'http://127.0.0.1:8765';
 const WS_BASE  = API_BASE.replace(/^http/, 'ws');
 
 export function XtermTerminal() {

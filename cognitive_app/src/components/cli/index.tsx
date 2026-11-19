@@ -28,7 +28,7 @@ interface CliRunResponse {
   timestamp: string;
 }
 
-const CLI_API = 'http://localhost:8765';
+const CLI_API = (import.meta.env.VITE_CLI_API_URL as string | undefined) ?? 'http://127.0.0.1:8765';
 
 const QUICK_COMMANDS = [
   { label: 'Health',     cmd: 'python -m codex.cli health 2>/dev/null || echo "CLI unavailable"' },
@@ -44,7 +44,7 @@ const QUICK_COMMANDS = [
 export function CliTerminal() {
   const [entries, setEntries] = useState<CliEntry[]>([{
     id: 0, type: 'system',
-    text: '🧠 Codex Cognitive Brain — CLI Terminal\nServer: http://localhost:8765\nType a command and press Enter. ↑↓ for history. Ctrl+L to clear.\n',
+    text: '🧠 Codex Cognitive Brain — CLI Terminal\nServer: http://127.0.0.1:8765\nType a command and press Enter. ↑↓ for history. Ctrl+L to clear.\n',
     timestamp: new Date().toISOString(),
   }]);
   const [input, setInput]       = useState('');

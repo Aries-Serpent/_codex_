@@ -41,6 +41,7 @@ if (!['http:', 'https:'].includes(site.protocol) || site.username || site.passwo
   throw new Error('BASE_URL must be an HTTP(S) URL without credentials');
 }
 const externalServer = !!process.env.BASE_URL;
+const chromiumExecutablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -109,7 +110,12 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        ...(chromiumExecutablePath
+          ? { launchOptions: { executablePath: chromiumExecutablePath } }
+          : {}),
+      },
     },
 
     {

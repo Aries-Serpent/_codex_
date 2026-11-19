@@ -170,13 +170,15 @@ def cli_api_probe() -> dict[str, Any]:
 
 def mcp_probe() -> dict[str, Any]:
     validator = ROOT / "scripts" / "validate_mcp.py"
+    workspace_config = ROOT / ".vscode" / "mcp.json"
     if not validator.exists():
         return {"documented": False, "probe_available": False}
     return {
         "documented": True,
         "probe_available": True,
+        "workspace_configured": workspace_config.exists(),
         "host_exposed": False,
-        "exposure_status": "not_verified_in_current_copilot_host",
+        "exposure_status": "configured_but_not_verified_in_current_copilot_host",
     }
 
 

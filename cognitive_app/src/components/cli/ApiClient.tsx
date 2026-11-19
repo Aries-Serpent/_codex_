@@ -38,7 +38,7 @@ interface ApiProxyResponse {
 
 // ── Constants ─────────────────────────────────────────────────────────────
 
-const CLI_API = (import.meta.env.VITE_CLI_API_URL as string | undefined) ?? 'http://localhost:8765';
+const CLI_API = (import.meta.env.VITE_CLI_API_URL as string | undefined) ?? 'http://127.0.0.1:8765';
 
 const METHOD_COLORS: Record<HttpMethod, string> = {
   GET:    'bg-blue-500/20 text-blue-300 border-blue-500/40',
@@ -56,10 +56,10 @@ const STATUS_COLOR = (code: number) =>
 
 // Preset endpoints — wired to the cognitive brain / CI server
 const PRESETS = [
-  { label: 'Brain Health',  method: 'GET'    as HttpMethod, url: 'http://localhost:8765/api/health',        body: '' },
-  { label: 'CLI History',   method: 'GET'    as HttpMethod, url: 'http://localhost:8765/api/cli/history',   body: '' },
-  { label: 'Clear History', method: 'DELETE' as HttpMethod, url: 'http://localhost:8765/api/cli/history',   body: '' },
-  { label: 'Run Command',   method: 'POST'   as HttpMethod, url: 'http://localhost:8765/api/cli/run',
+  { label: 'Brain Health',  method: 'GET'    as HttpMethod, url: 'http://127.0.0.1:8765/api/health',        body: '' },
+  { label: 'CLI History',   method: 'GET'    as HttpMethod, url: 'http://127.0.0.1:8765/api/cli/history',   body: '' },
+  { label: 'Clear History', method: 'DELETE' as HttpMethod, url: 'http://127.0.0.1:8765/api/cli/history',   body: '' },
+  { label: 'Run Command',   method: 'POST'   as HttpMethod, url: 'http://127.0.0.1:8765/api/cli/run',
     body: JSON.stringify({ command: 'git status --short', timeout: 10 }, null, 2) },
   { label: 'GH Repo',       method: 'GET'    as HttpMethod, url: 'https://api.github.com/repos/Aries-Serpent/_codex_', body: '' },
   { label: 'GH Runs',       method: 'GET'    as HttpMethod, url: 'https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs?per_page=5', body: '' },
@@ -69,7 +69,7 @@ const PRESETS = [
 
 export function ApiClient() {
   const [method, setMethod]     = useState<HttpMethod>('GET');
-  const [url, setUrl]           = useState('http://localhost:8765/api/health');
+  const [url, setUrl]           = useState('http://127.0.0.1:8765/api/health');
   const [headers, setHeaders]   = useState('{\n  "Accept": "application/json"\n}');
   const [params, setParams]     = useState('');
   const [body, setBody]         = useState('');

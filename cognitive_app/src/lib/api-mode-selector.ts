@@ -50,7 +50,7 @@ export interface SelectedAPI {
   brainIsLive:   boolean;
 }
 
-const CLI_URL  = (import.meta.env.VITE_CLI_API_URL  as string | undefined) ?? 'http://localhost:8765';
+const CLI_URL  = (import.meta.env.VITE_CLI_API_URL  as string | undefined) ?? 'http://127.0.0.1:8765';
 const CODEX_KEY = (import.meta.env.VITE_CODEX_KEY   as string | undefined) ?? '';
 
 let _cached: SelectedAPI | null = null;

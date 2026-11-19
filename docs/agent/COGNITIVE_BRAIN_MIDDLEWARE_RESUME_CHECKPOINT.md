@@ -46,6 +46,16 @@ on the first implementation commit alone.
     capability read completed once and replayed on the second request.
 11. Added checksum-verified user-local `gh` installation during update-content so a
     fresh/restarted Codespace restores the CLI instead of relying on session state.
+12. Restored Node 24.22.3/npm 11.11.0 and Alpine-native Chromium 149 from official
+    package metadata into user-local prefixes. `npm ci`, 210 Vitest tests, production
+    build, and a targeted real-browser Cognitive Brain session test pass.
+13. Added a stdio MCP bridge and `.vscode/mcp.json`; initialize, tools/list, a live
+    idempotent read call, and one no-ref blob write were verified. Active Copilot-host
+    tool exposure is still unverified because the current agent namespace does not
+    prove MCP activation.
+14. Created and pushed `clone-main` at the current `origin/main` tip. The queued
+    `CLONE_MAIN_31_FILE_TRANSPLANT_PLAN.md` maps exactly 31 comparison files to three
+    source commits; no files have been applied to `clone-main` yet.
 
 ## Current Verified State
 
@@ -72,8 +82,12 @@ on the first implementation commit alone.
 - Python and shell syntax checks passed.
 - VS Code TypeScript diagnostics report no errors in changed frontend files.
 - `git diff --check` passed.
-- Full frontend build and Playwright E2E were not run because Node/npm and browser
-  dependencies are absent from the active Codespace.
+- `npm ci`, 210 Vitest tests, and production build passed.
+- Playwright Chromium ran successfully. The targeted Cognitive Brain session E2E
+  passed; the broad suite had 14 passes and 3 unrelated hidden-fixture visibility
+  failures in `dependency-behavior.spec.ts`.
+- Full `tsc --noEmit` and ESLint still report pre-existing frontend type/lint debt;
+  the configured production build uses `tsc -b --noCheck` and succeeds.
 
 ## Remaining Work
 
