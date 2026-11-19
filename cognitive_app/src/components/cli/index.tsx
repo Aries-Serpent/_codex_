@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { ensureBrainSession } from '@/lib/brain-session';
+import { brainSessionFetch, ensureBrainSession, getBrainAPIURL } from '@/lib/brain-session';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -28,7 +28,7 @@ interface CliRunResponse {
   timestamp: string;
 }
 
-const CLI_API = (import.meta.env.VITE_CLI_API_URL as string | undefined) ?? 'http://127.0.0.1:8765';
+const CLI_API = getBrainAPIURL();
 
 const QUICK_COMMANDS = [
   { label: 'Health',     cmd: 'python -m codex.cli health 2>/dev/null || echo "CLI unavailable"' },
@@ -44,7 +44,7 @@ const QUICK_COMMANDS = [
 export function CliTerminal() {
   const [entries, setEntries] = useState<CliEntry[]>([{
     id: 0, type: 'system',
-    text: '🧠 Codex Cognitive Brain — CLI Terminal\nServer: http://127.0.0.1:8765\nType a command and press Enter. ↑↓ for history. Ctrl+L to clear.\n',
+    text: `🧠 Codex Cognitive Brain — CLI Terminal\nServer: ${CLI_API}\nType a command and press Enter. ↑↓ for history. Ctrl+L to clear.\n`,
     timestamp: new Date().toISOString(),
   }]);
   const [input, setInput]       = useState('');
@@ -91,12 +91,11 @@ export function CliTerminal() {
     }
 
     try {
-      const resp = await fetch(`${CLI_API}/api/cli/run`, {
+      const resp = await brainSessionFetch('/api/cli/run', {
         method: 'POST',
-        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ command: trimmed, timeout: 30 }),
-      });
+      }, CLI_API);
       if (!resp.ok) {
         const e = await resp.json().catch(() => ({ detail: resp.statusText }));
         throw new Error(e.detail || resp.statusText);
@@ -229,16 +228,19 @@ export function ApiClient() {
     try { if (hdrs.trim()) ph = JSON.parse(hdrs); } catch {}
     try { if (prms.trim()) pp = JSON.parse(prms); } catch {}
     try { if (body.trim()) pb = JSON.parse(body);  } catch { pb = body.trim()||undefined; }
+    ph = Object.fromEntries(
+      Object.entries(ph).filter(([name]) => name.toLowerCase() !== 'authorization'),
+    );
 
     try {
-      const r = await fetch(`${CLI_API}/api/request`, {
+      const r = await brainSessionFetch('/api/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ method, url,
           headers: Object.keys(ph).length ? ph : undefined,
           params:  Object.keys(pp).length ? pp : undefined,
           body: pb, timeout: 30 }),
-      });
+      }, CLI_API);
       const d = await r.json().catch(() => ({ detail: r.statusText }));
       if (!r.ok || 'detail' in d) {
         setEntries(p => [{ id, method, url, statusCode: r.status, durationMs: 0, body: d,
@@ -293,7 +295,7 @@ export function ApiClient() {
           <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground" onClick={() => setShowH(v=>!v)}>
             {showH ? <CaretDown className="w-3 h-3" /> : <CaretRight className="w-3 h-3" />}Headers (JSON)
           </button>
-          {showH && <Textarea value={hdrs} onChange={e=>setHdrs(e.target.value)} className="mt-1 font-mono text-xs h-20 resize-none" placeholder='{ "Authorization": "Bearer …" }' />}
+          {showH && <Textarea value={hdrs} onChange={e=>setHdrs(e.target.value)} className="mt-1 font-mono text-xs h-20 resize-none" placeholder='{ "Accept": "application/json" }' />}
         </div>
         <div>
           <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground" onClick={() => setShowP(v=>!v)}>

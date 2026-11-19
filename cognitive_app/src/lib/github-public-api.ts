@@ -24,7 +24,10 @@ function headers(): HeadersInit {
 }
 
 async function ghFetch<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, { headers: headers() });
+  const res = await fetch(`${BASE}${path}`, {
+    credentials: 'omit',
+    headers: headers(),
+  });
   if (!res.ok) throw new Error(`GitHub API ${path} → ${res.status}`);
   return res.json() as Promise<T>;
 }

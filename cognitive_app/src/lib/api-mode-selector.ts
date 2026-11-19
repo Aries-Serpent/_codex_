@@ -34,7 +34,7 @@ import { CodexAPIClient }    from './codex-api-client';
 import { MockCodexAPIClient } from './mock-api-client';
 import { loadHAR, harFetch }  from './har-replay-client';
 import * as GitHubAPI          from './github-public-api';
-import { ensureBrainSession }  from './brain-session';
+import { ensureBrainSession, getBrainAPIURL } from './brain-session';
 
 export type APIMode = 'live' | 'github' | 'har' | 'mock';
 
@@ -50,8 +50,7 @@ export interface SelectedAPI {
   brainIsLive:   boolean;
 }
 
-const CLI_URL  = (import.meta.env.VITE_CLI_API_URL  as string | undefined) ?? 'http://127.0.0.1:8765';
-const CODEX_KEY = (import.meta.env.VITE_CODEX_KEY   as string | undefined) ?? '';
+const CLI_URL = getBrainAPIURL();
 
 let _cached: SelectedAPI | null = null;
 
@@ -100,7 +99,7 @@ const serverOK = (targetMode === 'live' || !targetMode)
 
   switch (mode) {
     case 'live':
-      brainClient = new CodexAPIClient(CLI_URL, CODEX_KEY);
+      brainClient = new CodexAPIClient(CLI_URL);
       label       = `🟢 Live — ${CLI_URL}`;
       brainIsLive = true;
       break;

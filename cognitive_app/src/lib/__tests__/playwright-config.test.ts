@@ -21,7 +21,7 @@ describe('Playwright suite boundaries', () => {
     const config = await defaultConfig();
     expect(config.testIgnore).toBe('**/code-generator-lazy-init.spec.ts');
     expect(config.webServer).toMatchObject({
-      url: 'http://127.0.0.1:5173/',
+      url: 'http://localhost:5173/',
       reuseExistingServer: false,
     });
   });
@@ -34,6 +34,16 @@ describe('Playwright suite boundaries', () => {
     const config = await defaultConfig(baseURL);
     expect(config.use?.baseURL).toBe(baseURL);
     expect(config.webServer).toBeUndefined();
+  });
+
+  it('passes the configured forwarded brain origin to Vite', async () => {
+    vi.stubEnv('COGNITIVE_BRAIN_API_URL', 'https://brain.example.invalid/forwarded/');
+    const config = await defaultConfig();
+    expect(config.webServer).toMatchObject({
+      env: {
+        VITE_CLI_API_URL: 'https://brain.example.invalid/forwarded',
+      },
+    });
   });
 
   it.each(['file:///tmp/site', `https://${'synthetic-user'}@example.invalid/`])(
@@ -50,9 +60,9 @@ describe('Playwright suite boundaries', () => {
   });
 
   it.each([
-    ['1', 'true', 'http://127.0.0.1:5173/_codex_/cognitive_app/'],
-    ['1', '', 'http://127.0.0.1:5173/'],
-    ['', 'true', 'http://127.0.0.1:5173/'],
+    ['1', 'true', 'http://localhost:5173/_codex_/cognitive_app/'],
+    ['1', '', 'http://localhost:5173/'],
+    ['', 'true', 'http://localhost:5173/'],
   ])(
     'targets the base path its own server uses (E2E_PRODUCTION=%s, GITHUB_ACTIONS=%s)',
     async (mode, actions, url) => {

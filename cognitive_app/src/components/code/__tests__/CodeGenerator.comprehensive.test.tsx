@@ -82,7 +82,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockSpark.llm.mockResolvedValue(`def generated_function():\n    """AI-generated code"""\n    return "success"`);
-    delete (import.meta.env as any).VITE_CODEX_KEY;
+    delete (import.meta.env as any).VITE_CLI_API_URL;
     delete (import.meta.env as any).VITE_CODEX_API;
 
     vi.mocked(CodexAPIClient).mockImplementation(function () {
@@ -127,6 +127,13 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
   });
 
   it('generates code through the demo fallback path', async () => {
+    (import.meta.env as any).VITE_CLI_API_URL = 'http://127.0.0.1:8769';
+    vi.mocked(CodexAPIClient).mockImplementation(function () {
+      return {
+        getStatus: async () => ({ healthy: true, metrics: { k1_factor: 0.312 } }),
+        generateCode: async () => { throw new Error('Session unavailable'); },
+      } as any;
+    });
     render(<CodeGenerator />);
 
     await waitFor(() => {
@@ -265,6 +272,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
   // Gap 2.5 — Non-429 API error: info message + toast.error + mock fallback succeeds
   it('shows info message and toast.error on non-429 API error, then falls back to mock', async () => {
+    (import.meta.env as any).VITE_CLI_API_URL = 'http://127.0.0.1:8766';
     const apiError = new Error('Internal Server Error');
     // Use a regular function (not arrow) so vitest spy can call it with `new`.
     vi.mocked(CodexAPIClient).mockImplementation(function () {
@@ -273,8 +281,6 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
         generateCode: async () => { throw apiError; },
       };
     } as any);
-
-    (import.meta.env as any).VITE_CODEX_KEY = 'test-key';
 
     render(<CodeGenerator />);
     await waitFor(() => expect(screen.getByText('Connected')).toBeInTheDocument(), { timeout: 3000 });
@@ -301,7 +307,6 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
       expect(screen.getByText('Generated Code')).toBeInTheDocument();
     }, { timeout: 3000 });
 
-    delete (import.meta.env as any).VITE_CODEX_KEY;
   });
 
   // Gap 2.8 — Prompt too short: the button stays disabled and the char-count hint
@@ -333,7 +338,13 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
   // The mock-api-client vi.mock factory is module-scoped, so we use prototype spying to
   // make the already-instantiated mock client's generateCode throw for this one test.
   it('fires toast.error when mock client generateCode throws', async () => {
-    delete (import.meta.env as any).VITE_CODEX_KEY;
+    (import.meta.env as any).VITE_CLI_API_URL = 'http://127.0.0.1:8767';
+    vi.mocked(CodexAPIClient).mockImplementation(function () {
+      return {
+        getStatus: async () => ({ healthy: true, metrics: { k1_factor: 0.312 } }),
+        generateCode: async () => { throw new Error('Session unavailable'); },
+      };
+    } as any);
 
     // Spy on MockCodexAPIClient prototype so ANY instance created by the component throws.
     const { MockCodexAPIClient } = await import('@/lib/mock-api-client');
@@ -407,7 +418,13 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
   // Test: generation calls use DEFAULT_LANGUAGE ('python')
   it('calls mock generateCode with language python (DEFAULT_LANGUAGE)', async () => {
-    delete (import.meta.env as any).VITE_CODEX_KEY;
+    (import.meta.env as any).VITE_CLI_API_URL = 'http://127.0.0.1:8768';
+    vi.mocked(CodexAPIClient).mockImplementation(function () {
+      return {
+        getStatus: async () => ({ healthy: true, metrics: { k1_factor: 0.312 } }),
+        generateCode: async () => { throw new Error('Session unavailable'); },
+      };
+    } as any);
 
     const { MockCodexAPIClient } = await import('@/lib/mock-api-client');
     const generateSpy = vi.spyOn(MockCodexAPIClient.prototype, 'generateCode');

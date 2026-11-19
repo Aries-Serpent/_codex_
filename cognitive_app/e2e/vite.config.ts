@@ -7,7 +7,7 @@ export default mergeConfig(applicationConfig, {
     name: 'isolated-e2e-server',
     enforce: 'post',
     configResolved(config) {
-      config.server.host = '127.0.0.1';
+      config.server.host = '0.0.0.0';
       config.server.port = Number(process.env.E2E_PORT || 5173);
       config.server.strictPort = true;
       config.server.proxy = {};

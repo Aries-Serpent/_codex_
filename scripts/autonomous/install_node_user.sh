@@ -3,53 +3,89 @@ set -euo pipefail
 
 PREFIX="${HOME}/.local/opt/codex-node"
 LOCAL_BIN="${HOME}/.local/bin"
-NODE_VERSION="24.22.3"
-NPM_VERSION="11.11.0"
+NODE_VERSION="22.22.2"
 
-if [ -x "${PREFIX}/usr/bin/node" ] && \
-   LD_LIBRARY_PATH="${PREFIX}/usr/lib:${PREFIX}/lib" \
-   "${PREFIX}/usr/bin/node" --version | grep -q "^v${NODE_VERSION}$"; then
-    echo "Node ${NODE_VERSION} already installed at ${PREFIX}"
-else
-    TMP_DIR="$(mktemp -d)"
-    trap 'rm -rf "$TMP_DIR"' EXIT
-    cd "$TMP_DIR"
-    apk fetch --recursive nodejs npm >/dev/null
-    rm -rf "$PREFIX"
-    mkdir -p "$PREFIX"
-    for package in *.apk; do
-        tar -xzf "$package" -C "$PREFIX"
+find_feature_runtime() {
+    local candidate node_version node_dir
+    local candidates=(
+        "$PREFIX/bin/node"
+        "${CODEX_NODE_FEATURE_BIN:-}"
+        "${HOME}/.local/share/mise/shims/node"
+        "/usr/local/share/nvm/current/bin/node"
+        "/usr/local/bin/node"
+        "$(command -v node 2>/dev/null || true)"
+    )
+
+    for candidate in "${candidates[@]}"; do
+        [ -n "$candidate" ] && [ -x "$candidate" ] || continue
+        node_version="$($candidate --version 2>/dev/null || true)"
+        case "$node_version" in
+            v22.* | v24.* | v26.*) ;;
+            *) continue ;;
+        esac
+        node_dir="$(dirname "$candidate")"
+        [ -x "$node_dir/npm" ] && [ -x "$node_dir/npx" ] || continue
+        NODE_BIN="$candidate"
+        NPM_BIN="$node_dir/npm"
+        NPX_BIN="$node_dir/npx"
+        return 0
     done
+    return 1
+}
+
+install_pinned_runtime() {
+    local architecture artifact checksum stage_dir tmp_dir
+    architecture="$(uname -m)"
+    case "$architecture" in
+        x86_64)
+            artifact="node-v${NODE_VERSION}-linux-x64.tar.gz"
+            checksum="978978a635eef872fa68beae09f0aad0bbbae6757e444da80b570964a97e62a3"
+            ;;
+        aarch64 | arm64)
+            artifact="node-v${NODE_VERSION}-linux-arm64.tar.gz"
+            checksum="b2f3a96f31486bfc365192ad65ced14833ad2a3c2e1bcefec4846902f264fa28"
+            ;;
+        *)
+            echo "Unsupported Node fallback architecture: $architecture" >&2
+            return 1
+            ;;
+    esac
+
+    mkdir -p "$(dirname "$PREFIX")"
+    tmp_dir="$(mktemp -d)"
+    stage_dir="$(mktemp -d "${PREFIX}.tmp.XXXXXX")"
+    trap 'rm -rf "$tmp_dir" "$stage_dir"' RETURN
+    curl -fsSL -o "$tmp_dir/$artifact" \
+        "https://nodejs.org/dist/v${NODE_VERSION}/${artifact}"
+    printf '%s  %s\n' "$checksum" "$artifact" > "$tmp_dir/SHA256SUMS"
+    (cd "$tmp_dir" && sha256sum -c SHA256SUMS)
+
+    tar -xzf "$tmp_dir/$artifact" -C "$stage_dir" --strip-components=1
+    [ -x "$stage_dir/bin/node" ]
+    [ -x "$stage_dir/bin/npm" ]
+    [ -x "$stage_dir/bin/npx" ]
+    rm -rf "$PREFIX"
+    mv "$stage_dir" "$PREFIX"
+    trap 'rm -rf "$tmp_dir"' RETURN
+    NODE_BIN="$PREFIX/bin/node"
+    NPM_BIN="$PREFIX/bin/npm"
+    NPX_BIN="$PREFIX/bin/npx"
+}
+
+if [ "${CODEX_NODE_FORCE_FALLBACK:-0}" = "1" ] || ! find_feature_runtime; then
+    install_pinned_runtime
 fi
 
-mkdir -p "$LOCAL_BIN"
-cat > "${LOCAL_BIN}/node" <<'EOF'
-#!/usr/bin/env bash
-PREFIX="${HOME}/.local/opt/codex-node"
-export LD_LIBRARY_PATH="${PREFIX}/usr/lib:${PREFIX}/lib:${LD_LIBRARY_PATH:-}"
-export NODE_ICU_DATA="${PREFIX}/usr/share/icu/76.1"
-exec "${PREFIX}/usr/bin/node" "$@"
-EOF
-cat > "${LOCAL_BIN}/npm" <<'EOF'
-#!/usr/bin/env bash
-PREFIX="${HOME}/.local/opt/codex-node"
-export LD_LIBRARY_PATH="${PREFIX}/usr/lib:${PREFIX}/lib:${LD_LIBRARY_PATH:-}"
-export NODE_ICU_DATA="${PREFIX}/usr/share/icu/76.1"
-export PATH="${PREFIX}/usr/bin:${PATH}"
-exec "${PREFIX}/usr/bin/npm" "$@"
-EOF
-cat > "${LOCAL_BIN}/npx" <<'EOF'
-#!/usr/bin/env bash
-PREFIX="${HOME}/.local/opt/codex-node"
-export LD_LIBRARY_PATH="${PREFIX}/usr/lib:${PREFIX}/lib:${LD_LIBRARY_PATH:-}"
-export NODE_ICU_DATA="${PREFIX}/usr/share/icu/76.1"
-export PATH="${PREFIX}/usr/bin:${PATH}"
-exec "${PREFIX}/usr/bin/npx" "$@"
-EOF
-chmod 0755 "${LOCAL_BIN}/node" "${LOCAL_BIN}/npm" "${LOCAL_BIN}/npx"
+NODE_ACTUAL="$("$NODE_BIN" --version)"
+NPM_ACTUAL="$(PATH="$(dirname "$NODE_BIN"):${PATH}" "$NPM_BIN" --version)"
+case "$NODE_ACTUAL" in
+    v22.* | v24.* | v26.*) ;;
+    *) exit 1 ;;
+esac
+[ -n "$NPM_ACTUAL" ]
 
-NODE_ACTUAL="$("${LOCAL_BIN}/node" --version)"
-NPM_ACTUAL="$("${LOCAL_BIN}/npm" --version)"
-[ "$NODE_ACTUAL" = "v${NODE_VERSION}" ]
-[ "$NPM_ACTUAL" = "$NPM_VERSION" ]
-printf 'node=%s npm=%s\n' "$NODE_ACTUAL" "$NPM_ACTUAL"
+mkdir -p "$LOCAL_BIN"
+ln -sfn "$NODE_BIN" "$LOCAL_BIN/node"
+ln -sfn "$NPM_BIN" "$LOCAL_BIN/npm"
+ln -sfn "$NPX_BIN" "$LOCAL_BIN/npx"
+printf 'node=%s npm=%s source=%s\n' "$NODE_ACTUAL" "$NPM_ACTUAL" "$NODE_BIN"

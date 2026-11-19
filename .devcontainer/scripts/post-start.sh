@@ -15,6 +15,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(git -C "${SCRIPT_DIR}/../.." rev-parse --show-toplevel)"
 WORKSPACE="${CODESPACE_VSCODE_FOLDER:-${REPO_ROOT}}"
 CLI_API_PORT="${CODEX_CLI_API_PORT_NUMBER:-8765}"
+if [ -n "${CODEX_CLI_API_BIND_HOST:-}" ]; then
+    CLI_API_BIND_HOST="$CODEX_CLI_API_BIND_HOST"
+elif [ -n "${CODESPACE_NAME:-}" ]; then
+    CLI_API_BIND_HOST="0.0.0.0"
+else
+    CLI_API_BIND_HOST="127.0.0.1"
+fi
 LOCAL_CLI_API_URL="http://127.0.0.1:${CLI_API_PORT}"
 cd "$WORKSPACE"
 
@@ -93,6 +100,25 @@ export AGENT_GITHUB_TOKEN="${GITHUB_TOKEN:-}"
 export CODEX_DB_PATH="${WORKSPACE}/.codex/codex.db"
 export CODEX_SESSION_LOG_DIR="${WORKSPACE}/.codex/sessions"
 export PYTHONPATH="${WORKSPACE}/src:${PYTHONPATH:-}"
+if [ -n "${CODESPACE_NAME:-}" ]; then
+    CODESPACES_DOMAIN="${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN:-preview.app.github.dev}"
+    CODESPACE_UI_ORIGIN="https://${CODESPACE_NAME}-5173.${CODESPACES_DOMAIN}"
+    if [ -n "${CODEX_ALLOWED_ORIGINS:-}" ]; then
+        export CODEX_ALLOWED_ORIGINS="${CODEX_ALLOWED_ORIGINS},${CODESPACE_UI_ORIGIN}"
+    else
+        export CODEX_ALLOWED_ORIGINS="$CODESPACE_UI_ORIGIN"
+    fi
+fi
+
+UI_BOOTSTRAP_BROWSER="$("$PYTHON_BIN" -c 'import secrets; print(secrets.token_urlsafe(32))')"
+UI_BOOTSTRAP_MCP="$("$PYTHON_BIN" -c 'import secrets; print(secrets.token_urlsafe(32))')"
+export CODEX_UI_BOOTSTRAP_TOKENS="${UI_BOOTSTRAP_BROWSER},${UI_BOOTSTRAP_MCP}"
+UI_BOOTSTRAP_BROWSER_FILE="${WORKSPACE}/.codex/ui_bootstrap_browser"
+UI_BOOTSTRAP_MCP_FILE="${WORKSPACE}/.codex/ui_bootstrap_mcp"
+umask 077
+printf '%s' "$UI_BOOTSTRAP_BROWSER" > "$UI_BOOTSTRAP_BROWSER_FILE"
+printf '%s' "$UI_BOOTSTRAP_MCP" > "$UI_BOOTSTRAP_MCP_FILE"
+chmod 0600 "$UI_BOOTSTRAP_BROWSER_FILE" "$UI_BOOTSTRAP_MCP_FILE"
 
 if [ -n "$UVICORN_BIN" ]; then
     UVICORN_COMMAND=("$UVICORN_BIN")
@@ -101,7 +127,7 @@ else
 fi
 export CODEX_STARTUP_NONCE="$("$PYTHON_BIN" -c 'import secrets; print(secrets.token_urlsafe(18))')"
 nohup "${UVICORN_COMMAND[@]}" cognitive_app.src.server.cli_api_server:app \
-    --host 127.0.0.1 \
+    --host "${CLI_API_BIND_HOST}" \
     --port "${CLI_API_PORT}" \
     --log-level warning \
     > "$LOG_FILE" 2>&1 &
@@ -128,6 +154,8 @@ done
 
 if [ "$SERVER_READY" = "1" ]; then
     echo "  ✅ CLI API server ready on ${LOCAL_CLI_API_URL}"
+    echo "  🔐 UI launch capability stored at ${UI_BOOTSTRAP_BROWSER_FILE} (mode 0600)"
+    echo "     Append #codex_ui_bootstrap=<file-contents> to the Vite/Cognitive App URL."
     # Auth token report (mirrors copilot-setup-steps.yml auth banner)
     if   [ -n "${CODEX_MASTER_KEY:-}" ]; then
         echo "  🔑 Auth: CODEX_MASTER_KEY configured; live validity requires credential probe"

@@ -39,7 +39,7 @@ export default defineConfig({
   ],
   webServer: variantNames.map((name, index) => {
     const port = firstPort + index;
-    const args = `--config e2e/lazy-init.vite.config.ts --host 127.0.0.1 --port ${port} --strictPort`;
+    const args = `--config e2e/lazy-init.vite.config.ts --host localhost --port ${port} --strictPort`;
     return {
       cwd: resolve(import.meta.dirname, '..'),
       command: production

@@ -1,7 +1,7 @@
 import { mergeConfig } from 'vite';
 import { resolve } from 'node:path';
 import applicationConfig from './vite.config';
-import { dashboardAPI, variants, type Variant } from './lazy-init/variants';
+import { variants, type Variant } from './lazy-init/variants';
 
 const name = process.env.LAZY_VARIANT as Variant;
 if (!Object.hasOwn(variants, name)) throw new Error('LAZY_VARIANT must name a lazy-init build variant');
@@ -17,9 +17,7 @@ export default mergeConfig(applicationConfig, {
   envDir: false,
   envPrefix: [],
   define: {
-    'import.meta.env.VITE_CODEX_KEY': literal(variant.key),
     'import.meta.env.VITE_CODEX_API': literal(variant.api),
-    'import.meta.env.VITE_CLI_API_URL': JSON.stringify(dashboardAPI),
     'import.meta.env.VITE_STAGE_EXECUTION_TIME_MS': literal(variant.timing),
     'import.meta.env.VITE_API_MODE': JSON.stringify('mock'),
   },
@@ -46,5 +44,5 @@ export default mergeConfig(applicationConfig, {
       },
     },
   },
-  preview: { host: '127.0.0.1', strictPort: true, proxy: {} },
+  preview: { host: 'localhost', strictPort: true, proxy: {} },
 });

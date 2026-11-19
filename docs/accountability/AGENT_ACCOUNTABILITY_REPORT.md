@@ -24675,6 +24675,25 @@ and the CI gate requirement.
 
 ---
 
+## SESSION SUMMARY — 2026-11-19 PR #5835 REVIEW REMEDIATION
+
+### Scope and Evidence
+- Addressed the maintainer middleware review set with server-owned UI/MCP bootstrap, HttpOnly sessions, canonical local/Codespaces origins, no browser bearer credentials, deny-by-default mutation policy, atomic idempotency replay, truthful adapter state, safe public errors/logging, fixed outbound URL allowlists, resilient probes, and Debian-compatible Node/Chromium restoration.
+- Added adversarial coverage for session replay/origin denial, hostname cookies, write spoofing, concurrent execution, exception/log redaction, network failure continuation, literal download URLs, and installer/package-manager boundaries.
+- Local validation: 135 scoped backend tests, 218 Vitest tests, 4/4 Chromium session E2E tests, production build, Python compile/Black/isort/Ruff, scoped frontend ESLint, shell syntax, bundle credential scan, and `git diff --check` passed.
+
+### Authority and Residuals
+- No merge, deployment, workflow activation, approval bypass, credential rotation, or security-alert dismissal was performed.
+- Local Semgrep, detect-secrets, and mypy were unavailable; hosted CodeQL/Semgrep reconciliation remains dependent on the pushed SHA and live security analysis.
+- The full frontend `tsc --noEmit` baseline retains 49 unrelated errors; the production build and changed security path are validated separately.
+- Current review threads in unrelated inherited test files were not silently changed or dismissed; they require owner/security disposition based on current hosted alert state.
+
+### Impact
+- `clone-main` review-remediation patch prepared for publication and live PR reconciliation.
+- Canonical WEC selections and genuine review/security controls remain authoritative.
+
+---
+
 ## SESSION SUMMARY — 2026-11-19T01:12:28Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #unknown)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)

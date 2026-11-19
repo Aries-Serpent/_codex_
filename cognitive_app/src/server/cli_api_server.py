@@ -52,13 +52,11 @@ from codex.cognitive_brain.route_execution import (
     RouteExecutionConflict,
     RouteExecutionStore,
 )
-from codex.cognitive_brain.routing import (
-    RouteDecision as _RouteDecision,
-    RouteRequest as _RouteRequest,
-    RouteState as _RouteState,
-    capability_catalog as _capability_catalog,
-    plan_route as _plan_route,
-)
+from codex.cognitive_brain.routing import RouteDecision as _RouteDecision
+from codex.cognitive_brain.routing import RouteRequest as _RouteRequest
+from codex.cognitive_brain.routing import RouteState as _RouteState
+from codex.cognitive_brain.routing import capability_catalog as _capability_catalog
+from codex.cognitive_brain.routing import plan_route as _plan_route
 
 # Safe logging sanitizer to prevent log injection attacks
 try:
@@ -245,8 +243,8 @@ def _assert_safe_proxy_url(url: str) -> str:
 
     try:
         parsed = _urlparse(url)
-    except Exception as exc:  # pragma: no cover
-        raise HTTPException(status_code=400, detail=f"Malformed URL: {exc}")
+    except Exception:  # pragma: no cover
+        raise HTTPException(status_code=400, detail="Malformed URL")
 
     # 1. Require HTTPS
     if parsed.scheme != "https":
@@ -315,10 +313,7 @@ def _build_cors_origins() -> list[str]:
     env_val = os.environ.get("CODEX_ALLOWED_ORIGINS", "").strip()
     if env_val:
         origins = [o.strip() for o in env_val.split(",") if o.strip()]
-        log.info(
-            "CORS origins from CODEX_ALLOWED_ORIGINS: %s",
-            [_sanitize_log_value(origin) for origin in origins],
-        )
+        log.info("CORS origin allowlist loaded from server configuration")
         return origins
     # Default: localhost dev only.
     # Non-local origins (e.g. https://aries-serpent.github.io) MUST be added
@@ -368,10 +363,24 @@ _memory_bearer = HTTPBearer(auto_error=False)
 _UI_SESSION_COOKIE = "codex_ui_session"
 _UI_SESSION_TTL_SECONDS = 15 * 60
 _ui_sessions: dict[str, float] = {}
+_consumed_ui_bootstraps: set[str] = set()
 
 
 def _session_digest(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def _consume_ui_bootstrap(value: str) -> bool:
+    """Consume one process-local launch capability without disclosing it."""
+    if not value:
+        return False
+    digest = _session_digest(value)
+    configured = os.environ.get("CODEX_UI_BOOTSTRAP_TOKENS", "")
+    matches = {_session_digest(token.strip()) for token in configured.split(",") if token.strip()}
+    if digest not in matches or digest in _consumed_ui_bootstraps:
+        return False
+    _consumed_ui_bootstraps.add(digest)
+    return True
 
 
 def _valid_ui_session(session_id: str) -> bool:
@@ -606,7 +615,7 @@ class RoutePlanRequest(BaseModel):
 
 
 class RouteExecuteRequest(RoutePlanRequest):
-    allow_write: bool = False
+    """Authenticated route request; write authority is server-owned."""
 
 
 class CliRunResponse(BaseModel):
@@ -736,7 +745,7 @@ def _observed_adapter_states() -> dict[str, str]:
         "vscode_actions": _RouteState.UNAVAILABLE.value,
         "vscode_scm": _RouteState.EXPOSED.value,
         "vscode_terminal": _RouteState.EXPOSED.value,
-        "gh": _RouteState.VERIFIED.value if shutil.which("gh") else _RouteState.UNAVAILABLE.value,
+        "gh": _RouteState.INSTALLED.value if shutil.which("gh") else _RouteState.UNAVAILABLE.value,
         "rest_graphql": _RouteState.INSTALLED.value,
         "playwright": (
             _RouteState.INSTALLED.value
@@ -771,12 +780,30 @@ async def health():
 
 
 @app.post("/api/session")
-async def create_ui_session(request: Request):
-    """Issue a short-lived HttpOnly session for an allowed Cognitive App origin."""
+async def create_ui_session(
+    request: Request,
+    creds: Optional[HTTPAuthorizationCredentials] = Depends(_memory_bearer),
+):
+    """Exchange a one-time launch capability for an HttpOnly UI session."""
     origin = request.headers.get("origin")
     allowed_origins = set(_build_cors_origins())
     if not origin or origin not in allowed_origins:
         raise HTTPException(status_code=403, detail="Origin is not allowed for UI sessions")
+
+    existing_session = request.cookies.get(_UI_SESSION_COOKIE, "")
+    try:
+        expected_bearer = get_token(required_elevated=True)[0] or ""
+    except TokenResolutionError:
+        expected_bearer = ""
+    bearer_valid = bool(
+        expected_bearer and creds and secrets.compare_digest(creds.credentials, expected_bearer)
+    )
+    if not (
+        _valid_ui_session(existing_session)
+        or bearer_valid
+        or _consume_ui_bootstrap(request.headers.get("X-Codex-Bootstrap", ""))
+    ):
+        raise HTTPException(status_code=401, detail="A valid UI bootstrap is required")
 
     raw_session_id = secrets.token_urlsafe(32)
     _ui_sessions[_session_digest(raw_session_id)] = time.time() + _UI_SESSION_TTL_SECONDS
@@ -940,13 +967,13 @@ async def execute_route(
     _auth: None = Depends(_require_operation_auth),
 ):
     """Execute one authenticated, idempotent, policy-bound route operation."""
-    plan = _route_plan_for(req, allow_writes=req.allow_write)
+    plan = _route_plan_for(req, allow_writes=False)
     if plan.decision is not _RouteDecision.ALLOW:
         return JSONResponse(
             status_code=409,
             content={"detail": "Route is not executable", "plan": plan.to_dict()},
         )
-    payload = {**_route_request_dict(req), "allow_write": req.allow_write}
+    payload = _route_request_dict(req)
 
     try:
         result = await asyncio.to_thread(
@@ -954,8 +981,14 @@ async def execute_route(
             payload,
             lambda: _execute_route_operation(req, plan.preferred_adapter or ""),
         )
-    except RouteExecutionConflict as exc:
-        return JSONResponse(status_code=409, content={"detail": str(exc)})
+    except RouteExecutionConflict:
+        return JSONResponse(
+            status_code=409,
+            content={
+                "detail": "Route execution requires reconciliation",
+                "code": "route_execution_conflict",
+            },
+        )
     return {
         "operation_id": result.operation_id,
         "request_digest": result.request_digest,
@@ -1341,7 +1374,7 @@ def _sanitize_cli_cwd(raw_cwd: Optional[str]) -> str:
         candidate = candidate.resolve(strict=False)
 
     except (ValueError, OSError) as exc:
-        raise HTTPException(status_code=400, detail=f"Invalid path: {exc}") from exc
+        raise HTTPException(status_code=400, detail="Invalid path") from exc
 
     # Ensure the resolved path stays within the repository
     if not candidate.is_relative_to(repo_root):
@@ -1397,7 +1430,7 @@ async def cli_run(
     try:
         args = shlex.split(req.command)
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=f"Invalid command syntax: {exc}")
+        raise HTTPException(status_code=400, detail="Invalid command syntax") from exc
     if not args:
         raise HTTPException(status_code=400, detail="Empty command")
 
@@ -1432,7 +1465,8 @@ async def cli_run(
             stderr = stderr + (b"\n" if stderr else b"") + timeout_msg
             exit_code = proc.returncode if proc.returncode is not None else -1
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
+        log.warning("CLI process start failed (%s)", sanitize_for_log(type(exc).__name__))
+        raise HTTPException(status_code=500, detail="Command execution failed") from exc
 
     duration_ms = (time.monotonic() - t0) * 1000
     record: dict[str, Any] = {
@@ -1536,10 +1570,7 @@ async def webhook_github(request: Request):
     if secret:
         expected = "sha256=" + hmac.new(secret.encode(), raw_body, hashlib.sha256).hexdigest()
         if not sig_header or not hmac.compare_digest(expected, sig_header):
-            log.warning(
-                "Webhook HMAC verification failed (delivery=%s)",
-                _sanitize_log_value(request.headers.get("X-GitHub-Delivery", "unknown")),
-            )
+            log.warning("Webhook HMAC verification failed")
             return JSONResponse(status_code=401, content={"error": "Invalid signature"})
 
     event_type = request.headers.get("X-GitHub-Event", "unknown")
@@ -1571,11 +1602,7 @@ async def webhook_github(request: Request):
             sanitize_for_log(type(_e).__name__),
         )
 
-    log.info(
-        "webhook_github event=%r delivery=%r",
-        _sanitize_log_value(event_type),
-        _sanitize_log_value(delivery_id),
-    )
+    log.info("Webhook event accepted")
     return {"status": "accepted", "delivery_id": delivery_id}
 
 
@@ -1871,19 +1898,12 @@ async def api_proxy(req: ApiProxyRequest, request: Request):
                 content=req.body.encode() if isinstance(req.body, str) else None,
             )
     except httpx.ConnectError as exc:
-        raise HTTPException(status_code=502, detail=f"Connection error: {exc}")
+        log.warning("Upstream connection failed")
+        raise HTTPException(status_code=502, detail="Upstream connection failed") from exc
     except httpx.TimeoutException:
         raise HTTPException(status_code=504, detail="Request timed out")
     except Exception as exc:
-        # CodeQL py/stack-trace-exposure: log server-side, return generic message.
-        safe_host = (_urlparse(safe_url).hostname or "").lower()
-        # CodeQL py/log-injection: sanitize user-controlled method and host before logging.
-        log.warning(  # nosec: method and host are sanitized via _sanitize_log_value  # pragma: allowlist secret
-            "api_proxy %s host=%s failed (%s)",
-            _sanitize_log_value(method),
-            _sanitize_log_value(safe_host),
-            sanitize_for_log(type(exc).__name__),
-        )
+        log.warning("Upstream request failed (%s)", sanitize_for_log(type(exc).__name__))
         raise HTTPException(
             status_code=500, detail="Upstream request failed (see server logs for details)"
         )
@@ -1898,15 +1918,7 @@ async def api_proxy(req: ApiProxyRequest, request: Request):
     except Exception:
         body = resp.text
 
-    # CodeQL py/log-injection: sanitize user-controlled method and host before logging.
-    safe_host = (_urlparse(safe_url).hostname or "").lower()
-    log.info(  # nosec: method and host are sanitized via _sanitize_log_value  # pragma: allowlist secret
-        "api_proxy %s host=%s -> %s (%.0fms)",
-        _sanitize_log_value(method),
-        _sanitize_log_value(safe_host),
-        resp.status_code,
-        duration_ms,
-    )
+    log.info("api_proxy completed status=%s duration_ms=%.0f", resp.status_code, duration_ms)
     return {
         "status_code": resp.status_code,
         "headers": dict(resp.headers),
@@ -1952,9 +1964,8 @@ async def submit_decision(req: DecisionSubmitRequest):
                 _db.commit()
 
             log.info(
-                "Decision submitted: %s (lane=%s, confidence=%.2f)",  # lgtm[py/log-injection]
+                "Decision submitted: id=%s confidence=%.2f",
                 decision_id,
-                _sanitize_log_value(req.lane_name),
                 req.confidence_score,
             )
 
@@ -2141,11 +2152,7 @@ async def store_memory(req: MemoryStoreRequest, _auth: None = Depends(_require_m
                 )
                 _db.commit()
 
-            log.info(
-                "Memory stored: lane=%s, pattern_type=%s",  # lgtm[py/log-injection]
-                _sanitize_log_value(req.lane_name),
-                _sanitize_log_value(req.pattern_type),
-            )
+            log.info("Memory pattern stored")
 
             return {"success": True, "message": "Pattern stored in LTE", "timestamp": timestamp}
         except Exception as exc:
@@ -2232,7 +2239,7 @@ async def stm_push(req: dict[str, Any], _auth: None = Depends(_require_memory_au
                 )
                 _db.commit()
 
-            log.info("STM entry pushed: key=%s", _sanitize_log_value(key))  # lgtm[py/log-injection]
+            log.info("STM entry pushed")
 
             return {"success": True, "key": key, "timestamp": timestamp}
         except Exception as exc:
@@ -2558,11 +2565,11 @@ async def ws_metrics(ws: WebSocket):
                 if kind == "subscribe":
                     channels = msg.get("channels", [])
                     subscribed_channels.update(channels)
-                    log.debug("Subscribed to: %s", channels)
+                    log.debug("Metrics channels subscribed")
                 elif kind == "unsubscribe":
                     channels = msg.get("channels", [])
                     subscribed_channels.difference_update(channels)
-                    log.debug("Unsubscribed from: %s", channels)
+                    log.debug("Metrics channels unsubscribed")
         except WebSocketDisconnect:
             pass
         except Exception as exc:

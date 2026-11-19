@@ -85,7 +85,7 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
               ? String(fallbackError)
               : null;
         setInfoMessage(
-          fallbackMessage ? `Primary API failed: ${fallbackMessage}. Falling back to demo mode.` : 'Using demo mode (API key not configured)',
+          fallbackMessage ? `Primary API failed: ${fallbackMessage}. Falling back to demo mode.` : 'Using demo mode (Cognitive Brain session unavailable)',
         );
       }
 
