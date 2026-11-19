@@ -5,7 +5,11 @@ Source branch at start: `0D_base_`
 Source HEAD: `f188b8277a897db4bc1fbe844270077854acf08d`
 Published branch: `session/cognitive-brain-autopilot-20261118`
 Published implementation commit: `1fe600a82ad8edf07b7f9e4ed478af9fe5f152c7`
+Published execution/toolchain commit: `bb53ec0f4321494334c261d758a3ee8095198f33`
+Draft PR: `#5834` (`https://github.com/Aries-Serpent/_codex_/pull/5834`)
+Queued transplant branch: `clone-main` at `origin/main` `13851ac2ffd7aa8592d3e4e576b0a22b790bbee2`
 Primary plan: `docs/agent/COGNITIVE_BRAIN_MIDDLEWARE_AUTOPILOT_PLAN.md`
+Clone transplant plan: `docs/agent/CLONE_MAIN_31_FILE_TRANSPLANT_PLAN.md`
 
 This commit metadata is followed by a small checkpoint-metadata commit on the same
 published branch. Resume by fetching the branch and using its remote tip; do not depend
@@ -75,8 +79,15 @@ on the first implementation commit alone.
 ## Validation at Checkpoint
 
 - 26 routing/execution/UI-session/security tests passed.
-- 5 azimuth permission tests passed.
+- 8 MCP plus azimuth permission tests passed.
 - 46 existing BrainClient tests passed.
+- 210 Vitest tests passed.
+- Production build passed.
+- Targeted Playwright Cognitive Brain session E2E passed. Broad Chromium result was
+  14 passed and 3 unrelated hidden-fixture failures.
+- MCP stdio initialize/tools/list/live read and one no-ref blob write were verified;
+  the tool set is configured in `.vscode/mcp.json`, but active Copilot-host exposure
+  is still not provable from this agent session.
 - Ruff passed for focused changed Python files.
 - Black passed for focused changed Python files.
 - Python and shell syntax checks passed.
