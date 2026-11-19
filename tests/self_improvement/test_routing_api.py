@@ -62,6 +62,27 @@ def test_gh_binary_presence_is_installed_not_verified(monkeypatch: Any) -> None:
     assert states["gh"] != "verified"
 
 
+def test_github_preflight_uses_only_literal_api_user_url(monkeypatch: Any) -> None:
+    from cognitive_app.src.server import cli_api_server
+
+    calls: list[dict[str, Any]] = []
+
+    def fake_get(url: str, **kwargs: Any) -> Any:
+        calls.append({"url": url, **kwargs})
+        status = 200 if kwargs["headers"]["Authorization"] == "Bearer live-token" else 401
+        return SimpleNamespace(status_code=status)
+
+    monkeypatch.setenv("CODEX_MASTER_KEY", "stale-token")
+    monkeypatch.setenv("CODEX_BACKUP_KEY", "live-token")
+    monkeypatch.setattr(cli_api_server.httpx, "get", fake_get)
+
+    token, source = cli_api_server._github_token_preflight()
+
+    assert (token, source) == ("live-token", "CODEX_BACKUP_KEY")
+    assert [call["url"] for call in calls] == ["https://api.github.com/user"] * 2
+    assert all(call["follow_redirects"] is False for call in calls)
+
+
 def test_route_plan_endpoint_derives_write_from_action() -> None:
     response = TestClient(app).post(
         "/api/routes/plan",

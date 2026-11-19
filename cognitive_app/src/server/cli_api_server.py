@@ -34,8 +34,6 @@ import shutil
 import sqlite3
 import struct
 import subprocess  # nosec B404 — used only for PTY shell (ws_cli); Popen call has nosec B603
-import urllib.error
-import urllib.request
 from pathlib import Path
 from urllib.parse import urlparse as _urlparse
 from urllib.parse import urlunparse as _urlunparse
@@ -871,19 +869,20 @@ def _github_token_preflight() -> tuple[str, str]:
         token = os.environ.get(source, "").strip()
         if not token:
             continue
-        request = urllib.request.Request(
-            "https://api.github.com/user",
-            headers={
-                "Authorization": f"Bearer {token}",
-                "Accept": "application/vnd.github+json",
-                "X-GitHub-Api-Version": "2022-11-28",
-            },
-        )
         try:
-            with urllib.request.urlopen(request, timeout=10) as response:
-                if response.status == 200:
-                    return token, source
-        except (urllib.error.HTTPError, urllib.error.URLError, OSError):
+            response = httpx.get(
+                "https://api.github.com/user",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Accept": "application/vnd.github+json",
+                    "X-GitHub-Api-Version": "2022-11-28",
+                },
+                timeout=10,
+                follow_redirects=False,
+            )
+            if response.status_code == 200:
+                return token, source
+        except (httpx.HTTPError, OSError):
             continue
     raise RouteExecutionConflict("no live GitHub credential is available")
 

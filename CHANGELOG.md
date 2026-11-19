@@ -10,6 +10,7 @@
 - Require one-time server-issued UI bootstrap capabilities, centralize browser session transport, normalize local/forwarded Codespaces origins, and remove browser-visible bearer credentials.
 - Remove client-authorized writes, atomically replay completed idempotent operations, report truthful adapter states, redact public exceptions and request-derived logs, constrain outbound URLs, and normalize probe transport failures.
 - Replace Alpine-only Node/Chromium setup with the Debian devcontainer contract and checksum-pinned or Playwright-managed fallbacks; add focused security, concurrency, portability, and real-browser regressions.
+- Replace the remaining server `urllib` wrapper with a literal-URL `httpx` GitHub preflight, disabling redirects and proving stale-credential fallthrough.
 
 ### Fixed - baseline CodeQL URL and permission fixtures (2026-11-17)
 - Match parsed hostnames instead of URL prefixes and use owner-only fixture modes while preserving permission-denial coverage.

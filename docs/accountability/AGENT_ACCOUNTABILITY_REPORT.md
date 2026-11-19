@@ -24680,6 +24680,7 @@ and the CI gate requirement.
 ### Scope and Evidence
 - Addressed the maintainer middleware review set with server-owned UI/MCP bootstrap, HttpOnly sessions, canonical local/Codespaces origins, no browser bearer credentials, deny-by-default mutation policy, atomic idempotency replay, truthful adapter state, safe public errors/logging, fixed outbound URL allowlists, resilient probes, and Debian-compatible Node/Chromium restoration.
 - Added adversarial coverage for session replay/origin denial, hostname cookies, write spoofing, concurrent execution, exception/log redaction, network failure continuation, literal download URLs, and installer/package-manager boundaries.
+- Replaced the last server `urllib` preflight wrapper with literal-URL `httpx`, disabled redirects, and covered stale-credential fallthrough; focused routing API tests pass 23/23.
 - Local validation: 135 scoped backend tests, 218 Vitest tests, 4/4 Chromium session E2E tests, production build, Python compile/Black/isort/Ruff, scoped frontend ESLint, shell syntax, bundle credential scan, and `git diff --check` passed.
 
 ### Authority and Residuals
