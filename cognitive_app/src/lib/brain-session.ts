@@ -4,6 +4,8 @@ interface SessionState {
   established: boolean;
   generation: number;
   pending: Promise<boolean> | null;
+  failure: 'transport' | 'http' | null;
+  failureStatus: number | null;
 }
 
 const sessionStates = new Map<string, SessionState>();
@@ -17,6 +19,8 @@ function getSessionState(baseURL: string): SessionState {
     established: false,
     generation: 0,
     pending: null,
+    failure: null,
+    failureStatus: null,
   };
   sessionStates.set(baseURL, created);
   return created;
@@ -68,9 +72,11 @@ export function inferBrainAPIURLFromPage(pageURL: URL): string {
 }
 
 export function getBrainAPIURL(): string {
-  const configured = import.meta.env.VITE_CLI_API_URL || import.meta.env.VITE_CODEX_API;
+  const configured = import.meta.env.VITE_CLI_API_URL;
   if (configured) return normalizeBrainAPIURL(configured);
-  if (typeof window !== 'undefined') return inferBrainAPIURLFromPage(window.location);
+  if (typeof window !== 'undefined') {
+    return normalizeBrainAPIURL(inferBrainAPIURLFromPage(new URL(window.location.href)));
+  }
   return DEFAULT_BRAIN_API_URL;
 }
 
@@ -88,7 +94,15 @@ export async function ensureBrainSession(baseURL = getBrainAPIURL()): Promise<bo
     method: 'POST',
     credentials: 'include',
     headers: capability ? headers : undefined,
-  }).then(response => response.ok).catch(() => false).then(established => {
+  }).then(response => {
+    state.failure = response.ok ? null : 'http';
+    state.failureStatus = response.ok ? null : response.status;
+    return response.ok;
+  }).catch(() => {
+    state.failure = 'transport';
+    state.failureStatus = null;
+    return false;
+  }).then(established => {
     state.established = established;
     state.pending = null;
     if (established) state.generation += 1;
@@ -110,7 +124,14 @@ export async function brainSessionFetch(
 ): Promise<Response> {
   const normalized = normalizeBrainAPIURL(baseURL);
   if (!await ensureBrainSession(normalized)) {
-    return new Response(null, { status: 401, statusText: 'Session unavailable' });
+    const state = getSessionState(normalized);
+    if (state.failure === 'transport') {
+      throw new TypeError('Brain session transport unavailable');
+    }
+    return new Response(null, {
+      status: state.failureStatus ?? 401,
+      statusText: 'Session unavailable',
+    });
   }
 
   const state = getSessionState(normalized);
@@ -126,7 +147,12 @@ export async function brainSessionFetch(
   if (response.status !== 401) return response;
 
   invalidateBrainSession(normalized, generation);
-  if (!await ensureBrainSession(normalized)) return response;
+  if (!await ensureBrainSession(normalized)) {
+    if (state.failure === 'transport') {
+      throw new TypeError('Brain session transport unavailable');
+    }
+    return response;
+  }
   return request();
 }
 

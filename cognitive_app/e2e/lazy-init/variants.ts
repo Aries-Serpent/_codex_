@@ -1,7 +1,7 @@
 export const variants = {
   default: { api: undefined, timing: undefined, stageMs: 800 },
   noKey: { api: undefined, timing: undefined, stageMs: 800 },
-  fast: { api: 'http://127.0.0.1:58001', timing: '200', stageMs: 200 },
+  fast: { api: 'http://localhost:58001', timing: '200', stageMs: 200 },
   slow: { api: 'https://api.example.invalid', timing: '2000', stageMs: 2000 },
   zero: { api: undefined, timing: '0', stageMs: 800 },
   negative: { api: undefined, timing: '-500', stageMs: 800 },

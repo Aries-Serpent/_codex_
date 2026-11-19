@@ -9,6 +9,7 @@ import { CodexAPIClient } from '@/lib/codex-api-client';
 describe('browser Cognitive Brain session transport', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
     vi.unstubAllEnvs();
     window.history.replaceState(null, '', '/');
     resetBrainSession();
@@ -58,6 +59,50 @@ describe('browser Cognitive Brain session transport', () => {
 
     expect(new Headers(fetchMock.mock.calls[0]?.[1]?.headers).has('X-Codex-Bootstrap')).toBe(false);
     expect(new Headers(fetchMock.mock.calls[1]?.[1]?.headers).has('Authorization')).toBe(false);
+  });
+
+  it('uses the configured code-generation API only for inference, not Brain sessions', () => {
+    vi.stubEnv('VITE_CLI_API_URL', '');
+    vi.stubEnv('VITE_CODEX_API', 'https://inference.example.invalid');
+
+    expect(getBrainAPIURL()).toBe('http://localhost:8765');
+  });
+
+  it('normalizes an inferred Brain URL to the page hostname', () => {
+    vi.stubEnv('VITE_CLI_API_URL', '');
+    vi.stubEnv('VITE_CODEX_API', '');
+    vi.stubGlobal('window', { location: new URL('http://127.0.0.1:5173/') });
+
+    expect(getBrainAPIURL()).toBe('http://127.0.0.1:8765');
+  });
+
+  it('uses a credential-free transport for the separately configured inference API', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(
+      JSON.stringify({ healthy: true, metrics: {} }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } },
+    ));
+    const client = new CodexAPIClient('https://inference.example.invalid', false);
+
+    await expect(client.getStatus()).resolves.toEqual({ healthy: true, metrics: {} });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://inference.example.invalid/status',
+      expect.objectContaining({ credentials: 'omit' }),
+    );
+    expect(new Headers(fetchMock.mock.calls[0]?.[1]?.headers).has('Authorization')).toBe(false);
+  });
+
+  it('distinguishes session transport failures from HTTP authorization denials', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch')
+      .mockRejectedValueOnce(new TypeError('offline'))
+      .mockResolvedValueOnce(new Response(null, { status: 403 }));
+    const client = new CodexAPIClient('http://localhost:8765');
+
+    await expect(client.getStatus()).rejects.toBeInstanceOf(TypeError);
+    await expect(client.getStatus()).rejects.toMatchObject({ statusCode: 403 });
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
   it('derives a sibling Codespaces API origin without embedding a name', () => {

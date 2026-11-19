@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 NODE_INSTALLER = ROOT / "scripts" / "autonomous" / "install_node_user.sh"
 CHROMIUM_INSTALLER = ROOT / "scripts" / "autonomous" / "install_chromium_user.sh"
 POST_START = ROOT / ".devcontainer" / "scripts" / "post-start.sh"
+UPDATE_CONTENT = ROOT / ".devcontainer" / "scripts" / "update-content.sh"
 
 
 def write_executable(path: Path, content: str) -> None:
@@ -68,6 +69,17 @@ def test_post_start_uses_configurable_bind_and_secret_files() -> None:
     assert "UI_BOOTSTRAP_BROWSER_FILE" in script
     assert 'printf \'%s\' "$UI_BOOTSTRAP_BROWSER" > "$UI_BOOTSTRAP_BROWSER_FILE"' in script
     assert "UI launch fragment: #codex_ui_bootstrap=${UI_BOOTSTRAP_BROWSER}" not in script
+    assert (
+        'CODEX_ALLOWED_ORIGINS="${CODEX_ALLOWED_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}"'
+        in script
+    )
+    assert 'CODEX_ALLOWED_ORIGINS="${CODEX_ALLOWED_ORIGINS},${CODESPACE_UI_ORIGIN}"' in script
+
+
+def test_frontend_dependencies_are_installed_before_chromium_setup() -> None:
+    script = UPDATE_CONTENT.read_text(encoding="utf-8")
+
+    assert script.index("npm --prefix cognitive_app ci") < script.index("install_chromium_user.sh")
 
 
 def test_node_installer_uses_supported_feature_runtime_without_apk(tmp_path: Path) -> None:

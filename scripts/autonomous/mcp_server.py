@@ -11,7 +11,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
-from typing import Any, Callable, Mapping
+from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -158,7 +158,7 @@ def result_text(payload: Any) -> str:
 
 async def handle_message(
     message: Mapping[str, Any],
-    transport_factory: Callable[[], BrainTransport] = BrainTransport,
+    transport: Any | None = None,
 ) -> dict[str, Any] | None:
     request_id = message.get("id")
     method = message.get("method")
@@ -180,7 +180,9 @@ async def handle_message(
             arguments = params.get("arguments") or {}
             if not isinstance(arguments, dict):
                 raise ValueError("tool arguments must be an object")
-            payload = await call_tool(name, arguments, transport_factory())
+            payload = await call_tool(
+                name, arguments, transport if transport is not None else BrainTransport()
+            )
             result = {"content": [{"type": "text", "text": result_text(payload)}]}
         elif method == "ping":
             result = {}
@@ -200,6 +202,7 @@ async def handle_message(
 
 
 async def main() -> int:
+    transport = BrainTransport()
     while True:
         line = await asyncio.to_thread(sys.stdin.buffer.readline)
         if not line:
@@ -207,13 +210,13 @@ async def main() -> int:
         try:
             message = json.loads(line.decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError):
-            response = {
+            response: dict[str, Any] | None = {
                 "jsonrpc": "2.0",
                 "id": None,
                 "error": {"code": -32700, "message": "Invalid JSON input"},
             }
         else:
-            response = await handle_message(message)  # type: ignore[arg-type]
+            response = await handle_message(message, transport=transport)
         if response is not None:
             print(json.dumps(response, separators=(",", ":")), flush=True)
 

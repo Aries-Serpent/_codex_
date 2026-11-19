@@ -127,7 +127,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
   });
 
   it('generates code through the demo fallback path', async () => {
-    (import.meta.env as any).VITE_CLI_API_URL = 'http://127.0.0.1:8769';
+    (import.meta.env as any).VITE_CODEX_API = 'http://127.0.0.1:8769';
     vi.mocked(CodexAPIClient).mockImplementation(function () {
       return {
         getStatus: async () => ({ healthy: true, metrics: { k1_factor: 0.312 } }),
@@ -272,7 +272,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
   // Gap 2.5 — Non-429 API error: info message + toast.error + mock fallback succeeds
   it('shows info message and toast.error on non-429 API error, then falls back to mock', async () => {
-    (import.meta.env as any).VITE_CLI_API_URL = 'http://127.0.0.1:8766';
+    (import.meta.env as any).VITE_CODEX_API = 'http://127.0.0.1:8766';
     const apiError = new Error('Internal Server Error');
     // Use a regular function (not arrow) so vitest spy can call it with `new`.
     vi.mocked(CodexAPIClient).mockImplementation(function () {
@@ -338,7 +338,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
   // The mock-api-client vi.mock factory is module-scoped, so we use prototype spying to
   // make the already-instantiated mock client's generateCode throw for this one test.
   it('fires toast.error when mock client generateCode throws', async () => {
-    (import.meta.env as any).VITE_CLI_API_URL = 'http://127.0.0.1:8767';
+    (import.meta.env as any).VITE_CODEX_API = 'http://127.0.0.1:8767';
     vi.mocked(CodexAPIClient).mockImplementation(function () {
       return {
         getStatus: async () => ({ healthy: true, metrics: { k1_factor: 0.312 } }),
@@ -418,7 +418,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
   // Test: generation calls use DEFAULT_LANGUAGE ('python')
   it('calls mock generateCode with language python (DEFAULT_LANGUAGE)', async () => {
-    (import.meta.env as any).VITE_CLI_API_URL = 'http://127.0.0.1:8768';
+    (import.meta.env as any).VITE_CODEX_API = 'http://127.0.0.1:8768';
     vi.mocked(CodexAPIClient).mockImplementation(function () {
       return {
         getStatus: async () => ({ healthy: true, metrics: { k1_factor: 0.312 } }),

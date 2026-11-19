@@ -150,9 +150,11 @@ export class CodexAPIClient {
   }
 
   private baseURL: string;
+  private sessionProtected: boolean;
 
-  constructor(baseURL = getBrainAPIURL()) {
+  constructor(baseURL = getBrainAPIURL(), sessionProtected = true) {
     this.baseURL = normalizeBrainAPIURL(baseURL);
+    this.sessionProtected = sessionProtected;
 
     const factory = (this.constructor as typeof CodexAPIClient).__mockFactory;
     if (factory) {
@@ -162,6 +164,15 @@ export class CodexAPIClient {
   }
 
   private sessionFetch(path: string, init: RequestInit = {}): Promise<Response> {
+    if (!this.sessionProtected) {
+      const headers = new Headers(init.headers);
+      headers.delete('Authorization');
+      return fetch(`${this.baseURL}${path}`, {
+        ...init,
+        credentials: 'omit',
+        headers,
+      });
+    }
     return brainSessionFetch(path, init, this.baseURL);
   }
 

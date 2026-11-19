@@ -144,13 +144,22 @@ describe('AppService code generation integration', () => {
     })).rejects.toMatchObject({ statusCode: 429, message: 'Rate limit exceeded' });
   });
 
-  it('uses the session client at the localhost default without browser credentials', async () => {
+  it('uses a separate credential-free inference API by default', async () => {
     const service = new AppService();
 
     await expect(service.getStatus(false)).resolves.toMatchObject({
       status: 'connected',
       message: null,
     });
-    expect(CodexAPIClient).toHaveBeenCalledWith('http://localhost:8765');
+    expect(CodexAPIClient).toHaveBeenCalledWith('http://localhost:8000', false);
+  });
+
+  it('keeps an explicitly configured inference API separate from the Brain API', async () => {
+    (import.meta.env as any).VITE_CODEX_API = 'https://inference.example.invalid';
+    const service = new AppService();
+
+    await service.getStatus(false);
+
+    expect(CodexAPIClient).toHaveBeenCalledWith('https://inference.example.invalid', false);
   });
 });

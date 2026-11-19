@@ -6,7 +6,6 @@ import {
 } from '@/lib/codex-api-client';
 import { MockCodexAPIClient } from '@/lib/mock-api-client';
 import { SparkLLMClient } from '@/lib/spark-llm-client';
-import { getBrainAPIURL } from '@/lib/brain-session';
 
 export const DEFAULT_LANGUAGE = 'python' as const;
 export const DEFAULT_MODEL = 'gpt-4o-mini' as const;
@@ -55,9 +54,9 @@ export class AppService {
   private sparkClientRef: SparkLLMClient | null = null;
 
   private createClient(): CodexAPIClient {
-    const apiUrl = getBrainAPIURL();
+    const apiUrl = import.meta.env.VITE_CODEX_API?.trim() || 'http://localhost:8000';
     if (!this.clientRef || this.clientConfigKey !== apiUrl) {
-      this.clientRef = new CodexAPIClient(apiUrl);
+      this.clientRef = new CodexAPIClient(apiUrl, false);
       this.clientConfigKey = apiUrl;
     }
 

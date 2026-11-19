@@ -7,6 +7,7 @@ const BOOTSTRAPS = (
   || process.env.COGNITIVE_BRAIN_UI_BOOTSTRAP
   || ''
 ).split(',').filter(Boolean);
+const LIVE_E2E_ENABLED = process.env.COGNITIVE_BRAIN_LIVE_E2E === '1' && BOOTSTRAPS.length > 0;
 let bootstrapCursor = 0;
 const apiPort = API_URL.port || (API_URL.protocol === 'https:' ? '443' : '80');
 const LOOPBACK_APIS = [`http://localhost:${apiPort}`, `http://127.0.0.1:${apiPort}`];
@@ -18,6 +19,10 @@ const UI_URL = new URL(process.env.BASE_URL || `http://localhost:${process.env.E
 
 test.use({ trace: 'off' });
 test.describe.configure({ mode: 'serial' });
+test.skip(
+  !LIVE_E2E_ENABLED,
+  'Set COGNITIVE_BRAIN_LIVE_E2E=1 and provide UI bootstrap tokens to run live-backend tests.',
+);
 
 const protectedRequest = {
   method: 'POST',

@@ -77,33 +77,62 @@ const test = base.extend<{ harness: Harness }>({
       const request = route.request();
       const url = new URL(request.url());
       const api = variantAPI(active);
+      const browserOrigin = new URL(urls[active]).origin;
       if (request.method() === 'GET' && url.href === 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap') {
         await route.fulfill({ contentType: 'text/css', body: '/* Offline synthetic fonts: use system fallback. */' });
       } else if (request.method() === 'POST' && url.href === new URL('/_spark/loaded', urls[active]).href) {
         await route.fulfill({ status: 204 });
-      } else if (request.method() === 'GET' && url.origin === new URL(api).origin) {
+      } else if (
+        request.method() === 'OPTIONS' &&
+        (url.href === `${api}/status` || url.href === `${api}/infer`)
+      ) {
+        await route.fulfill({
+          status: 204,
+          headers: {
+            'Access-Control-Allow-Origin': browserOrigin,
+            'Access-Control-Allow-Methods': 'GET, POST',
+            'Access-Control-Allow-Headers': 'content-type,x-client-version',
+          },
+        });
+      } else if (
+        request.method() === 'GET' &&
+        url.origin === new URL(defaultAPI).origin &&
+        Object.keys(dashboardResponses).some(pathname => url.pathname.endsWith(pathname))
+      ) {
         const dashboardPath = Object.keys(dashboardResponses)
           .find(pathname => url.pathname.endsWith(pathname));
-        if (!dashboardPath || url.search) {
+        if (url.search) {
           unexpected.push(`${request.method()} ${url.href}`);
           await route.abort('blockedbyclient');
           return;
         }
+        if (!dashboardPath) throw new Error('Dashboard fixture path was not found');
         await route.fulfill({ json: dashboardResponses[dashboardPath] });
-      } else if (url.href === `${api}/api/session` || url.href === `${api}/status` || url.href === `${api}/infer`) {
+      } else if (
+        url.href === `${defaultAPI}/api/session` ||
+        url.href === `${api}/status` ||
+        url.href === `${api}/infer`
+      ) {
         harness.calls.push({
           url: url.href, method: request.method(),
           body: url.href.endsWith('/api/session') ? null : request.method() === 'POST' ? request.postDataJSON() : null,
           authorization: request.headers().authorization,
         });
-        if (url.href === `${api}/api/session`) {
+        if (url.href === `${defaultAPI}/api/session`) {
           expect(request.method()).toBe('POST');
-          await route.fulfill({ status: 204 });
+          await route.fulfill({
+            status: 204,
+            headers: {
+              'Access-Control-Allow-Origin': browserOrigin,
+              'Access-Control-Allow-Credentials': 'true',
+            },
+          });
         } else if (url.href === `${api}/status`) {
           expect(request.method()).toBe('GET');
           await statusGate;
           await route.fulfill({
             status: harness.statusCode,
+            headers: { 'Access-Control-Allow-Origin': browserOrigin },
             json: harness.statusCode === 200 ? { healthy: true, metrics: {} } : { message: 'Synthetic unavailable status' },
           });
         } else {
@@ -111,6 +140,7 @@ const test = base.extend<{ harness: Harness }>({
           expect(request.headers()['content-type']).toBe('application/json');
           await route.fulfill({
             status: harness.inferStatus,
+            headers: { 'Access-Control-Allow-Origin': browserOrigin },
             json: harness.inferStatus === 200
               ? harness.malformedResponse
                 ? { code: 'untrusted malformed response' }
@@ -175,7 +205,7 @@ async function demoResult(page: Page) {
   await expect(page.getByText(/Generated with Demo Mode • k₁ factor:/)).toBeVisible();
 }
 
-test('L01 default session uses localhost without browser authorization', async ({ page, harness }) => {
+test('L01 default API uses localhost without browser authorization', async ({ page, harness }) => {
   await harness.open('noKey');
   await connected(page);
   await expect(page.getByText(/Using demo mode/i)).toHaveCount(0);
@@ -209,7 +239,7 @@ test('L04 missing key preserves prompt entry and counts without live submission'
   await prompt(page).fill(text);
   await expect(page.getByText(`${text.length} / 5000`, { exact: true })).toBeVisible();
   await expect(generateButton(page)).toBeEnabled();
-  expect(harness.calls).toEqual([]);
+  expect(inferCalls(harness)).toEqual([]);
 });
 
 test('L05 held status request exposes yellow Checking state', async ({ page, harness }) => {
@@ -375,7 +405,7 @@ test('L20 API URL builds send status and infer to the exact configured endpoint'
       await generate(page, harness);
       const api = variantAPI(variant);
       expect(harness.calls.map(call => call.url)).toEqual([
-        `${api}/api/session`, `${api}/status`, `${api}/infer`,
+        `${defaultAPI}/api/session`, `${api}/status`, `${api}/infer`,
       ]);
       await expect(page.locator('pre code')).toHaveText(code);
       await expect(page.getByText(/Generated with Codex API • k₁ factor:/)).toBeVisible();

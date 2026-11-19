@@ -76,6 +76,12 @@ if command -v npm &>/dev/null && [ -f package.json ]; then
     echo "✅ Node.js deps installed"
 fi
 
+if command -v npm &>/dev/null && [ -f cognitive_app/package-lock.json ]; then
+    echo "📦 Installing Cognitive App dependencies…"
+    npm --prefix cognitive_app ci --prefer-offline --no-audit --quiet
+    echo "✅ Cognitive App deps installed"
+fi
+
 if bash scripts/autonomous/install_chromium_user.sh && \
    [ -x "${HOME}/.local/bin/chromium" ]; then
     export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH="${HOME}/.local/bin/chromium"

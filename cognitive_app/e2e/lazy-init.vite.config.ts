@@ -17,7 +17,7 @@ export default mergeConfig(applicationConfig, {
   envDir: false,
   envPrefix: [],
   define: {
-    'import.meta.env.VITE_CODEX_API': literal(variant.api),
+    'import.meta.env.VITE_CODEX_API': literal(variant.api || 'http://localhost:8765'),
     'import.meta.env.VITE_STAGE_EXECUTION_TIME_MS': literal(variant.timing),
     'import.meta.env.VITE_API_MODE': JSON.stringify('mock'),
   },

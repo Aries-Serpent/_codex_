@@ -103,11 +103,12 @@ export PYTHONPATH="${WORKSPACE}/src:${PYTHONPATH:-}"
 if [ -n "${CODESPACE_NAME:-}" ]; then
     CODESPACES_DOMAIN="${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN:-preview.app.github.dev}"
     CODESPACE_UI_ORIGIN="https://${CODESPACE_NAME}-5173.${CODESPACES_DOMAIN}"
-    if [ -n "${CODEX_ALLOWED_ORIGINS:-}" ]; then
-        export CODEX_ALLOWED_ORIGINS="${CODEX_ALLOWED_ORIGINS},${CODESPACE_UI_ORIGIN}"
-    else
-        export CODEX_ALLOWED_ORIGINS="$CODESPACE_UI_ORIGIN"
-    fi
+    CODEX_ALLOWED_ORIGINS="${CODEX_ALLOWED_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}"
+    case ",${CODEX_ALLOWED_ORIGINS}," in
+        *,"${CODESPACE_UI_ORIGIN}",*) ;;
+        *) CODEX_ALLOWED_ORIGINS="${CODEX_ALLOWED_ORIGINS},${CODESPACE_UI_ORIGIN}" ;;
+    esac
+    export CODEX_ALLOWED_ORIGINS
 fi
 
 UI_BOOTSTRAP_BROWSER="$("$PYTHON_BIN" -c 'import secrets; print(secrets.token_urlsafe(32))')"
