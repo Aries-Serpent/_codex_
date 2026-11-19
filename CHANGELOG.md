@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added — Cognitive Brain maintainer middleware checkpoint (2026-11-19)
+- Add the 42-file `clone-main` maintainer stack: authenticated/idempotent route execution, Codespace/VS Code portability, permission azimuth probes, resumable `gh`/Node/Chromium tooling, MCP stdio bridging, and browser-safe HttpOnly UI sessions.
+- Record the exact transplant evidence, focused backend/MCP/frontend validation, remaining WEC/hosted-check blockers, and current merge-readiness metadata without claiming platform approval.
+
 ### Fixed - baseline CodeQL URL and permission fixtures (2026-11-17)
 - Match parsed hostnames instead of URL prefixes and use owner-only fixture modes while preserving permission-denial coverage.
 - Record focused validation separately from pending hosted security analysis and independent approval.
