@@ -1,8 +1,7 @@
 # Queued Plan: Transplant 42 Cognitive Brain Files into `clone-main`
 
-**Status:** Queued. Do not implement until the current
-`session/cognitive-brain-autopilot-20261118` workstream is complete, committed,
-pushed, and reconciled.
+**Status:** Implemented on `clone-main` at
+`b8134bf8c50aa758c85284b3393b4dcd1c7c6b28` and published to origin.
 
 ## Branch and Diff Identity
 
@@ -20,8 +19,9 @@ pushed, and reconciled.
 - Follow-up result: 18 changed paths, including 7 overlaps with the original set.
 - Final union: exactly 42 changed files, 4,102 additions, 458 deletions at refresh time.
 
-`clone-main` was created locally and on origin from `origin/main`. No comparison
-files have been applied to it yet.
+`clone-main` was created locally and on origin from `origin/main`. The complete
+42-file union was applied, validated, committed, and pushed without switching the
+active task workspace or altering its existing uncommitted `.vscode/mcp.json` edit.
 
 ## Source Commits
 
@@ -264,7 +264,19 @@ approved. The output is a clean transplanted branch with exact scope and evidenc
 
 ## Completion Evidence
 
-Record:
+Implemented evidence:
+
+- Base SHA: `13851ac2ffd7aa8592d3e4e576b0a22b790bbee2`.
+- Implementation commit: `b8134bf8c50aa758c85284b3393b4dcd1c7c6b28`.
+- Exact staged and committed scope: 42 paths.
+- Original diff: 31 paths; follow-up diff: 18 paths; overlap: 7 paths.
+- Python: 26 route/execution/UI tests, 8 MCP/azimuth tests, and 46 BrainClient tests passed.
+- Frontend: 210 Vitest tests, production build, and targeted Chromium session E2E passed.
+- Lint: focused Ruff, Black, Python compile, shell syntax, JSON/JSONC, and diff checks passed.
+- Active task workspace preservation: existing `.vscode/mcp.json` edit remained uncommitted
+  on `session/cognitive-brain-autopilot-20261118` and was not overwritten.
+
+Record for future reruns:
 
 - `clone-main` base SHA and final SHA;
 - merge base and source commit SHAs;
