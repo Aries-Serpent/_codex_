@@ -76,7 +76,7 @@ vi.mock('@/lib/spark-llm-client', () => ({
 describe('CodeGenerator - Lazy Initialization Pattern', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    delete import.meta.env.VITE_CODEX_KEY;
+    delete import.meta.env.VITE_CLI_API_URL;
     delete import.meta.env.VITE_CODEX_API;
 
     // Set up mocks with factory functions
@@ -96,8 +96,8 @@ describe('CodeGenerator - Lazy Initialization Pattern', () => {
     vi.restoreAllMocks();
   });
 
-  describe('Test 2: No API Key Scenario', () => {
-    it('should show "Connected" status with green dot when no API key', async () => {
+  describe('Test 2: Default session configuration', () => {
+    it('should show "Connected" status with green dot at the session default', async () => {
       render(<CodeGenerator />);
 
       await waitFor(() => {
@@ -107,16 +107,15 @@ describe('CodeGenerator - Lazy Initialization Pattern', () => {
       }, { timeout: 3000 });
     });
 
-    it('should display blue info message for demo mode', async () => {
+    it('should use the session client without a demo-mode message', async () => {
       render(<CodeGenerator />);
 
       await waitFor(() => {
-        const infoMessage = screen.getByText(/Using demo mode/i);
-        expect(infoMessage).toBeInTheDocument();
+        expect(screen.getByText('Connected')).toBeInTheDocument();
       }, { timeout: 3000 });
 
-      const errorMessage = screen.queryByText(/Error/i);
-      expect(errorMessage).not.toBeInTheDocument();
+      expect(screen.queryByText(/Using demo mode/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Error/i)).not.toBeInTheDocument();
     });
 
     it('should enable Generate button in demo mode', async () => {
@@ -139,10 +138,9 @@ describe('CodeGenerator - Lazy Initialization Pattern', () => {
     });
   });
 
-  describe('Test 3: With API Key Scenario', () => {
+  describe('Test 3: Explicit API URL scenario', () => {
     beforeEach(() => {
-      import.meta.env.VITE_CODEX_KEY = 'test-api-key-12345';
-      import.meta.env.VITE_CODEX_API = 'http://localhost:8000';
+      import.meta.env.VITE_CLI_API_URL = 'http://127.0.0.1:8765';
 
       // Ensure CodexAPIClient mock is set up for this scenario
       const mockCodexClient = createMockCodexClient();
@@ -249,8 +247,7 @@ describe('CodeGenerator - Lazy Initialization Pattern', () => {
     }, 10000);
 
     it('should handle different API URL configurations', async () => {
-      import.meta.env.VITE_CODEX_API = 'https://api.example.com';
-      import.meta.env.VITE_CODEX_KEY = 'test-key';
+      import.meta.env.VITE_CLI_API_URL = 'https://api.example.com';
 
       render(<CodeGenerator />);
 

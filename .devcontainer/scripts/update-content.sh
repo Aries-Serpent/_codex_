@@ -64,9 +64,7 @@ echo "🐍 Installing Python dependencies…"
 
 "$PYTHON_BIN" scripts/autonomous/install_gh_user.py
 bash scripts/autonomous/install_node_user.sh
-bash scripts/autonomous/install_chromium_user.sh
 export PATH="${HOME}/.local/bin:${PATH}"
-export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH="${HOME}/.local/bin/chromium"
 
 echo "  Python packages installed:"
 "$PYTHON_BIN" -m pip list --format=columns 2>/dev/null | grep -E "^(pytest|ruff|black|mypy|fastapi|uvicorn|httpx|cryptography|codex)" || true
@@ -76,6 +74,17 @@ if command -v npm &>/dev/null && [ -f package.json ]; then
     echo "📦 Installing Node.js dependencies…"
     npm ci --prefer-offline --no-audit --quiet
     echo "✅ Node.js deps installed"
+fi
+
+if command -v npm &>/dev/null && [ -f cognitive_app/package-lock.json ]; then
+    echo "📦 Installing Cognitive App dependencies…"
+    npm --prefix cognitive_app ci --prefer-offline --no-audit --quiet
+    echo "✅ Cognitive App deps installed"
+fi
+
+if bash scripts/autonomous/install_chromium_user.sh && \
+   [ -x "${HOME}/.local/bin/chromium" ]; then
+    export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH="${HOME}/.local/bin/chromium"
 fi
 
 # ── Rust ─────────────────────────────────────────────────────────────────────

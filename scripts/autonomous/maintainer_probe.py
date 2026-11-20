@@ -5,10 +5,13 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import socket
 import subprocess
 import sys
+import urllib.error
 import urllib.parse
 import urllib.request
+from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -21,6 +24,21 @@ def utc_timestamp() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def normalized_probe_error(error_type: str) -> dict[str, Any]:
+    return {
+        "attempted": True,
+        "error_type": error_type,
+        "message": error_type,
+    }
+
+
+def report_probe(probe: Callable[[], dict[str, Any]]) -> dict[str, Any]:
+    try:
+        return probe()
+    except Exception:
+        return normalized_probe_error("probe_exception")
+
+
 def command_available(name: str) -> bool:
     return shutil.which(name) is not None
 
@@ -30,17 +48,23 @@ def environment_presence(names: tuple[str, ...]) -> dict[str, bool]:
 
 
 def sanitize_remote(value: str) -> str:
-    """Return a log-safe remote containing no URL username or password."""
+    """Return a log-safe remote containing no URL credentials or query."""
     parsed = urllib.parse.urlsplit(value)
     if parsed.scheme and parsed.hostname:
         host = parsed.hostname
-        if parsed.port:
-            host = f"{host}:{parsed.port}"
-        return urllib.parse.urlunsplit((parsed.scheme, host, parsed.path, parsed.query, ""))
+        if ":" in host:
+            host = f"[{host}]"
+        try:
+            port = parsed.port
+        except ValueError:
+            port = None
+        if port:
+            host = f"{host}:{port}"
+        return urllib.parse.urlunsplit((parsed.scheme, host, parsed.path, "", ""))
     if "@" in value and ":" in value:
         _, host_path = value.rsplit("@", 1)
-        return host_path
-    return value
+        return host_path.split("?", 1)[0]
+    return value.split("?", 1)[0]
 
 
 def approved_api_origin(value: str) -> bool:
@@ -48,8 +72,16 @@ def approved_api_origin(value: str) -> bool:
     parsed = urllib.parse.urlsplit(value)
     if parsed.scheme not in {"http", "https"} or not parsed.hostname:
         return False
+    if (
+        parsed.username is not None
+        or parsed.password is not None
+        or parsed.query
+        or parsed.fragment
+        or parsed.path not in {"", "/"}
+    ):
+        return False
     if parsed.hostname.lower() in {"localhost", "127.0.0.1", "::1"}:
-        return parsed.username is None and parsed.password is None
+        return True
     configured = os.environ.get("CODEX_ALLOWED_CLI_API_ORIGINS", "")
     approved = {origin.strip().rstrip("/") for origin in configured.split(",") if origin.strip()}
     return parsed.scheme == "https" and value.rstrip("/") in approved
@@ -106,6 +138,35 @@ def github_identity_probe() -> dict[str, Any]:
             "credential_present": True,
             "credential_source": "GITHUB_TOKEN" if os.environ.get("GITHUB_TOKEN") else "GH_TOKEN",
             "http_status": exc.code,
+            "error_type": "http_error",
+            "message": "http_error",
+        }
+    except urllib.error.URLError as exc:
+        error_type = "dns_error" if isinstance(exc.reason, socket.gaierror) else "url_error"
+        return normalized_probe_error(error_type) | {
+            "credential_present": True,
+            "credential_source": "GITHUB_TOKEN" if os.environ.get("GITHUB_TOKEN") else "GH_TOKEN",
+            "http_status": None,
+        }
+    except socket.gaierror:
+        return normalized_probe_error("dns_error") | {
+            "credential_present": True,
+            "http_status": None,
+        }
+    except TimeoutError:
+        return normalized_probe_error("timeout") | {
+            "credential_present": True,
+            "http_status": None,
+        }
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return normalized_probe_error("malformed_json") | {
+            "credential_present": True,
+            "http_status": None,
+        }
+    except OSError:
+        return normalized_probe_error("os_error") | {
+            "credential_present": True,
+            "http_status": None,
         }
 
 
@@ -141,7 +202,22 @@ def public_repo_probe() -> dict[str, Any]:
                 "archived": payload.get("archived"),
             }
     except urllib.error.HTTPError as exc:
-        return {"http_status": exc.code}
+        return {
+            "http_status": exc.code,
+            "error_type": "http_error",
+            "message": "http_error",
+        }
+    except urllib.error.URLError as exc:
+        error_type = "dns_error" if isinstance(exc.reason, socket.gaierror) else "url_error"
+        return normalized_probe_error(error_type) | {"http_status": None}
+    except socket.gaierror:
+        return normalized_probe_error("dns_error") | {"http_status": None}
+    except TimeoutError:
+        return normalized_probe_error("timeout") | {"http_status": None}
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return normalized_probe_error("malformed_json") | {"http_status": None}
+    except OSError:
+        return normalized_probe_error("os_error") | {"http_status": None}
 
 
 def cli_api_probe() -> dict[str, Any]:
@@ -150,11 +226,12 @@ def cli_api_probe() -> dict[str, Any]:
         or os.environ.get("COPILOT_CLI_BASE_URL")
         or DEFAULT_CLI_API_URL
     ).rstrip("/")
+    report_base_url = sanitize_remote(base_url)
     if not approved_api_origin(base_url):
         return {
             "reachable": False,
             "http_status": None,
-            "base_url": base_url,
+            "base_url": report_base_url,
             "blocked_reason": "origin_not_approved",
         }
     try:
@@ -162,10 +239,41 @@ def cli_api_probe() -> dict[str, Any]:
             return {
                 "reachable": True,
                 "http_status": response.status,
-                "base_url": base_url,
+                "base_url": report_base_url,
             }
-    except Exception:
-        return {"reachable": False, "http_status": None, "base_url": base_url}
+    except urllib.error.HTTPError as exc:
+        return {
+            "reachable": False,
+            "http_status": exc.code,
+            "base_url": report_base_url,
+            "error_type": "http_error",
+            "message": "http_error",
+        }
+    except urllib.error.URLError as exc:
+        error_type = "dns_error" if isinstance(exc.reason, socket.gaierror) else "url_error"
+        return normalized_probe_error(error_type) | {
+            "reachable": False,
+            "http_status": None,
+            "base_url": report_base_url,
+        }
+    except socket.gaierror:
+        return normalized_probe_error("dns_error") | {
+            "reachable": False,
+            "http_status": None,
+            "base_url": report_base_url,
+        }
+    except TimeoutError:
+        return normalized_probe_error("timeout") | {
+            "reachable": False,
+            "http_status": None,
+            "base_url": report_base_url,
+        }
+    except OSError:
+        return normalized_probe_error("os_error") | {
+            "reachable": False,
+            "http_status": None,
+            "base_url": report_base_url,
+        }
 
 
 def mcp_probe() -> dict[str, Any]:
@@ -242,15 +350,15 @@ def main() -> int:
             "workspace_from_environment": os.environ.get("CODESPACE_VSCODE_FOLDER"),
             "name_is_runtime_evidence_only": True,
         },
-        "git": git_state(),
+        "git": report_probe(git_state),
         "tools": {name: command_available(name) for name in tool_names},
         "credentials": environment_presence(credential_names),
-        "github_identity": github_identity_probe(),
-        "gh": gh_probe(),
-        "public_repository": public_repo_probe(),
-        "cli_api": cli_api_probe(),
-        "mcp": mcp_probe(),
-        "vscode": vscode_extension_probe(),
+        "github_identity": report_probe(github_identity_probe),
+        "gh": report_probe(gh_probe),
+        "public_repository": report_probe(public_repo_probe),
+        "cli_api": report_probe(cli_api_probe),
+        "mcp": report_probe(mcp_probe),
+        "vscode": report_probe(vscode_extension_probe),
         "workspace_files": {
             "venv": (ROOT / ".venv" / "bin" / "python").is_file(),
             "node_modules": (ROOT / "cognitive_app" / "node_modules").is_dir(),

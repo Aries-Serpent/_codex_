@@ -41,4 +41,6 @@ agent_token_*.json
 session_token.json
 live_token.json
 cli_api_server.pid
+ui_bootstrap_browser
+ui_bootstrap_mcp
 .copilot-agent-environment-report.txt

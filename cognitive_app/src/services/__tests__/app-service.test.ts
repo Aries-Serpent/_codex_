@@ -64,7 +64,7 @@ describe('AppService code generation integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     const env = import.meta.env as any;
-    delete env.VITE_CODEX_KEY;
+    delete env.VITE_CLI_API_URL;
     delete env.VITE_CODEX_API;
   });
 
@@ -85,8 +85,7 @@ describe('AppService code generation integration', () => {
 
   it('falls back to API generation after a Spark failure', async () => {
     const env = import.meta.env as any;
-    env.VITE_CODEX_KEY = 'test-api-key';
-    env.VITE_CODEX_API = 'http://localhost:8000';
+    env.VITE_CLI_API_URL = 'http://127.0.0.1:8765';
 
     vi.mocked(SparkLLMClient).mockImplementation(function () {
       return {
@@ -124,8 +123,7 @@ describe('AppService code generation integration', () => {
 
   it('re-throws 429 API rate limits to allow the UI recovery path', async () => {
     const env = import.meta.env as any;
-    env.VITE_CODEX_KEY = 'test-rate-limit-key';
-    env.VITE_CODEX_API = 'http://localhost:8000';
+    env.VITE_CLI_API_URL = 'http://127.0.0.1:8765';
 
     const rateLimitError = new CodexAPIError(429, 'Rate limit exceeded');
     vi.mocked(CodexAPIClient).mockImplementation(function () {
@@ -146,12 +144,22 @@ describe('AppService code generation integration', () => {
     })).rejects.toMatchObject({ statusCode: 429, message: 'Rate limit exceeded' });
   });
 
-  it('uses demo-mode status when no API key is configured', async () => {
+  it('uses a separate credential-free inference API by default', async () => {
     const service = new AppService();
 
     await expect(service.getStatus(false)).resolves.toMatchObject({
       status: 'connected',
-      message: 'Using demo mode (API key not configured)',
+      message: null,
     });
+    expect(CodexAPIClient).toHaveBeenCalledWith('http://localhost:8000', false);
+  });
+
+  it('keeps an explicitly configured inference API separate from the Brain API', async () => {
+    (import.meta.env as any).VITE_CODEX_API = 'https://inference.example.invalid';
+    const service = new AppService();
+
+    await service.getStatus(false);
+
+    expect(CodexAPIClient).toHaveBeenCalledWith('https://inference.example.invalid', false);
   });
 });

@@ -2,12 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { CodexAPIClient, QuantumStateResponse } from '@/lib/codex-api-client';
 import { MockCodexAPIClient } from '@/lib/mock-api-client';
 
-const API_URL = import.meta.env.VITE_CLI_API_URL
-             ?? import.meta.env.VITE_CODEX_API
-             ?? 'http://127.0.0.1:8765';
-const API_KEY = import.meta.env.VITE_CODEX_KEY || 'demo-key';
-
-const client = new CodexAPIClient(API_URL, API_KEY);
+const client = new CodexAPIClient();
 const mockClient = new MockCodexAPIClient();
 
 export function useQuantumState(autoRefresh = false, intervalMs = 10000) {

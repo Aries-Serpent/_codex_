@@ -7,7 +7,7 @@ import json
 import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Literal, Mapping
 
 
 class RouteExecutionConflict(RuntimeError):
@@ -31,6 +31,8 @@ class RouteExecutionClaim:
     operation_id: str
     request_digest: str
     idempotency_key: str
+    state: Literal["claimed", "replayed"] = "claimed"
+    result: Any = None
 
 
 class RouteExecutionStore:
@@ -83,7 +85,7 @@ class RouteExecutionStore:
         )
 
     def prepare(self, request: Mapping[str, Any]) -> RouteExecutionClaim:
-        """Atomically claim a request; a stale claim remains blocked after crash."""
+        """Atomically claim a request or return its completed replay outcome."""
         claim = self.claim_payload(request)
         with self._connect() as connection:
             connection.execute("BEGIN IMMEDIATE")
@@ -97,7 +99,13 @@ class RouteExecutionStore:
                         "idempotency key already refers to a different request"
                     )
                 if existing["state"] == "completed":
-                    return claim
+                    return RouteExecutionClaim(
+                        operation_id=claim.operation_id,
+                        request_digest=claim.request_digest,
+                        idempotency_key=claim.idempotency_key,
+                        state="replayed",
+                        result=json.loads(existing["result_json"]),
+                    )
                 if existing["state"] == "failed":
                     raise RouteExecutionConflict("execution previously failed and requires review")
                 raise RouteExecutionConflict("incomplete execution requires reconciliation")
@@ -111,25 +119,6 @@ class RouteExecutionStore:
                 (claim.operation_id, claim.idempotency_key, claim.request_digest),
             )
         return claim
-
-    def _completed(self, claim: RouteExecutionClaim) -> RouteExecutionResult | None:
-        with self._connect() as connection:
-            row = connection.execute(
-                "SELECT * FROM route_operations WHERE idempotency_key = ?",
-                (claim.idempotency_key,),
-            ).fetchone()
-        if row is None or row["request_digest"] != claim.request_digest:
-            return None
-        if row["state"] != "completed":
-            return None
-        return RouteExecutionResult(
-            operation_id=claim.operation_id,
-            request_digest=claim.request_digest,
-            idempotency_key=claim.idempotency_key,
-            state="completed",
-            result=json.loads(row["result_json"]),
-            replayed=True,
-        )
 
     def _finish(self, claim: RouteExecutionClaim, *, result: Any = None, error: str = "") -> None:
         with self._connect() as connection:
@@ -154,12 +143,17 @@ class RouteExecutionStore:
         operation: Callable[[], Any],
     ) -> RouteExecutionResult:
         """Run one operation atomically by idempotency key or replay its result."""
-        claim = self.claim_payload(request)
-        completed = self._completed(claim)
-        if completed is not None:
-            return completed
+        claim = self.prepare(request)
+        if claim.state == "replayed":
+            return RouteExecutionResult(
+                operation_id=claim.operation_id,
+                request_digest=claim.request_digest,
+                idempotency_key=claim.idempotency_key,
+                state="completed",
+                result=claim.result,
+                replayed=True,
+            )
 
-        self.prepare(request)
         try:
             result = operation()
         except Exception as exc:

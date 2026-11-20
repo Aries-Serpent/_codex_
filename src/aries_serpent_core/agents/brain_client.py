@@ -348,7 +348,6 @@ class BrainClient:
         *,
         arguments: dict[str, Any] | None = None,
         idempotency_key: str,
-        allow_write: bool = False,
     ) -> dict[str, Any]:
         """Execute a policy-bound route through the Cognitive Brain middleware."""
         return self._post(
@@ -359,7 +358,6 @@ class BrainClient:
                 "target": target,
                 "arguments": arguments or {},
                 "idempotency_key": idempotency_key,
-                "allow_write": allow_write,
             },
         )
 
