@@ -101,6 +101,20 @@ def test_ml_preflight_rejects_repo_torch_stub(tmp_path, job_name):
     assert "Real CPU PyTorch is required" in process.stderr
 
 
+def test_rag_workflow_only_preflights_packages_in_rag_extra():
+    root = Path(__file__).resolve().parents[2]
+    workflow = yaml.safe_load((root / ".github/workflows/test-rag.yml").read_text())
+    install = next(
+        step["run"]
+        for step in workflow["jobs"]["test-rag"]["steps"]
+        if step.get("name") == "Install dependencies"
+    )
+
+    assert "chromadb" not in install
+    assert ".[rag,test-core]" in install
+    assert "faiss-cpu" in install
+
+
 def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
     workflow_path = Path(__file__).resolve().parents[2] / ".github/workflows/ml-tests.yml"
     jobs = yaml.safe_load(workflow_path.read_text())["jobs"]

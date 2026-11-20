@@ -195,10 +195,10 @@ def test_tenant_context_propagation_across_multiple_requests(
 
     with TestClient(app) as client:
         # Sequential requests from different tenants
-        r1 = client.get("/v1/track", headers=_auth("key-a"))
-        r2 = client.get("/v1/track", headers=_auth("key-b"))
-        r3 = client.get("/v1/track", headers=_auth("key-c"))
-        r4 = client.get("/v1/track", headers=_auth("key-a"))
+        client.get("/v1/track", headers=_auth("key-a"))
+        client.get("/v1/track", headers=_auth("key-b"))
+        client.get("/v1/track", headers=_auth("key-c"))
+        client.get("/v1/track", headers=_auth("key-a"))
 
     assert len(received_tenants) == 4, "All requests must be tracked"
     assert received_tenants == [
@@ -369,8 +369,8 @@ def test_tenant_context_propagation_state_isolation(
     monkeypatch.setattr(tc_module.settings, "api_key_required", True)
 
     with TestClient(app) as client:
-        r1 = client.get("/v1/state", headers=_auth("key-a"))
-        r2 = client.get("/v1/state", headers=_auth("key-b"))
+        client.get("/v1/state", headers=_auth("key-a"))
+        client.get("/v1/state", headers=_auth("key-b"))
 
     assert len(request_states) == 2, "Both requests must be tracked"
     assert request_states[0]["tenant_id"] == "state-a", "First request is from tenant-a"

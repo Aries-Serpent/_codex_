@@ -156,7 +156,7 @@ jobs:
         \ upgrade failed\"\n  exit 1\nfi\necho \"[INSTALL] \u2713 cryptography/pyOpenSSL\
         \ upgraded\"\n \necho \"\"\necho \"[INSTALL] Step 4: Installing main package\
         \ with extras: [rag,test-core]...\"\necho \"         (This will install: sentence-transformers,\
-        \ chromadb, faiss-cpu, pytest, pytest-cov, and their dependencies)\"\necho\
+        \ faiss-cpu, pytest, pytest-cov, and their dependencies)\"\necho\
         \ \"         This may take 5-15 minutes depending on cache status...\"\n \n\
         # Monitor disk space during installation\nINSTALL_START=$(date +%s)\nif !\
         \ timeout 900 \"$PYTHON_BIN\" -m pip install --no-cache-dir -e \".[rag,test-core]\"\
@@ -192,8 +192,8 @@ jobs:
         \ debugging\necho \"\"\necho \"[INSTALL] Step 8: Verify key packages installed...\"\
         \n# Package name to import name mapping\ndeclare -A import_names=(\n  [pytest]=\"\
         pytest\"\n  [sentence-transformers]=\"sentence_transformers\"\n  [torch]=\"\
-        torch\"\n  [transformers]=\"transformers\"\n  [chromadb]=\"chromadb\"\n  [faiss-cpu]=\"\
-        faiss\"\n)\n\nfor pkg in pytest sentence-transformers torch transformers chromadb\
+        torch\"\n  [transformers]=\"transformers\"\n  [faiss-cpu]=\"\
+        faiss\"\n)\n\nfor pkg in pytest sentence-transformers torch transformers\
         \ faiss-cpu; do\n  import_name=\"${import_names[$pkg]}\"\n  if \"$PYTHON_BIN\"\
         \ -c \"import ${import_name}; print('  \u2713 $pkg')\" 2>/dev/null; then\n\
         \    :\n  else\n    echo \"  \u274C Missing: $pkg\"\n    exit 1\n  fi\ndone\n\

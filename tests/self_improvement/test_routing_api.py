@@ -365,6 +365,11 @@ def test_route_reconciliation_lists_and_resolves_verified_outcome(
         "idempotency_key": "resume-operation",
     }
     claim = store.prepare(payload)
+    with store._connect() as connection:
+        connection.execute(
+            "UPDATE route_operations SET owner_pid = ?, owner_start = ? WHERE operation_id = ?",
+            (999999999, "dead-process", claim.operation_id),
+        )
     monkeypatch.setattr(cli_api_server, "_ROUTE_EXECUTION_STORE", store)
 
     with TestClient(app, base_url="http://localhost:8765") as client:

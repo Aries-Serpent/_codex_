@@ -12,7 +12,6 @@ pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient
 
 import services.api.main as api_main
-from services.api.main import app
 
 
 @pytest.fixture(autouse=True)
@@ -32,13 +31,13 @@ def _auth_headers() -> dict[str, str]:
 
 
 def test_infer_requires_authentication():
-    client = TestClient(app)
+    client = TestClient(api_main.app)
     resp = client.post("/infer", json={"prompt": "hello"})
     assert resp.status_code == 401
 
 
 def test_secret_filtering_masks_keys():
-    client = TestClient(app)
+    client = TestClient(api_main.app)
     payload = {"prompt": "send sk-abcdef1234567890 now"}  # pragma: allowlist secret
     resp = client.post("/infer", json=payload, headers=_auth_headers())
     assert resp.status_code == 200, "status_code is not valid"

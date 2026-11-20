@@ -258,6 +258,13 @@ dataops = [
    "pandas>=3.0.5,<3.1",
    "numpy>=2.5.2,<3",
 ]
+brain-api = [
+   "fastapi>=0.141.1,<1",
+   "httpx>=0.26,<1",
+   "uvicorn[standard]>=0.29.0,<1",
+   "python-multipart>=0.0.20",
+   "cryptography>=50.0.1,<51.0.0",
+]
 
 # BACKWARDS COMPATIBILITY ALIASES (for existing scripts)
 # These are deprecated and will be removed in v1.0.0.

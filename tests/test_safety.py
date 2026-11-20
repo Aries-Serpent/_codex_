@@ -14,6 +14,7 @@ from pathlib import Path
 import pytest
 
 from codex_ml.safety import SafetyFilters, SafetyViolation
+from codex_ml.safety.filters import SafetyPolicy
 from codex_ml.safety.sandbox import run_in_sandbox
 from codex_ml.utils.hf_pinning import HFModelUnavailableError
 
@@ -80,6 +81,32 @@ def test_filters_bypass_records_event(tmp_path: Path) -> None:
     log_file = tmp_path / "events.ndjson"
     entries = [json.loads(line) for line in log_file.read_text().splitlines()]
     assert any(entry["action"] == "bypass" for entry in entries), "Condition must be true"
+
+
+def test_redacted_secret_is_absent_from_audit_log(tmp_path: Path) -> None:
+    secret = "password=hunter2-secret"  # pragma: allowlist secret
+    policy = SafetyPolicy.from_dict(
+        {
+            "enabled": True,
+            "log_path": str(tmp_path / "events.ndjson"),
+            "redaction_token": "{REDACTED}",
+            "rules": [
+                {
+                    "id": "redact-password",
+                    "action": "redact",
+                    "match": {"regex": r"password\s*=\s*[^\s]+"},
+                }
+            ],
+        }
+    )
+    result = SafetyFilters(policy).evaluate(secret, stage="output")
+    raw_log = (tmp_path / "events.ndjson").read_text(encoding="utf-8")
+
+    assert result.sanitized_text == "{REDACTED}"
+    assert secret not in result.sanitized_text
+    assert secret not in raw_log
+    assert json.loads(raw_log)["fragment_digest"]
+    assert json.loads(raw_log)["sanitized_text_digest"]
 
 
 def test_logits_masking_basic() -> None:

@@ -536,6 +536,13 @@ all = [
 auth = [
     { name = "pyotp" },
 ]
+brain-api = [
+    { name = "cryptography" },
+    { name = "fastapi" },
+    { name = "httpx" },
+    { name = "python-multipart" },
+    { name = "uvicorn", extra = ["standard"] },
+]
 core = [
     { name = "click" },
     { name = "codex-contracts" },
@@ -921,6 +928,7 @@ requires-dist = [
     { name = "coverage", extras = ["toml"], marker = "extra == 'dev'", specifier = ">=7.15.1,<8" },
     { name = "cryptography", specifier = ">=50.0.1,<51.0.0" },
     { name = "cryptography", marker = "extra == 'all'", specifier = ">=50.0.1,<51.0.0" },
+    { name = "cryptography", marker = "extra == 'brain-api'", specifier = ">=50.0.1,<51.0.0" },
     { name = "cryptography", marker = "extra == 'full'", specifier = ">=50.0.1,<51.0.0" },
     { name = "cryptography", marker = "extra == 'train'", specifier = ">=50.0.1,<51.0.0" },
     { name = "datasets", marker = "extra == 'all'", specifier = ">=5.1.0,<6" },
@@ -956,6 +964,7 @@ requires-dist = [
     { name = "faiss-cpu", marker = "extra == 'runtime'", specifier = ">=1.15.0,<2.0.0" },
     { name = "faiss-cpu", marker = "extra == 'train'", specifier = ">=1.15.0,<2.0.0" },
     { name = "fastapi", marker = "extra == 'all'", specifier = ">=0.141.1,<1" },
+    { name = "fastapi", marker = "extra == 'brain-api'", specifier = ">=0.141.1,<1" },
     { name = "fastapi", marker = "extra == 'full'", specifier = ">=0.141.1,<1" },
     { name = "fastapi", marker = "extra == 'ml'", specifier = ">=0.141.1,<1" },
     { name = "fastapi", marker = "extra == 'rag'", specifier = ">=0.141.1,<1" },
@@ -972,6 +981,7 @@ requires-dist = [
     { name = "great-expectations", marker = "extra == 'full'", specifier = ">=1.21.0,<2" },
     { name = "great-expectations", marker = "extra == 'train'", specifier = ">=1.21.0,<2" },
     { name = "httpx", marker = "extra == 'all'", specifier = ">=0.26,<1" },
+    { name = "httpx", marker = "extra == 'brain-api'", specifier = ">=0.26,<1" },
     { name = "httpx", marker = "extra == 'full'", specifier = ">=0.26,<1" },
     { name = "httpx", marker = "extra == 'ml'", specifier = ">=0.26,<1" },
     { name = "httpx", marker = "extra == 'rag'", specifier = ">=0.26,<1" },
@@ -1194,6 +1204,7 @@ requires-dist = [
     { name = "pytest-xdist", marker = "extra == 'full'", specifier = ">=3.8.0,<4.0.0" },
     { name = "pytest-xdist", marker = "extra == 'test-core'", specifier = ">=3.8.0,<4.0.0" },
     { name = "pytest-xdist", marker = "extra == 'train'", specifier = ">=3.8.0,<4.0.0" },
+    { name = "python-multipart", marker = "extra == 'brain-api'", specifier = ">=0.0.20" },
     { name = "pywavelets", marker = "extra == 'test-ml-integrations'", specifier = ">=1.8.0,<2" },
     { name = "pyyaml", specifier = ">=6.0.1" },
     { name = "pyyaml", marker = "extra == 'all'", specifier = ">=6.0.1" },
@@ -1325,6 +1336,7 @@ requires-dist = [
     { name = "typer", marker = "extra == 'test-core'", specifier = ">=0.27.1" },
     { name = "typer", marker = "extra == 'train'", specifier = ">=0.27.1" },
     { name = "urllib3", specifier = ">=2.8.0" },
+    { name = "uvicorn", extras = ["standard"], marker = "extra == 'brain-api'", specifier = ">=0.29.0,<1" },
     { name = "wandb", marker = "extra == 'all'", specifier = ">=0.29.0" },
     { name = "wandb", marker = "extra == 'full'", specifier = ">=0.29.0" },
     { name = "wandb", marker = "extra == 'train'", specifier = ">=0.29.0" },
@@ -1337,7 +1349,7 @@ requires-dist = [
     { name = "yamllint", marker = "extra == 'test-core'", specifier = ">=1.38.0,<2.0.0" },
     { name = "yamllint", marker = "extra == 'train'", specifier = ">=1.38.0,<2.0.0" },
 ]
-provides-extras = ["core", "runtime", "full", "eval", "dataops", "auth", "quality", "all", "dev", "ml", "train", "test-core", "test-ml-integrations", "rag"]
+provides-extras = ["core", "runtime", "full", "eval", "dataops", "brain-api", "auth", "quality", "all", "dev", "ml", "train", "test-core", "test-ml-integrations", "rag"]
 
 [[package]]
 name = "colorama"
@@ -3743,6 +3755,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/74/26/2fbeedb218a787a5eea551c7532cac4e009f83d689dd2faa0d0353473f86/python_dotenv-1.2.4.tar.gz", hash = "sha256:f0d53e69935a851c0dcc78f3ab7aaccd8cabef0b92382b576b824212902873c0", size = 60824, upload-time = "2026-10-01T05:36:10Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/60/d1/38f3a3405989a89ac18390803e70c6ad7c7760da4f9b83cbeca0c44a0c72/python_dotenv-1.2.4-py3-none-any.whl", hash = "sha256:42269a8a5b3fd54ffa6f3d84b18abed50064717576b4ecf03dc4a55d8aa04fdc", size = 23266, upload-time = "2026-10-01T05:36:08.633Z" },
+]
+
+[[package]]
+name = "python-multipart"
+version = "0.0.34"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7e/c0/c753d487a83d873f6946cee6cbc26cea3fe59a476ad0de99a14938a2fbd8/python_multipart-0.0.34.tar.gz", hash = "sha256:b998ae90ca6e1e363261ce2e0e230281b8af53867b757970abd69ee9edcd843a", size = 52456, upload-time = "2026-11-16T10:40:38.261Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f5/0e/090c52b122d8ec5fa37942c1410fea9cf04ce98bca0c84dde7f0aa11594d/python_multipart-0.0.34-py3-none-any.whl", hash = "sha256:ebacd224bd686eee2f9aa1066a657affe07435a185834e05e5235e2e59173e91", size = 32585, upload-time = "2026-11-16T10:40:37.119Z" },
 ]
 
 [[package]]

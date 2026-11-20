@@ -1161,8 +1161,8 @@ class SafetyFilters:
                         "severity": match.severity,
                         "description": match.description,
                         "policy": str(self.policy_path) if self.policy_path else None,
-                        "sanitized_text": decision.sanitized_text,
-                        "fragment": match.fragment,
+                        "sanitized_text_digest": _text_sha256(decision.sanitized_text),
+                        "fragment_digest": _text_sha256(match.fragment),
                         "text_digest": digest,
                     }
                     if match.metadata:

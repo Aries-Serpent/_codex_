@@ -18,8 +18,11 @@ def _require_checkpoint_torch() -> None:
     """Skip checkpoint I/O tests when real PyTorch is unavailable."""
     import torch
 
-    if getattr(torch, "IS_CODEX_STUB", False) or not all(
-        callable(getattr(torch, attr, None)) for attr in ("save", "load")
+    torch_vars = vars(torch)
+    if (
+        torch_vars.get("IS_CODEX_STUB")
+        or torch_vars.get("__codex_stub__")
+        or not all(callable(torch_vars.get(attr)) for attr in ("save", "load"))
     ):
         pytest.skip("PyTorch save/load is unavailable in this environment")
 

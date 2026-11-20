@@ -30,7 +30,7 @@ echo "════════════════════════�
 echo "🐍 Installing Python dependencies from uv.lock…"
 "$PYTHON_BIN" -m pip install --cache-dir "$HOME/.cache/pip" uv==0.13.9 --quiet
 UV_PROJECT_ENVIRONMENT="$VENV" \
-    "$PYTHON_BIN" -m uv sync --frozen --extra dev --python "$PYTHON_BIN" --quiet
+    "$PYTHON_BIN" -m uv sync --frozen --extra dev --extra brain-api --python "$PYTHON_BIN" --quiet
 "$PYTHON_BIN" -c 'import fastapi, httpx, uvicorn'
 
 "$PYTHON_BIN" scripts/autonomous/install_gh_user.py

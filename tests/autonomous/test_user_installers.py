@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import stat
 import subprocess
+import tomllib
 from pathlib import Path
 from typing import Any
 
@@ -84,10 +85,16 @@ def test_post_start_uses_configurable_bind_and_secret_files() -> None:
 
 def test_python_dependencies_are_restored_from_authoritative_lock() -> None:
     script = UPDATE_CONTENT.read_text(encoding="utf-8")
+    project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    brain_api = project["project"]["optional-dependencies"]["brain-api"]
 
     assert "uv==0.13.9" in script
-    assert "uv sync --frozen --extra dev" in script
+    assert "uv sync --frozen --extra dev --extra brain-api" in script
     assert 'pip install --cache-dir "$HOME/.cache/pip" \\\n    ruff' not in script
+    assert any(dependency.startswith("fastapi") for dependency in brain_api)
+    assert any(dependency.startswith("httpx") for dependency in brain_api)
+    assert any(dependency.startswith("uvicorn[standard]") for dependency in brain_api)
+    assert any(dependency.startswith("python-multipart") for dependency in brain_api)
 
 
 def test_generated_auth_status_uses_runtime_storage() -> None:

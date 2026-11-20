@@ -120,12 +120,29 @@ def test_execution_failure_is_recorded_and_reconciled(tmp_path: Path) -> None:
         store.execute(request(), lambda: {"status": 201})
 
 
-def test_incomplete_operation_reconciliation_enables_verified_replay(tmp_path: Path) -> None:
+def test_live_execution_is_not_reconcilable_or_reported_incomplete(tmp_path: Path) -> None:
     store = RouteExecutionStore(tmp_path / "routes.db")
     claim = store.prepare(request())
 
-    incomplete = store.incomplete_operations()
-    store.reconcile(claim.operation_id, result={"status": 201, "verified": True})
+    assert store.incomplete_operations() == []
+    with pytest.raises(RouteExecutionConflict, match="live executor"):
+        store.reconcile(claim.operation_id, result={"status": 201})
+
+
+def test_abandoned_operation_reconciliation_enables_verified_replay(tmp_path: Path) -> None:
+    database = tmp_path / "routes.db"
+    crashed_store = RouteExecutionStore(database)
+    recovery_store = RouteExecutionStore(database)
+    claim = crashed_store.prepare(request())
+
+    with crashed_store._connect() as connection:
+        connection.execute(
+            "UPDATE route_operations SET owner_pid = ?, owner_start = ? WHERE operation_id = ?",
+            (999999999, "dead-process", claim.operation_id),
+        )
+
+    incomplete = recovery_store.incomplete_operations()
+    recovery_store.reconcile(claim.operation_id, result={"status": 201, "verified": True})
 
     assert incomplete == [
         {
@@ -137,7 +154,7 @@ def test_incomplete_operation_reconciliation_enables_verified_replay(tmp_path: P
             "updated_at": incomplete[0]["updated_at"],
         }
     ]
-    assert store.prepare(request()).state == "replayed"
+    assert recovery_store.prepare(request()).state == "replayed"
 
 
 def test_reconciliation_rejects_missing_outcome_and_terminal_operation(tmp_path: Path) -> None:
@@ -147,6 +164,25 @@ def test_reconciliation_rejects_missing_outcome_and_terminal_operation(tmp_path:
     with pytest.raises(RouteExecutionConflict, match="requires a result or error"):
         store.reconcile(claim.operation_id)
 
+    with store._connect() as connection:
+        connection.execute(
+            "UPDATE route_operations SET owner_pid = ?, owner_start = ? WHERE operation_id = ?",
+            (999999999, "dead-process", claim.operation_id),
+        )
     store.reconcile(claim.operation_id, error="external operation was not applied")
     with pytest.raises(RouteExecutionConflict, match="not awaiting reconciliation"):
         store.reconcile(claim.operation_id, result={"status": 201})
+
+
+def test_finish_detects_lost_execution_ownership(tmp_path: Path) -> None:
+    store = RouteExecutionStore(tmp_path / "routes.db")
+    claim = store.prepare(request())
+
+    with store._connect() as connection:
+        connection.execute(
+            "UPDATE route_operations SET owner_id = ? WHERE operation_id = ?",
+            ("replacement-owner", claim.operation_id),
+        )
+
+    with pytest.raises(RouteExecutionConflict, match="lost ownership"):
+        store._finish(claim, result={"status": 201})
