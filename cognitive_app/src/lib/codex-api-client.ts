@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { brainSessionFetch, getBrainAPIURL, normalizeBrainAPIURL } from './brain-session';
 
 const CodexRequestSchema = z.object({
   prompt: z.string().min(10).max(5000),
@@ -141,36 +142,55 @@ export class CodexAPIError extends Error {
 }
 
 export class CodexAPIClient {
-  private static __mockFactory: ((baseURL: string, apiKey: string) => Record<string, unknown>) | null = null;
+  private static __mockFactory: ((baseURL: string) => Record<string, unknown>) | null = null;
 
-  static mockImplementation(factory: (baseURL: string, apiKey: string) => Record<string, unknown>) {
+  static mockImplementation(factory: (baseURL: string) => Record<string, unknown>) {
     this.__mockFactory = factory;
     return this;
   }
 
   private baseURL: string;
-  private apiKey: string;
+  private sessionProtected: boolean;
 
-  constructor(baseURL: string, apiKey: string) {
+  constructor(baseURL = getBrainAPIURL(), sessionProtected = true) {
+    this.baseURL = normalizeBrainAPIURL(baseURL);
+    this.sessionProtected = sessionProtected;
+
     const factory = (this.constructor as typeof CodexAPIClient).__mockFactory;
     if (factory) {
-      const mockInstance = factory(baseURL, apiKey);
+      const mockInstance = factory(this.baseURL);
       Object.assign(this, mockInstance);
-      return;
     }
+  }
 
-    this.baseURL = baseURL;
-    this.apiKey = apiKey;
+  private sessionFetch(path: string, init: RequestInit = {}): Promise<Response> {
+    if (!this.sessionProtected) {
+      const headers = new Headers(init.headers);
+      headers.delete('Authorization');
+      return fetch(`${this.baseURL}${path}`, {
+        ...init,
+        credentials: 'omit',
+        headers,
+      });
+    }
+    return brainSessionFetch(path, init, this.baseURL);
+  }
+
+  async get(path: string): Promise<unknown> {
+    const response = await this.sessionFetch(path);
+    if (!response.ok) {
+      throw new CodexAPIError(response.status, `Failed to fetch ${path}`);
+    }
+    return response.json();
   }
 
   async generateCode(request: CodexRequest): Promise<CodexResponse> {
     const validated = CodexRequestSchema.parse(request);
 
-    const response = await fetch(`${this.baseURL}/infer`, {
+    const response = await this.sessionFetch('/infer', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
         'X-Client-Version': '1.0.0',
       },
       body: JSON.stringify(validated),
@@ -186,9 +206,7 @@ export class CodexAPIClient {
   }
 
   async getStatus(): Promise<StatusResponse> {
-    const response = await fetch(`${this.baseURL}/status`, {
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
-    });
+    const response = await this.sessionFetch('/status');
 
     if (!response.ok) {
       throw new CodexAPIError(response.status, 'Failed to fetch status');
@@ -199,9 +217,7 @@ export class CodexAPIClient {
   }
 
   async getQuantumState(): Promise<QuantumStateResponse> {
-    const response = await fetch(`${this.baseURL}/api/cognitive/state`, {
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
-    });
+    const response = await this.sessionFetch('/api/cognitive/state');
 
     if (!response.ok) {
       throw new CodexAPIError(response.status, 'Failed to fetch quantum state');
@@ -212,12 +228,9 @@ export class CodexAPIClient {
   }
 
   async evaluateScenario(scenarios: unknown[]): Promise<unknown> {
-    const response = await fetch(`${this.baseURL}/api/cognitive/evaluate`, {
+    const response = await this.sessionFetch('/api/cognitive/evaluate', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ scenarios }),
     });
 
@@ -229,12 +242,9 @@ export class CodexAPIClient {
   }
 
   async collapseWaveFunction(scenarioId: string): Promise<unknown> {
-    const response = await fetch(`${this.baseURL}/api/cognitive/collapse`, {
+    const response = await this.sessionFetch('/api/cognitive/collapse', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ scenario_id: scenarioId }),
     });
 
@@ -246,9 +256,7 @@ export class CodexAPIClient {
   }
 
   async getMemoryState(): Promise<MemoryStateResponse> {
-    const response = await fetch(`${this.baseURL}/api/memory/state`, {
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
-    });
+    const response = await this.sessionFetch('/api/memory/state');
 
     if (!response.ok) {
       throw new CodexAPIError(response.status, 'Failed to fetch memory state');
@@ -259,9 +267,7 @@ export class CodexAPIClient {
   }
 
   async searchMemories(query: string): Promise<MemoryEntry[]> {
-    const response = await fetch(`${this.baseURL}/api/memory/search?q=${encodeURIComponent(query)}`, {
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
-    });
+    const response = await this.sessionFetch(`/api/memory/search?q=${encodeURIComponent(query)}`);
 
     if (!response.ok) {
       throw new CodexAPIError(response.status, 'Failed to search memories');
@@ -272,9 +278,7 @@ export class CodexAPIClient {
   }
 
   async getAgentState(): Promise<AgentStateResponse> {
-    const response = await fetch(`${this.baseURL}/api/agents/state`, {
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
-    });
+    const response = await this.sessionFetch('/api/agents/state');
 
     if (!response.ok) {
       throw new CodexAPIError(response.status, 'Failed to fetch agent state');
@@ -285,12 +289,9 @@ export class CodexAPIClient {
   }
 
   async orchestrateTask(taskDescription: string, workflowToken?: string): Promise<unknown> {
-    const response = await fetch(`${this.baseURL}/api/agents/orchestrate`, {
+    const response = await this.sessionFetch('/api/agents/orchestrate', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         task_description: taskDescription,
         workflow_token: workflowToken
@@ -305,9 +306,7 @@ export class CodexAPIClient {
   }
 
   async getDashboardMetrics(): Promise<DashboardMetrics> {
-    const response = await fetch(`${this.baseURL}/api/metrics/dashboard`, {
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
-    });
+    const response = await this.sessionFetch('/api/metrics/dashboard');
 
     if (!response.ok) {
       throw new CodexAPIError(response.status, 'Failed to fetch dashboard metrics');
@@ -318,9 +317,8 @@ export class CodexAPIClient {
   }
 
   async consolidateMemory(): Promise<ConsolidateResponse> {
-    const response = await fetch(`${this.baseURL}/api/memory/consolidate`, {
+    const response = await this.sessionFetch('/api/memory/consolidate', {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
     });
 
     if (!response.ok) {

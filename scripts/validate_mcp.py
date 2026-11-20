@@ -25,7 +25,7 @@ from mcp.server.http import ContextItem, ContextUpsertRequest, QueryRequest, app
 
 REQUIRED_FILES: list[Path] = [
     ROOT / ".copilot-space" / "mcp.example.json",
-    ROOT / "codex_capability_map.yaml",
+    ROOT / "configs" / "codex_capability_map.yaml",
     ROOT / "docs" / "mcp" / "api_schema.md",
     ROOT / "docs" / "mcp" / "authentication.md",
     ROOT / "docs" / "mcp" / "rate_limiting.md",
@@ -69,6 +69,7 @@ def check_capability_map_has_mcp(path: Path) -> None:
 
 
 def run_http_smoke() -> None:
+    os.environ.setdefault("MCP_OFFLINE", "true")
     client = TestClient(app)
     headers = {"X-MCP-API-Key": os.environ.get("MCP_API_KEY", "dev-key")}
 
@@ -79,7 +80,7 @@ def run_http_smoke() -> None:
     query_resp = client.post(
         "/mcp/v1/query",
         headers=headers,
-        json=QueryRequest(query="codex", top_k=2).dict(),
+        json=QueryRequest(query="codex", top_k=2).model_dump(),
     )
     if query_resp.status_code != 200:
         raise SystemExit(f"Query failed: {query_resp.status_code} {query_resp.text}")
@@ -89,7 +90,7 @@ def run_http_smoke() -> None:
         headers=headers,
         json=ContextUpsertRequest(
             items=[ContextItem(id="smoke", content="smoke test", metadata={"scope": "test"})]
-        ).dict(),
+        ).model_dump(),
     )
     if upsert_resp.status_code != 200:
         raise SystemExit(f"Context failed: {upsert_resp.status_code} {upsert_resp.text}")
@@ -108,7 +109,7 @@ def main() -> None:
     _load_json(ROOT / ".copilot-space" / "mcp.example.json")
 
     if args.check_capability_map:
-        check_capability_map_has_mcp(ROOT / "codex_capability_map.yaml")
+        check_capability_map_has_mcp(ROOT / "configs" / "codex_capability_map.yaml")
 
     if args.run_http_smoke:
         run_http_smoke()

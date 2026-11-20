@@ -17,9 +17,8 @@
  * Run via CI:
  *   .github/workflows/har-capture.yml (schedule + workflow_dispatch)
  *
- * GitHub App token injection:
- *   Set VITE_GITHUB_TOKEN in env to use the App installation token
- *   (fetched from CLI server /api/github/token when available).
+ * GitHub authentication remains server-side in the Cognitive Brain middleware.
+ * HAR capture uses public reads and never embeds a PAT in browser assets.
  */
 
 import { test, expect, Page, BrowserContext } from '@playwright/test';
@@ -79,10 +78,7 @@ test.describe('HAR capture — Cognitive App full walkthrough', () => {
         mode:      'full',          // capture all request/response bodies
         urlFilter: CAPTURE_URL_FILTER,
       },
-      // Inject GitHub token if available (raises rate limit 60 → 5,000 req/hr)
-      extraHTTPHeaders: process.env.VITE_GITHUB_TOKEN
-        ? { 'X-Har-Capture': 'true' }
-        : {},
+      extraHTTPHeaders: { 'X-Har-Capture': 'true' },
     });
 
     page = await context.newPage();
