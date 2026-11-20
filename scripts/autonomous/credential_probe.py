@@ -5,8 +5,10 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import socket
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,7 +20,8 @@ if str(ROOT) not in sys.path:
 
 from scripts.autonomous.github_permission_matrix import azimuth_write_plan  # noqa: E402
 
-API_ROOT = "https://api.github.com"
+GITHUB_API_SCHEME = "https"
+GITHUB_API_HOST = "api.github.com"
 REPOSITORY = "Aries-Serpent/_codex_"
 TOKEN_SOURCES = (
     "CODEX_MASTER_KEY",
@@ -42,6 +45,29 @@ def utc_timestamp() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def github_api_url(path: str) -> str:
+    parsed = urllib.parse.urlsplit(path)
+    if (
+        parsed.scheme
+        or parsed.netloc
+        or parsed.fragment
+        or not parsed.path.startswith("/")
+        or parsed.path.startswith("//")
+    ):
+        raise ValueError("GitHub API paths must be absolute paths")
+    return urllib.parse.urlunsplit(
+        (GITHUB_API_SCHEME, GITHUB_API_HOST, parsed.path, parsed.query, "")
+    )
+
+
+def normalized_probe_error(error_type: str) -> dict[str, Any]:
+    return {
+        "status": None,
+        "error_type": error_type,
+        "message": error_type,
+    }
+
+
 def request_json(
     path: str,
     token: str,
@@ -51,7 +77,7 @@ def request_json(
 ) -> dict[str, Any]:
     data = json.dumps(body).encode("utf-8") if body is not None else None
     request = urllib.request.Request(
-        f"{API_ROOT}{path}",
+        github_api_url(path),
         data=data,
         method=method,
         headers={
@@ -72,20 +98,47 @@ def request_json(
                 "payload": payload,
             }
     except urllib.error.HTTPError as exc:
-        headers = {key.lower(): value for key, value in exc.headers.items()}
+        headers = {key.lower(): value for key, value in (exc.headers or {}).items()}
         return {
             "status": exc.code,
             "oauth_scopes": headers.get("x-oauth-scopes"),
             "accepted_oauth_scopes": headers.get("x-accepted-oauth-scopes"),
             "rate_limit_remaining": headers.get("x-ratelimit-remaining"),
-            "message": exc.read().decode("utf-8", errors="replace")[:240],
+            "error_type": "http_error",
+            "message": "http_error",
         }
+    except urllib.error.URLError as exc:
+        error_type = "dns_error" if isinstance(exc.reason, socket.gaierror) else "url_error"
+        return normalized_probe_error(error_type)
+    except socket.gaierror:
+        return normalized_probe_error("dns_error")
+    except TimeoutError:
+        return normalized_probe_error("timeout")
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return normalized_probe_error("malformed_json")
+    except OSError:
+        return normalized_probe_error("os_error")
+    except Exception:
+        return normalized_probe_error("probe_exception")
+
+
+def safe_request_json(
+    path: str,
+    token: str,
+    *,
+    method: str = "GET",
+    body: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    try:
+        return request_json(path, token, method=method, body=body)
+    except Exception:
+        return normalized_probe_error("probe_exception")
 
 
 def safe_contents_write_probe(token: str) -> dict[str, Any]:
     """Create an unreferenced blob that cannot alter repository-visible refs."""
     marker = f"codex-azimuth-write-probe-{utc_timestamp()}"
-    result = request_json(
+    result = safe_request_json(
         f"/repos/{REPOSITORY}/git/blobs",
         token,
         method="POST",
@@ -103,11 +156,11 @@ def safe_contents_write_probe(token: str) -> dict[str, Any]:
 
 
 def probe_source(source: str, token: str, *, live_safe_probes: bool = False) -> dict[str, Any]:
-    identity = request_json("/user", token)
+    identity = safe_request_json("/user", token)
     probe_results: dict[str, dict[str, Any]] = {}
     repository_permissions: dict[str, Any] | None = None
     for operation, path in READ_PROBES.items():
-        result = request_json(path, token)
+        result = safe_request_json(path, token)
         payload = result.pop("payload", None)
         if operation == "repository" and isinstance(payload, dict):
             repository_permissions = payload.get("permissions")
@@ -117,6 +170,7 @@ def probe_source(source: str, token: str, *, live_safe_probes: bool = False) -> 
             "oauth_scopes": result.get("oauth_scopes"),
             "accepted_oauth_scopes": result.get("accepted_oauth_scopes"),
             "rate_limit_remaining": result.get("rate_limit_remaining"),
+            "error_type": result.get("error_type"),
             "denial": result.get("message") if result.get("status") != 200 else None,
         }
 
@@ -128,6 +182,8 @@ def probe_source(source: str, token: str, *, live_safe_probes: bool = False) -> 
         "source": source,
         "configured": True,
         "identity_status": identity.get("status"),
+        "identity_error_type": identity.get("error_type"),
+        "identity_message": identity.get("message"),
         "actor": identity_payload.get("login") if isinstance(identity_payload, dict) else None,
         "repository_permissions": repository_permissions,
         "reads": probe_results,
@@ -136,6 +192,17 @@ def probe_source(source: str, token: str, *, live_safe_probes: bool = False) -> 
         "azimuth_writes": azimuth_write_plan(),
         "live_safe_writes": live_safe_writes,
     }
+
+
+def safe_probe_source(source: str, token: str, *, live_safe_probes: bool = False) -> dict[str, Any]:
+    try:
+        return probe_source(source, token, live_safe_probes=live_safe_probes)
+    except Exception:
+        return {
+            "source": source,
+            "configured": True,
+            **normalized_probe_error("probe_exception"),
+        }
 
 
 def parse_args() -> argparse.Namespace:
@@ -169,7 +236,7 @@ def main() -> int:
             )
             continue
         seen_tokens[token] = [source]
-        credentials.append(probe_source(source, token, live_safe_probes=args.live_safe_probes))
+        credentials.append(safe_probe_source(source, token, live_safe_probes=args.live_safe_probes))
 
     report = {
         "timestamp": utc_timestamp(),

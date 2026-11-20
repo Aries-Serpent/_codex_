@@ -30,15 +30,20 @@ const shouldUseHarReplay = !!(process.env.CI || process.env.PLAYWRIGHT_HAR_REPLA
 const harReplayConfig = shouldUseHarReplay ? { serviceWorkers: 'block' as const } : {};
 const production = process.env.E2E_PRODUCTION === '1';
 const port = process.env.E2E_PORT || '5173';
+const configuredBrainAPIURL = process.env.COGNITIVE_BRAIN_API_URL || 'http://localhost:8765';
 // Matches vite.config.ts `base`; only the production server inherits GITHUB_ACTIONS.
 const basePath = production && process.env.GITHUB_ACTIONS ? '/_codex_/cognitive_app/' : '/';
-const baseURL = process.env.BASE_URL || `http://127.0.0.1:${port}${basePath}`;
+const baseURL = process.env.BASE_URL || `http://localhost:${port}${basePath}`;
 if (!/^\d+$/.test(port) || Number(port) < 1 || Number(port) > 65535) {
   throw new Error('E2E_PORT must be a TCP port');
 }
 const site = new URL(baseURL);
 if (!['http:', 'https:'].includes(site.protocol) || site.username || site.password) {
   throw new Error('BASE_URL must be an HTTP(S) URL without credentials');
+}
+const brainAPI = new URL(configuredBrainAPIURL);
+if (!['http:', 'https:'].includes(brainAPI.protocol) || brainAPI.username || brainAPI.password) {
+  throw new Error('COGNITIVE_BRAIN_API_URL must be an HTTP(S) URL without credentials');
 }
 const externalServer = !!process.env.BASE_URL;
 const chromiumExecutablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
@@ -152,11 +157,14 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: externalServer ? undefined : {
     command: production
-      ? `npm run preview -- --config e2e/vite.config.ts --host 127.0.0.1 --port ${port} --strictPort`
-      : `npm run dev -- --config e2e/vite.config.ts --host 127.0.0.1 --port ${port} --strictPort`,
+      ? `npm run preview -- --config e2e/vite.config.ts --host 0.0.0.0 --port ${port} --strictPort`
+      : `npm run dev -- --config e2e/vite.config.ts --host 0.0.0.0 --port ${port} --strictPort`,
     url: baseURL,
     reuseExistingServer: false,
-    env: { GITHUB_ACTIONS: production ? process.env.GITHUB_ACTIONS || '' : '' },
+    env: {
+      GITHUB_ACTIONS: production ? process.env.GITHUB_ACTIONS || '' : '',
+      VITE_CLI_API_URL: brainAPI.toString().replace(/\/$/, ''),
+    },
     timeout: 120 * 1000, // 2 minutes to start dev server
     stdout: 'pipe',
     stderr: 'pipe',

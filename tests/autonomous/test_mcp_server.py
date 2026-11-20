@@ -6,7 +6,9 @@ import asyncio
 import json
 from typing import Any
 
-from scripts.autonomous.mcp_server import TOOLS, handle_message
+import pytest
+
+from scripts.autonomous.mcp_server import TOOLS, approved_api_base, handle_message
 
 
 class FakeTransport:
@@ -18,13 +20,13 @@ def test_initialize_and_list_tools() -> None:
     initialized = asyncio.run(
         handle_message(
             {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}},
-            transport_factory=FakeTransport,
+            transport=FakeTransport(),
         )
     )
     listed = asyncio.run(
         handle_message(
             {"jsonrpc": "2.0", "id": 2, "method": "tools/list", "params": {}},
-            transport_factory=FakeTransport,
+            transport=FakeTransport(),
         )
     )
 
@@ -32,6 +34,10 @@ def test_initialize_and_list_tools() -> None:
     assert initialized["result"]["protocolVersion"] == "2024-11-05"
     assert listed is not None
     assert [tool["name"] for tool in listed["result"]["tools"]] == [tool["name"] for tool in TOOLS]
+    execute_schema = next(
+        tool["inputSchema"] for tool in TOOLS if tool["name"] == "cognitive_brain_route_execute"
+    )
+    assert "allow_write" not in execute_schema["properties"]
 
 
 def test_route_plan_tool_uses_local_middleware() -> None:
@@ -50,7 +56,7 @@ def test_route_plan_tool_uses_local_middleware() -> None:
                     },
                 },
             },
-            transport_factory=FakeTransport,
+            transport=FakeTransport(),
         )
     )
 
@@ -69,10 +75,68 @@ def test_unknown_tool_returns_json_rpc_error() -> None:
                 "method": "tools/call",
                 "params": {"name": "unknown", "arguments": {}},
             },
-            transport_factory=FakeTransport,
+            transport=FakeTransport(),
         )
     )
 
     assert response is not None
     assert response["error"]["code"] == -32000
-    assert "Unknown tool" in response["error"]["message"]
+    assert response["error"]["message"] == "Cognitive Brain tool failed"
+    assert "unknown" not in response["error"]["message"]
+
+
+def test_tool_error_does_not_expose_exception_text() -> None:
+    class FailingTransport:
+        def request(self, method: str, path: str, body: dict[str, Any] | None = None) -> Any:
+            raise RuntimeError("secret bootstrap path and token")
+
+    response = asyncio.run(
+        handle_message(
+            {
+                "jsonrpc": "2.0",
+                "id": 5,
+                "method": "tools/call",
+                "params": {"name": "cognitive_brain_capabilities", "arguments": {}},
+            },
+            transport=FailingTransport(),
+        )
+    )
+
+    assert response is not None
+    assert response["error"]["message"] == "Cognitive Brain tool failed"
+    assert "secret" not in response["error"]["message"]
+
+
+def test_stdio_messages_reuse_one_transport_instance() -> None:
+    class StatefulTransport(FakeTransport):
+        def __init__(self) -> None:
+            self.paths: list[str] = []
+
+        def request(self, method: str, path: str, body: dict[str, Any] | None = None) -> Any:
+            self.paths.append(path)
+            return super().request(method, path, body)
+
+    transport = StatefulTransport()
+    messages = [
+        {
+            "jsonrpc": "2.0",
+            "id": index,
+            "method": "tools/call",
+            "params": {"name": "cognitive_brain_capabilities", "arguments": {}},
+        }
+        for index in (6, 7)
+    ]
+
+    for message in messages:
+        asyncio.run(handle_message(message, transport=transport))
+
+    assert transport.paths == ["/api/capabilities", "/api/capabilities"]
+
+
+def test_api_base_rejects_non_loopback_dynamic_origins(monkeypatch) -> None:
+    monkeypatch.delenv("CODEX_ALLOWED_CLI_API_ORIGINS", raising=False)
+
+    with pytest.raises(ValueError):
+        approved_api_base("file:///etc/passwd")
+    with pytest.raises(ValueError):
+        approved_api_base("https://attacker.example")

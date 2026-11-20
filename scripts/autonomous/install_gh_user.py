@@ -25,8 +25,23 @@ def architecture() -> str:
     raise RuntimeError(f"unsupported architecture: {machine}")
 
 
-def download(url: str, destination: Path) -> None:
+def download_archive(target_architecture: str, destination: Path) -> None:
+    if target_architecture == "amd64":
+        url = "https://github.com/cli/cli/releases/download/v2.83.0/" "gh_2.83.0_linux_amd64.tar.gz"
+    elif target_architecture == "arm64":
+        url = "https://github.com/cli/cli/releases/download/v2.83.0/" "gh_2.83.0_linux_arm64.tar.gz"
+    else:
+        raise RuntimeError("unsupported GitHub CLI architecture")
     request = urllib.request.Request(url, headers={"User-Agent": "codex-maintainer-bootstrap"})
+    with urllib.request.urlopen(request, timeout=30) as response:
+        destination.write_bytes(response.read())
+
+
+def download_checksums(destination: Path) -> None:
+    request = urllib.request.Request(
+        "https://github.com/cli/cli/releases/download/v2.83.0/gh_2.83.0_checksums.txt",
+        headers={"User-Agent": "codex-maintainer-bootstrap"},
+    )
     with urllib.request.urlopen(request, timeout=30) as response:
         destination.write_bytes(response.read())
 
@@ -66,8 +81,8 @@ def main() -> int:
         temp_dir = Path(temporary)
         archive = temp_dir / archive_name
         checksums = temp_dir / "checksums.txt"
-        download(f"{RELEASE_ROOT}/{archive_name}", archive)
-        download(f"{RELEASE_ROOT}/gh_{VERSION}_checksums.txt", checksums)
+        download_archive(architecture(), archive)
+        download_checksums(checksums)
         actual = hashlib.sha256(archive.read_bytes()).hexdigest()
         expected = expected_checksum(checksums, archive_name)
         if actual != expected:

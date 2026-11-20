@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { ensureBrainSession } from '@/lib/brain-session';
+import { brainSessionFetch, getBrainAPIURL } from '@/lib/brain-session';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -38,7 +38,7 @@ interface ApiProxyResponse {
 
 // ── Constants ─────────────────────────────────────────────────────────────
 
-const CLI_API = (import.meta.env.VITE_CLI_API_URL as string | undefined) ?? 'http://127.0.0.1:8765';
+const CLI_API = getBrainAPIURL();
 
 const METHOD_COLORS: Record<HttpMethod, string> = {
   GET:    'bg-blue-500/20 text-blue-300 border-blue-500/40',
@@ -56,10 +56,10 @@ const STATUS_COLOR = (code: number) =>
 
 // Preset endpoints — wired to the cognitive brain / CI server
 const PRESETS = [
-  { label: 'Brain Health',  method: 'GET'    as HttpMethod, url: 'http://127.0.0.1:8765/api/health',        body: '' },
-  { label: 'CLI History',   method: 'GET'    as HttpMethod, url: 'http://127.0.0.1:8765/api/cli/history',   body: '' },
-  { label: 'Clear History', method: 'DELETE' as HttpMethod, url: 'http://127.0.0.1:8765/api/cli/history',   body: '' },
-  { label: 'Run Command',   method: 'POST'   as HttpMethod, url: 'http://127.0.0.1:8765/api/cli/run',
+  { label: 'Brain Health',  method: 'GET'    as HttpMethod, url: `${CLI_API}/api/health`,        body: '' },
+  { label: 'CLI History',   method: 'GET'    as HttpMethod, url: `${CLI_API}/api/cli/history`,   body: '' },
+  { label: 'Clear History', method: 'DELETE' as HttpMethod, url: `${CLI_API}/api/cli/history`,   body: '' },
+  { label: 'Run Command',   method: 'POST'   as HttpMethod, url: `${CLI_API}/api/cli/run`,
     body: JSON.stringify({ command: 'git status --short', timeout: 10 }, null, 2) },
   { label: 'GH Repo',       method: 'GET'    as HttpMethod, url: 'https://api.github.com/repos/Aries-Serpent/_codex_', body: '' },
   { label: 'GH Runs',       method: 'GET'    as HttpMethod, url: 'https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs?per_page=5', body: '' },
@@ -69,7 +69,7 @@ const PRESETS = [
 
 export function ApiClient() {
   const [method, setMethod]     = useState<HttpMethod>('GET');
-  const [url, setUrl]           = useState('http://127.0.0.1:8765/api/health');
+  const [url, setUrl]           = useState(`${CLI_API}/api/health`);
   const [headers, setHeaders]   = useState('{\n  "Accept": "application/json"\n}');
   const [params, setParams]     = useState('');
   const [body, setBody]         = useState('');
@@ -94,12 +94,13 @@ export function ApiClient() {
     try {
       if (body.trim()) parsedBody = JSON.parse(body);
     } catch { parsedBody = body.trim() || undefined; }
+    parsedHeaders = Object.fromEntries(
+      Object.entries(parsedHeaders).filter(([name]) => name.toLowerCase() !== 'authorization'),
+    );
 
     try {
-      await ensureBrainSession(CLI_API);
-      const resp = await fetch(`${CLI_API}/api/request`, {
+      const resp = await brainSessionFetch('/api/request', {
         method: 'POST',
-        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           method, url,
@@ -108,7 +109,7 @@ export function ApiClient() {
           body:    parsedBody,
           timeout: 30,
         }),
-      });
+      }, CLI_API);
 
       const data: ApiProxyResponse | { detail: string } = await resp.json().catch(() => ({ detail: resp.statusText }));
 
@@ -144,13 +145,14 @@ export function ApiClient() {
       if (err instanceof TypeError && (method === 'GET')) {
         try {
           const directUrl = new URL(url);
-          if (directUrl.protocol !== 'https:') throw new Error('Direct fallback requires HTTPS');
+          if (directUrl.protocol !== 'https:') throw err;
           if (Object.keys(parsedHeaders).some(key => key.toLowerCase() === 'authorization')) {
-            throw new Error('Direct fallback does not forward credentials');
+            throw err;
           }
           for (const [k, v] of Object.entries(parsedParams)) directUrl.searchParams.set(k, v);
           const directResp = await fetch(directUrl.toString(), {
             method: 'GET',
+            credentials: 'omit',
             headers: Object.keys(parsedHeaders).length ? (parsedHeaders as HeadersInit) : undefined,
           });
           const directData: unknown = await directResp.json().catch(async () => directResp.text());
@@ -254,7 +256,7 @@ export function ApiClient() {
           {showHeaders && (
             <Textarea value={headers} onChange={e => setHeaders(e.target.value)}
               className="mt-1 font-mono text-xs h-20 resize-none"
-              placeholder='{ "Authorization": "Bearer ..." }' />
+              placeholder='{ "Accept": "application/json" }' />
           )}
         </div>
 
