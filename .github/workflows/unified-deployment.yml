@@ -89,7 +89,7 @@ jobs:
   build_cognitive_app:
     permissions: {}
     name: "Build Cognitive App (artifact only \u2014 no Pages deploy)"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-m
     if: 'github.event_name == ''push'' ||
 
       (github.event_name == ''workflow_dispatch'' && (inputs.mode == ''cognitive-app-only''
