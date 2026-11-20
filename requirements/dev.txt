@@ -9,7 +9,7 @@ pytest-cov==7.1.0
 tensorboard>=2.14
 bandit==1.9.4  # Security scanning (pinned for consistency)
 defusedxml==0.7.1  # XML parsing hardening (pinned)
-semgrep==1.175.0  # SAST (pinned for rule consistency)
+# Semgrep is installed in isolated CI/nox scanner environments.
 detect-secrets==1.5.0  # Secrets detection (pinned)
 pre-commit==4.6.2
 nox==2026.8.17  # Pinned for reproducibility

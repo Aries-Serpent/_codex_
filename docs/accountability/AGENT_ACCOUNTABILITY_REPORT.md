@@ -25648,3 +25648,16 @@ was not dismissed because its detail API returned 403 and owner-side disposition
 has not been recorded.
 
 ---
+
+## SESSION SUMMARY - 2026-11-20 PR #5766 MERGE AND DEPENDENCY REPAIR
+
+### Scope and Evidence
+- Resolved and published the PR #5766 `main` merge on `0D_base_` as commit `23bac8e7dd26317613d4916209b963a75f836ada`; GitHub recalculated the PR as mergeable and created a synthetic merge ref.
+- Decoupled Semgrep from the project lock while preserving its isolated CI and nox installation paths. Removed MCP 1.29.0 and the OpenTelemetry 1.37 Semgrep chain from `uv.lock`.
+- Upgraded OAuthlib 4.0.0 to 4.0.1 and OpenTelemetry API/SDK to 1.45.2. `uv lock --check`, focused dependency/scanner tests, and the isolated Semgrep CLI execution were validated locally.
+
+### Residual Security Findings
+- ChromaDB 1.5.9, Sqlitedict 2.1.0, and Diskcache 5.6.3 remain current no-fix findings in the package index. No suppression, threshold reduction, alert dismissal, or false resolution claim was made.
+- The fresh candidate SHA must be rescanned by Trivy and the unrelated GHAS configuration identities verified before hosted clearance is claimed.
+
+---

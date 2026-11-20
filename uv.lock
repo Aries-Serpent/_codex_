@@ -137,8 +137,7 @@ version = "6.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jinja2" },
-    { name = "jsonschema", version = "4.25.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "jsonschema", version = "4.26.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "jsonschema" },
     { name = "narwhals" },
     { name = "packaging" },
     { name = "typing-extensions" },
@@ -338,8 +337,7 @@ name = "black"
 version = "26.10.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
     { name = "mypy-extensions" },
     { name = "packaging" },
     { name = "pathspec" },
@@ -353,30 +351,12 @@ wheels = [
 ]
 
 [[package]]
-name = "boltons"
-version = "21.0.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ad/1f/6c0608d86e0fc77c982a2923ece80eef85f091f2332fc13cbce41d70d502/boltons-21.0.0.tar.gz", hash = "sha256:65e70a79a731a7fe6e98592ecfb5ccf2115873d01dbc576079874629e5c90f13", size = 180201, upload-time = "2021-05-17T01:20:17.802Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f7/a7/1a31561d10a089fcb46fe286766dd4e053a12f6e23b4fd1c26478aff2475/boltons-21.0.0-py2.py3-none-any.whl", hash = "sha256:b9bb7b58b2b420bbe11a6025fdef6d3e5edc9f76a42fb467afe7ca212ef9948b", size = 193723, upload-time = "2021-05-17T01:20:20.023Z" },
-]
-
-[[package]]
 name = "boolean-py"
 version = "5.0"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/c4/cf/85379f13b76f3a69bca86b60237978af17d6aa0bc5998978c3b8cf05abb2/boolean_py-5.0.tar.gz", hash = "sha256:60cbc4bad079753721d32649545505362c754e121570ada4658b852a3a318d95", size = 37047, upload-time = "2025-04-03T10:39:49.734Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e5/ca/78d423b324b8d77900030fa59c4aa9054261ef0925631cd2501dd015b7b7/boolean_py-5.0-py3-none-any.whl", hash = "sha256:ef28a70bd43115208441b53a045d1549e2f0ec6e3d08a9d142cbc41c1938e8d9", size = 26577, upload-time = "2025-04-03T10:39:48.449Z" },
-]
-
-[[package]]
-name = "bracex"
-version = "3.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/fb/37/adf8dd2cde958c2d086bdd87fc36b532fd824bf38f10be6348d65da0c8f9/bracex-3.2.tar.gz", hash = "sha256:0a3d40bfae4caae4d3bfd0ea715874799fab711c38fd4012cc35343e815405cd", size = 29771, upload-time = "2026-10-22T00:28:49.508Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/42/65/8030b03de8137d1aab7dd6ecfecdba2fc22fc849fa35959b024f62293a99/bracex-3.2-py3-none-any.whl", hash = "sha256:8f3e908a452f66707e1d6d91b3d7d7d4c649d248df18537c0dc710aeb9c30d87", size = 12019, upload-time = "2026-10-22T00:28:48.233Z" },
 ]
 
 [[package]]
@@ -416,8 +396,7 @@ version = "5.6.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "billiard" },
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
     { name = "click-didyoumean" },
     { name = "click-plugins" },
     { name = "click-repl" },
@@ -519,18 +498,14 @@ dependencies = [
     { name = "grpcio" },
     { name = "httpx" },
     { name = "importlib-resources" },
-    { name = "jsonschema", version = "4.25.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "jsonschema", version = "4.26.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "jsonschema" },
     { name = "kubernetes" },
     { name = "mmh3" },
     { name = "numpy" },
     { name = "onnxruntime" },
-    { name = "opentelemetry-api", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-api", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-exporter-otlp-proto-grpc", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-exporter-otlp-proto-grpc", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-sdk", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-sdk", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-exporter-otlp-proto-grpc" },
+    { name = "opentelemetry-sdk" },
     { name = "orjson" },
     { name = "overrides" },
     { name = "pybase64" },
@@ -554,23 +529,8 @@ wheels = [
 
 [[package]]
 name = "click"
-version = "8.4.2"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
-sdist = { url = "https://files.pythonhosted.org/packages/76/d4/81420972a676e8ffea40450d8c8c92943e7218a78fe9b64359836cc9876b/click-8.4.2.tar.gz", hash = "sha256:9a6cea6e60b17ebe0a44c5cc636d94f09bd66142c1cd7d8b4cd731c4917a15f6", size = 338000, upload-time = "2026-06-24T17:45:15.148Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/fb/e2/79c688af8b210d232694e31e59da9f6ec747bae31c3f5946e4e9b98860d5/click-8.4.2-py3-none-any.whl", hash = "sha256:e6f9f66136c816745b9d65817da91d61d957fb16e02e4dcd0552553c5a197b76", size = 119243, upload-time = "2026-06-24T17:45:13.73Z" },
-]
-
-[[package]]
-name = "click"
 version = "8.5.0"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
 sdist = { url = "https://files.pythonhosted.org/packages/c7/0e/7fa0ef50764b67090eca4114772a2abf8b6148198475e54c660b97caeee6/click-8.5.0.tar.gz", hash = "sha256:ba0d2089de75ea0310e2dde03160e6ca10009947fb95a182f9b54021bb272e34", size = 382235, upload-time = "2026-08-26T13:33:14.56Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/58/50/6c0d534c5f134586a8e1ba4e330569e32f057e33372ae556463212fb4cd3/click-8.5.0-py3-none-any.whl", hash = "sha256:255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360", size = 125251, upload-time = "2026-08-26T13:33:12.928Z" },
@@ -581,8 +541,7 @@ name = "click-didyoumean"
 version = "0.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/30/ce/217289b77c590ea1e7c24242d9ddd6e249e52c795ff10fac2c50062c48cb/click_didyoumean-0.3.1.tar.gz", hash = "sha256:4f82fdff0dbe64ef8ab2279bd6aa3f6a99c3b28c05aa09cbfc07c9d7fbb5a463", size = 3089, upload-time = "2024-03-24T08:22:07.499Z" }
 wheels = [
@@ -590,24 +549,11 @@ wheels = [
 ]
 
 [[package]]
-name = "click-option-group"
-version = "0.5.9"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" } },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ef/ff/d291d66595b30b83d1cb9e314b2c9be7cfc7327d4a0d40a15da2416ea97b/click_option_group-0.5.9.tar.gz", hash = "sha256:f94ed2bc4cf69052e0f29592bd1e771a1789bd7bfc482dd0bc482134aff95823", size = 22222, upload-time = "2025-10-09T09:38:01.474Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/75/45/54bb2d8d4138964a94bef6e9afe48b0be4705ba66ac442ae7d8a8dc4ffef/click_option_group-0.5.9-py3-none-any.whl", hash = "sha256:ad2599248bd373e2e19bec5407967c3eec1d0d4fc4a5e77b08a0481e75991080", size = 11553, upload-time = "2025-10-09T09:38:00.066Z" },
-]
-
-[[package]]
 name = "click-plugins"
 version = "1.1.1.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/c3/a4/34847b59150da33690a36da3681d6bbc2ec14ee9a846bc30a6746e5984e4/click_plugins-1.1.1.2.tar.gz", hash = "sha256:d7af3984a99d243c131aa1a828331e7630f4a88a9741fd05c927b204bcf92261", size = 8343, upload-time = "2025-06-25T00:47:37.555Z" }
 wheels = [
@@ -619,8 +565,7 @@ name = "click-repl"
 version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
     { name = "prompt-toolkit" },
     { name = "typing-extensions" },
 ]
@@ -653,8 +598,7 @@ source = { editable = "." }
 dependencies = [
     { name = "bcrypt" },
     { name = "certifi" },
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
     { name = "codex-contracts" },
     { name = "cryptography" },
     { name = "defusedxml" },
@@ -662,8 +606,7 @@ dependencies = [
     { name = "hydra-core" },
     { name = "idna" },
     { name = "jinja2" },
-    { name = "jsonschema", version = "4.25.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "jsonschema", version = "4.26.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "jsonschema" },
     { name = "libcst" },
     { name = "marshmallow" },
     { name = "omegaconf" },
@@ -689,7 +632,7 @@ all = [
     { name = "accelerate" },
     { name = "black" },
     { name = "chromadb" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "click" },
     { name = "cryptography" },
     { name = "datasets" },
     { name = "detect-secrets" },
@@ -697,14 +640,14 @@ all = [
     { name = "dvc" },
     { name = "evidently" },
     { name = "faiss-cpu" },
-    { name = "fastapi", version = "0.159.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "fastapi" },
     { name = "freezegun" },
     { name = "great-expectations" },
     { name = "httpx" },
     { name = "hydra-core" },
     { name = "hypothesis" },
     { name = "isort" },
-    { name = "jsonschema", version = "4.26.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "jsonschema" },
     { name = "libcst" },
     { name = "litestar" },
     { name = "lm-eval" },
@@ -771,8 +714,7 @@ auth = [
     { name = "pyotp" },
 ]
 core = [
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
     { name = "codex-contracts" },
     { name = "hydra-core" },
     { name = "libcst" },
@@ -798,21 +740,20 @@ dataops = [
 dev = [
     { name = "bandit" },
     { name = "black" },
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" } },
+    { name = "click" },
     { name = "coverage", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "detect-secrets" },
     { name = "freezegun" },
     { name = "hydra-core" },
     { name = "hypothesis" },
     { name = "isort" },
-    { name = "jsonschema", version = "4.25.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "jsonschema" },
     { name = "libcst" },
     { name = "marshmallow" },
     { name = "mypy" },
     { name = "nbstripout" },
     { name = "nox" },
     { name = "omegaconf" },
-    { name = "opentelemetry-api", version = "1.37.0", source = { registry = "https://pypi.org/simple" } },
     { name = "parso" },
     { name = "pip-audit" },
     { name = "pre-commit" },
@@ -831,7 +772,6 @@ dev = [
     { name = "pyyaml" },
     { name = "responses" },
     { name = "ruff" },
-    { name = "semgrep" },
     { name = "sqlparse" },
     { name = "tree-sitter" },
     { name = "tree-sitter-python" },
@@ -851,7 +791,7 @@ full = [
     { name = "accelerate" },
     { name = "black" },
     { name = "chromadb" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "click" },
     { name = "cryptography" },
     { name = "datasets" },
     { name = "detect-secrets" },
@@ -859,14 +799,14 @@ full = [
     { name = "dvc" },
     { name = "evidently" },
     { name = "faiss-cpu" },
-    { name = "fastapi", version = "0.159.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "fastapi" },
     { name = "freezegun" },
     { name = "great-expectations" },
     { name = "httpx" },
     { name = "hydra-core" },
     { name = "hypothesis" },
     { name = "isort" },
-    { name = "jsonschema", version = "4.26.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "jsonschema" },
     { name = "libcst" },
     { name = "litestar" },
     { name = "lm-eval" },
@@ -936,8 +876,7 @@ ml = [
     { name = "duckdb" },
     { name = "evidently" },
     { name = "faiss-cpu" },
-    { name = "fastapi", version = "0.141.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "fastapi", version = "0.159.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "fastapi" },
     { name = "httpx" },
     { name = "litestar" },
     { name = "numpy" },
@@ -968,8 +907,7 @@ rag = [
     { name = "duckdb" },
     { name = "evidently" },
     { name = "faiss-cpu" },
-    { name = "fastapi", version = "0.141.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "fastapi", version = "0.159.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "fastapi" },
     { name = "httpx" },
     { name = "litestar" },
     { name = "numpy" },
@@ -993,8 +931,7 @@ runtime = [
     { name = "duckdb" },
     { name = "evidently" },
     { name = "faiss-cpu" },
-    { name = "fastapi", version = "0.141.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "fastapi", version = "0.159.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "fastapi" },
     { name = "httpx" },
     { name = "litestar" },
     { name = "numpy" },
@@ -1013,15 +950,13 @@ runtime = [
 ]
 test-core = [
     { name = "black" },
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
     { name = "detect-secrets" },
     { name = "freezegun" },
     { name = "hydra-core" },
     { name = "hypothesis" },
     { name = "isort" },
-    { name = "jsonschema", version = "4.25.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "jsonschema", version = "4.26.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "jsonschema" },
     { name = "libcst" },
     { name = "marshmallow" },
     { name = "mypy" },
@@ -1065,7 +1000,7 @@ train = [
     { name = "accelerate" },
     { name = "black" },
     { name = "chromadb" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "click" },
     { name = "cryptography" },
     { name = "datasets" },
     { name = "detect-secrets" },
@@ -1073,14 +1008,14 @@ train = [
     { name = "dvc" },
     { name = "evidently" },
     { name = "faiss-cpu" },
-    { name = "fastapi", version = "0.159.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "fastapi" },
     { name = "freezegun" },
     { name = "great-expectations" },
     { name = "httpx" },
     { name = "hydra-core" },
     { name = "hypothesis" },
     { name = "isort" },
-    { name = "jsonschema", version = "4.26.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "jsonschema" },
     { name = "libcst" },
     { name = "litestar" },
     { name = "lm-eval" },
@@ -1336,7 +1271,6 @@ requires-dist = [
     { name = "openai", marker = "python_full_version >= '3.8' and extra == 'full'", specifier = ">=3.5.0" },
     { name = "openai", marker = "python_full_version >= '3.8' and extra == 'train'", specifier = ">=3.5.0" },
     { name = "opencv-python-headless", marker = "extra == 'test-ml-integrations'", specifier = ">=4.12.0.88,<5" },
-    { name = "opentelemetry-api", marker = "extra == 'dev'", specifier = ">=1.37.0,<1.38.0" },
     { name = "packaging", marker = "extra == 'all'", specifier = ">=26.3,<27.0" },
     { name = "packaging", marker = "extra == 'full'", specifier = ">=26.3,<27.0" },
     { name = "packaging", marker = "extra == 'train'", specifier = ">=26.3,<27.0" },
@@ -1508,7 +1442,6 @@ requires-dist = [
     { name = "scipy", marker = "extra == 'all'", specifier = ">=1.18.1,<2" },
     { name = "scipy", marker = "extra == 'full'", specifier = ">=1.18.1,<2" },
     { name = "scipy", marker = "extra == 'train'", specifier = ">=1.18.1,<2" },
-    { name = "semgrep", marker = "extra == 'dev'", specifier = ">=1.175.0" },
     { name = "sentence-transformers", marker = "extra == 'all'", specifier = ">=6.0.0,<7.0.0" },
     { name = "sentence-transformers", marker = "extra == 'full'", specifier = ">=6.0.0,<7.0.0" },
     { name = "sentence-transformers", marker = "extra == 'ml'", specifier = ">=6.0.0,<7.0.0" },
@@ -1872,8 +1805,7 @@ name = "deprecated"
 version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "wrapt", version = "1.17.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "wrapt", version = "2.5.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "wrapt" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/f7/9c/16649913bf14c73e0a9453782e148362ff2657067deff6aa9c7ebcddcc31/deprecated-3.0.0.tar.gz", hash = "sha256:16850204d3a1e6bb0acd06bff48d96e8b0a0d25d1c52f71705405a0f4894192d", size = 166912, upload-time = "2026-09-26T13:58:10.675Z" }
 wheels = [
@@ -2191,8 +2123,7 @@ dependencies = [
     { name = "litestar" },
     { name = "nltk" },
     { name = "numpy" },
-    { name = "opentelemetry-proto", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-proto", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "opentelemetry-proto" },
     { name = "pandas", extra = ["parquet"] },
     { name = "plotly" },
     { name = "pydantic" },
@@ -2216,33 +2147,12 @@ wheels = [
 ]
 
 [[package]]
-name = "exceptiongroup"
-version = "1.2.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/09/35/2495c4ac46b980e4ca1f6ad6db102322ef3ad2410b79fdde159a4b0f3b92/exceptiongroup-1.2.2.tar.gz", hash = "sha256:47c2edf7c6738fafb49fd34290706d1a1a2f4d1c6df275526b62cbb4aa5393cc", size = 28883, upload-time = "2024-07-12T22:26:00.161Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/02/cc/b7e31358aac6ed1ef2bb790a9746ac2c69bcb3c8588b41616914eb106eaf/exceptiongroup-1.2.2-py3-none-any.whl", hash = "sha256:3111b9d131c238bec2f8f516e123e14ba243563fb135d3fe885990585aa7795b", size = 16453, upload-time = "2024-07-12T22:25:58.476Z" },
-]
-
-[[package]]
 name = "execnet"
 version = "2.1.2"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/bf/89/780e11f9588d9e7128a3f87788354c7946a9cbb1401ad38a48c4db9a4f07/execnet-2.1.2.tar.gz", hash = "sha256:63d83bfdd9a23e35b9c6a3261412324f964c2ec8dcd8d3c6916ee9373e0befcd", size = 166622, upload-time = "2025-11-12T09:56:37.75Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ab/84/02fc1827e8cdded4aa65baef11296a9bbe595c474f0d6d758af082d849fd/execnet-2.1.2-py3-none-any.whl", hash = "sha256:67fba928dd5a544b783f6056f449e5e3931a5c378b128bc18501f7ea79e296ec", size = 40708, upload-time = "2025-11-12T09:56:36.333Z" },
-]
-
-[[package]]
-name = "face"
-version = "26.0.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "boltons" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/53/fd/f84f0600bd72953d5a322f0dedbd4f900e2cedab718e6b6a093ae2d16aae/face-26.0.1.tar.gz", hash = "sha256:8183d94bc248baaea855a9f8445f97a22a9988908e60abddccc6e251da77c4c6", size = 51754, upload-time = "2026-06-17T23:14:39.938Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/0a/24/0159c48d19c8b05e6969ee809bbbecc5a5c863f7e38c9327e2c63cb06f0f/face-26.0.1-py3-none-any.whl", hash = "sha256:ab0a83c37c9789dce658a67a9a80eafaa113c9ec37c5a9d950ff5480542a062d", size = 57572, upload-time = "2026-06-17T23:14:38.711Z" },
 ]
 
 [[package]]
@@ -2271,37 +2181,15 @@ wheels = [
 
 [[package]]
 name = "fastapi"
-version = "0.141.1"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "annotated-doc", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "pydantic", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "starlette", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "typing-extensions", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "typing-inspection", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/8a/02/91e3416a8fdd715abb903a952a6bec7cdd8d14eed55d415fc8595524c319/fastapi-0.141.1.tar.gz", hash = "sha256:e8822fc40db1e1858054d7a949a888695bc9bdce70139178e33bd2871a453ca1", size = 425799, upload-time = "2026-07-29T17:18:05.568Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/cb/03/10388a42375ee7e4ac9b94eb2c5c569c8b5795e377e701c9ac3ad63de890/fastapi-0.141.1-py3-none-any.whl", hash = "sha256:bfb91aa2d334c61cb35ba9a116fc123b3d3df31640b801cf57a7a78ec3f603b3", size = 131954, upload-time = "2026-07-29T17:18:04.364Z" },
-]
-
-[[package]]
-name = "fastapi"
 version = "0.159.1"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
 dependencies = [
-    { name = "annotated-doc", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-api", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "pydantic", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "starlette", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "typing-extensions", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "typing-inspection", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "annotated-doc" },
+    { name = "opentelemetry-api" },
+    { name = "pydantic" },
+    { name = "starlette" },
+    { name = "typing-extensions" },
+    { name = "typing-inspection" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/9a/40/a212bffb9809afb9a94b250f11e0c29fd8b2589ec92e4bedd1cc7adf9938/fastapi-0.159.1.tar.gz", hash = "sha256:b45b1ec57f3aa4d2f80f09bfbcf068b46764a2ee892e56753f35bb3d9d845ce2", size = 522004, upload-time = "2026-10-21T20:59:29.054Z" }
 wheels = [
@@ -2367,8 +2255,7 @@ dependencies = [
     { name = "pandas" },
     { name = "scipy" },
     { name = "typing-extensions" },
-    { name = "wrapt", version = "1.17.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "wrapt", version = "2.5.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "wrapt" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/f1/87/e7b9b39d218793f159d7425e264c0ac196da07f1decc333001502fac02fb/formulaic-1.2.2.tar.gz", hash = "sha256:c99e8f11ff7d327eaecaf63855ca69b7fa0da100ad6c0041ef80912fbac667e6", size = 657522, upload-time = "2026-06-02T18:24:42.632Z" }
 wheels = [
@@ -2457,52 +2344,16 @@ wheels = [
 ]
 
 [[package]]
-name = "glom"
-version = "25.12.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "attrs" },
-    { name = "boltons" },
-    { name = "face" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/78/74/8387f95565ba7c30cd152a585b275ebb9a834d1d32782425c5d2fe0a102c/glom-25.12.0.tar.gz", hash = "sha256:1ae7da88be3693df40ad27bdf57a765a55c075c86c971bcddd67927403eb0069", size = 196128, upload-time = "2025-12-29T06:29:07.274Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a7/e6/4129d9a3baa72d747533bb33376543ccadd9a7f9944e5a6e3ae2e245f5d6/glom-25.12.0-py3-none-any.whl", hash = "sha256:b9f21e77f71a6576a43864e85066b8cc3f0f778d0d50961563f8981377a6dcb1", size = 103295, upload-time = "2025-12-29T06:29:06.074Z" },
-]
-
-[[package]]
-name = "google-api-core"
-version = "2.34.0"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "google-auth", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "googleapis-common-protos", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "proto-plus", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "protobuf", version = "6.33.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "requests", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/7b/7c/9be3903e3d45415e8ca493c75f8990a0f6f579d168015d44c379350d0ab0/google_api_core-2.34.0.tar.gz", hash = "sha256:98a779fe72de956eb1c9c2f47ff4c4432a668ece1a002ec38bed07ec2698ae59", size = 187953, upload-time = "2026-08-06T06:23:58.128Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bc/c1/a8a92ae1bc4b1a8f804c776d7d3f0c771b78a62c3ad4df1be41b3fd8c767/google_api_core-2.34.0-py3-none-any.whl", hash = "sha256:cdf9c67e7ca2402d86ccbfde5f2503fc83e3cc3f58cc78456ae96cad24a6d2de", size = 180545, upload-time = "2026-08-06T06:22:47.502Z" },
-]
-
-[[package]]
 name = "google-api-core"
 version = "2.42.0"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
 dependencies = [
-    { name = "google-auth", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "googleapis-common-protos", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-api", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "proto-plus", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "protobuf", version = "7.36.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "requests", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "google-auth" },
+    { name = "googleapis-common-protos" },
+    { name = "opentelemetry-api" },
+    { name = "proto-plus" },
+    { name = "protobuf" },
+    { name = "requests" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ac/aa/2aa84799e6920216f8aa2866d3b43daa20f7060dcb6efc8f0449e8be0ab0/google_api_core-2.42.0.tar.gz", hash = "sha256:82cf5daa2ef1b456d4e29ff1de1a5c2995c7be3ccf4fc608184326e03390c1ee", size = 273100, upload-time = "2026-10-08T18:12:37.477Z" }
 wheels = [
@@ -2527,8 +2378,7 @@ name = "googleapis-common-protos"
 version = "1.75.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "protobuf", version = "6.33.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "protobuf", version = "7.36.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "protobuf" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/8d/2b/6ce81972d5c8cab9705fddce3153be63222d9e12fd96f8baba5038a744dd/googleapis_common_protos-1.75.5.tar.gz", hash = "sha256:c7a866fc34ed29a3b10af627a4b9b1dc2433313ca6e959f0ae4feb132047ed72", size = 156513, upload-time = "2026-09-29T19:26:14.863Z" }
 wheels = [
@@ -2555,8 +2405,7 @@ dependencies = [
     { name = "altair" },
     { name = "cryptography" },
     { name = "jinja2" },
-    { name = "jsonschema", version = "4.25.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "jsonschema", version = "4.26.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "jsonschema" },
     { name = "marshmallow" },
     { name = "mistune" },
     { name = "numpy" },
@@ -2615,8 +2464,7 @@ name = "gto"
 version = "1.10.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
     { name = "entrypoints" },
     { name = "funcy" },
     { name = "pydantic" },
@@ -2711,15 +2559,6 @@ wheels = [
 ]
 
 [[package]]
-name = "httpx-sse"
-version = "0.4.3"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/0f/4c/751061ffa58615a32c31b2d82e8482be8dd4a89154f003147acee90f2be9/httpx_sse-0.4.3.tar.gz", hash = "sha256:9b1ed0127459a66014aec3c56bebd93da3c1bc8bb6618c8082039a44889a755d", size = 15943, upload-time = "2025-10-10T21:48:22.271Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d2/fd/6668e5aec43ab844de6fc74927e155a3b37bf40d7c3790e49fc0406b6578/httpx_sse-0.4.3-py3-none-any.whl", hash = "sha256:0ac1c9fe3c0afad2e0ebb25a934a59f4c7823b60792691f779fad2c5568830fc", size = 8960, upload-time = "2025-10-10T21:48:21.158Z" },
-]
-
-[[package]]
 name = "httpx2"
 version = "2.16.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2740,8 +2579,7 @@ name = "huggingface-hub"
 version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
     { name = "filelock" },
     { name = "fsspec" },
     { name = "hf-xet", marker = "platform_machine == 'AMD64' or platform_machine == 'ARM64' or platform_machine == 'aarch64' or platform_machine == 'amd64' or platform_machine == 'arm64' or platform_machine == 'x86_64'" },
@@ -2852,18 +2690,6 @@ wheels = [
 ]
 
 [[package]]
-name = "importlib-metadata"
-version = "8.7.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "zipp", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/f3/49/3b30cad09e7771a4982d9975a8cbf64f00d4a1ececb53297f1d9a7be1b10/importlib_metadata-8.7.1.tar.gz", hash = "sha256:49fef1ae6440c182052f407c8d34a68f72efc36db9ca90dc0113398f2fdde8bb", size = 57107, upload-time = "2025-12-21T10:00:19.278Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/fa/5e/f8e9a1d23b9c20a551a8a02ea3637b4642e22c2626e3a13a9a29cdea99eb/importlib_metadata-8.7.1-py3-none-any.whl", hash = "sha256:5a1f80bf1daa489495071efbb095d75a634cf28a8bc299581244063b53176151", size = 27865, upload-time = "2025-12-21T10:00:18.329Z" },
-]
-
-[[package]]
 name = "importlib-resources"
 version = "7.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2964,34 +2790,13 @@ wheels = [
 
 [[package]]
 name = "jsonschema"
-version = "4.25.1"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "attrs", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "jsonschema-specifications", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "referencing", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "rpds-py", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/74/69/f7185de793a29082a9f3c7728268ffb31cb5095131a9c139a74078e27336/jsonschema-4.25.1.tar.gz", hash = "sha256:e4a9655ce0da0c0b67a085847e00a3a51449e1157f4f75e9fb5aa545e122eb85", size = 357342, upload-time = "2025-08-18T17:03:50.038Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bf/9c/8c95d856233c1f82500c2450b8c68576b4cf1c871db3afac5c34ff84e6fd/jsonschema-4.25.1-py3-none-any.whl", hash = "sha256:3fba0169e345c7175110351d456342c364814cfcf3b964ba4587f22915230a63", size = 90040, upload-time = "2025-08-18T17:03:48.373Z" },
-]
-
-[[package]]
-name = "jsonschema"
 version = "4.26.0"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
 dependencies = [
-    { name = "attrs", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "jsonschema-specifications", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "referencing", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "rpds-py", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "attrs" },
+    { name = "jsonschema-specifications" },
+    { name = "referencing" },
+    { name = "rpds-py" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b3/fc/e067678238fa451312d4c62bf6e6cf5ec56375422aee02f9cb5f909b3047/jsonschema-4.26.0.tar.gz", hash = "sha256:0c26707e2efad8aa1bfc5b7ce170f3fccc2e4918ff85989ba9ffa9facb2be326", size = 366583, upload-time = "2026-01-07T13:41:07.246Z" }
 wheels = [
@@ -3138,8 +2943,7 @@ version = "2.25.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
     { name = "httpx" },
     { name = "litestar-htmx" },
     { name = "msgspec" },
@@ -3297,30 +3101,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/4b/9c/dd6e38d747a62ead27f9abef32f4ca4311d4e40ac28e76bcc9ffb5dd0329/mbstrdecoder-1.1.5.tar.gz", hash = "sha256:8cbfba26938befd8a35e3cc06ca0632f61320b7b2be7df32550b895e1725b1ce", size = 14529, upload-time = "2026-05-05T04:17:58.23Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/4c/eb/711270faab7b7df702339a2c68b31fd3ed4fffc68b0e99e5bdf49b1e87e4/mbstrdecoder-1.1.5-py3-none-any.whl", hash = "sha256:4a50fe113d4abecfd86e8f716b2e413cce03d63af83ec3c7cdbe81dec0e519ed", size = 7966, upload-time = "2026-05-05T04:17:56.78Z" },
-]
-
-[[package]]
-name = "mcp"
-version = "1.29.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "anyio" },
-    { name = "httpx" },
-    { name = "httpx-sse" },
-    { name = "jsonschema", version = "4.25.1", source = { registry = "https://pypi.org/simple" } },
-    { name = "pydantic" },
-    { name = "pydantic-settings" },
-    { name = "pyjwt", extra = ["crypto"], marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "python-multipart" },
-    { name = "sse-starlette" },
-    { name = "starlette" },
-    { name = "typing-extensions" },
-    { name = "typing-inspection" },
-    { name = "uvicorn" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/30/d3/f9acc21dfc886e4f78e2add1a47db46ce16884346afde53f8a064c02c891/mcp-1.29.0.tar.gz", hash = "sha256:52d01f334de1868cc3bb2d6604931126a67631f99a6c5d3b82ba47290315ec36", size = 643148, upload-time = "2026-07-28T13:41:41.939Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/01/c8/248b201f6d753d69fd5d6506011abbb35a946d9142b2ae311a948fd0be3d/mcp-1.29.0-py3-none-any.whl", hash = "sha256:f5a075bb611f23d6f4d080c6a1699fa62772eebc562ba9e66b306ddde1c755f7", size = 223436, upload-time = "2026-07-28T13:41:40.337Z" },
 ]
 
 [[package]]
@@ -3506,8 +3286,7 @@ version = "5.11.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fastjsonschema" },
-    { name = "jsonschema", version = "4.25.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "jsonschema", version = "4.26.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "jsonschema" },
     { name = "jupyter-core" },
     { name = "traitlets" },
 ]
@@ -3542,8 +3321,7 @@ name = "nltk"
 version = "3.10.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
     { name = "defusedxml" },
     { name = "joblib" },
     { name = "regex" },
@@ -3755,11 +3533,11 @@ wheels = [
 
 [[package]]
 name = "oauthlib"
-version = "4.0.0"
+version = "4.0.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/7a/d8/a1bcc8ba112a627f8ffbdc212a78ce18d3ac07e91a5ca65d27918eee25a1/oauthlib-4.0.0.tar.gz", hash = "sha256:efb274799819440f95b4ab3b818869f1ce9ae26c5beacba0201d1a1b76b54f86", size = 187232, upload-time = "2026-09-28T06:01:18.77Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/33/17/2bb072de0b990303c985f26869fd47bb179024a051f47e7f9d208eb92f8e/oauthlib-4.0.1.tar.gz", hash = "sha256:3d73febdb6faa00f277c81fb04be7b7586fb96fc3b7f0b9c772dada69a25ede7", size = 191219, upload-time = "2026-10-31T09:52:58.008Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d9/f4/78229a1066068ca14fc60fb26cf7381cabe4382261392b90e5f9552722d4/oauthlib-4.0.0-py3-none-any.whl", hash = "sha256:624c28c13a0a59cabf9747dfa52af63be3e512a7f2714df16e91b5b3a145e6cd", size = 159715, upload-time = "2026-09-28T06:01:17.008Z" },
+    { url = "https://files.pythonhosted.org/packages/df/ef/3b8adde1b32a6f540758bff734d3442c621734c83708e5f02b0ba2f43b84/oauthlib-4.0.1-py3-none-any.whl", hash = "sha256:498a298876e996301950a5b053d12c31628bb7b895db03666430c69ce182eb61", size = 161934, upload-time = "2026-10-31T09:52:56.206Z" },
 ]
 
 [[package]]
@@ -3783,8 +3561,7 @@ dependencies = [
     { name = "flatbuffers" },
     { name = "numpy" },
     { name = "packaging" },
-    { name = "protobuf", version = "6.33.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "protobuf", version = "7.36.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "protobuf" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/53/1a/561b43ca1536d9e81d1785bb8a1a260a9e314ef6d04976ba0411c652bda1/onnxruntime-1.31.0-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:35758d7606d578ec5b9d65f6e8a1f488013194c3f6097038a3223cb26d35ef9a", size = 21420804, upload-time = "2026-10-09T04:18:21.729Z" },
@@ -3813,8 +3590,7 @@ name = "opencensus"
 version = "0.11.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "google-api-core", version = "2.34.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "google-api-core", version = "2.42.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "google-api-core" },
     { name = "opencensus-context" },
     { name = "six" },
 ]
@@ -3849,33 +3625,14 @@ wheels = [
 
 [[package]]
 name = "opentelemetry-api"
-version = "1.37.0"
+version = "1.45.2"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
 dependencies = [
-    { name = "importlib-metadata", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "typing-extensions", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/63/04/05040d7ce33a907a2a02257e601992f0cdf11c73b33f13c4492bf6c3d6d5/opentelemetry_api-1.37.0.tar.gz", hash = "sha256:540735b120355bd5112738ea53621f8d5edb35ebcd6fe21ada3ab1c61d1cd9a7", size = 64923, upload-time = "2025-09-11T10:29:01.662Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/19/14/cf3a6b6448849656e1e5f4e2101f3988dc6789724050096aba1bc5ccf592/opentelemetry_api-1.45.2.tar.gz", hash = "sha256:d7b0008e21e5fd61cbe7a7f34ca3b6905a78ab677d9bc395e299359c75cda6b4", size = 73277, upload-time = "2026-10-29T17:29:37.888Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/91/48/28ed9e55dcf2f453128df738210a980e09f4e468a456fa3c763dbc8be70a/opentelemetry_api-1.37.0-py3-none-any.whl", hash = "sha256:accf2024d3e89faec14302213bc39550ec0f4095d1cf5ca688e1bfb1c8612f47", size = 65732, upload-time = "2025-09-11T10:28:41.826Z" },
-]
-
-[[package]]
-name = "opentelemetry-api"
-version = "1.45.1"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "typing-extensions", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/2e/02/6e0ae9cc61bd3169d401077b507b3ebc344745171e1051ab430be012dcd9/opentelemetry_api-1.45.1.tar.gz", hash = "sha256:aa38ed19bcc084ba42782a73255b3582283eced7ad6dddbd6695189e69adfb75", size = 72804, upload-time = "2026-10-06T17:32:58.133Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/1e/41/f7dcf80b81ee8e71c1a2b59f14208bc723edbd89ed027a73b175abf6348e/opentelemetry_api-1.45.1-py3-none-any.whl", hash = "sha256:b31553efa588ae44bc306f863c785c5333a9ecc091248c6ee68b4b6c87fdedfb", size = 60256, upload-time = "2026-10-06T17:32:33.506Z" },
+    { url = "https://files.pythonhosted.org/packages/a9/2d/610db864d7513158cebb8f36cc88e67e73bd6c7aa1905ef18d89e1281c81/opentelemetry_api-1.45.2-py3-none-any.whl", hash = "sha256:2cbd737377e710ee740d261c94e93fa0f08e6d037c18f17513cc0a2d94479a34", size = 60335, upload-time = "2026-10-29T17:29:06.955Z" },
 ]
 
 [[package]]
@@ -3883,7 +3640,7 @@ name = "opentelemetry-exporter-http-transport"
 version = "0.66b1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "opentelemetry-api", version = "1.45.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "opentelemetry-api" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/62/0c/e3ebdb4b507f66afcc905e6885a4946969bd75b45988492643356fbbdc63/opentelemetry_exporter_http_transport-0.66b1.tar.gz", hash = "sha256:443080203bf52586ce0b2ad901e8951c61833eab1aa539ae6f1f16fe9e8e7952", size = 11693, upload-time = "2026-10-06T17:32:59.65Z" }
 wheels = [
@@ -3900,7 +3657,7 @@ name = "opentelemetry-exporter-otlp-common"
 version = "0.66b1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "opentelemetry-sdk", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "opentelemetry-sdk" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/cb/19/41de712173f43057e4532d42ece7d0c6d4210d353e5752433cb14987643f/opentelemetry_exporter_otlp_common-0.66b1.tar.gz", hash = "sha256:6b1403487a2185ac1feb45fd5546fdf8630ce71c36bcefaadf51e2130e9e23f9", size = 14325, upload-time = "2026-10-06T17:33:01.725Z" }
 wheels = [
@@ -3909,28 +3666,10 @@ wheels = [
 
 [[package]]
 name = "opentelemetry-exporter-otlp-proto-common"
-version = "1.37.0"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "opentelemetry-proto", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/dc/6c/10018cbcc1e6fff23aac67d7fd977c3d692dbe5f9ef9bb4db5c1268726cc/opentelemetry_exporter_otlp_proto_common-1.37.0.tar.gz", hash = "sha256:c87a1bdd9f41fdc408d9cc9367bb53f8d2602829659f2b90be9f9d79d0bfe62c", size = 20430, upload-time = "2025-09-11T10:29:03.605Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/08/13/b4ef09837409a777f3c0af2a5b4ba9b7af34872bc43609dda0c209e4060d/opentelemetry_exporter_otlp_proto_common-1.37.0-py3-none-any.whl", hash = "sha256:53038428449c559b0c564b8d718df3314da387109c4d36bd1b94c9a641b0292e", size = 18359, upload-time = "2025-09-11T10:28:44.939Z" },
-]
-
-[[package]]
-name = "opentelemetry-exporter-otlp-proto-common"
 version = "1.45.1"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
 dependencies = [
-    { name = "opentelemetry-proto", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "opentelemetry-proto" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/c1/8e/65e85e5137991a3c493b11682151d198638a5bc1dd4b4c5f67e013c57d7c/opentelemetry_exporter_otlp_proto_common-1.45.1.tar.gz", hash = "sha256:2e4adcc3a67bcf57804fc49514f0ef64974ca7590aa3491da389852b4a0628f6", size = 18873, upload-time = "2026-10-06T17:33:04.471Z" }
 wheels = [
@@ -3939,41 +3678,17 @@ wheels = [
 
 [[package]]
 name = "opentelemetry-exporter-otlp-proto-grpc"
-version = "1.37.0"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "googleapis-common-protos", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "grpcio", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-api", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-exporter-otlp-proto-common", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-proto", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-sdk", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "typing-extensions", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d1/11/4ad0979d0bb13ae5a845214e97c8d42da43980034c30d6f72d8e0ebe580e/opentelemetry_exporter_otlp_proto_grpc-1.37.0.tar.gz", hash = "sha256:f55bcb9fc848ce05ad3dd954058bc7b126624d22c4d9e958da24d8537763bec5", size = 24465, upload-time = "2025-09-11T10:29:04.172Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/39/17/46630b74751031a658706bef23ac99cdc2953cd3b2d28ec90590a0766b3e/opentelemetry_exporter_otlp_proto_grpc-1.37.0-py3-none-any.whl", hash = "sha256:aee5104835bf7993b7ddaaf380b6467472abaedb1f1dbfcc54a52a7d781a3890", size = 19305, upload-time = "2025-09-11T10:28:45.776Z" },
-]
-
-[[package]]
-name = "opentelemetry-exporter-otlp-proto-grpc"
 version = "1.45.1"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
 dependencies = [
-    { name = "googleapis-common-protos", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "grpcio", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-api", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-exporter-otlp-common", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-exporter-otlp-proto-common", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-proto", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-sdk", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "typing-extensions", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "googleapis-common-protos" },
+    { name = "grpcio" },
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-exporter-otlp-common" },
+    { name = "opentelemetry-exporter-otlp-proto-common" },
+    { name = "opentelemetry-proto" },
+    { name = "opentelemetry-sdk" },
+    { name = "typing-extensions" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/d6/00/a82af0be959dc58495740b169c6669a86e0811f6cd353a01eda34d255db3/opentelemetry_exporter_otlp_proto_grpc-1.45.1.tar.gz", hash = "sha256:3b3dcfbfdcb4e35149fcf309972282054b45228f5c10547d0095d6578510a9a0", size = 25997, upload-time = "2026-10-06T17:33:05.114Z" }
 wheels = [
@@ -3982,40 +3697,16 @@ wheels = [
 
 [[package]]
 name = "opentelemetry-exporter-otlp-proto-http"
-version = "1.37.0"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "googleapis-common-protos" },
-    { name = "opentelemetry-api", version = "1.37.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "opentelemetry-exporter-otlp-proto-common", version = "1.37.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "opentelemetry-proto", version = "1.37.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "opentelemetry-sdk", version = "1.37.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "requests" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5d/e3/6e320aeb24f951449e73867e53c55542bebbaf24faeee7623ef677d66736/opentelemetry_exporter_otlp_proto_http-1.37.0.tar.gz", hash = "sha256:e52e8600f1720d6de298419a802108a8f5afa63c96809ff83becb03f874e44ac", size = 17281, upload-time = "2025-09-11T10:29:04.844Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e9/e9/70d74a664d83976556cec395d6bfedd9b85ec1498b778367d5f93e373397/opentelemetry_exporter_otlp_proto_http-1.37.0-py3-none-any.whl", hash = "sha256:54c42b39945a6cc9d9a2a33decb876eabb9547e0dcb49df090122773447f1aef", size = 19576, upload-time = "2025-09-11T10:28:46.726Z" },
-]
-
-[[package]]
-name = "opentelemetry-exporter-otlp-proto-http"
 version = "1.45.1"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
 dependencies = [
     { name = "googleapis-common-protos" },
-    { name = "opentelemetry-api", version = "1.45.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "opentelemetry-api" },
     { name = "opentelemetry-exporter-http-transport", extra = ["requests"], marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
     { name = "opentelemetry-exporter-otlp-common" },
-    { name = "opentelemetry-exporter-otlp-proto-common", version = "1.45.1", source = { registry = "https://pypi.org/simple" } },
-    { name = "opentelemetry-proto", version = "1.45.1", source = { registry = "https://pypi.org/simple" } },
-    { name = "opentelemetry-sdk", version = "1.45.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "opentelemetry-exporter-otlp-proto-common" },
+    { name = "opentelemetry-proto" },
+    { name = "opentelemetry-sdk" },
     { name = "requests" },
     { name = "typing-extensions" },
 ]
@@ -4026,32 +3717,12 @@ wheels = [
 
 [[package]]
 name = "opentelemetry-exporter-prometheus"
-version = "0.58b0"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "opentelemetry-api", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-sdk", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "prometheus-client", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/1a/4c/e351559526ee35fa36d990d3455e81a5607c1fa3e544b599ad802f2481f8/opentelemetry_exporter_prometheus-0.58b0.tar.gz", hash = "sha256:70f2627b4bb82bac65a1fcf95f6e0dcce9e823dd47379ced854753a7e14dfc93", size = 14972, upload-time = "2025-09-11T10:29:05.513Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a6/e3/50e9cdc5a52c2ab19585dd69e668ec9fee0343fafc4bffa919ca79230a4f/opentelemetry_exporter_prometheus-0.58b0-py3-none-any.whl", hash = "sha256:02005033a7a108ab9f3000ff3aa49e2d03a8893b5bf3431322ffa246affbf951", size = 13016, upload-time = "2025-09-11T10:28:47.67Z" },
-]
-
-[[package]]
-name = "opentelemetry-exporter-prometheus"
 version = "0.66b1"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
 dependencies = [
-    { name = "opentelemetry-api", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-sdk", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "prometheus-client", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-sdk" },
+    { name = "prometheus-client" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ed/58/e552853748c3a1478d3f0db31bb4e3bef2e45385f64d658148693183410e/opentelemetry_exporter_prometheus-0.66b1.tar.gz", hash = "sha256:1c702a0cc7a1b8c5e1f3f246aeb4273dbd707179af30dbb66182a75e16a06ed8", size = 16987, upload-time = "2026-10-06T17:33:06.358Z" }
 wheels = [
@@ -4059,73 +3730,11 @@ wheels = [
 ]
 
 [[package]]
-name = "opentelemetry-instrumentation"
-version = "0.58b0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "opentelemetry-api", version = "1.37.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "opentelemetry-semantic-conventions", version = "0.58b0", source = { registry = "https://pypi.org/simple" } },
-    { name = "packaging" },
-    { name = "wrapt", version = "1.17.3", source = { registry = "https://pypi.org/simple" } },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/f6/36/7c307d9be8ce4ee7beb86d7f1d31027f2a6a89228240405a858d6e4d64f9/opentelemetry_instrumentation-0.58b0.tar.gz", hash = "sha256:df640f3ac715a3e05af145c18f527f4422c6ab6c467e40bd24d2ad75a00cb705", size = 31549, upload-time = "2025-09-11T11:42:14.084Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d4/db/5ff1cd6c5ca1d12ecf1b73be16fbb2a8af2114ee46d4b0e6d4b23f4f4db7/opentelemetry_instrumentation-0.58b0-py3-none-any.whl", hash = "sha256:50f97ac03100676c9f7fc28197f8240c7290ca1baa12da8bfbb9a1de4f34cc45", size = 33019, upload-time = "2025-09-11T11:41:00.624Z" },
-]
-
-[[package]]
-name = "opentelemetry-instrumentation-requests"
-version = "0.58b0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "opentelemetry-api", version = "1.37.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "opentelemetry-instrumentation" },
-    { name = "opentelemetry-semantic-conventions", version = "0.58b0", source = { registry = "https://pypi.org/simple" } },
-    { name = "opentelemetry-util-http" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/36/42/83ee32de763b919779aaa595b60c5a7b9c0a4b33952bbe432c5f6a783085/opentelemetry_instrumentation_requests-0.58b0.tar.gz", hash = "sha256:ae9495e6ff64e27bdb839fce91dbb4be56e325139828e8005f875baf41951a2e", size = 15188, upload-time = "2025-09-11T11:42:51.268Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/90/4d/f3476b28ea167d1762134352d01ae9693940a42c78994d9f1b32a4477816/opentelemetry_instrumentation_requests-0.58b0-py3-none-any.whl", hash = "sha256:672a0be0bb5b52bea0c11820b35e27edcf4cd22d34abe4afc59a92a80519f8a8", size = 12966, upload-time = "2025-09-11T11:41:52.67Z" },
-]
-
-[[package]]
-name = "opentelemetry-instrumentation-threading"
-version = "0.58b0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "opentelemetry-api", version = "1.37.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "opentelemetry-instrumentation" },
-    { name = "wrapt", version = "1.17.3", source = { registry = "https://pypi.org/simple" } },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/70/a9/3888cb0470e6eb48ea17b6802275ae71df411edd6382b9a8e8f391936fda/opentelemetry_instrumentation_threading-0.58b0.tar.gz", hash = "sha256:f68c61f77841f9ff6270176f4d496c10addbceacd782af434d705f83e4504862", size = 8770, upload-time = "2025-09-11T11:42:56.308Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a5/54/add1076cb37980e617723a96e29c84006983e8ad6fc589dde7f69ddc57d4/opentelemetry_instrumentation_threading-0.58b0-py3-none-any.whl", hash = "sha256:eacc072881006aceb5b9b6831bcdce718c67ef6f31ac0b32bd6a23a94d979b4a", size = 9312, upload-time = "2025-09-11T11:41:58.603Z" },
-]
-
-[[package]]
-name = "opentelemetry-proto"
-version = "1.37.0"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "protobuf", version = "6.33.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/dd/ea/a75f36b463a36f3c5a10c0b5292c58b31dbdde74f6f905d3d0ab2313987b/opentelemetry_proto-1.37.0.tar.gz", hash = "sha256:30f5c494faf66f77faeaefa35ed4443c5edb3b0aa46dad073ed7210e1a789538", size = 46151, upload-time = "2025-09-11T10:29:11.04Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c4/25/f89ea66c59bd7687e218361826c969443c4fa15dfe89733f3bf1e2a9e971/opentelemetry_proto-1.37.0-py3-none-any.whl", hash = "sha256:8ed8c066ae8828bbf0c39229979bdf583a126981142378a9cbe9d6fd5701c6e2", size = 72534, upload-time = "2025-09-11T10:28:56.831Z" },
-]
-
-[[package]]
 name = "opentelemetry-proto"
 version = "1.45.1"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
 dependencies = [
-    { name = "protobuf", version = "7.36.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "protobuf" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/4b/7f/15f014fb195da6c2dbb6c71399b8e76824878718e94de6454038488eed28/opentelemetry_proto-1.45.1.tar.gz", hash = "sha256:79e0fb95e4616691a469439238aa9224d75779b3e108e895d1aa125ab29ca77c", size = 46488, upload-time = "2026-10-06T17:33:11.49Z" }
 wheels = [
@@ -4134,77 +3743,29 @@ wheels = [
 
 [[package]]
 name = "opentelemetry-sdk"
-version = "1.37.0"
+version = "1.45.2"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
 dependencies = [
-    { name = "opentelemetry-api", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-semantic-conventions", version = "0.58b0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "typing-extensions", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-semantic-conventions" },
+    { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f4/62/2e0ca80d7fe94f0b193135375da92c640d15fe81f636658d2acf373086bc/opentelemetry_sdk-1.37.0.tar.gz", hash = "sha256:cc8e089c10953ded765b5ab5669b198bbe0af1b3f89f1007d19acd32dc46dda5", size = 170404, upload-time = "2025-09-11T10:29:11.779Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7b/1a/74a21d4d6969fb8b432ac397e66112a8167a6deb267ea4559dbaf2fe91ef/opentelemetry_sdk-1.45.2.tar.gz", hash = "sha256:7eec4de13dd21ff3a1670dcb0e02079e692736f94d733dfdce5af461d884248d", size = 221705, upload-time = "2026-10-29T17:29:54.685Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9f/62/9f4ad6a54126fb00f7ed4bb5034964c6e4f00fcd5a905e115bd22707e20d/opentelemetry_sdk-1.37.0-py3-none-any.whl", hash = "sha256:8f3c3c22063e52475c5dbced7209495c2c16723d016d39287dfc215d1771257c", size = 131941, upload-time = "2025-09-11T10:28:57.83Z" },
-]
-
-[[package]]
-name = "opentelemetry-sdk"
-version = "1.45.1"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "opentelemetry-api", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-semantic-conventions", version = "0.66b1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "typing-extensions", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a1/79/7392e21a1c8f0c61d90b223e31c7e48cb9d452e91a6b820ad24cca5f23c4/opentelemetry_sdk-1.45.1.tar.gz", hash = "sha256:63d24a6ca645019a631e6a51999c73e93adcac1196ca640b8ae78a7cc4762bf3", size = 218324, upload-time = "2026-10-06T17:33:13.26Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/95/3c/87c42b4bd6dd297536f04cd9383d212ac557ecd49f2cbdcd46da1c9ef5c8/opentelemetry_sdk-1.45.1-py3-none-any.whl", hash = "sha256:c604c11dc429810812348989115fa44bd558772a3d7442afc43d024f2c250ca4", size = 140063, upload-time = "2026-10-06T17:32:55.04Z" },
+    { url = "https://files.pythonhosted.org/packages/9f/a5/9a3b793ef48245f2336a16beb2324c2397dbb3f987cd68942f77cca06156/opentelemetry_sdk-1.45.2-py3-none-any.whl", hash = "sha256:ff974ea70ee4f1d51e2ec152db37c2b626c7bf82bb3f7d86114fd8704e7199c6", size = 141756, upload-time = "2026-10-29T17:29:33.722Z" },
 ]
 
 [[package]]
 name = "opentelemetry-semantic-conventions"
-version = "0.58b0"
+version = "0.66b2"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
 dependencies = [
-    { name = "opentelemetry-api", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "typing-extensions", marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "opentelemetry-api" },
+    { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/aa/1b/90701d91e6300d9f2fb352153fb1721ed99ed1f6ea14fa992c756016e63a/opentelemetry_semantic_conventions-0.58b0.tar.gz", hash = "sha256:6bd46f51264279c433755767bb44ad00f1c9e2367e1b42af563372c5a6fa0c25", size = 129867, upload-time = "2025-09-11T10:29:12.597Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/37/3f/50f95972b50e8e353f5b9342034c9cd17730f1956f009ce6a3fbbd89f9ce/opentelemetry_semantic_conventions-0.66b2.tar.gz", hash = "sha256:7da5f1a5dc4383eb66711d4d3d3e71824d9403ac1559fea021cc103c1a4c4976", size = 150246, upload-time = "2026-10-29T17:29:55.682Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/07/90/68152b7465f50285d3ce2481b3aec2f82822e3f52e5152eeeaf516bab841/opentelemetry_semantic_conventions-0.58b0-py3-none-any.whl", hash = "sha256:5564905ab1458b96684db1340232729fce3b5375a06e140e8904c78e4f815b28", size = 207954, upload-time = "2025-09-11T10:28:59.218Z" },
-]
-
-[[package]]
-name = "opentelemetry-semantic-conventions"
-version = "0.66b1"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "opentelemetry-api", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "typing-extensions", marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/46/e4/dbbfb2a010c4db2224a5114638acede6fe563d33cc20fb1752cebcbe6298/opentelemetry_semantic_conventions-0.66b1.tar.gz", hash = "sha256:497ca63bf383723411e8eaf60c8779e9877633c936bb641080adab59d0eb6ec8", size = 150250, upload-time = "2026-10-06T17:33:14.073Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bc/14/67f8aa798857f8cf686f515bf93d9bb877ce952ddc8efae0fa25b45ce0d6/opentelemetry_semantic_conventions-0.66b1-py3-none-any.whl", hash = "sha256:d4cddeb4315490b35213f55e2bdc9ac54bb1e4d318927475bed62b35545e581b", size = 206279, upload-time = "2026-10-06T17:32:56.103Z" },
-]
-
-[[package]]
-name = "opentelemetry-util-http"
-version = "0.58b0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c6/5f/02f31530faf50ef8a41ab34901c05cbbf8e9d76963ba2fb852b0b4065f4e/opentelemetry_util_http-0.58b0.tar.gz", hash = "sha256:de0154896c3472c6599311c83e0ecee856c4da1b17808d39fdc5cce5312e4d89", size = 9411, upload-time = "2025-09-11T11:43:05.602Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a5/a3/0a1430c42c6d34d8372a16c104e7408028f0c30270d8f3eb6cccf2e82934/opentelemetry_util_http-0.58b0-py3-none-any.whl", hash = "sha256:6c6b86762ed43025fbd593dc5f700ba0aa3e09711aedc36fd48a13b23d8cb1e7", size = 7652, upload-time = "2025-09-11T11:42:09.682Z" },
+    { url = "https://files.pythonhosted.org/packages/67/bd/6bf33ed31521c565931c037e9e81bac47c1acb000e850c6e24220e2a0c00/opentelemetry_semantic_conventions-0.66b2-py3-none-any.whl", hash = "sha256:4cbe61e5f9275d57ab31708446e7938ef4291ebbe6a7fca6f7a629c5acae87d8", size = 206280, upload-time = "2026-10-29T17:29:35.062Z" },
 ]
 
 [[package]]
@@ -4308,15 +3869,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/08/e3/950e513affdfe1c1864397b4f40d6ed06ec1b54f608e462c27f151dd72df/patsy-1.0.3.tar.gz", hash = "sha256:79ebf4c93ff4d296e58a9d5be2b2ee31bd49d737cf11d70ffbd8a44b2de42e65", size = 399992, upload-time = "2026-08-29T21:35:32.258Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/20/70/cd3cf5cff538323076a879edef02cce6f13f7d75e03d12f211b0a0dbd178/patsy-1.0.3-py2.py3-none-any.whl", hash = "sha256:d3dbebe8fd5f46e29912d030b63c6268647b59bf788a99e2af28a30234cf357c", size = 233318, upload-time = "2026-08-29T21:35:30.913Z" },
-]
-
-[[package]]
-name = "peewee"
-version = "3.19.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/88/b0/79462b42e89764998756e0557f2b58a15610a5b4512fbbcccae58fba7237/peewee-3.19.0.tar.gz", hash = "sha256:f88292a6f0d7b906cb26bca9c8599b8f4d8920ebd36124400d0cbaaaf915511f", size = 974035, upload-time = "2026-01-07T17:24:59.597Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/1a/41/19c65578ef9a54b3083253c68a607f099642747168fe00f3a2bceb7c3a34/peewee-3.19.0-py3-none-any.whl", hash = "sha256:de220b94766e6008c466e00ce4ba5299b9a832117d9eb36d45d0062f3cfd7417", size = 411885, upload-time = "2026-01-07T17:24:58.33Z" },
 ]
 
 [[package]]
@@ -4537,8 +4089,7 @@ name = "proto-plus"
 version = "1.29.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "protobuf", version = "6.33.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "protobuf", version = "7.36.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "protobuf" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/46/70/783e33ffbb4466cc154a94f79b869b92a451e2bd45605054e68ff68b7af6/proto_plus-1.29.0.tar.gz", hash = "sha256:cfb4e62ad7e13dd18f346cabbda00cab39930d36a05791fd81ddb074d6ee884f", size = 58592, upload-time = "2026-09-29T19:26:15.963Z" }
 wheels = [
@@ -4547,26 +4098,8 @@ wheels = [
 
 [[package]]
 name = "protobuf"
-version = "6.33.6"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
-sdist = { url = "https://files.pythonhosted.org/packages/66/70/e908e9c5e52ef7c3a6c7902c9dfbb34c7e29c25d2f81ade3856445fd5c94/protobuf-6.33.6.tar.gz", hash = "sha256:a6768d25248312c297558af96a9f9c929e8c4cee0659cb07e780731095f38135", size = 444531, upload-time = "2026-03-18T19:05:00.988Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ee/90/b3c01fdec7d2f627b3a6884243ba328c1217ed2d978def5c12dc50d328a3/protobuf-6.33.6-cp39-abi3-manylinux2014_aarch64.whl", hash = "sha256:e2afbae9b8e1825e3529f88d514754e094278bb95eadc0e199751cdd9a2e82a2", size = 324610, upload-time = "2026-03-18T19:04:53.096Z" },
-    { url = "https://files.pythonhosted.org/packages/9b/ca/25afc144934014700c52e05103c2421997482d561f3101ff352e1292fb81/protobuf-6.33.6-cp39-abi3-manylinux2014_s390x.whl", hash = "sha256:c96c37eec15086b79762ed265d59ab204dabc53056e3443e702d2681f4b39ce3", size = 339381, upload-time = "2026-03-18T19:04:54.616Z" },
-    { url = "https://files.pythonhosted.org/packages/16/92/d1e32e3e0d894fe00b15ce28ad4944ab692713f2e7f0a99787405e43533a/protobuf-6.33.6-cp39-abi3-manylinux2014_x86_64.whl", hash = "sha256:e9db7e292e0ab79dd108d7f1a94fe31601ce1ee3f7b79e0692043423020b0593", size = 323436, upload-time = "2026-03-18T19:04:55.768Z" },
-    { url = "https://files.pythonhosted.org/packages/c4/72/02445137af02769918a93807b2b7890047c32bfb9f90371cbc12688819eb/protobuf-6.33.6-py3-none-any.whl", hash = "sha256:77179e006c476e69bf8e8ce866640091ec42e1beb80b213c3900006ecfba6901", size = 170656, upload-time = "2026-03-18T19:04:59.826Z" },
-]
-
-[[package]]
-name = "protobuf"
 version = "7.36.2"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
 sdist = { url = "https://files.pythonhosted.org/packages/d9/89/5b8517baa72f84a67b8a307ba953c91057af618bf40bf676f3c03551f8f0/protobuf-7.36.2.tar.gz", hash = "sha256:497d0463ff3316681da6c0b9e8d06cb465d61abce00b613ab42226175644d1bb", size = 512737, upload-time = "2026-09-17T20:07:59.326Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b6/ea/91fdf7c2b8bbd49cde056f00a9df6773532987e1c00fe2830b895af95c7e/protobuf-7.36.2-cp310-abi3-manylinux2014_aarch64.whl", hash = "sha256:e11e1f0180583a2af89db6a2ecd9e8dc40aa6d2988ca175bfd0e6d12ea72d74e", size = 344219, upload-time = "2026-09-17T20:07:52.914Z" },
@@ -5069,15 +4602,6 @@ wheels = [
 ]
 
 [[package]]
-name = "python-multipart"
-version = "0.0.32"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/5b/42/55c32bb9b12693c092ad250a0e82edb5b31ddeda6eb772de5f308b3804ad/python_multipart-0.0.32.tar.gz", hash = "sha256:be54b7f3fa167bb83e4fcd936b887b708f4e57fe75911c02aebf53efaf8d938e", size = 46881, upload-time = "2026-06-04T16:18:58.647Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e1/04/e8135ebd1ad02c56ec633277529b2602ff99ff634be76cdba5744cf554fd/python_multipart-0.0.32-py3-none-any.whl", hash = "sha256:ff6d3f776f16878c894e52e107296ffc890e913c611b1a4ec6c44e2821fe2e23", size = 30042, upload-time = "2026-06-04T16:18:57.319Z" },
-]
-
-[[package]]
 name = "pytokens"
 version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
@@ -5144,15 +4668,12 @@ name = "ray"
 version = "2.59.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
     { name = "filelock" },
-    { name = "jsonschema", version = "4.25.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "jsonschema", version = "4.26.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "jsonschema" },
     { name = "msgpack" },
     { name = "packaging" },
-    { name = "protobuf", version = "6.33.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "protobuf", version = "7.36.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "protobuf" },
     { name = "pyyaml" },
     { name = "requests" },
 ]
@@ -5166,18 +4687,14 @@ serve = [
     { name = "aiohttp" },
     { name = "aiohttp-cors" },
     { name = "colorful" },
-    { name = "fastapi", version = "0.141.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "fastapi", version = "0.159.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "fastapi" },
     { name = "grpcio" },
     { name = "jinja2" },
     { name = "mmh3" },
     { name = "opencensus" },
-    { name = "opentelemetry-exporter-prometheus", version = "0.58b0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-exporter-prometheus", version = "0.66b1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-proto", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-proto", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-sdk", version = "1.37.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "opentelemetry-sdk", version = "1.45.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "opentelemetry-exporter-prometheus" },
+    { name = "opentelemetry-proto" },
+    { name = "opentelemetry-sdk" },
     { name = "prometheus-client" },
     { name = "py-spy" },
     { name = "pydantic" },
@@ -5291,8 +4808,7 @@ name = "rich-click"
 version = "1.9.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
     { name = "rich" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/96/3e/5688fdd83aea416de336582a274f2bc8236b5c261b04c11e17bc262786ad/rich_click-1.9.9.tar.gz", hash = "sha256:324cba7513cd4187ee92b2eef21f071714e45be062458c8b157bd7e0c81103e3", size = 75866, upload-time = "2026-09-05T19:20:14.799Z" }
@@ -5347,20 +4863,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/c7/3b/ebda527b56beb90cb7652cb1c7e4f91f48649fbcd8d2eb2fb6e77cd3329b/ruamel_yaml-0.19.1.tar.gz", hash = "sha256:53eb66cd27849eff968ebf8f0bf61f46cdac2da1d1f3576dd4ccee9b25c31993", size = 142709, upload-time = "2026-01-02T16:50:31.84Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b8/0c/51f6841f1d84f404f92463fc2b1ba0da357ca1e3db6b7fbda26956c3b82a/ruamel_yaml-0.19.1-py3-none-any.whl", hash = "sha256:27592957fedf6e0b62f281e96effd28043345e0e66001f97683aa9a40c667c93", size = 118102, upload-time = "2026-01-02T16:50:29.201Z" },
-]
-
-[[package]]
-name = "ruamel-yaml-clib"
-version = "0.2.15"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ea/97/60fda20e2fb54b83a61ae14648b0817c8f5d84a3821e40bfbdae1437026a/ruamel_yaml_clib-0.2.15.tar.gz", hash = "sha256:46e4cc8c43ef6a94885f72512094e482114a8a706d3c555a34ed4b0d20200600", size = 225794, upload-time = "2025-11-16T16:12:59.761Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b9/cb/22366d68b280e281a932403b76da7a988108287adff2bfa5ce881200107a/ruamel_yaml_clib-0.2.15-cp312-cp312-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:f6d3655e95a80325b84c4e14c080b2470fe4f33b6846f288379ce36154993fb1", size = 737468, upload-time = "2025-11-16T20:22:47.335Z" },
-    { url = "https://files.pythonhosted.org/packages/71/73/81230babf8c9e33770d43ed9056f603f6f5f9665aea4177a2c30ae48e3f3/ruamel_yaml_clib-0.2.15-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:71845d377c7a47afc6592aacfea738cc8a7e876d586dfba814501d8c53c1ba60", size = 753349, upload-time = "2025-11-16T16:13:26.269Z" },
-    { url = "https://files.pythonhosted.org/packages/61/62/150c841f24cda9e30f588ef396ed83f64cfdc13b92d2f925bb96df337ba9/ruamel_yaml_clib-0.2.15-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:11e5499db1ccbc7f4b41f0565e4f799d863ea720e01d3e99fa0b7b5fcd7802c9", size = 788211, upload-time = "2025-11-16T16:13:27.441Z" },
-    { url = "https://files.pythonhosted.org/packages/30/93/e79bd9cbecc3267499d9ead919bd61f7ddf55d793fb5ef2b1d7d92444f35/ruamel_yaml_clib-0.2.15-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:4b293a37dc97e2b1e8a1aec62792d1e52027087c8eea4fc7b5abd2bdafdd6642", size = 743203, upload-time = "2025-11-16T16:13:28.671Z" },
-    { url = "https://files.pythonhosted.org/packages/8d/06/1eb640065c3a27ce92d76157f8efddb184bd484ed2639b712396a20d6dce/ruamel_yaml_clib-0.2.15-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:512571ad41bba04eac7268fe33f7f4742210ca26a81fe0c75357fa682636c690", size = 747292, upload-time = "2025-11-16T20:22:48.584Z" },
-    { url = "https://files.pythonhosted.org/packages/a5/21/ee353e882350beab65fcc47a91b6bdc512cace4358ee327af2962892ff16/ruamel_yaml_clib-0.2.15-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:e5e9f630c73a490b758bf14d859a39f375e6999aea5ddd2e2e9da89b9953486a", size = 771624, upload-time = "2025-11-16T16:13:29.853Z" },
 ]
 
 [[package]]
@@ -5494,56 +4996,6 @@ wheels = [
 ]
 
 [[package]]
-name = "semantic-version"
-version = "2.10.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/7d/31/f2289ce78b9b473d582568c234e104d2a342fd658cc288a7553d83bb8595/semantic_version-2.10.0.tar.gz", hash = "sha256:bdabb6d336998cbb378d4b9db3a4b56a1e3235701dc05ea2690d9a997ed5041c", size = 52289, upload-time = "2022-05-26T13:35:23.454Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/6a/23/8146aad7d88f4fcb3a6218f41a60f6c2d4e3a72de72da1825dc7c8f7877c/semantic_version-2.10.0-py2.py3-none-any.whl", hash = "sha256:de78a3b8e0feda74cabc54aab2da702113e33ac9d9eb9d2389bcf1f58b7d9177", size = 15552, upload-time = "2022-05-26T13:35:21.206Z" },
-]
-
-[[package]]
-name = "semgrep"
-version = "1.182.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "attrs" },
-    { name = "boltons" },
-    { name = "certifi" },
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" } },
-    { name = "click-option-group" },
-    { name = "colorama" },
-    { name = "exceptiongroup" },
-    { name = "glom" },
-    { name = "jsonschema", version = "4.25.1", source = { registry = "https://pypi.org/simple" } },
-    { name = "mcp" },
-    { name = "opentelemetry-api", version = "1.37.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "opentelemetry-exporter-otlp-proto-http", version = "1.37.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "opentelemetry-instrumentation-requests" },
-    { name = "opentelemetry-instrumentation-threading" },
-    { name = "opentelemetry-sdk", version = "1.37.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "packaging" },
-    { name = "peewee" },
-    { name = "pyjwt", extra = ["crypto"], marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "requests" },
-    { name = "rich" },
-    { name = "ruamel-yaml" },
-    { name = "ruamel-yaml-clib" },
-    { name = "semantic-version" },
-    { name = "tomli" },
-    { name = "typing-extensions" },
-    { name = "urllib3" },
-    { name = "wcmatch" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/85/cc/105417f17abe0247fdc595be4690a3dc46ec816e9f8dd67a4a40e3dc7e79/semgrep-1.182.1.tar.gz", hash = "sha256:b072c59734384784a912b991c417b6c8e4771abdb3c39b9196fc01efdff8aa10", size = 522145, upload-time = "2026-10-22T02:11:13.063Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/48/2a0fb9d839570da42817aca2dc913f5cb13a42c4259331870339ca82b212/semgrep-1.182.1-cp310.cp311.cp312.cp313.cp314.py310.py311.py312.py313.py314-none-manylinux_2_34_aarch64.whl", hash = "sha256:3fdfbd68ac5eeead60983dbcd539428bbc40d01f805e0569301068d06be7eaa3", size = 73888910, upload-time = "2026-10-22T02:13:14.187Z" },
-    { url = "https://files.pythonhosted.org/packages/92/11/1bfd4abd746509ad90726397dd8e0d9e1150378ac329821757ea56d4ea4c/semgrep-1.182.1-cp310.cp311.cp312.cp313.cp314.py310.py311.py312.py313.py314-none-manylinux_2_34_x86_64.whl", hash = "sha256:bba25e5a38db5061d725c0920699ecee3e8137026427e722a271bd9bb8d25a40", size = 71829150, upload-time = "2026-10-22T02:13:19.709Z" },
-    { url = "https://files.pythonhosted.org/packages/91/83/c479d634fe3e48d1620ca9599659b84f0048cd978fa330a8e1c5ae18241c/semgrep-1.182.1-cp310.cp311.cp312.cp313.cp314.py310.py311.py312.py313.py314-none-musllinux_1_2_aarch64.whl", hash = "sha256:c38a3490fca93080e26e5f169e7e1fcb46742dd77e3d8e0fd9190653cb6c4ccd", size = 80976759, upload-time = "2026-10-22T02:13:25.094Z" },
-    { url = "https://files.pythonhosted.org/packages/de/01/e66fc84a2a792f0715c17e0929faf4b6e7ad476418a934320631eb5cc27b/semgrep-1.182.1-cp310.cp311.cp312.cp313.cp314.py310.py311.py312.py313.py314-none-musllinux_1_2_x86_64.whl", hash = "sha256:1e18f12a091cb7258f879c5fea1b47a10768af212f1f78ee0c16c52e00be32b7", size = 78547857, upload-time = "2026-10-22T02:13:31.602Z" },
-]
-
-[[package]]
 name = "semver"
 version = "3.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -5644,8 +5096,7 @@ name = "smart-open"
 version = "8.0.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "wrapt", version = "1.17.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "wrapt", version = "2.5.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "wrapt" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/68/e3/1fb5c310b1f55d99ba51cb81b8f1a0e4b5f89be44de69405aeeb12814778/smart_open-8.0.4.tar.gz", hash = "sha256:8cff8321f0b0ae4bd9cb0cd0c507c135ad6aa980171248fca520b645fd6ff717", size = 62316, upload-time = "2026-10-17T19:34:45.106Z" }
 wheels = [
@@ -5706,19 +5157,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/60/63/ff6509fa8f06bbaa8cffdba4dd9c01bfd9c6af3dc40c95d7669a09d2f659/sqltrie-0.11.3.tar.gz", hash = "sha256:358fb71b236311c74598616e071b43b38fc74921e5724c4659e47998e8b27e95", size = 25006, upload-time = "2026-09-01T17:45:24.899Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d9/b3/964c1595267bae401e4c166f748c2e25760a361382b3be8f326c5c5c8d37/sqltrie-0.11.3-py3-none-any.whl", hash = "sha256:2ea7dec60f02982226cc21da4acdf57fcde33a0092c14edd1c5e3cf536da558d", size = 17165, upload-time = "2026-09-01T17:45:23.496Z" },
-]
-
-[[package]]
-name = "sse-starlette"
-version = "3.5.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "anyio" },
-    { name = "starlette" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/e4/be/0123026f719d1a7936f214a88b553bb5701e04ff2511147c1dab0c5035eb/sse_starlette-3.5.0.tar.gz", hash = "sha256:75de713aa8a9441513cc283220826da079d982770965b951e9437720e8bafdb2", size = 36794, upload-time = "2026-09-28T17:48:14.7Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/be/e4/cdda14023c316d71493bc54fdffc3dd006631b88866145c9d3cc33e0f1df/sse_starlette-3.5.0-py3-none-any.whl", hash = "sha256:3e6e1070df3f0f5d9cea81496de92dbb72f6721871d99748ece67441dd8b7997", size = 17407, upload-time = "2026-09-28T17:48:13.228Z" },
 ]
 
 [[package]]
@@ -5829,7 +5267,7 @@ dependencies = [
     { name = "numpy" },
     { name = "packaging" },
     { name = "pillow" },
-    { name = "protobuf", version = "7.36.2", source = { registry = "https://pypi.org/simple" } },
+    { name = "protobuf" },
     { name = "setuptools" },
     { name = "tensorboard-data-server" },
     { name = "werkzeug" },
@@ -6167,8 +5605,7 @@ name = "uvicorn"
 version = "0.54.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-dev' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-codex-ml-all' or extra != 'extra-8-codex-ml-dev' or extra == 'extra-8-codex-ml-full' or extra == 'extra-8-codex-ml-train' or (extra == 'extra-8-codex-ml-ge' and extra == 'extra-8-codex-ml-marshmallow-v4')" },
+    { name = "click" },
     { name = "h11" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/da/34/30e9280707135d2cfc589dfff3cb796bd07a3aeb1a3e415ba09dd89d7bb4/uvicorn-0.54.0.tar.gz", hash = "sha256:a2e33cbfaa0306f8e6b0c13e0cb89d7d7a2da3e62b90c66e18c33d9807b28620", size = 112283, upload-time = "2026-09-25T06:52:37.601Z" }
@@ -6237,14 +5674,14 @@ name = "wandb"
 version = "0.31.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.5.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "click" },
     { name = "cwevals" },
-    { name = "opentelemetry-api", version = "1.45.1", source = { registry = "https://pypi.org/simple" } },
-    { name = "opentelemetry-exporter-otlp-proto-http", version = "1.45.1", source = { registry = "https://pypi.org/simple" } },
-    { name = "opentelemetry-sdk", version = "1.45.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-exporter-otlp-proto-http" },
+    { name = "opentelemetry-sdk" },
     { name = "packaging" },
     { name = "platformdirs" },
-    { name = "protobuf", version = "7.36.2", source = { registry = "https://pypi.org/simple" } },
+    { name = "protobuf" },
     { name = "pydantic" },
     { name = "pyyaml" },
     { name = "requests" },
@@ -6292,18 +5729,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/7f/f5/2f106829e6e2bc91ad74614730f6df484202b9a4d20d927dbf2f08d37d44/watchfiles-1.3.0-cp310-abi3-manylinux_2_31_riscv64.whl", hash = "sha256:d36c72fcdc08f143d87316a4c4c3b064e340da2c7383d39803950740ed418935", size = 468707, upload-time = "2026-09-21T09:08:25.167Z" },
     { url = "https://files.pythonhosted.org/packages/15/37/2741ab776b978669c1f3bba1e573f1a184f727ab8b4d3a6d9c61090800ed/watchfiles-1.3.0-cp310-abi3-musllinux_1_1_aarch64.whl", hash = "sha256:f0c9865240e065a2247f4b5248528ae3d01e0e8ae071462c250c884dc16e3ee3", size = 632510, upload-time = "2026-09-21T09:08:26.532Z" },
     { url = "https://files.pythonhosted.org/packages/48/64/db4a4684275fe9b696ee5118c194705c1423b3d42181c3f8ee70194d5c73/watchfiles-1.3.0-cp310-abi3-musllinux_1_1_x86_64.whl", hash = "sha256:380f513d26cc2e598266b88d66456e07d67ef4be8f0f435a1154d9c44b43d509", size = 661723, upload-time = "2026-09-21T09:08:28.004Z" },
-]
-
-[[package]]
-name = "wcmatch"
-version = "8.5.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "bracex" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ea/c4/55e0d36da61d7b8b2a49fd273e6b296fd5e8471c72ebbe438635d1af3968/wcmatch-8.5.2.tar.gz", hash = "sha256:a70222b86dea82fb382dd87b73278c10756c138bd6f8f714e2183128887b9eb2", size = 114983, upload-time = "2024-05-15T12:51:08.054Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/09/78/533ef890536e5ba0fd4f7df37482b5800ecaaceae9afc30978a1a7f88ff1/wcmatch-8.5.2-py3-none-any.whl", hash = "sha256:17d3ad3758f9d0b5b4dedc770b65420d4dac62e680229c287bf24c9db856a478", size = 39397, upload-time = "2024-05-15T12:51:06.2Z" },
 ]
 
 [[package]]
@@ -6376,27 +5801,8 @@ sdist = { url = "https://files.pythonhosted.org/packages/4a/29/a31940c848521f072
 
 [[package]]
 name = "wrapt"
-version = "1.17.3"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
-sdist = { url = "https://files.pythonhosted.org/packages/95/8f/aeb76c5b46e273670962298c23e7ddde79916cb74db802131d49a85e4b7d/wrapt-1.17.3.tar.gz", hash = "sha256:f66eb08feaa410fe4eebd17f2a2c8e2e46d3476e9f8c783daa8e09e0faa666d0", size = 55547, upload-time = "2025-08-12T05:53:21.714Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9f/81/5d931d78d0eb732b95dc3ddaeeb71c8bb572fb01356e9133916cd729ecdd/wrapt-1.17.3-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl", hash = "sha256:042ec3bb8f319c147b1301f2393bc19dba6e176b7da446853406d041c36c7828", size = 88036, upload-time = "2025-08-12T05:52:34.784Z" },
-    { url = "https://files.pythonhosted.org/packages/ca/38/2e1785df03b3d72d34fc6252d91d9d12dc27a5c89caef3335a1bbb8908ca/wrapt-1.17.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:3af60380ba0b7b5aeb329bc4e402acd25bd877e98b3727b0135cb5c2efdaefe9", size = 88156, upload-time = "2025-08-12T05:52:13.599Z" },
-    { url = "https://files.pythonhosted.org/packages/b3/8b/48cdb60fe0603e34e05cffda0b2a4adab81fd43718e11111a4b0100fd7c1/wrapt-1.17.3-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:0b02e424deef65c9f7326d8c19220a2c9040c51dc165cddb732f16198c168396", size = 87102, upload-time = "2025-08-12T05:52:14.56Z" },
-    { url = "https://files.pythonhosted.org/packages/3c/51/d81abca783b58f40a154f1b2c56db1d2d9e0d04fa2d4224e357529f57a57/wrapt-1.17.3-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:74afa28374a3c3a11b3b5e5fca0ae03bef8450d6aa3ab3a1e2c30e3a75d023dc", size = 87732, upload-time = "2025-08-12T05:52:36.165Z" },
-    { url = "https://files.pythonhosted.org/packages/1f/f6/a933bd70f98e9cf3e08167fc5cd7aaaca49147e48411c0bd5ae701bb2194/wrapt-1.17.3-py3-none-any.whl", hash = "sha256:7171ae35d2c33d326ac19dd8facb1e82e5fd04ef8c6c0e394d7af55a55051c22", size = 23591, upload-time = "2025-08-12T05:53:20.674Z" },
-]
-
-[[package]]
-name = "wrapt"
 version = "2.5.1"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "sys_platform == 'linux'",
-]
 sdist = { url = "https://files.pythonhosted.org/packages/04/22/89e2f3bdae5cb34e0cab0cd86d7172dbf418de4b46c9b17b9c7a560dfa44/wrapt-2.5.1.tar.gz", hash = "sha256:f595bb0185aab3e9dc31950c95d914f56ea8278810c3b928f3426e12ed6d27bc", size = 184455, upload-time = "2026-10-14T00:39:39.24Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/4a/5a/2a34ba5a468e9d3d6e5b0733280e1ae3c850bfc5f1d681fc0e97f564d1f2/wrapt-2.5.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl", hash = "sha256:bfaa998ceeea4d0aa72b40cdd0023d19409504e244b439ff2aa9f01729341c5f", size = 250438, upload-time = "2026-10-14T00:37:21.882Z" },
@@ -6485,13 +5891,4 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/10/9a/2fef89272d98b799e4daa50201c5582ec76bdd4e92a1a7e3deb74c52b7fa/zc_lockfile-4.0.tar.gz", hash = "sha256:d3ab0f53974296a806db3219b9191ba0e6d5cbbd1daa2e0d17208cb9b29d2102", size = 10956, upload-time = "2025-09-18T07:32:34.412Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3b/7f/3a614b65bc4b181578b1d50a78663ee02d5d2d3b859712f3d3597c8afe6f/zc_lockfile-4.0-py3-none-any.whl", hash = "sha256:aa3aa295257bebaa09ea9ad5cb288bf9f98f88de6932f96b6659f62715d83581", size = 9143, upload-time = "2025-09-18T07:32:33.517Z" },
-]
-
-[[package]]
-name = "zipp"
-version = "4.1.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/18/05/ba1458dee0ac485b2a01071c1b88f5199fe878a485df482e10e1ef2205cc/zipp-4.1.2.tar.gz", hash = "sha256:cf474b90b07ea932637e17c6b9479de2b2882900b0d311bdaf4f5c000a15a97f", size = 27864, upload-time = "2026-10-21T18:57:04.743Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b8/44/7bd2007260da11cccca29ba2d4c345f1287aa663db38ee7cefeabf6386a5/zipp-4.1.2-py3-none-any.whl", hash = "sha256:b30cb6cd253122169c47de245ca24a86bac2a5d3802ba15bf7ba6414eb9e144d", size = 10581, upload-time = "2026-10-21T18:57:03.79Z" },
 ]

@@ -12,6 +12,10 @@
 - Replace Alpine-only Node/Chromium setup with the Debian devcontainer contract and checksum-pinned or Playwright-managed fallbacks; add focused security, concurrency, portability, and real-browser regressions.
 - Replace the remaining server `urllib` wrapper with a literal-URL `httpx` GitHub preflight, disabling redirects and proving stale-credential fallthrough.
 
+### Fixed - PR #5766 dependency scan remediation (2026-11-20)
+- Decouple Semgrep from the project dependency graph while retaining dedicated CI and nox scanner installation; remove its vulnerable MCP 1.29.0 and OpenTelemetry 1.37 transitive chain from `uv.lock`.
+- Upgrade OAuthlib to 4.0.1 and OpenTelemetry API/SDK to 1.45.2. ChromaDB 1.5.9, Sqlitedict 2.1.0, and Diskcache 5.6.3 remain explicitly unresolved because the package index reports no newer release for those findings.
+
 ### Fixed - #5766 merge conflicts after #5812 landed on `main`
 
 - Merge `main` (`195427c333`, hotfix #5812) into `0D_base_` (`83dd0fb099`, after #5813).
