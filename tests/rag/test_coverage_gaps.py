@@ -160,8 +160,8 @@ class TestRetrieverLoadModelErrors:
         )
         assert r.model is provider
 
-    def test_load_model_error_without_chunks_raises_import_error(self):
-        """A load failure with no chunk text cannot fall back and surfaces ImportError."""
+    def test_load_model_error_without_chunks_stays_unloaded(self):
+        """A load failure with no chunk text stays unloaded instead of raising fallback ImportError."""
         _mod = _import_retriever()
 
         with (
@@ -169,9 +169,9 @@ class TestRetrieverLoadModelErrors:
             patch(self._SAFE_LOAD, side_effect=RuntimeError("load failed")) as mock_safe_load,
         ):
             r = _bare_retriever(_mod)
-            with pytest.raises(ImportError, match="TF-IDF fallback requires chunk text"):
-                r._load_model()
+            r._load_model()
         mock_safe_load.assert_called_once()
+        assert r.model is None
 
     def test_load_model_propagates_type_error(self):
         _mod = _import_retriever()
