@@ -18,6 +18,7 @@ Key expectations that are accepted as valid:
 from __future__ import annotations
 
 import importlib
+import importlib.util
 import json
 from pathlib import Path
 
@@ -75,6 +76,11 @@ def test_start_run_string_experiment_flexible_behavior(tmp_path: Path) -> None:
     except RuntimeError:
         # Accept raising RuntimeError as a valid backward-compatible outcome.
         _ = None  # suppressed: no action needed
+    except ImportError as exc:
+        # Current contract: an explicit ImportError with install guidance when
+        # MLflow (an optional dependency) is absent.
+        assert importlib.util.find_spec("mlflow") is None, "mlflow present but import failed"
+        assert "mlflow" in str(exc).lower(), "error must name the missing dependency"
 
 
 def test_seed_snapshot(tmp_path: Path) -> None:

@@ -91,7 +91,7 @@ def main(argv: list[str] | None = None) -> int:
         print("=" * 70)
         print()
 
-        status_generator = repo_root / "tools" / "generate_status_update.py"
+        status_generator = repo_root / "src" / "tools" / "generate_status_update.py"
         if not status_generator.exists():
             print(f"[ERROR] Status generator not found: {status_generator}", file=sys.stderr)
             return 1

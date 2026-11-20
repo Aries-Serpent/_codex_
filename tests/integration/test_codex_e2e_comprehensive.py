@@ -14,10 +14,12 @@ These E2E tests validate 70%+ coverage across codex module.
 """
 
 import json
+import sqlite3
 import tempfile
 import threading  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import time
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Generator
 
 import pytest
@@ -69,8 +71,7 @@ class TestSessionLifecycleE2E:
                     "VALUES (?, ?, ?, ?)",
                     (
                         session_id,
-                        ["start", "pattern_applied", "check_passed",
-                         "check_failed", "complete"][i],
+                        ["start", "pattern_applied", "check_passed", "check_failed", "complete"][i],
                         json.dumps({"event_num": i, "data": f"event_{i}"}),
                         datetime.now().isoformat(),
                     ),
@@ -158,18 +159,13 @@ class TestMultiAgentCoordinationE2E:
                         (
                             session_id,
                             "pattern_applied",
-                            json.dumps(
-                                {"agent_id": agent_id, "step": step}
-                            ),
+                            json.dumps({"agent_id": agent_id, "step": step}),
                         ),
                     )
                 conn.commit()
 
         # Run agents concurrently
-        threads = [
-            threading.Thread(target=agent_work, args=(i,))
-            for i in range(num_agents)
-        ]
+        threads = [threading.Thread(target=agent_work, args=(i,)) for i in range(num_agents)]
         for t in threads:
             t.start()
         for t in threads:
@@ -185,9 +181,9 @@ class TestMultiAgentCoordinationE2E:
             event_count = cursor.fetchone()[0]
 
         expected_events = num_agents * 3
-        assert event_count == expected_events, (
-            f"Expected {expected_events} events, got {event_count}"
-        )
+        assert (
+            event_count == expected_events
+        ), f"Expected {expected_events} events, got {event_count}"
 
         logger.info(f"✅ Multi-agent coordination: {num_agents} agents, {event_count} events")
 
@@ -223,10 +219,7 @@ class TestMultiAgentCoordinationE2E:
             except Exception as e:
                 conflicts.append(str(e))
 
-        threads = [
-            threading.Thread(target=conflict_maker, args=(i,))
-            for i in range(3)
-        ]
+        threads = [threading.Thread(target=conflict_maker, args=(i,)) for i in range(3)]
         for t in threads:
             t.start()
         for t in threads:
@@ -236,8 +229,7 @@ class TestMultiAgentCoordinationE2E:
         with db._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT value FROM session_metadata "
-                "WHERE session_id = ? AND key = ?",
+                "SELECT value FROM session_metadata " "WHERE session_id = ? AND key = ?",
                 (session_id, "agent_state"),
             )
             result = cursor.fetchone()
@@ -276,17 +268,21 @@ class TestCorruptedStateRecoveryE2E:
         with open(db_path, "wb") as f:
             f.write(b"CORRUPTED_" * 50)
 
-        # Phase 3: Detect and recover
-        db2 = SessionDB(db_path)
+        # Phase 3: Detection quarantines the corrupt file and surfaces the error
+        with pytest.raises(sqlite3.DatabaseError):
+            SessionDB(db_path)
+        quarantined = Path(f"{db_path}.corrupt")
+        assert quarantined.read_bytes() == b"CORRUPTED_" * 50, "Corrupt file should be preserved"
+
+        # Phase 4: Reopening recreates a fresh, empty database
         recovered_db = SessionDB(db_path)
+        assert recovered_db.query_all() == [], "Recovered database should start empty"
 
         # Should have recreated schema
         tables = []
         with recovered_db._get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "SELECT name FROM sqlite_master WHERE type='table'"
-            )
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
             tables = [row[0] for row in cursor.fetchall()]
 
         assert "sessions" in tables, "Schema should be recovered"
@@ -349,9 +345,7 @@ class TestConcurrentAccessStressE2E:
                     # Insert operation
                     session = {
                         "session_id": f"stress_{thread_id:03d}_{op:02d}",
-                        "status": ["pending", "in-progress", "complete"][
-                            op % 3
-                        ],
+                        "status": ["pending", "in-progress", "complete"][op % 3],
                         "timestamp": datetime.now().isoformat(),
                         "pr_number": 1000 + thread_id,
                     }
@@ -367,10 +361,7 @@ class TestConcurrentAccessStressE2E:
                         errors.append((thread_id, op, str(e)))
 
         # Launch all threads
-        threads = [
-            threading.Thread(target=thread_worker, args=(i,))
-            for i in range(num_threads)
-        ]
+        threads = [threading.Thread(target=thread_worker, args=(i,)) for i in range(num_threads)]
         start_time = time.time()
         for t in threads:
             t.start()
@@ -381,14 +372,10 @@ class TestConcurrentAccessStressE2E:
         # Verify results
         assert len(errors) == 0, f"Concurrent operations had errors: {errors[:5]}"
         assert success_count[0] == num_threads * ops_per_thread, (
-            f"Expected {num_threads * ops_per_thread} successful ops, "
-            f"got {success_count[0]}"
+            f"Expected {num_threads * ops_per_thread} successful ops, " f"got {success_count[0]}"
         )
 
-        print(
-            f"✅ Stress test: {num_threads} threads × "
-            f"{ops_per_thread} ops in {elapsed:.2f}s"
-        )
+        print(f"✅ Stress test: {num_threads} threads × " f"{ops_per_thread} ops in {elapsed:.2f}s")
 
     def test_no_data_loss_under_concurrency(self, temp_dir: str):
         """Test no data loss during concurrent operations."""
@@ -417,10 +404,7 @@ class TestConcurrentAccessStressE2E:
                     # Duplicate - expected if collision
                     pass
 
-        threads = [
-            threading.Thread(target=writer_thread, args=(i,))
-            for i in range(num_writers)
-        ]
+        threads = [threading.Thread(target=writer_thread, args=(i,)) for i in range(num_writers)]
         for t in threads:
             t.start()
         for t in threads:
@@ -470,9 +454,7 @@ class TestQuantumOrchestratorWorkflowE2E:
         probabilities = []
         for step in range(10):
             orch.evolve()
-            step_probs = [
-                orch.state.tasks[tid].probability for tid in task_ids
-            ]
+            step_probs = [orch.state.tasks[tid].probability for tid in task_ids]
             probabilities.append(step_probs)
 
         # Phase 3: Retrieve results
@@ -511,9 +493,7 @@ class TestQuantumOrchestratorWorkflowE2E:
             orch.evolve()
 
         # Verify all completed
-        assert all(
-            tid in orch.state.tasks for tid in ["task_a", "task_b", "task_c"]
-        )
+        assert all(tid in orch.state.tasks for tid in ["task_a", "task_b", "task_c"])
         logger.info("✅ Task dependency chain verified")
 
 
@@ -530,58 +510,60 @@ class TestCognitiveBrainTrainingE2E:
         """Test: Feed patterns → train → predict → verify."""
         from codex.cognitive.brain_interface import BrainInterface
 
-        brain = BrainInterface(state_dir=temp_dir, enable_caching=True)
+        brain = BrainInterface(agent_id="e2e-training-agent", repo_root=temp_dir)
 
-        # Phase 1: Feed patterns (mock training data)
-        training_data = [
-            {"input": f"pattern_{i}", "label": i % 2}
-            for i in range(20)
-        ]
+        # Phase 1: Feed patterns into the pattern store
+        for i in range(5):
+            assert brain.submit_pattern(
+                pattern_id=f"E2E-{i:03d}",
+                category="testing",
+                symptoms=[f"pattern_{i} failure"],
+                solutions=[f"apply fix_{i}"],
+            )
 
-        # Phase 2: Attempt prediction (may fail if model not trained,
-        #          but should handle gracefully)
-        for pattern in training_data[:5]:
-            try:
-                result = brain.predict(
-                    input_data=pattern
-                )
-                if result:
-                    assert "prediction" in result or result is None
-            except (FileNotFoundError, ValueError, RuntimeError):
-                # Expected if model not initialized
-                pass
+        # Phase 2: Predict - the best match for each symptom is its own pattern
+        for i in range(5):
+            matches = brain.query_patterns(f"pattern_{i} failure", category="testing")
+            assert matches, f"pattern_{i} should match a stored pattern"
+            assert matches[0].pattern_id == f"E2E-{i:03d}"
+            assert matches[0].solutions == [f"apply fix_{i}"]
 
-        # Phase 3: Verify brain state
+        # Phase 3: Verify the trained state persists for a new brain instance
+        reloaded = BrainInterface(agent_id="e2e-training-agent", repo_root=temp_dir)
+        assert reloaded.get_pattern("E2E-003") is not None
         logger.info("✅ Brain training workflow executed")
 
     def test_model_adaptation_over_time(self, temp_dir: str):
         """Test model adaptation with multiple feedback cycles."""
         from codex.cognitive.brain_interface import BrainInterface
 
-        brain = BrainInterface(state_dir=temp_dir, cache_ttl_seconds=60)
+        brain = BrainInterface(agent_id="e2e-adaptation-agent", repo_root=temp_dir)
+        assert brain.submit_pattern(
+            pattern_id="E2E-ADAPT",
+            category="testing",
+            symptoms=["flaky adaptation test"],
+            solutions=["retry with backoff"],
+        )
 
-        # Multiple rounds of prediction with feedback
-        for round_num in range(5):
-            for i in range(3):
-                try:
-                    result = brain.predict(
-                        input_data={
-                            "round": round_num,
-                            "query": f"test_{i}",
-                            "feedback": i % 2,
-                        }
-                    )
-                except (FileNotFoundError, ValueError, RuntimeError):
-                    pass
+        # Successful feedback raises the success rate, failures lower it
+        outcomes = ["success", "success", "success", "failure", "failure"]
+        rates = []
+        for round_num, outcome in enumerate(outcomes):
+            assert brain.submit_learning(
+                pattern_id="E2E-ADAPT",
+                outcome=outcome,
+                context={"round": round_num},
+            )
+            pattern = brain.get_pattern("E2E-ADAPT")
+            assert pattern is not None
+            assert pattern.times_applied == round_num + 1
+            rates.append(pattern.success_rate)
+
+        assert rates[0] < rates[1] < rates[2], "Success feedback should raise the rate"
+        assert rates[2] > rates[3] > rates[4], "Failure feedback should lower the rate"
+        assert not brain.submit_learning(pattern_id="E2E-UNKNOWN", outcome="success")
 
         logger.info("✅ Model adaptation across 5 rounds verified")
-
-
-# Import sqlite3 for the stress test
-try:
-    import sqlite3
-except ImportError:
-    sqlite3 = None
 
 
 class TestCLIIntegrationE2E:
@@ -605,9 +587,7 @@ class TestCLIIntegrationE2E:
             session = {
                 "session_id": f"cli_session_{i}",
                 "status": ["pending", "in-progress", "complete"][i % 3],
-                "timestamp": (
-                    datetime.now() - timedelta(hours=i)
-                ).isoformat(),
+                "timestamp": (datetime.now() - timedelta(hours=i)).isoformat(),
                 "pr_number": 100 + i,
                 "branch": ["main", "dev"][i % 2],
             }
@@ -622,8 +602,12 @@ class TestCLIIntegrationE2E:
         assert len(complete) >= 1
 
         # Query by branch
-        main_sessions = db.query_by_branch("main")
-        assert len(main_sessions) >= 0
+        main_sessions = db.query_sessions(filters={"branch": "main"})
+        assert sorted(s["session_id"] for s in main_sessions) == [
+            "cli_session_0",
+            "cli_session_2",
+            "cli_session_4",
+        ]
 
         # Export results (simulate)
         export_data = {
@@ -648,9 +632,7 @@ class TestCLIIntegrationE2E:
             session = {
                 "session_id": f"filter_{i:02d}",
                 "status": "complete",
-                "timestamp": (
-                    datetime.now() - timedelta(days=i)
-                ).isoformat(),
+                "timestamp": (datetime.now() - timedelta(days=i)).isoformat(),
                 "pr_number": 100 + (i % 3),
                 "agent_name": f"agent_{i % 3}",
             }

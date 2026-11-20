@@ -76,12 +76,14 @@ def _to_device(batch: Mapping[str, Any], device: str | None) -> dict[str, Any]:
 def _loss_to_float(loss: Any) -> float:
     if isinstance(loss, (int, float)):
         return float(loss)
+    # Apply each conversion at most once: ``Tensor.detach()``/``.cpu()`` return
+    # tensors that expose the same methods, so recursing on them never terminates.
     if hasattr(loss, "detach"):
-        detached = loss.detach()
-        return _loss_to_float(detached)
+        loss = loss.detach()
     if hasattr(loss, "cpu"):
-        cpu = loss.cpu()
-        return _loss_to_float(cpu)
+        loss = loss.cpu()
+    if isinstance(loss, (int, float)):
+        return float(loss)
     if hasattr(loss, "item"):
         return float(loss.item())
     raise TypeError(f"Cannot convert loss of type {type(loss)!r} to float")

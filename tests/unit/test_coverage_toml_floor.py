@@ -2,13 +2,25 @@
 Test Coverage Toml Floor
 
 Test module for coverage toml floor.
+
+The root ``noxfile.py`` is a thin wrapper; the canonical session registry (and
+``_toml_fail_under_from_str``) lives in ``configs/development/noxfile.py`` and is
+exposed by the wrapper as ``noxfile._dev_noxfile``.
 """
 
 from __future__ import annotations
 
+from types import ModuleType
+
+
+def _canonical_noxfile() -> ModuleType:
+    import noxfile  # type: ignore
+
+    return noxfile._dev_noxfile  # type: ignore[attr-defined]
+
 
 def test_toml_fail_under_from_str_parses_valid_value() -> None:
-    import noxfile  # type: ignore
+    noxfile = _canonical_noxfile()
 
     text = """
     [tool.coverage.report]
@@ -19,7 +31,7 @@ def test_toml_fail_under_from_str_parses_valid_value() -> None:
 
 
 def test_toml_fail_under_from_str_absent_returns_none() -> None:
-    import noxfile  # type: ignore
+    noxfile = _canonical_noxfile()
 
     text = """
     [tool.coverage.report]
@@ -30,7 +42,7 @@ def test_toml_fail_under_from_str_absent_returns_none() -> None:
 
 
 def test_toml_fail_under_from_str_non_int_returns_none() -> None:
-    import noxfile  # type: ignore
+    noxfile = _canonical_noxfile()
 
     text = """
     [tool.coverage.report]

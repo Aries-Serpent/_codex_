@@ -157,7 +157,9 @@ class TestModuleConstants:
 
     def test_logger_exists(self):
         """Test logger is configured."""
-        from codex.archive.util import logger
+        # codex.archive.util is a thin re-export shim; logging happens in the
+        # canonical implementation module.
+        from aries_serpent_core.archive.util import logger
 
         assert logger is not None, "logger must be initialized"
-        assert logger.name == "codex.archive.util", "name is not valid"
+        assert logger.name == "aries_serpent_core.archive.util", "name is not valid"

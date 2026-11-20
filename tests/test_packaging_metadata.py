@@ -66,9 +66,13 @@ def test_pyproject_core_metadata():
     # Vulnerable optional stacks should not be pulled into the base install.
     assert all("lm-eval" not in dep for dep in dependencies), "Condition must be true"
     assert "eval" in optional, "Condition must be true"
-    assert any("lm-eval" in dep for dep in optional["eval"]), "Condition must be true"
+    assert all("lm-eval" not in dep for dep in optional["eval"]), "Condition must be true"
     assert "dataops" in optional, "Data must not be empty"
-    assert any("dvc==" in dep for dep in optional["dataops"]), "Data must not be empty"
+    assert all("dvc==" not in dep for dep in optional["dataops"]), "Data must not be empty"
+    declared_optional = [dependency for group in optional.values() for dependency in group]
+    assert all("chromadb" not in dependency for dependency in declared_optional)
+    assert all("lm-eval" not in dependency for dependency in declared_optional)
+    assert all("dvc==" not in dependency for dependency in declared_optional)
 
     # Scripts presence
     scripts = proj.get("scripts", {})

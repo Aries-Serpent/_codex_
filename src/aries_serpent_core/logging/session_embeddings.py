@@ -203,8 +203,6 @@ class SessionEmbeddings:
                         data = json.load(f)
                         # Convert JSON to numpy array format if needed
                         if isinstance(data, list):
-                            import numpy as np
-
                             self._embeddings = np.array(data, dtype=np.float32)
                         else:
                             self._embeddings = data
@@ -227,15 +225,15 @@ class SessionEmbeddings:
                 if HAS_FAISS:
                     faiss.write_index(self._embeddings, str(self.embeddings_path))
                 else:
-                    # Save embeddings as JSON for safe serialization (CWE-502 remediation)
-                    import json
-
-                    import numpy as np
-
+                    # Save embeddings as JSON for safe serialization (CWE-502 remediation).
+                    # Module-level ``json``/``np`` are used: re-importing them locally made
+                    # ``json`` function-local and raised UnboundLocalError on the faiss path.
                     if isinstance(self._embeddings, np.ndarray):
                         embeddings_data = self._embeddings.tolist()
                     else:
-                        embeddings_data = self._embeddings
+                        embeddings_data = [
+                            e.tolist() if isinstance(e, np.ndarray) else e for e in self._embeddings
+                        ]
 
                     with open(self.embeddings_path, "w") as f:
                         json.dump(embeddings_data, f)

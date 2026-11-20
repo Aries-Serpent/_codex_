@@ -89,18 +89,15 @@ def test_purge_skips_shared_artifact(tmp_path: Path) -> None:
     artifact = restore_payload["artifact"]
     assert artifact["blob_bytes"] is not None, "Value must be initialized"
 
-    with dal._transaction() as execute:  # type: ignore[attr-defined]
-        events = execute(
-            """
-            SELECT context
-            FROM event
-            WHERE item_id = :item_id AND action = 'DELETE_APPROVED'
-            ORDER BY created_at
-            """,
-            {"item_id": first["item"]},
-            fetchall=True,
-        )
-    contexts = [json.loads(row["context"]) for row in events]
+    # Read the audit events through the public API (the private _transaction
+    # helper moved to ArchiveDatabase when ArchiveDAL became a facade).
+    events = dal.show_item(first["tombstone"])["events"]
+    contexts = [
+        json.loads(e["context"]) if isinstance(e["context"], str) else e["context"]
+        for e in events
+        if e["action"] == "DELETE_APPROVED"
+    ]
+    assert contexts, "DELETE_APPROVED events must be recorded"
     assert all(ctx.get("blob_scrubbed") is False for ctx in contexts), "Condition must be true"
     assert any(ctx.get("shared_references") == 1 for ctx in contexts), "Condition must be true"
 

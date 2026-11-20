@@ -1,3 +1,6 @@
+from pathlib import Path
+import pytest
+import json
 #         assert len(missing_docs) < len(, "Missing_docs must not be empty"
 #             routers
 #         ), f"Most router files should have docstrings: missing in {missing_docs}"
@@ -152,6 +155,12 @@
 #         # Just verify we found some endpoints
 #         if endpoints_found > 0:
 #             pass  # Log but don't fail (not all endpoints need response models)
+
+
+REPO_ROOT = Path(__file__).parents[2]
+
+
+DOCS_DIR = REPO_ROOT / "docs"
 
 
 class TestCLIDocumentation:

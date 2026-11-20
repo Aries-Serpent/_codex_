@@ -1,3 +1,5 @@
+from validate_table_spacing import check_table_spacing
+import pytest
 #         assert fixed_content == (, "Content must not be empty"
 # """Tests for scripts/validate_table_spacing.py"""
 #         assert fixed_content == (, "Content must not be empty"

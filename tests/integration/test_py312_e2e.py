@@ -36,7 +36,9 @@ class TestPython312Integration:
 
         # Key files should exist
         assert (repo_root / "pyproject.toml").exists(), "pyproject.toml missing"
-        assert (repo_root / "pytest.ini").exists() or (repo_root / "pyproject.toml").exists(), "Condition must be true"
+        assert (repo_root / "pytest.ini").exists() or (
+            repo_root / "pyproject.toml"
+        ).exists(), "Condition must be true"
 
     def test_core_imports_work(self):
         """Test that core modules can be imported."""
@@ -69,6 +71,7 @@ class TestPython312Integration:
 
             try:
                 import codex_ml.data  # noqa: F401
+
                 optional_imports.append("data")
             except ImportError:
                 # Optional module not available, skip
@@ -102,7 +105,9 @@ class TestCLIIntegration:
         )
 
         assert result.returncode == 0, "Result must not be empty"
-        assert "Python 3." in result.stdout or "Python 3." in result.stderr, "Result must not be empty"
+        assert (
+            "Python 3." in result.stdout or "Python 3." in result.stderr
+        ), "Result must not be empty"
 
     def test_pip_works(self):
         """Verify pip works in Python 3.12."""
@@ -145,9 +150,13 @@ class TestCLIIntegration:
             cwd=repo_root,
         )
 
-        # Should run (exit code 0 or 1 depending on compatibility)
-        assert result.returncode in [0, 1]
-        assert "Python 3.12 Dependency Compatibility Checker" in result.stdout, "Result must not be empty"
+        # Partial inspection has its own non-success exit code, not READY.
+        assert result.returncode in [0, 1, 2], result.stderr
+        if result.returncode == 2:
+            assert "INCONCLUSIVE" in result.stdout
+        assert (
+            "Python 3.12 Dependency Compatibility Checker" in result.stdout
+        ), "Result must not be empty"
 
 
 @pytest.mark.integration
@@ -314,7 +323,9 @@ python_files = ["test_*.py"]
 
             assert config["project"]["name"] == "test-project", "Condition must be true"
             assert "numpy" in config["project"]["dependencies"], "Condition must be true"
-            assert config["tool"]["pytest"]["ini_options"]["testpaths"] == ["tests"], "Condition must be true"
+            assert config["tool"]["pytest"]["ini_options"]["testpaths"] == [
+                "tests"
+            ], "Condition must be true"
 
     def test_text_processing_workflow(self, tmp_path):
         """Test text processing workflow."""

@@ -1,3 +1,4 @@
+import textwrap
 from pathlib import Path
 
 #         assert not set(entry.covered_lines) & set(, "Condition must be true"
@@ -293,6 +294,47 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 
 
+def _write_coverage_xml(tmp_path: Path, content: str) -> Path:
+    """Write coverage XML to a temp file and return the path."""
+    p = tmp_path / "coverage.xml"
+    p.write_text(textwrap.dedent(content))
+    return p
+
+
+def _minimal_xml(
+    filename: str,
+    line_rate: float,
+    covered_lines: list[int],
+    uncovered_lines: list[int],
+    branch_rate: float = 0.0,
+) -> str:
+    """Build a minimal valid coverage.xml for one file."""
+    lines_xml = ""
+    for ln in covered_lines:
+        lines_xml += f'            <line number="{ln}" hits="1"/>\n'
+    for ln in uncovered_lines:
+        lines_xml += f'            <line number="{ln}" hits="0"/>\n'
+    return f"""\
+<?xml version="1.0" ?>
+<coverage version="7.4.0" timestamp="1743000000" lines-valid="10"
+          lines-covered="{len(covered_lines)}" line-rate="{line_rate}"
+          branches-covered="0" branches-valid="0" branch-rate="{branch_rate}"
+          complexity="0">
+    <packages>
+        <package name="codex" line-rate="{line_rate}" branch-rate="{branch_rate}">
+            <classes>
+                <class name="{Path(filename).name}" filename="{filename}"
+                       line-rate="{line_rate}" branch-rate="{branch_rate}">
+                    <lines>
+{lines_xml}                    </lines>
+                </class>
+            </classes>
+        </package>
+    </packages>
+</coverage>
+"""
+
+
 class TestPrDelta:
     """Thread [4] + general regression: pr_delta must flag covered→uncovered transitions."""
 
@@ -304,6 +346,8 @@ class TestPrDelta:
     def _make_map_json(self, tmp_path: Path, subdir: str, xml_content: str) -> Path:
         """Build a coverage_map.json from XML content and return its path."""
         import json as _json
+
+        from generate_coverage_map import build_coverage_map
 
         d = tmp_path / subdir
         d.mkdir()

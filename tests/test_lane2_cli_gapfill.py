@@ -14,11 +14,38 @@ This test suite covers:
 
 from __future__ import annotations
 
+import importlib.util
 import sys
 from pathlib import Path
+from types import ModuleType
 from unittest import mock
 
 import pytest
+
+_CLI_MODULE_PATH = Path(__file__).resolve().parents[1] / "src" / "cli.py"
+
+
+@pytest.fixture(scope="module", autouse=True)
+def load_standalone_cli():
+    """Load ``src/cli.py`` explicitly; the ``cli`` package shadows this file."""
+    saved_path = list(sys.path)
+    sentinel = object()
+    module_names = ("cli", "cli.train_codex", "tokenization", "tokenization.loader")
+    saved_modules = {name: sys.modules.get(name, sentinel) for name in module_names}
+    spec = importlib.util.spec_from_file_location("_codex_standalone_cli", _CLI_MODULE_PATH)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["cli"] = module
+    try:
+        spec.loader.exec_module(module)
+        yield module
+    finally:
+        sys.path[:] = saved_path
+        for name, previous in saved_modules.items():
+            if previous is sentinel:
+                sys.modules.pop(name, None)
+            else:
+                sys.modules[name] = previous
 
 
 class TestEnsureRealTorch:
@@ -28,33 +55,35 @@ class TestEnsureRealTorch:
         """Test when real torch is already loaded."""
         with mock.patch.dict(sys.modules, {"torch": mock.MagicMock(__version__="2.0.0")}):
             # Import after mocking
-            from cli import _ensure_real_torch
-
             # Should not raise
-            _ensure_real_torch()
+            with mock.patch("cli.importlib.import_module") as mock_import:
+                from cli import _ensure_real_torch
+
+                _ensure_real_torch()
+                mock_import.assert_not_called()
 
     def test_ensure_real_torch_stub_version(self) -> None:
         """Test when stub torch is loaded."""
         stub_torch = mock.MagicMock(__version__="stub")
         with mock.patch.dict(sys.modules, {"torch": stub_torch}):
-            from cli import _ensure_real_torch
+            # A stub must be replaced by an import of the real torch module.
+            with mock.patch("cli.importlib.import_module") as mock_import:
+                from cli import _ensure_real_torch
 
-            # Should not raise when attempting to reload
-            with mock.patch("importlib.import_module") as mock_import:
                 _ensure_real_torch()
-                # Verify attempt to import torch
+                mock_import.assert_called_once_with("torch")
 
     def test_ensure_real_torch_no_torch_loaded(self) -> None:
         """Test when torch is not loaded at all."""
         with mock.patch.dict(sys.modules, {}, clear=False):
             if "torch" in sys.modules:
                 del sys.modules["torch"]
-
+            # An absent module also triggers the canonical torch import.
+            with mock.patch("cli.importlib.import_module") as mock_import:
                 from cli import _ensure_real_torch
 
-            # Should attempt import
-            with mock.patch("importlib.import_module"):
                 _ensure_real_torch()
+                mock_import.assert_called_once_with("torch")
 
 
 class TestResolveCallable:
@@ -109,18 +138,18 @@ class TestResolveCallable:
         from cli import _resolve_callable
 
         # This will trigger _ensure_real_torch()
-        with mock.patch("src.cli._ensure_real_torch"):
-            with mock.patch("importlib.import_module") as mock_import:
-                mock_torch = mock.MagicMock()
-                mock_torch.nn = mock.MagicMock()
-                mock_torch.nn.Module = mock.MagicMock()
-                mock_import.return_value = mock_torch.nn
-
-                try:
-                    resolved = _resolve_callable("torch.nn.Module")
-                except (ModuleNotFoundError, AttributeError):
-                    # Expected if torch not actually installed
-                    pass
+        resolved_module = ModuleType("torch.nn")
+        resolved_class = type("Module", (), {})
+        resolved_module.Module = resolved_class
+        with mock.patch("cli._ensure_real_torch") as ensure_torch:
+            with mock.patch(
+                "cli.importlib.import_module",
+                side_effect=[resolved_module],
+            ) as mock_import:
+                resolved = _resolve_callable("torch.nn.Module")
+        ensure_torch.assert_called_once_with()
+        assert resolved is resolved_class
+        assert mock_import.call_args_list == [mock.call("torch.nn")]
 
 
 class TestPathManagement:
@@ -133,13 +162,15 @@ class TestPathManagement:
 
         assert isinstance(PROJECT_ROOT, Path)
         assert isinstance(CLI_PACKAGE_PATH, Path)
-        assert PROJECT_ROOT.exists() or not PROJECT_ROOT.exists(), "Condition must be true"
+        assert PROJECT_ROOT == _CLI_MODULE_PATH.parent
+        assert CLI_PACKAGE_PATH == PROJECT_ROOT / "cli"
 
     def test_cli_package_path_is_valid(self) -> None:
         """Test that CLI_PACKAGE_PATH is properly derived."""
         from cli import CLI_PACKAGE_PATH
 
-        assert "cli" in str(CLI_PACKAGE_PATH).lower() or CLI_PACKAGE_PATH.exists(), "Condition must be true"
+        assert CLI_PACKAGE_PATH == _CLI_MODULE_PATH.parent / "cli"
+        assert CLI_PACKAGE_PATH.is_dir()
 
 
 class TestTokenizationLoader:
@@ -151,12 +182,17 @@ class TestTokenizationLoader:
         from cli import logger  # noqa: F401
 
         assert "tokenization" in sys.modules, "Condition must be true"
+        assert (
+            Path(sys.modules["tokenization"].__path__[0])
+            == _CLI_MODULE_PATH.parent / "tokenization"
+        )
 
     def test_tokenization_loader_registered(self) -> None:
         """Test that tokenization.loader is registered in sys.modules."""
         from cli import logger  # noqa: F401
 
-        assert "tokenization.loader" in sys.modules, "Condition must be true"
+        loader = sys.modules["tokenization.loader"]
+        assert Path(loader.__file__) == _CLI_MODULE_PATH.parent / "tokenization" / "loader.py"
 
 
 class TestCliEdgeCases:
@@ -175,14 +211,15 @@ class TestCliEdgeCases:
         from cli import _resolve_callable
 
         resolved = _resolve_callable("os.path.exists")
-        # Should work like os.path.exists
-        assert callable(resolved), "Condition must be true"
+        assert resolved is __import__("os").path.exists
+        assert resolved(_CLI_MODULE_PATH)
 
     def test_cli_module_imports_successfully(self) -> None:
         """Test that cli module imports without errors."""
         from cli import logger  # noqa: F401
 
-        # If we get here, import succeeded
+        assert "cli" in sys.modules
+        assert Path(sys.modules["cli"].__file__) == _CLI_MODULE_PATH
 
 
 class TestCliIntegration:
@@ -192,7 +229,8 @@ class TestCliIntegration:
         """Test that train_codex module is loaded."""
         from cli import logger  # noqa: F401
 
-        assert "cli.train_codex" in sys.modules, "Condition must be true"
+        train_codex = sys.modules["cli.train_codex"]
+        assert Path(train_codex.__file__) == _CLI_MODULE_PATH.parent / "cli" / "train_codex.py"
 
     def test_logging_configured(self) -> None:
         """Test that logging is configured in cli module."""
@@ -204,10 +242,10 @@ class TestCliIntegration:
 
     def test_hydra_import_fallback(self) -> None:
         """Test hydra import with fallback handling."""
-        # The module handles ImportError gracefully
-        from cli import logger  # noqa: F401
+        from cli import compose, initialize_config_dir
 
-        # If we reach here, error handling worked
+        assert callable(compose)
+        assert callable(initialize_config_dir)
 
 
 class TestCliConstants:

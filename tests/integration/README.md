@@ -74,6 +74,106 @@ pytest tests/integration/ -k "error" -v
 
 These tests are designed to run in GitHub Actions. See `.github/workflows/integration-tests.yml` for CI configuration.
 
+### ML workflow shards
+
+The [ML workflow](../../.github/workflows/ml-tests.yml) runs four independent
+integration shards and four non-integration coverage shards after the component
+jobs. Tests within a file stay together; SHA-256 of the relative file path
+selects the shard, independent of collection order or `pytest-randomly` seeds.
+No durations file, pytest-split or xdist is required.
+ML jobs install `.[runtime,test-ml-integrations]` and run `pip check`; the
+test-only extra does not expand production runtime requirements. Scanner/dev
+dependencies resolve separately rather than forcing their OpenTelemetry API
+constraint into the ML runtime environment. Supported-runner installation and
+imports must pass on Ubuntu/glibc; cross-platform resolution or downloaded
+wheels alone do not qualify the runtime. Preflight rejects the repository's
+optional Torch stub and requires a real CPU tensor round trip.
+Two coverage shards both exceeded their 18-minute test budgets in the first
+hosted run, so the coverage partition was increased to four without changing
+the selection or threshold.
+The four-way trial still timed out (one shard reached 95%), and the latest run
+timed out at 61% after 30 minutes. Coverage test steps now allow 50 minutes
+inside a 60-minute job budget for setup and reporting. The 300-second per-test
+timeout is unchanged.
+
+From the repository root, reproduce an integration shard:
+
+```bash
+PYTHONPATH="$PWD/scripts/ci:$PWD/src" pytest tests/integration/ \
+  -p ml_pytest_shards -m integration -rfE --durations=30 --timeout=600 \
+  --ml-shards=4 --ml-shard=1 --ml-shard-report=reports/selection.json \
+  --junitxml=reports/junit.xml
+```
+
+Coverage shards run **exactly** `tests/ -m "not slow and not integration"`,
+with `--cov=src --cov=training`. Their individual coverage thresholds are
+disabled because each sees only a subset. The single `ml-slow-aggregate`
+check combines only `.coverage.unit-*` from `unit-cov-*` artifacts and enforces
+the ratchet floor described below (target **70%**). Component and integration coverage never
+enter that gate. Integration pass/fail remains independently required.
+Module-level collection skips are not selected test items. The aggregate
+counts them once across shard reports without hiding missing selected tests
+or collection errors.
+Failures are also appended to the test step summary as they occur, before
+final JUnit generation, so a later timeout does not erase the first failures.
+
+Every shard records JUnit, its selected IDs and a digest of the entire eligible
+collection. The aggregate rejects differing collections, overlap, missing
+collection. Each JUnit test case carries its canonical pytest node ID; matching
+counts alone cannot substitute different tests. Manifests also record completion,
+pytest exit status, and the repository, SHA, workflow run and attempt. The aggregate
+rejects collect-only/incomplete/failed producers and evidence from another context.
+After a workflow rerun, rerun all shard producers rather than mixing artifacts
+from previous attempts.
+selections/reports/data, and failed/cancelled/skipped upstream jobs. It writes
+merged JUnit, coverage HTML and readable failure summaries; shards also write
+summaries to GitHub's job summary. Empty or unavailable evidence is failure,
+not successful skipped acceptance.
+
+#### Quarantine manifest and coverage floor (ratchet gate)
+
+Pre-existing unit failures are tracked, not ignored. Coverage shards pass
+`--ml-quarantine .codex/baselines/ml_unit_quarantine.json`; each listed test
+item (`{"version": 1, "entries": [{"nodeid", "cluster", "issue", "owner",
+"reason", "added_sha"}]}`, `issue` is an https URL or `#<n>`) runs as
+`xfail(strict=True)`, prepended so it overrides any `xfail` the test declares
+itself. A quarantined test whose body passes (XPASS) fails the run, and the
+shard report's `quarantine_results` lets the aggregate reject an XPASS even if
+JUnit shows a plain pass, so fixed tests must leave the manifest. Only a failure
+of the test body is quarantined: setup/teardown (fixture) errors stay errors
+(`setup-error`/`teardown-error`), because they signal broken environment or
+fixtures rather than the tracked failure. Collection errors have no item ID and
+are never quarantinable. Shards record their pytest exit code and only fail the job
+for infrastructure problems (no JUnit, timeout, exit codes other than 0/1);
+`ml-slow-aggregate` is the gate and fails on any non-quarantined failure/error,
+any collection error, or any manifest entry that no shard collected (stale).
+
+Combined unit coverage must not drop below `floor` in
+`.codex/baselines/ml_unit_coverage_floor.json` (initially 54, from 54.51% at
+`2865b571ab`; floor = ⌊measured − 0.5⌋). When coverage is at least one point
+above the floor the aggregate prints a notice suggesting a raise; nothing is
+committed automatically. On pull requests the aggregate also compares both
+files with the PR base (`HEAD^1` of the merge commit,
+`ml_slow_aggregate.py ratchet`): adding manifest entries or lowering the floor
+fails unless the PR carries the `quarantine-approved` label
+(`ML_QUARANTINE_GROWTH_APPROVED=1`). Labels are read from the event payload, so
+push a new commit after adding the label. Pushes are compared with
+`github.event.before` (checked out by SHA, `--no-approval`: approval never
+applies on push); a push with no previous commit (new branch) skips with a
+notice. Pushes touching only `.codex/baselines/ml_unit_*.json` still trigger the
+workflow. A base without the files imposes no constraint.
+
+Use `--durations=30` output to identify expensive files before changing timeouts
+or introducing xdist. No quick-subset selection or component-coverage reuse is
+enabled. Push/nightly runs are not automatically cancelled; superseded PR
+runs still are.
+
+The follow-up is stacked on #5783. `copilot/session-*` PR bases are included so
+stacked repairs can run this workflow. A repository administrator must replace
+any required `test-integration-slow` check with **`ml-slow-aggregate`** only
+after verifying its published check name and fresh hosted results. This code
+does not change branch protection or configure required checks.
+
 ---
 
 ## Test Scenarios

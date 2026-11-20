@@ -7,6 +7,8 @@ Validates the BayesianAssessor API:
 - from_dict() and from_json() construction
 """
 
+import os
+
 import json
 import tempfile
 

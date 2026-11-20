@@ -4,9 +4,15 @@ Tests the complete OODA cycle from observation through execution,
 including parallel execution and stress tests.
 """
 
+import functools
+import json
 import time
+from dataclasses import dataclass
+from enum import Enum
 
 import pytest
+from aries_serpent_core.brain import ooda_orchestrator
+from aries_serpent_core.brain.ooda_observer import EnvironmentObserver
 from codex.brain import (
     OODAactor,
     OODADecider,
@@ -15,6 +21,58 @@ from codex.brain import (
     OODAOrienter,
     ParallelOODAOrchestrator,
 )
+
+
+@pytest.fixture(autouse=True)
+def _isolated_cycle_log(tmp_path, monkeypatch):
+    """Keep cycle records out of the tracked ``.codex/ooda_cycles.jsonl``."""
+    log_path = tmp_path / "ooda_cycles.jsonl"
+    monkeypatch.setattr(
+        ooda_orchestrator,
+        "CycleRecorder",
+        functools.partial(ooda_orchestrator.CycleRecorder, db_path=log_path),
+    )
+    return log_path
+
+
+class TestCycleRecorderSerialization:
+    """Regression tests for cycle persistence."""
+
+    def test_enum_fields_are_serialized_by_value(self, tmp_path):
+        class Kind(Enum):
+            HEAL = "heal_failure"
+
+        @dataclass
+        class Record:
+            kind: Kind
+            nested: list
+
+        recorder = ooda_orchestrator.CycleRecorder(db_path=tmp_path / "c.jsonl")
+        data = recorder._to_serializable_dict(Record(Kind.HEAL, [{"k": Kind.HEAL}]))
+        assert data == {"kind": "heal_failure", "nested": [{"k": "heal_failure"}]}
+
+    def test_run_cycle_persists_decision_type(self, _isolated_cycle_log):
+        cycle = OODAOrchestrator().run_cycle()
+
+        lines = _isolated_cycle_log.read_text().splitlines()
+        assert len(lines) == 1, "Cycle must be persisted"
+        record = json.loads(lines[0])
+        action_type = cycle.decision.action.action_type
+        assert record["decision"]["action"]["action_type"] == action_type.value
+
+
+class TestEnvironmentObserverNetworkProbe:
+    """The ICMP probe must not run (and block OBSERVE) unless requested."""
+
+    def test_network_probe_is_opt_in(self, monkeypatch):
+        calls = []
+        monkeypatch.setattr(
+            "aries_serpent_core.brain.ooda_observer.subprocess.run",
+            lambda *a, **k: calls.append(a),
+        )
+        metrics = EnvironmentObserver().observe()
+        assert calls == [], "Network probe must be disabled by default"
+        assert metrics.network_latency_ms is None
 
 
 class TestOODAObserver:
@@ -27,7 +85,9 @@ class TestOODAObserver:
 
         # Fixed malformed assertion: assert observable is not None, "observable must be initialized"
         assert observable.repository is not None, "repository must be initialized"
-        assert observable.repository.current_branch is not None, "current_branch must be initialized"
+        assert (
+            observable.repository.current_branch is not None
+        ), "current_branch must be initialized"
         assert observable.repository.commit_hash is not None, "commit_hash must be initialized"
 
     def test_observer_collects_agent_state(self):
@@ -56,24 +116,33 @@ class TestOODAObserver:
 
         assert observable.environment is not None, "environment must be initialized"
         assert observable.environment.cpu_percent >= 0, "cpu_percent must be greater than zero"
-        assert observable.environment.memory_percent >= 0, "memory_percent must be greater than zero"
+        assert (
+            observable.environment.memory_percent >= 0
+        ), "memory_percent must be greater than zero"
 
     def test_observer_latency_under_100ms(self):
         """OBSERVE phase should complete in <100ms (p95)."""
         observer = OODAObserver()
-        start = time.time()
-        observable = observer.observe()
-        latency_ms = (time.time() - start) * 1000
+        observer.observe()  # warm-up: first subprocess/git calls pay cold-cache costs
 
-        assert latency_ms < 200, "latency_ms is not valid"
-        assert observable.metadata.observation_latency_ms < 200, "Data must not be empty"
+        samples = []
+        for _ in range(5):
+            start = time.perf_counter()
+            observable = observer.observe()
+            samples.append((time.perf_counter() - start) * 1000)
+            assert observable.metadata.observation_latency_ms <= samples[-1] + 1
+
+        # Median of warm samples tolerates one-off scheduler stalls on shared CI.
+        assert sorted(samples)[len(samples) // 2] < 200, f"latency_ms is not valid: {samples}"
 
     def test_observer_state_completeness(self):
         """OBSERVE should achieve >95% state completeness."""
         observer = OODAObserver()
         observable = observer.observe()
 
-        assert observable.metadata.state_completeness > 0.8, "state_completeness must be greater than zero"
+        assert (
+            observable.metadata.state_completeness > 0.8
+        ), "state_completeness must be greater than zero"
 
 
 class TestOODAOrienter:
@@ -110,7 +179,7 @@ class TestOODAOrienter:
 
         assert isinstance(orientation.agent_candidates, list)
         if orientation.agent_candidates:
-            assert all(hasattr(a, 'suitability_score') for a in orientation.agent_candidates)
+            assert all(hasattr(a, "suitability_score") for a in orientation.agent_candidates)
 
     def test_orienter_assesses_risks(self):
         """ORIENT should assess risks."""
@@ -159,7 +228,9 @@ class TestOODADecider:
 
         assert decision is not None, "decision must be initialized"
         assert decision.action is not None, "action must be initialized"
-        assert decision.confidence >= 0.0 and decision.confidence <= 1.0, "confidence must be greater than zero"
+        assert (
+            decision.confidence >= 0.0 and decision.confidence <= 1.0
+        ), "confidence must be greater than zero"
 
     def test_decider_ranks_candidates(self):
         """DECIDE should rank action candidates."""
@@ -188,7 +259,7 @@ class TestOODADecider:
         decision = decider.decide(observable, orientation)
 
         assert isinstance(decision.guardrail_checks, list)
-        assert all(hasattr(c, 'passed') for c in decision.guardrail_checks)
+        assert all(hasattr(c, "passed") for c in decision.guardrail_checks)
 
     def test_decider_confidence_scoring(self):
         """DECIDE should provide confidence scores."""
@@ -391,14 +462,13 @@ class TestParallelOODAOrchestrator:
         """PARALLEL ORCHESTRATOR should track completed cycles."""
         orchestrator = ParallelOODAOrchestrator(max_concurrent_cycles=2)
 
-        for _ in range(2):
-            orchestrator.start_cycle()
-
-        # Wait for completion
-        time.sleep(2)
+        cycle_ids = [orchestrator.start_cycle() for _ in range(2)]
+        # Block on each cycle rather than sleeping a fixed interval.
+        for cycle_id in cycle_ids:
+            assert orchestrator.get_cycle_result(cycle_id) is not None, "Cycle must finish"
 
         completed = orchestrator.get_completed_cycles()
-        assert len(completed) >= 1, "Completed must not be empty"
+        assert set(completed) == set(cycle_ids), "All finished cycles must be tracked"
 
         orchestrator.shutdown()
 
@@ -487,7 +557,9 @@ class TestOODAIntegration:
         metrics = orchestrator.get_metrics()
 
         # Average confidence should be reasonable (>0.5 in this test scenario)
-        assert metrics.avg_decision_confidence > 0.3, "avg_decision_confidence must be greater than zero"
+        assert (
+            metrics.avg_decision_confidence > 0.3
+        ), "avg_decision_confidence must be greater than zero"
 
     def test_ooda_execution_success_rate(self):
         """OODA execution should have 85%+ success rate."""
@@ -498,7 +570,9 @@ class TestOODAIntegration:
             orchestrator.run_cycle()
 
         metrics = orchestrator.get_metrics()
-        assert metrics.avg_execution_success_rate >= 0.0, "avg_execution_success_rate must be greater than zero"
+        assert (
+            metrics.avg_execution_success_rate >= 0.0
+        ), "avg_execution_success_rate must be greater than zero"
 
     def test_ooda_phase_latencies(self):
         """OODA phases should meet latency targets."""

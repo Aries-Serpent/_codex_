@@ -114,7 +114,7 @@ import threading
 import time
 from collections import deque
 from datetime import datetime, timezone
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 import httpx
 from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
@@ -584,6 +584,14 @@ REPO_ROOT = str(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 )
 
+
+def _codex_runtime_dir() -> Path:
+    configured = os.environ.get("CODEX_RUNTIME_DIR")
+    if configured:
+        return Path(configured).expanduser()
+    return Path(REPO_ROOT) / ".codex" / "runtime"
+
+
 # ── Schemas ───────────────────────────────────────────────────────────────────
 
 
@@ -614,6 +622,13 @@ class RoutePlanRequest(BaseModel):
 
 class RouteExecuteRequest(RoutePlanRequest):
     """Authenticated route request; write authority is server-owned."""
+
+
+class RouteReconcileRequest(BaseModel):
+    operation_id: str
+    state: Literal["completed", "failed"]
+    result: Any = None
+    error: str = ""
 
 
 class CliRunResponse(BaseModel):
@@ -772,6 +787,8 @@ async def health():
             "repo_root": REPO_ROOT,
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "history_db": _DB_PATH,
+            "route_operations_db": str(_ROUTE_EXECUTION_STORE.path),
+            "incomplete_route_operations": len(_ROUTE_EXECUTION_STORE.incomplete_operations()),
             "otel_enabled": _OTEL_ENABLED,
             "startup_nonce": os.environ.get("CODEX_STARTUP_NONCE"),
         }
@@ -858,9 +875,7 @@ async def plan_route(req: RoutePlanRequest):
     return _route_plan_for(req).to_dict()
 
 
-_ROUTE_EXECUTION_STORE = RouteExecutionStore(
-    Path(REPO_ROOT) / ".codex" / "runtime" / "route_operations.sqlite3"
-)
+_ROUTE_EXECUTION_STORE = RouteExecutionStore(_codex_runtime_dir() / "route_operations.sqlite3")
 
 
 def _github_token_preflight() -> tuple[str, str]:
@@ -996,6 +1011,36 @@ async def execute_route(
         "replayed": result.replayed,
         "result": result.result,
     }
+
+
+@app.get("/api/routes/incomplete")
+async def incomplete_route_operations(
+    _auth: None = Depends(_require_operation_auth),
+):
+    """List interrupted operations without exposing request arguments or credentials."""
+    return {"operations": await asyncio.to_thread(_ROUTE_EXECUTION_STORE.incomplete_operations)}
+
+
+@app.post("/api/routes/reconcile")
+async def reconcile_route_operation(
+    req: RouteReconcileRequest,
+    _auth: None = Depends(_require_operation_auth),
+):
+    """Record a verified outcome for one interrupted operation."""
+    if req.state == "completed" and req.result is None:
+        raise HTTPException(status_code=422, detail="completed reconciliation requires a result")
+    if req.state == "failed" and not req.error.strip():
+        raise HTTPException(status_code=422, detail="failed reconciliation requires an error")
+    try:
+        await asyncio.to_thread(
+            _ROUTE_EXECUTION_STORE.reconcile,
+            req.operation_id,
+            result=req.result,
+            error=req.error.strip() if req.state == "failed" else "",
+        )
+    except RouteExecutionConflict as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return {"operation_id": req.operation_id, "state": req.state}
 
 
 # ── Sprint 3: OODA loop endpoints — wire CognitiveAppMain to the React frontend

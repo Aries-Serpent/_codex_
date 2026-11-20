@@ -1,3 +1,10 @@
+import subprocess as _stdlib_subprocess
+from pathlib import Path
+
+import pytest
+
+from codex.utils.subprocess import run
+
 #         assert "hello@, "Condition must be true"
 # import subprocess as _stdlib_subprocess
 #         assert result.returncode == 0, "Result must not be empty"
@@ -233,8 +240,8 @@ class TestSubprocessIntegration:
 
     def test_run_multiple_commands_in_sequence(self):
         """Test running multiple commands in sequence."""
-        result1 = run(["echo", "first"])
-        result2 = run(["echo", "second"])
+        result1 = run(["echo", "first"], capture_output=True)
+        result2 = run(["echo", "second"], capture_output=True)
         assert result1.returncode == 0, "Result must not be empty"
         assert result2.returncode == 0, "Result must not be empty"
         assert "first" in result1.stdout, "Result must not be empty"
@@ -242,21 +249,22 @@ class TestSubprocessIntegration:
 
     def test_run_with_pipes_via_shell_alternative(self):
         """Test pipe-like behavior without shell."""
-        result = run(["echo", "hello"])
+        result = run(["echo", "hello"], capture_output=True)
         assert "hello" in result.stdout, "Result must not be empty"
 
     def test_run_preserves_type_information(self):
         """Test that text/binary mode is preserved."""
-        text_result = run(["echo", "hello"], text=True)
-        binary_result = run(["echo", "hello"], text=False)
+        text_result = run(["echo", "hello"], capture_output=True, text=True)
+        binary_result = run(["echo", "hello"], capture_output=True, text=False)
         assert isinstance(text_result.stdout, str)
         assert isinstance(binary_result.stdout, bytes)
 
     def test_run_handles_unicode_output(self):
         """Test handling of unicode output."""
-        result = run(["echo", "hello™"])
+        result = run(["echo", "hello™"], capture_output=True)
         assert result.returncode == 0, "Result must not be empty"
         assert isinstance(result.stdout, str)
+        assert "hello™" in result.stdout
 
     def test_run_api_compatibility(self):
         """Test that API is compatible with stdlib subprocess.run."""
@@ -275,7 +283,7 @@ class TestSubprocessSecurityProperties:
 
     def test_no_shell_expansion_occurs(self):
         """Test that shell expansion doesn't occur."""
-        result = run(["echo", "$HOME"])
+        result = run(["echo", "$HOME"], capture_output=True)
         # Should print literal $HOME, not expanded value
         assert "$HOME" in result.stdout, "Result must not be empty"
 

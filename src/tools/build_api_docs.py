@@ -6,7 +6,7 @@ This script generates HTML API reference documentation for the codex_ml package
 and its public modules. Output is written to artifacts/docs/api/ (local only).
 
 Usage:
-    python tools/build_api_docs.py [--output-dir DIRECTORY] [--fail-on-missing]
+    python -m tools.build_api_docs [--output-dir DIRECTORY] [--fail-on-missing]
 
 Return codes:
     0: Success - pdoc generated for available modules
@@ -26,7 +26,7 @@ import sys
 from pathlib import Path
 
 # Add src to Python path for imports
-_REPO_ROOT = Path(__file__).parent.parent.resolve()
+_REPO_ROOT = Path(__file__).resolve().parents[2]
 _SRC_DIR = _REPO_ROOT / "src"
 if str(_SRC_DIR) not in sys.path:
     sys.path.insert(0, str(_SRC_DIR))

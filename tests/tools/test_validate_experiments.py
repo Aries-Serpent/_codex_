@@ -88,7 +88,7 @@ def test_validator_success():
         result = subprocess.run(
             [
                 sys.executable,
-                "tools/validate_experiments.py",
+                "src/tools/validate_experiments.py",
                 "--schema",
                 str(schema),
                 "--paths",
@@ -111,7 +111,7 @@ def test_validator_failure():
         result = subprocess.run(
             [
                 sys.executable,
-                "tools/validate_experiments.py",
+                "src/tools/validate_experiments.py",
                 "--schema",
                 str(schema),
                 "--paths",
@@ -136,7 +136,7 @@ def test_validator_toml_success():
         result = subprocess.run(
             [
                 sys.executable,
-                "tools/validate_experiments.py",
+                "src/tools/validate_experiments.py",
                 "--schema",
                 str(schema),
                 "--paths",
@@ -161,7 +161,7 @@ def test_validator_toml_failure():
         result = subprocess.run(
             [
                 sys.executable,
-                "tools/validate_experiments.py",
+                "src/tools/validate_experiments.py",
                 "--schema",
                 str(schema),
                 "--paths",
@@ -199,7 +199,7 @@ def test_validator_excludes_schema_files():
         result = subprocess.run(
             [
                 sys.executable,
-                "tools/validate_experiments.py",
+                "src/tools/validate_experiments.py",
                 "--schema",
                 str(schema_file),
                 "--paths",
@@ -225,7 +225,7 @@ def test_validator_missing_schema_file():
         result = subprocess.run(
             [
                 sys.executable,
-                "tools/validate_experiments.py",
+                "src/tools/validate_experiments.py",
                 "--schema",
                 str(nonexistent_schema),
                 "--paths",
@@ -252,7 +252,7 @@ def test_validator_malformed_config_json():
         result = subprocess.run(
             [
                 sys.executable,
-                "tools/validate_experiments.py",
+                "src/tools/validate_experiments.py",
                 "--schema",
                 str(schema),
                 "--paths",
@@ -279,7 +279,7 @@ def test_validator_malformed_config_toml():
         result = subprocess.run(
             [
                 sys.executable,
-                "tools/validate_experiments.py",
+                "src/tools/validate_experiments.py",
                 "--schema",
                 str(schema),
                 "--paths",
@@ -306,7 +306,7 @@ def test_validator_empty_directory():
         result = subprocess.run(
             [
                 sys.executable,
-                "tools/validate_experiments.py",
+                "src/tools/validate_experiments.py",
                 "--schema",
                 str(schema),
                 "--paths",
@@ -341,7 +341,7 @@ def test_validator_multiple_paths():
         result = subprocess.run(
             [
                 sys.executable,
-                "tools/validate_experiments.py",
+                "src/tools/validate_experiments.py",
                 "--schema",
                 str(schema),
                 "--paths",

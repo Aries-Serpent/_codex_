@@ -7,6 +7,7 @@ import pytest
 
 np = pytest.importorskip("numpy")
 
+import codex.rag.indexer as indexer
 from codex.rag.cache.embedding_cache import EmbeddingCache
 from codex.rag.embeddings import CachedEmbeddingProvider, OpenAIEmbeddingProvider
 from codex.rag.indexer import persist_index
@@ -54,7 +55,6 @@ def test_persist_index_with_faiss_mock(monkeypatch, tmp_path):
 
         def write_index(self, index, path):
             Path(path).write_text(f"fake-index:{index.ntotal}", encoding="utf-8")
-
 
     monkeypatch.setattr(indexer, "faiss", FakeFaiss())
     embeddings = np.random.randn(2, 4).astype(np.float32)

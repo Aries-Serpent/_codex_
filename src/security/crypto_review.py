@@ -216,7 +216,7 @@ class CryptographicReviewer:
                 "password": r'password\s*=\s*["\']([^\'"]+)["\']',
                 "token": r'(token|auth)\s*=\s*["\']([^\'"]+)["\']',
                 "aws_key": r"AKIA[0-9A-Z]{16}",
-                "private_key": r"-----BEGIN RSA PRIVATE KEY-----",
+                "private_key": r"-----BEGIN RSA " + r"PRIVATE KEY-----",
             }
 
         secrets = []

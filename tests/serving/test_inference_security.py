@@ -191,6 +191,24 @@
 
 import pytest
 
+pytest.importorskip("fastapi")
+from fastapi.testclient import TestClient  # noqa: E402
+
+
+@pytest.fixture
+def secure_client(monkeypatch):
+    """Test client with API-key authentication enabled.
+
+    Restored after commit 28e26369d6 commented the fixture out together with
+    the malformed JWT tests above. The env stays patched for the whole test so
+    authentication is enforced at request time, not only at app creation.
+    """
+    from codex_ml.serving.inference_server import create_app
+
+    monkeypatch.setenv("CODEX_API_KEYS", "test-key-1,test-key-2")
+    monkeypatch.delenv("CODEX_JWT_SECRET", raising=False)
+    return TestClient(create_app())
+
 
 class TestPayloadAttacks:
     """Test payload-based attacks."""

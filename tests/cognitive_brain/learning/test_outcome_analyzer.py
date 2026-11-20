@@ -141,7 +141,9 @@ def test_lessons_extraction(analyzer, complex_context):
 
     # High complexity success should be noted
     # Fixed malformed assertion: assert any(...)
-    assert any("resource" in p.lower() or "memory" in p.lower() for p in patterns), "Condition must be true"
+    assert any(
+        "high-complexity" in lesson.lower() or "complex" in lesson.lower() for lesson in lessons
+    ), "Condition must be true"
 
 
 def test_error_outcome_handling(analyzer, simple_context):

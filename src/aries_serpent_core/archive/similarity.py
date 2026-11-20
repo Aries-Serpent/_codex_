@@ -66,8 +66,10 @@ def py_ast_hash(text: str) -> str:
         tree = ast.parse(text)
         dump = ast.dump(tree, annotate_fields=True, include_attributes=False)
         return hashlib.sha256(dump.encode("utf-8")).hexdigest()
-    except (ValueError, TypeError):
-        logger.warning("Exception occurred", exc_info=True)
+    except (SyntaxError, ValueError, TypeError):
+        # Unparseable source (e.g. a .py file with syntax errors) has no AST hash;
+        # callers treat "" as "not AST-equal".
+        logger.debug("py_ast_hash: source is not parseable Python", exc_info=True)
         return ""
 
 

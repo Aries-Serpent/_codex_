@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import stat
 import subprocess
+import tomllib
 from pathlib import Path
 from typing import Any
 
@@ -67,6 +68,7 @@ def test_post_start_uses_configurable_bind_and_secret_files() -> None:
 
     assert '--host "${CLI_API_BIND_HOST}"' in script
     assert "UI_BOOTSTRAP_BROWSER_FILE" in script
+    assert 'UI_BOOTSTRAP_BROWSER_FILE="${CODEX_RUNTIME_DIR}/ui_bootstrap_browser"' in script
     assert 'printf \'%s\' "$UI_BOOTSTRAP_BROWSER" > "$UI_BOOTSTRAP_BROWSER_FILE"' in script
     assert "UI launch fragment: #codex_ui_bootstrap=${UI_BOOTSTRAP_BROWSER}" not in script
     assert (
@@ -74,6 +76,35 @@ def test_post_start_uses_configurable_bind_and_secret_files() -> None:
         in script
     )
     assert 'CODEX_ALLOWED_ORIGINS="${CODEX_ALLOWED_ORIGINS},${CODESPACE_UI_ORIGIN}"' in script
+    assert 'SERVER_PID_FILE="${CODEX_RUNTIME_DIR}/cli_api_server.pid"' in script
+    assert 'UI_PID_FILE="${CODEX_RUNTIME_DIR}/cognitive_app.pid"' in script
+    assert 'stop_owned_process "$UI_PID_FILE" "npm run dev" "Cognitive App"' in script
+    assert 'npm run dev -- --host "$UI_BIND_HOST" --port "$UI_PORT"' in script
+    assert 'CODESPACE_REPORT="${CODEX_RUNTIME_DIR}/copilot-agent-environment-report.txt"' in script
+
+
+def test_python_dependencies_are_restored_from_authoritative_lock() -> None:
+    script = UPDATE_CONTENT.read_text(encoding="utf-8")
+    project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    brain_api = project["project"]["optional-dependencies"]["brain-api"]
+
+    assert "uv==0.13.9" in script
+    assert "uv sync --frozen --extra dev --extra brain-api" in script
+    assert 'pip install --cache-dir "$HOME/.cache/pip" \\\n    ruff' not in script
+    assert any(dependency.startswith("fastapi") for dependency in brain_api)
+    assert any(dependency.startswith("httpx") for dependency in brain_api)
+    assert any(dependency.startswith("uvicorn[standard]") for dependency in brain_api)
+    assert any(dependency.startswith("python-multipart") for dependency in brain_api)
+
+
+def test_generated_auth_status_uses_runtime_storage() -> None:
+    script = (ROOT / ".devcontainer" / "scripts" / "post-create.sh").read_text(encoding="utf-8")
+
+    assert (
+        'AUTH_STATUS_FILE="${CODEX_RUNTIME_DIR:-${HOME}/.codex/runtime}/codespace_auth_status.json"'
+        in script
+    )
+    assert 'AUTH_STATUS_FILE="${WORKSPACE}/.codex/codespace_auth_status.json"' not in script
 
 
 def test_frontend_dependencies_are_installed_before_chromium_setup() -> None:

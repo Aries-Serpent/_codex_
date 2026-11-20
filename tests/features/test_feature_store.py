@@ -1,3 +1,4 @@
+from codex_ml.features.feature_store import FeatureMetadata
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"

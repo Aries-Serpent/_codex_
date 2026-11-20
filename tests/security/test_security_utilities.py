@@ -308,7 +308,8 @@ class TestErrorHandling:
 
 def test_security_utilities_exist():
     """Verify all security utilities are present."""
-    utils_dir = Path(__file__).parent.parent.parent / "utils"
+    # utils/ moved under src/utils/ in the canonical src layout (57cb3506ed).
+    utils_dir = Path(__file__).parent.parent.parent / "src" / "utils"
 
     assert (utils_dir / "safe_torch_loader.py").exists(), "Condition must be true"
     assert (utils_dir / "safe_pickle.py").exists(), "Condition must be true"

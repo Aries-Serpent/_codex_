@@ -8,6 +8,66 @@ import sys
 from pathlib import Path
 
 import pytest
+from detect_secrets.core.scan import scan_line
+from detect_secrets.settings import transient_settings
+
+
+@pytest.mark.parametrize(
+    ("session", "field", "kind", "fingerprint"),
+    [
+        (
+            "pr-5746-review-5729914229",
+            "git_sha",
+            "Hex High Entropy String",
+            "abfc8ac80e5b1d0a464a0496cb7c401f3d8ec039",  # pragma: allowlist secret
+        ),
+        (
+            "AGENT-SELF-IMPROVEMENT-001/draft-review-continuation",  # pragma: allowlist secret
+            "git_sha",
+            "Hex High Entropy String",
+            "3924e2a3fe68c06e76746a82529638d4999276ce",  # pragma: allowlist secret
+        ),
+        (
+            "AGENT-SELF-IMPROVEMENT-001/draft-review-continuation",  # pragma: allowlist secret
+            "session",
+            "Base64 High Entropy String",
+            "dc4c17bda613551cb6a4f3c9eafa11006f55128e",  # pragma: allowlist secret
+        ),
+        (
+            "pr-5763-archive-review-followup",
+            "git_sha",
+            "Hex High Entropy String",
+            "0e192e272c9ca215f6bb9843411c7264d42c099d",  # pragma: allowlist secret
+        ),
+        (
+            "pr-5765-readiness-20261109",
+            "git_sha",
+            "Hex High Entropy String",
+            "03044088fb6f83e02c1fbc389069206c9aa6d364",  # pragma: allowlist secret
+        ),
+    ],
+)
+def test_pda_provenance_baseline_is_value_specific(session, field, kind, fingerprint):
+    root = Path(__file__).resolve().parents[2]
+    filename = ".codex/aftermath/pda_iterations.jsonl"
+    baseline = json.loads((root / ".secrets.baseline").read_text())
+    records = [json.loads(line) for line in (root / filename).read_text().splitlines()]
+    record = next(row for row in records if row.get("session") == session)
+    entries = [
+        row
+        for row in baseline["results"][filename]
+        if row["type"] == kind and row["hashed_secret"] == fingerprint
+    ]
+    assert len(entries) == 1
+    assert entries[0]["is_secret"] is False
+    assert entries[0]["is_verified"] is False
+    value = record[field]
+    with transient_settings(baseline):
+        original = list(scan_line(json.dumps({field: value})))
+        changed = list(scan_line(json.dumps({field: value[::-1]})))
+    assert any(row.type == kind and row.secret_hash == fingerprint for row in original)
+    known = {(row["type"], row["hashed_secret"]) for row in baseline["results"][filename]}
+    assert any(row.type == kind and (row.type, row.secret_hash) not in known for row in changed)
 
 
 @pytest.fixture

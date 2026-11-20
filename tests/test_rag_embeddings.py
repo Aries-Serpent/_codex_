@@ -390,11 +390,14 @@ class TestCreateEmbeddingProvider:
         assert provider.model_name == "sentence-transformers/all-MiniLM-L6-v2", "model_name is not valid"
 
     @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})  # pragma: allowlist secret
-    def test_create_openai_provider(self):
-        """Test creating OpenAI provider"""
+    def test_create_openai_provider(self, monkeypatch):
+        """Test creating OpenAI provider (openai client mocked; package is optional)."""
+        mock_openai = MagicMock()
+        monkeypatch.setitem(OpenAIEmbeddingProvider.__init__.__globals__, "OpenAI", mock_openai)
         provider = create_embedding_provider(provider_type="openai", use_cache=False)
 
         assert isinstance(provider, OpenAIEmbeddingProvider)
+        mock_openai.assert_called_once_with(api_key="test-key")  # pragma: allowlist secret
 
     def test_create_openai_without_key_raises(self):
         """Test creating OpenAI provider without key raises error"""
@@ -403,8 +406,9 @@ class TestCreateEmbeddingProvider:
                 create_embedding_provider(provider_type="openai")
 
     @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})  # pragma: allowlist secret
-    def test_create_openai_with_cache(self):
-        """Test creating OpenAI provider with cache"""
+    def test_create_openai_with_cache(self, monkeypatch):
+        """Test creating OpenAI provider with cache (openai client mocked)."""
+        monkeypatch.setitem(OpenAIEmbeddingProvider.__init__.__globals__, "OpenAI", MagicMock())
         with tempfile.TemporaryDirectory() as tmpdir:
             provider = create_embedding_provider(
                 provider_type="openai", use_cache=True, cache_dir=tmpdir

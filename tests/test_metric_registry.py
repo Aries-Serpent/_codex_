@@ -114,3 +114,22 @@ def test_compute_metrics_uses_registry_metric(monkeypatch, tmp_path: Path) -> No
     assert metric_name in results, "Result must not be empty"
     assert results[metric_name]["total"] == 3.0, "Result must not be empty"
     assert results[metric_name]["matches"] == 2.0, "Result must not be empty"
+
+
+def test_compute_metrics_resolves_each_requested_metric_key(monkeypatch) -> None:
+    import codex_ml.eval.runner as runner
+
+    requested = "requested_metric"
+    trailing = "trailing_metric"
+    monkeypatch.setattr(runner, "list_metrics", lambda: [requested, trailing])
+    monkeypatch.setattr(
+        runner,
+        "get_registered_metric",
+        lambda name: {requested: lambda *_args: "requested", trailing: lambda *_args: "trailing"}[
+            name
+        ],
+    )
+
+    result = _compute_metrics([{"prediction": "p", "target": "t"}], [requested])
+
+    assert result == {requested: "requested"}

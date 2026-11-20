@@ -57,9 +57,7 @@
   // ── Port forwarding ────────────────────────────────────────────────────────
   "forwardPorts": [
     5173,
-    8765,
-    8766,
-    3000
+    8765
   ],
   "portsAttributes": {
     "5173": {
@@ -73,16 +71,6 @@
       "protocol": "http",
       "onAutoForward": "notify",
       "requireLocalPort": false
-    },
-    "8766": {
-      "label": "🔐 GitHub App webhook receiver",
-      "protocol": "http",
-      "onAutoForward": "silent"
-    },
-    "3000": {
-      "label": "🌐 React frontend (cognitive_app)",
-      "protocol": "http",
-      "onAutoForward": "openPreview"
     }
   },
   "otherPortsAttributes": {
@@ -110,8 +98,10 @@
     "CODEX_FORCE_CPU": "1",
     "RAG_EMBEDDING_PROVIDER": "tfidf",
     "CODEX_LOG_LEVEL": "INFO",
-    "CODEX_DB_PATH": "/workspaces/_codex_/.codex/codex.db",
-    "CODEX_SESSION_LOG_DIR": "/workspaces/_codex_/.codex/sessions",
+    "CODEX_STATE_DIR": "/home/codex/.codex",
+    "CODEX_DB_PATH": "/home/codex/.codex/codex.db",
+    "CODEX_RUNTIME_DIR": "/home/codex/.codex/runtime",
+    "CODEX_SESSION_LOG_DIR": "/home/codex/.codex/sessions",
     "CODEX_SQLITE_POOL": "1",
     // Codespaces APT prebuild controls (consumed by on-create.sh)
     "CODESPACES_APT_UPDATE_RETRY": "true",

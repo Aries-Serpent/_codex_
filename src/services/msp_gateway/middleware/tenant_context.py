@@ -219,6 +219,10 @@ class TenantRegistry:
             tenant = self.get_tenant(cached_tenant_id)
             if tenant is None:
                 return None
+            if not tenant["active"]:
+                # A stale auth cache must not restore access to an inactive tenant.
+                auth_manager.revoke_api_key(api_key)
+                return tenant
             current_hash = hash_api_key(api_key)
             if tenant.get("api_key_hash") == current_hash:
                 return tenant
@@ -291,7 +295,12 @@ class TenantRegistry:
                 }
                 # Cache it
                 self.tenants[tenant_id] = tenant_data
-                auth_manager.register_api_key_hash(pbkdf2_hash, tenant_id)
+                if tenant_data["active"]:
+                    auth_manager.register_api_key_hash(pbkdf2_hash, tenant_id)
+                else:
+                    # Return the inactive record so middleware retains its 403
+                    # response, but never resurrect a revoked credential.
+                    auth_manager.revoke_api_key_hash(pbkdf2_hash)
                 auth_manager.revoke_api_key_hash(legacy_sha256_hash)
                 return tenant_data
 

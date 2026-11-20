@@ -1,3 +1,12 @@
+import json
+from pathlib import Path
+
+import pytest
+
+from codex.ast.export import ExportFormat, export_knowledge_graph
+from codex.ast.metrics import MetricsAggregator
+from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
+
 #         assert ", "Condition must be true"
 #         assert "test_project" in result.content, "Result must not be empty"
 #         assert "Dependency Analysis" in result.content, "Result must not be empty"
@@ -323,6 +332,36 @@
 #         assert data["success"] is True, "Data must not be empty"
 
 
+@pytest.fixture
+def sample_nodes():
+    """Create sample AST nodes for testing."""
+    loc1 = SourceLocation(Path("module.py"), 1, 0, 50, 0)
+    root = StandardizedASTNode("mod1", NodeType.MODULE, "sample_module", loc1)
+
+    loc2 = SourceLocation(Path("module.py"), 5, 0, 20, 0)
+    func = StandardizedASTNode(
+        "func1",
+        NodeType.FUNCTION,
+        "process_data",
+        loc2,
+        docstring="Process the data.",
+    )
+
+    loc3 = SourceLocation(Path("module.py"), 25, 0, 50, 0)
+    cls = StandardizedASTNode(
+        "cls1",
+        NodeType.CLASS,
+        "DataProcessor",
+        loc3,
+        docstring="Data processing class.",
+    )
+
+    root.add_child(func)
+    root.add_child(cls)
+
+    return [root]
+
+
 class TestExportKnowledgeGraphFunction:
     """Tests for export_knowledge_graph convenience function."""
 
@@ -335,17 +374,21 @@ class TestExportKnowledgeGraphFunction:
 
     def test_export_with_graph_and_metrics(self, sample_nodes, sample_graph, sample_metrics):
         """Test export with all components."""
+        aggregator = MetricsAggregator()
+        aggregator.store_metrics("func1", sample_metrics)
         result = export_knowledge_graph(
             sample_nodes,
             format=ExportFormat.JSON,
             graph=sample_graph,
-            metrics=sample_metrics,
+            metrics=aggregator,
         )
 
         assert result.success, "Result must not be empty"
         data = json.loads(result.content)
         assert data["graph"] is not None, "Value must be initialized"
         assert data["metrics"] is not None, "Value must be initialized"
+        assert data["metrics"]["entities"]["func1"] == sample_metrics.to_dict()
+        assert data["metrics"]["summary"] == aggregator.summary()
 
     def test_export_to_file(self, sample_nodes, tmp_path):
         """Test export to file."""

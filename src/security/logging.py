@@ -346,7 +346,10 @@ if __name__ == "__main__":
     print(f"Token hash: {hash_token(test_token)}")
     print()
 
-    test_password = "MyS3cur3P@ssw0rd!"  # nosec  # pragma: allowlist secret -- synthetic demo value
+    # Generated at runtime so no credential-shaped literal ships in this module.
+    import secrets as _secrets
+
+    test_password = _secrets.token_urlsafe(12)
 
     print(f"Redacted password: {redact_password(test_password)}")
     print()

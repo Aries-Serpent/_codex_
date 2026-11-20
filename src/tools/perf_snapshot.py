@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from collections.abc import Mapping, MutableMapping, Sequence
 from pathlib import Path
 from typing import Any
@@ -20,6 +21,10 @@ METRIC_MAP: Mapping[str, MetricSpec] = {
     "latency_p90_ms": ("inference", "latency_p90_ms"),
     "latency_p99_ms": ("inference", "latency_p99_ms"),
 }
+
+# Trainer logs may contain several whitespace-separated key:value or key=value
+# fields on one line. Keep the single-field parser below for legacy raw keys.
+_METRIC_FIELDS = re.compile(r"(?:^|\s)([^\s:=]+)\s*[:=]\s*(\S+)")
 
 
 def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -49,19 +54,26 @@ def parse_perf_log(text: str) -> dict[str, Any]:
         line = raw_line.strip()
         if not line or line.startswith("#"):
             continue
-        if ":" not in line:
-            continue
-        key, value = (item.strip() for item in line.split(":", 1))
-        try:
-            numeric = float(value)
-        except ValueError:
-            continue
-        raw[key] = numeric
-        spec = METRIC_MAP.get(key)
-        if spec:
-            section, normalized_key = spec
-            section_store = _ensure_section(structured, section)
-            section_store[normalized_key] = numeric
+        fields = _METRIC_FIELDS.findall(line)
+        if ":" in line and len(fields) <= 1:
+            key, value = (item.strip() for item in line.split(":", 1))
+            try:
+                float(value)
+            except ValueError:
+                pass
+            else:
+                fields = [(key, value)]
+        for key, value in fields:
+            try:
+                numeric = float(value)
+            except ValueError:
+                continue
+            raw[key] = numeric
+            spec = METRIC_MAP.get(key)
+            if spec:
+                section, normalized_key = spec
+                section_store = _ensure_section(structured, section)
+                section_store[normalized_key] = numeric
     structured["raw"] = raw
     return structured
 

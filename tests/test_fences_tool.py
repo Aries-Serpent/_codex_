@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TOOL = ROOT / "tools" / "validate_fences.py"
+TOOL = ROOT / "src" / "tools" / "validate_fences.py"
 SAMPLE = ROOT / "tests" / "data" / "validate_fences_sample.md"
 
 

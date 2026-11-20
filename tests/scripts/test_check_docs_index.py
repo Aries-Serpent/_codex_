@@ -1,3 +1,6 @@
+import importlib.util
+import pytest
+from pathlib import Path
 #         assert ", "Condition must be true"
 #         assert "[child/](child/)" in content, "Content must not be empty"
 # Focused on the generate_index() behaviour that was fixed in S-185:
@@ -200,6 +203,25 @@
 #         assert ", "Condition must be true"
 #         assert ", "Condition must be true"
 #         assert "\n\n\n" not in content, "Content must not be empty"
+
+
+_SCRIPT_PATH = Path(__file__).resolve().parents[2] / "scripts" / "ci" / "check_docs_index.py"
+
+
+_spec = importlib.util.spec_from_file_location("check_docs_index", _SCRIPT_PATH)
+
+
+_mod = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_mod)
+
+
+def _patch_roots(monkeypatch: pytest.MonkeyPatch, docs_root: Path) -> None:
+    """Point the module's DOCS_ROOT and REPO_ROOT at a temp tree."""
+    monkeypatch.setattr(_mod, "DOCS_ROOT", docs_root)
+    monkeypatch.setattr(_mod, "REPO_ROOT", docs_root.parent)
+
+
+generate_index = _mod.generate_index
 
 
 class TestGenerateIndexEdgeCases:

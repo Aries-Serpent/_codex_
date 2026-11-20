@@ -9,6 +9,12 @@ import pytest
 from tools import build_api_docs
 
 
+@pytest.fixture(autouse=True)
+def isolate_generated_docs(tmp_path, monkeypatch):
+    """Keep main()'s default output inside the test's temporary directory."""
+    monkeypatch.setattr(build_api_docs, "DEFAULT_OUTPUT_DIR", tmp_path / "api")
+
+
 class TestFilterModules:
     """Test the filter_modules function."""
 

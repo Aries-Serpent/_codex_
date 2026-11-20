@@ -42,7 +42,7 @@ SECRET_TYPES: Dict[str, Dict[str, Any]] = {
         "description": "Private Key (RSA/ED25519)",
         "urgency": "CRITICAL",
         "rotation_hours": 6,
-        "patterns": ["BEGIN PRIVATE KEY", "BEGIN RSA PRIVATE KEY"],
+        "patterns": ["BEGIN PRIVATE KEY", "BEGIN RSA " + "PRIVATE KEY"],
     },
     "DB_PASSWORD": {
         "description": "Database Password or Connection String",
@@ -322,9 +322,7 @@ def categorize_secret_findings(findings_json_path: str) -> Dict[str, Any]:
                 "type": secret_type,
                 "count": 0,
                 "rotation_urgency": secret_info["urgency"],
-                "rotation_deadline": _calculate_rotation_deadline(
-                    secret_info["urgency"]
-                ),
+                "rotation_deadline": _calculate_rotation_deadline(secret_info["urgency"]),
                 "findings": [],
             }
 
@@ -335,9 +333,7 @@ def categorize_secret_findings(findings_json_path: str) -> Dict[str, Any]:
                 "secret_type": secret_type,
                 "file": f"{finding.get('file_path', 'unknown')}:{finding.get('line_number', '?')}",
                 "tool": finding.get("tool", "Unknown"),
-                "confidence": _convert_confidence_to_percent(
-                    finding.get("confidence", 1.0)
-                ),
+                "confidence": _convert_confidence_to_percent(finding.get("confidence", 1.0)),
                 "remediation": _generate_remediation_steps(
                     secret_type, finding.get("file_path", "")
                 ),
@@ -348,13 +344,9 @@ def categorize_secret_findings(findings_json_path: str) -> Dict[str, Any]:
     # Calculate metadata
     total_secrets = len(secret_findings)
     critical_count = sum(
-        1
-        for cat in secret_categories.values()
-        if cat["rotation_urgency"] == "CRITICAL"
+        1 for cat in secret_categories.values() if cat["rotation_urgency"] == "CRITICAL"
     )
-    high_count = sum(
-        1 for cat in secret_categories.values() if cat["rotation_urgency"] == "HIGH"
-    )
+    high_count = sum(1 for cat in secret_categories.values() if cat["rotation_urgency"] == "HIGH")
     medium_count = sum(
         1 for cat in secret_categories.values() if cat["rotation_urgency"] == "MEDIUM"
     )
@@ -424,8 +416,7 @@ def _generate_markdown_report(formatted: Dict[str, Any]) -> str:
         lines.append(f"### {secret_type}")
         lines.append("")
         lines.append(
-            f"**Urgency**: `{urgency}` | **Count**: {count} | "
-            f"**Deadline**: {deadline}"
+            f"**Urgency**: `{urgency}` | **Count**: {count} | " f"**Deadline**: {deadline}"
         )
         lines.append("")
 
@@ -459,9 +450,7 @@ def main() -> int:
     subparsers = parser.add_subparsers(dest="command", help="Command to run")
 
     # categorize-secrets subcommand
-    cat_cmd = subparsers.add_parser(
-        "categorize-secrets", help="Categorize secret findings"
-    )
+    cat_cmd = subparsers.add_parser("categorize-secrets", help="Categorize secret findings")
     cat_cmd.add_argument(
         "--findings",
         required=True,

@@ -19,6 +19,8 @@ runnable via::
 
 from __future__ import annotations
 
+import importlib.util
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -35,12 +37,36 @@ try:
 except ImportError:  # pragma: no cover
     pass  # FastAPI is optional; TestClient features unavailable without it
 
+_DASHBOARD_API_PATH = Path(__file__).resolve().parents[2] / "monitoring" / "dashboard_api.py"
+_DASHBOARD_MODULE_NAME = "_codex_root_monitoring_dashboard_api"
+
+
+def _dashboard_app() -> Any:
+    """Load the repository-root dashboard API by path.
+
+    ``src/monitoring`` precedes the repository root on ``sys.path``, so a
+    package import of ``monitoring.dashboard_api`` resolves to the wrong
+    ``monitoring`` package depending on import order.
+    """
+    pytest.importorskip("fastapi")
+    module = sys.modules.get(_DASHBOARD_MODULE_NAME)
+    if module is None:
+        spec = importlib.util.spec_from_file_location(_DASHBOARD_MODULE_NAME, _DASHBOARD_API_PATH)
+        assert spec is not None and spec.loader is not None, "dashboard_api.py must be loadable"
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[_DASHBOARD_MODULE_NAME] = module
+        try:
+            spec.loader.exec_module(module)
+        except BaseException:
+            sys.modules.pop(_DASHBOARD_MODULE_NAME, None)
+            raise
+    return module.app
+
 
 @pytest.mark.integration
 def test_api_health_endpoint_returns_healthy() -> None:
     """The /health endpoint returns status=healthy (API ↔ model-service boundary)."""
-    pytest.importorskip("fastapi")
-    from monitoring.dashboard_api import app  # local import keeps module optional
+    app = _dashboard_app()
 
     client = TestClient(app, raise_server_exceptions=True)
     response = client.get("/health")
@@ -53,8 +79,7 @@ def test_api_health_endpoint_returns_healthy() -> None:
 @pytest.mark.integration
 def test_api_readiness_probe_reports_ready() -> None:
     """The /readiness probe responds 200 OK (API ↔ model-service boundary)."""
-    pytest.importorskip("fastapi")
-    from monitoring.dashboard_api import app
+    app = _dashboard_app()
 
     client = TestClient(app)
     response = client.get("/readiness")
@@ -66,8 +91,7 @@ def test_api_readiness_probe_reports_ready() -> None:
 @pytest.mark.integration
 def test_api_liveness_probe_reports_alive() -> None:
     """The /liveness probe responds 200 OK with uptime info (API ↔ model-service)."""
-    pytest.importorskip("fastapi")
-    from monitoring.dashboard_api import app
+    app = _dashboard_app()
 
     client = TestClient(app)
     response = client.get("/liveness")
@@ -80,8 +104,7 @@ def test_api_liveness_probe_reports_alive() -> None:
 @pytest.mark.integration
 def test_api_ci_metrics_endpoint_structure() -> None:
     """GET /api/metrics/ci returns a dict with expected keys (API ↔ model-service)."""
-    pytest.importorskip("fastapi")
-    from monitoring.dashboard_api import app
+    app = _dashboard_app()
 
     client = TestClient(app)
     response = client.get("/api/metrics/ci")
@@ -94,8 +117,7 @@ def test_api_ci_metrics_endpoint_structure() -> None:
 @pytest.mark.integration
 def test_api_root_lists_known_endpoints() -> None:
     """GET / advertises ci_metrics and alerts endpoints (API ↔ model-service)."""
-    pytest.importorskip("fastapi")
-    from monitoring.dashboard_api import app
+    app = _dashboard_app()
 
     client = TestClient(app)
     response = client.get("/")

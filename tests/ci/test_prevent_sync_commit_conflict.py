@@ -1,3 +1,4 @@
+from scripts.ci.prevent_sync_commit_conflict import check_codex_manifest
 #         assert any("CODEX_MANIFEST.json" in w.file for w in warnings, "Condition must be true"
 #         ), "Condition must be true"
 # Tests the three detection functions:

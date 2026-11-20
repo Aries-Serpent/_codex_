@@ -11,6 +11,7 @@ Expected coverage gain: +0.3pp from resource management code
 """
 
 import gc
+import os
 import resource
 import sys
 import threading
@@ -332,20 +333,20 @@ class TestRateLimitingRecovery:
         assert len(request_times) <= rate_limit, "Request_times must not be empty"
 
     def test_backoff_strategy(self):
-        """Test backoff strategy."""
-        attempt = 0
+        """Test exponential backoff between rate-limited attempts."""
         max_attempts = 3
         base_delay = 0.01
+        delays = []
 
-        while attempt < max_attempts:
+        for attempt in range(1, max_attempts + 1):
             try:
                 # Simulate rate limited request
-                raise Exception("Rate limited")
-            except (ConnectionError, TimeoutError) as _err:
-                attempt += 1
+                raise ConnectionError("Rate limited")
+            except (ConnectionError, TimeoutError):
                 if attempt < max_attempts:
-                    delay = base_delay * (2**attempt)
-                    assert delay > 0, "delay must be greater than zero"
+                    delays.append(base_delay * (2**attempt))
+
+        assert delays == [0.02, 0.04], "backoff must double per attempt"
 
     def test_rate_limit_reset(self):
         """Test rate limit reset."""
@@ -358,38 +359,48 @@ class TestRateLimitingRecovery:
 class TestProcessExhaustion:
     """Test process exhaustion handling."""
 
+    # ``-I`` isolates the child from PYTHONPATH and the repo ``sitecustomize``
+    # bootstrap (which tests/conftest.py propagates to subprocesses and which
+    # costs seconds of imports).  These tests are about process lifecycle, not
+    # interpreter start-up, so the child must start in milliseconds.  The
+    # timeout is only a hang guard, not a performance assertion.
+    _HANG_GUARD_S = 30
+
     def test_subprocess_cleanup(self):
-        """Test subprocess cleanup."""
+        """A finished child is reaped: returncode is set and pipes are closed."""
         import subprocess
 
-        try:
-            # Create subprocess
-            proc = subprocess.Popen(
-                [sys.executable, "-c", "import time; time.sleep(0.1)"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
+        with subprocess.Popen(
+            [sys.executable, "-I", "-c", "import time; time.sleep(0.1)"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        ) as proc:
+            try:
+                proc.wait(timeout=self._HANG_GUARD_S)
+            finally:
+                if proc.poll() is None:
+                    proc.kill()
+                    proc.wait()
 
-            # Wait for completion
-            proc.wait(timeout=1)
-
-            # Process should be cleaned up
-            assert proc.returncode is not None, "returncode must be initialized"
-        except (ImportError, AttributeError, ModuleNotFoundError):
-            pass
+        assert proc.returncode == 0, "child must exit cleanly"
+        assert proc.stdout.closed and proc.stderr.closed, "pipes must be closed"
 
     def test_zombie_process_prevention(self):
-        """Test prevention of zombie processes."""
+        """communicate() reaps the child so no zombie remains."""
         import subprocess
 
+        proc = subprocess.Popen([sys.executable, "-I", "-c", "pass"], stdout=subprocess.PIPE)
         try:
-            proc = subprocess.Popen([sys.executable, "-c", "pass"], stdout=subprocess.PIPE)
+            proc.communicate(timeout=self._HANG_GUARD_S)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.communicate()
+            raise
 
-            # Always clean up
-            stdout, stderr = proc.communicate(timeout=1)
-            assert proc.returncode is not None, "returncode must be initialized"
-        except (AttributeError, OSError, RuntimeError):
-            pass
+        assert proc.returncode == 0, "child must exit cleanly"
+        # A reaped process can no longer be waited on by the OS.
+        with pytest.raises(ChildProcessError):
+            os.waitpid(proc.pid, os.WNOHANG)
 
 
 class TestDeadlockPrevention:

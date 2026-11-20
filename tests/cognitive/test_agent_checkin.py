@@ -1,3 +1,4 @@
+import scripts.cognitive.agent_checkin as _mod
 import pytest
 
 #         assert "PR, "Condition must be true"
@@ -146,6 +147,13 @@ import pytest
 # ---------------------------------------------------------------------------
 # _build_close_checkin_comment
 # ---------------------------------------------------------------------------
+
+
+def _offline(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Remove all GitHub tokens so tests run offline."""
+    monkeypatch.delenv("CODEX_MASTER_KEY", raising=False)
+    monkeypatch.delenv("CODEX_BACKUP_KEY", raising=False)
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
 
 
 class TestBuildCloseCheckinComment:

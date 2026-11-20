@@ -1,3 +1,7 @@
+from scripts.handoff.auto_handoff import AutoHandoff
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
 import pytest
 
 #         assert ", "Condition must be true"
@@ -178,7 +182,7 @@ import pytest
 #     def test_load_patterns_no_file(self, handoff):
 #     def test_load_patterns_no_file(self, handoff):
 #         """Test pattern loading when file doesn't exist."""
-#         with patch("auto_handoff.PATTERN_STORE") as mock_path:
+#         with patch("scripts.handoff.auto_handoff.PATTERN_STORE") as mock_path:
 #             mock_path.exists.return_value = False
 #             patterns = handoff.load_patterns()
 #         assert patterns == [], "patterns is not valid"
@@ -186,7 +190,7 @@ import pytest
 #     def test_load_tracking_data_no_file(self, handoff, temp_dir):
 #     def test_load_tracking_data_no_file(self, handoff, temp_dir):
 #         """Test tracking data loading when file doesn't exist."""
-#         with patch("auto_handoff.TRACKING_FILE", temp_dir / "tracking.json"):
+#         with patch("scripts.handoff.auto_handoff.TRACKING_FILE", temp_dir / "tracking.json"):
 #             data = handoff.load_tracking_data()
 #         assert "handoffs" in data, "Data must not be empty"
 #         assert "metrics" in data, "Data must not be empty"
@@ -195,7 +199,7 @@ import pytest
 #     def test_save_tracking_data(self, handoff, temp_dir):
 #         """Test saving tracking data."""
 #         tracking_file = temp_dir / "tracking.json"
-#         with patch("auto_handoff.TRACKING_FILE", tracking_file):
+#         with patch("scripts.handoff.auto_handoff.TRACKING_FILE", tracking_file):
 #             data = {"handoffs": [], "metrics": {}}
 #             handoff.save_tracking_data(data)
 #
@@ -222,7 +226,7 @@ import pytest
 #         with open(tracking_file, "w") as f:
 #             json.dump(initial_data, f)
 #
-#         with patch("auto_handoff.TRACKING_FILE", tracking_file):
+#         with patch("scripts.handoff.auto_handoff.TRACKING_FILE", tracking_file):
 #             handoff.tracking_data = initial_data
 #             result = handoff.update_handoff_status("HO-001", "complete")
 #
@@ -315,9 +319,9 @@ class TestAutoHandoffIntegration:
         output_file = temp_env / ".codex" / "handoffs" / "test.md"
 
         with (
-            patch("auto_handoff.TRACKING_FILE", tracking_file),
-            patch("auto_handoff.ACTION_LOG_PATH", temp_env / "action_log.ndjson"),
-            patch("auto_handoff.OUTPUT_DIR", temp_env / ".codex" / "handoffs"),
+            patch("scripts.handoff.auto_handoff.TRACKING_FILE", tracking_file),
+            patch("scripts.handoff.auto_handoff.ACTION_LOG_PATH", temp_env / "action_log.ndjson"),
+            patch("scripts.handoff.auto_handoff.OUTPUT_DIR", temp_env / ".codex" / "handoffs"),
         ):
 
             handoff = AutoHandoff()
@@ -339,8 +343,8 @@ class TestAutoHandoffIntegration:
         tracking_file = temp_env / ".codex" / "handoff_tracking.json"
 
         with (
-            patch("auto_handoff.TRACKING_FILE", tracking_file),
-            patch("auto_handoff.ACTION_LOG_PATH", temp_env / "action_log.ndjson"),
+            patch("scripts.handoff.auto_handoff.TRACKING_FILE", tracking_file),
+            patch("scripts.handoff.auto_handoff.ACTION_LOG_PATH", temp_env / "action_log.ndjson"),
         ):
 
             handoff = AutoHandoff()

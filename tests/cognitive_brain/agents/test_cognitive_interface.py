@@ -1,3 +1,4 @@
+from cognitive_brain.agents.cognitive_interface import CognitiveBrain
 #         assert result.decision in {, "Result must not be empty"
 # Phase 5 Cognitive Brain Interface Tests
 # - CognitiveBrain.decide() — happy path, session memory, fallback

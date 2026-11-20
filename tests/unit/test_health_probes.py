@@ -9,7 +9,10 @@ Covers:
 
 from __future__ import annotations
 
+import importlib.util
+import sys
 from pathlib import Path
+from types import ModuleType
 from unittest.mock import patch
 
 import pytest
@@ -27,13 +30,37 @@ except ImportError:  # pragma: no cover
 pytestmark = pytest.mark.skipif(not _FASTAPI_AVAILABLE, reason="fastapi[testclient] not installed")
 
 
+_DASHBOARD_API_PATH = Path(__file__).resolve().parents[2] / "monitoring" / "dashboard_api.py"
+_DASHBOARD_MODULE_NAME = "_codex_root_monitoring_dashboard_api"
+
+
+def _load_dashboard_api() -> ModuleType:
+    """Load the repository-root ``monitoring/dashboard_api.py`` by path.
+
+    ``src/monitoring`` and ``scripts/monitoring`` are also importable as
+    ``monitoring`` depending on ``sys.path`` order, so a package import of
+    ``monitoring.dashboard_api`` resolves to the wrong package.
+    """
+    module = sys.modules.get(_DASHBOARD_MODULE_NAME)
+    if module is None:
+        spec = importlib.util.spec_from_file_location(_DASHBOARD_MODULE_NAME, _DASHBOARD_API_PATH)
+        assert spec is not None and spec.loader is not None, "dashboard_api.py must be loadable"
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[_DASHBOARD_MODULE_NAME] = module
+        try:
+            spec.loader.exec_module(module)
+        except BaseException:
+            sys.modules.pop(_DASHBOARD_MODULE_NAME, None)
+            raise
+    return module
+
+
 @pytest.fixture(scope="module")
 def client():
     import tempfile
 
-    import monitoring.dashboard_api as _da  # type: ignore[import]
-
     # Import inside fixture so the skip above works cleanly
+    _da = _load_dashboard_api()
 
     # Patch Path so /readiness never touches the repo working directory
     with tempfile.TemporaryDirectory() as _tmp:
@@ -78,7 +105,7 @@ class TestLivenessProbe:
 
 class TestReadinessProbe:
     def test_returns_200_when_ready(self, client, tmp_path):
-        from monitoring import dashboard_api as da  # type: ignore[import]
+        da = _load_dashboard_api()
 
         with patch.object(da, "Path", return_value=tmp_path):
             resp = client.get("/readiness")
@@ -98,7 +125,7 @@ class TestReadinessProbe:
         assert "timestamp" in data, "Data must not be empty"
 
     def test_returns_503_when_mkdir_fails(self, client):
-        from monitoring import dashboard_api as _da  # type: ignore[import]
+        _da = _load_dashboard_api()
 
         class _FailPath:
             """Fake Path that raises OSError on mkdir."""

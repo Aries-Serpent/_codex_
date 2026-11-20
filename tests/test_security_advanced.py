@@ -63,7 +63,9 @@ class TestThreatModeling:
 
             # Check API endpoints
             api = surface["api_endpoints"]
-            if api["public"] > 0 and api["authentication_required"] < api["count"]:
+            # Every endpoint must be either authenticated or explicitly declared
+            # public (e.g. /health); anything unaccounted for is exposed.
+            if api["authentication_required"] + api["public"] < api["count"]:
                 issues.append("Public endpoints without authentication")
 
             # Check database
@@ -80,6 +82,21 @@ class TestThreatModeling:
 
         issues = analyze_attack_surface(attack_surface)
         assert len(issues) == 0, "Attack surface properly hardened"
+
+        # Negative cases: the analyzer must still detect weaknesses.
+        import copy
+
+        exposed = copy.deepcopy(attack_surface)
+        exposed["api_endpoints"]["authentication_required"] = 23
+        assert analyze_attack_surface(exposed) == ["Public endpoints without authentication"]
+
+        plaintext_db = copy.deepcopy(attack_surface)
+        plaintext_db["database_connections"]["encrypted"] = 2
+        assert analyze_attack_surface(plaintext_db) == ["Unencrypted database connections"]
+
+        unvalidated = copy.deepcopy(attack_surface)
+        unvalidated["file_uploads"]["validated"] = 4
+        assert analyze_attack_surface(unvalidated) == ["Unvalidated file uploads"]
 
     def test_trust_boundary_identification(self):
         """Verify trust boundaries are identified and protected."""

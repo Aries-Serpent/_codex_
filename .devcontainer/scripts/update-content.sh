@@ -26,41 +26,12 @@ echo "════════════════════════�
 echo "  Codex Codespace — update-content (Phase 3+4)"
 echo "══════════════════════════════════════════════════════════"
 
-# ── Python — upgrade pip, install project + dev dependencies ─────────────────
-echo "🐍 Installing Python dependencies…"
-"$PYTHON_BIN" -m pip install --upgrade pip --quiet
-
-# Core project + all dev extras (matches copilot-setup-steps.yml standard profile)
-"$PYTHON_BIN" -m pip install --cache-dir "$HOME/.cache/pip" \
-    pytest==8.4.2 \
-    pytest-timeout==2.4.0 \
-    pytest-xdist==3.8.0 \
-    pytest-cov==5.0.0 \
-    pytest-asyncio==1.3.0 \
-    pytest-mock==3.15.1 \
-    pytest-randomly \
-    pytest-rerunfailures \
-    --quiet
-
-"$PYTHON_BIN" -m pip install --cache-dir "$HOME/.cache/pip" -e ".[dev]" --quiet 2>/dev/null || \
-"$PYTHON_BIN" -m pip install --cache-dir "$HOME/.cache/pip" -e "." --quiet
-
-# Code quality tools (same as copilot-setup-steps.yml)
-"$PYTHON_BIN" -m pip install --cache-dir "$HOME/.cache/pip" \
-    ruff \
-    black \
-    mypy \
-    pre-commit \
-    detect-secrets \
-    --quiet
-
-# Cognitive Brain server deps (always needed for CLI API server)
-"$PYTHON_BIN" -m pip install --cache-dir "$HOME/.cache/pip" \
-    "fastapi>=0.110.0,<1.0" \
-    "uvicorn[standard]>=0.29.0,<1.0" \
-    "httpx>=0.27.0,<1.0" \
-    "cryptography>=42.0.0,<47.0.0" \
-    --quiet
+# ── Python — restore the authoritative lock ───────────────────────────────────
+echo "🐍 Installing Python dependencies from uv.lock…"
+"$PYTHON_BIN" -m pip install --cache-dir "$HOME/.cache/pip" uv==0.13.9 --quiet
+UV_PROJECT_ENVIRONMENT="$VENV" \
+    "$PYTHON_BIN" -m uv sync --frozen --extra dev --extra brain-api --python "$PYTHON_BIN" --quiet
+"$PYTHON_BIN" -c 'import fastapi, httpx, uvicorn'
 
 "$PYTHON_BIN" scripts/autonomous/install_gh_user.py
 bash scripts/autonomous/install_node_user.sh

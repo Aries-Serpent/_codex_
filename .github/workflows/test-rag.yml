@@ -156,7 +156,7 @@ jobs:
         \ upgrade failed\"\n  exit 1\nfi\necho \"[INSTALL] \u2713 cryptography/pyOpenSSL\
         \ upgraded\"\n \necho \"\"\necho \"[INSTALL] Step 4: Installing main package\
         \ with extras: [rag,test-core]...\"\necho \"         (This will install: sentence-transformers,\
-        \ chromadb, faiss-cpu, pytest, pytest-cov, and their dependencies)\"\necho\
+        \ faiss-cpu, pytest, pytest-cov, and their dependencies)\"\necho\
         \ \"         This may take 5-15 minutes depending on cache status...\"\n \n\
         # Monitor disk space during installation\nINSTALL_START=$(date +%s)\nif !\
         \ timeout 900 \"$PYTHON_BIN\" -m pip install --no-cache-dir -e \".[rag,test-core]\"\
@@ -192,8 +192,8 @@ jobs:
         \ debugging\necho \"\"\necho \"[INSTALL] Step 8: Verify key packages installed...\"\
         \n# Package name to import name mapping\ndeclare -A import_names=(\n  [pytest]=\"\
         pytest\"\n  [sentence-transformers]=\"sentence_transformers\"\n  [torch]=\"\
-        torch\"\n  [transformers]=\"transformers\"\n  [chromadb]=\"chromadb\"\n  [faiss-cpu]=\"\
-        faiss\"\n)\n\nfor pkg in pytest sentence-transformers torch transformers chromadb\
+        torch\"\n  [transformers]=\"transformers\"\n  [faiss-cpu]=\"\
+        faiss\"\n)\n\nfor pkg in pytest sentence-transformers torch transformers\
         \ faiss-cpu; do\n  import_name=\"${import_names[$pkg]}\"\n  if \"$PYTHON_BIN\"\
         \ -c \"import ${import_name}; print('  \u2713 $pkg')\" 2>/dev/null; then\n\
         \    :\n  else\n    echo \"  \u274C Missing: $pkg\"\n    exit 1\n  fi\ndone\n\
@@ -278,7 +278,7 @@ jobs:
         echo ""
 
         echo "[TEST-RUN] ========== Test Execution Configuration =========="
-        echo "[TEST-RUN] Module: src/codex/rag"
+        echo "[TEST-RUN] Module: src/aries_serpent_core/rag"
         echo "[TEST-RUN] Coverage config: tests/rag/.coveragerc"
         echo "[TEST-RUN] Individual test timeout: 300s (5 min)"
         echo "[TEST-RUN] Workflow timeout: 60 minutes"
@@ -298,7 +298,7 @@ jobs:
         if ! timeout 2700 "$PYTHON_BIN" -m pytest \
           tests/test_rag_*.py tests/rag/ \
           -v --tb=short --timeout=300 --timeout-method=signal \
-          --cov=src/codex/rag --cov-config=tests/rag/.coveragerc \
+          --cov=src/aries_serpent_core/rag --cov-config=tests/rag/.coveragerc \
           --cov-report=xml --cov-report=html --cov-report=term-missing \
           2>&1 | tee /tmp/test_output.log; then
           TEST_EXIT=$?

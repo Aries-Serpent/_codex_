@@ -393,7 +393,7 @@ class TestDataProtection:
             # Should not contain passwords, tokens, API keys
             sensitive_patterns = [
                 r'password\s*[:=]',
-                r'api_key\s*[:=]',
+                r'api[_\s-]?key\s*[:=]',  # api_key / api-key / "API key"
                 r'secret\s*[:=]',
                 r'token\s*[:=]'
             ]
@@ -410,7 +410,8 @@ class TestDataProtection:
 
         # Logs with sensitive data
         with pytest.raises(ValueError):
-            log_message("User authentication failed for ******")
+            # Input was masked to "******" when the file was created (c0f1ccd748).
+            log_message("User authentication failed: password=hunter2")
 
         with pytest.raises(ValueError):
             log_message("API key: sk_live_abc123def456")
@@ -422,14 +423,14 @@ class TestDataProtection:
         code_snippets = [
             'api_key = "sk_live_1234567890abcdef"',  # Bad
             'api_key = os.environ.get("API_KEY")',   # Good
-            'GITHUB_TOKEN = "ghp_1234567890"',       # Bad
+            'GITHUB_TOKEN = "ghp_' + 'x' * 36 + '"',  # Bad (synthetic, realistic length)
             'token = config.get_secret("github_token")',  # Good
         ]
 
         def contains_hardcoded_secret(code: str) -> bool:
             patterns = [
                 r'api_key\s*=\s*["\'][\w]{20,}["\']',
-                r'token\s*=\s*["\']gh[p_][\w]{30,}["\']',
+                r'(?i)token\s*=\s*["\']gh[p_][\w]{30,}["\']',
                 r'key\s*=\s*["\'][A-Za-z0-9_]{30,}["\']',
             ]
 
@@ -460,11 +461,14 @@ class TestDataProtection:
             return True
 
         # Valid: TLS required
-        assert validate_db_connection_string("******host/db?sslmode=require"), "Condition must be true"
+        # Inputs were masked to "******" when the file was created (c0f1ccd748).
+        assert validate_db_connection_string(
+            "postgresql://app@db.example.com:5432/app?sslmode=require"
+        ), "Condition must be true"
 
         # Invalid: no TLS
         with pytest.raises(ValueError):
-            validate_db_connection_string("******host/db")
+            validate_db_connection_string("postgresql://app@db.example.com:5432/app")
 
 
 class TestErrorHandling:

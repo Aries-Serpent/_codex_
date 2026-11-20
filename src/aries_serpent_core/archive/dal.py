@@ -682,7 +682,7 @@ class PostgresDAL(BaseDAL):
         self.dsn = dsn
         try:
             import psycopg
-        except (ConnectionError, TimeoutError) as e:  # pragma: no cover - import guard
+        except ImportError as e:  # pragma: no cover - optional driver import guard
             raise RuntimeError("psycopg (v3) is required for postgres backend") from e
         self.pg = psycopg
         self.conn = self.pg.connect(self.dsn)
@@ -898,14 +898,18 @@ class PostgresDAL(BaseDAL):
 
 
 class MariaDbDAL(BaseDAL):
+    """MariaDB backend with autocommit disabled regardless of DSN options."""
+
     def __init__(self, dsn: str):
         self.dsn = dsn
         try:
             import pymysql
-        except (ValueError, TypeError) as e:  # pragma: no cover - import guard
+        except ImportError as e:  # pragma: no cover - import guard
             raise RuntimeError("pymysql is required for mariadb backend") from e
         self.mysql = pymysql
-        self.conn = self.mysql.connect(self._parse_dsn(self.dsn), autocommit=False)
+        config = self._parse_dsn(self.dsn)
+        config["autocommit"] = False
+        self.conn = self.mysql.connect(**config)
         self.ensure_schema()
 
     @staticmethod

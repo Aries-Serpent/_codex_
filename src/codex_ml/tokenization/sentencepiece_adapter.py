@@ -25,42 +25,39 @@ from collections.abc import Iterable, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
+# Explicit override hook, never overwritten by a resolved library or fallback.
 spm = None
+_FALLBACK_SPM: Any = None
 
 
 def _get_sentencepiece() -> Any:
-    """Return the ``sentencepiece`` module or raise ``ImportError``."""
+    """Resolve the explicit override, installed library, or existing fallback.
 
-    import sys as _sys
+    An importable module without a processor is broken, not absent, and must
+    raise rather than silently selecting the fallback.
+    """
 
-    global spm
-    # Check sys.modules first — allows tests to inject a stub via
-    # monkeypatch.setitem(sys.modules, "sentencepiece", stub)
-    # Skip the repo's own sentencepiece shim (IS_CODEX_STUB=True) so that
-    # monkeypatch can override the module-level `spm` variable in tests.
-    patched = _sys.modules.get("sentencepiece")
-    if (
-        patched is not None
-        and hasattr(patched, "SentencePieceProcessor")
-        and not getattr(patched, "IS_CODEX_STUB", False)
-    ):
-        return patched
     if spm is not None:
         return spm
     try:  # pragma: no cover - optional dependency
         import sentencepiece as sentencepiece_module
+    except ImportError:
+        logger.debug("sentencepiece not installed; using existing fallback", exc_info=True)
+        return _fallback_sentencepiece()
+    if getattr(sentencepiece_module, "IS_CODEX_STUB", False):
+        return _fallback_sentencepiece()
+    if not hasattr(sentencepiece_module, "SentencePieceProcessor"):
+        raise ImportError(
+            "sentencepiece module is missing SentencePieceProcessor. "
+            "Try reinstalling: pip install --force-reinstall sentencepiece"
+        )
+    return sentencepiece_module
 
-        if getattr(sentencepiece_module, "IS_CODEX_STUB", False):
-            raise ImportError("sentencepiece is not installed (repo stub active)")
-        if not hasattr(sentencepiece_module, "SentencePieceTrainer"):
-            raise ImportError(
-                "sentencepiece module is missing SentencePieceTrainer. "
-                "Try reinstalling: pip install --force-reinstall sentencepiece"
-            )
-        spm = sentencepiece_module
-        return sentencepiece_module
-    except (ImportError, AttributeError):
-        logger.warning("Exception occurred", exc_info=True)
+
+def _fallback_sentencepiece() -> Any:
+    """Cache the existing lightweight stand-in separately from the override."""
+    global _FALLBACK_SPM
+    if _FALLBACK_SPM is None:
         # Provide a lightweight stub that satisfies smoke tests when the
         # native sentencepiece bindings are unavailable.
         from types import SimpleNamespace
@@ -92,7 +89,7 @@ def _get_sentencepiece() -> Any:
                     try:
                         data = json.loads(Path(model_file).read_text(encoding="utf-8"))
                         self.vocab = list(data.get("vocab", []))
-                    except (IOError, OSError, ModuleNotFoundError, ImportError):
+                    except (OSError, ValueError):
                         logger.warning("Exception occurred", exc_info=True)
                         self.vocab = []
 
@@ -120,11 +117,11 @@ def _get_sentencepiece() -> Any:
                     return self.get_piece_size
                 raise AttributeError(name)
 
-        spm = SimpleNamespace(  # type: ignore[assignment]
+        _FALLBACK_SPM = SimpleNamespace(
             SentencePieceTrainer=_StubSentencePieceTrainer,
             SentencePieceProcessor=_StubSentencePieceProcessor,
         )
-        return spm
+    return _FALLBACK_SPM
 
 
 class SentencePieceAdapter:
@@ -170,11 +167,17 @@ class SentencePieceAdapter:
         character_coverage: float = 0.9995,
         model_type: str = "bpe",
     ) -> SentencePieceAdapter:
-        """Train a new model or load an existing one."""
+        """Train or load, raising ImportError if training needs a broken trainer."""
         module = _get_sentencepiece()
         if self.model_path.exists():
             return self.load()
-        module.SentencePieceTrainer.train(
+        train = getattr(getattr(module, "SentencePieceTrainer", None), "train", None)
+        if not callable(train):
+            raise ImportError(
+                "sentencepiece module is missing callable SentencePieceTrainer.train. "
+                "Try reinstalling: pip install --force-reinstall sentencepiece"
+            )
+        train(
             input=str(input_path),
             model_prefix=str(self.model_prefix),
             vocab_size=vocab_size,

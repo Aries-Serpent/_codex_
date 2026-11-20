@@ -223,13 +223,14 @@ def secure_subprocess_run(
     subprocess.TimeoutExpired
         If process exceeds timeout
     """
+    # Never allow shell execution through the subprocess wrapper. Checked before
+    # command validation so no "validation passed" event is emitted for a call
+    # that is about to be rejected.
+    if kwargs.get("shell", False):
+        raise SubprocessSecurityError("shell=True is not permitted: shell execution is disabled")
+
     # Validate command
     validated_cmd = validate_subprocess_command(cmd, allowed_executables=allowed_executables)
-
-    # Ensure safe execution parameters
-    # Never allow shell execution through the subprocess wrapper.
-    if kwargs.get("shell", False):
-        raise SubprocessSecurityError("shell execution is not permitted")
 
     # Use safe defaults
     run_kwargs = {

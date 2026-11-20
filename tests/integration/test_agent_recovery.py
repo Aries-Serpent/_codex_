@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 
 import pytest
+import yaml
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -122,7 +123,9 @@ class TestAgentRecoveryFlow:
 
         assert recovered_state["task_id"] == initial_state["task_id"], "Condition must be true"
         assert recovered_state["progress"] == initial_state["progress"], "Condition must be true"
-        assert recovered_state["checkpoint"] == initial_state["checkpoint"], "Condition must be true"
+        assert (
+            recovered_state["checkpoint"] == initial_state["checkpoint"]
+        ), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -131,22 +134,31 @@ class TestAgentRecoveryFlow:
 
 
 class TestHealthCheckWorkflow:
-    """Validate agent-health-check.yml integration points."""
+    """Validate the current, explicitly dispatched unified health workflow.
 
-    HEALTH_CHECK_WORKFLOW = Path(".github/workflows/agent-health-check.yml")
+    This is a workflow contract check, not evidence of a scheduled rolling-health
+    window or authorization to activate a new workflow.
+    """
+
+    HEALTH_CHECK_WORKFLOW = (
+        Path(__file__).resolve().parents[2] / ".github/workflows/workflow-analytics-unified.yml"
+    )
 
     def test_health_check_workflow_exists(self) -> None:
-        """agent-health-check.yml must exist for D3 rolling health monitoring."""
-        assert self.HEALTH_CHECK_WORKFLOW.exists(), (
-            "Missing .github/workflows/agent-health-check.yml — "
-            "required for D3 7-day rolling health window"
-        )
+        """The unified workflow must expose its health-check job."""
+        workflow = yaml.safe_load(self.HEALTH_CHECK_WORKFLOW.read_text(encoding="utf-8"))
+        assert "quantum-health-check" in workflow["jobs"]
 
-    def test_health_check_workflow_has_schedule(self) -> None:
-        """Workflow must have a schedule trigger for rolling window."""
-        content = self.HEALTH_CHECK_WORKFLOW.read_text(encoding="utf-8")
-        assert ("schedule" in content or "workflow_dispatch" in content, "Content must not be empty"
-        ), "agent-health-check.yml must have schedule or workflow_dispatch trigger"
+    def test_health_check_workflow_requires_dispatch(self) -> None:
+        """Health analysis is explicitly dispatched, not automatically scheduled."""
+        workflow = yaml.safe_load(self.HEALTH_CHECK_WORKFLOW.read_text(encoding="utf-8"))
+        triggers = workflow["on"]
+        assert set(triggers) == {"workflow_dispatch"}
+        mode = triggers["workflow_dispatch"]["inputs"]["mode"]
+        assert mode["required"] is True
+        assert mode["default"] == "health-check"
+        assert "health-check" in mode["options"]
+        assert "inputs.mode == 'health-check'" in workflow["jobs"]["quantum-health-check"]["if"]
 
     def test_compliance_log_exists(self) -> None:
         """Orchestration compliance log must exist."""

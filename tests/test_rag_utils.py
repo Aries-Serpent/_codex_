@@ -1,7 +1,7 @@
 """
 Tests for RAG Utils Module
 
-This module tests the utility functions in src/codex/rag/utils.py,
+This module tests the utility functions in src/aries_serpent_core/rag/utils.py (re-exported as codex.rag.utils),
 with specific focus on meta tensor handling and model loading.
 """
 
@@ -36,7 +36,7 @@ try:
 
     if torch is None:
         raise ImportError("torch unavailable")
-    from codex.rag.utils import (
+    from aries_serpent_core.rag.utils import (
         ProvenanceMetadata,
         check_for_meta_tensors,
         safe_model_load,
@@ -221,8 +221,11 @@ class TestSafeModelLoadV2:
         del mock_model.to_empty  # Remove to_empty attribute
 
         # Mock has_meta_tensors to return True
-        with patch("codex.rag.utils.has_meta_tensors", return_value=True):
-            with pytest.raises(AttributeError, match="Model does not support to_empty"):
+        with patch("aries_serpent_core.rag.utils.has_meta_tensors", return_value=True):
+            with pytest.raises(
+                AttributeError,
+                match=r"Model with meta tensors requires to_empty\(\) for safe device transfer",
+            ):
                 safe_model_load_v2(mock_model, device="cpu")
 
     def test_model_without_model_name(self):

@@ -181,7 +181,9 @@ class TestModuleLevel:
 
     def test_logger_exists(self):
         """Test logger is configured."""
-        from codex.archive.retry import logger
+        # codex.archive.retry is a thin re-export shim; logging happens in the
+        # canonical implementation module.
+        from aries_serpent_core.archive.retry import logger
 
         assert logger is not None, "logger must be initialized"
-        assert logger.name == "codex.archive.retry", "name is not valid"
+        assert logger.name == "aries_serpent_core.archive.retry", "name is not valid"

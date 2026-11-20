@@ -1,6 +1,75 @@
+from codex.quantum_orchestrator.orchestrator import DiracSpinor
+from codex.quantum_orchestrator.orchestrator import TaskState
+from codex.quantum_orchestrator.orchestrator import TaskVector
+from codex.quantum_orchestrator.orchestrator import PhysicsConstants
+import pytest
+from codex.quantum_orchestrator.qft.gauge import NoetherCurrent
+from codex.quantum_orchestrator.orchestrator import OrchestratorState
+from codex.quantum_orchestrator.qft.gauge import GaugeChecker
+from codex.quantum_orchestrator.qft.gauge import ConservationEnforcer
+from codex.quantum_orchestrator.qft.gauge import U1GaugeTransform
+from codex.quantum_orchestrator.qft.gauge import TranslationSymmetry
+from codex.quantum_orchestrator.qft.gauge import TimeTranslationSymmetry
+from codex.quantum_orchestrator.qft.gauge import SymmetryType
+from codex.quantum_orchestrator.qft.gauge import TransformationResult
+import numpy as np
+from unittest.mock import Mock
 #     assert np.allclose(, "Condition must be true"
 #         momentum_curr, simple_task.spinor.total_probability * simple_task.velocity, rtol=1e-6
 #     )
+
+
+@pytest.fixture
+def physics_constants():
+    """Provide physics constants."""
+    return PhysicsConstants(hbar=1.0, c=100.0, default_mass=1.0)
+
+
+@pytest.fixture
+def simple_task():
+    """Create a simple task state."""
+    spinor = DiracSpinor(components=np.array([0.8 + 0j, 0.6 + 0j, 0j, 0j]))
+    return TaskState(
+        task_id="task_1",
+        name="Test Task",
+        position=TaskVector(priority=0.5, complexity=1.0),
+        spinor=spinor,
+        velocity=np.array([0.1, 0.0, 0.0, 0.0, 0.0]),
+        rest_mass=1.0,
+    )
+
+
+@pytest.fixture
+def multi_task_state(physics_constants):
+    """Create a state with multiple tasks."""
+    tasks = {}
+    for i in range(3):
+        spinor = DiracSpinor(components=np.array([0.8 + 0j, 0.6 + 0j, 0j, 0j]))
+        spinor.normalize()
+        tasks[f"task_{i}"] = TaskState(
+            task_id=f"task_{i}",
+            name=f"Task {i}",
+            position=TaskVector(priority=0.3 * i, complexity=1.0 + 0.5 * i),
+            spinor=spinor,
+            velocity=np.array([0.1 * i, 0.0, 0.0, 0.0, 0.0]),
+            rest_mass=1.0 + 0.1 * i,
+        )
+
+    return OrchestratorState(
+        tasks=tasks,
+        timestamp=0.0,
+        constants=physics_constants,
+    )
+
+
+@pytest.fixture
+def simple_state(simple_task):
+    """Create a simple orchestrator state with one task."""
+    return OrchestratorState(
+        tasks={"task_1": simple_task},
+        timestamp=0.0,
+        constants=PhysicsConstants(),
+    )
 
 
 def test_noether_continuity_equation(multi_task_state):

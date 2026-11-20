@@ -12,6 +12,7 @@ Covers previously-uncovered branches in:
 
 from __future__ import annotations
 
+import importlib
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -36,17 +37,51 @@ pytest.importorskip(
 )
 
 
+def _rag_module(name: str):
+    """Return the canonical ``aries_serpent_core.rag.<name>`` module object.
+
+    ``codex.rag`` is a ``sys.modules`` alias of ``aries_serpent_core.rag``, but
+    importing ``codex.rag.<name>`` (or patching a ``"codex.rag.<name>.attr"``
+    target) makes the import system execute a *second* copy of the submodule
+    under the legacy name.  Production code performs lazy imports such as
+    ``from aries_serpent_core.rag.indexer import load_index``, which resolve via
+    ``sys.modules["aries_serpent_core.rag.<name>"]``.  Always resolving through
+    ``sys.modules`` (``importlib.import_module``) keeps the object under test and
+    every patch target on the module that production code actually uses,
+    independent of test order.
+    """
+    return importlib.import_module(f"aries_serpent_core.rag.{name}")
+
+
 def _import_retriever():
-    """Import codex.rag.retriever with a clearer error message on failure."""
+    """Import aries_serpent_core.rag.retriever with a clearer error message on failure."""
     try:
-        from codex.rag import retriever as _mod
+        _mod = _rag_module("retriever")
     except ImportError as exc:
         raise ImportError(
-            "Failed to import codex.rag.retriever; ensure codex.rag and its "
+            "Failed to import aries_serpent_core.rag.retriever; ensure the RAG "
             "dependencies are installed. Original error: "
             f"{exc.__class__.__name__}: {exc}"
         ) from exc
     return _mod
+
+
+def _bare_retriever(_mod, chunks=None):
+    """Build a Retriever without running ``__init__`` (no index / model I/O)."""
+    r = _mod.Retriever.__new__(_mod.Retriever)
+    r.model_name = "test-model"
+    r.cache_dir = None
+    r.model = None
+    r.faiss_index = None
+    r.chunks_metadata = list(chunks or [])
+    r.index_metadata = {"dimension": 16} if chunks else {}
+    return r
+
+
+_FALLBACK_CHUNKS = [
+    {"id": 0, "text": "python retrieval augmented generation"},
+    {"id": 1, "text": "faiss vector index similarity search"},
+]
 
 
 # ===========================================================================
@@ -55,47 +90,84 @@ def _import_retriever():
 
 
 class TestRetrieverLoadModelErrors:
-    """Cover _load_model() branches that are not exercised by the main test suite."""
+    """Cover _load_model() branches that are not exercised by the main test suite.
 
-    def test_load_model_raises_when_sentence_transformers_none(self):
+    Current contract (src/aries_serpent_core/rag/retriever.py::_load_model):
+    * sentence-transformers missing, or RuntimeError/OSError/ValueError while
+      loading -> offline TF-IDF fallback fitted on the indexed chunk texts;
+    * TF-IDF fallback without any chunk text -> ImportError;
+    * TypeError while loading -> re-raised.
+    """
+
+    _SAFE_LOAD = "aries_serpent_core.rag._model_utils.safe_load_sentence_transformer"
+
+    def test_load_model_without_st_and_chunks_raises_import_error(self):
         _mod = _import_retriever()
 
-        with patch.object(_mod, "SentenceTransformer", None):
-            r = _mod.Retriever.__new__(_mod.Retriever)
-            r.model_name = "test-model"
-            r.cache_dir = None
-            with pytest.raises(ImportError, match="sentence-transformers not installed"):
+        with (
+            patch.object(_mod, "SentenceTransformer", None),
+            patch(self._SAFE_LOAD) as mock_safe_load,
+        ):
+            r = _bare_retriever(_mod)
+            with pytest.raises(ImportError, match="TF-IDF fallback requires chunk text"):
                 r._load_model()
+        mock_safe_load.assert_not_called()
 
-    def test_load_model_propagates_runtime_error(self):
-        from codex.rag import retriever as _mod
+    def test_load_model_uses_tfidf_when_sentence_transformers_none(self):
+        _mod = _import_retriever()
+        from aries_serpent_core.rag.embeddings import TfidfEmbeddingProvider
 
-        sentinel = MagicMock()  # non-None SentenceTransformer sentinel
-        with patch.object(_mod, "SentenceTransformer", sentinel):
-            with patch(
-                "codex.rag._model_utils.safe_load_sentence_transformer",
-                side_effect=RuntimeError("load failed"),
-            ):
-                r = _mod.Retriever.__new__(_mod.Retriever)
-                r.model_name = "test-model"
-                r.cache_dir = None
-                with pytest.raises(RuntimeError, match="load failed"):
-                    r._load_model()
+        with (
+            patch.object(_mod, "SentenceTransformer", None),
+            patch(self._SAFE_LOAD) as mock_safe_load,
+        ):
+            r = _bare_retriever(_mod, _FALLBACK_CHUNKS)
+            r._load_model()
+        mock_safe_load.assert_not_called()
+        assert isinstance(r.model, TfidfEmbeddingProvider), "expected TF-IDF fallback model"
 
-    def test_load_model_propagates_value_error(self):
+    @pytest.mark.parametrize(
+        "exc",
+        [RuntimeError("load failed"), ValueError("bad value"), OSError("offline")],
+        ids=["runtime_error", "value_error", "os_error"],
+    )
+    def test_load_model_falls_back_to_tfidf_on_load_error(self, exc):
+        _mod = _import_retriever()
+        from aries_serpent_core.rag.embeddings import TfidfEmbeddingProvider
+
+        with (
+            patch.object(_mod, "SentenceTransformer", MagicMock()),
+            patch(self._SAFE_LOAD, side_effect=exc) as mock_safe_load,
+        ):
+            r = _bare_retriever(_mod, _FALLBACK_CHUNKS)
+            r._load_model()
+        mock_safe_load.assert_called_once_with("test-model", None)
+        assert isinstance(r.model, TfidfEmbeddingProvider), "expected TF-IDF fallback model"
+
+    def test_load_model_error_without_chunks_raises_import_error(self):
+        """A load failure with no chunk text cannot fall back and surfaces ImportError."""
         _mod = _import_retriever()
 
-        sentinel = MagicMock()
-        with patch.object(_mod, "SentenceTransformer", sentinel):
-            with patch(
-                "codex.rag._model_utils.safe_load_sentence_transformer",
-                side_effect=ValueError("bad value"),
-            ):
-                r = _mod.Retriever.__new__(_mod.Retriever)
-                r.model_name = "test-model"
-                r.cache_dir = None
-                with pytest.raises(ValueError, match="bad value"):
-                    r._load_model()
+        with (
+            patch.object(_mod, "SentenceTransformer", MagicMock()),
+            patch(self._SAFE_LOAD, side_effect=RuntimeError("load failed")) as mock_safe_load,
+        ):
+            r = _bare_retriever(_mod)
+            with pytest.raises(ImportError, match="TF-IDF fallback requires chunk text"):
+                r._load_model()
+        mock_safe_load.assert_called_once()
+
+    def test_load_model_propagates_type_error(self):
+        _mod = _import_retriever()
+
+        with (
+            patch.object(_mod, "SentenceTransformer", MagicMock()),
+            patch(self._SAFE_LOAD, side_effect=TypeError("bad signature")),
+        ):
+            r = _bare_retriever(_mod, _FALLBACK_CHUNKS)
+            with pytest.raises(TypeError, match="bad signature"):
+                r._load_model()
+        assert r.model is None, "TypeError must not trigger the TF-IDF fallback"
 
 
 # ===========================================================================
@@ -107,9 +179,17 @@ class TestRetrieverLoadIndexErrors:
     def test_load_index_reraises_generic_exception(self, tmp_path):
         _mod = _import_retriever()
 
-        with patch("codex.rag.indexer.load_index", side_effect=RuntimeError("corrupt index")):
+        with (
+            patch(
+                "aries_serpent_core.rag.indexer.load_index",
+                side_effect=RuntimeError("corrupt index"),
+            ) as mock_load,
+            patch.object(_mod.Retriever, "_load_model") as mock_load_model,
+        ):
             with pytest.raises(RuntimeError, match="corrupt index"):
                 _mod.Retriever(index_dir=str(tmp_path), index_name="test")
+        mock_load.assert_called_once()
+        mock_load_model.assert_not_called()
 
 
 # ===========================================================================
@@ -145,7 +225,7 @@ class TestRetrieverReload:
 
 class TestMultiIndexRetriever:
     def test_query_merges_results_from_multiple_retrievers(self):
-        from codex.rag import retriever as _mod
+        _mod = _rag_module("retriever")
 
         mir = _mod.MultiIndexRetriever.__new__(_mod.MultiIndexRetriever)
 
@@ -165,7 +245,7 @@ class TestMultiIndexRetriever:
         assert results[0]["index_name"] == "idx1", "Result must not be empty"
 
     def test_query_handles_retriever_exception(self):
-        from codex.rag import retriever as _mod
+        _mod = _rag_module("retriever")
 
         mir = _mod.MultiIndexRetriever.__new__(_mod.MultiIndexRetriever)
         r1 = MagicMock()
@@ -178,7 +258,7 @@ class TestMultiIndexRetriever:
         assert results == [], "Result must not be empty"
 
     def test_get_stats_delegates_to_retrievers(self):
-        from codex.rag import retriever as _mod
+        _mod = _rag_module("retriever")
 
         mir = _mod.MultiIndexRetriever.__new__(_mod.MultiIndexRetriever)
         r1 = MagicMock()
@@ -195,7 +275,7 @@ class TestMultiIndexRetriever:
 
 class TestCachedRetriever:
     def _make_cached_retriever(self):
-        from codex.rag import retriever as _mod
+        _mod = _rag_module("retriever")
 
         cr = _mod.CachedRetriever.__new__(_mod.CachedRetriever)
         cr.cache_ttl = 60
@@ -317,14 +397,14 @@ class TestCachedRetriever:
 
 class TestRAGRetriever:
     def test_query_raises_when_not_loaded(self):
-        from codex.rag import retriever as _mod
+        _mod = _rag_module("retriever")
 
         rr = _mod.RAGRetriever()
         with pytest.raises(RuntimeError, match="not initialised"):
             rr.query("anything")
 
     def test_load_creates_retriever(self, tmp_path):
-        from codex.rag import retriever as _mod
+        _mod = _rag_module("retriever")
 
         mock_retriever = MagicMock()
         with patch.object(_mod, "Retriever", return_value=mock_retriever):
@@ -335,7 +415,7 @@ class TestRAGRetriever:
         assert rr._retriever is mock_retriever, "_retriever is not valid"
 
     def test_query_delegates_to_retriever(self, tmp_path):
-        from codex.rag import retriever as _mod
+        _mod = _rag_module("retriever")
 
         mock_retriever = MagicMock()
         mock_retriever.query.return_value = [{"text": "r", "score": 0.1}]
@@ -352,7 +432,7 @@ class TestRAGRetriever:
 
 class TestHasMetaTensorsSubmoduleWalk:
     def test_submodule_with_meta_param_returns_true(self):
-        from codex.rag.utils import has_meta_tensors
+        from aries_serpent_core.rag.utils import has_meta_tensors
 
         meta_param = SimpleNamespace(is_meta=True)
         submod = SimpleNamespace(
@@ -366,7 +446,7 @@ class TestHasMetaTensorsSubmoduleWalk:
         assert has_meta_tensors(model) is True, "has_meta_tens is not valid"
 
     def test_submodule_with_meta_device_param_returns_true(self):
-        from codex.rag.utils import has_meta_tensors
+        from aries_serpent_core.rag.utils import has_meta_tensors
 
         device = SimpleNamespace(type="meta")
         param = SimpleNamespace(is_meta=False, device=device)
@@ -381,7 +461,7 @@ class TestHasMetaTensorsSubmoduleWalk:
         assert has_meta_tensors(model) is True, "has_meta_tens is not valid"
 
     def test_submodule_with_meta_buffer_returns_true(self):
-        from codex.rag.utils import has_meta_tensors
+        from aries_serpent_core.rag.utils import has_meta_tensors
 
         meta_buf = SimpleNamespace(is_meta=True)
         submod = SimpleNamespace(
@@ -395,7 +475,7 @@ class TestHasMetaTensorsSubmoduleWalk:
         assert has_meta_tensors(model) is True, "has_meta_tens is not valid"
 
     def test_model_device_attribute_meta_returns_true(self):
-        from codex.rag.utils import has_meta_tensors
+        from aries_serpent_core.rag.utils import has_meta_tensors
 
         device = SimpleNamespace(type="meta")
         model = SimpleNamespace(
@@ -406,14 +486,14 @@ class TestHasMetaTensorsSubmoduleWalk:
         assert has_meta_tensors(model) is True, "has_meta_tens is not valid"
 
     def test_exception_in_has_meta_tensors_returns_none(self):
-        from codex.rag.utils import has_meta_tensors
+        from aries_serpent_core.rag.utils import has_meta_tensors
 
         model = SimpleNamespace(parameters=MagicMock(side_effect=RuntimeError("boom")))
         result = has_meta_tensors(model)
         assert result is None, "Result must not be empty"
 
     def test_named_parameters_typeerror_fallback(self):
-        from codex.rag.utils import has_meta_tensors
+        from aries_serpent_core.rag.utils import has_meta_tensors
 
         def named_params_raises_on_kwarg(**kwargs):
             if kwargs:
@@ -430,7 +510,7 @@ class TestHasMetaTensorsSubmoduleWalk:
         assert result is False, "Result must not be empty"
 
     def test_named_buffers_typeerror_fallback(self):
-        from codex.rag.utils import has_meta_tensors
+        from aries_serpent_core.rag.utils import has_meta_tensors
 
         def named_bufs_raises_on_kwarg(**kwargs):
             if kwargs:
@@ -454,23 +534,23 @@ class TestHasMetaTensorsSubmoduleWalk:
 
 class TestSafeModelToDevice:
     def test_returns_model_when_has_meta_tensors_is_none(self):
-        from codex.rag.utils import safe_model_to_device
+        from aries_serpent_core.rag.utils import safe_model_to_device
 
         model = object()
-        with patch("codex.rag.utils.has_meta_tensors", return_value=None):
+        with patch("aries_serpent_core.rag.utils.has_meta_tensors", return_value=None):
             result = safe_model_to_device(model, device="cpu")
         assert result is model, "Result must not be empty"
 
     def test_raises_when_meta_tensors_and_no_to_empty(self):
-        from codex.rag.utils import safe_model_to_device
+        from aries_serpent_core.rag.utils import safe_model_to_device
 
         model = SimpleNamespace()  # no to_empty attribute
-        with patch("codex.rag.utils.has_meta_tensors", return_value=True):
+        with patch("aries_serpent_core.rag.utils.has_meta_tensors", return_value=True):
             with pytest.raises(AttributeError, match="to_empty"):
                 safe_model_to_device(model, device="cpu")
 
     def test_meta_path_calls_to_empty_and_reset_parameters(self):
-        from codex.rag.utils import safe_model_to_device
+        from aries_serpent_core.rag.utils import safe_model_to_device
 
         inner_mod = MagicMock()
         inner_mod.reset_parameters = MagicMock()
@@ -478,38 +558,51 @@ class TestSafeModelToDevice:
         model.to_empty.return_value = model
         model.modules.return_value = [inner_mod]
 
-        with patch("codex.rag.utils.has_meta_tensors", return_value=True):
+        with patch("aries_serpent_core.rag.utils.has_meta_tensors", return_value=True):
             result = safe_model_to_device(model, device="cpu")
         model.to_empty.assert_called_once_with(device="cpu")
         assert result is model, "Result must not be empty"
 
     def test_meta_path_skips_reset_when_no_modules(self):
-        from codex.rag.utils import safe_model_to_device
+        from aries_serpent_core.rag.utils import safe_model_to_device
 
         model = SimpleNamespace()
         materialized = SimpleNamespace()
         model.to_empty = MagicMock(return_value=materialized)
 
-        with patch("codex.rag.utils.has_meta_tensors", return_value=True):
+        with patch("aries_serpent_core.rag.utils.has_meta_tensors", return_value=True):
             result = safe_model_to_device(model, device="cpu")
         assert result is materialized, "Result must not be empty"
 
     def test_import_error_falls_back_to_try_model_to(self):
-        from codex.rag.utils import safe_model_to_device
+        from aries_serpent_core.rag.utils import safe_model_to_device
 
         model = SimpleNamespace()
         model.to = MagicMock(return_value=model)
 
-        with patch("codex.rag.utils.has_meta_tensors", side_effect=ImportError("no torch")):
+        with patch(
+            "aries_serpent_core.rag.utils.has_meta_tensors", side_effect=ImportError("no torch")
+        ):
             result = safe_model_to_device(model, device="cpu")
         assert result is model, "Result must not be empty"
 
-    def test_generic_exception_raises_runtime_error(self):
-        from codex.rag.utils import safe_model_to_device
+    def test_inspection_exception_returns_model_unchanged(self):
+        """Uninspectable models are returned unchanged (meta state treated as unknown).
 
-        with patch("codex.rag.utils.has_meta_tensors", side_effect=RuntimeError("crash")):
-            with pytest.raises(RuntimeError):
-                safe_model_to_device(object(), device="cpu")
+        ``safe_model_to_device`` deliberately swallows inspection failures from
+        ``has_meta_tensors`` and returns the model as-is instead of raising.
+        """
+        from aries_serpent_core.rag.utils import safe_model_to_device
+
+        model = SimpleNamespace(to=MagicMock(), to_empty=MagicMock())
+        with patch(
+            "aries_serpent_core.rag.utils.has_meta_tensors", side_effect=RuntimeError("crash")
+        ) as mock_has_meta:
+            result = safe_model_to_device(model, device="cpu")
+        mock_has_meta.assert_called_once_with(model)
+        assert result is model, "model must be returned unchanged"
+        model.to.assert_not_called()
+        model.to_empty.assert_not_called()
 
 
 # ===========================================================================
@@ -519,7 +612,7 @@ class TestSafeModelToDevice:
 
 class TestTryModelTo:
     def test_calls_to_with_kwargs(self):
-        from codex.rag.utils import _try_model_to
+        from aries_serpent_core.rag.utils import _try_model_to
 
         model = MagicMock()
         model.to.return_value = model
@@ -528,7 +621,7 @@ class TestTryModelTo:
         model.to.assert_called()
 
     def test_typeerror_fallback_to_positional(self):
-        from codex.rag.utils import _try_model_to
+        from aries_serpent_core.rag.utils import _try_model_to
 
         model = MagicMock()
         model.to.side_effect = [TypeError("no kwargs"), model]
@@ -536,7 +629,7 @@ class TestTryModelTo:
         assert result is model, "Result must not be empty"
 
     def test_returns_model_when_no_to_method(self):
-        from codex.rag.utils import _try_model_to
+        from aries_serpent_core.rag.utils import _try_model_to
 
         model = SimpleNamespace()  # no .to()
         result = _try_model_to(model, "cpu")
@@ -554,14 +647,19 @@ class TestModelUtilsSafeLoad:
             "sentence_transformers",
             reason="sentence_transformers not installed — skipping meta-tensor load tests",
         )
-        from codex.rag._model_utils import safe_load_sentence_transformer
+        from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
 
         with patch(
             "sentence_transformers.SentenceTransformer",
             side_effect=RuntimeError("simulated load failure"),
         ):
-            with pytest.raises(RuntimeError, match="simulated load failure"):
+            with pytest.raises(
+                RuntimeError,
+                match="Failed to load SentenceTransformer model 'nonexistent-model-xyz'",
+            ) as excinfo:
                 safe_load_sentence_transformer("nonexistent-model-xyz", None)
+        assert isinstance(excinfo.value.__cause__, RuntimeError), "original error must be chained"
+        assert "simulated load failure" in str(excinfo.value.__cause__)
 
     def test_raises_attributeerror_on_missing_to_empty(self):
         """Raise RuntimeError when meta fallback returns a model without to_empty()."""
@@ -569,7 +667,7 @@ class TestModelUtilsSafeLoad:
             "sentence_transformers",
             reason="sentence_transformers not installed — skipping meta-tensor load tests",
         )
-        from codex.rag import _model_utils as _mu
+        _mu = _rag_module("_model_utils")
 
         no_to_empty_model = MagicMock(spec=[])  # no to_empty attribute
 
@@ -586,7 +684,7 @@ class TestModelUtilsSafeLoad:
 
     def test_meta_fallback_materializes_and_returns_model(self, monkeypatch):
         """Meta fallback should materialize to CPU and verify all params are non-meta."""
-        from codex.rag._model_utils import safe_load_sentence_transformer
+        from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
 
         fake_st_module = SimpleNamespace()
         materialized_model = MagicMock()
@@ -596,9 +694,7 @@ class TestModelUtilsSafeLoad:
         meta_model = MagicMock()
         meta_model.to_empty.return_value = materialized_model
 
-        fake_constructor = MagicMock(
-            side_effect=[NotImplementedError("meta tensor"), meta_model]
-        )
+        fake_constructor = MagicMock(side_effect=[NotImplementedError("meta tensor"), meta_model])
         fake_st_module.SentenceTransformer = fake_constructor
         monkeypatch.setitem(sys.modules, "sentence_transformers", fake_st_module)
 
@@ -610,7 +706,7 @@ class TestModelUtilsSafeLoad:
 
     def test_meta_fallback_raises_when_meta_params_remain(self, monkeypatch):
         """Meta fallback should fail if any parameter remains on the meta device."""
-        from codex.rag._model_utils import safe_load_sentence_transformer
+        from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
 
         fake_st_module = SimpleNamespace()
         materialized_model = MagicMock()
@@ -620,9 +716,7 @@ class TestModelUtilsSafeLoad:
         meta_model = MagicMock()
         meta_model.to_empty.return_value = materialized_model
 
-        fake_constructor = MagicMock(
-            side_effect=[NotImplementedError("meta tensor"), meta_model]
-        )
+        fake_constructor = MagicMock(side_effect=[NotImplementedError("meta tensor"), meta_model])
         fake_st_module.SentenceTransformer = fake_constructor
         monkeypatch.setitem(sys.modules, "sentence_transformers", fake_st_module)
 
@@ -637,7 +731,7 @@ class TestModelUtilsSafeLoad:
 
 class TestIndexerEmbedChunksImportError:
     def test_embed_chunks_raises_on_missing_sentence_transformers(self):
-        from codex.rag import indexer as _mod
+        _mod = _rag_module("indexer")
 
         with patch.dict("sys.modules", {"sentence_transformers": None}):
             with pytest.raises(ImportError):
@@ -654,7 +748,7 @@ class TestIndexerEmbedChunksImportError:
 
 class TestIndexerBuildIndexErrors:
     def test_build_index_from_files_raises_when_no_valid_files(self, tmp_path):
-        from codex.rag import indexer as _mod
+        _mod = _rag_module("indexer")
 
         nonexistent = tmp_path / "does_not_exist.txt"
         with pytest.raises(ValueError, match="No valid input files found"):
@@ -672,7 +766,7 @@ class TestIndexerBuildIndexErrors:
 
 class TestManageTenantIndicesError:
     def test_invalid_operation_returns_failure(self, tmp_path):
-        from codex.rag import indexer as _mod
+        _mod = _rag_module("indexer")
 
         result = _mod.manage_tenant_indices(
             tenant_id="t1",
@@ -693,7 +787,11 @@ class TestSentenceChunkerEdgeCases:
 
     def test_sentence_chunker_handles_whitespace_only_split(self):
         """Verify SentenceChunker filters out whitespace-only sentences."""
-        from codex.rag.ingestion.chunker import ChunkingConfig, ChunkingStrategy, SentenceChunker
+        from aries_serpent_core.rag.ingestion.chunker import (
+            ChunkingConfig,
+            ChunkingStrategy,
+            SentenceChunker,
+        )
 
         config = ChunkingConfig(
             strategy=ChunkingStrategy.SENTENCE,
@@ -710,7 +808,11 @@ class TestSentenceChunkerEdgeCases:
 
     def test_fixed_size_chunker_min_chunk_size_filter(self):
         """Cover FixedSizeChunker filtering of sub-minimum chunks."""
-        from codex.rag.ingestion.chunker import ChunkingConfig, ChunkingStrategy, FixedSizeChunker
+        from aries_serpent_core.rag.ingestion.chunker import (
+            ChunkingConfig,
+            ChunkingStrategy,
+            FixedSizeChunker,
+        )
 
         config = ChunkingConfig(
             strategy=ChunkingStrategy.FIXED_SIZE,

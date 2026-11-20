@@ -360,6 +360,7 @@ def _compute_metrics(
         registry_metrics = {}
 
     for metric_name in metric_names:
+        key = metric_name.lower()
         if key == "perplexity":
             values, targs, from_logits = _collect_perplexity_inputs(records)
             results[metric_name] = compute_perplexity(values, targs, from_logits=from_logits)

@@ -9,6 +9,8 @@ Tests cover:
 - Convergence detection
 """
 
+import math
+
 
 class TestOptimizationBasics:
     """Test optimization algorithm basics."""
@@ -53,9 +55,10 @@ class TestOptimizationBasics:
         gradients = [0.1, 0.5, 2.0, -1.5]
         max_grad = 1.0
 
-        clipped = [min(g, max_grad) for g in gradients]
+        clipped = [max(-max_grad, min(g, max_grad)) for g in gradients]
 
         assert all(abs(g) <= max_grad for g in clipped), "Condition must be true"
+        assert clipped == [0.1, 0.5, 1.0, -1.0]
 
 
 class TestAdamOptimizer:
@@ -320,7 +323,9 @@ class TestConvergenceDetection:
         gradients = [0.5, 0.1, 0.01, 0.001, 0.0001]
         threshold = 0.001
 
-        converged = all(abs(g) < threshold for g in gradients[-2:])
+        # Convergence includes the threshold itself, but not earlier gradients.
+        converged = all(abs(g) <= threshold for g in gradients[-2:])
+        assert not all(abs(g) <= threshold for g in gradients[:2])
 
         assert converged is True, "converged is not valid"
 
@@ -336,13 +341,17 @@ class TestConvergenceDetection:
         """Test threshold for no improvement stopping."""
         metric_history = [0.8, 0.81, 0.808, 0.809, 0.8]
         min_improvement = 0.001
+        patience = 3
 
-        no_improvement = True
-        for i in range(1, len(metric_history)):
-            if metric_history[i] - metric_history[i - 1] > min_improvement:
-                no_improvement = False
+        best_before_window = max(metric_history[:-patience])
+        window = metric_history[-patience:]
+        no_improvement = all(m - best_before_window <= min_improvement for m in window)
 
         assert no_improvement is True, "no_improvement is not valid"
+
+        improving = [0.8, 0.81, 0.83, 0.85, 0.9]
+        best_improving = max(improving[:-patience])
+        assert not all(m - best_improving <= min_improvement for m in improving[-patience:])
 
 
 class TestGradientDescent:

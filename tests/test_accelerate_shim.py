@@ -4,6 +4,8 @@ Test Accelerate Shim
 Test module for accelerate shim.
 """
 
+import os
+
 import importlib
 import sys
 import tempfile

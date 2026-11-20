@@ -1,3 +1,6 @@
+from scripts.cognitive.auto_continuation import generate_pr_comment_prompt
+from scripts.cognitive.auto_continuation import generate_json_prompt
+import json
 #         assert ", "Condition must be true"
 #         assert "Task 1" in result, "Result must not be empty"
 #         assert "Task 2" in result, "Result must not be empty"

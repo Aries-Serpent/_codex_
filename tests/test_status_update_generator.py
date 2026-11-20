@@ -23,7 +23,7 @@ import pytest
 
 # Paths
 REPO_ROOT = Path(__file__).resolve().parents[1]
-GENERATOR = REPO_ROOT / "tools" / "generate_status_update.py"
+GENERATOR = REPO_ROOT / "src" / "tools" / "generate_status_update.py"
 SCHEMA = REPO_ROOT / "schemas" / "codex_status_update.schema.json"
 STATUS_DIR = REPO_ROOT / ".codex" / "status"
 
