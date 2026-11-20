@@ -84,6 +84,68 @@ jobs:
         \nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+  frontend-diagnostics:
+    name: Cognitive App Diagnostics
+    needs:
+    - change_filter
+    runs-on: ubuntu-latest-m
+    if: '(github.event_name == ''pull_request'' && needs.change_filter.outputs.run_quality
+      == ''true'') ||
+
+      (github.event_name == ''push'' && needs.change_filter.outputs.run_quality ==
+      ''true'') ||
+
+      (github.event_name == ''workflow_dispatch'' && (inputs.mode == ''quality-only''
+      || inputs.mode == ''full-suite''))
+
+      '
+    permissions:
+      contents: read
+    timeout-minutes: 30
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        persist-credentials: false
+        fetch-depth: 1
+    - name: Set up Node.js 22
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+      with:
+        node-version: '22'
+        cache: npm
+        cache-dependency-path: cognitive_app/package-lock.json
+    - name: Install cognitive_app dependencies
+      working-directory: cognitive_app
+      run: npm ci
+    - name: Capture TypeScript, ESLint, and npm audit evidence
+      working-directory: cognitive_app
+      continue-on-error: true
+      run: |
+        set +e
+        node node_modules/typescript/bin/tsc --noEmit --pretty false > ../cognitive-app-tsc.txt 2>&1
+        tsc_rc=$?
+        npm run lint -- --format stylish > ../cognitive-app-eslint.txt 2>&1
+        lint_rc=$?
+        npm audit --json > ../cognitive-app-audit.json 2>&1
+        audit_rc=$?
+        tsc_count=$(grep -c 'error TS' ../cognitive-app-tsc.txt || true)
+        lint_count=$(grep -Ec 'error|warning' ../cognitive-app-eslint.txt || true)
+        echo "TypeScript diagnostics: $tsc_count (exit $tsc_rc)" >> "$GITHUB_STEP_SUMMARY"
+        echo "ESLint findings: $lint_count (exit $lint_rc)" >> "$GITHUB_STEP_SUMMARY"
+        echo "npm audit exit: $audit_rc" >> "$GITHUB_STEP_SUMMARY"
+        exit 0
+    - name: Upload frontend diagnostics
+      if: always()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        path: |
+          cognitive-app-tsc.txt
+          cognitive-app-eslint.txt
+          cognitive-app-audit.json
+        if-no-files-found: ignore
+        retention-days: 30
+        name: cognitive-app-diagnostics-${{ github.run_number }}
+
   coverage_analysis:
     name: Coverage Report Generation
     needs:
