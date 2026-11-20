@@ -21,6 +21,7 @@ name: RAG Module Tests
     - src/codex/rag/**
     - tests/test_rag_**
     - pyproject.toml
+  workflow_dispatch: {}
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

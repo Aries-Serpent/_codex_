@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5766 live review-comment and RAG readiness repair (2026-11-20)
+- Add a locked `brain-api` Codespace extra, bind route reconciliation to the live execution owner, hash safety-audit fragments, and clean up the tenant, Torch-stub, and API test review findings without weakening behavior.
+- Remove the stale ChromaDB prerequisite from the RAG workflow now that FAISS is the supported store, and record the four `_update_path` findings as current-signature false positives rather than applying a no-op rename.
+- Refresh the current-day PDA/readiness evidence while retaining the broad `auto_fix` score dimension as red until its repository-wide findings are actually resolved.
+
 ### Added - Autonomous Codespace resume and shutdown readiness (2026-11-20)
 - Persist databases, logs, bootstrap capabilities, PID files, and route-execution state under `CODEX_RUNTIME_DIR`; restore Python from the frozen `uv.lock` and start both the CLI API and Cognitive App with owned-process health checks.
 - Add authenticated route-operation reconciliation, a read-only strict Codespace readiness auditor, VS Code task integration, runtime ignore boundaries, and a committed shutdown/resume contract.

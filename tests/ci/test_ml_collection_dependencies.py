@@ -113,6 +113,7 @@ def test_rag_workflow_only_preflights_packages_in_rag_extra():
     assert "chromadb" not in install
     assert ".[rag,test-core]" in install
     assert "faiss-cpu" in install
+    assert "workflow_dispatch" in workflow["on"]
 
 
 def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
