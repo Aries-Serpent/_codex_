@@ -25675,3 +25675,16 @@ has not been recorded.
 - The ignored clone-worktree Codex API client test was classified as duplicate of tracked brain-session coverage and was not force-added. Raw `/tmp`, platform secrets, caches, databases, logs, sockets, and runtime tokens remain uncommitted.
 
 ---
+
+## SESSION SUMMARY - 2026-11-20 PR #5766 REVIEW-COMMENT READINESS
+
+### Scope and Evidence
+- Published review-fix commit `fd6513cc20` for the 14 maintainer-listed comments: 10 comments were addressed by five code/security/test fix groups, while four `_update_path` comments were verified against the current keyword-only `allow_structured_override` signature and passing tests without no-op churn.
+- Added a frozen `brain-api` Codespace extra, execution-owner-aware route recovery, hash-only safety audit records, tenant/Torch/API test cleanups, and removal of the stale ChromaDB prerequisite from the RAG workflow.
+- Focused validation passed across installer, route ledger/API, safety, structured CLI, tenant, checkpoint, API-secret, and workflow contract suites; Ruff, Black, `uv lock --check`, shell/YAML checks, and changed-file secret scanning passed.
+
+### Readiness
+- This entry makes the PDA dimension current. The local score therefore moves from 77/100 to the expected 85/100, while remaining NOT READY because the broad `auto_fix` dimension still reports 5,628 repository findings (34 auto-fixable).
+- The exact final governance SHA must receive fresh hosted RAG/CodeQL/ML checks before review-thread closure or merge readiness is claimed. A numerical score is diagnostic only and does not replace review, security, or protected merge controls.
+
+---
