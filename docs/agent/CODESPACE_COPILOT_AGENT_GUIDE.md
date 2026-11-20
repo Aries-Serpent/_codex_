@@ -172,7 +172,7 @@ Container pulled / built
  post-create.sh
  • write ~/.codex_env (all CODEX_* vars)
  • auth token status report
- • write .codex/codespace_auth_status.json
+ • write ${CODEX_RUNTIME_DIR}/codespace_auth_status.json
  • load agent_context.json (repo variables)
  • validate python / gh / ruff / imports
 

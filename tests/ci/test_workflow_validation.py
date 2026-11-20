@@ -329,6 +329,17 @@ def test_cost_gate_callers_grant_called_workflow_permissions() -> None:
     assert "data-quality-suite.yml" in callers
 
 
+def test_container_scan_runs_all_trivy_configurations_for_every_pr() -> None:
+    workflow = _load_workflow("container-scan.yml")
+
+    assert "paths" not in workflow["on"]["pull_request"]
+    assert workflow["jobs"]["trivy-scan"]["strategy"]["matrix"]["dockerfile"] == [
+        ".config/Dockerfile",
+        "docker/Dockerfile.cpu",
+        "docker/Dockerfile.gpu",
+    ]
+
+
 def test_agent_delegation_requires_protected_environment() -> None:
     workflow = _load_workflow("agent-auth-delegation.yml")
     activation = workflow["jobs"]["activate-delegation"]

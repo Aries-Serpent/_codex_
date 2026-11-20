@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Added - Autonomous Codespace resume and shutdown readiness (2026-11-20)
+- Persist databases, logs, bootstrap capabilities, PID files, and route-execution state under `CODEX_RUNTIME_DIR`; restore Python from the frozen `uv.lock` and start both the CLI API and Cognitive App with owned-process health checks.
+- Add authenticated route-operation reconciliation, a read-only strict Codespace readiness auditor, VS Code task integration, runtime ignore boundaries, and a committed shutdown/resume contract.
+- Run every Trivy Dockerfile matrix configuration on dependency-only PRs and remove unused no-fix ChromaDB, `lm-eval`, and DVC dependency chains while retaining isolated-tool and FAISS guidance.
+
 ### Added — Cognitive Brain maintainer middleware checkpoint (2026-11-19)
 - Add the 42-file `clone-main` maintainer stack: authenticated/idempotent route execution, Codespace/VS Code portability, permission azimuth probes, resumable `gh`/Node/Chromium tooling, MCP stdio bridging, and browser-safe HttpOnly UI sessions.
 - Record the exact transplant evidence, focused backend/MCP/frontend validation, remaining WEC/hosted-check blockers, and current merge-readiness metadata without claiming platform approval.
@@ -14,7 +19,9 @@
 
 ### Fixed - PR #5766 dependency scan remediation (2026-11-20)
 - Decouple Semgrep from the project dependency graph while retaining dedicated CI and nox scanner installation; remove its vulnerable MCP 1.29.0 and OpenTelemetry 1.37 transitive chain from `uv.lock`.
-- Upgrade OAuthlib to 4.0.1 and OpenTelemetry API/SDK to 1.45.2. ChromaDB 1.5.9, Sqlitedict 2.1.0, and Diskcache 5.6.3 remain explicitly unresolved because the package index reports no newer release for those findings.
+- Upgrade OAuthlib to 4.0.1 and OpenTelemetry API/SDK to 1.45.2.
+- Remove unused no-fix ChromaDB, `lm-eval`/Sqlitedict, and DVC/Diskcache optional dependency chains; FAISS remains the supported vector store, and removed evaluation/data tools require explicit isolated environments.
+- Run all three container Trivy matrix configurations on every pull request so dependency-only changes cannot leave base GHAS configuration identities missing.
 
 ### Fixed - #5766 merge conflicts after #5812 landed on `main`
 

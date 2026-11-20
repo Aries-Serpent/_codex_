@@ -154,7 +154,6 @@ runtime = [
     "duckdb>=1.5.5",
     # RAG pipeline
     "sentence-transformers>=6.0.0,<7.0.0",
-    "chromadb>=1.5.9",  # Security: Issue #5299 - Code injection vulnerability in <=1.5.9, using latest stable
     "faiss-cpu>=1.15.0,<2.0.0",
 ]
 
@@ -192,7 +191,6 @@ full = [
     "prometheus-client>=0.26.0",
     "psutil>=7.2.2",
     "sentence-transformers>=6.0.0,<7.0.0",
-    "chromadb>=1.5.9",  # Security: Issue #5299 - Code injection vulnerability in <=1.5.9, using latest stable
     "faiss-cpu>=1.15.0,<2.0.0",
     "evidently>=0.7.21,<1",
     # Testing & quality
@@ -223,14 +221,12 @@ full = [
     "responses>=0.26.3",
     "pyotp>=2.10.0",
     # Additional features
-    "lm-eval>=0.4.2,<1",
     "nltk>=3.10.3",  # Security: Issue #5416 - CVE fixes
     "rouge-score>=0.1.2",
     "sacrebleu>=2.6.0",
     "scipy>=1.18.1,<2",
     "statsmodels>=0.15.0,<1",
     "great_expectations>=1.21.0,<2",
-    "dvc==3.67.1",
     "duckdb>=1.5.5",
     "PyGithub>=2.10.0,<3.0.0",
     "nvidia-ml-py3>=7.352.0",
@@ -249,7 +245,6 @@ full = [
 ]
 
 eval = [
-   "lm-eval>=0.4.2,<1",
    "datasets>=5.1.0,<6",
    "transformers>=5.16.1,<6",
    "sentencepiece>=0.2.2",
@@ -258,7 +253,6 @@ eval = [
 ]
 
 dataops = [
-   "dvc==3.67.1",
    "duckdb>=1.5.5",
    "great_expectations>=1.21.0,<2",
    "pandas>=3.0.5,<3.1",
@@ -314,7 +308,6 @@ all = [
     "prometheus-client>=0.26.0",
     "psutil>=7.2.2",
     "sentence-transformers>=6.0.0,<7.0.0",
-    "chromadb>=1.5.9",
     "faiss-cpu>=1.15.0,<2.0.0",
     "evidently>=0.7.21,<1",
     # Pinned plugin floors per code-quality-coverage-suite.yml (PR #3248 stability fix)
@@ -343,14 +336,12 @@ all = [
     "nbstripout>=0.9.1",
     "responses>=0.26.3",
     "pyotp>=2.10.0",
-    "lm-eval>=0.4.2,<1",
     "nltk>=3.10.3",
     "rouge-score>=0.1.2",
     "sacrebleu>=2.6.0",
     "scipy>=1.18.1,<2",
     "statsmodels>=0.15.0,<1",
     "great_expectations>=1.21.0,<2",
-    "dvc==3.67.1",
     "duckdb>=1.5.5",
     "PyGithub>=2.10.0,<3.0.0",
     "nvidia-ml-py3>=7.352.0",
@@ -433,7 +424,6 @@ ml = [
     "evidently>=0.7.21,<1",
     "duckdb>=1.5.5",
     "sentence-transformers>=6.0.0,<7.0.0",
-    "chromadb>=1.5.9",
     "faiss-cpu>=1.15.0,<2.0.0",
 ]
 train = [
@@ -468,7 +458,6 @@ train = [
     "prometheus-client>=0.26.0",
     "psutil>=7.2.2",
     "sentence-transformers>=6.0.0,<7.0.0",
-    "chromadb>=1.5.9",
     "faiss-cpu>=1.15.0,<2.0.0",
     "evidently>=0.7.21,<1",
     # Pinned plugin floors per code-quality-coverage-suite.yml (PR #3248 stability fix)
@@ -497,14 +486,12 @@ train = [
     "nbstripout>=0.9.1",
     "responses>=0.26.3",
     "pyotp>=2.10.0",
-    "lm-eval>=0.4.2,<1",
     "nltk>=3.10.3",
     "rouge-score>=0.1.2",
     "sacrebleu>=2.6.0",
     "scipy>=1.18.1,<2",
     "statsmodels>=0.15.0,<1",
     "great_expectations>=1.21.0,<2",
-    "dvc==3.67.1",
     "duckdb>=1.5.5",
     "PyGithub>=2.10.0,<3.0.0",
     "nvidia-ml-py3>=7.352.0",
@@ -601,7 +588,6 @@ rag = [
     "evidently>=0.7.21,<1",
     "duckdb>=1.5.5",
     "sentence-transformers>=6.0.0,<7.0.0",
-    "chromadb>=1.5.9",
     "faiss-cpu>=1.15.0,<2.0.0",
 ]
 

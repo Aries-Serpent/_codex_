@@ -30,8 +30,10 @@ export CODEX_ENV="codespace-copilot-agent"
 export CODEX_FORCE_CPU="1"
 export RAG_EMBEDDING_PROVIDER="tfidf"
 export CODEX_LOG_LEVEL="INFO"
-export CODEX_DB_PATH="${WORKSPACE}/.codex/codex.db"
-export CODEX_SESSION_LOG_DIR="${WORKSPACE}/.codex/sessions"
+export CODEX_STATE_DIR="\${CODEX_STATE_DIR:-${HOME}/.codex}"
+export CODEX_DB_PATH="\${CODEX_DB_PATH:-${HOME}/.codex/codex.db}"
+export CODEX_RUNTIME_DIR="\${CODEX_RUNTIME_DIR:-${HOME}/.codex/runtime}"
+export CODEX_SESSION_LOG_DIR="\${CODEX_SESSION_LOG_DIR:-${HOME}/.codex/sessions}"
 export CODEX_CLI_API_URL="http://localhost:8765"
 export COPILOT_CLI_BASE_URL="http://localhost:8765"
 export GITHUB_COPILOT_AGENT="true"
@@ -72,8 +74,8 @@ _report_token "_GITHUB_APP_ID"
 _report_token "_GITHUB_APP_PRIVATE_KEY"
 _report_token "WEBHOOK_SECRET"
 
-# Write a non-secret summary to .codex/codespace_auth_status.json
-AUTH_STATUS_FILE="${WORKSPACE}/.codex/codespace_auth_status.json"
+# Write a non-secret summary to persisted runtime state.
+AUTH_STATUS_FILE="${CODEX_RUNTIME_DIR:-${HOME}/.codex/runtime}/codespace_auth_status.json"
 python3 - << PYEOF
 import json, os, time
 secrets = [

@@ -297,7 +297,6 @@ class TestFullProfileAllImportsAvailable:
             'starlette': 'Starlette',
             'ray': 'Ray',
             'sentence_transformers': 'Sentence Transformers',
-            'chromadb': 'ChromaDB',
             'faiss': 'FAISS',
             'duckdb': 'DuckDB',
             # Dev/Test

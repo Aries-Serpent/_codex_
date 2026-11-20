@@ -25657,7 +25657,21 @@ has not been recorded.
 - Upgraded OAuthlib 4.0.0 to 4.0.1 and OpenTelemetry API/SDK to 1.45.2. `uv lock --check`, focused dependency/scanner tests, and the isolated Semgrep CLI execution were validated locally.
 
 ### Residual Security Findings
-- ChromaDB 1.5.9, Sqlitedict 2.1.0, and Diskcache 5.6.3 remain current no-fix findings in the package index. No suppression, threshold reduction, alert dismissal, or false resolution claim was made.
-- The fresh candidate SHA must be rescanned by Trivy and the unrelated GHAS configuration identities verified before hosted clearance is claimed.
+- ChromaDB 1.5.9 had no production import/registered implementation and was removed from the project extras; FAISS remains supported. `lm-eval` and DVC were removed from optional project graphs so their Sqlitedict and Diskcache chains cannot enter repository builds. Explicit use now requires separately reviewed isolated tooling.
+- The three container Trivy jobs run for every pull request, preserving scan coverage and restoring their GHAS configuration identities after dependency-only changes. A fresh candidate SHA must still be rescanned before hosted clearance is claimed; no suppression or threshold reduction was used.
+
+---
+
+## SESSION SUMMARY - 2026-11-20 CODESPACE AUTONOMY IMPLEMENTATION
+
+### Scope and Evidence
+- Unified Codespace persistent state under `CODEX_STATE_DIR`/`CODEX_RUNTIME_DIR`; API/UI startup now uses lock-restored Python, owned PID files, health checks, and two intentional forwarded ports.
+- Added authenticated incomplete-route inspection/reconciliation, readiness auditing, VS Code task integration, generated-state ignore rules, and a sanitized shutdown contract.
+- Removed unused no-fix ChromaDB, `lm-eval`, and DVC project dependency chains while retaining FAISS and isolated-tool guidance; container Trivy matrix scans now run on every pull request.
+- Focused readiness, installer, routing, workflow, and packaging validation passed locally; changed-file secret scanning reported zero findings.
+
+### Authority and Residuals
+- No bypass, alert dismissal, severity reduction, or hosted merge was used. Live checks must validate the final pushed SHA, and the strict readiness auditor must pass after commit with every registered worktree included before Codespace termination.
+- The ignored clone-worktree Codex API client test was classified as duplicate of tracked brain-session coverage and was not force-added. Raw `/tmp`, platform secrets, caches, databases, logs, sockets, and runtime tokens remain uncommitted.
 
 ---

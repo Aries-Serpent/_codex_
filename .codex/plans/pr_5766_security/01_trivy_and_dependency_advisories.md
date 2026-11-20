@@ -6,8 +6,8 @@
 
 - The project graph no longer installs Semgrep; CI and the nox security session retain isolated `pip` installation. This removes Semgrep's fixed `mcp==1.29.0` and OpenTelemetry 1.37 transitive chains from `uv.lock`.
 - OAuthlib is locked at 4.0.1, while OpenTelemetry API/SDK resolve to 1.45.2. `uv lock --check` and 26 focused dependency/semgrep tests passed; the clean isolated Semgrep CLI runs the repository rules.
-- ChromaDB 1.5.9, Sqlitedict 2.1.0, and Diskcache 5.6.3 have no newer package-index release. They remain unresolved and must not be dismissed or suppressed without explicit, finding-level security-owner disposition.
-- These lock changes require a fresh candidate SHA, Trivy scan, and GHAS configuration verification before any alert state is claimed.
+- ChromaDB 1.5.9 had no production import/registered implementation and was removed from runtime, ML, RAG, train, full, and all extras; FAISS remains the supported vector store. The evaluation and dataops extras no longer install `lm-eval` or DVC, removing their Sqlitedict and Diskcache chains. When explicitly required, those tools must run in separately reviewed isolated environments, never in the project graph.
+- These lock changes require a fresh candidate SHA, Trivy scan, and GHAS configuration verification before any alert state is claimed. The three Dockerfile matrix jobs now run on every PR so the base configurations are re-established for dependency-only changes.
 
 ## 1. Establish current evidence
 

@@ -137,6 +137,44 @@ class RouteExecutionStore:
                 ),
             )
 
+    def incomplete_operations(self) -> list[dict[str, Any]]:
+        """Return executing operations that require external-state reconciliation."""
+        with self._connect() as connection:
+            rows = connection.execute("""
+                SELECT operation_id, idempotency_key, request_digest, state,
+                       created_at, updated_at
+                FROM route_operations
+                WHERE state = 'executing'
+                ORDER BY created_at, operation_id
+                """).fetchall()
+        return [dict(row) for row in rows]
+
+    def reconcile(self, operation_id: str, *, result: Any = None, error: str = "") -> None:
+        """Resolve one interrupted operation only after its outcome is verified."""
+        if not operation_id or (result is None and not error):
+            raise RouteExecutionConflict("reconciliation requires a result or error")
+        try:
+            result_json = json.dumps(result, allow_nan=False) if not error else None
+        except (TypeError, ValueError) as exc:
+            raise RouteExecutionConflict("reconciliation result must be JSON serializable") from exc
+        with self._connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            cursor = connection.execute(
+                """
+                UPDATE route_operations
+                SET state = ?, result_json = ?, error = ?, updated_at = CURRENT_TIMESTAMP
+                WHERE operation_id = ? AND state = 'executing'
+                """,
+                (
+                    "completed" if not error else "failed",
+                    result_json,
+                    error,
+                    operation_id,
+                ),
+            )
+            if cursor.rowcount != 1:
+                raise RouteExecutionConflict("operation is not awaiting reconciliation")
+
     def execute(
         self,
         request: Mapping[str, Any],

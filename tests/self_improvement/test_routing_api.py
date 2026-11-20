@@ -16,6 +16,14 @@ from cognitive_app.src.server.cli_api_server import app
 UI_BOOTSTRAP_TOKEN = "test-ui-bootstrap-capability"
 
 
+def test_codex_runtime_dir_honors_environment(monkeypatch: pytest.MonkeyPatch) -> None:
+    from cognitive_app.src.server import cli_api_server
+
+    monkeypatch.setenv("CODEX_RUNTIME_DIR", "/tmp/codex-persistent-runtime")
+
+    assert str(cli_api_server._codex_runtime_dir()) == "/tmp/codex-persistent-runtime"
+
+
 @pytest.fixture(autouse=True)
 def configure_ui_bootstrap(monkeypatch: pytest.MonkeyPatch):
     from cognitive_app.src.server import cli_api_server
@@ -328,6 +336,70 @@ def test_route_execute_requires_authentication() -> None:
     )
 
     assert response.status_code == 401
+
+
+def test_route_reconciliation_requires_authentication() -> None:
+    client = TestClient(app)
+
+    assert client.get("/api/routes/incomplete").status_code == 401
+    assert (
+        client.post(
+            "/api/routes/reconcile",
+            json={"operation_id": "probe", "state": "completed", "result": {}},
+        ).status_code
+        == 401
+    )
+
+
+def test_route_reconciliation_lists_and_resolves_verified_outcome(
+    monkeypatch: Any, tmp_path: Any
+) -> None:
+    from cognitive_app.src.server import cli_api_server
+
+    store = RouteExecutionStore(tmp_path / "route.sqlite3")
+    payload = {
+        "capability": "git.local",
+        "action": "status",
+        "target": "local",
+        "arguments": {},
+        "idempotency_key": "resume-operation",
+    }
+    claim = store.prepare(payload)
+    monkeypatch.setattr(cli_api_server, "_ROUTE_EXECUTION_STORE", store)
+
+    with TestClient(app, base_url="http://localhost:8765") as client:
+        assert establish_ui_session(client).status_code == 200
+        listed = client.get("/api/routes/incomplete")
+        reconciled = client.post(
+            "/api/routes/reconcile",
+            json={
+                "operation_id": claim.operation_id,
+                "state": "completed",
+                "result": {"status": "verified externally"},
+            },
+        )
+
+    assert listed.status_code == 200
+    assert listed.json()["operations"][0]["operation_id"] == claim.operation_id
+    assert "arguments" not in listed.json()["operations"][0]
+    assert reconciled.status_code == 200
+    assert store.prepare(payload).state == "replayed"
+
+
+def test_route_reconciliation_rejects_unverified_payload(monkeypatch: Any, tmp_path: Any) -> None:
+    from cognitive_app.src.server import cli_api_server
+
+    store = RouteExecutionStore(tmp_path / "route.sqlite3")
+    monkeypatch.setattr(cli_api_server, "_ROUTE_EXECUTION_STORE", store)
+
+    with TestClient(app, base_url="http://localhost:8765") as client:
+        assert establish_ui_session(client).status_code == 200
+        response = client.post(
+            "/api/routes/reconcile",
+            json={"operation_id": "not-started", "state": "completed"},
+        )
+
+    assert response.status_code == 422
 
 
 def test_route_execute_replays_completed_operation(monkeypatch: Any, tmp_path: Any) -> None:

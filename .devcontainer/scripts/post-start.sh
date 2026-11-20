@@ -56,49 +56,57 @@ echo "  Codex Codespace — post-start"
 echo "  Starting background services…"
 echo "══════════════════════════════════════════════════════════"
 
-# ── 1. Stop only the server previously started by this workspace ─────────────
-SERVER_PID_FILE="${WORKSPACE}/.codex/cli_api_server.pid"
-pid_is_workspace_brain() {
-    local pid="$1" command_line process_cwd
+CODEX_STATE_DIR="${CODEX_STATE_DIR:-${HOME}/.codex}"
+export CODEX_RUNTIME_DIR="${CODEX_RUNTIME_DIR:-${CODEX_STATE_DIR}/runtime}"
+mkdir -p "$CODEX_STATE_DIR" "$CODEX_RUNTIME_DIR"
+
+# ── 1. Stop only services previously started by this workspace ────────────────
+SERVER_PID_FILE="${CODEX_RUNTIME_DIR}/cli_api_server.pid"
+UI_PID_FILE="${CODEX_RUNTIME_DIR}/cognitive_app.pid"
+pid_is_workspace_process() {
+    local pid="$1" marker="$2" command_line process_cwd
     [[ "$pid" =~ ^[0-9]+$ ]] || return 1
     [ -r "/proc/${pid}/cmdline" ] || return 1
     command_line="$(tr '\0' ' ' < "/proc/${pid}/cmdline")"
     process_cwd="$(readlink "/proc/${pid}/cwd" 2>/dev/null || true)"
-    [[ "$command_line" == *"cognitive_app.src.server.cli_api_server:app"* ]] && \
-        [ "$process_cwd" = "$WORKSPACE" ]
+    [[ "$command_line" == *"$marker"* ]] && \
+        { [ "$process_cwd" = "$WORKSPACE" ] || [[ "$process_cwd" == "$WORKSPACE"/* ]]; }
 }
-if [ -f "$SERVER_PID_FILE" ]; then
-    SERVER_PID="$(cat "$SERVER_PID_FILE")"
-    if pid_is_workspace_brain "$SERVER_PID"; then
-        kill "$SERVER_PID" 2>/dev/null || true
+stop_owned_process() {
+    local pid_file="$1" marker="$2" label="$3" pid
+    [ -f "$pid_file" ] || return 0
+    pid="$(cat "$pid_file")"
+    if pid_is_workspace_process "$pid" "$marker"; then
+        kill "$pid" 2>/dev/null || true
         for _ in 1 2 3 4 5; do
-            kill -0 "$SERVER_PID" 2>/dev/null || break
+            kill -0 "$pid" 2>/dev/null || break
         done
-        kill -0 "$SERVER_PID" 2>/dev/null && kill -KILL "$SERVER_PID" 2>/dev/null || true
+        kill -0 "$pid" 2>/dev/null && kill -KILL "$pid" 2>/dev/null || true
+        echo "  ✅ Stopped previous ${label} (PID=${pid})"
     else
-        echo "  ⚠️  Ignoring stale or unrelated PID file"
+        echo "  ⚠️  Ignoring stale or unrelated ${label} PID file"
     fi
-    rm -f "$SERVER_PID_FILE"
-fi
+    rm -f "$pid_file"
+}
+stop_owned_process "$SERVER_PID_FILE" "cognitive_app.src.server.cli_api_server:app" "CLI API server"
+stop_owned_process "$UI_PID_FILE" "npm run dev" "Cognitive App"
 
-# ── 2. Ensure fastapi + uvicorn are available (idempotent) ────────────────────
-"$PYTHON_BIN" -m pip install --cache-dir "$HOME/.cache/pip" \
-    "fastapi>=0.110.0,<1.0" \
-    "uvicorn[standard]>=0.29.0,<1.0" \
-    "httpx>=0.27.0,<1.0" \
-    --quiet 2>/dev/null || true
+
+# ── 2. Verify the lock-restored server runtime without mutating it ────────────
+"$PYTHON_BIN" -c 'import fastapi, httpx, uvicorn'
 
 # ── 3. Start the Cognitive Brain CLI API server ────────────────────────────────
 # Exactly mirrors the nohup block in copilot-setup-steps.yml.
 # Auth tokens are forwarded explicitly (pattern from Phase 6 of setup-steps).
-LOG_FILE="${WORKSPACE}/.codex/cli_api_server.log"
-mkdir -p "$(dirname "$LOG_FILE")"
+LOG_FILE="${CODEX_RUNTIME_DIR}/cli_api_server.log"
+mkdir -p "$(dirname "$LOG_FILE")" "$CODEX_STATE_DIR"
 
 export CODEX_MASTER_KEY="${CODEX_MASTER_KEY:-}"
 export CODEX_BACKUP_KEY="${CODEX_BACKUP_KEY:-}"
 export AGENT_GITHUB_TOKEN="${GITHUB_TOKEN:-}"
-export CODEX_DB_PATH="${WORKSPACE}/.codex/codex.db"
-export CODEX_SESSION_LOG_DIR="${WORKSPACE}/.codex/sessions"
+export CODEX_DB_PATH="${CODEX_DB_PATH:-${CODEX_STATE_DIR}/codex.db}"
+export CODEX_RUNTIME_DIR="${CODEX_RUNTIME_DIR:-${CODEX_STATE_DIR}/runtime}"
+export CODEX_SESSION_LOG_DIR="${CODEX_SESSION_LOG_DIR:-${CODEX_STATE_DIR}/sessions}"
 export PYTHONPATH="${WORKSPACE}/src:${PYTHONPATH:-}"
 if [ -n "${CODESPACE_NAME:-}" ]; then
     CODESPACES_DOMAIN="${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN:-preview.app.github.dev}"
@@ -114,8 +122,8 @@ fi
 UI_BOOTSTRAP_BROWSER="$("$PYTHON_BIN" -c 'import secrets; print(secrets.token_urlsafe(32))')"
 UI_BOOTSTRAP_MCP="$("$PYTHON_BIN" -c 'import secrets; print(secrets.token_urlsafe(32))')"
 export CODEX_UI_BOOTSTRAP_TOKENS="${UI_BOOTSTRAP_BROWSER},${UI_BOOTSTRAP_MCP}"
-UI_BOOTSTRAP_BROWSER_FILE="${WORKSPACE}/.codex/ui_bootstrap_browser"
-UI_BOOTSTRAP_MCP_FILE="${WORKSPACE}/.codex/ui_bootstrap_mcp"
+UI_BOOTSTRAP_BROWSER_FILE="${CODEX_RUNTIME_DIR}/ui_bootstrap_browser"
+UI_BOOTSTRAP_MCP_FILE="${CODEX_RUNTIME_DIR}/ui_bootstrap_mcp"
 umask 077
 printf '%s' "$UI_BOOTSTRAP_BROWSER" > "$UI_BOOTSTRAP_BROWSER_FILE"
 printf '%s' "$UI_BOOTSTRAP_MCP" > "$UI_BOOTSTRAP_MCP_FILE"
@@ -133,7 +141,7 @@ nohup "${UVICORN_COMMAND[@]}" cognitive_app.src.server.cli_api_server:app \
     --log-level warning \
     > "$LOG_FILE" 2>&1 &
 CLI_API_PID=$!
-echo "$CLI_API_PID" > "${WORKSPACE}/.codex/cli_api_server.pid"
+echo "$CLI_API_PID" > "$SERVER_PID_FILE"
 echo "  Started CLI API server (PID=${CLI_API_PID}) → $LOG_FILE"
 
 # ── 4. Health-check with retry (matches setup-steps.yml 5-second retry loop) ──
@@ -177,7 +185,44 @@ else
     exit 1
 fi
 
-# ── 4b. Auto-update Codespace-scoped repo variables ──────────────────────────
+# ── 4b. Start the Cognitive App when enabled by the Codespace contract ────────
+if [ "${CODEX_START_COGNITIVE_APP:-true}" = "true" ]; then
+    UI_PORT="${CODEX_COGNITIVE_APP_PORT_NUMBER:-5173}"
+    UI_LOG_FILE="${CODEX_RUNTIME_DIR}/cognitive_app.log"
+    if [ -n "${CODESPACE_NAME:-}" ]; then
+        UI_BIND_HOST="${CODEX_COGNITIVE_APP_BIND_HOST:-0.0.0.0}"
+    else
+        UI_BIND_HOST="${CODEX_COGNITIVE_APP_BIND_HOST:-127.0.0.1}"
+    fi
+    (
+        cd "${WORKSPACE}/cognitive_app"
+        exec npm run dev -- --host "$UI_BIND_HOST" --port "$UI_PORT"
+    ) > "$UI_LOG_FILE" 2>&1 &
+    UI_PID=$!
+    echo "$UI_PID" > "$UI_PID_FILE"
+    UI_READY=0
+    for _ in 1 2 3 4 5 6 7 8; do
+        sleep 1
+        if ! kill -0 "$UI_PID" 2>/dev/null; then
+            break
+        fi
+        if "$PYTHON_BIN" -c 'import urllib.request, sys; urllib.request.urlopen(sys.argv[1], timeout=2).read(1)' \
+            "http://127.0.0.1:${UI_PORT}/" 2>/dev/null; then
+            UI_READY=1
+            break
+        fi
+    done
+    if [ "$UI_READY" != "1" ]; then
+        echo "  ❌ Cognitive App failed health verification" >&2
+        echo "  Check logs: cat ${UI_LOG_FILE}" >&2
+        kill "$UI_PID" 2>/dev/null || true
+        rm -f "$UI_PID_FILE"
+        exit 1
+    fi
+    echo "  ✅ Cognitive App ready on port ${UI_PORT}"
+fi
+
+# ── 4c. Auto-update Codespace-scoped repo variables ──────────────────────────
 # If running in a Codespace, construct the public forwarded URL and update
 # the repo variable so GitHub webhooks can deliver to this Codespace.
 # Also records the active Codespace name so tooling can reference it.
@@ -249,7 +294,7 @@ PYEOF
 fi
 
 # ── 6. Write Codespace environment report ────────────────────────────────────
-CODESPACE_REPORT="${WORKSPACE}/.codex/.copilot-agent-environment-report.txt"
+CODESPACE_REPORT="${CODEX_RUNTIME_DIR}/copilot-agent-environment-report.txt"
 mkdir -p "$(dirname "${CODESPACE_REPORT}")"
 {
   echo "# Copilot Agent Environment Report (Codespace)"
@@ -272,6 +317,14 @@ mkdir -p "$(dirname "${CODESPACE_REPORT}")"
   else
     echo "STATUS=degraded"
     echo "REASON=CLI API did not become ready after 5s"
+  fi
+  echo ""
+  echo "## Cognitive App"
+  if [ "${CODEX_START_COGNITIVE_APP:-true}" = "true" ] && [ "${UI_READY:-0}" = "1" ]; then
+    echo "STATUS=ready"
+    echo "URL=http://127.0.0.1:${UI_PORT}"
+  else
+    echo "STATUS=disabled"
   fi
 } > "${CODESPACE_REPORT}"
 echo "  ✅ Environment report written → ${CODESPACE_REPORT}"

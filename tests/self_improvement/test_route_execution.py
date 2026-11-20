@@ -118,3 +118,35 @@ def test_execution_failure_is_recorded_and_reconciled(tmp_path: Path) -> None:
 
     with pytest.raises(RouteExecutionConflict, match="failed"):
         store.execute(request(), lambda: {"status": 201})
+
+
+def test_incomplete_operation_reconciliation_enables_verified_replay(tmp_path: Path) -> None:
+    store = RouteExecutionStore(tmp_path / "routes.db")
+    claim = store.prepare(request())
+
+    incomplete = store.incomplete_operations()
+    store.reconcile(claim.operation_id, result={"status": 201, "verified": True})
+
+    assert incomplete == [
+        {
+            "operation_id": claim.operation_id,
+            "idempotency_key": "task-probe-1",
+            "request_digest": claim.request_digest,
+            "state": "executing",
+            "created_at": incomplete[0]["created_at"],
+            "updated_at": incomplete[0]["updated_at"],
+        }
+    ]
+    assert store.prepare(request()).state == "replayed"
+
+
+def test_reconciliation_rejects_missing_outcome_and_terminal_operation(tmp_path: Path) -> None:
+    store = RouteExecutionStore(tmp_path / "routes.db")
+    claim = store.prepare(request())
+
+    with pytest.raises(RouteExecutionConflict, match="requires a result or error"):
+        store.reconcile(claim.operation_id)
+
+    store.reconcile(claim.operation_id, error="external operation was not applied")
+    with pytest.raises(RouteExecutionConflict, match="not awaiting reconciliation"):
+        store.reconcile(claim.operation_id, result={"status": 201})

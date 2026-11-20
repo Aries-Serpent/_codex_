@@ -206,14 +206,6 @@ class TestRAGPipelineDependencies:
         except ImportError as e:
             pytest.skip(f"sentence-transformers not installed: {e}")
 
-    def test_chromadb_import(self):
-        """Test chromadb import."""
-        try:
-            import chromadb
-            assert hasattr(chromadb, '__version__')
-        except ImportError as e:
-            pytest.skip(f"chromadb not installed: {e}")
-
     def test_faiss_import(self):
         """Test faiss-cpu import."""
         try:
@@ -351,7 +343,6 @@ class TestRuntimeProfileIntegration:
             'slowapi',
             'ray',
             'sentence_transformers',
-            'chromadb',
             'faiss',
             'duckdb',
             'prometheus_client',
@@ -393,7 +384,6 @@ class TestRuntimeProfileIntegration:
             'starlette': ('1.0.1', '2.0.0'),
             'ray': ('2.9.0', '3.0.0'),
             'sentence_transformers': ('5.5.1', '6.0.0'),
-            'chromadb': ('1.5.8', '2.0.0'),
             'faiss': ('1.13.2', '2.0.0'),
             'duckdb': ('1.5.4', None),
             'prometheus_client': ('0.19.0', None),

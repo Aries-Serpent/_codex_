@@ -208,6 +208,18 @@
       ]
     },
     {
+      "label": "Codex: readiness audit",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "${workspaceFolder}/scripts/autonomous/codespace_readiness.py",
+        "--strict",
+        "--worktree",
+        "${workspaceFolder}"
+      ],
+      "problemMatcher": []
+    },
+    {
       "label": "Codex: maintainer capability probe",
       "type": "process",
       "command": "python3.12",

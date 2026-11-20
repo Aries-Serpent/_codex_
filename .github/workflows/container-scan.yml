@@ -15,9 +15,6 @@ name: Art_Container Security Scan
       - main
       - 0D_base_
       - develop
-    paths:
-      - ".config/Dockerfile*"
-      - "docker/**"
   schedule:
     - cron: "0 5 * * 1"
   workflow_dispatch: {}
