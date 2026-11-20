@@ -152,8 +152,11 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
     )
     assert "--report-only" in summarize
     assert coverage["env"]["COVERAGE_FILE"] == ".coverage.unit-${{ matrix.shard }}"
+    assert jobs["test-ml-components"]["strategy"]["matrix"]["os"] == ["ubuntu-latest-m"]
     for name, count in (("integration-shard", 4), ("coverage-shard", 4)):
         job = jobs[name]
+        assert job["runs-on"] == "ubuntu-latest-m"
+        assert job["runs-on"] == "ubuntu-latest-m"
         assert job["strategy"]["fail-fast"] is False
         assert len(job["strategy"]["matrix"]["shard"]) == count
         assert job["needs"] == "test-ml-components"
@@ -161,8 +164,11 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
             step.get("if") == "always()" and "Summarize" in step.get("name", "")
             for step in job["steps"]
         )
+    assert jobs["test-ml-components"]["strategy"]["matrix"]["os"] == ["ubuntu-latest-m"]
     aggregate = jobs["ml-slow-aggregate"]
     assert aggregate["name"] == "ml-slow-aggregate"
+    assert aggregate["runs-on"] == "ubuntu-latest-m"
+    assert aggregate["runs-on"] == "ubuntu-latest-m"
     assert aggregate["if"] == "always()"
     assert set(aggregate["needs"]) == {"test-ml-components", "integration-shard", "coverage-shard"}
     assert aggregate["permissions"] == {"contents": "read"}
@@ -184,7 +190,10 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
     assert aggregate["steps"][0]["with"]["fetch-depth"] == 2
     ratchet = steps["Ratchet quarantine and coverage floor against PR base"]
     assert ratchet["if"] == "always() && github.event_name == 'pull_request'"
-    assert "ratchet --base-ref HEAD^1" in ratchet["run"]
+    assert "PR_BASE_SHA" in ratchet["env"]
+    assert "github.event.pull_request.base.sha" in ratchet["env"]["PR_BASE_SHA"]
+    assert 'git fetch --no-tags --depth=1 origin "$PR_BASE_SHA"' in ratchet["run"]
+    assert 'ratchet --base-ref "$PR_BASE_SHA"' in ratchet["run"]
     assert (
         "contains(github.event.pull_request.labels.*.name, 'quarantine-approved')"
         in ratchet["env"]["ML_QUARANTINE_GROWTH_APPROVED"]

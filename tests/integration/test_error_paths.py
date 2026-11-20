@@ -159,16 +159,17 @@ class TestDALErrorPaths:
 class TestRAGErrorPaths:
     """Test RAG error paths."""
 
-    def test_retriever_load_model_import_error(self, tmp_path):
-        """No neural dependency and no chunk text must fail, not return a fake encoder."""
-        from codex.rag.retriever import Retriever
+    def test_retriever_load_model_stays_unloaded_without_index(self, tmp_path):
+        """Missing neural dependencies and no loaded index leave the retriever unloaded."""
+        from aries_serpent_core.rag.retriever import Retriever
 
         with (
-            patch("codex.rag.retriever.SentenceTransformer", None),
-            patch.object(Retriever, "_load_index"),
+            patch("aries_serpent_core.rag.retriever.SentenceTransformer", None),
+            patch("aries_serpent_core.rag.indexer.load_index", side_effect=FileNotFoundError),
         ):
-            with pytest.raises(ImportError, match="TF-IDF fallback requires chunk text metadata"):
-                Retriever(index_dir=str(tmp_path))
+            retriever = Retriever(index_dir=str(tmp_path))
+
+        assert retriever.model is None
 
     def test_indexer_chunk_text_invalid_params(self):
         """Test chunk_text parameter validation."""

@@ -28,7 +28,7 @@ concurrency:
 permissions: {}
 jobs:
   test-rag:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-m
     permissions:
       contents: read
     strategy:
