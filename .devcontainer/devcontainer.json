@@ -18,17 +18,15 @@
   // Documentation: docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md
   // ──────────────────────────────────────────────────────────────────────────
   "name": "Codex — Copilot Agent Workspace",
-
   // Use the preview-dev image when already built; fall back to building locally.
   // The preview-dev image ships Python 3.12 + all runtime deps pre-installed.
-  "image": "ghcr.io/aries-serpent/codex/preview-dev:latest",
+  "image": "ghcr.io/aries-serpent/_codex_/preview-dev:latest",
   "build": {
-    "dockerfile": "../Dockerfile.preview",
+    "dockerfile": "../.config/Dockerfile.preview",
     "target": "preview-dev",
     "context": "..",
-    "cacheFrom": "ghcr.io/aries-serpent/codex/preview-dev:latest"
+    "cacheFrom": "ghcr.io/aries-serpent/_codex_/preview-dev:latest"
   },
-
   // ── devcontainer Features ──────────────────────────────────────────────────
   // Each feature is a self-contained setup script published to GHCR.
   "features": {
@@ -56,9 +54,13 @@
       "moby": false
     }
   },
-
   // ── Port forwarding ────────────────────────────────────────────────────────
-  "forwardPorts": [5173, 8765, 8766, 3000],
+  "forwardPorts": [
+    5173,
+    8765,
+    8766,
+    3000
+  ],
   "portsAttributes": {
     "5173": {
       "label": "⚡ Vite dev server (cognitive_app)",
@@ -86,11 +88,9 @@
   "otherPortsAttributes": {
     "onAutoForward": "silent"
   },
-
   // ── Non-root user ──────────────────────────────────────────────────────────
   "remoteUser": "codex",
   "containerUser": "codex",
-
   // ── Container environment (static, secret-free) ───────────────────────────
   // These mirror the "Set Codex Environment Variables" step in copilot-setup-steps.yml.
   // Secrets are injected at runtime via the "secrets" block below — never here.
@@ -105,7 +105,6 @@
     "PYTHONUNBUFFERED": "1",
     "PYTHONPATH": "/workspaces/_codex_/src",
     "PIP_NO_INPUT": "1",
-
     // Codex core
     "CODEX_ENV": "codespace-copilot-agent",
     "CODEX_FORCE_CPU": "1",
@@ -114,26 +113,20 @@
     "CODEX_DB_PATH": "/workspaces/_codex_/.codex/codex.db",
     "CODEX_SESSION_LOG_DIR": "/workspaces/_codex_/.codex/sessions",
     "CODEX_SQLITE_POOL": "1",
-
     // Codespaces APT prebuild controls (consumed by on-create.sh)
     "CODESPACES_APT_UPDATE_RETRY": "true",
     "CODESPACES_APT_CLEANUP_AGGRESSIVE": "true",
-
     // CLI API server URL — matches the hard-coded value in copilot-setup-steps.yml
     "CODEX_CLI_API_URL": "http://localhost:8765",
     "COPILOT_CLI_BASE_URL": "http://localhost:8765",
-
     // Copilot agent identity flag
     "GITHUB_COPILOT_AGENT": "true",
-
     // GitHub App defaults (values overridden at runtime by secrets)
     "GITHUB_APP_API_BASE_URL": "https://api.github.com",
-
     // Misc
     "DEBIAN_FRONTEND": "noninteractive",
     "CI": "true",
     "GIT_LFS_SKIP_SMUDGE": "1",
-
     // ── SAR-G05: OpenTelemetry distributed tracing ─────────────────────────
     // OTEL_EXPORTER_OTLP_ENDPOINT is set to the local Jaeger gRPC address.
     // This requires a running Jaeger all-in-one instance (started by the
@@ -149,7 +142,6 @@
     "OTEL_SERVICE_NAME": "codex-mcp",
     "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:4317"
   },
-
   // ── Codespace secrets → container env ─────────────────────────────────────
   // Each secret is set in: Settings → Codespaces → Secrets (user or org level).
   // They are injected as environment variables matching the name exactly.
@@ -188,26 +180,19 @@
       "documentationUrl": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/ops/WEBHOOK_REGISTRY.md"
     }
   },
-
   // ── Lifecycle commands ─────────────────────────────────────────────────────
   // Each script mirrors one or more phases of copilot-setup-steps.yml.
   // Scripts are executable shell files under .devcontainer/scripts/.
-
   // Phase 1+2: checkout (already done by Codespaces) + system deps
   "onCreateCommand": "bash .devcontainer/scripts/on-create.sh",
-
   // Phase 3+4: Python deps + env vars (re-run on branch switch / content update)
   "updateContentCommand": "bash .devcontainer/scripts/update-content.sh",
-
   // Phase 5+6: final validation + agent context injection
   "postCreateCommand": "bash .devcontainer/scripts/post-create.sh",
-
   // Phase 7: start background services (CLI API server)
   "postStartCommand": "bash .devcontainer/scripts/post-start.sh",
-
   // Phase 8: print agent quick-start banner on every terminal attach
   "postAttachCommand": "bash .devcontainer/scripts/post-attach.sh",
-
   // ── VS Code / Copilot customizations ──────────────────────────────────────
   "customizations": {
     "vscode": {
@@ -218,21 +203,17 @@
         "ms-python.debugpy",
         "charliermarsh.ruff",
         "ms-python.mypy-type-checker",
-
         // GitHub Copilot — REQUIRED for Copilot agent to operate
         "github.copilot",
         "github.copilot-chat",
-
         // GitHub integration
         "github.vscode-pull-request-github",
         "github.vscode-github-actions",
-
         // Infrastructure
         "ms-azuretools.vscode-docker",
         "tamasfe.even-better-toml",
         "redhat.vscode-yaml",
         "ms-vscode.makefile-tools",
-
         // Utilities
         "EditorConfig.EditorConfig",
         "streetsidesoftware.code-spell-checker",
@@ -240,10 +221,11 @@
       ],
       "settings": {
         // Python interpreter
-        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
         "python.analysis.typeCheckingMode": "basic",
-        "python.analysis.extraPaths": ["/workspaces/_codex_/src"],
-
+        "python.analysis.extraPaths": [
+          "${workspaceFolder}/src"
+        ],
         // Format on save via Ruff
         "editor.formatOnSave": true,
         "[python]": {
@@ -253,18 +235,20 @@
             "source.fixAll": "explicit"
           }
         },
-
         // Ruff
-        "ruff.lint.args": ["--config=/workspaces/_codex_/pyproject.toml"],
-        "ruff.format.args": ["--config=/workspaces/_codex_/pyproject.toml"],
-
+        "ruff.lint.args": [
+          "--config=${workspaceFolder}/pyproject.toml"
+        ],
+        "ruff.format.args": [
+          "--config=${workspaceFolder}/pyproject.toml"
+        ],
         // Terminal
         "terminal.integrated.defaultProfile.linux": "bash",
         "terminal.integrated.env.linux": {
-          "CODEX_CLI_API_URL": "http://localhost:8765",
-          "PYTHONPATH": "/workspaces/_codex_/src"
+          "CODEX_CLI_API_URL": "http://127.0.0.1:8765",
+          "PATH": "${env:HOME}/.local/bin:${env:PATH}",
+          "PYTHONPATH": "${workspaceFolder}/src"
         },
-
         // GitHub Copilot agent settings
         "github.copilot.enable": {
           "*": true,
@@ -272,22 +256,21 @@
           "markdown": true
         },
         "github.copilot.chat.agent.runTasks": true,
-
         // Test discovery
         "python.testing.pytestEnabled": true,
         "python.testing.pytestArgs": [
-          "--rootdir=/workspaces/_codex_",
+          "--rootdir=${workspaceFolder}",
           "--timeout=120"
         ],
-        "python.testing.cwd": "/workspaces/_codex_",
-
+        "python.testing.cwd": "${workspaceFolder}",
         // Misc editor
-        "editor.rulers": [100],
+        "editor.rulers": [
+          100
+        ],
         "files.trimTrailingWhitespace": true,
         "files.insertFinalNewline": true
       }
     },
-
     // GitHub Codespaces-specific Copilot agent configuration
     "codespaces": {
       "openFiles": [
@@ -295,7 +278,6 @@
       ]
     }
   },
-
   // ── Mount + workspace ─────────────────────────────────────────────────────
   "workspaceFolder": "/workspaces/_codex_",
   "mounts": [
@@ -309,7 +291,6 @@
     // Persist npm cache for cognitive_app across rebuilds
     "source=codex-npm-cache,target=/home/codex/.npm,type=volume"
   ],
-
   // ── Shutdown + resource limits ────────────────────────────────────────────
   "shutdownAction": "stopContainer",
   "hostRequirements": {

@@ -1,10 +1,10 @@
 /**
  * CodeGenerator Component - Lazy Initialization Tests
  *
- * Tests for PR #2705 lazy initialization improvements:
- * - Test 2: No API Key scenario
- * - Test 3: With API Key scenario
- * - Test 4: Mock Fallback scenario
+ * Tests for session-client lazy initialization:
+ * - Test 2: Default API configuration
+ * - Test 3: Explicit API configuration
+ * - Test 4: Mock fallback behavior
  * - Test 5: Environment variable configuration
  *
  * These tests validate the lazy initialization pattern implemented
@@ -18,7 +18,7 @@ import { CodeGenerator } from '../CodeGenerator';
 // Mock the API clients with working implementations
 vi.mock('@/lib/codex-api-client', () => {
   class CodexAPIClient {
-    constructor(apiUrl: string, apiKey: string) {}
+    constructor(apiUrl: string) {}
 
     async getStatus() {
       // Simulate async delay for realistic timing
@@ -112,50 +112,33 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
     });
   });
 
-  /**
-   * Test 2: Lazy Initialization - No API Key
-   *
-   * Validates behavior when VITE_CODEX_KEY is not set:
-   * ✅ Error message displayed
-   * ✅ API status shows "Error" (red)
-   * ✅ Generate button is disabled
-   */
-  describe('Test 2: No API Key Scenario', () => {
-    it('[APPROVED] should display info message when API key is missing (mock fallback)', async () => {
-      // Arrange: Remove API key
-      delete import.meta.env.VITE_CODEX_KEY;
+  /** Test the localhost session default without browser credentials. */
+  describe('Test 2: Default API configuration', () => {
+    it('[APPROVED] should use the session client without browser credentials', async () => {
+      delete import.meta.env.VITE_CLI_API_URL;
+      delete import.meta.env.VITE_CODEX_API;
       import.meta.env.DEV = false;
-
-      // Act: Render component
       render(<CodeGenerator />);
 
-      // Assert: Info message appears (component uses mock fallback)
       await waitFor(() => {
-        expect(screen.getByText(/using demo mode.*api key not configured/i)).toBeInTheDocument();
+        expect(screen.getByText('Connected')).toBeInTheDocument();
       }, { timeout: 3000 });
+      expect(screen.queryByText(/using demo mode/i)).not.toBeInTheDocument();
     });
 
-    it('[APPROVED] should show "Connected" status with mock fallback', async () => {
-      delete import.meta.env.VITE_CODEX_KEY;
+    it('[APPROVED] should show a green Connected status', async () => {
       render(<CodeGenerator />);
 
-      // Component now uses mock fallback when no API key, showing "Connected" status
       await waitFor(() => {
         const statusText = screen.getByText(/connected/i);
         expect(statusText).toBeInTheDocument();
-
-        // Verify green status indicator (mock fallback available)
         const statusContainer = statusText.closest('div');
-        const statusDot = statusContainer?.querySelector('.bg-green-500');
-        expect(statusDot).toBeInTheDocument();
-
-        // Verify info message about demo mode
-        expect(screen.getByText(/using demo mode/i)).toBeInTheDocument();
+        expect(statusContainer?.querySelector('.bg-green-500')).toBeInTheDocument();
       }, { timeout: 2000 });
+      expect(screen.queryByText(/using demo mode/i)).not.toBeInTheDocument();
     });
 
-    it('[APPROVED] should enable generate button with mock fallback', async () => {
-      delete import.meta.env.VITE_CODEX_KEY;
+    it('[APPROVED] should enable generate button after session initialization', async () => {
       render(<CodeGenerator />);
 
       // With mock fallback available, button should be enabled (not disabled by apiStatus)
@@ -177,19 +160,10 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
     });
   });
 
-  /**
-   * Test 3: Lazy Initialization - With API Key
-   *
-   * Validates behavior when VITE_CODEX_KEY is set:
-   * ✅ API status checks on mount
-   * ✅ Status shows "Connected" (green) or "Checking" (yellow)
-   * ✅ Generate button is enabled
-   */
-  describe('Test 3: With API Key Scenario', () => {
+  /** Test an explicit loopback API origin. */
+  describe('Test 3: Explicit API configuration', () => {
     beforeEach(() => {
-      // Set valid API key
-      import.meta.env.VITE_CODEX_KEY = 'test-api-key-12345';
-      import.meta.env.VITE_CODEX_API = 'http://localhost:8000';
+      import.meta.env.VITE_CLI_API_URL = 'http://127.0.0.1:8765';
       import.meta.env.DEV = false;
     });
 
@@ -240,15 +214,10 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
   /**
    * Test 4: Mock Fallback Scenario
    *
-   * Validates behavior when API call fails:
-   * ✅ Invalid API key provided
-   * ✅ Mock client activates automatically
-   * ✅ Toast shows "(Demo Mode)"
-   * ✅ Generated code appears
+   * Validates prompt behavior after the primary session path is initialized.
    */
   describe('Test 4: Mock Fallback Scenario', () => {
     it('[APPROVED] should accept prompt input of at least 10 characters', async () => {
-      import.meta.env.VITE_CODEX_KEY = 'invalid-key';
       render(<CodeGenerator />);
 
       const textarea = screen.getByPlaceholderText(/example: create a fastapi endpoint/i);
@@ -263,7 +232,6 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
     });
 
     it('[APPROVED] should show character count and validation', () => {
-      import.meta.env.VITE_CODEX_KEY = 'test-key';
       render(<CodeGenerator />);
 
       const textarea = screen.getByPlaceholderText(/example: create a fastapi endpoint/i);
@@ -275,7 +243,6 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
     });
 
     it('[APPROVED] should have copy and download buttons after generation', async () => {
-      import.meta.env.VITE_CODEX_KEY = 'test-key';
       render(<CodeGenerator />);
 
       // Note: Full generation flow requires API mocking
@@ -306,16 +273,14 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
       expect(screen.getByText(/code generation/i)).toBeInTheDocument();
     });
 
-    it('[APPROVED] should handle various VITE_CODEX_API configurations', () => {
-      // Default
+    it('[APPROVED] should handle various API URL configurations', () => {
+      delete import.meta.env.VITE_CLI_API_URL;
       delete import.meta.env.VITE_CODEX_API;
-      import.meta.env.VITE_CODEX_KEY = 'test';
       const { unmount } = render(<CodeGenerator />);
       expect(screen.getByText(/code generation/i)).toBeInTheDocument();
       unmount();
 
-      // Custom API URL
-      import.meta.env.VITE_CODEX_API = 'https://api.example.com';
+      import.meta.env.VITE_CLI_API_URL = 'https://api.example.com';
       render(<CodeGenerator />);
       expect(screen.getByText(/code generation/i)).toBeInTheDocument();
     });
@@ -328,7 +293,6 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
    */
   describe('Component Structure Validation', () => {
     it('[APPROVED] should render all expected UI sections', () => {
-      import.meta.env.VITE_CODEX_KEY = 'test-key';
       render(<CodeGenerator />);
 
       // Main heading
@@ -346,7 +310,6 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
     });
 
     it('[APPROVED] should show character count with proper formatting', () => {
-      import.meta.env.VITE_CODEX_KEY = 'test-key';
       render(<CodeGenerator />);
 
       // Initial state (0 characters)
@@ -354,7 +317,6 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
     });
 
     it('[APPROVED] should apply correct styling based on validation state', async () => {
-      import.meta.env.VITE_CODEX_KEY = 'test-key';
       render(<CodeGenerator />);
 
       const textarea = screen.getByPlaceholderText(/example: create a fastapi endpoint/i);

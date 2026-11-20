@@ -118,7 +118,7 @@ class TestAuthHeader:
         with patch.dict(
             os.environ, {"CODEX_MASTER_KEY": "masterkey123", "CODEX_BACKUP_KEY": ""}, clear=False
         ):
-            b = BrainClient(base_url="http://x")
+            b = BrainClient(base_url="http://127.0.0.1:8765")
             hdr = b._auth_header()
         assert hdr == {"Authorization": "Bearer masterkey123"}, "hdr is not valid"
 
@@ -126,7 +126,7 @@ class TestAuthHeader:
         env_copy = {k: v for k, v in os.environ.items() if k != "CODEX_MASTER_KEY"}
         env_copy["CODEX_BACKUP_KEY"] = "backupkey456"
         with patch.dict(os.environ, env_copy, clear=True):
-            b = BrainClient(base_url="http://x")
+            b = BrainClient(base_url="http://127.0.0.1:8765")
             hdr = b._auth_header()
         assert hdr == {"Authorization": "Bearer backupkey456"}, "hdr is not valid"
 
@@ -149,7 +149,7 @@ class TestAuthHeader:
         with patch.dict(
             os.environ, {"CODEX_MASTER_KEY": "  trimmed  ", "CODEX_BACKUP_KEY": ""}, clear=False
         ):
-            b = BrainClient(base_url="http://x")
+            b = BrainClient(base_url="http://127.0.0.1:8765")
             hdr = b._auth_header()
         assert hdr == {"Authorization": "Bearer trimmed"}, "hdr is not valid"
 
@@ -164,19 +164,19 @@ def test_installation_token_fallback(name: str) -> None:
     env_copy = {k: v for k, v in os.environ.items() if k not in _AUTH_ENV_VARS}
     env_copy[name] = "  installation-test-key  "
     with patch.dict(os.environ, env_copy, clear=True):
-        assert BrainClient(base_url="http://x")._auth_header() == {
+        assert BrainClient(base_url="http://localhost:8765")._auth_header() == {
             "Authorization": "Bearer installation-test-key"
         }
 
 
-def test_header_is_sent_without_logging_credentials(caplog) -> None:
+def test_public_health_does_not_send_or_log_credentials(caplog) -> None:
     with (
         patch.dict(os.environ, {"CODEX_MASTER_KEY": "wire-test-key"}, clear=True),
         patch("urllib.request.urlopen", return_value=_make_response({"status": "ok"})) as send,
     ):
-        BrainClient(base_url="http://x").health()
+        BrainClient(base_url="http://127.0.0.1:8765").health()
     request = send.call_args.args[0]
-    assert request.get_header("Authorization") == "Bearer wire-test-key"
+    assert request.get_header("Authorization") is None
     assert "wire-test-key" not in caplog.text
 
 
@@ -547,7 +547,7 @@ class TestAuthHeaderSentOnRequests:
         }
         captured, fake = self._capture_headers(payload)
         with patch.dict(os.environ, {"CODEX_MASTER_KEY": "secretkey"}, clear=False):
-            b = BrainClient(base_url="http://x")
+            b = BrainClient(base_url="http://127.0.0.1:8765")
             with patch("urllib.request.urlopen", side_effect=fake):
                 b.memory_state()
         assert len(captured) == 1, "Captured must not be empty"
@@ -558,7 +558,7 @@ class TestAuthHeaderSentOnRequests:
     def test_memory_search_sends_auth_header(self) -> None:
         captured, fake = self._capture_headers({"items": [], "total": 0})
         with patch.dict(os.environ, {"CODEX_MASTER_KEY": "searchkey"}, clear=False):
-            b = BrainClient(base_url="http://x")
+            b = BrainClient(base_url="http://127.0.0.1:8765")
             with patch("urllib.request.urlopen", side_effect=fake):
                 b.memory_search("test query")
         assert len(captured) == 1, "Captured must not be empty"
@@ -590,7 +590,7 @@ class TestAuthHeaderSentOnRequests:
         env_copy = {k: v for k, v in os.environ.items() if k != "CODEX_MASTER_KEY"}
         env_copy["CODEX_BACKUP_KEY"] = "backuptoken"
         with patch.dict(os.environ, env_copy, clear=True):
-            b = BrainClient(base_url="http://x")
+            b = BrainClient(base_url="http://127.0.0.1:8765")
             with patch("urllib.request.urlopen", side_effect=fake):
                 b.memory_state()
         assert len(captured) == 1, "Captured must not be empty"

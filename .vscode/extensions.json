@@ -4,6 +4,7 @@
     "github.copilot-chat",
     "github.vscode-pull-request-github",
     "github.vscode-github-actions",
+    "ms-playwright.playwright",
     "ms-python.python",
     "ms-python.vscode-pylance",
     "ms-python.debugpy",

@@ -11,8 +11,16 @@
 # ─────────────────────────────────────────────────────────────────────────────
 set -euo pipefail
 
-WORKSPACE="${CODESPACE_VSCODE_FOLDER:-/workspaces/_codex_}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(git -C "${SCRIPT_DIR}/../.." rev-parse --show-toplevel)"
+WORKSPACE="${CODESPACE_VSCODE_FOLDER:-${REPO_ROOT}}"
+VENV="${WORKSPACE}/.venv"
 cd "$WORKSPACE"
+
+if [ ! -x "${VENV}/bin/python" ]; then
+    python3.12 -m venv "$VENV"
+fi
+PYTHON_BIN="${VENV}/bin/python"
 
 echo "══════════════════════════════════════════════════════════"
 echo "  Codex Codespace — update-content (Phase 3+4)"
@@ -20,10 +28,10 @@ echo "════════════════════════�
 
 # ── Python — upgrade pip, install project + dev dependencies ─────────────────
 echo "🐍 Installing Python dependencies…"
-python -m pip install --upgrade pip --quiet
+"$PYTHON_BIN" -m pip install --upgrade pip --quiet
 
 # Core project + all dev extras (matches copilot-setup-steps.yml standard profile)
-pip install --cache-dir "$HOME/.cache/pip" \
+"$PYTHON_BIN" -m pip install --cache-dir "$HOME/.cache/pip" \
     pytest==8.4.2 \
     pytest-timeout==2.4.0 \
     pytest-xdist==3.8.0 \
@@ -34,11 +42,11 @@ pip install --cache-dir "$HOME/.cache/pip" \
     pytest-rerunfailures \
     --quiet
 
-pip install --cache-dir "$HOME/.cache/pip" -e ".[dev]" --quiet 2>/dev/null || \
-pip install --cache-dir "$HOME/.cache/pip" -e "." --quiet
+"$PYTHON_BIN" -m pip install --cache-dir "$HOME/.cache/pip" -e ".[dev]" --quiet 2>/dev/null || \
+"$PYTHON_BIN" -m pip install --cache-dir "$HOME/.cache/pip" -e "." --quiet
 
 # Code quality tools (same as copilot-setup-steps.yml)
-pip install --cache-dir "$HOME/.cache/pip" \
+"$PYTHON_BIN" -m pip install --cache-dir "$HOME/.cache/pip" \
     ruff \
     black \
     mypy \
@@ -47,21 +55,36 @@ pip install --cache-dir "$HOME/.cache/pip" \
     --quiet
 
 # Cognitive Brain server deps (always needed for CLI API server)
-pip install --cache-dir "$HOME/.cache/pip" \
+"$PYTHON_BIN" -m pip install --cache-dir "$HOME/.cache/pip" \
     "fastapi>=0.110.0,<1.0" \
     "uvicorn[standard]>=0.29.0,<1.0" \
     "httpx>=0.27.0,<1.0" \
     "cryptography>=42.0.0,<47.0.0" \
     --quiet
 
+"$PYTHON_BIN" scripts/autonomous/install_gh_user.py
+bash scripts/autonomous/install_node_user.sh
+export PATH="${HOME}/.local/bin:${PATH}"
+
 echo "  Python packages installed:"
-pip list --format=columns 2>/dev/null | grep -E "^(pytest|ruff|black|mypy|fastapi|uvicorn|httpx|cryptography|codex)" || true
+"$PYTHON_BIN" -m pip list --format=columns 2>/dev/null | grep -E "^(pytest|ruff|black|mypy|fastapi|uvicorn|httpx|cryptography|codex)" || true
 
 # ── Node.js ───────────────────────────────────────────────────────────────────
 if command -v npm &>/dev/null && [ -f package.json ]; then
     echo "📦 Installing Node.js dependencies…"
-    npm ci --prefer-offline --no-audit --quiet || npm install --no-audit --quiet
+    npm ci --prefer-offline --no-audit --quiet
     echo "✅ Node.js deps installed"
+fi
+
+if command -v npm &>/dev/null && [ -f cognitive_app/package-lock.json ]; then
+    echo "📦 Installing Cognitive App dependencies…"
+    npm --prefix cognitive_app ci --prefer-offline --no-audit --quiet
+    echo "✅ Cognitive App deps installed"
+fi
+
+if bash scripts/autonomous/install_chromium_user.sh && \
+   [ -x "${HOME}/.local/bin/chromium" ]; then
+    export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH="${HOME}/.local/bin/chromium"
 fi
 
 # ── Rust ─────────────────────────────────────────────────────────────────────
@@ -72,9 +95,9 @@ if command -v cargo &>/dev/null && [ -f Cargo.toml ]; then
 fi
 
 # ── pre-commit hooks ─────────────────────────────────────────────────────────
-if [ -f .pre-commit-config.yaml ] && command -v pre-commit &>/dev/null; then
+if [ -f .pre-commit-config.yaml ] && [ -x "${VENV}/bin/pre-commit" ]; then
     echo "🔗 Installing pre-commit hooks…"
-    pre-commit install --install-hooks --quiet || true
+    "${VENV}/bin/pre-commit" install --install-hooks --quiet || true
     echo "✅ pre-commit hooks installed"
 fi
 

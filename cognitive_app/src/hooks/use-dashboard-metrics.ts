@@ -1,10 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { CodexAPIClient, DashboardMetrics } from '@/lib/codex-api-client';
 
-const API_URL = import.meta.env.VITE_CODEX_API || 'http://localhost:8000';
-const API_KEY = import.meta.env.VITE_CODEX_KEY || 'demo-key';
-
-const client = new CodexAPIClient(API_URL, API_KEY);
+const client = new CodexAPIClient();
 
 export function useDashboardMetrics(autoRefresh = true, intervalMs = 10000) {
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);

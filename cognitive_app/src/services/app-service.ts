@@ -53,25 +53,17 @@ export class AppService {
   private mockClientRef: MockCodexAPIClient | null = null;
   private sparkClientRef: SparkLLMClient | null = null;
 
-  private createClient(): CodexAPIClient | null {
-    const apiKey = import.meta.env.VITE_CODEX_KEY;
-    const apiUrl = import.meta.env.VITE_CODEX_API || 'http://localhost:8000';
-    if (!apiKey) {
-      this.clientRef = null;
-      this.clientConfigKey = null;
-      return null;
-    }
-
-    const configKey = `${apiUrl}:${apiKey}`;
-    if (!this.clientRef || this.clientConfigKey !== configKey) {
-      this.clientRef = new CodexAPIClient(apiUrl, apiKey);
-      this.clientConfigKey = configKey;
+  private createClient(): CodexAPIClient {
+    const apiUrl = import.meta.env.VITE_CODEX_API?.trim() || 'http://localhost:8000';
+    if (!this.clientRef || this.clientConfigKey !== apiUrl) {
+      this.clientRef = new CodexAPIClient(apiUrl, false);
+      this.clientConfigKey = apiUrl;
     }
 
     return this.clientRef;
   }
 
-  private getClient(): CodexAPIClient | null {
+  private getClient(): CodexAPIClient {
     return this.createClient();
   }
 
@@ -133,24 +125,6 @@ export class AppService {
     }
 
     const client = this.getClient();
-    if (!client) {
-      try {
-        await this.getMockClient().getStatus();
-        return {
-          status: 'connected',
-          error: null,
-          message: 'Using demo mode (API key not configured)',
-        };
-      } catch (error) {
-        console.error('Mock client status check failed:', error);
-        return {
-          status: 'error',
-          error: 'Demo mode unavailable',
-          message: null,
-        };
-      }
-    }
-
     try {
       await client.getStatus();
       return {
@@ -194,26 +168,19 @@ export class AppService {
     }
 
     const client = this.getClient();
-    if (client) {
-      try {
-        const response = await client.generateCode(this.buildRequest(request.prompt, language, model));
-        return { source: 'api', response };
-      } catch (error) {
-        if (error instanceof CodexAPIError && error.statusCode === 429) {
-          throw error;
-        }
-
-        const mockResponse = await this.getMockClient().generateCode(
-          this.buildRequest(request.prompt, language, model),
-        );
-        return { source: 'mock', response: mockResponse, fallbackError: error };
+    try {
+      const response = await client.generateCode(this.buildRequest(request.prompt, language, model));
+      return { source: 'api', response };
+    } catch (error) {
+      if (error instanceof CodexAPIError && error.statusCode === 429) {
+        throw error;
       }
-    }
 
-    const mockResponse = await this.getMockClient().generateCode(
-      this.buildRequest(request.prompt, language, model),
-    );
-    return { source: 'mock', response: mockResponse };
+      const mockResponse = await this.getMockClient().generateCode(
+        this.buildRequest(request.prompt, language, model),
+      );
+      return { source: 'mock', response: mockResponse, fallbackError: error };
+    }
   }
 }
 
