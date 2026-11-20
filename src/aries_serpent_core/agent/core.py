@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 else:
     try:
         from agent.core import AgentConfig, AgentCore
-    except ImportError:  # pragma: no cover - fallback for repo checkout or legacy path
-        from src.agent.core import AgentConfig, AgentCore
+    except ImportError:  # pragma: no cover - fallback for legacy package layout
+        from aries_serpent_core.agent.core import AgentConfig, AgentCore
 
 __all__ = ["AgentConfig", "AgentCore"]
