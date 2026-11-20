@@ -31,7 +31,7 @@ if str(_SRC) not in sys.path:
 # Skip entire module if numpy (a transitive RAG dependency) is missing so
 # tests can be collected without error in minimal environments.
 # ---------------------------------------------------------------------------
-pytest.importorskip(
+np = pytest.importorskip(
     "numpy",
     reason="numpy not installed — RAG coverage tests require the full RAG extras",
 )
@@ -84,6 +84,95 @@ _FALLBACK_CHUNKS = [
 ]
 
 
+class TestRetrieverCoreBehavior:
+    """Exercise the primary Retriever query and provenance paths with mocks."""
+
+    def test_query_returns_empty_without_loaded_index(self):
+        _mod = _import_retriever()
+        retriever = _bare_retriever(_mod)
+
+        assert retriever.query("anything") == []
+
+    def test_query_rejects_empty_text(self):
+        _mod = _import_retriever()
+        retriever = _bare_retriever(_mod, _FALLBACK_CHUNKS)
+        retriever.faiss_index = MagicMock()
+        retriever.model = MagicMock()
+
+        assert retriever.query("   ") == []
+        retriever.model.encode.assert_not_called()
+
+    def test_query_builds_provenance_results_and_filters_invalid_matches(self):
+        _mod = _import_retriever()
+        retriever = _bare_retriever(
+            _mod,
+            [
+                {"id": 7, "text": "alpha", "file": "docs/a.md", "start": 160, "end": 240},
+                {"id": 8, "text": "beta", "start": 80, "end": 160, "text_hash": "hash-b"},
+            ],
+        )
+        retriever.model = MagicMock()
+        retriever.model.encode.return_value = np.array([[1.0, 0.0]], dtype=np.float32)
+        retriever.faiss_index = MagicMock()
+        retriever.faiss_index.search.return_value = (
+            np.array([[0.25, 0.75]], dtype=np.float32),
+            np.array([[1, -1]], dtype=np.int64),
+        )
+
+        results = retriever.query("alpha", top_k=2, min_score=0.5)
+
+        assert len(results) == 1
+        assert results[0]["text"] == "beta"
+        assert results[0]["file"] == "unknown"
+        assert results[0]["start_line"] == 2
+        assert results[0]["end_line"] == 3
+        assert results[0]["score"] == 0.25
+        assert results[0]["chunk_id"] == 8
+        assert results[0]["text_hash"] == "hash-b"
+
+    def test_query_normalizes_nonpositive_top_k(self):
+        _mod = _import_retriever()
+        retriever = _bare_retriever(_mod, _FALLBACK_CHUNKS)
+        retriever.model = MagicMock()
+        retriever.model.encode.return_value = np.array([[1.0, 0.0]], dtype=np.float32)
+        retriever.faiss_index = MagicMock()
+        retriever.faiss_index.search.return_value = (
+            np.array([[0.25]], dtype=np.float32),
+            np.array([[0]], dtype=np.int64),
+        )
+
+        results = retriever.query("query", top_k=0)
+
+        assert len(results) == 1
+        retriever.faiss_index.search.assert_called_once()
+        assert retriever.faiss_index.search.call_args.args[1] == 5
+
+    def test_line_and_file_metadata_helpers(self):
+        _mod = _import_retriever()
+        retriever = _bare_retriever(_mod)
+
+        assert retriever._estimate_line_number(0) == 1
+        assert retriever._estimate_line_number(160) == 3
+        assert retriever._extract_file_from_metadata({"file": "docs/a.md"}) == "docs/a.md"
+        assert retriever._extract_file_from_metadata({"text": "plain"}) == "unknown"
+
+    def test_get_stats_and_reload(self):
+        _mod = _import_retriever()
+        retriever = _bare_retriever(_mod, _FALLBACK_CHUNKS)
+        retriever.index_name = "docs"
+        retriever.tenant_id = "tenant-a"
+        retriever.index_metadata = {"dimension": 16}
+        retriever.faiss_index = SimpleNamespace(ntotal=2)
+
+        stats = retriever.get_stats()
+        assert stats["num_vectors"] == 2
+        assert stats["num_chunks"] == 2
+
+        with patch.object(retriever, "_load_index") as mock_load:
+            retriever.reload()
+        mock_load.assert_called_once()
+
+
 # ===========================================================================
 # retriever.py — _load_model error paths (lines 78-103)
 # ===========================================================================
@@ -101,7 +190,7 @@ class TestRetrieverLoadModelErrors:
 
     _SAFE_LOAD = "aries_serpent_core.rag._model_utils.safe_load_sentence_transformer"
 
-    def test_load_model_without_st_and_chunks_raises_import_error(self):
+    def test_load_model_without_st_and_chunks_stays_unloaded(self):
         _mod = _import_retriever()
 
         with (
@@ -109,22 +198,30 @@ class TestRetrieverLoadModelErrors:
             patch(self._SAFE_LOAD) as mock_safe_load,
         ):
             r = _bare_retriever(_mod)
-            with pytest.raises(ImportError, match="TF-IDF fallback requires chunk text"):
-                r._load_model()
+            r._load_model()
         mock_safe_load.assert_not_called()
+        assert r.model is None
 
     def test_load_model_uses_tfidf_when_sentence_transformers_none(self):
         _mod = _import_retriever()
-        from aries_serpent_core.rag.embeddings import TfidfEmbeddingProvider
+        provider = MagicMock()
 
         with (
             patch.object(_mod, "SentenceTransformer", None),
             patch(self._SAFE_LOAD) as mock_safe_load,
+            patch(
+                "aries_serpent_core.rag.embeddings.TfidfEmbeddingProvider",
+                return_value=provider,
+            ) as mock_provider,
         ):
             r = _bare_retriever(_mod, _FALLBACK_CHUNKS)
             r._load_model()
         mock_safe_load.assert_not_called()
-        assert isinstance(r.model, TfidfEmbeddingProvider), "expected TF-IDF fallback model"
+        mock_provider.assert_called_once_with(max_features=16)
+        provider.encode.assert_called_once_with(
+            ["python retrieval augmented generation", "faiss vector index similarity search"]
+        )
+        assert r.model is provider
 
     @pytest.mark.parametrize(
         "exc",
@@ -133,16 +230,24 @@ class TestRetrieverLoadModelErrors:
     )
     def test_load_model_falls_back_to_tfidf_on_load_error(self, exc):
         _mod = _import_retriever()
-        from aries_serpent_core.rag.embeddings import TfidfEmbeddingProvider
+        provider = MagicMock()
 
         with (
             patch.object(_mod, "SentenceTransformer", MagicMock()),
             patch(self._SAFE_LOAD, side_effect=exc) as mock_safe_load,
+            patch(
+                "aries_serpent_core.rag.embeddings.TfidfEmbeddingProvider",
+                return_value=provider,
+            ) as mock_provider,
         ):
             r = _bare_retriever(_mod, _FALLBACK_CHUNKS)
             r._load_model()
         mock_safe_load.assert_called_once_with("test-model", None)
-        assert isinstance(r.model, TfidfEmbeddingProvider), "expected TF-IDF fallback model"
+        mock_provider.assert_called_once_with(max_features=16)
+        provider.encode.assert_called_once_with(
+            ["python retrieval augmented generation", "faiss vector index similarity search"]
+        )
+        assert r.model is provider
 
     def test_load_model_error_without_chunks_raises_import_error(self):
         """A load failure with no chunk text cannot fall back and surfaces ImportError."""

@@ -85,6 +85,13 @@ class Retriever:
     def _load_model(self) -> None:
         """Load embedding model for query encoding."""
         if SentenceTransformer is None:
+            if not self.chunks_metadata:
+                logger.warning(
+                    "sentence-transformers not installed and no index chunks are loaded; "
+                    "retriever will remain unloaded"
+                )
+                self.model = None
+                return
             logger.warning(
                 "sentence-transformers not installed; using TF-IDF fallback for query encoding"
             )
