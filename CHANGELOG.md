@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Added — Cognitive Brain maintainer middleware checkpoint (2026-11-19)
+- Add the 42-file `clone-main` maintainer stack: authenticated/idempotent route execution, Codespace/VS Code portability, permission azimuth probes, resumable `gh`/Node/Chromium tooling, MCP stdio bridging, and browser-safe HttpOnly UI sessions.
+- Record the exact transplant evidence, focused backend/MCP/frontend validation, remaining WEC/hosted-check blockers, and current merge-readiness metadata without claiming platform approval.
+
+### Fixed — PR #5835 maintainer middleware review reconciliation
+- Require one-time server-issued UI bootstrap capabilities, centralize browser session transport, normalize local/forwarded Codespaces origins, and remove browser-visible bearer credentials.
+- Remove client-authorized writes, atomically replay completed idempotent operations, report truthful adapter states, redact public exceptions and request-derived logs, constrain outbound URLs, and normalize probe transport failures.
+- Replace Alpine-only Node/Chromium setup with the Debian devcontainer contract and checksum-pinned or Playwright-managed fallbacks; add focused security, concurrency, portability, and real-browser regressions.
+- Replace the remaining server `urllib` wrapper with a literal-URL `httpx` GitHub preflight, disabling redirects and proving stale-credential fallthrough.
+
 ### Fixed - #5766 merge conflicts after #5812 landed on `main`
 
 - Merge `main` (`195427c333`, hotfix #5812) into `0D_base_` (`83dd0fb099`, after #5813).
@@ -192,17 +202,6 @@
 ### Fixed — PR #5765 readiness follow-up (2026-11-09)
 - Remove the documented Codespace guide's trailing whitespace found by Fast Validation, and keep Rust advisory auditing available to fork pull requests without asking their read-only token to publish a check.
 - Record the verified preflight push denial and no-job startup failure separately from local checks; current hosted checks remain action-required and review approval is not established.
-
-### Added — Cognitive Brain maintainer middleware checkpoint (2026-11-19)
-- Add the 42-file `clone-main` maintainer stack: authenticated/idempotent route execution, Codespace/VS Code portability, permission azimuth probes, resumable `gh`/Node/Chromium tooling, MCP stdio bridging, and browser-safe HttpOnly UI sessions.
-- Record the exact transplant evidence, focused backend/MCP/frontend validation, remaining WEC/hosted-check blockers, and current merge-readiness metadata without claiming platform approval.
-
-### Fixed — PR #5835 maintainer middleware review reconciliation
-- Require one-time server-issued UI bootstrap capabilities, centralize browser session transport, normalize local/forwarded Codespaces origins, and remove browser-visible bearer credentials.
-- Remove client-authorized writes, atomically replay completed idempotent operations, report truthful adapter states, redact public exceptions and request-derived logs, constrain outbound URLs, and normalize probe transport failures.
-- Replace Alpine-only Node/Chromium setup with the Debian devcontainer contract and checksum-pinned or Playwright-managed fallbacks; add focused security, concurrency, portability, and real-browser regressions.
-- Replace the remaining server `urllib` wrapper with a literal-URL `httpx` GitHub preflight, disabling redirects and proving stale-credential fallthrough.
-
 ### Fixed - baseline CodeQL URL and permission fixtures (2026-11-17)
 - Match parsed hostnames instead of URL prefixes and use owner-only fixture modes while preserving permission-denial coverage.
 - Record focused validation separately from pending hosted security analysis and independent approval.
