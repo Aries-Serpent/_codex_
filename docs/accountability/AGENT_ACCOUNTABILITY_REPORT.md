@@ -1,3 +1,17 @@
+## Session: issue 5802 Pattern 19 remediation (2026-11-20)
+
+### Agents Used
+
+- None — direct execution (no delegated agents).
+
+### Execution and evidence
+
+- Removed actionable `src.*` import prefixes from `src/aries_serpent_core/agent/core.py` and `src/codex/logging/session_logger.py`.
+- Auto-fix inventory improved from 5,613 findings / 35 auto-fixable to 5,611 findings / 35 auto-fixable; Pattern 19 changed from 2 findings to 0.
+- Focused agent/session-logger tests: 71 passed.
+- Ruff, Black, isort, compileall, and `git diff --check` passed.
+- No PR, branch push, hosted CI result, merge, or issue closure is claimed.
+
 ## Session: resolve #5766 merge conflicts after #5812 (2026-11-14)
 
 ### Agents Used

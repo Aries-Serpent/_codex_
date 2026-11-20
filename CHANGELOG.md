@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed - Pattern 19 src-import remediation (2026-11-20)
+- Remove actionable `src.*` import prefixes from the agent compatibility fallback and session logger shim.
+- Auto-fix inventory improved from 5,613 to 5,611 findings; Pattern 19 changed from 2 findings to 0.
+- Validate with 71 focused tests, Ruff, Black, isort, compileall, and `git diff --check`; issue #5802 remains open until PR and scorecard evidence are complete.
+
 ### Fixed - PR #5766 live review-comment and RAG readiness repair (2026-11-20)
 - Add a locked `brain-api` Codespace extra, bind route reconciliation to the live execution owner, hash safety-audit fragments, and clean up the tenant, Torch-stub, and API test review findings without weakening behavior.
 - Remove the stale ChromaDB prerequisite from the RAG workflow now that FAISS is the supported store, and record the four `_update_path` findings as current-signature false positives rather than applying a no-op rename.
