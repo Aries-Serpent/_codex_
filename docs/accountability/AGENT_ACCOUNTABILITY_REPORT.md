@@ -1,5 +1,9 @@
 ## Session: resolve #5766 merge conflicts after #5812 (2026-11-14)
 
+### Agents Used
+
+- None — direct execution (no delegated agents).
+
 ### Execution and evidence
 
 - Direct execution (no delegated agents). Ran `git merge --no-ff origin/main` on
@@ -25673,6 +25677,8 @@ has not been recorded.
 ### Authority and Residuals
 - No bypass, alert dismissal, severity reduction, or hosted merge was used. Live checks must validate the final pushed SHA, and the strict readiness auditor must pass after commit with every registered worktree included before Codespace termination.
 - The ignored clone-worktree Codex API client test was classified as duplicate of tracked brain-session coverage and was not force-added. Raw `/tmp`, platform secrets, caches, databases, logs, sockets, and runtime tokens remain uncommitted.
+### Agents Used
+- None — direct execution (no delegated agents).
 
 ---
 
