@@ -117,14 +117,15 @@ class TestRetrieverModelLoading:
 
         assert hasattr(Retriever, "_load_model")
 
-    @patch("codex.rag.retriever.SentenceTransformer", None)
-    def test_load_model_without_sentence_transformers_raises(self):
-        """Without neural dependencies, an empty corpus cannot fit the fallback."""
-        from codex.rag.retriever import Retriever
+    @patch("aries_serpent_core.rag.retriever.SentenceTransformer", None)
+    def test_load_model_without_sentence_transformers_stays_unloaded(self):
+        """Without a loaded index, missing neural dependencies leave the retriever unloaded."""
+        from aries_serpent_core.rag.retriever import Retriever
 
-        with patch.object(Retriever, "_load_index"):
-            with pytest.raises(ImportError, match="TF-IDF fallback requires chunk text metadata"):
-                Retriever()
+        with patch("aries_serpent_core.rag.indexer.load_index", side_effect=FileNotFoundError):
+            retriever = Retriever()
+
+        assert retriever.model is None
 
     def test_load_model_uses_hf_token(self, monkeypatch, tmp_path):
         """Exercise the shared loader and assert the external constructor contract."""
