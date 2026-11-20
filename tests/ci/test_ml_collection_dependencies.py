@@ -278,3 +278,18 @@ def test_cognitive_app_build_jobs_use_larger_runner():
     deployment = yaml.safe_load((root / ".github/workflows/unified-deployment.yml").read_text())
     assert pages["jobs"]["build"]["runs-on"] == "ubuntu-latest-m"
     assert deployment["jobs"]["build_cognitive_app"]["runs-on"] == "ubuntu-latest-m"
+
+
+def test_cognitive_app_diagnostics_are_observation_only_and_use_larger_runner():
+    root = Path(__file__).resolve().parents[2]
+    workflow = yaml.safe_load(
+        (root / ".github/workflows/code-quality-coverage-suite.yml").read_text()
+    )
+    text = (root / ".github/workflows/code-quality-coverage-suite.yml").read_text()
+    job = workflow["jobs"]["frontend-diagnostics"]
+    assert job["runs-on"] == "ubuntu-latest-m"
+    assert "cognitive_app/" in text
+    assert "copilot/extension/" in text
+    assert "tsc --noEmit" in text
+    assert "npm run lint" in text
+    assert "npm audit --json" in text
