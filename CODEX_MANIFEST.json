@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-11-19T08:09:42Z",
+  "generated_at": "2026-11-21T07:51:23Z",
   "agents": [
     {
       "name": "cdx-archive-lifecycle",
@@ -1386,5 +1386,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "d6ade9f1d39aad748e58489135d7165e0dfe1fbe5dad095e3d35f76177a3785d"
+  "integrity_sha256": "6f9df8af6cc8db2df9c8f5641efdd91c47db34836c8e10231d6b983181b9cfe5"
 }

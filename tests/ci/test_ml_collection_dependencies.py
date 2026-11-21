@@ -270,3 +270,18 @@ def test_coverage_shard_installs_and_preflights_optional_test_integrations():
         "pywt",
         "cv2",
     } <= imports
+
+
+def test_cognitive_app_diagnostics_are_observation_only():
+    root = Path(__file__).resolve().parents[2]
+    workflow = yaml.safe_load(
+        (root / ".github/workflows/code-quality-coverage-suite.yml").read_text()
+    )
+    text = (root / ".github/workflows/code-quality-coverage-suite.yml").read_text()
+    job = workflow["jobs"]["frontend-diagnostics"]
+    assert job["runs-on"] == "ubuntu-latest-m"
+    assert "cognitive_app/" in text
+    assert "node node_modules/typescript/bin/tsc --noEmit" in text
+    assert "npm run lint" in text
+    assert "npm audit --json" in text
+    assert "continue-on-error: true" in text
