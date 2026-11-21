@@ -185,7 +185,7 @@ jobs:
           \ All 5 dependent workflows validate (validated by tests)\\n`;\nmarkdown\
           \ += `- ${totalFailed === 0 ? '\u2705' : '\u274C'} Security/secrets tests\
           \ pass\\n`;\nmarkdown += `- \u23F3 File size within acceptable range (validated\
-          \ by tests)\\n`;\nmarkdown += `- \u23F3 At least 1 human reviewer approval\\\
+          \ by tests)\n`;\nmarkdown += `- \u23F3 Exact-SHA AI reviewer approval under @mbaetiong D-tier owner authorization\\\n`;
           n`;\n\n// Post or update comment\nconst { data: comments } = await github.rest.issues.listComments({\n\
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
           \ context.issue.number,\n});\n\nconst botComment = comments.find(comment\

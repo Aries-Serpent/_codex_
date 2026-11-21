@@ -373,7 +373,8 @@ Detect → Classify → Remediate → Verify
 ### RC-6 — Staging-Gate Merge Commit Misclassified as CODE-LEAK ✅ FIXED (S146)
 
 **Root cause:** After a `0D_base_` → `main` staging-gate PR merges, GitHub creates
-a merge commit authored by the human reviewer (e.g., `Merge pull request #3777 from
+a merge commit authored by the automated merge authority (human owner or AI
+workflow actor), e.g., `Merge pull request #3777 from
 Aries-Serpent/0D_base_`). The `IS_AUTOGEN` classifier only accepts `github-actions[bot]`,
 so this normal pipeline commit was classified as **CODE-LEAK** → `severity=CRITICAL`.
 This triggered spurious @copilot rescue sessions after every staging-gate merge.

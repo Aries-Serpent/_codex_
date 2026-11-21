@@ -36,7 +36,7 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-latest
+          - ubuntu-latest-m
         python-version:
           - '3.12'
         test-suite:
@@ -140,7 +140,7 @@ jobs:
   integration-shard:
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-m
     needs: test-ml-components
     strategy:
       fail-fast: false
@@ -249,7 +249,7 @@ jobs:
   coverage-shard:
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-m
     needs: test-ml-components
     strategy:
       fail-fast: false
@@ -419,15 +419,15 @@ jobs:
       - name: Ratchet quarantine and coverage floor against PR base
         if: always() && github.event_name == 'pull_request'
         env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           ML_QUARANTINE_GROWTH_APPROVED: ${{ contains(github.event.pull_request.labels.*.name, 'quarantine-approved') && '1' || '0' }}
         run: |
           set -euo pipefail
-          parents="$(git rev-list --parents -n 1 HEAD | wc -w)"
-          if [ "$parents" -ne 3 ]; then
-            echo "::error::Expected the pull_request merge commit; cannot identify the base"
+          if ! printf '%s' "${PR_BASE_SHA}" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "::error::Unexpected pull_request base SHA"
             exit 1
           fi
-          python scripts/ci/ml_slow_aggregate.py ratchet --base-ref HEAD^1 \
+          python scripts/ci/ml_slow_aggregate.py ratchet --base-ref "${PR_BASE_SHA}" \
             --floor-file .codex/baselines/ml_unit_coverage_floor.json \
             --quarantine .codex/baselines/ml_unit_quarantine.json
 

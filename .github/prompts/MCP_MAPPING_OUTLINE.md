@@ -47,7 +47,7 @@ E. Validation Plan
 
 **Intended role**:
 
-- Anchor for Copilot’s deep reasoning and for human reviewers.
+- Anchor for Copilot’s deep reasoning and for exact-SHA AI reviewers.
 - Source-of-truth for MCP design decisions & mapping.
 - Relatively internal; you don’t need to wire it into mkdocs immediately.
 
