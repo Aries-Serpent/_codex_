@@ -388,7 +388,7 @@ def main() -> int:
     status, repo = api_request(pat, "GET", f"/repos/{owner}/{repo_name}")
     repo_id = repo.get("id") if status == 200 and isinstance(repo, dict) else None
 
-    report: dict[str, object] = {
+    dry_run_report: dict[str, object] = {
         "dry_run": args.dry_run,
         "app_id_resolved": bool(credentials["app_id"]),
         "installation_id_resolved": bool(credentials["installation_id"]),
@@ -397,15 +397,16 @@ def main() -> int:
     }
 
     if args.dry_run:
-        report["actions"] = {
+        dry_run_report["actions"] = {
             "sync_app_secrets": sync_app,
             "set_owner_protected_secret": set_owner_secret,
             "configure_owner_environment": configure_owner,
             "setup_git_signing": setup_signing,
         }
-        print(json.dumps(report, sort_keys=True) if args.json else report)
+        print(json.dumps(dry_run_report, sort_keys=True) if args.json else dry_run_report)
         return 0
 
+    report: dict[str, object] = dict(dry_run_report)
     if sync_app and repo_id:
         app_secrets = {
             "_GITHUB_APP_ID": credentials["app_id"],
@@ -417,28 +418,37 @@ def main() -> int:
         app_status = {}
         for name, value in app_secrets.items():
             if value:
-                ok, status = set_repo_secret(pat, owner, repo_name, name, value)
-                app_status[name] = {"synced": ok, "status": status}
-                ok, status = set_codespace_secret(pat, int(repo_id), name, value)
-                app_status[name]["codespace_synced"] = ok
+                repo_synced, _ = set_repo_secret(pat, owner, repo_name, name, value)
+                codespace_synced, _ = set_codespace_secret(pat, int(repo_id), name, value)
+                app_status[name] = {
+                    "repo_synced": bool(repo_synced),
+                    "codespace_synced": bool(codespace_synced),
+                }
         report["app_secrets"] = app_status
 
     if set_owner_secret and repo_id:
-        ok, status = set_environment_secret(
+        owner_secret_synced, _ = set_environment_secret(
             pat,
             int(repo_id),
             "owner-approval",
             "OWNER_APPROVAL_PROTECTED",
             "true",
         )
-        report["owner_protected_secret"] = {"synced": ok, "status": status}
+        report["owner_protected_secret"] = {"synced": bool(owner_secret_synced)}
 
     if configure_owner:
         report["owner_environment"] = configure_owner_environment(pat, owner, repo_name)
         report["agent_environment"] = configure_agent_environment(pat, owner, repo_name)
 
     if setup_signing:
-        report["git_signing"] = setup_git_signing(owner, repo_name)
+        signing_result = setup_git_signing(owner, repo_name)
+        report["git_signing"] = {
+            "configured": bool(signing_result.get("configured")),
+            "public_key_registered": bool(signing_result.get("public_key_registered")),
+            "codespace_signing_key_synced": bool(
+                signing_result.get("codespace_signing_key_synced")
+            ),
+        }
 
     print(
         json.dumps(report, sort_keys=True)

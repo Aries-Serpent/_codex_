@@ -76,7 +76,6 @@ def test_main_report_excludes_resolved_secret_values(monkeypatch: Any, capsys: A
     for canary in ("pat-canary", "private-key-canary", "client-secret-canary"):
         assert canary not in output
     assert report["app_secrets"]["_GITHUB_APP_PRIVATE_KEY"] == {
-        "synced": True,
-        "status": "synced",
+        "repo_synced": True,
         "codespace_synced": True,
     }
