@@ -379,12 +379,6 @@ def main() -> int:
         print(json.dumps(report, sort_keys=True) if args.json else report)
         return 1
 
-    credentials = resolve_app_credentials()
-    if not credentials["installation_id"]:
-        credentials["installation_id"] = recover_installation_id(
-            credentials["app_id"], credentials["private_key"], owner
-        )
-
     status, repo = api_request(pat, "GET", f"/repos/{owner}/{repo_name}")
     repo_id = repo.get("id") if status == 200 and isinstance(repo, dict) else None
 
@@ -403,6 +397,12 @@ def main() -> int:
         print(json.dumps(dry_run_report, sort_keys=True) if args.json else dry_run_report)
         return 0
 
+    credentials = resolve_app_credentials()
+    if not credentials["installation_id"]:
+        credentials["installation_id"] = recover_installation_id(
+            credentials["app_id"], credentials["private_key"], owner
+        )
+
     report: dict[str, object] = {"dry_run": False, "repo_id": repo_id}
     if sync_app and repo_id:
         app_secrets = {
@@ -412,16 +412,16 @@ def main() -> int:
         }
         if credentials["client_secret"]:
             app_secrets["_GITHUB_APP_CLIENT_SECRET"] = credentials["client_secret"]
-        app_status = {}
         for name, value in app_secrets.items():
-            if value:
-                repo_synced, _ = set_repo_secret(pat, owner, repo_name, name, value)
-                codespace_synced, _ = set_codespace_secret(pat, int(repo_id), name, value)
-                app_status[name] = {
-                    "repo_synced": bool(repo_synced),
-                    "codespace_synced": bool(codespace_synced),
-                }
-        report["app_secrets"] = app_status
+            if not value:
+                continue
+            repo_synced, _ = set_repo_secret(pat, owner, repo_name, name, value)
+            if not repo_synced:
+                raise RuntimeError("repository secret synchronization failed")
+            codespace_synced, _ = set_codespace_secret(pat, int(repo_id), name, value)
+            if not codespace_synced:
+                raise RuntimeError("Codespace secret synchronization failed")
+        report["app_secrets"] = {"sync_status": "completed"}
 
     if set_owner_secret and repo_id:
         owner_secret_synced, _ = set_environment_secret(
@@ -431,7 +431,9 @@ def main() -> int:
             "OWNER_APPROVAL_PROTECTED",
             "true",
         )
-        report["owner_protected_secret"] = {"synced": bool(owner_secret_synced)}
+        if not owner_secret_synced:
+            raise RuntimeError("owner environment secret synchronization failed")
+        report["owner_protected_secret"] = {"sync_status": "completed"}
 
     if configure_owner:
         report["owner_environment"] = configure_owner_environment(pat, owner, repo_name)

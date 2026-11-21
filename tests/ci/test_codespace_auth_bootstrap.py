@@ -78,7 +78,4 @@ def test_main_report_excludes_resolved_secret_values(monkeypatch: Any, capsys: A
     assert "app_id_resolved" not in report
     assert "installation_id_resolved" not in report
     assert "private_key_resolved" not in report
-    assert report["app_secrets"]["_GITHUB_APP_PRIVATE_KEY"] == {
-        "repo_synced": True,
-        "codespace_synced": True,
-    }
+    assert report["app_secrets"] == {"sync_status": "completed"}
