@@ -174,6 +174,7 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
         )
     aggregate = jobs["ml-slow-aggregate"]
     assert aggregate["name"] == "ml-slow-aggregate"
+    assert aggregate["runs-on"] == "ubuntu-latest-m"
     assert aggregate["if"] == "always()"
     assert set(aggregate["needs"]) == {"test-ml-components", "integration-shard", "coverage-shard"}
     assert aggregate["permissions"] == {"contents": "read"}
@@ -196,6 +197,8 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
     ratchet = steps["Ratchet quarantine and coverage floor against PR base"]
     assert ratchet["if"] == "always() && github.event_name == 'pull_request'"
     assert ratchet["env"]["PR_BASE_SHA"] == "${{ github.event.pull_request.base.sha }}"
+    assert 'git fetch --no-tags --depth=1 origin "${PR_BASE_SHA}"' in ratchet["run"]
+    assert 'git cat-file -e "${PR_BASE_SHA}^{commit}"' in ratchet["run"]
     assert 'ratchet --base-ref "${PR_BASE_SHA}"' in ratchet["run"]
     assert "HEAD^1" not in ratchet["run"]
     assert (

@@ -374,7 +374,7 @@ jobs:
     name: ml-slow-aggregate
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-m
     needs: [test-ml-components, integration-shard, coverage-shard]
     if: always()
     timeout-minutes: 10
@@ -425,6 +425,11 @@ jobs:
           set -euo pipefail
           if ! printf '%s' "${PR_BASE_SHA}" | grep -Eq '^[0-9a-f]{40}$'; then
             echo "::error::Unexpected pull_request base SHA"
+            exit 1
+          fi
+          git fetch --no-tags --depth=1 origin "${PR_BASE_SHA}"
+          if ! git cat-file -e "${PR_BASE_SHA}^{commit}"; then
+            echo "::error::Fetched pull_request base SHA is unavailable"
             exit 1
           fi
           python scripts/ci/ml_slow_aggregate.py ratchet --base-ref "${PR_BASE_SHA}" \

@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-21T20:03:54Z",
+  "generated_at": "2026-11-21T20:16:59Z",
   "repository": "Aries-Serpent/_codex_",
   "branch": "0D_base_",
   "sha_encoding": "concatenate chunks without separators",
   "pre_publication_base_chunks": ["cdd9f3c6", "b7b4d0c5", "6023f887", "7188ce8d", "3f7336fc"],
   "pre_handoff_head_chunks": ["f710c156", "bbba2457", "58433a0f", "8e235903", "f6cd03ff"],
-  "publication_state": "prior closeout publication verified; this rate-limit continuation is in local preparation",
+  "publication_state": "prior closeout and rate-limit campaign publication verified on 0D_base_",
   "post_closeout_base_chunks": ["8c3261af", "f162152d", "4f80c8a0", "0b4b76e2", "e8167d7a"],
   "original_dirty_worktree": {
     "tracked_modified": 83,
@@ -94,7 +94,8 @@
     }
   ],
   "rate_limit_campaign": {
-    "state": "implementation complete; validation and publication pending",
+    "state": "published; 278 focused checks passed with one Node-dependent task skipped",
+    "published_commit_chunks": ["deddec93", "89efe3bf", "2f40962b", "643aa695", "c98f70fa"],
     "shared_transport": "scripts/ci/github_rate_limit.py",
     "auth_surfaces": [
       "GitHub App JWT and installation-token operations",
@@ -120,7 +121,13 @@
       "all_observed_core_buckets_exhausted": false,
       "deferred_credentials": 0
     },
-    "tests": "Focused auth/rate-limit suites pass; run the final consolidated gate before commit."
+    "tests": "278 focused tests passed with one Node-dependent task skipped; strict formatting, lint, compile, JSON, startup, and patch checks passed.",
+    "draft_pr_reconciliation": {
+      "5842": "fully incorporated; exact reverse patch applies",
+      "5840_5841": "RAG/ML objectives incorporated; unique base-fetch and aggregate-runner hardening carried into 0D_base_",
+      "5843_5845": "larger runners, Zod 4.6.6, and frontend diagnostics incorporated with stronger direct implementations",
+      "decision": "close draft PRs as superseded after the follow-up commit is pushed and exact base SHA is recorded"
+    }
   },
   "active_draft_pull_requests": [
     {"number": 5840, "title": "fix(ci): remediate Pattern 19 src-prefixed imports", "head_ref": "copilot/session-pattern19-20261120", "head_sha_chunks": ["e12da35e", "1b6ae718", "2153ecd0", "a8b02f6c", "f73e9e84"], "base": "0D_base_"},
