@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5766 CI validation (2026-11-21)
+- Repair the setup-validation summary script and the broken policy link reported by fast validation.
+
 ### Fixed - PR #5766 live review-comment and RAG readiness repair (2026-11-20)
 - Add a locked `brain-api` Codespace extra, bind route reconciliation to the live execution owner, hash safety-audit fragments, and clean up the tenant, Torch-stub, and API test review findings without weakening behavior.
 - Remove the stale ChromaDB prerequisite from the RAG workflow now that FAISS is the supported store, and record the four `_update_path` findings as current-signature false positives rather than applying a no-op rename.

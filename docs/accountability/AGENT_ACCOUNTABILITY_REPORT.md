@@ -25694,3 +25694,11 @@ has not been recorded.
 - The exact final governance SHA must receive fresh hosted RAG/CodeQL/ML checks before review-thread closure or merge readiness is claimed. A numerical score is diagnostic only and does not replace review, security, or protected merge controls.
 
 ---
+## Session: PR #5766 CI rescue (2026-11-21)
+
+- Direct implementation with an independent code-review agent. Fixed the
+  setup-validation summary script syntax and the policy link reported by fast
+  validation.
+- The prior preflight auto-fix push was denied (HTTP 403); this entry and the
+  changelog update provide the requested last-commit documentation. Hosted
+  checks remain subject to a new run and actual platform permissions.
