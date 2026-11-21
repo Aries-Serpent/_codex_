@@ -301,7 +301,7 @@ def _torch_available():
 def test_torch_availability_does_not_invoke_stub_getattr(monkeypatch):
     class TorchStub:
         def __getattr__(self, name):
-            raise ImportError(f"dynamic attribute rejected: {name}")
+            raise AttributeError(f"dynamic attribute rejected: {name}")
 
     monkeypatch.setitem(sys.modules, "torch", TorchStub())
 

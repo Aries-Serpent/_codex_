@@ -173,7 +173,8 @@ class TestRobinHoodHashTable:
             ),
         )
 
-        assert table.delete("b") is True
+        delete_result = table.delete("b")
+        assert delete_result is True
         assert table.size == 2
         assert table.lookup("a") == 1
         assert table.lookup("c") == 3
