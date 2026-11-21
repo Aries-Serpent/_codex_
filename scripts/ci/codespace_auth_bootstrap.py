@@ -390,9 +390,6 @@ def main() -> int:
 
     dry_run_report: dict[str, object] = {
         "dry_run": args.dry_run,
-        "app_id_resolved": bool(credentials["app_id"]),
-        "installation_id_resolved": bool(credentials["installation_id"]),
-        "private_key_resolved": bool(credentials["private_key"]),
         "repo_id": repo_id,
     }
 
@@ -406,7 +403,7 @@ def main() -> int:
         print(json.dumps(dry_run_report, sort_keys=True) if args.json else dry_run_report)
         return 0
 
-    report: dict[str, object] = dict(dry_run_report)
+    report: dict[str, object] = {"dry_run": False, "repo_id": repo_id}
     if sync_app and repo_id:
         app_secrets = {
             "_GITHUB_APP_ID": credentials["app_id"],
