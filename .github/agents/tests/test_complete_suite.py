@@ -40,9 +40,9 @@ class TestCompleteIntegration:
         """Mock GitHub API client with proper async support."""
         mock_client = Mock(spec=GitHubAPIClient)
         mock_client.post_review = AsyncMock(return_value={"id": 123, "state": "COMMENTED"})
-        mock_client.get_pr_files = AsyncMock(return_value=[
-            {"filename": "test.py", "patch": "+def test(): pass", "additions": 1}
-        ])
+        mock_client.get_pr_files = AsyncMock(
+            return_value=[{"filename": "test.py", "patch": "+def test(): pass", "additions": 1}]
+        )
         mock_client.get_pr_diff = AsyncMock(return_value="+ def test(): pass\n")
         mock_client.add_comment = AsyncMock(return_value={"id": 456})
         return mock_client
@@ -61,7 +61,7 @@ class TestCompleteIntegration:
             description="Test PR for validation",
             labels=[],
             reviewers=[],
-            timestamp=datetime.utcnow()  # Fixed: proper instantiation
+            timestamp=datetime.utcnow(),  # Fixed: proper instantiation
         )
 
     @pytest.mark.asyncio
@@ -102,7 +102,7 @@ class TestCompleteIntegration:
             ('github_token = "ghp_1234567890abcdefghij123456789012"', True, "GitHub token"),
             ('AWS_ACCESS_KEY_ID = "AKIAIOSFODNN7EXAMPLE"', True, "AWS access key"),
             ('regular_code = "normal_value"', False, "Normal code"),
-            ('YOUR_API_KEY_HERE', False, "Placeholder should be filtered"),
+            ("YOUR_API_KEY_HERE", False, "Placeholder should be filtered"),
         ]
 
         for code, should_detect, description in test_cases:
@@ -114,7 +114,7 @@ class TestCompleteIntegration:
                 base_branch="main",
                 head_branch="feature",
                 author="user",
-                description="Test"
+                description="Test",
             )
 
             result = await validator.scan(context)
@@ -142,7 +142,7 @@ class TestCompleteIntegration:
                 status="approved" if i % 2 == 0 else "commented",
                 suggestions_count=i % 5,
                 knowledge_gaps_count=1,
-                files_changed=3
+                files_changed=3,
             )
             metrics_list.append(metric)
             collector.record_review(metric, flush_immediately=False)
@@ -177,7 +177,7 @@ class TestCompleteIntegration:
             ],
             orchestration_plan={},
             next_steps=[],
-            knowledge_gaps=["quantum patterns", "async best practices"]
+            knowledge_gaps=["quantum patterns", "async best practices"],
         )
 
         plan = await orchestrator.create_plan(sample_context, review_result)
@@ -210,7 +210,7 @@ class TestCompleteIntegration:
             base_branch="main",
             head_branch="feature/quantum",
             author="user",
-            description=""  # Empty description
+            description="",  # Empty description
         )
 
         gaps = await detector.detect_gaps(context)
@@ -237,7 +237,7 @@ class TestCompleteIntegration:
             base_branch="main",
             head_branch="feature",
             author="user",
-            description="Test"
+            description="Test",
         )
 
         result = ReviewResult(
@@ -246,7 +246,7 @@ class TestCompleteIntegration:
             suggestions=[],
             orchestration_plan={},
             next_steps=[],
-            knowledge_gaps=[]
+            knowledge_gaps=[],
         )
 
         # Learn from review
@@ -257,7 +257,7 @@ class TestCompleteIntegration:
             "pr_number": 123,
             "suggestions_accepted": 2,
             "suggestions_rejected": 1,
-            "user_comment": "Good security suggestions"
+            "user_comment": "Good security suggestions",
         }
 
         await learning.learn_from_feedback(context, json.dumps(feedback))
@@ -290,13 +290,14 @@ class TestCompleteIntegration:
         validator = SecurityValidator()
 
         # Verify patterns are compiled at initialization
-        assert hasattr(validator, '_sql_patterns')
-        assert hasattr(validator, '_xss_patterns')
-        assert hasattr(validator, '_cmd_patterns')
-        assert hasattr(validator, '_path_patterns')
+        assert hasattr(validator, "_sql_patterns")
+        assert hasattr(validator, "_xss_patterns")
+        assert hasattr(validator, "_cmd_patterns")
+        assert hasattr(validator, "_path_patterns")
 
         # Verify they are compiled regex patterns
         import re
+
         assert all(isinstance(p, re.Pattern) for p in validator._sql_patterns)
         assert all(isinstance(p, re.Pattern) for p in validator._xss_patterns)
 
@@ -311,7 +312,7 @@ class TestCompleteIntegration:
             base_branch="main",
             head_branch="feature",
             author="user",
-            description="Test 1"
+            description="Test 1",
         )
 
         # Small delay
@@ -325,7 +326,7 @@ class TestCompleteIntegration:
             base_branch="main",
             head_branch="feature",
             author="user",
-            description="Test 2"
+            description="Test 2",
         )
 
         # Timestamps should be different
@@ -346,12 +347,11 @@ class TestErrorHandling:
         mock_client.post_review = AsyncMock(side_effect=Exception("API Error"))
         reviewer.github_client = mock_client
 
-        # Should not raise exception
+        # Publication failures are explicit; the caller must not mistake them for success.
         event = {"action": "initial_review", "context": sample_context}
         result = await reviewer.handle_event(event)
 
-        # Should still complete (but log error)
-        assert result["status"] == "review_complete"
+        assert result["status"] == "review_failed"
 
     @pytest.mark.asyncio
     async def test_empty_diff_handling(self):
@@ -364,7 +364,7 @@ class TestErrorHandling:
             base_branch="main",
             head_branch="feature",
             author="user",
-            description="Empty PR"
+            description="Empty PR",
         )
 
         reviewer = CodexQuantumReviewer()
@@ -387,7 +387,7 @@ def sample_context():
         base_branch="main",
         head_branch="feature",
         author="testuser",
-        description="Sample PR"
+        description="Sample PR",
     )
 
 

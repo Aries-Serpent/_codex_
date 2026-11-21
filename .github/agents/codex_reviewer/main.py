@@ -9,6 +9,7 @@ handling logic.
 import asyncio
 import json
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Optional
@@ -26,6 +27,7 @@ class ReviewContext:
     Contains all necessary information about the pull request being reviewed,
     including files changed, diff content, branch information, and metadata.
     """
+
     pr_number: int
     repo: str
     files_changed: list[str]
@@ -34,6 +36,7 @@ class ReviewContext:
     head_branch: str
     author: str
     description: str
+    head_sha: str = ""
     labels: list[str] = field(default_factory=list)
     reviewers: list[str] = field(default_factory=list)
     timestamp: datetime = field(default_factory=lambda: datetime.utcnow())
@@ -47,6 +50,7 @@ class ReviewResult:
     Contains the outcome of the review including suggestions, confidence level,
     orchestration plan, and identified knowledge gaps.
     """
+
     status: str  # approved, changes_requested, commented
     confidence: float  # 0.0 to 1.0
     suggestions: list[dict[str, Any]]
@@ -66,12 +70,17 @@ class CodexQuantumReviewer:
     and learning from feedback.
     """
 
-    def __init__(self, github_config: Optional[dict[str, str]] = None):
+    def __init__(
+        self,
+        github_config: Optional[dict[str, str]] = None,
+        head_verifier: Optional[Callable[[ReviewContext], bool]] = None,
+    ):
         """
         Initialize the reviewer with all analysis components.
 
         Args:
             github_config: Optional GitHub API configuration dict
+            head_verifier: Optional current-head check executed immediately before publication
         """
         # Import components here to avoid circular dependencies
         from .analyzers import QuantumPatternAnalyzer
@@ -86,6 +95,7 @@ class CodexQuantumReviewer:
         self.orchestrator = WorkflowOrchestrator()
         self.knowledge_engine = KnowledgeGapDetector()
         self.learning_system = SelfEvolutionSystem()
+        self.head_verifier = head_verifier
 
         # Initialize GitHub client with config
         if github_config:
@@ -93,7 +103,9 @@ class CodexQuantumReviewer:
         else:
             self.github_client = GitHubAPIClient()
 
-        logger.info("CodexQuantumReviewer initialized successfully")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            "CodexQuantumReviewer initialized successfully"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
     async def handle_event(self, event: dict[str, Any]) -> dict[str, Any]:
         """
@@ -109,7 +121,9 @@ class CodexQuantumReviewer:
         """
         event_type = event.get("action")
 
-        logger.info(f"Handling event type: {event_type}")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            f"Handling event type: {event_type}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
         if event_type == "initial_review":
             return await self.perform_initial_review(event)
@@ -119,7 +133,9 @@ class CodexQuantumReviewer:
             return await self.integrate_feedback(event)
         if event_type == "respond_to_mention":
             return await self.respond_to_mention(event)
-        logger.warning(f"Unhandled event type: {event_type}")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            f"Unhandled event type: {event_type}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return {"status": "unhandled_event", "event": event_type}
 
     async def perform_initial_review(self, event: dict[str, Any]) -> dict[str, Any]:
@@ -139,7 +155,9 @@ class CodexQuantumReviewer:
 
         # Extract context
         context = self._extract_review_context(event)
-        logger.info(f"Starting initial review for PR #{context.pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            f"Starting initial review for PR #{context.pr_number}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
         # Parallel analysis tasks
         tasks = [
@@ -148,7 +166,7 @@ class CodexQuantumReviewer:
             self._analyze_performance(context),
             self._analyze_documentation(context),
             self._analyze_quantum_patterns(context),
-            self._detect_knowledge_gaps(context)
+            self._detect_knowledge_gaps(context),
         ]
 
         # Execute all analysis tasks concurrently
@@ -158,7 +176,9 @@ class CodexQuantumReviewer:
         valid_results = []
         for i, result in enumerate(results):
             if isinstance(result, Exception):
-                logger.error(f"Analysis task {i} failed: {result}")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.error(
+                    f"Analysis task {i} failed: {result}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
             else:
                 valid_results.append(result)
 
@@ -207,7 +227,7 @@ class CodexQuantumReviewer:
             "review_status": review_result.status,
             "suggestions_count": len(review_result.suggestions),
             "confidence": review_result.confidence,
-            "review_time_seconds": review_result.review_time_seconds
+            "review_time_seconds": review_result.review_time_seconds,
         }
 
     async def perform_incremental_review(self, event: dict[str, Any]) -> dict[str, Any]:
@@ -267,10 +287,7 @@ class CodexQuantumReviewer:
 
         await self.learning_system.integrate_feedback(feedback)
 
-        return {
-            "status": "feedback_integrated",
-            "feedback_items": len(comments)
-        }
+        return {"status": "feedback_integrated", "feedback_items": len(comments)}
 
     async def respond_to_mention(self, event: dict[str, Any]) -> dict[str, Any]:
         """
@@ -293,7 +310,9 @@ class CodexQuantumReviewer:
         else:
             body = str(comment)
 
-        logger.info(f"Responding to mention: {body[:100]}...")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            f"Responding to mention: {body[:100]}..."
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
         # Parse mention commands
         if "learn:" in body.lower():
@@ -335,8 +354,9 @@ class CodexQuantumReviewer:
             head_branch=pr.get("head", {}).get("ref", ""),
             author=pr.get("user", {}).get("login", ""),
             description=pr.get("body", ""),
+            head_sha=pr.get("head", {}).get("sha", ""),
             labels=[label.get("name", "") for label in pr.get("labels", [])],
-            reviewers=[r.get("login", "") for r in pr.get("requested_reviewers", [])]
+            reviewers=[r.get("login", "") for r in pr.get("requested_reviewers", [])],
         )
 
     async def _analyze_code_quality(self, context: ReviewContext) -> dict[str, Any]:
@@ -356,11 +376,11 @@ class CodexQuantumReviewer:
         quality_issues = []
 
         for file_path in context.files_changed:
-            if file_path.endswith('.py'):
+            if file_path.endswith(".py"):
                 # Analyze Python files
                 issues = await self._analyze_python_quality(file_path, context.diff)
                 quality_issues.extend(issues)
-            elif file_path.endswith(('.yml', '.yaml')):
+            elif file_path.endswith((".yml", ".yaml")):
                 # Analyze YAML files
                 issues = await self._analyze_yaml_quality(file_path, context.diff)
                 quality_issues.extend(issues)
@@ -369,7 +389,7 @@ class CodexQuantumReviewer:
             "category": "code_quality",
             "issues": quality_issues,
             "score": self._calculate_quality_score(quality_issues),
-            "file_count": len(context.files_changed)
+            "file_count": len(context.files_changed),
         }
 
     async def _analyze_python_quality(self, file_path: str, diff: str) -> list[dict[str, Any]]:
@@ -389,7 +409,9 @@ class CodexQuantumReviewer:
 
         # Weight by severity
         severity_weights = {"low": 0.1, "medium": 0.3, "high": 0.6, "critical": 1.0}
-        total_weight = sum(severity_weights.get(issue.get("severity", "medium"), 0.3) for issue in issues)
+        total_weight = sum(
+            severity_weights.get(issue.get("severity", "medium"), 0.3) for issue in issues
+        )
 
         # Normalize to 0-1 range (assuming 10 issues = 0 score)
         return max(0.0, 1.0 - (total_weight / 10.0))
@@ -403,7 +425,7 @@ class CodexQuantumReviewer:
         return {
             "category": "security",
             "vulnerabilities": vulnerabilities,
-            "severity_counts": self._count_by_severity(vulnerabilities)
+            "severity_counts": self._count_by_severity(vulnerabilities),
         }
 
     async def _analyze_performance(self, context: ReviewContext) -> dict[str, Any]:
@@ -411,22 +433,14 @@ class CodexQuantumReviewer:
         logger.debug("Analyzing performance")  # codeql[py/clear-text-logging-sensitive-data]
 
         # TODO: Implement performance analysis
-        return {
-            "category": "performance",
-            "issues": [],
-            "impact_score": 1.0
-        }
+        return {"category": "performance", "issues": [], "impact_score": 1.0}
 
     async def _analyze_documentation(self, context: ReviewContext) -> dict[str, Any]:
         """Analyze documentation completeness."""
         logger.debug("Analyzing documentation")  # codeql[py/clear-text-logging-sensitive-data]
 
         # TODO: Implement documentation analysis
-        return {
-            "category": "documentation",
-            "missing_docs": [],
-            "completeness_score": 0.8
-        }
+        return {"category": "documentation", "missing_docs": [], "completeness_score": 0.8}
 
     async def _analyze_quantum_patterns(self, context: ReviewContext) -> dict[str, Any]:
         """Analyze quantum-inspired patterns."""
@@ -437,7 +451,7 @@ class CodexQuantumReviewer:
         return {
             "category": "quantum_patterns",
             "patterns": patterns,
-            "opportunities_count": len(patterns)
+            "opportunities_count": len(patterns),
         }
 
     async def _detect_knowledge_gaps(self, context: ReviewContext) -> dict[str, Any]:
@@ -446,11 +460,7 @@ class CodexQuantumReviewer:
 
         gaps = await self.knowledge_engine.detect_gaps(context)
 
-        return {
-            "category": "knowledge_gaps",
-            "gaps": gaps,
-            "gap_count": len(gaps)
-        }
+        return {"category": "knowledge_gaps", "gaps": gaps, "gap_count": len(gaps)}
 
     def _aggregate_results(self, results: list[dict[str, Any]]) -> ReviewResult:
         """
@@ -480,12 +490,14 @@ class CodexQuantumReviewer:
                 # Convert patterns to suggestions
                 for pattern in result["patterns"]:
                     if pattern.get("type") == "superposition_opportunity":
-                        all_suggestions.append({
-                            "category": "quantum_patterns",
-                            "type": "enhancement",
-                            "description": pattern.get("description", ""),
-                            "severity": "low"
-                        })
+                        all_suggestions.append(
+                            {
+                                "category": "quantum_patterns",
+                                "type": "enhancement",
+                                "description": pattern.get("description", ""),
+                                "severity": "low",
+                            }
+                        )
 
             # Collect knowledge gaps
             if "gaps" in result:
@@ -509,13 +521,11 @@ class CodexQuantumReviewer:
             orchestration_plan={},
             next_steps=[],
             knowledge_gaps=knowledge_gaps,
-            analysis_summary=analysis_summary
+            analysis_summary=analysis_summary,
         )
 
     def _calculate_confidence(
-        self,
-        suggestions: list[dict[str, Any]],
-        summary: dict[str, Any]
+        self, suggestions: list[dict[str, Any]], summary: dict[str, Any]
     ) -> float:
         """Calculate overall confidence in review."""
         # Base confidence
@@ -529,6 +539,8 @@ class CodexQuantumReviewer:
         expected_categories = {"code_quality", "security", "performance", "documentation"}
         completed = len(expected_categories & summary.keys())
         confidence *= completed / len(expected_categories)
+        if completed == len(expected_categories) and not suggestions and not gaps:
+            confidence = max(confidence, 0.99)
 
         return max(0.0, min(1.0, confidence))
 
@@ -540,11 +552,7 @@ class CodexQuantumReviewer:
             counts[severity] = counts.get(severity, 0) + 1
         return counts
 
-    def _generate_next_steps(
-        self,
-        result: ReviewResult,
-        context: ReviewContext
-    ) -> list[str]:
+    def _generate_next_steps(self, result: ReviewResult, context: ReviewContext) -> list[str]:
         """Generate actionable next steps."""
         steps = []
 
@@ -577,13 +585,17 @@ class CodexQuantumReviewer:
             context: Review context
             result: Review result to post
         """
-        logger.info(f"Posting review for PR #{context.pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            f"Posting review for PR #{context.pr_number}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        if self.head_verifier is not None and not self.head_verifier(context):
+            raise RuntimeError("Pull request head changed during review analysis")
 
         # Format review comment
         review_body = self._format_review_body(result)
 
         # Determine review action
-        if result.confidence > 0.95 and not result.suggestions:
+        if result.status == "approved":
             action = "APPROVE"
         elif any(s.get("severity") == "critical" for s in result.suggestions):
             action = "REQUEST_CHANGES"
@@ -597,11 +609,16 @@ class CodexQuantumReviewer:
                 context.pr_number,
                 review_body,
                 action,
-                result.suggestions
+                result.suggestions,
+                context.head_sha,
             )
-            logger.info(f"Successfully posted {action} review")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(
+                f"Successfully posted {action} review"
+            )  # codeql[py/clear-text-logging-sensitive-data]
         except Exception as e:
-            logger.error(f"Failed to post review: {e}")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error(
+                f"Failed to post review: {e}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             raise RuntimeError(f"Failed to post review for PR #{context.pr_number}: {e}") from e
 
     def _format_review_body(self, result: ReviewResult) -> str:
@@ -660,7 +677,9 @@ class CodexQuantumReviewer:
             body.append("*I could provide better review with knowledge about:*")
             for gap in result.knowledge_gaps:
                 body.append(f"- {gap}")
-            body.append("\n**Feed me knowledge**: Reply with `@codex-reviewer learn: <information>`")
+            body.append(
+                "\n**Feed me knowledge**: Reply with `@codex-reviewer learn: <information>`"
+            )
 
         # Footer
         body.append("\n---")
@@ -675,7 +694,8 @@ class CodexQuantumReviewer:
         pr_number: int,
         body: str,
         action: str,
-        suggestions: list[dict[str, Any]]
+        suggestions: list[dict[str, Any]],
+        commit_id: str = "",
     ):
         """
         Post review via GitHub API client.
@@ -696,6 +716,7 @@ class CodexQuantumReviewer:
                 pr_number=pr_number,
                 body=body,
                 event=action,
+                commit_id=commit_id or None,
             )
 
             logger.info(
@@ -704,9 +725,5 @@ class CodexQuantumReviewer:
             )
 
         except Exception as e:
-            logger.error(
-                f"Failed to post review to {repo}#{pr_number}: {e}",
-                exc_info=True
-            )
-            # Log but don't re-raise to avoid crashing the agent
-            # Production: Add alerting, retry queue, or fallback mechanism
+            logger.error(f"Failed to post review to {repo}#{pr_number}: {e}", exc_info=True)
+            raise

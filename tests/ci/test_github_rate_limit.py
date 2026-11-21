@@ -248,6 +248,36 @@ def test_legacy_api_cache_keys_are_credential_scoped() -> None:
     assert "credential-one" not in _gh_api._cache_key(url, "credential-one")
 
 
+def test_cached_api_delegates_cache_ownership_to_shared_transport(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Any
+) -> None:
+    calls: list[dict[str, Any]] = []
+
+    def request(method: str, url: str, **kwargs: Any) -> rate_limit.GitHubResponse:
+        calls.append({"method": method, "url": url, **kwargs})
+        return rate_limit.GitHubResponse(200, {"from": "backup"}, {}, "backup", 1, cached=True)
+
+    monkeypatch.setattr(_gh_api.gh_rate_limit, "request", request)
+    monkeypatch.setattr(
+        _gh_api,
+        "_cache_store",
+        lambda *_args, **_kwargs: pytest.fail("legacy cache must not rewrite rotated responses"),
+    )
+
+    payload, headers = _gh_api.api_get_cached(
+        "https://api.github.com/repos/o/r",
+        "primary",
+        cache_dir=tmp_path,
+        ttl_seconds=90,
+        page_sleep=0,
+    )
+
+    assert payload == {"from": "backup"}
+    assert headers == {}
+    assert calls[0]["cache_dir"] == tmp_path
+    assert calls[0]["cache_ttl_seconds"] == 90
+
+
 def test_shared_gh_api_preserves_public_get_contract(monkeypatch: pytest.MonkeyPatch) -> None:
     calls: list[dict[str, Any]] = []
 

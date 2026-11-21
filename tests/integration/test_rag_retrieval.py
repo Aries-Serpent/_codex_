@@ -92,6 +92,18 @@ class TestRetrieverQuery:
 
             assert result == [], "Result must not be empty"
 
+    def test_query_without_model_returns_empty_list(self):
+        """A loaded index with an unavailable encoder fails closed."""
+        from codex.rag.retriever import Retriever
+
+        with patch.object(Retriever, "_load_index"), patch.object(Retriever, "_load_model"):
+            retriever = Retriever()
+            retriever.faiss_index = MagicMock()
+            retriever.model = None
+
+            assert retriever.query("test query") == []
+            retriever.faiss_index.search.assert_not_called()
+
     def test_query_invalid_top_k_uses_default(self):
         """Test query with invalid top_k uses default."""
         from codex.rag.retriever import Retriever

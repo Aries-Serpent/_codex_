@@ -144,6 +144,26 @@ class TestChecksumValidation:
         finally:
             Path(temp_path).unlink()
 
+    def test_checksum_digest_is_never_treated_as_filename(self, tmp_path, monkeypatch):
+        """A 64-hex digest remains a digest even when a same-named file exists."""
+        target = tmp_path / "target.txt"
+        target.write_bytes(b"target-content")
+        expected_digest = hashlib.sha256(b"expected-content").hexdigest()
+        digest_named_file = tmp_path / expected_digest
+        digest_named_file.write_bytes(target.read_bytes())
+        monkeypatch.chdir(tmp_path)
+
+        result = validate_with_checksum(str(target), expected_digest)
+
+        assert result["valid"] is False
+        assert result["match"] is False
+
+    def test_checksum_missing_file_uses_mapping_result(self, tmp_path):
+        result = validate_with_checksum(str(tmp_path / "missing"))
+
+        assert result["valid"] is False
+        assert result["sha256"] == ""
+
 
 class TestDiffValidation:
     """Test diff validation."""
@@ -181,6 +201,13 @@ class TestDiffValidation:
         finally:
             Path(path1).unlink()
             Path(path2).unlink()
+
+    def test_diff_missing_file_uses_mapping_result(self, tmp_path):
+        result = validate_with_diff(str(tmp_path / "missing"), str(tmp_path / "also-missing"))
+
+        assert result["valid"] is False
+        assert result["identical"] is False
+        assert result["diff"] == ""
 
 
 class TestCodeQualityValidation:

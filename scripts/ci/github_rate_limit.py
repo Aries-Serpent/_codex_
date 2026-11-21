@@ -286,7 +286,8 @@ def _defer_until(
         if reset is not None:
             return max(now, float(reset)) + 1.0
     except (TypeError, ValueError):
-        pass
+        # Malformed reset metadata is ignored in favor of bounded jitter.
+        return now + min(60.0, (2.0**attempt) + random.random())
     return now + min(60.0, (2.0**attempt) + random.random())
 
 

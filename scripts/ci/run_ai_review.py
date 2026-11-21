@@ -61,12 +61,24 @@ def load_review_context(
     if pull_request.get("state") != "open":
         raise RuntimeError("Pull request is not open")
 
-    status, files = github_request(
-        "GET", f"/repos/{repo}/pulls/{pr_number}/files?per_page=100", read_token
-    )
-    if status != 200 or not isinstance(files, list):
-        raise RuntimeError(f"Pull request files lookup failed with HTTP {status}")
+    files: list[Any] = []
+    for page in range(1, 101):
+        status, batch = github_request(
+            "GET",
+            f"/repos/{repo}/pulls/{pr_number}/files?per_page=100&page={page}",
+            read_token,
+        )
+        if status != 200 or not isinstance(batch, list):
+            raise RuntimeError(f"Pull request files lookup failed with HTTP {status}")
+        files.extend(batch)
+        if len(batch) < 100:
+            break
+    else:
+        raise RuntimeError("Pull request changed-file pagination did not terminate")
 
+    expected_files = pull_request.get("changed_files")
+    if not isinstance(expected_files, int) or expected_files != len(files):
+        raise RuntimeError("Pull request changed-file listing is incomplete")
     file_names = [str(item.get("filename", "")) for item in files if item.get("filename")]
     status, diff = github_request(
         "GET",
@@ -132,13 +144,25 @@ async def execute_review(
     diff: str,
     review_token: str,
 ) -> dict[str, Any]:
+    head_sha = str((pull_request.get("head") or {}).get("sha", ""))
+
+    def head_is_current(context: Any) -> bool:
+        status, current = github_request("GET", f"/repos/{repo}/pulls/{pr_number}", review_token)
+        return (
+            status == 200
+            and isinstance(current, dict)
+            and str((current.get("head") or {}).get("sha", "")) == head_sha
+            and context.head_sha == head_sha
+        )
+
     reviewer = CodexQuantumReviewer(
         {
             "token": review_token,
             "base_url": "https://api.github.com",
             "timeout": 30,
             "max_retries": 3,
-        }
+        },
+        head_verifier=head_is_current,
     )
     event = {
         "action": "initial_review",
@@ -194,6 +218,8 @@ def main() -> int:
             )
         )
         print(json.dumps({**summary, "review_result": result}, sort_keys=True))
+        if result.get("status") != "review_complete":
+            return 1
     finally:
         if review_token:
             revoke_token(review_token)

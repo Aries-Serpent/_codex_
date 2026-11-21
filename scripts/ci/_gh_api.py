@@ -372,18 +372,28 @@ def api_get_cached(
     if cache_dir is None or os.environ.get("CODEX_API_CACHE_DISABLED", "0") == "1":
         return api_get(url, token, page_sleep=page_sleep, min_remaining=min_remaining)
 
-    cache_path = Path(cache_dir)
-    cached = _cache_load(cache_path, url, ttl_seconds, token)
-    if cached is not None:
-        # Still apply page_sleep even on cache hits to avoid burst patterns
-        # when called in a tight loop against many URLs.
+    try:
+        response = gh_rate_limit.request(
+            "GET",
+            url,
+            credentials=gh_rate_limit.credentials_for_token(token),
+            min_remaining=min_remaining,
+            max_retries=MAX_RETRIES,
+            cache_dir=Path(cache_dir),
+            cache_ttl_seconds=ttl_seconds,
+            user_agent=UA,
+        )
+        if response.status >= 400:
+            body = json.dumps(response.payload)[:400]
+            log.error("HTTP %d fetching %s: %s", response.status, url, body)
+            raise SystemExit(1)
+        sleep_factor = 0.1 if response.cached else 1.0
         if page_sleep > 0:
-            time.sleep(page_sleep * 0.1)  # 10 % of normal sleep on cache hit
-        return cached
-
-    data, headers = api_get(url, token, page_sleep=page_sleep, min_remaining=min_remaining)
-    _cache_store(cache_path, url, data, headers, token)
-    return data, headers
+            time.sleep(page_sleep * sleep_factor)
+        return response.payload, response.headers
+    except (gh_rate_limit.GitHubRateLimitError, TimeoutError, OSError) as exc:
+        log.error("GitHub request failed for %s: %s", url, type(exc).__name__)
+        raise SystemExit(1) from exc
 
 
 def paginate_cached(

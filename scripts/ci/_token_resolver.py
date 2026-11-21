@@ -83,7 +83,7 @@ def resolve_app_private_key() -> tuple[str, str]:
             try:
                 path.chmod(0o600)
             except OSError:
-                pass
+                logger.debug("Best-effort private-key chmod failed for %s", path)
             return value, str(path)
 
     return "", ""

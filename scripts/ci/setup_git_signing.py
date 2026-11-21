@@ -8,7 +8,12 @@ import base64
 import json
 import os
 import subprocess
+import sys
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from scripts.ci.github_rate_limit import GitHubRateLimitError, credentials_for_token, request
 
@@ -96,10 +101,10 @@ def ensure_private_key(key_path: Path) -> tuple[bool, str]:
     return created, key_path.read_text(encoding="utf-8")
 
 
-def configure_git(public_key_path: Path, public_key_line: str) -> None:
+def configure_git(private_key_path: Path, public_key_line: str) -> None:
     subprocess.run(["git", "config", "--global", "gpg.format", "ssh"], check=True)
     subprocess.run(
-        ["git", "config", "--global", "user.signingkey", str(public_key_path)], check=True
+        ["git", "config", "--global", "user.signingkey", str(private_key_path)], check=True
     )
     subprocess.run(["git", "config", "--global", "commit.gpgsign", "true"], check=True)
     subprocess.run(["git", "config", "--global", "tag.gpgsign", "true"], check=True)
@@ -212,7 +217,7 @@ def main() -> int:
     public_key_line = derive_public_key(key_path)
     public_key_path.write_text(public_key_line, encoding="utf-8")
     public_key_path.chmod(0o644)
-    configure_git(public_key_path, public_key_line)
+    configure_git(key_path, public_key_line)
 
     result: dict[str, object] = {
         "key_created": created,

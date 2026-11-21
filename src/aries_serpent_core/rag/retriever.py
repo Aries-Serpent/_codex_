@@ -172,6 +172,10 @@ class Retriever:
             logger.warning("top_k must be positive, using default of 5")
             top_k = 5
 
+        if self.model is None:
+            logger.error("No query embedding model loaded. Cannot perform query.")
+            return []
+
         # Encode query
         logger.debug("Encoding query input")
         query_embedding = self.model.encode(

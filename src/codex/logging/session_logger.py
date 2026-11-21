@@ -43,12 +43,10 @@ DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 # package-local implementations, and only then the local fallback.
 try:
     from codex.logging.db import _DB_LOCK as _shared_DB_LOCK
-    from codex.logging.db import init_db as _shared_init_db
     from codex.logging.db import log_event as _shared_log_event
 except (ImportError, AttributeError, ModuleNotFoundError):
     logger.debug("src.codex.logging.db not available; using built-in fallbacks", exc_info=True)
     _shared_DB_LOCK = None  # type: ignore[assignment]
-    _shared_init_db = None  # type: ignore[assignment]
     try:
         from codex.monkeypatch.log_adapters import (
             log_event as _shared_log_event,  # type: ignore[no-redef]

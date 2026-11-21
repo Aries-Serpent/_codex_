@@ -139,47 +139,45 @@ def set_repo_secret(token: str, owner: str, repo: str, name: str, value: str) ->
         token, "GET", f"/repos/{owner}/{repo}/actions/secrets/public-key"
     )
     if status != 200 or not isinstance(public_key, dict):
-        return False, f"public-key HTTP {status}"
+        return False, f"public-key-http-{status}"
     try:
         encrypted = encrypt_secret(public_key["key"], value)
-    except Exception as exc:
-        return False, str(exc)
-    status, payload = api_request(
+    except Exception:
+        return False, "encryption-failed"
+    status, _ = api_request(
         token,
         "PUT",
         f"/repos/{owner}/{repo}/actions/secrets/{name}",
         {"encrypted_value": encrypted, "key_id": public_key["key_id"]},
     )
     if status not in (201, 204):
-        message = payload.get("message", "") if isinstance(payload, dict) else ""
-        return False, f"HTTP {status}: {message}" if message else f"HTTP {status}"
+        return False, f"write-http-{status}"
     return True, "synced"
 
 
 def set_codespace_secret(token: str, repo_id: int, name: str, value: str) -> tuple[bool, str]:
     status, public_key = api_request(token, "GET", "/user/codespaces/secrets/public-key")
     if status != 200 or not isinstance(public_key, dict):
-        return False, f"public-key HTTP {status}"
+        return False, f"public-key-http-{status}"
     try:
         encrypted = encrypt_secret(public_key["key"], value)
-    except Exception as exc:
-        return False, str(exc)
+    except Exception:
+        return False, "encryption-failed"
     body = {
         "encrypted_value": encrypted,
         "key_id": public_key["key_id"],
         "selected_repository_ids": [repo_id],
     }
-    status, payload = api_request(token, "PUT", f"/user/codespaces/secrets/{name}", body)
+    status, _ = api_request(token, "PUT", f"/user/codespaces/secrets/{name}", body)
     if status == 422:
-        status, payload = api_request(
+        status, _ = api_request(
             token,
             "PUT",
             f"/user/codespaces/secrets/{name}",
             {"encrypted_value": encrypted, "key_id": public_key["key_id"]},
         )
     if status not in (201, 204):
-        message = payload.get("message", "") if isinstance(payload, dict) else ""
-        return False, f"HTTP {status}: {message}" if message else f"HTTP {status}"
+        return False, f"write-http-{status}"
     return True, "synced"
 
 
@@ -192,20 +190,19 @@ def set_environment_secret(
         f"/repositories/{repo_id}/environments/{environment}/secrets/public-key",
     )
     if status != 200 or not isinstance(public_key, dict):
-        return False, f"public-key HTTP {status}"
+        return False, f"public-key-http-{status}"
     try:
         encrypted = encrypt_secret(public_key["key"], value)
-    except Exception as exc:
-        return False, str(exc)
-    status, payload = api_request(
+    except Exception:
+        return False, "encryption-failed"
+    status, _ = api_request(
         token,
         "PUT",
         f"/repositories/{repo_id}/environments/{environment}/secrets/{name}",
         {"encrypted_value": encrypted, "key_id": public_key["key_id"]},
     )
     if status not in (201, 204):
-        message = payload.get("message", "") if isinstance(payload, dict) else ""
-        return False, f"HTTP {status}: {message}" if message else f"HTTP {status}"
+        return False, f"write-http-{status}"
     return True, "synced"
 
 

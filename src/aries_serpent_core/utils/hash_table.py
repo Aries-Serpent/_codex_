@@ -249,15 +249,15 @@ class RobinHoodHashTable(Generic[K, V]):
         if idx is None:
             return False
 
-        remaining = [
-            (entry[0], entry[1])
-            for slot, entry in enumerate(self.table)
-            if entry is not None and slot != idx
-        ]
-        self.table = [None] * self.capacity
-        self.size = 0
-        for remaining_key, remaining_value in remaining:
-            self.insert(remaining_key, remaining_value)
+        self.table[idx] = None
+        self.size -= 1
+        hole = idx
+        candidate = (hole + 1) % self.capacity
+        while (entry := self.table[candidate]) is not None and entry[2] > 0:
+            self.table[hole] = (entry[0], entry[1], entry[2] - 1)
+            self.table[candidate] = None
+            hole = candidate
+            candidate = (candidate + 1) % self.capacity
         return True
 
     def get_metrics(self) -> dict[str, Any]:

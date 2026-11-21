@@ -21,6 +21,7 @@ from __future__ import annotations
 import ast
 import hashlib
 import logging
+import re
 import subprocess
 from pathlib import Path
 from typing import Optional
@@ -139,15 +140,16 @@ def validate_with_checksum(
     path = Path(file_path)
     if not path.exists():
         logger.error(f"File not found: {file_path}")
-        return False, ""
+        return _ValidationResult(valid=False, detail="", match=False, sha256="")
 
     try:
         content = path.read_bytes()
         sha = hashlib.sha256(content).hexdigest()
 
         if expected_sha256:
+            is_digest = re.fullmatch(r"[0-9a-fA-F]{64}", expected_sha256) is not None
             expected_path = Path(expected_sha256)
-            if expected_path.is_file():
+            if not is_digest and expected_path.is_file():
                 other_sha = hashlib.sha256(expected_path.read_bytes()).hexdigest()
                 match = sha == other_sha
                 logger.info(f"Checksum comparison: {file_path} == {expected_sha256}: {match}")
@@ -182,7 +184,7 @@ def validate_with_checksum(
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.error("Checksum validation failed: <ERROR_TYPE>")
-        return False, ""
+        return _ValidationResult(valid=False, detail="", match=False, sha256="")
 
 
 def validate_with_diff(
@@ -199,7 +201,13 @@ def validate_with_diff(
 
     if not original_path.exists() or not modified_path.exists():
         logger.error(f"Files not found: {original_file} or {modified_file}")
-        return False, ""
+        return _ValidationResult(
+            valid=False,
+            detail="",
+            identical=False,
+            diff="",
+            match=False,
+        )
 
     try:
         result = subprocess.run(
@@ -229,7 +237,13 @@ def validate_with_diff(
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.error("Diff validation failed: <ERROR_TYPE>")
-        return False, ""
+        return _ValidationResult(
+            valid=False,
+            detail="",
+            identical=False,
+            diff="",
+            match=False,
+        )
 
 
 def validate_code_quality(file_path: str) -> dict[str, bool]:

@@ -42,11 +42,39 @@ try:
         resolve_app_private_key,
     )
 except ImportError:
-    from _token_resolver import (  # type: ignore[no-redef]
-        resolve_app_id,
-        resolve_app_installation_id,
-        resolve_app_private_key,
-    )
+
+    def resolve_app_private_key() -> tuple[str, str]:
+        for name in (
+            "_GITHUB_APP_PRIVATE_KEY_PEM",
+            "_GITHUB_APP_PRIVATE_KEY",
+            "GITHUB_APP_PRIVATE_KEY_PEM",
+            "GITHUB_APP_PRIVATE_KEY",
+        ):
+            value = os.environ.get(name, "").strip()
+            if value.startswith("-----BEGIN") and "PRIVATE KEY" in value:
+                return value, name
+        path_value = os.environ.get("GITHUB_APP_PRIVATE_KEY_PATH", "").strip()
+        if path_value:
+            path = Path(path_value).expanduser()
+            if path.is_file():
+                value = path.read_text(encoding="utf-8").strip()
+                if value.startswith("-----BEGIN") and "PRIVATE KEY" in value:
+                    return value, str(path)
+        return "", ""
+
+    def resolve_app_id() -> tuple[str, str]:
+        for name in ("_GITHUB_APP_ID", "GITHUB_APP_ID"):
+            value = os.environ.get(name, "").strip()
+            if value.isdecimal():
+                return value, name
+        return "", ""
+
+    def resolve_app_installation_id() -> tuple[str, str]:
+        for name in ("_GITHUB_APP_INSTALLATION_ID", "GITHUB_APP_INSTALLATION_ID"):
+            value = os.environ.get(name, "").strip()
+            if value.isdecimal():
+                return value, name
+        return "", ""
 
 
 def _read_private_key() -> bytes:

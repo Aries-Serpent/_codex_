@@ -71,7 +71,6 @@ try:
         resolve_app_installation_id,
         resolve_app_private_key,
     )
-    from scripts.ci.github_rate_limit import _NoRedirect  # isort: skip  # noqa: F401
     from scripts.ci.github_rate_limit import (
         Credential,
         GitHubInvalidResponseError,
@@ -85,7 +84,6 @@ except ImportError:
         resolve_app_installation_id,
         resolve_app_private_key,
     )
-    from github_rate_limit import _NoRedirect  # isort: skip  # noqa: F401
     from github_rate_limit import (  # type: ignore[no-redef]
         Credential,
         GitHubInvalidResponseError,

@@ -6,12 +6,13 @@ import urllib.request
 import pytest
 
 from scripts.ci import approve_pending_runs as approval
+from scripts.ci import github_rate_limit
 
 
 def test_redirect_is_not_followed():
     request = urllib.request.Request("https://api.github.com/repos/o/r/actions/runs")
     assert (
-        approval._NoRedirect().redirect_request(
+        github_rate_limit._NoRedirect().redirect_request(
             request, None, 302, "redirect", {}, "https://untrusted.invalid/"
         )
         is None
@@ -35,7 +36,7 @@ def test_proxy_disabled_and_redirect_denied(monkeypatch):
 
     def build(*handlers):
         assert handlers[0].proxies == {}
-        assert isinstance(handlers[1], approval._NoRedirect)
+        assert isinstance(handlers[1], github_rate_limit._NoRedirect)
         return Opener()
 
     monkeypatch.setattr(urllib.request, "build_opener", build)

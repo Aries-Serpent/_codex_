@@ -4,6 +4,7 @@ Integration tests for error paths and exception handling.
 Tests exception propagation, graceful degradation, and recovery mechanisms.
 """
 
+import sys
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
@@ -281,12 +282,27 @@ def _torch_available():
         import torch
     except ImportError:
         return False
-    if not callable(getattr(torch, "save", None)) or not callable(getattr(torch, "load", None)):
+    module_vars = vars(torch)
+    if module_vars.get("IS_CODEX_STUB") or module_vars.get("__codex_stub__"):
+        return False
+    save = module_vars.get("save")
+    load = module_vars.get("load")
+    if not callable(save) or not callable(load):
         return False
     try:
         with tempfile.TemporaryDirectory() as tmpdir:
             probe = Path(tmpdir) / "probe.pt"
-            torch.save({"probe": True}, probe)
-            return probe.is_file() and torch.load(probe) == {"probe": True}
+            save({"probe": True}, probe)
+            return probe.is_file() and load(probe) == {"probe": True}
     except (AttributeError, OSError, RuntimeError, TypeError, ValueError):
         return False
+
+
+def test_torch_availability_does_not_invoke_stub_getattr(monkeypatch):
+    class TorchStub:
+        def __getattr__(self, name):
+            raise ImportError(f"dynamic attribute rejected: {name}")
+
+    monkeypatch.setitem(sys.modules, "torch", TorchStub())
+
+    assert _torch_available() is False
