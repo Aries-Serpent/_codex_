@@ -119,14 +119,25 @@ def mint_review_token(repo: str) -> tuple[str, int]:
     if not hasattr(token, "token") or not token.token:
         raise RuntimeError("GitHub App did not return a repository token")
 
-    if not isinstance(token.permissions, dict) or token.permissions.get("pull_requests") != "write":
-        revoke_token(token.token)
-        raise RuntimeError("GitHub App review token lacks pull_requests=write")
-    status, repository = github_request("GET", f"/repos/{repo}", token.token)
-    if status != 200 or not isinstance(repository, dict) or repository.get("full_name") != repo:
-        revoke_token(token.token)
-        raise RuntimeError("GitHub App review token is not bound to the target repository")
-    return token.token, int(installation_id)
+    review_token = str(token.token)
+    try:
+        if (
+            not isinstance(token.permissions, dict)
+            or token.permissions.get("pull_requests") != "write"
+        ):
+            raise RuntimeError("GitHub App review token lacks pull_requests=write")
+        status, repository = github_request("GET", f"/repos/{repo}", review_token)
+        if status != 200 or not isinstance(repository, dict) or repository.get("full_name") != repo:
+            raise RuntimeError("GitHub App review token is not bound to the target repository")
+        return review_token, int(installation_id)
+    except Exception:
+        try:
+            revoke_token(review_token)
+        except Exception as cleanup_error:
+            raise RuntimeError(
+                "GitHub App review token validation and cleanup failed"
+            ) from cleanup_error
+        raise
 
 
 def revoke_token(token: str) -> bool:

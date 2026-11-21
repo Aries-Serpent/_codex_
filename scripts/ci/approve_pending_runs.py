@@ -110,6 +110,7 @@ AI_REVIEWER_BOT_LOGINS = {
     "cognitive-brain[bot]",
     "codex-reviewer[bot]",
     "copilot-pull-request-reviewer",
+    "copilot-pull-request-reviewer[bot]",
     "github-copilot[bot]",
 }
 

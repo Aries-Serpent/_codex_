@@ -564,6 +564,7 @@ def test_rest_route_executes_repository_read(monkeypatch: Any) -> None:
         assert kwargs["headers"]["Accept"] == "application/vnd.github+json"
         return ReadResponse()
 
+    monkeypatch.setattr(cli_api_server.gh_rate_limit, "discover_credentials", lambda: [])
     monkeypatch.setattr(cli_api_server.httpx, "get", fake_get)
 
     request = cli_api_server.RouteExecuteRequest(
@@ -576,6 +577,37 @@ def test_rest_route_executes_repository_read(monkeypatch: Any) -> None:
     result = cli_api_server._execute_route_operation(request, "rest_graphql")
 
     assert result["repository"]["full_name"] == "Aries-Serpent/_codex_"
+    assert result["credential_source"] is None
+
+
+def test_rest_route_rotates_expired_credential(monkeypatch: Any) -> None:
+    from cognitive_app.src.server import cli_api_server
+
+    credentials = [
+        cli_api_server.gh_rate_limit.Credential("CODEX_MASTER_KEY", "expired"),
+        cli_api_server.gh_rate_limit.Credential("CODEX_BACKUP_KEY", "valid"),
+    ]
+    attempted: list[str] = []
+
+    def request(_method: str, _url: str, **kwargs: Any) -> Any:
+        source = kwargs["credentials"][0].source
+        attempted.append(source)
+        if source == "CODEX_MASTER_KEY":
+            return cli_api_server.gh_rate_limit.GitHubResponse(
+                401, {"message": "Bad credentials"}, {}, source, 1
+            )
+        return cli_api_server.gh_rate_limit.GitHubResponse(
+            200, {"full_name": "Aries-Serpent/_codex_"}, {}, source, 1
+        )
+
+    monkeypatch.setattr(cli_api_server.gh_rate_limit, "discover_credentials", lambda: credentials)
+    monkeypatch.setattr(cli_api_server.gh_rate_limit, "request", request)
+
+    result, source = cli_api_server._run_github_rest("repos/Aries-Serpent/_codex_")
+
+    assert result["full_name"] == "Aries-Serpent/_codex_"
+    assert source == "CODEX_BACKUP_KEY"
+    assert attempted == ["CODEX_MASTER_KEY", "CODEX_BACKUP_KEY"]
 
 
 def test_rest_route_rejects_stale_check_sha(monkeypatch: Any) -> None:

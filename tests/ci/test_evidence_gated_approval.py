@@ -722,7 +722,7 @@ def delegated_app(api, monkeypatch):
 
 def test_copilot_bot_review_satisfies_single_owner_agent_model(delegated_app, monkeypatch):
     evidence, run = delegated_app
-    evidence["review"]["user"]["login"] = "copilot-pull-request-reviewer"
+    evidence["review"]["user"]["login"] = "copilot-pull-request-reviewer[bot]"
     monkeypatch.setenv("GITHUB_ACTOR", "author")
     monkeypatch.setenv("GITHUB_TRIGGERING_ACTOR", "author")
     token, source = approval._resolve_token()

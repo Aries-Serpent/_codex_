@@ -95,6 +95,22 @@ def test_load_review_context_rejects_incomplete_file_listing(monkeypatch: Any) -
         run_ai_review.load_review_context("o/r", 1, "read-token")
 
 
+def test_python_quality_analysis_is_substantive() -> None:
+    reviewer = CodexQuantumReviewer()
+    diff = """diff --git a/example.py b/example.py
+--- a/example.py
++++ b/example.py
++try:
++    work()
++except:
++    pass
+"""
+
+    result = asyncio.run(reviewer._analyze_python_quality("example.py", diff))
+
+    assert any(issue["type"] == "bare_except" for issue in result)
+
+
 def test_clean_complete_review_can_approve() -> None:
     reviewer = CodexQuantumReviewer()
     summary = {
@@ -209,6 +225,43 @@ def test_publication_failure_reaches_driver(monkeypatch: Any) -> None:
                 SHA,
             )
         )
+
+
+def test_mint_review_token_revokes_after_repository_validation_error(
+    monkeypatch: Any,
+) -> None:
+    revoked: list[str] = []
+
+    class App:
+        def __init__(self, _config: Any) -> None:
+            pass
+
+        def get_installation_token(self, **_kwargs: Any) -> Any:
+            return type(
+                "Token",
+                (),
+                {"token": "review-token", "permissions": {"pull_requests": "write"}},
+            )()
+
+    monkeypatch.setattr(run_ai_review, "resolve_app_id", lambda: ("1", "test"))
+    monkeypatch.setattr(run_ai_review, "resolve_app_installation_id", lambda: ("2", "test"))
+    monkeypatch.setattr(
+        run_ai_review,
+        "resolve_app_private_key",
+        lambda: ("-----BEGIN PRIVATE KEY-----\nfixture\n-----END PRIVATE KEY-----", "test"),
+    )
+    monkeypatch.setattr(run_ai_review, "GitHubApp", App)
+    monkeypatch.setattr(
+        run_ai_review,
+        "github_request",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("lookup failed")),
+    )
+    monkeypatch.setattr(run_ai_review, "revoke_token", lambda token: revoked.append(token) or True)
+
+    with pytest.raises(RuntimeError, match="lookup failed"):
+        run_ai_review.mint_review_token("o/r")
+
+    assert revoked == ["review-token"]
 
 
 def test_driver_returns_nonzero_for_failed_review_and_revokes(

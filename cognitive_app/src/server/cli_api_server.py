@@ -35,9 +35,11 @@ import sqlite3
 import struct
 import subprocess  # nosec B404 — used only for PTY shell (ws_cli); Popen call has nosec B603
 from pathlib import Path
+from urllib.parse import urlencode as _urlencode
 from urllib.parse import urlparse as _urlparse
 from urllib.parse import urlunparse as _urlunparse
 
+from scripts.ci import github_rate_limit as gh_rate_limit
 from scripts.ci._token_resolver import TokenResolutionError, get_token
 
 # Safe JSON parser for external/untrusted inputs (sanitises C0 control chars).
@@ -976,29 +978,53 @@ def _run_github_rest(
     path: str,
     *,
     params: dict[str, Any] | None = None,
-) -> Any:
-    """Execute one read-only GitHub REST request from the server route plane."""
+) -> tuple[Any, str | None]:
+    """Execute a read with bounded credential fallback and accurate provenance."""
     if re.match(r"^https?://", path, flags=re.IGNORECASE):
         raise RouteExecutionConflict("GitHub REST paths must not be absolute URLs")
-    headers, credential_source = _github_rest_headers()
-    response = httpx.get(
-        f"https://api.github.com/{path.lstrip('/')}",
-        headers=headers,
-        params=params,
-        timeout=10,
-        follow_redirects=False,
+    url = f"https://api.github.com/{path.lstrip('/')}"
+    if params:
+        url = f"{url}?{_urlencode(params)}"
+
+    credentials = gh_rate_limit.discover_credentials()
+    if not credentials:
+        headers, _ = _github_rest_headers()
+        response = httpx.get(url, headers=headers, timeout=10, follow_redirects=False)
+        if response.status_code < 200 or response.status_code >= 300:
+            raise RouteExecutionConflict(
+                f"GitHub REST read failed with HTTP {response.status_code}"
+            )
+        try:
+            payload = response.json()
+        except (json.JSONDecodeError, ValueError) as exc:
+            raise RouteExecutionConflict("GitHub REST read returned invalid JSON") from exc
+        if not isinstance(payload, (dict, list)):
+            raise RouteExecutionConflict("GitHub REST read returned an unsupported payload")
+        return payload, None
+
+    last_status: int | None = None
+    for credential in credentials:
+        try:
+            response = gh_rate_limit.request(
+                "GET",
+                url,
+                credentials=[credential],
+                max_retries=1,
+                max_wait_seconds=0,
+                user_agent="codex-cognitive-brain-rest/1.0",
+            )
+        except (gh_rate_limit.GitHubRateLimitError, OSError, TimeoutError):
+            continue
+        last_status = response.status
+        if 200 <= response.status < 300:
+            if not isinstance(response.payload, (dict, list)):
+                raise RouteExecutionConflict("GitHub REST read returned an unsupported payload")
+            return response.payload, response.source
+        if response.status not in (401, 403):
+            raise RouteExecutionConflict(f"GitHub REST read failed with HTTP {response.status}")
+    raise RouteExecutionConflict(
+        f"GitHub REST credentials exhausted with HTTP {last_status or 'unavailable'}"
     )
-    if response.status_code < 200 or response.status_code >= 300:
-        raise RouteExecutionConflict(
-            f"GitHub REST read failed with HTTP {response.status_code}"
-        )
-    try:
-        payload = response.json()
-    except (json.JSONDecodeError, ValueError) as exc:
-        raise RouteExecutionConflict("GitHub REST read returned invalid JSON") from exc
-    if not isinstance(payload, (dict, list)):
-        raise RouteExecutionConflict("GitHub REST read returned an unsupported payload")
-    return payload
 
 
 def _execute_route_operation(req: RouteExecuteRequest, adapter: str) -> dict[str, Any]:
@@ -1032,8 +1058,7 @@ def _execute_route_operation(req: RouteExecuteRequest, adapter: str) -> dict[str
 
         if req.action == "get_repository":
             repo = _validate_github_repo_target(req.target)
-            result = _run_github_rest(f"repos/{repo}")
-            _, credential_source = _github_rest_headers()
+            result, credential_source = _run_github_rest(f"repos/{repo}")
             return {"credential_source": credential_source, "repository": result}
 
         if req.action == "list_pull_requests":
@@ -1044,11 +1069,10 @@ def _execute_route_operation(req: RouteExecuteRequest, adapter: str) -> dict[str
             per_page = int(req.arguments.get("per_page", 100))
             if per_page < 1 or per_page > 100:
                 raise RouteExecutionConflict("per_page must be between 1 and 100")
-            result = _run_github_rest(
+            result, credential_source = _run_github_rest(
                 f"repos/{repo}/pulls",
                 params={"state": state, "per_page": str(per_page)},
             )
-            _, credential_source = _github_rest_headers()
             return {"credential_source": credential_source, "pull_requests": result}
 
         if req.action == "list_workflow_runs":
@@ -1072,8 +1096,7 @@ def _execute_route_operation(req: RouteExecuteRequest, adapter: str) -> dict[str
                 path = f"repos/{repo}/actions/workflows/{workflow_id}/runs"
             else:
                 path = f"repos/{repo}/actions/runs"
-            result = _run_github_rest(path, params=params)
-            _, credential_source = _github_rest_headers()
+            result, credential_source = _run_github_rest(path, params=params)
             return {"credential_source": credential_source, "workflow_runs": result}
 
         if req.action == "list_checks":
@@ -1082,11 +1105,10 @@ def _execute_route_operation(req: RouteExecuteRequest, adapter: str) -> dict[str
             per_page = int(req.arguments.get("per_page", 100))
             if per_page < 1 or per_page > 100:
                 raise RouteExecutionConflict("per_page must be between 1 and 100")
-            result = _run_github_rest(
+            result, credential_source = _run_github_rest(
                 f"repos/{repo}/commits/{sha}/check-runs",
                 params={"per_page": str(per_page)},
             )
-            _, credential_source = _github_rest_headers()
             return {"credential_source": credential_source, "check_runs": result}
 
         raise RouteExecutionConflict(f"REST route cannot execute: {req.capability}/{req.action}")

@@ -299,9 +299,10 @@ class Retriever:
         }
 
     def reload(self) -> None:
-        """Reload the index from disk (useful if index was updated)."""
+        """Reload the index and encoder from disk after an index update."""
         logger.info("Reloading index from disk")
         self._load_index()
+        self._load_model()
 
 
 class MultiIndexRetriever:

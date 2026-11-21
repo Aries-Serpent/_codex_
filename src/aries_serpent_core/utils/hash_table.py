@@ -253,10 +253,12 @@ class RobinHoodHashTable(Generic[K, V]):
         self.size -= 1
         hole = idx
         candidate = (hole + 1) % self.capacity
-        while (entry := self.table[candidate]) is not None and entry[2] > 0:
-            self.table[hole] = (entry[0], entry[1], entry[2] - 1)
-            self.table[candidate] = None
-            hole = candidate
+        while (entry := self.table[candidate]) is not None:
+            home = self._hash(entry[0])
+            if (hole - home) % self.capacity < (candidate - home) % self.capacity:
+                self.table[hole] = (entry[0], entry[1], (hole - home) % self.capacity)
+                self.table[candidate] = None
+                hole = candidate
             candidate = (candidate + 1) % self.capacity
         return True
 

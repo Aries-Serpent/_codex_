@@ -51,8 +51,16 @@ def test_secret_write_failures_never_return_provider_message(
 def test_dry_run_does_not_resolve_or_report_secret_action_values(
     monkeypatch: Any, capsys: Any
 ) -> None:
-    monkeypatch.setattr(bootstrap, "get_pat", lambda: "pat-canary")
-    monkeypatch.setattr(bootstrap, "api_request", lambda *_args, **_kwargs: (200, {"id": 7}))
+    monkeypatch.setattr(
+        bootstrap,
+        "get_pat",
+        lambda: (_ for _ in ()).throw(AssertionError("dry-run resolved a PAT")),
+    )
+    monkeypatch.setattr(
+        bootstrap,
+        "api_request",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("dry-run called API")),
+    )
     monkeypatch.setattr(
         bootstrap,
         "resolve_app_credentials",
@@ -72,7 +80,7 @@ def test_dry_run_does_not_resolve_or_report_secret_action_values(
     assert bootstrap.main() == 0
 
     report = json.loads(capsys.readouterr().out)
-    assert report == {"dry_run": True, "repo_id": 7}
+    assert report == {"dry_run": True}
 
 
 def test_main_report_excludes_resolved_secret_values(monkeypatch: Any, capsys: Any) -> None:

@@ -104,6 +104,26 @@ class TestRetrieverQuery:
             assert retriever.query("test query") == []
             retriever.faiss_index.search.assert_not_called()
 
+    def test_reload_initializes_model_after_missing_index_becomes_available(self):
+        """A retriever can transition from missing index to query-ready state."""
+        from codex.rag.retriever import Retriever
+
+        with patch.object(Retriever, "_load_index"), patch.object(Retriever, "_load_model"):
+            retriever = Retriever()
+
+        def load_index():
+            retriever.chunks_metadata = [{"text": "indexed text"}]
+            retriever.faiss_index = MagicMock()
+
+        with (
+            patch.object(retriever, "_load_index", side_effect=load_index),
+            patch.object(retriever, "_load_model") as load_model,
+        ):
+            retriever.reload()
+
+        load_model.assert_called_once_with()
+        assert retriever.faiss_index is not None
+
     def test_query_invalid_top_k_uses_default(self):
         """Test query with invalid top_k uses default."""
         from codex.rag.retriever import Retriever

@@ -373,6 +373,10 @@ def main() -> int:
     configure_owner = args.configure_owner_environment or args.apply_all
     setup_signing = args.setup_git_signing or args.apply_all
 
+    if args.dry_run:
+        print('{"dry_run": true}' if args.json else {"dry_run": True})
+        return 0
+
     pat = get_pat()
     if not pat:
         report = {"error": "No PAT available", "dry_run": args.dry_run}
@@ -381,15 +385,6 @@ def main() -> int:
 
     status, repo = api_request(pat, "GET", f"/repos/{owner}/{repo_name}")
     repo_id = repo.get("id") if status == 200 and isinstance(repo, dict) else None
-
-    dry_run_report: dict[str, object] = {
-        "dry_run": args.dry_run,
-        "repo_id": repo_id,
-    }
-
-    if args.dry_run:
-        print(json.dumps(dry_run_report, sort_keys=True) if args.json else dry_run_report)
-        return 0
 
     credentials = resolve_app_credentials()
     if not credentials["installation_id"]:

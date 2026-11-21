@@ -180,6 +180,18 @@ class TestRobinHoodHashTable:
         assert table.lookup("c") == 3
         assert table.lookup("b") is None
 
+    def test_robin_hood_delete_moves_entry_across_different_home_bucket(self, monkeypatch):
+        table = RobinHoodHashTable[str, int](initial_capacity=8)
+        homes = {"a": 0, "b": 1, "c": 0}
+        monkeypatch.setattr(table, "_hash", lambda key: homes[key])
+        for key, value in (("a", 1), ("b", 2), ("c", 3)):
+            table.insert(key, value)
+
+        assert table.delete("a") is True
+        assert table.lookup("a") is None
+        assert table.lookup("b") == 2
+        assert table.lookup("c") == 3
+
     def test_robin_hood_resize(self):
         """Test table resizing."""
         table = RobinHoodHashTable[str, int](initial_capacity=4, max_load_factor=0.75)

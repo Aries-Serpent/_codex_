@@ -9,6 +9,7 @@ handling logic.
 import asyncio
 import json
 import logging
+import re
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -390,17 +391,85 @@ class CodexQuantumReviewer:
             "issues": quality_issues,
             "score": self._calculate_quality_score(quality_issues),
             "file_count": len(context.files_changed),
+            "substantive": True,
         }
 
+    @staticmethod
+    def _added_source_lines(diff: str, file_path: str) -> list[str]:
+        """Return added source lines belonging to one file in a unified diff."""
+        current_file = ""
+        lines: list[str] = []
+        for raw_line in diff.splitlines():
+            if raw_line.startswith("+++ b/"):
+                current_file = raw_line[6:]
+                continue
+            if raw_line.startswith("+") and not raw_line.startswith("+++"):
+                if not file_path or current_file == file_path:
+                    lines.append(raw_line[1:])
+        return lines
+
     async def _analyze_python_quality(self, file_path: str, diff: str) -> list[dict[str, Any]]:
-        """Analyze Python-specific quality issues."""
-        # TODO: Implement Python-specific analysis
-        return []
+        """Run bounded Python style checks on added lines for the changed file."""
+        issues: list[dict[str, Any]] = []
+        for line_number, line in enumerate(self._added_source_lines(diff, file_path), 1):
+            if line.rstrip() != line:
+                issues.append(
+                    {
+                        "category": "code_quality",
+                        "type": "trailing_whitespace",
+                        "severity": "low",
+                        "line": line_number,
+                        "file": file_path,
+                    }
+                )
+            if re.match(r"^\s*except\s*:\s*(?:#.*)?$", line):
+                issues.append(
+                    {
+                        "category": "code_quality",
+                        "type": "bare_except",
+                        "severity": "low",
+                        "line": line_number,
+                        "file": file_path,
+                    }
+                )
+            if len(line) > 120:
+                issues.append(
+                    {
+                        "category": "code_quality",
+                        "type": "long_line",
+                        "severity": "low",
+                        "line": line_number,
+                        "file": file_path,
+                    }
+                )
+        return issues
 
     async def _analyze_yaml_quality(self, file_path: str, diff: str) -> list[dict[str, Any]]:
-        """Analyze YAML-specific quality issues."""
-        # TODO: Implement YAML-specific analysis
-        return []
+        """Run bounded YAML hygiene checks on added lines for the changed file."""
+        issues: list[dict[str, Any]] = []
+        for line_number, line in enumerate(self._added_source_lines(diff, file_path), 1):
+            if "\t" in line:
+                issues.append(
+                    {
+                        "category": "code_quality",
+                        "type": "yaml_tab",
+                        "severity": "low",
+                        "line": line_number,
+                        "file": file_path,
+                    }
+                )
+            uses = re.search(r"\buses:\s*([^\s#]+)", line)
+            if uses and not uses.group(1).startswith("./") and "@" not in uses.group(1):
+                issues.append(
+                    {
+                        "category": "code_quality",
+                        "type": "unpinned_action",
+                        "severity": "low",
+                        "line": line_number,
+                        "file": file_path,
+                    }
+                )
+        return issues
 
     def _calculate_quality_score(self, issues: list[dict[str, Any]]) -> float:
         """Calculate overall quality score from issues."""
@@ -429,18 +498,74 @@ class CodexQuantumReviewer:
         }
 
     async def _analyze_performance(self, context: ReviewContext) -> dict[str, Any]:
-        """Analyze performance implications."""
+        """Detect bounded performance anti-patterns in added Python lines."""
         logger.debug("Analyzing performance")  # codeql[py/clear-text-logging-sensitive-data]
-
-        # TODO: Implement performance analysis
-        return {"category": "performance", "issues": [], "impact_score": 1.0}
+        issues: list[dict[str, Any]] = []
+        for file_path in context.files_changed:
+            if not file_path.endswith(".py"):
+                continue
+            lines = self._added_source_lines(context.diff, file_path)
+            loop_depth = 0
+            for line_number, line in enumerate(lines, 1):
+                stripped = line.lstrip()
+                indent = len(line) - len(stripped)
+                if stripped.startswith("for ") or stripped.startswith("while "):
+                    loop_depth += 1
+                    if loop_depth > 1 or (
+                        indent > 0 and any(marker in line for marker in (".append(", "+="))
+                    ):
+                        issues.append(
+                            {
+                                "category": "performance",
+                                "type": "nested_or_repeated_work",
+                                "severity": "low",
+                                "file": file_path,
+                                "line": line_number,
+                            }
+                        )
+                elif indent == 0:
+                    loop_depth = 0
+        return {
+            "category": "performance",
+            "issues": issues,
+            "impact_score": max(0.0, 1.0 - len(issues) * 0.05),
+            "substantive": True,
+        }
 
     async def _analyze_documentation(self, context: ReviewContext) -> dict[str, Any]:
-        """Analyze documentation completeness."""
+        """Detect added production definitions without nearby docstrings."""
         logger.debug("Analyzing documentation")  # codeql[py/clear-text-logging-sensitive-data]
-
-        # TODO: Implement documentation analysis
-        return {"category": "documentation", "missing_docs": [], "completeness_score": 0.8}
+        missing_docs: list[dict[str, Any]] = []
+        for file_path in context.files_changed:
+            if (
+                not file_path.endswith(".py")
+                or "/tests/" in f"/{file_path}"
+                or file_path.startswith("tests/")
+            ):
+                continue
+            lines = self._added_source_lines(context.diff, file_path)
+            for index, line in enumerate(lines):
+                match = re.match(r"\s*(?:async\s+def|def|class)\s+(_?[A-Za-z][A-Za-z0-9_]*)", line)
+                if not match or match.group(1).startswith("_"):
+                    continue
+                next_lines = "\n".join(lines[index + 1 : index + 4])
+                if '"""' not in next_lines:
+                    missing_docs.append(
+                        {
+                            "category": "documentation",
+                            "type": "missing_docstring",
+                            "severity": "low",
+                            "file": file_path,
+                            "line": index + 1,
+                        }
+                    )
+        completeness = 1.0 if not missing_docs else max(0.5, 1.0 - len(missing_docs) * 0.05)
+        return {
+            "category": "documentation",
+            "missing_docs": missing_docs,
+            "completeness_score": completeness,
+            "substantive": True,
+        }
 
     async def _analyze_quantum_patterns(self, context: ReviewContext) -> dict[str, Any]:
         """Analyze quantum-inspired patterns."""
@@ -544,7 +669,10 @@ class CodexQuantumReviewer:
         # Adjust based on analysis completeness. Low-severity enhancement
         # opportunities and knowledge gaps are advisory, not approval blockers.
         expected_categories = {"code_quality", "security", "performance", "documentation"}
-        completed = len(expected_categories & summary.keys())
+        completed_categories = expected_categories & summary.keys()
+        completed = sum(
+            1 for category in completed_categories if summary[category].get("substantive", True)
+        )
         confidence *= completed / len(expected_categories)
         blocking = [
             suggestion
