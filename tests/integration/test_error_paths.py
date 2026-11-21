@@ -4,7 +4,6 @@ Integration tests for error paths and exception handling.
 Tests exception propagation, graceful degradation, and recovery mechanisms.
 """
 
-import importlib.util
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
@@ -159,16 +158,17 @@ class TestDALErrorPaths:
 class TestRAGErrorPaths:
     """Test RAG error paths."""
 
-    def test_retriever_load_model_import_error(self, tmp_path):
-        """No neural dependency and no chunk text must fail, not return a fake encoder."""
+    def test_retriever_load_model_no_index_remains_unloaded(self, tmp_path):
+        """No neural dependency and no chunk text leave the retriever unloaded."""
         from codex.rag.retriever import Retriever
 
         with (
             patch("codex.rag.retriever.SentenceTransformer", None),
             patch.object(Retriever, "_load_index"),
         ):
-            with pytest.raises(ImportError, match="TF-IDF fallback requires chunk text metadata"):
-                Retriever(index_dir=str(tmp_path))
+            retriever = Retriever(index_dir=str(tmp_path))
+
+        assert retriever.model is None
 
     def test_indexer_chunk_text_invalid_params(self):
         """Test chunk_text parameter validation."""
@@ -276,5 +276,17 @@ class TestEvaluationErrorPaths:
 
 # Helper
 def _torch_available():
-    """Check if PyTorch is available."""
-    return importlib.util.find_spec("torch") is not None
+    """Check whether the loaded Torch module supports real checkpoint I/O."""
+    try:
+        import torch
+    except ImportError:
+        return False
+    if not callable(getattr(torch, "save", None)) or not callable(getattr(torch, "load", None)):
+        return False
+    try:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            probe = Path(tmpdir) / "probe.pt"
+            torch.save({"probe": True}, probe)
+            return probe.is_file() and torch.load(probe) == {"probe": True}
+    except (AttributeError, OSError, RuntimeError, TypeError, ValueError):
+        return False

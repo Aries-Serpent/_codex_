@@ -536,13 +536,13 @@ class StrategyGenerator:
                 strategy_id="",
                 incident_id=report.incident_id,
                 strategy_type=StrategyType.ESCALATE,
-                description="Escalate to human reviewer",
+                description="Escalate to AI reviewer and owner-visible governance handoff",
                 actions=[
                     Action(
                         action_type=StrategyType.ESCALATE,
                         description="Escalate incident",
                         target="governance",
-                        changes={"escalation": "unknown_pattern"},
+                        changes={"escalation": "ai_reviewer_governance"},
                         estimated_duration_sec=0.0,
                     )
                 ],

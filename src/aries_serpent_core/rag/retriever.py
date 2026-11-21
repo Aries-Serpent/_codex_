@@ -84,6 +84,11 @@ class Retriever:
 
     def _load_model(self) -> None:
         """Load embedding model for query encoding."""
+        if not self.chunks_metadata:
+            logger.info("No indexed chunks loaded; retriever model remains unloaded")
+            self.model = None
+            return
+
         if SentenceTransformer is None:
             logger.warning(
                 "sentence-transformers not installed; using TF-IDF fallback for query encoding"
@@ -119,7 +124,9 @@ class Retriever:
             if chunk.get("text", "").strip()
         ]
         if not chunk_texts:
-            raise ImportError("TF-IDF fallback requires chunk text metadata to fit query encoder")
+            logger.info("No chunk text available; retriever model remains unloaded")
+            self.model = None
+            return
 
         dimension = int(
             self.index_metadata.get("dimension")

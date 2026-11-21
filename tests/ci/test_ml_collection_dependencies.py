@@ -101,6 +101,17 @@ def test_ml_preflight_rejects_repo_torch_stub(tmp_path, job_name):
     assert "Real CPU PyTorch is required" in process.stderr
 
 
+def test_heavy_cognitive_app_and_rag_jobs_use_larger_runners():
+    root = Path(__file__).resolve().parents[2]
+    pages = yaml.safe_load((root / ".github/workflows/pages-mkdocs.yml").read_text())
+    deploy = yaml.safe_load((root / ".github/workflows/unified-deployment.yml").read_text())
+    rag = yaml.safe_load((root / ".github/workflows/test-rag.yml").read_text())
+
+    assert pages["jobs"]["build"]["runs-on"] == "ubuntu-latest-m"
+    assert deploy["jobs"]["build_cognitive_app"]["runs-on"] == "ubuntu-latest-m"
+    assert rag["jobs"]["test-rag"]["runs-on"] == "ubuntu-latest-m"
+
+
 def test_rag_workflow_only_preflights_packages_in_rag_extra():
     root = Path(__file__).resolve().parents[2]
     workflow = yaml.safe_load((root / ".github/workflows/test-rag.yml").read_text())
@@ -184,7 +195,9 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
     assert aggregate["steps"][0]["with"]["fetch-depth"] == 2
     ratchet = steps["Ratchet quarantine and coverage floor against PR base"]
     assert ratchet["if"] == "always() && github.event_name == 'pull_request'"
-    assert "ratchet --base-ref HEAD^1" in ratchet["run"]
+    assert ratchet["env"]["PR_BASE_SHA"] == "${{ github.event.pull_request.base.sha }}"
+    assert 'ratchet --base-ref "${PR_BASE_SHA}"' in ratchet["run"]
+    assert "HEAD^1" not in ratchet["run"]
     assert (
         "contains(github.event.pull_request.labels.*.name, 'quarantine-approved')"
         in ratchet["env"]["ML_QUARANTINE_GROWTH_APPROVED"]
@@ -207,11 +220,31 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
         ".codex/baselines/ml_unit_*.json"
         in yaml.safe_load(workflow_path.read_text())["on"]["push"]["paths"]
     )
+    assert jobs["test-ml-components"]["strategy"]["matrix"]["os"] == ["ubuntu-latest-m"]
+    assert jobs["integration-shard"]["runs-on"] == "ubuntu-latest-m"
+    assert jobs["coverage-shard"]["runs-on"] == "ubuntu-latest-m"
     for job in jobs.values():
         assert job["timeout-minutes"] <= 60
         for step in job["steps"]:
             uses = step.get("uses", "")
             assert not uses or uses.startswith("./") or len(uses.split("@", 1)[1]) == 40
+
+
+def test_frontend_diagnostics_are_observation_only():
+    root = Path(__file__).resolve().parents[2]
+    workflow = yaml.safe_load(
+        (root / ".github/workflows/code-quality-coverage-suite.yml").read_text()
+    )
+    job = workflow["jobs"]["frontend-diagnostics"]
+
+    assert job["runs-on"] == "ubuntu-latest-m"
+    assert job["timeout-minutes"] <= 45
+    steps = {step.get("name"): step for step in job["steps"]}
+    assert "Install cognitive_app dependencies" in steps
+    assert "Run frontend diagnostics" in steps
+    assert "Upload frontend diagnostics" in steps
+    assert steps["Install cognitive_app dependencies"]["continue-on-error"] is True
+    assert steps["Run frontend diagnostics"]["continue-on-error"] is True
 
 
 def test_ml_repairs_can_be_validated_on_staging_sub_prs():

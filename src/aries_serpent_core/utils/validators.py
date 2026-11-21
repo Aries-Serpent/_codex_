@@ -28,6 +28,13 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 
+class _ValidationResult(dict):
+    """Dict result that also supports legacy ``valid, detail`` unpacking."""
+
+    def __iter__(self):
+        return iter((self["valid"], self["detail"]))
+
+
 def validate_file_structure(file_path: str) -> dict[str, bool]:
     """
     Validate file structure: shebangs, balanced braces, syntax.
@@ -118,7 +125,7 @@ def validate_file_structure(file_path: str) -> dict[str, bool]:
 
 def validate_with_checksum(
     file_path: str, expected_sha256: Optional[str] = None
-) -> tuple[bool, str]:
+) -> tuple[bool, str] | dict[str, bool | str]:
     """
     Validate file via SHA256 checksum.
 
@@ -139,15 +146,38 @@ def validate_with_checksum(
         sha = hashlib.sha256(content).hexdigest()
 
         if expected_sha256:
+            expected_path = Path(expected_sha256)
+            if expected_path.is_file():
+                other_sha = hashlib.sha256(expected_path.read_bytes()).hexdigest()
+                match = sha == other_sha
+                logger.info(f"Checksum comparison: {file_path} == {expected_sha256}: {match}")
+                return _ValidationResult(
+                    valid=match,
+                    detail=sha,
+                    match=match,
+                    sha256=sha,
+                    sha1=sha,
+                    sha2=other_sha,
+                )
             if sha == expected_sha256:
                 logger.info(f"Checksum valid: {file_path}")
-                return True, sha
+                return _ValidationResult(
+                    valid=True,
+                    detail=sha,
+                    match=True,
+                    sha256=sha,
+                )
             logger.error(
                 f"Checksum mismatch: {file_path}\n  Expected: {expected_sha256}\n  Got: {sha}"
             )
-            return False, sha
+            return _ValidationResult(
+                valid=False,
+                detail=sha,
+                match=False,
+                sha256=sha,
+            )
         logger.info(f"Checksum computed: {sha} ({file_path})")
-        return True, sha
+        return _ValidationResult(valid=True, detail=sha, match=True, sha256=sha)
     except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
@@ -157,7 +187,7 @@ def validate_with_checksum(
 
 def validate_with_diff(
     original_file: str, modified_file: str, context_lines: int = 3
-) -> tuple[bool, str]:
+) -> dict[str, bool | str]:
     """
     Validate files by comparing them with diff.
 
@@ -180,9 +210,21 @@ def validate_with_diff(
 
         if result.returncode == 0:
             logger.info(f"Files identical: {original_file} == {modified_file}")
-            return True, ""
+            return _ValidationResult(
+                valid=True,
+                detail="",
+                identical=True,
+                diff="",
+                match=True,
+            )
         logger.info(f"Files differ: {original_file} vs {modified_file}")
-        return False, result.stdout
+        return _ValidationResult(
+            valid=False,
+            detail=result.stdout,
+            identical=False,
+            diff=result.stdout,
+            match=False,
+        )
     except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
@@ -208,7 +250,7 @@ def validate_code_quality(file_path: str) -> dict[str, bool]:
     path = Path(file_path)
     if not path.exists():
         logger.error(f"File not found: {file_path}")
-        return checks
+        return {"syntax_valid": False, "linting_pass": False}
 
     try:
         # Python syntax check

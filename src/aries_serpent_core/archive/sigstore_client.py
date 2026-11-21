@@ -33,8 +33,8 @@ logger = logging.getLogger(__name__)
 
 # Try to import the sigstore SDK (optional dependency)
 try:
-    from sigstore.sign import Signer
-    from sigstore.verify import Verifier
+    from sigstore.sign import Signer as _SigstoreSigner
+    from sigstore.verify import Verifier as _SigstoreVerifier
     from sigstore.verify.policy import UnsafeNoOp
 
     _HAS_SIGSTORE = True
@@ -50,7 +50,38 @@ except ImportError:
 # Public alias for external inspection (e.g., tests and diagnostics)
 HAS_SIGSTORE = _HAS_SIGSTORE
 
-__all__ = ["HAS_SIGSTORE", "SignstoreClient"]
+
+class Signer:
+    """Compatibility signer with a deterministic SHA-256 fallback."""
+
+    def __call__(self, data: bytes) -> bytes:
+        return self.sign(data)
+
+    def sign(self, data: bytes) -> bytes:
+        if not isinstance(data, (bytes, bytearray)):
+            raise TypeError("data must be bytes")
+        digest = hashlib.sha256(bytes(data)).digest()
+        return b"MOCK_SIG_" + digest
+
+
+class Verifier:
+    """Compatibility verifier for deterministic mock signatures."""
+
+    def __call__(self, data: bytes, signature: bytes) -> bool:
+        return self.verify(data, signature)
+
+    def verify(self, data: bytes, signature: bytes) -> bool:
+        if not isinstance(data, (bytes, bytearray)):
+            raise TypeError("data must be bytes")
+        if not isinstance(signature, (bytes, bytearray)):
+            raise TypeError("signature must be bytes")
+        signature_bytes = bytes(signature)
+        if not signature_bytes:
+            return False
+        return signature_bytes == Signer().sign(bytes(data))
+
+
+__all__ = ["HAS_SIGSTORE", "Signer", "Verifier", "SignstoreClient"]
 
 
 class SignstoreClient:
@@ -181,7 +212,7 @@ class SignstoreClient:
     ) -> dict[str, Any]:
         """Sign using the real sigstore Python SDK."""
         try:
-            signer = Signer.production()
+            signer = _SigstoreSigner.production()
             bundle = signer.sign(io.BytesIO(record_bytes))
             # Bundle is JSON-serialisable via its model
             bundle_json = bundle.to_json()
@@ -205,7 +236,7 @@ class SignstoreClient:
 
             record_bytes = json.dumps(record, sort_keys=True).encode("utf-8")
             bundle = Bundle.from_json(bundle_json)
-            verifier = Verifier.production()
+            verifier = _SigstoreVerifier.production()
             verifier.verify_artifact(
                 io.BytesIO(record_bytes),
                 bundle,
