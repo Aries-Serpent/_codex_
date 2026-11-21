@@ -44,6 +44,24 @@ export DEBIAN_FRONTEND="noninteractive"
 export GIT_LFS_SKIP_SMUDGE="1"
 ENVEOF
 
+cat >> "$PROFILE_SNIPPET" << ENVEOF
+# GitHub App secret normalization (underscore Codespaces names → standard tool names)
+export GITHUB_APP_ID="\${GITHUB_APP_ID:-\${_GITHUB_APP_ID:-}}"
+export GITHUB_APP_INSTALLATION_ID="\${GITHUB_APP_INSTALLATION_ID:-\${_GITHUB_APP_INSTALLATION_ID:-}}"
+export GITHUB_APP_CLIENT_SECRET="\${GITHUB_APP_CLIENT_SECRET:-\${_GITHUB_APP_CLIENT_SECRET:-}}"
+export GITHUB_APP_PRIVATE_KEY_PATH="\${GITHUB_APP_PRIVATE_KEY_PATH:-\${HOME}/.config/codex/github-app.pem}"
+if [ -n "\${_GITHUB_APP_PRIVATE_KEY:-}" ] && [[ "\${_GITHUB_APP_PRIVATE_KEY}" == -----BEGIN*PRIVATE\ KEY-----* ]]; then
+    mkdir -p "\${HOME}/.config/codex"
+    umask 077
+    printf '%s' "\${_GITHUB_APP_PRIVATE_KEY}" > "\${GITHUB_APP_PRIVATE_KEY_PATH}"
+    chmod 0600 "\${GITHUB_APP_PRIVATE_KEY_PATH}"
+fi
+if [ -s "\${GITHUB_APP_PRIVATE_KEY_PATH}" ]; then
+    export GITHUB_APP_PRIVATE_KEY="\$(cat "\${GITHUB_APP_PRIVATE_KEY_PATH}")"
+    export GITHUB_APP_PRIVATE_KEY_PEM="\${GITHUB_APP_PRIVATE_KEY}"
+fi
+ENVEOF
+
 # Source from both bash profiles so env is available in all terminals
 for RC in "$HOME/.bashrc" "$HOME/.profile" "$HOME/.bash_profile"; do
     if ! grep -q "codex_env" "$RC" 2>/dev/null; then
@@ -73,6 +91,11 @@ _report_token "CODEX_ADMIN_KEY"
 _report_token "_GITHUB_APP_ID"
 _report_token "_GITHUB_APP_PRIVATE_KEY"
 _report_token "WEBHOOK_SECRET"
+
+# Git signing: generate if needed, register via PAT scope, and sync private key to Codespaces.
+if [ -x "${WORKSPACE}/.venv/bin/python" ]; then
+    "${WORKSPACE}/.venv/bin/python" scripts/ci/setup_git_signing.py --register --sync-codespace-secret --json || true
+fi
 
 # Write a non-secret summary to persisted runtime state.
 AUTH_STATUS_FILE="${CODEX_RUNTIME_DIR:-${HOME}/.codex/runtime}/codespace_auth_status.json"

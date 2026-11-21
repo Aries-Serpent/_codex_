@@ -68,8 +68,13 @@ All components in the platform resolve GitHub tokens in the same order:
 
 > **GitHub App JWT auth** (used by `GitHubApp.generate_jwt()` /
 > `get_installation_token()`) is **separate** from PAT auth.
-> The RSA private key (`GITHUB_APP_PRIVATE_KEY` env var) is used exclusively
-> for JWT signing — it never falls through to PAT tokens.
+> The RSA private key (`GITHUB_APP_PRIVATE_KEY` / `_GITHUB_APP_PRIVATE_KEY`) must
+> contain the full raw PEM block whose header starts with `-----BEGIN`, identifies
+> RSA or the generic key type, and ends with `PRIVATE KEY-----`. A `SHA256:...`
+> value is only the public-key fingerprint and cannot sign JWTs. The OAuth
+> `_GITHUB_APP_CLIENT_SECRET` must
+> contain the raw client secret, without a `SHA256:` prefix; it is used only by
+> OAuth flows and never substitutes for the PEM.
 
 ---
 

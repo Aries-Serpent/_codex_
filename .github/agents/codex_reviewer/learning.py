@@ -48,12 +48,15 @@ class SelfEvolutionSystem:
         # Update confidence calibration
         await self._update_confidence_model(result)
 
-        logger.info(f"Learned from review #{context.pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            f"Learned from review #{context.pr_number}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
     async def learn_from_feedback(self, context, feedback_payload):
         """Backward-compatible entry point for feedback processing."""
         if isinstance(feedback_payload, str):
             import json
+
             try:
                 parsed = json.loads(feedback_payload)
             except json.JSONDecodeError:
@@ -78,10 +81,10 @@ class SelfEvolutionSystem:
 
     async def integrate_feedback(self, feedback: dict[str, Any]):
         """
-        Integrate human feedback into learning system.
+        Integrate owner and AI-review feedback into the learning system.
 
         Args:
-            feedback: Feedback data from human reviewers
+            feedback: Feedback from @mbaetiong or authorized AI reviewers
         """
         if isinstance(feedback, str):
             feedback = {"user_comment": feedback}
@@ -117,12 +120,14 @@ class SelfEvolutionSystem:
         learning_entry = {
             "timestamp": datetime.utcnow().isoformat(),
             "content": content,
-            "type": "user_input"
+            "type": "user_input",
         }
 
         self.learned_patterns[f"user_{len(self.learned_patterns)}"] = learning_entry
 
-        logger.info(f"Learned from user input: {content[:50]}...")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            f"Learned from user input: {content[:50]}..."
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
     async def _store_review_metadata(self, context, result):
         """Store review metadata for analysis."""
@@ -134,7 +139,7 @@ class SelfEvolutionSystem:
             "status": result.status,
             "suggestions_count": len(result.suggestions),
             "knowledge_gaps_count": len(result.knowledge_gaps),
-            "review_time_seconds": result.review_time_seconds
+            "review_time_seconds": result.review_time_seconds,
         }
 
         self.review_history.append(metadata)
@@ -150,19 +155,18 @@ class SelfEvolutionSystem:
             pattern_key = f"{category}_{suggestion.get('type', 'generic')}"
 
             if pattern_key not in self.learned_patterns:
-                self.learned_patterns[pattern_key] = {
-                    "count": 0,
-                    "examples": []
-                }
+                self.learned_patterns[pattern_key] = {"count": 0, "examples": []}
 
             self.learned_patterns[pattern_key]["count"] += 1
 
             # Store example (keep max 5)
             if len(self.learned_patterns[pattern_key]["examples"]) < 5:
-                self.learned_patterns[pattern_key]["examples"].append({
-                    "description": suggestion.get("description", ""),
-                    "severity": suggestion.get("severity", "medium")
-                })
+                self.learned_patterns[pattern_key]["examples"].append(
+                    {
+                        "description": suggestion.get("description", ""),
+                        "severity": suggestion.get("severity", "medium"),
+                    }
+                )
 
     async def _update_confidence_model(self, result):
         """Update confidence calibration based on outcomes."""
@@ -180,11 +184,13 @@ class SelfEvolutionSystem:
         if isinstance(rejected, list):
             rejected = len(rejected)
 
-        self.feedback_history.append({
-            "timestamp": datetime.utcnow().isoformat(),
-            "accepted_count": int(accepted),
-            "rejected_count": int(rejected)
-        })
+        self.feedback_history.append(
+            {
+                "timestamp": datetime.utcnow().isoformat(),
+                "accepted_count": int(accepted),
+                "rejected_count": int(rejected),
+            }
+        )
 
         # Calculate acceptance rate
         if self.feedback_history:
@@ -194,7 +200,9 @@ class SelfEvolutionSystem:
 
             if total > 0:
                 acceptance_rate = total_accepted / total
-                logger.info(f"Suggestion acceptance rate: {acceptance_rate:.1%}")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.info(
+                    f"Suggestion acceptance rate: {acceptance_rate:.1%}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
 
     async def _adjust_criteria_weights(self, feedback: dict[str, Any]):
         """Adjust criteria weights based on feedback."""

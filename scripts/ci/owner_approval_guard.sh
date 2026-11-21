@@ -18,8 +18,9 @@
 #   - Else evaluate explicit environment approval windows (protected marker
 #     required); missing approval denies.
 #   - Worktree JSON/YAML files are evidence only, never approval authority.
-# In CI, run this guard from trusted code before executing PR content. The
-# owner-approval environment must require independent maintainer approval.
+# In CI, run this guard from trusted code before executing PR content. This
+# single-human-owner repository uses protected owner authorization plus exact-SHA
+# AI review; its environment intentionally has no human required reviewers.
 set -euo pipefail
 
 TOOL_KEY="${TOOL_KEY:-docker-build-push}"

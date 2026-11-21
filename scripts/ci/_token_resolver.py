@@ -11,8 +11,10 @@ Example:
     >>> header = get_auth_header(token)
 """
 
+import glob
 import logging
 import os
+from pathlib import Path
 from typing import List, Optional, Tuple
 
 # Environment variable hierarchy for token resolution
@@ -39,6 +41,70 @@ TOKEN_SCOPES = {
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+def resolve_app_private_key() -> tuple[str, str]:
+    """Resolve a raw RSA PEM for GitHub App JWTs without logging secret material."""
+    for name in (
+        "_GITHUB_APP_PRIVATE_KEY_PEM",
+        "_GITHUB_APP_PRIVATE_KEY",
+        "GITHUB_APP_PRIVATE_KEY_PEM",
+        "GITHUB_APP_PRIVATE_KEY",
+    ):
+        value = os.environ.get(name, "").strip()
+        if not value:
+            continue
+        if value.startswith("-----BEGIN"):
+            return value, name
+        if value.startswith("SHA256:"):
+            continue
+        return "", name
+
+    path_candidates = [
+        os.environ.get("GITHUB_APP_PRIVATE_KEY_PATH", "").strip(),
+        os.environ.get("_GITHUB_APP_PRIVATE_KEY_PATH", "").strip(),
+        str(Path.home() / ".config" / "codex" / "github-app.pem"),
+    ]
+    path_candidates.extend(sorted(glob.glob("/workspaces/cognitive-brain.*.private-key.pem")))
+
+    seen: set[str] = set()
+    for candidate in path_candidates:
+        if not candidate or candidate in seen:
+            continue
+        seen.add(candidate)
+        path = Path(candidate).expanduser()
+        if not path.is_file():
+            continue
+        try:
+            value = path.read_text(encoding="utf-8").strip()
+        except OSError:
+            continue
+        if value.startswith("-----BEGIN") and "PRIVATE KEY" in value:
+            try:
+                path.chmod(0o600)
+            except OSError:
+                pass
+            return value, str(path)
+
+    return "", ""
+
+
+def resolve_app_id() -> tuple[str, str]:
+    """Resolve the numeric GitHub App ID from Codespaces or standard env names."""
+    for name in ("_GITHUB_APP_ID", "GITHUB_APP_ID"):
+        value = os.environ.get(name, "").strip()
+        if value.isdecimal():
+            return value, name
+    return "", ""
+
+
+def resolve_app_installation_id() -> tuple[str, str]:
+    """Resolve the numeric GitHub App installation ID from Codespaces or standard env names."""
+    for name in ("_GITHUB_APP_INSTALLATION_ID", "GITHUB_APP_INSTALLATION_ID"):
+        value = os.environ.get(name, "").strip()
+        if value.isdecimal():
+            return value, name
+    return "", ""
 
 
 class TokenResolutionError(Exception):
@@ -285,6 +351,9 @@ def log_token_usage(context: str, required_elevated: bool = False) -> None:
 
 __all__ = [
     "CANONICAL_HIERARCHY",
+    "resolve_app_private_key",
+    "resolve_app_id",
+    "resolve_app_installation_id",
     "get_token",
     "get_token_source",
     "get_token_scope",

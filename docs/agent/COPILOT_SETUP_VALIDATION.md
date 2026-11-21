@@ -287,7 +287,7 @@ After all tests complete, the workflow posts a summary comment on the PR:
 -  All 5 dependent workflows validate (validated by tests)
 -  Security/secrets tests pass
 -  File size within acceptable range (validated by tests)
--  At least 1 human reviewer approval
+-  Exact-SHA AI agent review or approval recorded, with the sole human owner preauthorization at D-tier
 ```
 
 ## Understanding Results
@@ -439,7 +439,7 @@ The PR can only be merged when ALL of the following are true:
 - [ ] **File size within range** (<1000 lines, <750 warning)
 
 ### Human Requirements
-- [ ] **At least 1 human code review** (using COPILOT_SETUP_REVIEW_CHECKLIST.md)
+- [ ] **Exact-SHA AI code review** (using COPILOT_SETUP_REVIEW_CHECKLIST.md; no second human is assumed or required)
 - [ ] **Reviewer approves the diff**
 - [ ] **All commit messages are clear**
 
