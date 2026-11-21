@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5766 Fast Validation fixture (2026-11-21)
+- Make the logging-adapter fallback test disable the `codex.logging.db` module that the implementation actually imports.
+
 ### Fixed - PR #5766 CI validation (2026-11-21)
 - Repair the setup-validation summary script and the broken policy link reported by fast validation.
 

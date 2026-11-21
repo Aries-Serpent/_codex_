@@ -25702,3 +25702,12 @@ has not been recorded.
 - The prior preflight auto-fix push was denied (HTTP 403); this entry and the
   changelog update provide the requested last-commit documentation. Hosted
   checks remain subject to a new run and actual platform permissions.
+- Fast Validation run `44948234628` failed because the logging-adapter test
+  patched `src.codex.logging.db` while the implementation imports
+  `codex.logging.db`. Corrected the fixture target; the same four-file CI test
+  set passed locally (6 tests), as did Ruff, Black, isort, compilation, and
+  `git diff --check`.
+- The CodeQL check on `74fc83f9` remains unresolved: check-log lookup returned
+  404 and code-scanning alert listing returned 403. The subsequent hosted
+  validation run is `action_required`; no hosted-green or security-clearance
+  claim is made. The PR body still needs an authorized body-edit interface.
