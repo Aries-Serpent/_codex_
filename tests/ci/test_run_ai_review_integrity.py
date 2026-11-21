@@ -16,6 +16,7 @@ if str(AGENTS_ROOT) not in sys.path:
 
 from codex_reviewer.github_client import GitHubAPIClient
 from codex_reviewer.main import CodexQuantumReviewer, ReviewContext, ReviewResult
+from codex_reviewer.security import SecurityValidator
 
 from scripts.ci import run_ai_review
 
@@ -106,6 +107,57 @@ def test_clean_complete_review_can_approve() -> None:
 
     assert confidence > 0.95
     assert result.status == "approved"
+
+
+def test_low_severity_opportunity_does_not_block_approval() -> None:
+    reviewer = CodexQuantumReviewer()
+    analyses = [
+        {"category": category, "gaps": []}
+        for category in ("code_quality", "security", "performance", "documentation")
+    ]
+    analyses.append(
+        {
+            "category": "quantum_patterns",
+            "patterns": [
+                {
+                    "type": "superposition_opportunity",
+                    "description": "advisory parallelism opportunity",
+                }
+            ],
+        }
+    )
+
+    result = reviewer._aggregate_results(analyses)
+
+    assert result.status == "approved"
+    assert len(result.suggestions) == 1
+    assert result.suggestions[0]["severity"] == "low"
+
+
+def test_security_scan_ignores_nonexecutable_fixture_patterns(monkeypatch: Any) -> None:
+    diff = """diff --git a/scripts/example.py b/scripts/example.py
+--- /dev/null
++++ b/scripts/example.py
++token = app.get_installation_token(installation_id=1)
++set_owner_protected_secret = True
++command = ["git", "config"]  # never shell=True
++lock_handle = Path("runtime").open("a+", encoding="utf-8")
++f"sys.path.insert(0, {value!r}); "
+ diff --git a/tests/example.py b/tests/example.py
+--- /dev/null
++++ b/tests/example.py
++github_token = "ghp_1234567890abcdefghij123456789012"
++private_key = "-----BEGIN " + "PRIVATE KEY-----\\ncanary\\n-----END PRIVATE KEY-----"
++output = "../reports/example.txt"
+"""
+    validator = SecurityValidator()
+    review_context = context()
+    review_context.diff = diff
+    review_context.files_changed = ["scripts/example.py", "tests/example.py", "package.json"]
+
+    findings = asyncio.run(validator.scan(review_context))
+
+    assert findings == []
 
 
 def test_github_client_posts_commit_id(monkeypatch: Any) -> None:

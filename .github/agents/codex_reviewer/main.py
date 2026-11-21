@@ -506,8 +506,14 @@ class CodexQuantumReviewer:
         # Calculate overall confidence
         confidence = self._calculate_confidence(all_suggestions, analysis_summary)
 
-        # Determine status
-        if confidence > 0.95 and not all_suggestions:
+        # Determine status. Low-severity opportunities are included in the
+        # review body but do not prevent a substantive clean approval.
+        blocking = [
+            suggestion
+            for suggestion in all_suggestions
+            if suggestion.get("severity") in {"medium", "high", "critical"}
+        ]
+        if confidence > 0.95 and not blocking:
             status = "approved"
         elif any(s.get("severity") == "critical" for s in all_suggestions):
             status = "changes_requested"
@@ -535,11 +541,17 @@ class CodexQuantumReviewer:
         gaps = sum(len(s.get("gaps", [])) for s in summary.values())
         confidence -= gaps * 0.05
 
-        # Adjust based on analysis completeness
+        # Adjust based on analysis completeness. Low-severity enhancement
+        # opportunities and knowledge gaps are advisory, not approval blockers.
         expected_categories = {"code_quality", "security", "performance", "documentation"}
         completed = len(expected_categories & summary.keys())
         confidence *= completed / len(expected_categories)
-        if completed == len(expected_categories) and not suggestions and not gaps:
+        blocking = [
+            suggestion
+            for suggestion in suggestions
+            if suggestion.get("severity") in {"medium", "high", "critical"}
+        ]
+        if completed == len(expected_categories) and not blocking:
             confidence = max(confidence, 0.99)
 
         return max(0.0, min(1.0, confidence))

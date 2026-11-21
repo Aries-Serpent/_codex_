@@ -213,7 +213,7 @@ def main() -> int:
     owner, repo_name = args.repo.split("/", 1)
     key_path = Path(args.key_path).expanduser()
     created, private_key = ensure_private_key(key_path)
-    public_key_path = Path(str(key_path) + ".pub")
+    public_key_path = Path(f"{key_path}.pub")
     public_key_line = derive_public_key(key_path)
     public_key_path.write_text(public_key_line, encoding="utf-8")
     public_key_path.chmod(0o644)
