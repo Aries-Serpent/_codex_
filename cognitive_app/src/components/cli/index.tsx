@@ -64,8 +64,11 @@ export function CliTerminal() {
     } catch { setServerOnline(false); }
   }, []);
 
-  // Check server health on mount
-  useEffect(() => { checkServer(); }, [checkServer]);
+  // Check server health after the mount effect completes.
+  useEffect(() => {
+    const timeout = window.setTimeout(() => void checkServer(), 0);
+    return () => window.clearTimeout(timeout);
+  }, [checkServer]);
 
   const append = (entry: Omit<CliEntry, 'id'>) => {
     setEntries(prev => {
@@ -225,8 +228,8 @@ export function ApiClient() {
     setLoading(true);
     const id = eid.current++;
     let ph: Record<string,string>={}, pp: Record<string,string>={}, pb: unknown;
-    try { if (hdrs.trim()) ph = JSON.parse(hdrs); } catch {}
-    try { if (prms.trim()) pp = JSON.parse(prms); } catch {}
+    try { if (hdrs.trim()) ph = JSON.parse(hdrs); } catch { ph = {}; }
+    try { if (prms.trim()) pp = JSON.parse(prms); } catch { pp = {}; }
     try { if (body.trim()) pb = JSON.parse(body);  } catch { pb = body.trim()||undefined; }
     ph = Object.fromEntries(
       Object.entries(ph).filter(([name]) => name.toLowerCase() !== 'authorization'),
