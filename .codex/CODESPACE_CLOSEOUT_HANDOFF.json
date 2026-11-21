@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-21T20:16:59Z",
+  "generated_at": "2026-11-21T20:22:20Z",
   "repository": "Aries-Serpent/_codex_",
   "branch": "0D_base_",
   "sha_encoding": "concatenate chunks without separators",
@@ -96,6 +96,7 @@
   "rate_limit_campaign": {
     "state": "published; 278 focused checks passed with one Node-dependent task skipped",
     "published_commit_chunks": ["deddec93", "89efe3bf", "2f40962b", "643aa695", "c98f70fa"],
+    "pr_carryover_commit_chunks": ["f02346b8", "118889f3", "a632881b", "8d3126dc", "015ca00e"],
     "shared_transport": "scripts/ci/github_rate_limit.py",
     "auth_surfaces": [
       "GitHub App JWT and installation-token operations",
@@ -126,8 +127,14 @@
       "5842": "fully incorporated; exact reverse patch applies",
       "5840_5841": "RAG/ML objectives incorporated; unique base-fetch and aggregate-runner hardening carried into 0D_base_",
       "5843_5845": "larger runners, Zod 4.6.6, and frontend diagnostics incorporated with stronger direct implementations",
-      "decision": "close draft PRs as superseded after the follow-up commit is pushed and exact base SHA is recorded"
+      "decision": "completed on 2026-11-21; PRs 5840-5845 closed as superseded against the published 0D_base_"
     }
+  },
+  "tracking_issue_campaign": {
+    "updated_issues": [5798, 5799, 5800, 5801, 5802, 5803, 5804, 5805, 5806, 5807, 5808, 5809, 5810, 5811],
+    "closed_verified": [5806],
+    "remaining_open": [5798, 5799, 5800, 5801, 5802, 5803, 5804, 5805, 5807, 5808, 5809, 5810, 5811],
+    "close_policy": "Keep broad or unverified objectives open with exact remaining evidence; do not close from stale or local-only checks."
   },
   "active_draft_pull_requests": [
     {"number": 5840, "title": "fix(ci): remediate Pattern 19 src-prefixed imports", "head_ref": "copilot/session-pattern19-20261120", "head_sha_chunks": ["e12da35e", "1b6ae718", "2153ecd0", "a8b02f6c", "f73e9e84"], "base": "0D_base_"},
