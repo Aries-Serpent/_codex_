@@ -219,7 +219,10 @@ class SecurityValidator:
         """Check for SQL injection vulnerabilities using pre-compiled patterns."""
         vulnerabilities = []
 
-        lines = [self._executable_prefix(line) for _file, line in self._added_lines(diff)]
+        lines = [
+            self._without_string_literals(self._executable_prefix(line))
+            for _file, line in self._added_lines(diff)
+        ]
         for pattern in self._sql_patterns:
             if any(pattern.search(line) for line in lines):
                 vulnerabilities.append(
@@ -239,7 +242,10 @@ class SecurityValidator:
         """Check for XSS vulnerabilities using pre-compiled patterns."""
         vulnerabilities = []
 
-        lines = [self._executable_prefix(line) for _file, line in self._added_lines(diff)]
+        lines = [
+            self._without_string_literals(self._executable_prefix(line))
+            for _file, line in self._added_lines(diff)
+        ]
         for pattern in self._xss_patterns:
             if any(pattern.search(line) for line in lines):
                 vulnerabilities.append(
@@ -263,7 +269,10 @@ class SecurityValidator:
         """Check for potential command injection vulnerabilities using pre-compiled patterns."""
         vulnerabilities = []
 
-        lines = [self._executable_prefix(line) for _file, line in self._added_lines(diff)]
+        lines = [
+            self._without_string_literals(self._executable_prefix(line))
+            for _file, line in self._added_lines(diff)
+        ]
         for pattern, description in self._cmd_patterns:
             if any(pattern.search(line) for line in lines):
                 vulnerabilities.append(

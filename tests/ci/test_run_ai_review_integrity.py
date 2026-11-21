@@ -143,6 +143,7 @@ def test_security_scan_ignores_nonexecutable_fixture_patterns(monkeypatch: Any) 
 +command = ["git", "config"]  # never shell=True
 +lock_handle = Path("runtime").open("a+", encoding="utf-8")
 +f"sys.path.insert(0, {value!r}); "
++patterns = [r"os.system\\s*\\(", r"shell=True", r"eval\\s*\\(", r"<script"]
  diff --git a/tests/example.py b/tests/example.py
 --- /dev/null
 +++ b/tests/example.py
