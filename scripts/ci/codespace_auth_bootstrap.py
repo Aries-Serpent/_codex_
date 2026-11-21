@@ -388,12 +388,6 @@ def main() -> int:
     }
 
     if args.dry_run:
-        dry_run_report["actions"] = {
-            "sync_app_secrets": sync_app,
-            "set_owner_protected_secret": set_owner_secret,
-            "configure_owner_environment": configure_owner,
-            "setup_git_signing": setup_signing,
-        }
         print(json.dumps(dry_run_report, sort_keys=True) if args.json else dry_run_report)
         return 0
 

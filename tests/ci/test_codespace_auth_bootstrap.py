@@ -48,6 +48,33 @@ def test_secret_write_failures_never_return_provider_message(
     assert canary not in repr(result)
 
 
+def test_dry_run_does_not_resolve_or_report_secret_action_values(
+    monkeypatch: Any, capsys: Any
+) -> None:
+    monkeypatch.setattr(bootstrap, "get_pat", lambda: "pat-canary")
+    monkeypatch.setattr(bootstrap, "api_request", lambda *_args, **_kwargs: (200, {"id": 7}))
+    monkeypatch.setattr(
+        bootstrap,
+        "resolve_app_credentials",
+        lambda: (_ for _ in ()).throw(AssertionError("dry-run resolved credentials")),
+    )
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "codespace_auth_bootstrap.py",
+            "--dry-run",
+            "--sync-app-secrets",
+            "--set-owner-protected-secret",
+            "--json",
+        ],
+    )
+
+    assert bootstrap.main() == 0
+
+    report = json.loads(capsys.readouterr().out)
+    assert report == {"dry_run": True, "repo_id": 7}
+
+
 def test_main_report_excludes_resolved_secret_values(monkeypatch: Any, capsys: Any) -> None:
     canary_values = {
         "app_id": "123456",
