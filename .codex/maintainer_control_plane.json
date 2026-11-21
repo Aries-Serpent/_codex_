@@ -42,6 +42,7 @@
   ],
   "discovery": {
     "startup_packet": ".codex/session_startup_packet.json",
+    "closeout_handoff": ".codex/CODESPACE_CLOSEOUT_HANDOFF.json",
     "vscode_tasks": ".vscode/tasks.json",
     "mcp_config": ".vscode/mcp.json",
     "guide": "docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md"
