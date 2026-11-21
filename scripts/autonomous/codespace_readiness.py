@@ -16,6 +16,7 @@ APP_PROCESS_MARKERS = (
     "vite",
     "playwright",
     "scripts/autonomous/mcp_server.py",
+    "scripts/autonomous/codespace_keepalive.py",
 )
 SENSITIVE_TEMP_NAMES = {".env", ".env-secrets", "mcp.sock"}
 
@@ -165,6 +166,14 @@ def temporary_candidates(roots: list[Path]) -> list[dict[str, Any]]:
     return candidates
 
 
+def keepalive_status() -> dict[str, Any]:
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
+    from scripts.autonomous.codespace_keepalive import read_status, runtime_dir_default
+
+    return read_status(runtime_dir_default())
+
+
 def build_report(worktrees: list[Path], temp_roots: list[Path]) -> dict[str, Any]:
     worktree_reports = [worktree_state(path) for path in worktrees]
     processes = owned_processes(worktrees)
@@ -191,6 +200,7 @@ def build_report(worktrees: list[Path], temp_roots: list[Path]) -> dict[str, Any
         "worktrees": worktree_reports,
         "stashes": stash_count(repository),
         "repository_processes": processes,
+        "keepalive": keepalive_status(),
         "temporary_candidates": temporary_candidates(temp_roots),
         "blockers": blockers,
         "ready": not blockers,
@@ -202,6 +212,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--worktree", action="append", type=Path, dest="worktrees")
     parser.add_argument("--temp-root", action="append", type=Path, dest="temp_roots")
     parser.add_argument("--strict", action="store_true")
+    parser.add_argument("--json", action="store_true", help="Emit the JSON report (default)")
     return parser.parse_args(argv)
 
 

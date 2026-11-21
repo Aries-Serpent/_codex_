@@ -83,6 +83,7 @@ _ROUTE_CHAINS: dict[str, tuple[str, ...]] = {
     "shell.read": ("vscode_terminal", "brain_cli", "shell"),
     "browser.read": ("playwright_mcp", "playwright_cli", "brain_proxy"),
     "brain.read": ("brain_api",),
+    "maintainer.read": ("brain_api",),
 }
 
 
@@ -162,6 +163,10 @@ _OPERATION_REGISTRY: dict[tuple[str, str], OperationDefinition] = {
     ("shell.read", "run_read_only"): OperationDefinition("shell.read", "run_read_only"),
     ("browser.read", "navigate"): OperationDefinition("browser.read", "navigate"),
     ("brain.read", "capabilities"): OperationDefinition("brain.read", "capabilities"),
+    ("maintainer.read", "status"): OperationDefinition("maintainer.read", "status"),
+    ("maintainer.read", "keepalive_status"): OperationDefinition(
+        "maintainer.read", "keepalive_status"
+    ),
 }
 
 _AVAILABLE_STATES = frozenset({RouteState.VERIFIED, RouteState.EXPOSED, RouteState.INSTALLED})

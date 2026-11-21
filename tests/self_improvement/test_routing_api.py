@@ -55,8 +55,39 @@ def test_capability_endpoint_uses_server_observed_state() -> None:
     payload = response.json()
     assert payload["execution_enabled"] is False
     assert "github.read" in payload["routes"]
+    assert "maintainer.read" in payload["routes"]
     assert payload["adapter_states"]["github_mcp"] == "unavailable"
     assert not any("token" in key.lower() for key in payload)
+
+
+def test_maintainer_status_is_secret_free() -> None:
+    response = TestClient(app).get("/api/maintainer/status")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["owner"] == {
+        "human_login": "mbaetiong",
+        "human_reviewers_required": 0,
+        "ai_review": "exact_head_sha_required",
+    }
+    assert "value" not in response.text.lower()
+
+
+def test_keepalive_touch_requires_operation_session(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Any
+) -> None:
+    monkeypatch.setenv("CODEX_RUNTIME_DIR", str(tmp_path))
+    client = TestClient(app)
+
+    denied = client.post("/api/maintainer/keepalive/touch")
+    assert denied.status_code in {401, 503}
+
+    established = establish_ui_session(client)
+    assert established.status_code == 200
+    allowed = client.post("/api/maintainer/keepalive/touch")
+
+    assert allowed.status_code == 200
+    assert (tmp_path / "agent-session.active").is_file()
 
 
 def test_gh_binary_presence_is_installed_not_verified(monkeypatch: Any) -> None:
@@ -108,6 +139,26 @@ def test_route_plan_endpoint_derives_write_from_action() -> None:
     assert response.json()["permission_family"] == "pull_requests"
     assert response.json()["risk"] == "medium"
     assert response.json()["rollback_class"] == "close"
+
+
+def test_rest_route_plan_allows_repository_read() -> None:
+    from cognitive_app.src.server import cli_api_server
+
+    states = cli_api_server._observed_adapter_states()
+    plan = cli_api_server._plan_route(
+        cli_api_server._RouteRequest(
+            capability="github.read",
+            action="get_repository",
+            target="Aries-Serpent/_codex_",
+            idempotency_key="read-plan",
+        ),
+        states,
+        allow_writes=False,
+    )
+
+    assert states["rest_graphql"] == "verified"
+    assert plan.decision is cli_api_server._RouteDecision.ALLOW
+    assert plan.preferred_adapter == "rest_graphql"
 
 
 def test_route_plan_rejects_action_not_registered_for_capability() -> None:
@@ -497,6 +548,49 @@ def test_route_execute_keeps_writes_disabled_without_opt_in(
 
     assert response.status_code == 409
     assert called is False
+
+
+def test_rest_route_executes_repository_read(monkeypatch: Any) -> None:
+    from cognitive_app.src.server import cli_api_server
+
+    class ReadResponse:
+        status_code = 200
+
+        def json(self) -> dict[str, Any]:
+            return {"full_name": "Aries-Serpent/_codex_", "private": False}
+
+    def fake_get(url: str, **kwargs: Any) -> ReadResponse:
+        assert url == "https://api.github.com/repos/Aries-Serpent/_codex_"
+        assert kwargs["headers"]["Accept"] == "application/vnd.github+json"
+        return ReadResponse()
+
+    monkeypatch.setattr(cli_api_server.httpx, "get", fake_get)
+
+    request = cli_api_server.RouteExecuteRequest(
+        capability="github.read",
+        action="get_repository",
+        target="Aries-Serpent/_codex_",
+        idempotency_key="rest-read",
+    )
+
+    result = cli_api_server._execute_route_operation(request, "rest_graphql")
+
+    assert result["repository"]["full_name"] == "Aries-Serpent/_codex_"
+
+
+def test_rest_route_rejects_stale_check_sha(monkeypatch: Any) -> None:
+    from cognitive_app.src.server import cli_api_server
+
+    request = cli_api_server.RouteExecuteRequest(
+        capability="github.read",
+        action="list_checks",
+        target="Aries-Serpent/_codex_",
+        arguments={"sha": "e12da35e1b"},
+        idempotency_key="stale-check-sha",
+    )
+
+    with pytest.raises(cli_api_server.RouteExecutionConflict, match="40-character commit SHA"):
+        cli_api_server._execute_route_operation(request, "rest_graphql")
 
 
 def test_route_execute_rejects_client_authorized_write(monkeypatch: Any, tmp_path: Any) -> None:

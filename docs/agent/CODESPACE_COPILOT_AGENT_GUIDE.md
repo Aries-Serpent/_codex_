@@ -103,8 +103,8 @@ copilot-setup-steps.yml .devcontainer/devcontainer.json
  Phase 1+2: system deps ≡ on-create.sh
  Phase 3+4: pip install ≡ update-content.sh
  Phase 5+6: env vars + auth ≡ post-create.sh
- Phase 7: start CLI server ≡ post-start.sh
- (attach) ≡ post-attach.sh (banner)
+ Phase 7: start CLI server + keepalive ≡ post-start.sh
+ (attach) ≡ post-attach.sh (banner + activity renewal)
 ```
 
 ---
@@ -118,16 +118,21 @@ copilot-setup-steps.yml .devcontainer/devcontainer.json
  on-create.sh Phase 1+2: system deps (runs once)
  update-content.sh Phase 3+4: pip install (re-runs on rebuild)
  post-create.sh Phase 5+6: env vars + auth report (once)
- post-start.sh Phase 7: start CLI API server (every start)
- post-attach.sh Banner + health check (every attach)
+ post-start.sh Phase 7: CLI API + bounded keepalive (every start)
+ post-attach.sh Banner + health + activity renewal (every attach)
 ```
 
 ---
 
 ## Prerequisites — Admin Setup
 
-Before any Copilot agent can use the Codespace, an org admin must configure
-these **Codespace secrets** (Settings Codespaces Secrets):
+Before any Copilot agent can use the Codespace, the sole human owner,
+`@mbaetiong`, or an authorized AI bootstrap must configure these **Codespace
+secrets**. This repository intentionally has one human maintainer; do not add a
+second human reviewer. The `owner-approval` environment must keep required
+reviewers empty and use exact-SHA Copilot/AI review instead.
+
+The required Codespaces secrets are:
 
 | Secret | Required | Purpose |
 |--------|----------|---------|
@@ -135,10 +140,25 @@ these **Codespace secrets** (Settings Codespaces Secrets):
 | `CODEX_BACKUP_KEY` | **Yes** | Fallback PAT — used automatically when master returns 401/403. |
 | `CODEX_ADMIN_KEY` | For webhooks | Fine-grained PAT (Webhooks:write). Webhook management only. |
 | `_GITHUB_APP_ID` | For GitHub App | Numeric App ID from github.com/settings/apps. |
-| `_GITHUB_APP_PRIVATE_KEY` | For GitHub App | PEM RSA-2048 private key. Multi-line — paste as-is. |
-| `_GITHUB_APP_INSTALLATION_ID` | For install tokens | Get from `GET /app/installations`. |
+| `_GITHUB_APP_PRIVATE_KEY` | For GitHub App | Full raw RSA-2048 PEM. Never use only a `SHA256:` fingerprint. |
+| `_GITHUB_APP_INSTALLATION_ID` | For install tokens | Numeric installation ID from `GET /app/installations`. |
+| `_GITHUB_APP_CLIENT_SECRET` | For OAuth only | Raw OAuth client secret, without `SHA256:`; not a PEM or JWT signing key. |
 | `WEBHOOK_SECRET` | For webhook verify | Shared HMAC secret set on the GitHub webhook. |
 | `WEBHOOK_RECEIVER_URL` | For activation | Public URL for webhook delivery. |
+
+To run the registered AI review gate on an exact pull-request SHA:
+
+```bash
+.venv/bin/python -m scripts.ci.run_ai_review \
+  --repo Aries-Serpent/_codex_ \
+  --pr <PR_NUMBER> \
+  --sha <40_CHARACTER_HEAD_SHA> \
+  --dry-run
+```
+
+Remove `--dry-run` only when publication of the exact-SHA AI review is intended.
+The wrapper uses a short-lived repository-scoped App token and revokes it in a
+`finally` block.
 
 > Secrets set at the **org level** (Settings Codespaces Secrets select
 > `Aries-Serpent/_codex_`) are automatically available to all Codespaces in the
@@ -293,6 +313,36 @@ nohup uvicorn cognitive_app.src.server.cli_api_server:app \
  --host 0.0.0.0 --port 8765 --log-level warning \
  > .codex/cli_api_server.log 2>&1 &
 ```
+
+## Active Session Keepalive
+
+`post-start.sh` owns a single keepalive daemon for Codespaces. The daemon opens
+an authenticated SSH connection back to the active Codespace and emits terminal
+output every 30 seconds. GitHub documents terminal input and output as activity
+that resets the idle timeout. The parent process, activity marker, and connection
+are all bounded to 8 hours, after which they stop without mutating account policy.
+
+GitHub limits the configurable idle-timeout setting to 240 minutes and enforces
+a 12-hour maximum Codespace lifetime. Organization policy can impose a lower
+limit. This implementation does not override either boundary. It maintains
+active terminal evidence while a Copilot/VS Code session is in progress and
+records the server-observed timeout in its JSON status.
+
+```bash
+# Native VS Code tasks expose these same operations.
+python scripts/autonomous/codespace_keepalive.py start --json
+python scripts/autonomous/codespace_keepalive.py status --json
+python scripts/autonomous/codespace_keepalive.py touch --json
+python scripts/autonomous/codespace_keepalive.py stop --json
+python scripts/autonomous/codespace_keepalive.py restart --json
+```
+
+`post-attach.sh`, MCP tool calls, and the protected Cognitive Brain touch route
+renew the activity marker. The public `GET /api/maintainer/status` route and MCP
+`cognitive_brain_maintainer_status` tool expose only the secret-free canonical
+policy and live status. The canonical machine-readable source is
+`.codex/maintainer_control_plane.json`, embedded into
+`.codex/session_startup_packet.json` at session bootstrap.
 
 ---
 

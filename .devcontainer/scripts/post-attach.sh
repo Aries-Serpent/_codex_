@@ -11,6 +11,14 @@ WORKSPACE="${CODESPACE_VSCODE_FOLDER:-/workspaces/_codex_}"
 # Source env so token vars are visible
 [ -f "$HOME/.codex_env" ] && source "$HOME/.codex_env" 2>/dev/null || true
 
+CODEX_RUNTIME_DIR="${CODEX_RUNTIME_DIR:-${HOME}/.codex/runtime}"
+PYTHON_BIN="${WORKSPACE}/.venv/bin/python"
+if [ -x "$PYTHON_BIN" ]; then
+    "$PYTHON_BIN" scripts/autonomous/codespace_keepalive.py touch \
+        --runtime-dir "$CODEX_RUNTIME_DIR" --repo-root "$WORKSPACE" --json \
+        >/dev/null 2>&1 || true
+fi
+
 # ── Server health ─────────────────────────────────────────────────────────────
 SERVER_UP=false
 curl -sf http://localhost:8765/api/health > /dev/null 2>&1 && SERVER_UP=true
@@ -36,6 +44,19 @@ if $SERVER_UP; then
 else
     echo "    ❌  CLI API server NOT running"
     echo "        Restart: bash .devcontainer/scripts/post-start.sh"
+fi
+if [ -x "$PYTHON_BIN" ]; then
+    KEEPALIVE_STATE="$(
+      "$PYTHON_BIN" scripts/autonomous/codespace_keepalive.py status \
+        --runtime-dir "$CODEX_RUNTIME_DIR" --repo-root "$WORKSPACE" --json 2>/dev/null | \
+      "$PYTHON_BIN" -c 'import json,sys; data=json.load(sys.stdin); print("active" if data.get("running") and data.get("connection", {}).get("active") else "inactive")' \
+        2>/dev/null || true
+    )"
+    if [ "$KEEPALIVE_STATE" = "active" ]; then
+      echo "    ✅  Codespace 8-hour terminal keepalive → active"
+    else
+      echo "    ⚠️  Codespace terminal keepalive → inactive"
+    fi
 fi
 echo ""
 

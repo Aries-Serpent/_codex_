@@ -208,6 +208,50 @@
       ]
     },
     {
+      "label": "Codex: keepalive start",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "${workspaceFolder}/scripts/autonomous/codespace_keepalive.py",
+        "start",
+        "--json"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: keepalive status",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "${workspaceFolder}/scripts/autonomous/codespace_keepalive.py",
+        "status",
+        "--json"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: keepalive stop",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "${workspaceFolder}/scripts/autonomous/codespace_keepalive.py",
+        "stop",
+        "--json"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: keepalive restart",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "${workspaceFolder}/scripts/autonomous/codespace_keepalive.py",
+        "restart",
+        "--json"
+      ],
+      "problemMatcher": []
+    },
+    {
       "label": "Codex: readiness audit",
       "type": "process",
       "command": "${workspaceFolder}/.venv/bin/python",

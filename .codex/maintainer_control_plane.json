@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "owner": {
+    "human_login": "mbaetiong",
+    "human_reviewers_required": 0,
+    "ai_review": "exact_head_sha_required"
+  },
+  "session_liveness": {
+    "mode": "owned_codespace_ssh_terminal_output",
+    "enabled_by_default_in_codespaces": true,
+    "active_window_seconds": 28800,
+    "max_duration_seconds": 28800,
+    "heartbeat_interval_seconds": 60,
+    "platform_policy_overridden": false,
+    "terminal_output_interval_seconds": 30,
+    "limit": "GitHub allows idle settings from 5 to 240 minutes and a 12-hour maximum Codespace lifetime. The forced-TTY terminal output resets the configured idle timer only while the bounded 8-hour active session is running; organization policy and the platform lifetime cap still apply."
+  },
+  "commands": {
+    "keepalive_start": "python scripts/autonomous/codespace_keepalive.py start --json",
+    "keepalive_status": "python scripts/autonomous/codespace_keepalive.py status --json",
+    "keepalive_touch": "python scripts/autonomous/codespace_keepalive.py touch --json",
+    "keepalive_stop": "python scripts/autonomous/codespace_keepalive.py stop --json",
+    "readiness": "python scripts/autonomous/codespace_readiness.py --strict --worktree . --json",
+    "maintainer_probe": "python scripts/autonomous/maintainer_probe.py",
+    "auth_preflight": "python -m scripts.ci.github_auth_preflight --repo Aries-Serpent/_codex_ --environment owner-approval --branch main",
+    "auth_bootstrap": "python -m scripts.ci.codespace_auth_bootstrap --apply-all --json",
+    "signing_setup": "python -m scripts.ci.setup_git_signing --register --sync-codespace-secret --json",
+    "exact_sha_review": "python -m scripts.ci.run_ai_review --repo Aries-Serpent/_codex_ --pr PR --sha SHA"
+  },
+  "credential_routes": {
+    "github_app": ["_GITHUB_APP_ID", "_GITHUB_APP_INSTALLATION_ID", "_GITHUB_APP_PRIVATE_KEY"],
+    "codespaces_administration": ["CODEX_BACKUP_KEY"],
+    "actions_runtime": ["GITHUB_TOKEN"],
+    "commit_signing": ["_GIT_SIGNING_PRIVATE_KEY"]
+  },
+  "mcp_tools": [
+    "cognitive_brain_capabilities",
+    "cognitive_brain_route_plan",
+    "cognitive_brain_route_execute",
+    "cognitive_brain_maintainer_status",
+    "cognitive_brain_keepalive_touch"
+  ],
+  "discovery": {
+    "startup_packet": ".codex/session_startup_packet.json",
+    "vscode_tasks": ".vscode/tasks.json",
+    "mcp_config": ".vscode/mcp.json",
+    "guide": "docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md"
+  }
+}
