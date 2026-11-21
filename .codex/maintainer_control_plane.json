@@ -23,6 +23,8 @@
     "readiness": "python scripts/autonomous/codespace_readiness.py --strict --worktree . --json",
     "maintainer_probe": "python scripts/autonomous/maintainer_probe.py",
     "auth_preflight": "python -m scripts.ci.github_auth_preflight --repo Aries-Serpent/_codex_ --environment owner-approval --branch main",
+    "rate_limit_status": "python -m scripts.ci.rate_limit_status --json",
+    "rate_limit_orchestration_status": "python -m scripts.ci.rate_limit_orchestrator --status",
     "auth_bootstrap": "python -m scripts.ci.codespace_auth_bootstrap --apply-all --json",
     "signing_setup": "python -m scripts.ci.setup_git_signing --register --sync-codespace-secret --json",
     "exact_sha_review": "python -m scripts.ci.run_ai_review --repo Aries-Serpent/_codex_ --pr PR --sha SHA"

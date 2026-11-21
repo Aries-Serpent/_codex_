@@ -37,8 +37,6 @@ import json
 import os
 import sys
 import time
-import urllib.error
-import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -46,6 +44,7 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from scripts.ci._token_resolver import get_token
+from scripts.ci.github_rate_limit import GitHubRateLimitError, credentials_for_token, request
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 
@@ -68,26 +67,27 @@ COPILOT_WEEKLY_LIMIT_HINT = "Not publicly exposed — inferred from 429 history"
 
 # ── GitHub API helper ──────────────────────────────────────────────────────────
 
+
 def _gh_get(path: str) -> tuple[int, object]:
-    url = f"https://api.github.com{path}"
-    headers = {
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-        "User-Agent": "codex-rate-limit-status/1.0",
-    }
-    if GH_TOKEN:
-        headers["Authorization"] = f"Bearer {GH_TOKEN}"
-    req = urllib.request.Request(url, headers=headers)
+    if not GH_TOKEN:
+        return -1, {"error": "No GitHub credential available"}
     try:
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            return resp.status, json.loads(resp.read())
-    except urllib.error.HTTPError as exc:
-        return exc.code, {}
-    except Exception as exc:
-        return -1, {"error": str(exc)}
+        response = request(
+            "GET",
+            f"https://api.github.com{path}",
+            credentials=credentials_for_token(GH_TOKEN),
+            timeout=10,
+            user_agent="codex-rate-limit-status/1.1",
+        )
+        return response.status, response.payload
+    except GitHubRateLimitError:
+        return 429, {}
+    except (OSError, TimeoutError) as exc:
+        return -1, {"error": type(exc).__name__}
 
 
 # ── Data sources ───────────────────────────────────────────────────────────────
+
 
 def get_github_api_limits() -> dict:
     """Query GitHub REST API rate-limit endpoint."""
@@ -124,9 +124,7 @@ def get_github_api_limits() -> dict:
         "core_limit": core.get("limit", "?"),
         "core_pct": core.get("pct_remaining", "?"),
         "core_reset": core.get("reset_utc", "?"),
-        "any_exhausted": any(
-            r.get("exhausted") for r in result["resources"].values()
-        ),
+        "any_exhausted": any(r.get("exhausted") for r in result["resources"].values()),
     }
     return result
 
@@ -134,7 +132,10 @@ def get_github_api_limits() -> dict:
 def get_checkpoint_status() -> dict:
     """Read the local rate-limit checkpoint file."""
     if not CHECKPOINT_FILE.exists():
-        return {"found": False, "message": "No checkpoint file — no prior rate-limit interruption recorded."}
+        return {
+            "found": False,
+            "message": "No checkpoint file — no prior rate-limit interruption recorded.",
+        }
 
     try:
         cp = json.loads(CHECKPOINT_FILE.read_text())
@@ -182,7 +183,9 @@ def get_rate_limit_log_history(tail: int = 20) -> list[dict]:
                     # Keep tolerant behavior while tracking malformed NDJSON rows.
                     malformed_count += 1
     except Exception as exc:
-        print(f"⚠️ Could not read rate-limit log history: {exc}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"⚠️ Could not read rate-limit log history: {exc}", file=sys.stderr
+        )  # codeql[py/clear-text-logging-sensitive-data]
     if malformed_count:
         entries_word = "entry" if malformed_count == 1 else "entries"
         print(
@@ -197,17 +200,15 @@ def scan_workflow_runs_for_429(limit: int = 20) -> dict:
     if not REPO or not GH_TOKEN:
         return {"error": "GITHUB_REPOSITORY and GH_TOKEN required for run scanning"}
 
-    status, data = _gh_get(
-        f"/repos/{REPO}/actions/runs?per_page={limit}&event=dynamic"
-    )
+    status, data = _gh_get(f"/repos/{REPO}/actions/runs?per_page={limit}&event=dynamic")
     if status != 200:
         return {"error": f"Could not list workflow runs (HTTP {status})"}
 
     runs = data.get("workflow_runs", [])  # type: ignore[union-attr]
     copilot_runs = [
-        r for r in runs
-        if "copilot" in r.get("name", "").lower()
-        or "copilot" in r.get("display_title", "").lower()
+        r
+        for r in runs
+        if "copilot" in r.get("name", "").lower() or "copilot" in r.get("display_title", "").lower()
     ]
 
     rate_limited = []
@@ -219,13 +220,15 @@ def scan_workflow_runs_for_429(limit: int = 20) -> dict:
         branch = r.get("head_branch", "")
         if conclusion == "failure":
             # We can't read log content here without fetching jobs, but we track failures
-            rate_limited.append({
-                "run_id": run_id,
-                "created_at": created,
-                "branch": branch,
-                "conclusion": conclusion,
-                "url": r.get("html_url", ""),
-            })
+            rate_limited.append(
+                {
+                    "run_id": run_id,
+                    "created_at": created,
+                    "branch": branch,
+                    "conclusion": conclusion,
+                    "url": r.get("html_url", ""),
+                }
+            )
 
     return {
         "total_copilot_runs_scanned": len(copilot_runs),
@@ -264,9 +267,13 @@ def print_status(api: dict, cp: dict, history: list, scan: dict | None) -> None:
     print("  🌐 GitHub REST API Limits")  # codeql[py/clear-text-logging-sensitive-data]
     print(f"  {'─'*56}")  # codeql[py/clear-text-logging-sensitive-data]
     if api.get("error"):
-        print(f"  ❌ Could not fetch: {api['error']}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"  ❌ Could not fetch: {api['error']}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         if not GH_TOKEN:
-            print("     → Set CODEX_MASTER_KEY or GH_TOKEN to enable API checks")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                "     → Set CODEX_MASTER_KEY or GH_TOKEN to enable API checks"
+            )  # codeql[py/clear-text-logging-sensitive-data]
     elif api.get("available"):
         for name, info in api.get("resources", {}).items():
             pct = info.get("pct_remaining", 0)
@@ -279,36 +286,64 @@ def print_status(api: dict, cp: dict, history: list, scan: dict | None) -> None:
     print()  # codeql[py/clear-text-logging-sensitive-data]
 
     # ── Copilot weekly limit (checkpoint-inferred) ─────────────────
-    print("  🤖 Copilot Weekly Limit (inferred from checkpoint)")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        "  🤖 Copilot Weekly Limit (inferred from checkpoint)"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     print(f"  {'─'*56}")  # codeql[py/clear-text-logging-sensitive-data]
     if not cp.get("found"):
-        print("  ✅ No checkpoint — no prior weekly rate-limit hit recorded")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            "  ✅ No checkpoint — no prior weekly rate-limit hit recorded"
+        )  # codeql[py/clear-text-logging-sensitive-data]
     else:
         resolved = cp.get("resolved")
         icon = "✅" if resolved else "🔴"
-        print(f"  {icon} Resolution:    {cp.get('resolution', 'unknown')}")  # codeql[py/clear-text-logging-sensitive-data]
-        print(f"     Session:       {cp.get('session', '?')} (PR #{cp.get('pr_number', '?')})")  # codeql[py/clear-text-logging-sensitive-data]
-        print(f"     Interrupted:   {cp.get('created_at', '?')}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"  {icon} Resolution:    {cp.get('resolution', 'unknown')}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"     Session:       {cp.get('session', '?')} (PR #{cp.get('pr_number', '?')})"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"     Interrupted:   {cp.get('created_at', '?')}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         if resolved:
-            print(f"     Resolved at:   {cp.get('resolved_at', '?')}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"     Resolved at:   {cp.get('resolved_at', '?')}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            print(f"     Retry after:   {cp.get('retry_after_utc', '?')}")  # codeql[py/clear-text-logging-sensitive-data]
-            print(f"     Tasks pending: {cp.get('tasks_pending', 0)}")  # codeql[py/clear-text-logging-sensitive-data]
-            print(f"     In-progress:   {cp.get('tasks_in_progress', 0)}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"     Retry after:   {cp.get('retry_after_utc', '?')}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"     Tasks pending: {cp.get('tasks_pending', 0)}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"     In-progress:   {cp.get('tasks_in_progress', 0)}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             if cp.get("push_conflict_risk"):
-                print("     ⚠️  Push conflict risk: run push_conflict_resolver.py first")  # codeql[py/clear-text-logging-sensitive-data]
+                print(
+                    "     ⚠️  Push conflict risk: run push_conflict_resolver.py first"
+                )  # codeql[py/clear-text-logging-sensitive-data]
             print()  # codeql[py/clear-text-logging-sensitive-data]
             print("  Recovery commands:")  # codeql[py/clear-text-logging-sensitive-data]
-            print("     python3 scripts/ci/push_conflict_resolver.py")  # codeql[py/clear-text-logging-sensitive-data]
-            print("     python3 scripts/ci/rate_limit_handler.py --resolve")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                "     python3 scripts/ci/push_conflict_resolver.py"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                "     python3 scripts/ci/rate_limit_handler.py --resolve"
+            )  # codeql[py/clear-text-logging-sensitive-data]
     print()  # codeql[py/clear-text-logging-sensitive-data]
 
     # ── Event history ─────────────────────────────────────────────
     if history:
-        print(f"  📜 Rate-Limit Event History (last {len(history)} entries)")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"  📜 Rate-Limit Event History (last {len(history)} entries)"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         print(f"  {'─'*56}")  # codeql[py/clear-text-logging-sensitive-data]
         for e in history[-5:]:
-            print(f"     {e.get('logged_at','?')[:19]}  {e.get('event','?')}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"     {e.get('logged_at','?')[:19]}  {e.get('event','?')}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
         print()  # codeql[py/clear-text-logging-sensitive-data]
 
     # ── Workflow run scan ─────────────────────────────────────────
@@ -321,9 +356,13 @@ def print_status(api: dict, cp: dict, history: list, scan: dict | None) -> None:
             failed = scan.get("failed_runs", 0)
             total = scan.get("total_copilot_runs_scanned", 0)
             icon = "🔴" if failed > 3 else ("⚠️ " if failed > 0 else "✅")
-            print(f"  {icon} {failed}/{total} Copilot runs failed (may include rate-limit + push conflicts)")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"  {icon} {failed}/{total} Copilot runs failed (may include rate-limit + push conflicts)"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             for r in scan.get("failed_run_details", [])[:5]:
-                print(f"     • Run {r['run_id']} — {r['created_at'][:16]} — {r['branch']}")  # codeql[py/clear-text-logging-sensitive-data]
+                print(
+                    f"     • Run {r['run_id']} — {r['created_at'][:16]} — {r['branch']}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
         print()  # codeql[py/clear-text-logging-sensitive-data]
 
     print(f"{'═'*60}\n")  # codeql[py/clear-text-logging-sensitive-data]
@@ -331,8 +370,11 @@ def print_status(api: dict, cp: dict, history: list, scan: dict | None) -> None:
 
 # ── Watch mode ─────────────────────────────────────────────────────────────────
 
+
 def watch(interval: int, assert_ok: bool) -> None:
-    print(f"👀 Watch mode — polling every {interval}s. Ctrl-C to stop.\n")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"👀 Watch mode — polling every {interval}s. Ctrl-C to stop.\n"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     try:
         while True:
             api = get_github_api_limits()
@@ -349,7 +391,9 @@ def watch(interval: int, assert_ok: bool) -> None:
                             tzinfo=timezone.utc
                         )
                         if datetime.now(timezone.utc) >= reset_dt:
-                            print("🟢 Rate-limit reset window has passed! Safe to retry.")  # codeql[py/clear-text-logging-sensitive-data]
+                            print(
+                                "🟢 Rate-limit reset window has passed! Safe to retry."
+                            )  # codeql[py/clear-text-logging-sensitive-data]
                     except ValueError as exc:
                         print(
                             "⚠️ Could not parse checkpoint retry_after_utc "
@@ -363,13 +407,15 @@ def watch(interval: int, assert_ok: bool) -> None:
 
 # ── Entry point ────────────────────────────────────────────────────────────────
 
+
 def _parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p.add_argument(
-        "--json", "-j",
+        "--json",
+        "-j",
         action="store_true",
         dest="json_output",
         help="Output full status as JSON",
@@ -412,7 +458,9 @@ def main() -> int:
 
     if args.log_event:
         append_rate_limit_event({"event": args.log_event})
-        print(f"✅ Logged event '{args.log_event}' to {RATE_LIMIT_LOG}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"✅ Logged event '{args.log_event}' to {RATE_LIMIT_LOG}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return 0
 
     if args.watch:

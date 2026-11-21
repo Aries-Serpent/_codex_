@@ -275,6 +275,35 @@ In Codespaces, `GITHUB_TOKEN` is **automatically provided** by GitHub with
 The `GitHubApp.pat_api_get()` method and `BrainClient.proxy_request()` both
 implement this chain automatically — no manual header construction needed.
 
+## GitHub Quota Coordination
+
+GitHub REST, GraphQL, App-token, approval, signing, Codespaces-secret, and
+checkpoint calls use `scripts/ci/github_rate_limit.py` as the shared transport.
+The transport observes `X-RateLimit-*` headers, deduplicates credentials by token
+value, rotates among compatible PATs, honors `Retry-After`, bounds reset waits,
+and reuses successful GET responses by credential-specific cache keys.
+
+An explicit short-lived GitHub App token remains isolated: the transport never
+falls back from that token to a PAT or another App token. Permission `403`
+responses return immediately and are never treated as primary-rate exhaustion;
+secondary-limit `403` and `429` responses rotate or defer the affected
+credential. A request is failed closed before the bounded wait if the reset is
+too far away.
+
+```bash
+# Live REST resource state; output contains no token values.
+python -m scripts.ci.rate_limit_status --json
+
+# Verify App/PAT routes and process-observed quota state without mutations.
+python -m scripts.ci.github_auth_preflight \
+  --repo Aries-Serpent/_codex_ \
+  --environment owner-approval \
+  --branch main
+
+# The same diagnostics are exposed as native VS Code tasks and through
+# GET /api/maintainer/status or cognitive_brain_maintainer_status.
+```
+
 ---
 
 ## CLI API Server

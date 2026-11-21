@@ -8,8 +8,6 @@ import asyncio
 import json
 import re
 import sys
-import urllib.error
-import urllib.request
 from pathlib import Path
 from typing import Any
 
@@ -31,6 +29,7 @@ from scripts.ci._token_resolver import (
     resolve_app_installation_id,
     resolve_app_private_key,
 )
+from scripts.ci.github_rate_limit import GitHubRateLimitError, credentials_for_token, request
 
 
 def github_request(
@@ -40,29 +39,17 @@ def github_request(
     *,
     accept: str = "application/vnd.github+json",
 ) -> tuple[int, Any]:
-    request = urllib.request.Request(
-        f"https://api.github.com{path}",
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Accept": accept,
-            "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": "codex-ai-review/1.0",
-        },
-        method=method,
-    )
     try:
-        with urllib.request.urlopen(request, timeout=30) as response:
-            raw = response.read()
-            if ".diff" in accept or accept.endswith("diff"):
-                return response.status, raw.decode("utf-8", errors="replace") if raw else ""
-            return response.status, json.loads(raw) if raw else {}
-    except urllib.error.HTTPError as exc:
-        raw = exc.read()
-        try:
-            payload = json.loads(raw)
-        except json.JSONDecodeError:
-            payload = {"message": raw.decode("utf-8", "replace")}
-        return exc.code, payload
+        response = request(
+            method,
+            f"https://api.github.com{path}",
+            credentials=credentials_for_token(token),
+            accept=accept,
+            user_agent="codex-ai-review/1.1",
+        )
+        return response.status, response.payload
+    except GitHubRateLimitError:
+        return 429, {"message": "GitHub review credential is rate-limited"}
 
 
 def load_review_context(

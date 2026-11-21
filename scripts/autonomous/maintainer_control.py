@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.autonomous.codespace_keepalive import read_status, runtime_dir_default
+from scripts.ci.github_rate_limit import quota_status
 
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG_PATH = ROOT / ".codex" / "maintainer_control_plane.json"
@@ -32,4 +33,5 @@ def maintainer_status() -> dict[str, Any]:
         "mcp_tools": catalog["mcp_tools"],
         "discovery": catalog["discovery"],
         "keepalive": read_status(runtime_dir_default()),
+        "github_rate_limit": quota_status(),
     }

@@ -77,7 +77,12 @@ from typing import Any
 # Add parent directory to path for CI execution
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from scripts.ci._token_resolver import get_token
+from scripts.ci.github_rate_limit import (
+    Credential,
+    GitHubRateLimitError,
+    discover_credentials,
+    request,
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -88,39 +93,38 @@ logging.basicConfig(
 logger = logging.getLogger("gh_trickle")
 
 _OWNER = "Aries-Serpent"
-_REPO  = "_codex_"
-_BASE  = "https://api.github.com"
+_REPO = "_codex_"
+_BASE = "https://api.github.com"
 
 # ──────────────────────────────────────────────────────────────
 # Configuration from environment
 # ──────────────────────────────────────────────────────────────
-POLITE_SLEEP   = float(os.environ.get("GH_TRICKLE_POLITE_SLEEP",   "0.5"))
-MIN_REMAINING  = int(  os.environ.get("GH_TRICKLE_MIN_REMAINING",  "10"))
-MAX_WAIT       = float(os.environ.get("GH_TRICKLE_MAX_WAIT",       "120"))
-MAX_RETRIES    = int(  os.environ.get("GH_TRICKLE_RETRIES",        "3"))
+POLITE_SLEEP = float(os.environ.get("GH_TRICKLE_POLITE_SLEEP", "0.5"))
+MIN_REMAINING = int(os.environ.get("GH_TRICKLE_MIN_REMAINING", "10"))
+MAX_WAIT = float(os.environ.get("GH_TRICKLE_MAX_WAIT", "120"))
+MAX_RETRIES = int(os.environ.get("GH_TRICKLE_RETRIES", "3"))
 
 
 # ──────────────────────────────────────────────────────────────
 # Token discovery
 # ──────────────────────────────────────────────────────────────
 def _discover_tokens() -> list[str]:
-    """Return deduplicated list of all available GitHub tokens, highest privilege first."""
-    candidates = [
-        get_token(required_elevated=True)[0],
-        get_token(required_elevated=True)[0],
-        os.environ.get("CODEX_ADMIN_KEY"),
-        os.environ.get("AGENT_GITHUB_TOKEN"),
-        os.environ.get("GITHUB_COPILOT_API_TOKEN"),
-        os.environ.get("GITHUB_TOKEN"),
-        get_token(required_elevated=False)[0],
+    """Return deduplicated token values from the canonical credential pool."""
+    result = [
+        credential.token
+        for credential in discover_credentials(
+            sources=(
+                "CODEX_MASTER_KEY",
+                "CODEX_BACKUP_KEY",
+                "CODEX_ADMIN_KEY",
+                "AGENT_GITHUB_TOKEN",
+                "GITHUB_COPILOT_API_TOKEN",
+                "GH_TOKEN",
+                "GITHUB_TOKEN",
+            )
+        )
     ]
-    seen: set[str] = set()
-    result: list[str] = []
-    for t in candidates:
-        if t and t not in seen:
-            seen.add(t)
-            result.append(t)
-    logger.info("Token discovery: %d unique tokens found", len(result))  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info("Token discovery: %d unique tokens found", len(result))
     return result
 
 
@@ -141,13 +145,19 @@ def _headers(token: str) -> dict[str, str]:
 def check_rate_limits(token: str) -> dict[str, dict[str, int]]:
     """Return rate-limit info for all resource types for a given token."""
     try:
-        req = urllib.request.Request(f"{_BASE}/rate_limit", headers=_headers(token))  # noqa: S310  # _BASE = https://api.github.com (https-only constant)
-        with urllib.request.urlopen(req, timeout=10) as r:  # noqa: S310  # _BASE = https://api.github.com (https-only constant)
-            data = json.load(r)
-        return data.get("resources", {})
-    except Exception as exc:
-        logger.debug("rate_limit check failed: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
+        response = request(
+            "GET",
+            f"{_BASE}/rate_limit",
+            credentials=[Credential("rate-limit-probe", token)],
+            max_retries=1,
+            user_agent="codex-github-api-trickle/1.1",
+        )
+    except (GitHubRateLimitError, OSError, TimeoutError):
         return {}
+    if response.status != 200 or not isinstance(response.payload, dict):
+        return {}
+    resources = response.payload.get("resources", {})
+    return resources if isinstance(resources, dict) else {}
 
 
 def _polite_sleep(extra: float = 0.0) -> None:
@@ -168,7 +178,9 @@ def _write_github_env(name: str, value: str) -> None:
         with open(env_file, "a") as f:
             f.write(f"{name}={value}\n")
     except OSError as exc:
-        logger.debug("Could not write to GITHUB_ENV: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(
+            "Could not write to GITHUB_ENV: %s", exc
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
 
 def _write_github_output(name: str, value: str) -> None:
@@ -183,7 +195,9 @@ def _write_github_output(name: str, value: str) -> None:
         with open(out_file, "a") as f:
             f.write(f"{name}={value}\n")
     except OSError as exc:
-        logger.debug("Could not write to GITHUB_OUTPUT: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug(
+            "Could not write to GITHUB_OUTPUT: %s", exc
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
 
 def _wait_for_reset(reset_epoch: int, resource: str = "core") -> None:
@@ -193,10 +207,14 @@ def _wait_for_reset(reset_epoch: int, resource: str = "core") -> None:
     if capped < wait:
         logger.warning(
             "%s rate limit: need to wait %.0fs but capping at %.0fs (MAX_WAIT)",
-            resource, wait, capped,
+            resource,
+            wait,
+            capped,
         )
     else:
-        logger.info("%s rate limit: sleeping %.0fs until reset", resource, capped)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            "%s rate limit: sleeping %.0fs until reset", resource, capped
+        )  # codeql[py/clear-text-logging-sensitive-data]
     time.sleep(capped)
 
 
@@ -208,53 +226,30 @@ def rest_get(
     tokens: list[str] | None = None,
     retries: int = MAX_RETRIES,
 ) -> tuple[Any, str | None]:
-    """
-    GET {_BASE}{path} trying each token in order.
-    Returns (data, error_message) — one of them is None.
-    """
-    tokens = tokens or TOKENS
-    for tok_slot, token in enumerate(tokens, 1):
-        limits = check_rate_limits(token)
-        _polite_sleep()
-        core = limits.get("core", {})
-        remaining = core.get("remaining", 0)
-
-        if remaining < MIN_REMAINING:
-            logger.info("token[slot-%d] core=%d — trying next token", tok_slot, remaining)  # codeql[py/clear-text-logging-sensitive-data]
-            continue
-
-        for attempt in range(retries):
-            try:
-                req = urllib.request.Request(f"{_BASE}{path}", headers=_headers(token))  # noqa: S310  # _BASE = https://api.github.com (https-only constant)
-                with urllib.request.urlopen(req, timeout=20) as r:  # noqa: S310  # _BASE = https://api.github.com (https-only constant)
-                    data = json.load(r)
-                    logger.debug("REST OK: %s", path[:80])  # codeql[py/clear-text-logging-sensitive-data]
-                    return data, None
-
-            except urllib.error.HTTPError as exc:
-                body = exc.read().decode(errors="replace")
-                if exc.code == 403 and "rate limit" in body.lower():
-                    backoff = min((2 ** attempt) * 5, MAX_WAIT)
-                    logger.warning(
-                        "REST 403 rate-limited (attempt %d/%d) — backoff %.0fs",
-                        attempt + 1, retries, backoff,
-                    )
-                    time.sleep(backoff)
-                    continue
-                if exc.code == 422:
-                    logger.warning("REST 422 Unprocessable: %s", body[:200])  # codeql[py/clear-text-logging-sensitive-data]
-                    return None, f"HTTP 422: {body[:100]}"
-                if exc.code in (401, 404):
-                    logger.warning("REST %d for %s", exc.code, path[:60])  # codeql[py/clear-text-logging-sensitive-data]
-                    return None, f"HTTP {exc.code}"
-                logger.warning("REST HTTP %d (attempt %d): %s", exc.code, attempt + 1, body[:100])  # codeql[py/clear-text-logging-sensitive-data]
-                _polite_sleep(2 ** attempt)
-
-            except Exception as exc:
-                logger.warning("REST error (attempt %d): %s", attempt + 1, exc)  # codeql[py/clear-text-logging-sensitive-data]
-                _polite_sleep(2 ** attempt)
-
-    return None, "all tokens exhausted or rate-limited"
+    """GET one REST resource using response-derived quota rotation."""
+    values = tokens or TOKENS
+    if not values:
+        return None, "no credentials available"
+    credentials = [
+        Credential(f"token-slot-{index}", value) for index, value in enumerate(values, 1)
+    ]
+    try:
+        response = request(
+            "GET",
+            f"{_BASE}{path}",
+            credentials=credentials,
+            max_retries=retries,
+            min_remaining=MIN_REMAINING,
+            max_wait_seconds=MAX_WAIT,
+            user_agent="codex-github-api-trickle/1.1",
+        )
+    except GitHubRateLimitError:
+        return None, "all tokens exhausted or rate-limited"
+    except (OSError, TimeoutError):
+        return None, "GitHub transport unavailable"
+    if response.status >= 400:
+        return None, f"HTTP {response.status}"
+    return response.payload, None
 
 
 def rest_paginate(path: str, tokens: list[str] | None = None) -> list[Any]:
@@ -295,46 +290,37 @@ def graphql(
     variables: dict[str, Any] | None = None,
     tokens: list[str] | None = None,
 ) -> tuple[dict, str | None]:
-    """Execute a GraphQL query. Returns (data_dict, error_string)."""
-    tokens = tokens or TOKENS
-    payload = json.dumps({"query": query, **({"variables": variables} if variables else {})}).encode()
-
-    for tok_slot, token in enumerate(tokens, 1):
-        limits = check_rate_limits(token)
-        _polite_sleep()
-        gql_remaining = limits.get("graphql", {}).get("remaining", 0)
-        if gql_remaining < MIN_REMAINING:
-            logger.info("token[slot-%d] graphql=%d — trying next", tok_slot, gql_remaining)  # codeql[py/clear-text-logging-sensitive-data]
-            continue
-
-        for attempt in range(MAX_RETRIES):
-            try:
-                req = urllib.request.Request(
-                    "https://api.github.com/graphql",
-                    data=payload,
-                    headers={**_headers(token), "Content-Type": "application/json"},
-                    method="POST",
-                )
-                with urllib.request.urlopen(req, timeout=20) as r:  # noqa: S310  # _BASE = https://api.github.com (https-only constant)
-                    result = json.load(r)
-                if "errors" in result:
-                    errs = result["errors"]
-                    # Surface undefined-field errors immediately; don't retry
-                    if any(e.get("extensions", {}).get("code") == "undefinedField" for e in errs):
-                        return {}, f"GraphQL schema error: {errs[0]['message']}"
-                    logger.warning("GraphQL errors: %s", errs)  # codeql[py/clear-text-logging-sensitive-data]
-                return result.get("data", {}), None
-            except urllib.error.HTTPError as exc:
-                body = exc.read().decode(errors="replace")
-                if exc.code == 403 and "rate limit" in body.lower():
-                    _polite_sleep(2 ** attempt * 3)
-                    continue
-                return {}, f"HTTP {exc.code}: {body[:100]}"
-            except Exception as exc:
-                logger.warning("GraphQL error (attempt %d): %s", attempt + 1, exc)  # codeql[py/clear-text-logging-sensitive-data]
-                _polite_sleep(2 ** attempt)
-
-    return {}, "all tokens exhausted for GraphQL"
+    """Execute GraphQL with response-derived quota rotation."""
+    values = tokens or TOKENS
+    if not values:
+        return {}, "no credentials available"
+    credentials = [
+        Credential(f"token-slot-{index}", value) for index, value in enumerate(values, 1)
+    ]
+    try:
+        response = request(
+            "POST",
+            "https://api.github.com/graphql",
+            credentials=credentials,
+            body={"query": query, **({"variables": variables} if variables else {})},
+            max_retries=MAX_RETRIES,
+            min_remaining=MIN_REMAINING,
+            max_wait_seconds=MAX_WAIT,
+            user_agent="codex-github-api-trickle/1.1",
+        )
+    except GitHubRateLimitError:
+        return {}, "all tokens exhausted for GraphQL"
+    except (OSError, TimeoutError):
+        return {}, "GraphQL transport unavailable"
+    if response.status >= 400:
+        return {}, f"HTTP {response.status}"
+    result = response.payload if isinstance(response.payload, dict) else {}
+    if "errors" in result:
+        errors = result["errors"]
+        if any(error.get("extensions", {}).get("code") == "undefinedField" for error in errors):
+            return {}, f"GraphQL schema error: {errors[0]['message']}"
+        logger.warning("GraphQL errors: %s", errors)
+    return result.get("data", {}), None
 
 
 # ──────────────────────────────────────────────────────────────
@@ -355,7 +341,7 @@ def gh_cli(args: list[str], input_json: dict | None = None) -> tuple[Any, str | 
             timeout=30,
             input=json.dumps(input_json) if input_json else None,
             env={**os.environ},
-            shell=False,          # never use shell=True
+            shell=False,  # never use shell=True
         )
         if result.returncode == 0:
             out = result.stdout.strip()
@@ -367,7 +353,9 @@ def gh_cli(args: list[str], input_json: dict | None = None) -> tuple[Any, str | 
             return None, None
         stderr = result.stderr.strip()
         if "rate limit" in stderr.lower():
-            logger.warning("gh CLI rate limited: %s", stderr[:100])  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "gh CLI rate limited: %s", stderr[:100]
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return None, f"rate-limited: {stderr[:100]}"
         return None, stderr[:200]
     except subprocess.TimeoutExpired:
@@ -387,18 +375,30 @@ def download_artifact(artifact_id: int, dest: Path, tokens: list[str] | None = N
     for token in tokens:
         try:
             url = f"{_BASE}/repos/{_OWNER}/{_REPO}/actions/artifacts/{artifact_id}/zip"
-            req = urllib.request.Request(url, headers=_headers(token))  # noqa: S310  # _BASE = https://api.github.com (https-only constant)
-            with urllib.request.urlopen(req, timeout=60) as r:  # noqa: S310  # _BASE = https://api.github.com (https-only constant)
+            req = urllib.request.Request(
+                url, headers=_headers(token)
+            )  # noqa: S310  # _BASE = https://api.github.com (https-only constant)
+            with urllib.request.urlopen(
+                req, timeout=60
+            ) as r:  # noqa: S310  # _BASE = https://api.github.com (https-only constant)
                 dest.write_bytes(r.read())
-            logger.info("Downloaded artifact %d → %s", artifact_id, dest)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(
+                "Downloaded artifact %d → %s", artifact_id, dest
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return True
         except urllib.error.HTTPError as exc:
             if exc.code == 410:
-                logger.warning("Artifact %d expired (410)", artifact_id)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning(
+                    "Artifact %d expired (410)", artifact_id
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 return False
-            logger.debug("Artifact download HTTP %d", exc.code)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "Artifact download HTTP %d", exc.code
+            )  # codeql[py/clear-text-logging-sensitive-data]
         except Exception as exc:
-            logger.debug("Artifact download error: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "Artifact download error: %s", exc
+            )  # codeql[py/clear-text-logging-sensitive-data]
         _polite_sleep()
     return False
 
@@ -413,7 +413,7 @@ CODEQL_CLI = os.environ.get(
     "CODEQL_CLI_PATH",
     shutil.which("codeql") or "/opt/hostedtoolcache/CodeQL/2.25.1/x64/codeql/codeql",
 )
-CODEQL_DB  = os.environ.get("CODEQL_DB_PATH", os.path.join(tempfile.gettempdir(), "codex-db-py"))
+CODEQL_DB = os.environ.get("CODEQL_DB_PATH", os.path.join(tempfile.gettempdir(), "codex-db-py"))
 CODEQL_QLPACKS = os.environ.get(
     "CODEQL_QLPACKS_PATH",
     "/opt/hostedtoolcache/CodeQL/2.25.1/x64/codeql/qlpacks/codeql/python-queries/1.7.11",
@@ -423,15 +423,28 @@ CODEQL_QLPACKS = os.environ.get(
 def build_codeql_db(source_root: str = REPO_ROOT) -> bool:
     """Build local CodeQL Python DB. Returns True if successful."""
     if not Path(CODEQL_CLI).exists():
-        logger.warning("CodeQL CLI not found at %s", CODEQL_CLI)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "CodeQL CLI not found at %s", CODEQL_CLI
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return False
     if Path(CODEQL_DB).exists() and (Path(CODEQL_DB) / "db-python").exists():
-        logger.info("CodeQL DB already exists at %s", CODEQL_DB)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            "CodeQL DB already exists at %s", CODEQL_DB
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return True
-    logger.info("Building CodeQL DB (may take ~5 minutes)…")  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info(
+        "Building CodeQL DB (may take ~5 minutes)…"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     result = subprocess.run(
-        [CODEQL_CLI, "database", "create", CODEQL_DB,
-         "--language=python", f"--source-root={source_root}", "--overwrite"],
+        [
+            CODEQL_CLI,
+            "database",
+            "create",
+            CODEQL_DB,
+            "--language=python",
+            f"--source-root={source_root}",
+            "--overwrite",
+        ],
         capture_output=False,
         timeout=600,
         shell=False,
@@ -444,13 +457,25 @@ def run_codeql_query(query_path: str, output_csv: str) -> list[list[str]]:
     if not build_codeql_db():
         return []
     result = subprocess.run(
-        [CODEQL_CLI, "database", "analyze", CODEQL_DB,
-         query_path, "--format=csv", f"--output={output_csv}",
-         "--no-print-diagnostics-summary"],
-        capture_output=True, text=True, timeout=300, shell=False,
+        [
+            CODEQL_CLI,
+            "database",
+            "analyze",
+            CODEQL_DB,
+            query_path,
+            "--format=csv",
+            f"--output={output_csv}",
+            "--no-print-diagnostics-summary",
+        ],
+        capture_output=True,
+        text=True,
+        timeout=300,
+        shell=False,
     )
     if result.returncode != 0:
-        logger.warning("CodeQL query failed: %s", result.stderr[:200])  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "CodeQL query failed: %s", result.stderr[:200]
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return []
     try:
         rows = []
@@ -475,39 +500,65 @@ def fetch_code_scanning_alerts(
     logger.info("=== Method 1: REST paginate ===")  # codeql[py/clear-text-logging-sensitive-data]
     alerts = rest_paginate(f"/repos/{owner}/{repo}/code-scanning/alerts?state={state}")
     if alerts:
-        logger.info("REST: retrieved %d alerts", len(alerts))  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            "REST: retrieved %d alerts", len(alerts)
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return alerts
 
-    logger.info("=== Method 2: GraphQL (not available for code-scanning) ===")  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info(
+        "=== Method 2: GraphQL (not available for code-scanning) ==="
+    )  # codeql[py/clear-text-logging-sensitive-data]
     # code-scanning has no GraphQL equivalent — skip to Method 3
 
     logger.info("=== Method 3: gh CLI ===")  # codeql[py/clear-text-logging-sensitive-data]
-    data, err = gh_cli([
-        "api",
-        f"/repos/{owner}/{repo}/code-scanning/alerts?state={state}&per_page=100",
-    ])
+    data, err = gh_cli(
+        [
+            "api",
+            f"/repos/{owner}/{repo}/code-scanning/alerts?state={state}&per_page=100",
+        ]
+    )
     if data and isinstance(data, list):
-        logger.info("gh CLI: retrieved %d alerts", len(data))  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            "gh CLI: retrieved %d alerts", len(data)
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return data
     logger.info("gh CLI result: %s", err)  # codeql[py/clear-text-logging-sensitive-data]
 
-    logger.info("=== Method 4: CodeQL DB analyze ===")  # codeql[py/clear-text-logging-sensitive-data]
+    logger.info(
+        "=== Method 4: CodeQL DB analyze ==="
+    )  # codeql[py/clear-text-logging-sensitive-data]
     if build_codeql_db():
         _sarif_out = os.path.join(tempfile.gettempdir(), "codeql-results.sarif")
         result = subprocess.run(
-            [CODEQL_CLI, "database", "analyze", CODEQL_DB,
-             CODEQL_QLPACKS,
-             "--format=sarifv2.1.0", "--output", _sarif_out,
-             "--no-print-diagnostics-summary"],
-            capture_output=True, text=True, timeout=600, shell=False,
+            [
+                CODEQL_CLI,
+                "database",
+                "analyze",
+                CODEQL_DB,
+                CODEQL_QLPACKS,
+                "--format=sarifv2.1.0",
+                "--output",
+                _sarif_out,
+                "--no-print-diagnostics-summary",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=600,
+            shell=False,
         )
         if result.returncode == 0 and Path(_sarif_out).exists():
             alerts = _parse_sarif(_sarif_out)
-            logger.info("Local CodeQL: %d findings", len(alerts))  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(
+                "Local CodeQL: %d findings", len(alerts)
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return alerts
-        logger.warning("CodeQL analyze failed: %s", result.stderr[:200])  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "CodeQL analyze failed: %s", result.stderr[:200]
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
-    logger.error("All methods exhausted — no alerts retrieved")  # codeql[py/clear-text-logging-sensitive-data]
+    logger.error(
+        "All methods exhausted — no alerts retrieved"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     return []
 
 
@@ -525,14 +576,23 @@ def _parse_sarif(sarif_path: str) -> list[dict]:
                 for loc in result.get("locations", []):
                     phys = loc.get("physicalLocation", {})
                     region = phys.get("region", {})
-                    alerts.append({
-                        "rule": {"id": rule_id, "severity": rule_info.get("defaultConfiguration", {}).get("level", "note")},
-                        "most_recent_instance": {"location": {
-                            "path": phys.get("artifactLocation", {}).get("uri", "?"),
-                            "start_line": region.get("startLine", 0),
-                        }},
-                        "message": result.get("message", {}).get("text", ""),
-                    })
+                    alerts.append(
+                        {
+                            "rule": {
+                                "id": rule_id,
+                                "severity": rule_info.get("defaultConfiguration", {}).get(
+                                    "level", "note"
+                                ),
+                            },
+                            "most_recent_instance": {
+                                "location": {
+                                    "path": phys.get("artifactLocation", {}).get("uri", "?"),
+                                    "start_line": region.get("startLine", 0),
+                                }
+                            },
+                            "message": result.get("message", {}).get("text", ""),
+                        }
+                    )
     except Exception as exc:
         logger.warning("SARIF parse error: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
     return alerts
@@ -540,7 +600,8 @@ def _parse_sarif(sarif_path: str) -> list[dict]:
 
 def fetch_pr_review_threads(pr_number: int, owner: str = _OWNER, repo: str = _REPO) -> list[dict]:
     """Fetch unresolved PR review threads via GraphQL."""
-    data, err = graphql("""
+    data, err = graphql(
+        """
     query($owner: String!, $repo: String!, $pr: Int!) {
       repository(owner: $owner, name: $repo) {
         pullRequest(number: $pr) {
@@ -555,15 +616,15 @@ def fetch_pr_review_threads(pr_number: int, owner: str = _OWNER, repo: str = _RE
         }
       }
     }
-    """, {"owner": owner, "repo": repo, "pr": pr_number})
+    """,
+        {"owner": owner, "repo": repo, "pr": pr_number},
+    )
     if err:
-        logger.warning("GraphQL fetch_pr_review_threads: %s", err)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning(
+            "GraphQL fetch_pr_review_threads: %s", err
+        )  # codeql[py/clear-text-logging-sensitive-data]
     threads = (
-        data
-        .get("repository", {})
-        .get("pullRequest", {})
-        .get("reviewThreads", {})
-        .get("nodes", [])
+        data.get("repository", {}).get("pullRequest", {}).get("reviewThreads", {}).get("nodes", [])
     )
     return [t for t in threads if not t.get("isResolved")]
 
@@ -578,12 +639,13 @@ def wait_for_rate_limit_reset(resource: str = "core") -> None:
         _polite_sleep(0.3)
         r = limits.get(resource, {})
         if r.get("remaining", 0) >= MIN_REMAINING:
-            logger.info("Token[slot-%d] %s remaining=%d — ready", tok_slot, resource, r["remaining"])  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(
+                "Token[slot-%d] %s remaining=%d — ready", tok_slot, resource, r["remaining"]
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return
     # All tokens exhausted — wait for first reset
     earliest_reset = min(
-        check_rate_limits(t).get(resource, {}).get("reset", int(time.time()) + 60)
-        for t in TOKENS
+        check_rate_limits(t).get(resource, {}).get("reset", int(time.time()) + 60) for t in TOKENS
     )
     _polite_sleep(0.3)
     _wait_for_reset(earliest_reset, resource)
@@ -627,16 +689,16 @@ def status(*, write_state: bool = True, min_remaining: int = MIN_REMAINING) -> d
             if not info.get("limit", 0):
                 continue
             remaining = info.get("remaining", 0)
-            reset_ep  = info.get("reset", int(now) + 3600)
-            reset_dt  = datetime.fromtimestamp(reset_ep, tz=timezone.utc).strftime("%H:%M:%S UTC")
+            reset_ep = info.get("reset", int(now) + 3600)
+            reset_dt = datetime.fromtimestamp(reset_ep, tz=timezone.utc).strftime("%H:%M:%S UTC")
             wait_secs = max(0, reset_ep - now)
             row["pools"][name] = {
                 "remaining": remaining,
-                "limit":     info["limit"],
-                "reset_epoch":  reset_ep,
-                "reset_human":  reset_dt,
-                "wait_secs":    round(wait_secs),
-                "ready":        remaining >= min_remaining,
+                "limit": info["limit"],
+                "reset_epoch": reset_ep,
+                "reset_human": reset_dt,
+                "wait_secs": round(wait_secs),
+                "ready": remaining >= min_remaining,
             }
             if remaining >= min_remaining:
                 if name == "core":
@@ -649,13 +711,13 @@ def status(*, write_state: bool = True, min_remaining: int = MIN_REMAINING) -> d
 
     earliest_dt = datetime.fromtimestamp(earliest_reset, tz=timezone.utc).strftime("%H:%M:%S UTC")
     state = {
-        "ok":                    any_core_ready,
-        "core_ready":            any_core_ready,
-        "security_ready":        any_security_ready,
-        "tokens":                token_rows,
-        "earliest_reset_epoch":  earliest_reset,
-        "earliest_reset_human":  earliest_dt,
-        "checked_at":            datetime.fromtimestamp(now, tz=timezone.utc).isoformat(),
+        "ok": any_core_ready,
+        "core_ready": any_core_ready,
+        "security_ready": any_security_ready,
+        "tokens": token_rows,
+        "earliest_reset_epoch": earliest_reset,
+        "earliest_reset_human": earliest_dt,
+        "checked_at": datetime.fromtimestamp(now, tz=timezone.utc).isoformat(),
     }
 
     if write_state:
@@ -663,7 +725,9 @@ def status(*, write_state: bool = True, min_remaining: int = MIN_REMAINING) -> d
             _STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
             _STATE_PATH.write_text(json.dumps(state, indent=2))
         except Exception as exc:  # pragma: no cover - best-effort
-            logger.debug("Could not write rate_limit_state.json: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug(
+                "Could not write rate_limit_state.json: %s", exc
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
     return state
 
@@ -671,7 +735,9 @@ def status(*, write_state: bool = True, min_remaining: int = MIN_REMAINING) -> d
 def print_status(state: dict) -> None:
     """Pretty-print a status dict returned by :func:`status`."""
     print(f"\n{'═'*60}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"  GitHub API Rate-Limit Status — {state['checked_at']}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(
+        f"  GitHub API Rate-Limit Status — {state['checked_at']}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
     print(f"{'═'*60}")  # codeql[py/clear-text-logging-sensitive-data]
     for row in state["tokens"]:
         print(f"\n  Token[slot-{row['slot']}]:")  # codeql[py/clear-text-logging-sensitive-data]
@@ -684,7 +750,9 @@ def print_status(state: dict) -> None:
             )
     print()  # codeql[py/clear-text-logging-sensitive-data]
     if state["ok"]:
-        print("  ✅ At least one token has capacity — API calls may proceed.")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            "  ✅ At least one token has capacity — API calls may proceed."
+        )  # codeql[py/clear-text-logging-sensitive-data]
     else:
         print(
             f"  🔴 ALL tokens exhausted — wait until {state['earliest_reset_human']}"
@@ -698,20 +766,28 @@ def print_status(state: dict) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--owner", default=_OWNER)
-    parser.add_argument("--repo",  default=_REPO)
+    parser.add_argument("--repo", default=_REPO)
     parser.add_argument("--resource", choices=["code-scanning-alerts", "pr-reviews", "rate-limits"])
-    parser.add_argument("--status",  action="store_true",
-                        help="Print rate-limit status table for all tokens; exit 0=ready 1=all-exhausted")
-    parser.add_argument("--write-env", action="store_true",
-                        help="When --status exits 1 (all exhausted), write RATE_LIMITED=true to $GITHUB_ENV "
-                             "and $GITHUB_OUTPUT so downstream steps can skip API calls")
-    parser.add_argument("--rest",    metavar="PATH", help="Raw REST GET path")
+    parser.add_argument(
+        "--status",
+        action="store_true",
+        help="Print rate-limit status table for all tokens; exit 0=ready 1=all-exhausted",
+    )
+    parser.add_argument(
+        "--write-env",
+        action="store_true",
+        help="When --status exits 1 (all exhausted), write RATE_LIMITED=true to $GITHUB_ENV "
+        "and $GITHUB_OUTPUT so downstream steps can skip API calls",
+    )
+    parser.add_argument("--rest", metavar="PATH", help="Raw REST GET path")
     parser.add_argument("--graphql", metavar="FILE", help="GraphQL query file")
-    parser.add_argument("--pr",      type=int,       help="PR number (for pr-reviews)")
-    parser.add_argument("--state",   default="open", help="Alert state filter")
-    parser.add_argument("--json",    action="store_true", help="Output raw JSON")
+    parser.add_argument("--pr", type=int, help="PR number (for pr-reviews)")
+    parser.add_argument("--state", default="open", help="Alert state filter")
+    parser.add_argument("--json", action="store_true", help="Output raw JSON")
     args = parser.parse_args()
 
     # ── new: --status ────────────────────────────────────────────
@@ -724,7 +800,9 @@ def main() -> int:
         if not is_ready and args.write_env:
             _write_github_env("RATE_LIMITED", "true")
             _write_github_output("rate_limited", "true")
-            logger.warning("All tokens exhausted — wrote RATE_LIMITED=true to GITHUB_ENV/GITHUB_OUTPUT")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "All tokens exhausted — wrote RATE_LIMITED=true to GITHUB_ENV/GITHUB_OUTPUT"
+            )  # codeql[py/clear-text-logging-sensitive-data]
         return 0 if is_ready else 1
 
     if args.resource == "rate-limits":
@@ -758,30 +836,48 @@ def main() -> int:
         by_rule: dict[str, list] = {}
         for a in alerts:
             rule = a.get("rule", {}).get("id", "?")
-            loc  = a.get("most_recent_instance", {}).get("location", {})
-            by_rule.setdefault(rule, []).append({
-                "num": a.get("number"),
-                "file": loc.get("path"),
-                "line": loc.get("start_line"),
-                "severity": a.get("rule", {}).get("severity"),
-                "msg": a.get("message", {}).get("text", "") if isinstance(a.get("message"), dict) else a.get("message", ""),
-            })
+            loc = a.get("most_recent_instance", {}).get("location", {})
+            by_rule.setdefault(rule, []).append(
+                {
+                    "num": a.get("number"),
+                    "file": loc.get("path"),
+                    "line": loc.get("start_line"),
+                    "severity": a.get("rule", {}).get("severity"),
+                    "msg": (
+                        a.get("message", {}).get("text", "")
+                        if isinstance(a.get("message"), dict)
+                        else a.get("message", "")
+                    ),
+                }
+            )
         for rule, items in sorted(by_rule.items()):
-            print(f"\n=== {rule} ({len(items)}) ===")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"\n=== {rule} ({len(items)}) ==="
+            )  # codeql[py/clear-text-logging-sensitive-data]
             for i in items[:15]:
-                print(f"  #{i['num']} [{i['severity']}] {i['file']}:{i['line']}")  # codeql[py/clear-text-logging-sensitive-data]
+                print(
+                    f"  #{i['num']} [{i['severity']}] {i['file']}:{i['line']}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
         return 0
 
     if args.resource == "pr-reviews":
         if not args.pr:
-            print("ERROR: --pr required for pr-reviews", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                "ERROR: --pr required for pr-reviews", file=sys.stderr
+            )  # codeql[py/clear-text-logging-sensitive-data]
             return 1
         threads = fetch_pr_review_threads(args.pr, owner=args.owner, repo=args.repo)
-        print(f"Unresolved review threads: {len(threads)}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(
+            f"Unresolved review threads: {len(threads)}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         for t in threads:
-            print(f"  {t.get('path')}:{t.get('line')}")  # codeql[py/clear-text-logging-sensitive-data]
+            print(
+                f"  {t.get('path')}:{t.get('line')}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
             for c in t.get("comments", {}).get("nodes", [])[:1]:
-                print(f"    @{c['author']['login']}: {c['body'][:120]}")  # codeql[py/clear-text-logging-sensitive-data]
+                print(
+                    f"    @{c['author']['login']}: {c['body'][:120]}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
         return 0
 
     parser.print_help()

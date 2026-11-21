@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-21T18:13:23Z",
+  "generated_at": "2026-11-21T20:03:54Z",
   "repository": "Aries-Serpent/_codex_",
   "branch": "0D_base_",
   "sha_encoding": "concatenate chunks without separators",
   "pre_publication_base_chunks": ["cdd9f3c6", "b7b4d0c5", "6023f887", "7188ce8d", "3f7336fc"],
   "pre_handoff_head_chunks": ["f710c156", "bbba2457", "58433a0f", "8e235903", "f6cd03ff"],
-  "publication_state": "signed local commits prepared; push must be verified after handoff commit",
+  "publication_state": "prior closeout publication verified; this rate-limit continuation is in local preparation",
+  "post_closeout_base_chunks": ["8c3261af", "f162152d", "4f80c8a0", "0b4b76e2", "e8167d7a"],
   "original_dirty_worktree": {
     "tracked_modified": 83,
     "untracked": 7,
@@ -92,6 +93,35 @@
       "detail": "The repository-local torch package is present but does not persist serialization; one checkpoint test skips after a real save/load capability probe."
     }
   ],
+  "rate_limit_campaign": {
+    "state": "implementation complete; validation and publication pending",
+    "shared_transport": "scripts/ci/github_rate_limit.py",
+    "auth_surfaces": [
+      "GitHub App JWT and installation-token operations",
+      "Codespaces secret and SSH signing APIs",
+      "exact-SHA AI review",
+      "approval/preflight routes",
+      "REST, GraphQL, security snapshot, cooldown, checkpoint, and workflow orchestration"
+    ],
+    "protections": [
+      "primary and secondary rate-limit classification",
+      "distinct credential rotation",
+      "explicit App-token isolation",
+      "bounded Retry-After and reset waits",
+      "no ambiguous POST network retry",
+      "proxy-disabled and redirect-denied requests",
+      "one-megabyte JSON response bound",
+      "credential-scoped GET caching",
+      "redacted quota status in preflight and maintainer control"
+    ],
+    "live_evidence": {
+      "app_route": "verified-installation",
+      "core_remaining": 4932,
+      "all_observed_core_buckets_exhausted": false,
+      "deferred_credentials": 0
+    },
+    "tests": "Focused auth/rate-limit suites pass; run the final consolidated gate before commit."
+  },
   "active_draft_pull_requests": [
     {"number": 5840, "title": "fix(ci): remediate Pattern 19 src-prefixed imports", "head_ref": "copilot/session-pattern19-20261120", "head_sha_chunks": ["e12da35e", "1b6ae718", "2153ecd0", "a8b02f6c", "f73e9e84"], "base": "0D_base_"},
     {"number": 5841, "title": "test(rag): add Retriever behavior coverage batch", "head_ref": "copilot/session-rag-retriever-20261120", "head_sha_chunks": ["b9992103", "a7194c40", "9b5b6c57", "2fe63995", "41078663"], "base": "0D_base_"},

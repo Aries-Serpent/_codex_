@@ -58,7 +58,6 @@ import json
 import os
 import sys
 import time
-import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
@@ -72,11 +71,27 @@ try:
         resolve_app_installation_id,
         resolve_app_private_key,
     )
+    from scripts.ci.github_rate_limit import _NoRedirect  # isort: skip  # noqa: F401
+    from scripts.ci.github_rate_limit import (
+        Credential,
+        GitHubInvalidResponseError,
+        GitHubRateLimitError,
+        request,
+        source_for_token,
+    )
 except ImportError:
     from _token_resolver import (  # type: ignore[no-redef]
         resolve_app_id,
         resolve_app_installation_id,
         resolve_app_private_key,
+    )
+    from github_rate_limit import _NoRedirect  # isort: skip  # noqa: F401
+    from github_rate_limit import (  # type: ignore[no-redef]
+        Credential,
+        GitHubInvalidResponseError,
+        GitHubRateLimitError,
+        request,
+        source_for_token,
     )
 
 if __package__ or __name__ != "__main__":
@@ -122,11 +137,6 @@ def _verified_identity(token: str) -> dict[str, Any] | None:
     return None
 
 
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, req, fp, code, msg, headers, newurl):
-        return None
-
-
 def _gh(
     method: str,
     path: str,
@@ -142,33 +152,22 @@ def _gh(
         or any(char in path for char in ("\r", "\n", "\0", "\\"))
     ):
         raise ValueError("invalid GitHub API path")
-    url = f"https://api.github.com{path}"
-    data = json.dumps(body).encode() if body else None
-    headers = {
-        "Authorization": "Bearer " + token,
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-        "Content-Type": "application/json",
-        "User-Agent": "codex-approve-pending-runs/1.0",
-    }
-    req = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
-        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
-        with opener.open(req, timeout=timeout) as resp:
-            body_bytes = resp.read(1024 * 1024 + 1)
-            if len(body_bytes) > 1024 * 1024:
-                return 502, {"error": "GitHub API response exceeds size limit"}
-            try:
-                parsed = json.loads(body_bytes) if body_bytes.strip() else {}
-            except json.JSONDecodeError:
-                return 502, {"error": "Invalid JSON from GitHub API"}
-            return resp.status, parsed
-    except urllib.error.HTTPError as exc:
-        try:
-            err_body = json.loads(exc.read())
-        except Exception:
-            err_body = {"message": str(exc)}
-        return exc.code, err_body
+        response = request(
+            method,
+            f"https://api.github.com{path}",
+            credentials=[Credential(source_for_token(token, "ephemeral-github-token"), token)],
+            body=body,
+            timeout=timeout,
+            user_agent="codex-approve-pending-runs/1.1",
+        )
+        return response.status, response.payload
+    except GitHubRateLimitError:
+        return 429, {"message": "GitHub API credential is rate-limited"}
+    except GitHubInvalidResponseError as exc:
+        if "size limit" in str(exc):
+            return 502, {"error": "GitHub API response exceeds size limit"}
+        return 502, {"error": "Invalid JSON from GitHub API"}
 
 
 class AppTokenRevocationError(RuntimeError):

@@ -252,6 +252,33 @@
       "problemMatcher": []
     },
     {
+      "label": "Codex: GitHub rate-limit status",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "-m",
+        "scripts.ci.rate_limit_status",
+        "--json"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: GitHub auth preflight",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "-m",
+        "scripts.ci.github_auth_preflight",
+        "--repo",
+        "Aries-Serpent/_codex_",
+        "--environment",
+        "owner-approval",
+        "--branch",
+        "main"
+      ],
+      "problemMatcher": []
+    },
+    {
       "label": "Codex: readiness audit",
       "type": "process",
       "command": "${workspaceFolder}/.venv/bin/python",

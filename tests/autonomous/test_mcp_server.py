@@ -90,7 +90,8 @@ def test_keepalive_tool_renews_activity_marker(
     assert (tmp_path / "agent-session.active").is_file()
 
 
-def test_maintainer_tool_uses_single_owner_catalog() -> None:
+def test_maintainer_tool_uses_single_owner_catalog(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("GITHUB_TOKEN", "secret-rate-limit-sentinel")
     response = asyncio.run(
         handle_message(
             {
@@ -108,6 +109,9 @@ def test_maintainer_tool_uses_single_owner_catalog() -> None:
     assert payload["owner"]["human_login"] == "mbaetiong"
     assert payload["owner"]["human_reviewers_required"] == 0
     assert payload["session_liveness"]["max_duration_seconds"] == 28_800
+    assert "github_rate_limit" in payload
+    assert "credentials" in payload["github_rate_limit"]
+    assert "secret-rate-limit-sentinel" not in json.dumps(payload["github_rate_limit"])
 
 
 def test_unknown_tool_returns_json_rpc_error() -> None:

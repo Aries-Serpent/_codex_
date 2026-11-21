@@ -23,6 +23,7 @@ from scripts.ci._token_resolver import (
     resolve_app_private_key,
 )
 from scripts.ci.approve_pending_runs import AppTokenRevocationError, _gh, _mint_app_token
+from scripts.ci.github_rate_limit import quota_status
 
 READ_ONLY_APP_PERMISSIONS = {
     "actions": "read",
@@ -109,6 +110,7 @@ def inspect_access(repo: str, environment: str, branch: str) -> dict[str, Any]:
         "branch": branch,
         "app_route": app_status,
         "routes": routes,
+        "rate_limit": quota_status(),
         "verified_reads": verified_reads,
         "write_authority": "unverified; no repository mutations performed",
         "protected_approval": "unverified; requires protected runtime evidence",

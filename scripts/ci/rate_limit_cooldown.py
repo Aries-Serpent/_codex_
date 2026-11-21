@@ -66,8 +66,6 @@ import argparse
 import json
 import os
 import sys
-import urllib.error
-import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -75,6 +73,7 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from scripts.ci._token_resolver import get_token
+from scripts.ci.github_rate_limit import GitHubRateLimitError, credentials_for_token, request
 
 # ── Paths & constants ──────────────────────────────────────────────────────────
 
@@ -98,12 +97,13 @@ VAR_LAST_START = "COPILOT_LAST_SESSION_START_UTC"
 VAR_COOLDOWN_MINS = "COPILOT_SESSION_COOLDOWN_MINUTES"
 
 # Conservative defaults
-DEFAULT_COOLDOWN_MINUTES = 30    # wait between sessions even without a 429
-POST_429_BUFFER_MINUTES = 15     # extra buffer added on top of reported reset window
-WARNING_SESSION_COUNT = 6        # warn after this many sessions in a week
+DEFAULT_COOLDOWN_MINUTES = 30  # wait between sessions even without a 429
+POST_429_BUFFER_MINUTES = 15  # extra buffer added on top of reported reset window
+WARNING_SESSION_COUNT = 6  # warn after this many sessions in a week
 
 
 # ── State I/O ──────────────────────────────────────────────────────────────────
+
 
 def _load_state() -> dict:
     if not STATE_FILE.exists():
@@ -118,9 +118,14 @@ def _load_state() -> dict:
     try:
         return json.loads(STATE_FILE.read_text())
     except Exception:
-        return {"schema_version": "1.0", "sessions": [], "hit429_count": 0,
-                "cooldown_until_utc": None, "cooldown_minutes": DEFAULT_COOLDOWN_MINUTES,
-                "last_updated": None}
+        return {
+            "schema_version": "1.0",
+            "sessions": [],
+            "hit429_count": 0,
+            "cooldown_until_utc": None,
+            "cooldown_minutes": DEFAULT_COOLDOWN_MINUTES,
+            "last_updated": None,
+        }
 
 
 def _save_state(state: dict) -> None:
@@ -138,25 +143,24 @@ def _append_log(event: dict) -> None:
 
 # ── GitHub API (PR comments + repo variables) ───────────────────────────────────
 
+
 def _gh(method: str, path: str, body: dict | None = None) -> tuple[int, object]:
-    url = f"https://api.github.com{path}"
-    headers = {
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-        "User-Agent": "codex-rate-limit-cooldown/1.0",
-    }
-    if GH_TOKEN:
-        headers["Authorization"] = f"Bearer {GH_TOKEN}"
-    data = json.dumps(body).encode() if body else None
-    req = urllib.request.Request(url, data=data, headers=headers, method=method)
+    if not GH_TOKEN:
+        return -1, {"error": "No GitHub credential available"}
     try:
-        with urllib.request.urlopen(req, timeout=12) as resp:
-            raw = resp.read()
-            return resp.status, json.loads(raw) if raw else {}
-    except urllib.error.HTTPError as exc:
-        return exc.code, {}
-    except Exception as exc:
-        return -1, {"error": str(exc)}
+        response = request(
+            method,
+            f"https://api.github.com{path}",
+            credentials=credentials_for_token(GH_TOKEN),
+            body=body,
+            timeout=12,
+            user_agent="codex-rate-limit-cooldown/1.1",
+        )
+        return response.status, response.payload
+    except GitHubRateLimitError:
+        return 429, {}
+    except (OSError, TimeoutError) as exc:
+        return -1, {"error": type(exc).__name__}
 
 
 def _upsert_repo_var(name: str, value: str) -> bool:
@@ -206,11 +210,14 @@ def _post_or_update_pr_comment(pr_number: int, body: str, marker: str) -> bool:
         verb = "posted"
 
     ok = status in (200, 201)
-    print(f"  {'✅' if ok else '❌'} PR #{pr_number} comment {verb} (HTTP {status})", file=sys.stderr)
+    print(
+        f"  {'✅' if ok else '❌'} PR #{pr_number} comment {verb} (HTTP {status})", file=sys.stderr
+    )
     return ok
 
 
 # ── Cooldown logic ─────────────────────────────────────────────────────────────
+
 
 def _now_utc() -> datetime:
     return datetime.now(timezone.utc)
@@ -275,7 +282,8 @@ def _sessions_this_week(state: dict) -> int:
     """Count sessions started within the last 7 days."""
     cutoff = _now_utc() - timedelta(days=7)
     return sum(
-        1 for s in state.get("sessions", [])
+        1
+        for s in state.get("sessions", [])
         if (_parse_iso(s.get("started_at")) or datetime.min.replace(tzinfo=timezone.utc)) > cutoff
     )
 
@@ -292,16 +300,19 @@ def set_cooldown(state: dict, minutes: int, reason: str = "429") -> dict:
     _upsert_repo_var(VAR_COOLDOWN_UNTIL, until_str)
     _upsert_repo_var(VAR_COOLDOWN_MINS, str(minutes))
 
-    _append_log({
-        "event": f"cooldown_set_{reason}",
-        "cooldown_until_utc": until_str,
-        "minutes": minutes,
-    })
+    _append_log(
+        {
+            "event": f"cooldown_set_{reason}",
+            "cooldown_until_utc": until_str,
+            "minutes": minutes,
+        }
+    )
 
     return state
 
 
 # ── PR Comment bodies ───────────────────────────────────────────────────────────
+
 
 def _pre_warning_body(
     pr_number: int,
@@ -314,48 +325,50 @@ def _pre_warning_body(
     now_str = _now_utc().strftime("%Y-%m-%dT%H:%MZ")
     safe_after = (_now_utc() + timedelta(minutes=cooldown_minutes)).strftime("%H:%MZ")
 
-    return "\n".join([
-        marker,
-        "## ⚠️ Rate-Limit Pre-Warning — Approaching Weekly Budget",
-        "",
-        f"> **Session:** `{session or 'current'}`  ",
-        f"> **Generated:** `{now_str}`  ",
-        f"> **Sessions this week:** `{session_count}`  ",
-        f"> **Prior 429 hits:** `{hit_count}`",
-        "",
-        "---",
-        "",
-        "### ⏳ Recommended Cooldown",
-        "",
-        f"Wait **{cooldown_minutes} minutes** between sessions to avoid hitting the weekly rate limit.",
-        "",
-        "| | |",
-        "|---|---|",
-        f"| 🕐 Current time | `{now_str}` |",
-        f"| ✅ Safe to retry after | `{safe_after}` |",
-        f"| ⏳ Cooldown | **{cooldown_minutes} min** |",
-        "",
-        "---",
-        "",
-        "### 🔄 Recovery Sequence",
-        "",
-        "Before triggering the next session:",
-        "",
-        "```bash",
-        "# 1. Check current cooldown status",
-        "python3 scripts/ci/rate_limit_cooldown.py check",
-        "",
-        "# 2. Check for push conflicts from automated bot commits",
-        "python3 scripts/ci/push_conflict_resolver.py",
-        "",
-        "# 3. View full rate-limit status",
-        "python3 scripts/ci/rate_limit_status.py",
-        "```",
-        "",
-        f"Repo variable `{VAR_COOLDOWN_UNTIL}` has been updated with the safe retry time.",
-        "",
-        "_This comment is auto-updated by `scripts/ci/rate_limit_cooldown.py`._",
-    ])
+    return "\n".join(
+        [
+            marker,
+            "## ⚠️ Rate-Limit Pre-Warning — Approaching Weekly Budget",
+            "",
+            f"> **Session:** `{session or 'current'}`  ",
+            f"> **Generated:** `{now_str}`  ",
+            f"> **Sessions this week:** `{session_count}`  ",
+            f"> **Prior 429 hits:** `{hit_count}`",
+            "",
+            "---",
+            "",
+            "### ⏳ Recommended Cooldown",
+            "",
+            f"Wait **{cooldown_minutes} minutes** between sessions to avoid hitting the weekly rate limit.",
+            "",
+            "| | |",
+            "|---|---|",
+            f"| 🕐 Current time | `{now_str}` |",
+            f"| ✅ Safe to retry after | `{safe_after}` |",
+            f"| ⏳ Cooldown | **{cooldown_minutes} min** |",
+            "",
+            "---",
+            "",
+            "### 🔄 Recovery Sequence",
+            "",
+            "Before triggering the next session:",
+            "",
+            "```bash",
+            "# 1. Check current cooldown status",
+            "python3 scripts/ci/rate_limit_cooldown.py check",
+            "",
+            "# 2. Check for push conflicts from automated bot commits",
+            "python3 scripts/ci/push_conflict_resolver.py",
+            "",
+            "# 3. View full rate-limit status",
+            "python3 scripts/ci/rate_limit_status.py",
+            "```",
+            "",
+            f"Repo variable `{VAR_COOLDOWN_UNTIL}` has been updated with the safe retry time.",
+            "",
+            "_This comment is auto-updated by `scripts/ci/rate_limit_cooldown.py`._",
+        ]
+    )
 
 
 def _post_429_body(
@@ -435,6 +448,7 @@ def _post_429_body(
 
 # ── Sub-commands ────────────────────────────────────────────────────────────────
 
+
 def cmd_start(args: argparse.Namespace) -> int:
     """Record session start; block if cooldown is active."""
     state = _load_state()
@@ -486,7 +500,10 @@ def cmd_end(args: argparse.Namespace) -> int:
 
     _save_state(state)
     _append_log({"event": f"session_end_{args.outcome}", "session": args.session})
-    print(f"✅ Session ended ({args.outcome}). Next session safe after {cooldown_mins} min.", file=sys.stderr)
+    print(
+        f"✅ Session ended ({args.outcome}). Next session safe after {cooldown_mins} min.",
+        file=sys.stderr,
+    )
     return 0
 
 
@@ -510,8 +527,15 @@ def cmd_hit429(args: argparse.Namespace) -> int:
             break
 
     _save_state(state)
-    _append_log({"event": "429_hit", "session": args.session, "hit_count": hit_count,
-                 "reset_minutes": reset_mins, "cooldown_minutes": cooldown_mins})
+    _append_log(
+        {
+            "event": "429_hit",
+            "session": args.session,
+            "hit_count": hit_count,
+            "reset_minutes": reset_mins,
+            "cooldown_minutes": cooldown_mins,
+        }
+    )
 
     # Post PR comment with cooldown timer
     if args.pr:
@@ -528,7 +552,10 @@ def cmd_hit429(args: argparse.Namespace) -> int:
         _post_or_update_pr_comment(args.pr, body, "<!-- codex-rate-limit-cooldown -->")
 
     safe_after = (_now_utc() + timedelta(minutes=cooldown_mins)).strftime("%H:%MZ")
-    print(f"\n🔴 429 recorded. Cooldown set: {cooldown_mins} min. Safe after {safe_after}", file=sys.stderr)
+    print(
+        f"\n🔴 429 recorded. Cooldown set: {cooldown_mins} min. Safe after {safe_after}",
+        file=sys.stderr,
+    )
     return 0
 
 
@@ -599,7 +626,9 @@ def cmd_sync_vars(args: argparse.Namespace) -> int:
     ok = True
     ok &= _upsert_repo_var(VAR_COOLDOWN_UNTIL, state.get("cooldown_until_utc") or "none")
     ok &= _upsert_repo_var(VAR_HIT_COUNT, str(state.get("hit429_count", 0)))
-    ok &= _upsert_repo_var(VAR_COOLDOWN_MINS, str(state.get("cooldown_minutes", DEFAULT_COOLDOWN_MINUTES)))
+    ok &= _upsert_repo_var(
+        VAR_COOLDOWN_MINS, str(state.get("cooldown_minutes", DEFAULT_COOLDOWN_MINUTES))
+    )
     return 0 if ok else 1
 
 
@@ -635,6 +664,7 @@ def _print_check(status: dict, state: dict) -> None:
 
 # ── Entry point ─────────────────────────────────────────────────────────────────
 
+
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description=__doc__,
@@ -657,8 +687,12 @@ def _build_parser() -> argparse.ArgumentParser:
     ph = sub.add_parser("hit429", help="Record a 429 hit, set cooldown, post PR comment")
     ph.add_argument("--pr", type=int, default=0)
     ph.add_argument("--session", default="")
-    ph.add_argument("--reset-minutes", type=int, default=0,
-                    help="Minutes until rate limit resets (from error message)")
+    ph.add_argument(
+        "--reset-minutes",
+        type=int,
+        default=0,
+        help="Minutes until rate limit resets (from error message)",
+    )
     ph.add_argument("--request-id", default="")
     ph.add_argument("--completed", default="", help="Comma-separated completed tasks")
     ph.add_argument("--pending", default="", help="Comma-separated pending tasks")
@@ -667,8 +701,9 @@ def _build_parser() -> argparse.ArgumentParser:
     pw = sub.add_parser("warn", help="Post pre-warning PR comment (before hitting limit)")
     pw.add_argument("--pr", type=int, default=0)
     pw.add_argument("--session", default="")
-    pw.add_argument("--budget-pct", type=int, default=70,
-                    help="Estimated budget % used (for comment context)")
+    pw.add_argument(
+        "--budget-pct", type=int, default=70, help="Estimated budget % used (for comment context)"
+    )
 
     # post-cooldown
     pc = sub.add_parser("post-cooldown", help="Post cooldown timer comment manually")

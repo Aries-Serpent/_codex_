@@ -64,6 +64,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+try:
+    from scripts.ci import github_rate_limit as gh_rate_limit
+except ImportError:  # pragma: no cover - direct-script compatibility
+    import github_rate_limit as gh_rate_limit  # type: ignore[no-redef]
+
 log = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -71,10 +76,10 @@ log = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 MAX_RETRIES: int = 3
-DEFAULT_PAGE_SLEEP: float = 1.0     # seconds between paginated requests
-DEFAULT_MIN_REMAINING: int = 20     # pause when REST budget drops this low
-DEFAULT_PER_PAGE: int = 100         # GitHub REST API maximum
-DEFAULT_CACHE_TTL: int = 3600       # 1 hour
+DEFAULT_PAGE_SLEEP: float = 1.0  # seconds between paginated requests
+DEFAULT_MIN_REMAINING: int = 20  # pause when REST budget drops this low
+DEFAULT_PER_PAGE: int = 100  # GitHub REST API maximum
+DEFAULT_CACHE_TTL: int = 3600  # 1 hour
 
 API_VERSION = "2022-11-28"
 ACCEPT = "application/vnd.github+json"
@@ -99,9 +104,7 @@ def resolve_token() -> str:
         if tok:
             log.debug("Using token from %s", envvar)
             return tok
-    log.error(
-        "No GitHub token found. Set CODEX_MASTER_KEY (needs security_events scope)."
-    )
+    log.error("No GitHub token found. Set CODEX_MASTER_KEY (needs security_events scope).")
     raise SystemExit(1)
 
 
@@ -109,20 +112,23 @@ def resolve_token() -> str:
 # Disk cache helpers
 # ---------------------------------------------------------------------------
 
-def _cache_key(url: str) -> str:
-    """Return a short, filesystem-safe cache key derived from *url*."""
-    return hashlib.sha256(url.encode()).hexdigest()[:32]
+
+def _cache_key(url: str, token: str = "") -> str:
+    """Return a credential-scoped, filesystem-safe cache key."""
+    credential_fingerprint = hashlib.sha256(token.encode()).hexdigest()[:16]
+    return hashlib.sha256(f"{credential_fingerprint}\n{url}".encode()).hexdigest()[:32]
 
 
 def _cache_load(
     cache_dir: Path,
     url: str,
     ttl_seconds: int,
+    token: str = "",
 ) -> tuple[Any, dict[str, str]] | None:
     """Return ``(data, headers)`` from disk cache if fresh, else ``None``."""
     if os.environ.get("CODEX_API_CACHE_DISABLED", "0") == "1":
         return None
-    path = cache_dir / f"{_cache_key(url)}.json"
+    path = cache_dir / f"{_cache_key(url, token)}.json"
     if not path.exists():
         return None
     age = time.time() - path.stat().st_mtime
@@ -143,12 +149,13 @@ def _cache_store(
     url: str,
     data: Any,
     headers: dict[str, str],
+    token: str = "",
 ) -> None:
     """Atomically write *data*/*headers* to the disk cache for *url*."""
     if os.environ.get("CODEX_API_CACHE_DISABLED", "0") == "1":
         return
     cache_dir.mkdir(parents=True, exist_ok=True)
-    dest = cache_dir / f"{_cache_key(url)}.json"
+    dest = cache_dir / f"{_cache_key(url, token)}.json"
     entry = {"url": url, "data": data, "headers": headers}
     # Write to a temp file first, then rename — atomic on Linux/macOS.
     try:
@@ -188,14 +195,8 @@ def _make_headers(token: str) -> dict[str, str]:
 
 def _check_rate_limit(headers: dict[str, str], min_remaining: int) -> None:
     """Sleep until the rate-limit window resets if budget is low."""
-    raw_remaining = (
-        headers.get("X-RateLimit-Remaining")
-        or headers.get("x-ratelimit-remaining")
-    )
-    raw_reset = (
-        headers.get("X-RateLimit-Reset")
-        or headers.get("x-ratelimit-reset")
-    )
+    raw_remaining = headers.get("X-RateLimit-Remaining") or headers.get("x-ratelimit-remaining")
+    raw_reset = headers.get("X-RateLimit-Reset") or headers.get("x-ratelimit-reset")
     if raw_remaining is None:
         return
     remaining = int(raw_remaining)
@@ -218,7 +219,10 @@ def _handle_retry_after(exc: urllib.error.HTTPError, attempt: int) -> None:
     retry_after = int(raw) if raw and str(raw).isdigit() else 60
     log.warning(
         "HTTP %d on attempt %d/%d — sleeping %ds (Retry-After).",
-        exc.code, attempt + 1, MAX_RETRIES, retry_after,
+        exc.code,
+        attempt + 1,
+        MAX_RETRIES,
+        retry_after,
     )
     time.sleep(retry_after)
 
@@ -243,40 +247,25 @@ def api_get(
       transient network errors (5-s exponential back-off).
     - Inserts ``page_sleep`` after a successful response.
     """
-    req = urllib.request.Request(url, headers=_make_headers(token))
-
-    for attempt in range(MAX_RETRIES):
-        try:
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                raw = resp.read().decode("utf-8")
-                headers = dict(resp.headers)
-                data = json.loads(raw)
-                _check_rate_limit(headers, min_remaining)
-                if page_sleep > 0:
-                    time.sleep(page_sleep)
-                return data, headers
-
-        except urllib.error.HTTPError as exc:
-            if exc.code in (429, 403):
-                _handle_retry_after(exc, attempt)
-                continue
-            body = exc.read().decode("utf-8", errors="replace")
-            log.error("HTTP %d fetching %s: %s", exc.code, url, body[:400])
+    try:
+        response = gh_rate_limit.request(
+            "GET",
+            url,
+            credentials=gh_rate_limit.credentials_for_token(token),
+            min_remaining=min_remaining,
+            max_retries=MAX_RETRIES,
+            user_agent=UA,
+        )
+        if response.status >= 400:
+            body = json.dumps(response.payload)[:400]
+            log.error("HTTP %d fetching %s: %s", response.status, url, body)
             raise SystemExit(1)
-
-        except OSError as exc:
-            wait = 5 * (2 ** attempt)
-            log.warning(
-                "Network error on attempt %d/%d: %s — retrying in %ds.",
-                attempt + 1, MAX_RETRIES, exc, wait,
-            )
-            if attempt < MAX_RETRIES - 1:
-                time.sleep(wait)
-                continue
-            raise SystemExit(1)
-
-    log.error("Exhausted %d retries for %s", MAX_RETRIES, url)
-    raise SystemExit(1)
+        if page_sleep > 0:
+            time.sleep(page_sleep)
+        return response.payload, response.headers
+    except (gh_rate_limit.GitHubRateLimitError, TimeoutError, OSError) as exc:
+        log.error("GitHub request failed for %s: %s", url, type(exc).__name__)
+        raise SystemExit(1) from exc
 
 
 def api_post(
@@ -293,51 +282,30 @@ def api_post(
     ``inter_call_sleep`` is inserted after each successful POST to avoid
     secondary rate limits when calling in a tight loop.
     """
-    body = json.dumps(payload).encode("utf-8") if payload else b""
-    req_headers = {**_make_headers(token), "Content-Type": "application/json"}
-    req = urllib.request.Request(url, data=body, headers=req_headers, method="POST")
-
-    for attempt in range(MAX_RETRIES):
-        try:
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                raw = resp.read().decode("utf-8")
-                resp_headers = dict(resp.headers)
-                data = json.loads(raw) if raw.strip() else {}
-                _check_rate_limit(resp_headers, min_remaining)
-                if inter_call_sleep > 0:
-                    time.sleep(inter_call_sleep)
-                return data, resp_headers
-
-        except urllib.error.HTTPError as exc:
-            if exc.code in (429, 403):
-                _handle_retry_after(exc, attempt)
-                continue
-            # 422 = autofix not supported for this alert / rule
-            if exc.code == 422:
-                body_txt = exc.read().decode("utf-8", errors="replace")
-                log.debug("HTTP 422 for %s — not supported: %s", url, body_txt[:200])
-                return {"error": "unsupported", "status": 422}, {}
-            # 404 = alert gone or feature not enabled on this repo
-            if exc.code == 404:
-                log.debug("HTTP 404 for %s — not found or feature disabled.", url)
-                return {"error": "not_found", "status": 404}, {}
-            body_txt = exc.read().decode("utf-8", errors="replace")
-            log.error("HTTP %d POSTing %s: %s", exc.code, url, body_txt[:400])
+    try:
+        response = gh_rate_limit.request(
+            "POST",
+            url,
+            credentials=gh_rate_limit.credentials_for_token(token),
+            body=payload,
+            min_remaining=min_remaining,
+            max_retries=MAX_RETRIES,
+            user_agent=UA,
+        )
+        if response.status == 422:
+            return {"error": "unsupported", "status": 422}, response.headers
+        if response.status == 404:
+            return {"error": "not_found", "status": 404}, response.headers
+        if response.status >= 400:
+            body = json.dumps(response.payload)[:400]
+            log.error("HTTP %d POSTing %s: %s", response.status, url, body)
             raise SystemExit(1)
-
-        except OSError as exc:
-            wait = 5 * (2 ** attempt)
-            log.warning(
-                "Network error on attempt %d/%d: %s — retrying in %ds.",
-                attempt + 1, MAX_RETRIES, exc, wait,
-            )
-            if attempt < MAX_RETRIES - 1:
-                time.sleep(wait)
-                continue
-            raise SystemExit(1)
-
-    log.error("Exhausted %d retries for %s", MAX_RETRIES, url)
-    raise SystemExit(1)
+        if inter_call_sleep > 0:
+            time.sleep(inter_call_sleep)
+        return response.payload, response.headers
+    except (gh_rate_limit.GitHubRateLimitError, TimeoutError, OSError) as exc:
+        log.error("GitHub request failed for %s: %s", url, type(exc).__name__)
+        raise SystemExit(1) from exc
 
 
 def paginate(
@@ -405,7 +373,7 @@ def api_get_cached(
         return api_get(url, token, page_sleep=page_sleep, min_remaining=min_remaining)
 
     cache_path = Path(cache_dir)
-    cached = _cache_load(cache_path, url, ttl_seconds)
+    cached = _cache_load(cache_path, url, ttl_seconds, token)
     if cached is not None:
         # Still apply page_sleep even on cache hits to avoid burst patterns
         # when called in a tight loop against many URLs.
@@ -414,7 +382,7 @@ def api_get_cached(
         return cached
 
     data, headers = api_get(url, token, page_sleep=page_sleep, min_remaining=min_remaining)
-    _cache_store(cache_path, url, data, headers)
+    _cache_store(cache_path, url, data, headers, token)
     return data, headers
 
 

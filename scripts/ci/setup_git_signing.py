@@ -8,39 +8,28 @@ import base64
 import json
 import os
 import subprocess
-import urllib.error
-import urllib.request
 from pathlib import Path
 
+from scripts.ci.github_rate_limit import GitHubRateLimitError, credentials_for_token, request
+
 API_BASE = "https://api.github.com"
+CODESPACE_TOKEN_SOURCES = ("CODEX_BACKUP_KEY", "CODEX_MASTER_KEY", "CODEX_ADMIN_KEY")
 
 
 def api_request(
     token: str, method: str, path: str, body: dict | None = None
 ) -> tuple[int, dict | list | None]:
-    data = json.dumps(body).encode("utf-8") if body is not None else None
-    request = urllib.request.Request(
-        API_BASE + path,
-        data=data,
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": "codex-git-signing-bootstrap/1.0",
-        },
-        method=method,
-    )
     try:
-        with urllib.request.urlopen(request, timeout=30) as response:
-            raw = response.read()
-            return response.status, json.loads(raw) if raw else {}
-    except urllib.error.HTTPError as exc:
-        raw = exc.read()
-        try:
-            payload = json.loads(raw)
-        except Exception:
-            payload = {"message": raw.decode("utf-8", "replace")}
-        return exc.code, payload
+        response = request(
+            method,
+            API_BASE + path,
+            credentials=credentials_for_token(token, sources=CODESPACE_TOKEN_SOURCES),
+            body=body,
+            user_agent="codex-git-signing-bootstrap/1.1",
+        )
+        return response.status, response.payload
+    except GitHubRateLimitError:
+        return 429, {"message": "All signing-capable credentials are rate-limited"}
 
 
 def get_pat() -> str:
