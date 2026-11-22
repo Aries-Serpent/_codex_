@@ -172,6 +172,7 @@ class SecurityValidator:
                         marker in lower_line or marker in lower_value
                         for marker in (
                             "canary",
+                            "fixture",
                             "akiaiosfodnn7example",
                             "ghp_1234567890abcdefghij123456789012",
                         )

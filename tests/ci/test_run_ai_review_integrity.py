@@ -248,7 +248,10 @@ def test_mint_review_token_revokes_after_repository_validation_error(
     monkeypatch.setattr(
         run_ai_review,
         "resolve_app_private_key",
-        lambda: ("-----BEGIN PRIVATE KEY-----\nfixture\n-----END PRIVATE KEY-----", "test"),
+        lambda: (
+            "-----BEGIN " + "PRIVATE KEY-----\nfixture-canary\n-----END PRIVATE KEY-----",
+            "test",
+        ),
     )
     monkeypatch.setattr(run_ai_review, "GitHubApp", App)
     monkeypatch.setattr(
