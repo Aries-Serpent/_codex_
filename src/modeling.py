@@ -92,8 +92,10 @@ def _assert_bf16_capability(
 
     try:
         device_obj = torch.device(device)
-    except (ConnectionError, TimeoutError):  # pragma: no cover - fall back to heuristic
-        device_obj = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    except (AttributeError, ConnectionError, TimeoutError, RuntimeError):
+        if require:
+            raise RuntimeError(f"bf16 requested but device '{device}' is unavailable")
+        return
 
     try:
         a = torch.ones((2, 2), dtype=bf16, device=device_obj)
@@ -144,8 +146,14 @@ def _resolve_dtype(name: str | None) -> torch.dtype:
 
 def _resolve_device(name: str | None) -> str:
     if not name or name == "auto":
-        if torch is not None and getattr(torch.cuda, "is_available", lambda: False)():
-            return "cuda"
+        if torch is not None:
+            try:
+                cuda = getattr(torch, "cuda", None)
+                is_available = getattr(cuda, "is_available", lambda: False)
+                if callable(is_available) and is_available():
+                    return "cuda"
+            except (AttributeError, ModuleNotFoundError, RuntimeError):
+                pass
         return "cpu"
     return name
 
@@ -313,14 +321,19 @@ def _ensure_bf16_capability(
 
     try:
         target = torch.device(device_name)
-    except (ConnectionError, TimeoutError):  # pragma: no cover - fallback to cpu/cuda detection
-        target = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    except (AttributeError, ConnectionError, TimeoutError, RuntimeError):
+        if enforced:
+            raise RuntimeError(f"Requested bf16 but device '{device_name}' is unavailable")
+        return
 
     supported = False
     try:
-        tensor = torch.zeros(1, dtype=torch.bfloat16, device=target)
-        supported = tensor.dtype == torch.bfloat16
-    except (ConnectionError, TimeoutError):
+        bfloat16 = getattr(torch, "bfloat16", None)
+        if bfloat16 is None:
+            raise AttributeError("torch.bfloat16 is unavailable")
+        tensor = torch.zeros(1, dtype=bfloat16, device=target)
+        supported = tensor.dtype == bfloat16
+    except (AttributeError, ConnectionError, TimeoutError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         supported = False
 

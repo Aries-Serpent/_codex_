@@ -322,8 +322,15 @@ class LoadBalancer:
         endpoint.healthy = False
 
     def mark_healthy(self, endpoint: Endpoint) -> None:
-        """Mark an endpoint as healthy."""
+        """Mark an endpoint as healthy and resume round-robin at its slot."""
         endpoint.healthy = True
+        if self.strategy == "round_robin":
+            try:
+                endpoint_index = self.endpoints.index(endpoint)
+            except ValueError:
+                return
+            with self._lock:
+                self._current_index = endpoint_index
 
 
 class ResourcePool:

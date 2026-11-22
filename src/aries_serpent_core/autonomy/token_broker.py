@@ -646,6 +646,10 @@ class TokenBroker:
                 self._circuit_breaker.record_failure(source)
                 continue
 
+            # Track the rotation schedule for any candidate source that has a
+            # usable value, even if a subsequent health check rejects it.
+            self._rotation_scheduler.register_token(source)
+
             # Perform health check (Task 2.1.1)
             health_check = None
             if enable_health_check:
@@ -662,7 +666,6 @@ class TokenBroker:
 
             # Success: update circuit breaker and rotation scheduler
             self._circuit_breaker.record_success(source)
-            self._rotation_scheduler.register_token(source)
             self._rotation_scheduler.check_rotation_needed(source)
 
             elapsed_ms = (time.time() - start_time) * 1000

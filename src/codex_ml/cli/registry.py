@@ -32,14 +32,11 @@ def list_models_command(args: argparse.Namespace) -> int:
                 get_default_logger().info(f"  - {model}")
 
         return 0
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
-        type(e).__name__
+    except Exception as e:
         get_default_logger().debug(
-            "Exception: <ERROR_TYPE>"
+            "Exception: %s", type(e).__name__, exc_info=True
         )  # codeql[py/clear-text-logging-sensitive-data]
-        print(
-            "Error: <ERROR_TYPE>", file=sys.stderr
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"Error: {e}", file=sys.stderr)
         return 1
 
 
