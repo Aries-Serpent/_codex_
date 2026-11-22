@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import ast
 import logging
+import textwrap
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
@@ -97,7 +98,7 @@ class StubAnalyzer:
             True if this is an intentional abstract method pattern
         """
         try:
-            content = file_path.read_text(encoding="utf-8")
+            content = textwrap.dedent(file_path.read_text(encoding="utf-8"))
             tree = ast.parse(content, filename=str(file_path))
 
             # Build a mapping from function nodes to their parent class nodes (O(n) complexity)
@@ -162,6 +163,34 @@ class StubAnalyzer:
             get_default_logger().debug(
                 f"Failed to parse {file_path} for abstract method detection: <ERROR_TYPE>"
             )
+
+        # Textual fallback for mixed-indentation snippets where AST parsing is
+        # intentionally or incidentally unavailable (for example pasted test fixtures).
+        try:
+            lines = content.splitlines()
+            raise_idx = min(max(line_number - 1, 0), len(lines) - 1)
+
+            function_idx = None
+            for idx in range(raise_idx, -1, -1):
+                stripped = lines[idx].strip()
+                if stripped.startswith("def ") or stripped.startswith("async def "):
+                    function_idx = idx
+                    break
+
+            if function_idx is not None:
+                for idx in range(function_idx - 1, max(function_idx - 12, -1), -1):
+                    stripped = lines[idx].strip()
+                    if stripped.startswith("@abstractmethod"):
+                        return True
+
+                for idx in range(function_idx - 1, -1, -1):
+                    stripped = lines[idx].strip()
+                    if stripped.startswith("class ") and (
+                        "ABC" in stripped or "Protocol" in stripped
+                    ):
+                        return True
+        except Exception:
+            pass
 
         return False
 
