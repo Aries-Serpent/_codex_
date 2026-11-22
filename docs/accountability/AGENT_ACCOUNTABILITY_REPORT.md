@@ -1,7 +1,10 @@
 ## Session: PR #5766 exact ML evidence and clean wrap-up planset (2026-11-22)
 
-- Added a 2026-11-22 PDA entry for PR #5766 at exact head
-  `42073ea3eeee218c3350816017fb92c5c6b2fa21`.
+- Refreshed 2026-11-22 PDA accountability for PR #5766 at published handoff head
+  `1212dbbcf52a1a208eb0921265e4a9604575028f`. ML run
+  `44971752791` evidence remains anchored to prior campaign head
+  `42073ea3eeee218c3350816017fb92c5c6b2fa21` and must be rerun at the live new head
+  before merge readiness is claimed.
 - Today's repository scorecard is 85/100 and NOT READY: PDA/accountability,
   sync, action pins, ruff, Pattern 27, download-artifact v5, and AAIS pass;
   the repository auto-fix dimension remains red and ML aggregate readiness is

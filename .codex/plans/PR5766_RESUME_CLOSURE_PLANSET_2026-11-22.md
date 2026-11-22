@@ -4,7 +4,8 @@ Status: implementation handoff; merge blocked
 
 ## Evidence anchor
 
-- Campaign head: `42073ea3eeee218c3350816017fb92c5c6b2fa21`
+- Latest published 0D_base handoff head before the refresh: `1212dbbcf52a1a208eb0921265e4a9604575028f`
+- ML evidence head: `42073ea3eeee218c3350816017fb92c5c6b2fa21`
 - Live main: `f6f822dde20e221eefffdbc133b82f4868cc5659`
 - PR: `5766`, open, not merged
 - ML run: `44971752791`, attempt 2, aggregate failed
