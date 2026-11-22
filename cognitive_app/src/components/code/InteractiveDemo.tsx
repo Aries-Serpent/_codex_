@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { startTransition, useState, useCallback, useEffect, useRef } from 'react';
 import { Play, Stop, Trash, Clock, Cpu, Database, CheckCircle, XCircle, Warning } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 
 interface InteractiveDemoProps {
   script: string;
-  language: 'python' | 'javascript' | 'typescript' | 'bash';
+  language: 'python' | 'javascript' | 'typescript' | 'bash' | 'go' | 'rust';
   onExecute?: (result: ExecutionResult) => void;
 }
 
@@ -39,7 +39,7 @@ export function InteractiveDemo({ script, language, onExecute }: InteractiveDemo
   const startTimeRef = useRef<number>(0);
 
   useEffect(() => {
-    setEditedScript(script);
+    startTransition(() => setEditedScript(script));
   }, [script]);
 
   useEffect(() => {

@@ -154,7 +154,7 @@ describe('CodeGenerator - Lazy Initialization Pattern', () => {
       const delayedMock = createMockCodexClient();
       delayedMock.getStatus = async () => {
         await new Promise(resolve => setTimeout(resolve, 100));
-        return { healthy: true, metrics: {} };
+        return { healthy: true, metrics: { k1_factor: 0.312 } };
       };
       vi.mocked(CodexAPIClient).mockImplementation(function () {
         return delayedMock as any;
