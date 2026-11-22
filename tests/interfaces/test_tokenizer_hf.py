@@ -83,6 +83,7 @@ class DummyAutoTokenizer:
 
 @pytest.fixture(autouse=True)
 def _patch_auto_tokenizer(monkeypatch):
+    monkeypatch.setenv("CODEX_HF_REVISION", "0" * 40)
     monkeypatch.setattr("codex_ml.interfaces.tokenizer._AutoTokenizer", DummyAutoTokenizer)
 
 
