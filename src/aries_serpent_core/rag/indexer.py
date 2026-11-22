@@ -369,6 +369,74 @@ def load_index(
     return index, chunks_metadata, index_metadata
 
 
+def delete_index(
+    index_name: str,
+    tenant_id: str = "default",
+    index_dir: str = ".codex/tenants",
+) -> bool:
+    """Delete a persisted tenant index."""
+    index_path = _resolve_safe_subpath(index_dir, tenant_id, index_name)
+    if not index_path.exists():
+        raise FileNotFoundError(f"Index not found: {index_path}")
+    shutil.rmtree(index_path)
+    return True
+
+
+def list_indices(
+    tenant_id: str = "default",
+    index_dir: str = ".codex/tenants",
+) -> list[str]:
+    """List valid persisted index names for a tenant."""
+    tenant_path = _resolve_safe_subpath(index_dir, tenant_id)
+    if not tenant_path.exists():
+        return []
+
+    indices: list[str] = []
+    for item in tenant_path.iterdir():
+        if item.is_symlink() or not item.is_dir():
+            continue
+        if (item / "index.faiss").exists() or (item / "metadata.json").exists():
+            indices.append(item.name)
+    return sorted(indices)
+
+
+def get_index_metadata(
+    index_name: str,
+    tenant_id: str = "default",
+    index_dir: str = ".codex/tenants",
+) -> dict[str, Any]:
+    """Read persisted metadata for a tenant index."""
+    index_path = _resolve_safe_subpath(index_dir, tenant_id, index_name)
+    if not index_path.exists():
+        raise FileNotFoundError(f"Index not found: {index_path}")
+
+    metadata_file = _resolve_safe_subpath(index_path, "metadata.json")
+    if not metadata_file.exists():
+        raise FileNotFoundError(f"Index metadata not found: {metadata_file}")
+
+    with open(metadata_file, encoding="utf-8") as handle:
+        metadata = json.load(handle)
+    if not isinstance(metadata, dict):
+        raise TypeError("Index metadata must contain a JSON object")
+    return metadata
+
+
+def merge_indices(
+    source_indices: list[str],
+    destination_index: str,
+    tenant_id: str = "default",
+    index_dir: str = ".codex/tenants",
+) -> "TenantOperationResult":
+    """Merge persisted indices using the tenant lifecycle implementation."""
+    return manage_tenant_indices(
+        tenant_id=tenant_id,
+        operation=IndexOperation.MERGE,
+        index_names=source_indices,
+        index_dir=index_dir,
+        merge_name=destination_index,
+    )
+
+
 def build_index_from_files(
     files: list[Path],
     index_name: str,
