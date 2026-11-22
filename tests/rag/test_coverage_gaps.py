@@ -165,7 +165,7 @@ class TestRetrieverLoadModelErrors:
         ):
             r = _bare_retriever(_mod)
             r._load_model()
-        mock_safe_load.assert_called_once_with("test-model", None)
+        mock_safe_load.assert_not_called()
         assert r.model is None
 
     def test_load_model_propagates_type_error(self):

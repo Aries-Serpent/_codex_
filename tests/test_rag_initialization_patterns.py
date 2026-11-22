@@ -137,7 +137,11 @@ def test_retriever_load_model_uses_default_device_allocation(
     tmp_path: Path,
 ) -> None:
     """Retriever model initialization should use device='cpu' for direct CPU initialization."""
-    monkeypatch.setattr(Retriever, "_load_index", lambda self: None)
+    monkeypatch.setattr(
+        Retriever,
+        "_load_index",
+        lambda self: setattr(self, "chunks_metadata", [{"text": "indexed"}]),
+    )
     Retriever(index_dir=str(tmp_path))
     _, kwargs = sentence_transformer_spy.calls[0]
     assert kwargs.get("device") == "cpu", "Condition must be true"
@@ -150,7 +154,11 @@ def test_retriever_load_model_calls_eval(
     tmp_path: Path,
 ) -> None:
     """Retriever should call eval on the loaded SentenceTransformer."""
-    monkeypatch.setattr(Retriever, "_load_index", lambda self: None)
+    monkeypatch.setattr(
+        Retriever,
+        "_load_index",
+        lambda self: setattr(self, "chunks_metadata", [{"text": "indexed"}]),
+    )
     Retriever(index_dir=str(tmp_path))
     assert sentence_transformer_spy.instances, "sentence_transf is not valid"
     assert sentence_transformer_spy.instances[0].eval_called is True, "eval_called is not valid"
