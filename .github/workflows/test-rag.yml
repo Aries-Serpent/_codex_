@@ -100,34 +100,34 @@ jobs:
 
           '
     - name: Free disk space
-      run: "echo \"[DISK-CLEANUP] Starting disk cleanup...\"\necho \"\"\necho \"[DISK-CLEANUP]\
+      run: "echo \"[DISK-CLEANUP] Starting disk cleanup...\"\nAVAILABLE_KB=$(df --output=avail / | tail -1 | tr -d ' ')\nAVAILABLE_GB=$((AVAILABLE_KB / 1024 / 1024))\necho \"[DISK-CLEANUP] Available before cleanup: ${AVAILABLE_GB}GB\"\nif [ \"$AVAILABLE_GB\" -ge 15 ]; then echo \"[DISK-CLEANUP] Sufficient disk space; skipping destructive cleanup\"; exit 0; fi\necho \"\"\necho \"[DISK-CLEANUP]\
         \ Disk space BEFORE cleanup:\"\ndf -h / | tail -1 | awk '{print \"  Available:\
         \ \" $4 \", Used: \" $3 \", Size: \" $2}'\necho \"\"\n \n# CRITICAL: These\
         \ steps must NOT affect the venv or build tools\necho \"[DISK-CLEANUP] Removing\
         \ large system packages that don't affect test runs...\"\n \n# Remove dotnet\
         \ (safe \u2014 Python/pytest don't depend on it)\nif [ -d /usr/share/dotnet\
-        \ ]; then\n  echo \"[DISK-CLEANUP] Removing /usr/share/dotnet...\"\n  sudo\
+        \ ]; then\n  echo \"[DISK-CLEANUP] Removing /usr/share/dotnet...\"\n  timeout 120 sudo\
         \ rm -rf /usr/share/dotnet 2>&1 | grep -v \"Permission denied\" || true\n\
         fi\n \n# Remove GHC (safe \u2014 Python/pytest don't depend on it)\nif [ -d\
-        \ /opt/ghc ]; then\n  echo \"[DISK-CLEANUP] Removing /opt/ghc...\"\n  sudo\
+        \ /opt/ghc ]; then\n  echo \"[DISK-CLEANUP] Removing /opt/ghc...\"\n  timeout 120 sudo\
         \ rm -rf /opt/ghc 2>&1 | grep -v \"Permission denied\" || true\nfi\n \n# Remove\
         \ boost (safe \u2014 Python/pytest don't depend on it)\nif [ -d /usr/local/share/boost\
         \ ]; then\n  echo \"[DISK-CLEANUP] Removing /usr/local/share/boost...\"\n\
-        \  sudo rm -rf /usr/local/share/boost 2>&1 | grep -v \"Permission denied\"\
+        \  timeout 120 sudo rm -rf /usr/local/share/boost 2>&1 | grep -v \"Permission denied\"\
         \ || true\nfi\n \n# Remove Android NDK (safe \u2014 not needed for Python)\n\
         if [ -d /usr/local/lib/android ]; then\n  echo \"[DISK-CLEANUP] Removing /usr/local/lib/android...\"\
-        \n  sudo rm -rf /usr/local/lib/android 2>&1 | grep -v \"Permission denied\"\
+        \n  timeout 120 sudo rm -rf /usr/local/lib/android 2>&1 | grep -v \"Permission denied\"\
         \ || true\nfi\n \n# Remove large developer tools\nif [ -d /opt/hostedtoolcache/CodeQL\
         \ ]; then\n  echo \"[DISK-CLEANUP] Removing /opt/hostedtoolcache/CodeQL...\"\
-        \n  sudo rm -rf /opt/hostedtoolcache/CodeQL 2>&1 | grep -v \"Permission denied\"\
+        \n  timeout 120 sudo rm -rf /opt/hostedtoolcache/CodeQL 2>&1 | grep -v \"Permission denied\"\
         \ || true\nfi\n \n# Perform safe apt cleanup\necho \"[DISK-CLEANUP] Running\
-        \ apt-get cleanup (safe, doesn't remove test deps)...\"\nsudo apt-get clean\
-        \ 2>&1 | grep -v \"Permission denied\" || true\nsudo apt-get autoclean 2>&1\
+        \ apt-get cleanup (safe, doesn't remove test deps)...\"\ntimeout 120 sudo apt-get clean\
+        \ 2>&1 | grep -v \"Permission denied\" || true\ntimeout 120 sudo apt-get autoclean 2>&1\
         \ | grep -v \"Permission denied\" || true\n \n# Docker cleanup (safe \u2014\
         \ only removes dangling images/volumes)\necho \"[DISK-CLEANUP] Docker cleanup\
         \ (images, containers, dangling volumes)...\"\n# CRITICAL: Use --volumes=false\
         \ to preserve named volumes (avoid breaking cache)\n# Only remove dangling\
-        \ volumes, not all volumes\nsudo docker system prune --all --force --volumes=false\
+        \ volumes, not all volumes\ntimeout 120 sudo docker system prune --all --force --volumes=false\
         \ 2>/dev/null || true\n \necho \"\"\necho \"[DISK-CLEANUP] Disk space AFTER\
         \ cleanup:\"\ndf -h / | tail -1 | awk '{print \"  Available: \" $4 \", Used:\
         \ \" $3 \", Size: \" $2}'\n \n# Verify we have enough disk space (need ~5GB\

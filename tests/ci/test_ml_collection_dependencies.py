@@ -112,6 +112,22 @@ def test_heavy_cognitive_app_and_rag_jobs_use_larger_runners():
     assert rag["jobs"]["test-rag"]["runs-on"] == "ubuntu-latest-m"
 
 
+def test_rag_cleanup_skips_sufficient_disk_and_bounds_destructive_commands():
+    root = Path(__file__).resolve().parents[2]
+    workflow = yaml.safe_load((root / ".github/workflows/test-rag.yml").read_text())
+    cleanup = next(
+        step["run"]
+        for step in workflow["jobs"]["test-rag"]["steps"]
+        if step.get("name") == "Free disk space"
+    )
+
+    assert 'AVAILABLE_GB" -ge 15' in cleanup
+    assert "exit 0" in cleanup
+    sudo_lines = [line for line in cleanup.splitlines() if "sudo " in line]
+    assert sudo_lines
+    assert all("timeout 120" in line for line in sudo_lines)
+
+
 def test_rag_workflow_only_preflights_packages_in_rag_extra():
     root = Path(__file__).resolve().parents[2]
     workflow = yaml.safe_load((root / ".github/workflows/test-rag.yml").read_text())
