@@ -4,22 +4,22 @@ Status: implementation handoff; merge blocked
 
 ## Evidence anchor
 
-- Latest published 0D_base repair head: `29b8f177e9519a715d6c3833025ea54bb98950e1`
+- Latest published 0D_base repair head: `0b0f799fa504cb169d738a05f6bd09bb6f46deb6`
 - Historical ML evidence head: `42073ea3eeee218c3350816017fb92c5c6b2fa21`
 - Live main: `f6f822dde20e221eefffdbc133b82f4868cc5659`
 - PR: `5766`, open, not merged
-- Live ML run: `44996615353`, attempt 1, exact-head rerun pending
-- Live RAG run: `44996615372`, exact-head RAG validation in progress
-- Prior aggregate run: `44971752791`, attempt 2, aggregate failed
+- Live exact-head ML run: `44997419065`, ML components pending
+- Live exact-head RAG run: `44997418906`, RAG validation queued
+- Prior aggregate runs: `44971752791` failed at historical head `42073ea3e`; `44996615353` ran at prior repair head `29b8f177e9`
 - Aggregate artifact: `14735719851`, `ml-slow-reports`
 - Integration: 1,797 tests, 0 failures/errors, 23 skipped
 - Prior unit baseline: 32,258 tests, 754 failures/errors, 1,014 skipped
-- Live cumulative aggregate baseline: 32,258 unit tests, 773 failures/errors, 1,013 skipped
-- Prior combined unit coverage: 54.99%; cumulative live head measurement: 54.96%
+- Prior repair-head cumulative baseline: 32,258 unit tests, 773 failures/errors, 1,013 skipped at `29b8f177e9`
+- Prior combined unit coverage: 54.99% at `42073ea3e`; prior repair-head measurement: 54.96% at `29b8f177e9`
 - Coverage floor: 54; target: 70
 - Quarantine: 0 entries
 - Ratchet result: no quarantine growth and no floor decrease
-- Review: exact-SHA approval record remains applicable to the unchanged campaign head
+- Review: exact-SHA approval record applies only to the prior campaign head; the current head requires fresh review and checks
 - Current cumulative repair head: hash-table, codex resilience, git metadata, refactoring, cognitive reconstruction, circuit breaker, checkpoint, task router, and once-label batches are local or already published across exact-SHA commits.
 - Published cumulative repair commits: OpenAI namespace `78e496d9f1`; model-loader fallback `10d6faf034`; tokenizer/CLI and refactoring compatibility `4c5ebbfe41`, `428742dfd8`, `ab2bd97697`; cognitive/session, task-router, checkpoint, once-label, Cuckoo, codex resilience, git metadata, and frontend repair commits through `29b8f177e9`.
 - Today’s local scorecard: 85/100, NOT READY; PDA/accountability, sync, action pins, ruff, Pattern 27, download-artifact v5, and AAIS pass; repository auto-fix remains red
@@ -29,8 +29,8 @@ Status: implementation handoff; merge blocked
 
 Complete the four unit-failure repair lanes, ratchet coverage toward 70%, refresh all
 campaign issue evidence, reconcile `0D_base_` and `main`, and merge PR 5766 only when
-the live merge gate is green. Historical coverage 54.99% and live cumulative coverage 54.96%
-are retained as successful floor results;
+the live merge gate is green. Historical coverage 54.99% and prior repair-head coverage 54.96%
+are retained as successful floor evidence;
 it is not a substitute for the unit failure gate or the target 70% milestone.
 
 ## Multi-lane execution model
@@ -93,7 +93,7 @@ strict-xfail verification.
 Owner: Unified Coverage Agent plus direct execution.
 
 - Preserve floor 54 and target 70.
-- Preserve 54.96% as the live post-run baseline and 54.99% as historical run 44971752791 evidence.
+- Preserve 54.96% as the prior repair-head baseline and 54.99% as historical run 44971752791 evidence; recompute at the exact new head.
 - Rank uncovered `src/` modules by uncovered lines times impact.
 - Select one batch and one regression group at a time.
 - Recompute combined coverage from all four `.coverage.unit-*` artifacts.
@@ -111,7 +111,7 @@ Issue mappings:
 - #5798 master continuation tracker
 - #5799 PDA/scorecard
 - #5800 unit-failure repair batches
-- #5801 coverage ratchet 54.96 live baseline -> 54.99 historical -> 70 target
+- #5801 coverage ratchet 54.96 prior repair-head -> 54.99 historical -> 70 target
 - #5802 auto-fix backlog
 - #5803 CodeQL, closed
 - #5804 dependency CVEs, open
@@ -190,8 +190,8 @@ The continuation plan was tested against these alternative explanations:
 
 A reader should be able to answer all of these without chat context:
 
-- Why is merge blocked? The live exact ML aggregate has not passed; 773 failures are the cumulative baseline until fresh JUnit evidence supersedes it.
-- Why is coverage not a blocker and also not complete? Live 54.96% (historical 54.99%) passes floor 54 and leaves target 70 unmet.
+- Why is merge blocked? The exact-head ML/RAG aggregates have not passed; 773 failures at prior repair head `29b8f177e9` remain historical until fresh JUnit evidence supersedes them.
+- Why is coverage not a blocker and also not complete? Prior repair-head 54.96% (historical 54.99%) passes floor 54 and leaves target 70 unmet.
 - Why is quarantine not an escape hatch? The baseline is zero and quarantine changes require explicit approval.
 - What is the next implementation unit? One module-family repair batch on `0D_base_`, then an exact aggregate rerun.
 - What is the only merge path? Fresh exact-SHA approval and all required checks at one candidate head.
@@ -214,8 +214,8 @@ Before close:
 
 Use this prompt in the next session:
 
-> Continue PR 5766 resume from live head 29b8f177e9519a715d6c3833025ea54bb98950e1.
-> Refresh origin/main and origin/0D_base_, validate issue/PDA state, consume live ML run
-> 44996615353 and RAG run 44996615372, and continue unit batches until a fresh exact-head aggregate reports zero failures.
+> Continue PR 5766 resume from live head 0b0f799fa504cb169d738a05f6bd09bb6f46deb6.
+> Refresh origin/main and origin/0D_base_, validate issue/PDA state, consume exact-head ML run
+> 44997419065 and RAG run 44997418906, and continue unit batches until a fresh exact-head aggregate reports zero failures.
 > Preserve coverage floor 54, target 70, quarantine 0, and WEC selections. Do not merge,
 > dispatch workflows, or push to main without operation-specific authorization.
