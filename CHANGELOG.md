@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5766 Fast Validation YAML lint (2026-11-22)
+- Reformat the RAG disk cleanup script as a YAML block without changing its commands.
+
 ### Fixed - PR #5766 Fast Validation fixture (2026-11-21)
 - Make the logging-adapter fallback test disable the `codex.logging.db` module that the implementation actually imports.
 

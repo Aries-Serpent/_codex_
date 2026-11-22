@@ -1,3 +1,12 @@
+## Session: PR #5766 Fast Validation YAML lint (2026-11-22)
+
+- Run `44969101570` failed strict yamllint on the RAG disk cleanup step.
+- Reformatted the step without changing its shell commands; strict YAML lint,
+  shell syntax and 13 focused workflow tests passed locally.
+- Actionlint and automated secret scanning were unavailable; additions were
+  reviewed manually. Hosted checks on the fix remain unverified.
+- Direct implementation; a code-review agent reviewed the workflow diff.
+
 ## Session: resolve #5766 merge conflicts after #5812 (2026-11-14)
 
 ### Agents Used
