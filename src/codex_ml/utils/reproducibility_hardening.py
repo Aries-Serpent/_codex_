@@ -65,7 +65,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         get_default_logger().debug(
             "✓ Python random seeded"
         )  # codeql[py/clear-text-logging-sensitive-data]
-    except (ValueError, TypeError, RuntimeError) as e:
+    except Exception as e:
         type(e).__name__
         get_default_logger().debug(
             "Exception: <ERROR_TYPE>"
@@ -82,7 +82,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         get_default_logger().debug(
             "✓ PYTHONHASHSEED set"
         )  # codeql[py/clear-text-logging-sensitive-data]
-    except (ImportError, AttributeError) as e:
+    except Exception as e:
         type(e).__name__
         get_default_logger().debug(
             "Exception: <ERROR_TYPE>"
@@ -108,7 +108,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         get_default_logger().debug(
             "NumPy not available (skipped)"
         )  # codeql[py/clear-text-logging-sensitive-data]
-    except AttributeError as e:
+    except Exception as e:
         type(e).__name__
         get_default_logger().debug(
             "Exception: <ERROR_TYPE>"
@@ -164,7 +164,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
                 get_default_logger().debug(
                     "✓ PyTorch deterministic algorithms enabled (strict mode)"
                 )  # codeql[py/clear-text-logging-sensitive-data]
-            except (ValueError, TypeError, RuntimeError) as e:
+            except Exception as e:
                 type(e).__name__
                 get_default_logger().debug(
                     "Exception: <ERROR_TYPE>"
@@ -189,7 +189,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         get_default_logger().debug(
             "PyTorch not available (skipped)"
         )  # codeql[py/clear-text-logging-sensitive-data]
-    except AttributeError as e:
+    except Exception as e:
         type(e).__name__
         get_default_logger().debug(
             "Exception: <ERROR_TYPE>"
@@ -230,7 +230,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         get_default_logger().debug(
             "TensorFlow not available (skipped)"
         )  # codeql[py/clear-text-logging-sensitive-data]
-    except (ValueError, TypeError, RuntimeError) as e:
+    except Exception as e:
         type(e).__name__
         get_default_logger().debug(
             "Exception: <ERROR_TYPE>"
@@ -320,7 +320,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
         ).strip()
         snapshot["git_dirty"] = bool(git_status)
 
-    except (ValueError, TypeError, RuntimeError) as e:
+    except Exception as e:
         type(e).__name__
         get_default_logger().debug(
             "Exception: <ERROR_TYPE>"
@@ -338,7 +338,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
                 [sys.executable, "-m", "pip", "freeze"], text=True, timeout=30
             )
             snapshot["pip_freeze"] = pip_freeze.strip().split("\n")
-        except (ValueError, TypeError, RuntimeError) as e:
+        except Exception as e:
             type(e).__name__
             get_default_logger().debug(
                 "Exception: <ERROR_TYPE>"
@@ -384,7 +384,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
         snapshot["cudnn_version"] = None
         snapshot["gpu_count"] = None
         snapshot["gpu_devices"] = None
-    except (ValueError, TypeError, RuntimeError) as e:
+    except Exception as e:
         type(e).__name__
         get_default_logger().debug(
             "Exception: <ERROR_TYPE>"
