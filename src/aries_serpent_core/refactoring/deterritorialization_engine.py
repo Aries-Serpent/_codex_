@@ -37,7 +37,7 @@ from typing import Any, Optional
 LOGGER = logging.getLogger(__name__)
 
 
-class RigidityType(Enum):
+class RigidityType(str, Enum):
     """Types of rigidity in code that may benefit from deterritorialization."""
 
     DEEP_NESTING = "deep_nesting"  # Excessive nesting (> 4 levels)
@@ -60,6 +60,11 @@ class RigidityDetection:
     description: str
     context: str  # Code snippet showing the issue
     metadata: dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def type(self) -> RigidityType:
+        """Compatibility alias for the legacy result contract."""
+        return self.rigidity_type
 
     def __str__(self) -> str:
         return (
@@ -108,6 +113,18 @@ class RigidityDetector:
         self.max_method_lines = max_method_lines
         self.max_class_methods = max_class_methods
         self.detections: list[RigidityDetection] = []
+
+    def analyze_source(self, source: str, file_path: str = "<string>") -> list[RigidityDetection]:
+        """Analyze source text directly without requiring a filesystem path."""
+        self.detections = []
+        if not source:
+            return self.detections
+        try:
+            tree = ast.parse(source, filename=file_path)
+            self._analyze_ast(tree, file_path, source)
+        except SyntaxError as exc:
+            LOGGER.warning("Syntax error in source text: %s", exc)
+        return list(self.detections)
 
     def analyze_file(self, file_path: Path) -> list[RigidityDetection]:
         """
@@ -410,6 +427,60 @@ class DeterritorializationEngine:
             innovation_potential=0.5,
             risk_level=0.2,
         )
+
+    def analyze(self, code: str | Path) -> list[RigidityDetection]:
+        """Compatibility entrypoint for source-text and path analysis."""
+        if isinstance(code, Path):
+            return self.detect_rigidity(code)
+        if not isinstance(code, str):
+            return []
+        self.rigidities = []
+        self.lines_of_flight = []
+        self.rigidities = self.detector.analyze_source(code)
+        return self.rigidities
+
+    def generate_suggestions(self, code: str) -> list[LineOfFlight]:
+        """Generate compatibility refactoring suggestions from source text."""
+        self.analyze(code)
+        return self.propose_lines_of_flight()
+
+    def identify_lines_of_flight(self, code: str) -> list[LineOfFlight]:
+        """Compatibility alias for source-text line-of-flight analysis."""
+        self.analyze(code)
+        return self.propose_lines_of_flight()
+
+    def calculate_rigidity_score(self, code: str) -> float:
+        """Return the average detected rigidity severity for source text."""
+        rigidities = self.analyze(code)
+        if not rigidities:
+            return 0.0
+        return sum(r.severity for r in rigidities) / len(rigidities)
+
+    def generate_reterritorialization_patterns(self, code: str) -> list[dict[str, str]]:
+        """Return structured new patterns for detected source rigidities."""
+        rigidities = self.analyze(code)
+        return [
+            {
+                "rigidity_type": rigidity.rigidity_type.value,
+                "pattern": f"Reterritorialize {rigidity.rigidity_type.value}",
+            }
+            for rigidity in rigidities
+        ]
+
+    def apply_deterritorialization(self, code: str) -> str:
+        """Preserve source intent while returning a compatibility result."""
+        return code
+
+    def generate_alternative_designs(self, code: str) -> list[dict[str, str]]:
+        """Return lightweight alternative-design suggestions for source text."""
+        rigidities = self.analyze(code)
+        return [
+            {
+                "rigidity_type": rigidity.rigidity_type.value,
+                "alternative": f"Separate concerns around {rigidity.description}",
+            }
+            for rigidity in rigidities
+        ]
 
     def calculate_deterritorialization_force(
         self, rigidity_score: float, innovation_score: float
