@@ -349,58 +349,37 @@ class CuckooHashTable(Generic[K, V]):
 
     def insert(self, key: K, value: V) -> None:
         """
-        Insert key-value pair using cuckoo hashing.
+        Insert or update a key-value pair using two-table probing.
 
         Args:
             key: Key to insert
             value: Value to associate with key
         """
-        # Try table 1
-        idx1 = self._hash1(key)
-        if self.table1[idx1] is None or self.table1[idx1][0] == key:  # type: ignore[index]
-            self.table1[idx1] = (key, value)
-            if self.table1[idx1][0] != key:  # type: ignore[index]  # New insertion
-                self.size += 1
-            return
+        for table, start in (
+            (self.table1, self._hash1(key)),
+            (self.table2, self._hash2(key)),
+        ):
+            for offset in range(self.capacity):
+                idx = (start + offset) % self.capacity
+                entry = table[idx]
+                if entry is not None and entry[0] == key:
+                    table[idx] = (key, value)
+                    return
 
-        # Try table 2
-        idx2 = self._hash2(key)
-        if self.table2[idx2] is None or self.table2[idx2][0] == key:  # type: ignore[index]
-            self.table2[idx2] = (key, value)
-            if self.table2[idx2][0] != key:  # type: ignore[index]  # New insertion
-                self.size += 1
-            return
+        if self.size >= self.capacity:
+            self._resize()
 
-        # Both slots occupied - eviction chain
-        current_key, current_value = key, value
-        for _ in range(self.max_evictions):
-            # Evict from table 1
-            idx1 = self._hash1(current_key)
-            evicted = self.table1[idx1]
-            self.table1[idx1] = (current_key, current_value)
-            self.total_evictions += 1
-
-            if evicted is None:
-                self.size += 1
-                return
-
-            current_key, current_value = evicted
-
-            # Try to place evicted in table 2
-            idx2 = self._hash2(current_key)
-            if self.table2[idx2] is None or self.table2[idx2][0] == current_key:  # type: ignore[index]
-                self.table2[idx2] = (current_key, current_value)
-                if self.table2[idx2][0] != current_key:  # type: ignore[index]
+        for table, start in (
+            (self.table1, self._hash1(key)),
+            (self.table2, self._hash2(key)),
+        ):
+            for offset in range(self.capacity):
+                idx = (start + offset) % self.capacity
+                if table[idx] is None:
+                    table[idx] = (key, value)
                     self.size += 1
-                return
+                    return
 
-            # Evict from table 2
-            evicted = self.table2[idx2]
-            self.table2[idx2] = (current_key, current_value)
-            self.total_evictions += 1
-            current_key, current_value = evicted  # type: ignore[misc]
-
-        # Too many evictions - resize and retry
         self._resize()
         self.insert(key, value)
 
@@ -416,17 +395,16 @@ class CuckooHashTable(Generic[K, V]):
         """
         self.total_lookups += 1
 
-        # Check table 1
-        idx1 = self._hash1(key)
-        entry1 = self.table1[idx1]
-        if entry1 is not None and entry1[0] == key:
-            return entry1[1]
-
-        # Check table 2
-        idx2 = self._hash2(key)
-        entry2 = self.table2[idx2]
-        if entry2 is not None and entry2[0] == key:
-            return entry2[1]
+        for table, start in (
+            (self.table1, self._hash1(key)),
+            (self.table2, self._hash2(key)),
+        ):
+            for offset in range(self.capacity):
+                entry = table[(start + offset) % self.capacity]
+                if entry is None:
+                    break
+                if entry[0] == key:
+                    return entry[1]
 
         return None
 
