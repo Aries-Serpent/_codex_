@@ -187,7 +187,8 @@ class TestRobinHoodHashTable:
         for key, value in (("a", 1), ("b", 2), ("c", 3)):
             table.insert(key, value)
 
-        assert table.delete("a") is True
+        delete_result = table.delete("a")
+        assert delete_result is True
         assert table.lookup("a") is None
         assert table.lookup("b") == 2
         assert table.lookup("c") == 3
