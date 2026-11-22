@@ -25745,3 +25745,18 @@ has not been recorded.
   404 and code-scanning alert listing returned 403. The subsequent hosted
   validation run is `action_required`; no hosted-green or security-clearance
   claim is made. The PR body still needs an authorized body-edit interface.
+
+---
+## Session: PR #5766 exact-head evidence (2026-11-22)
+
+- Direct execution; no delegated agents were invoked.
+- Published signed review-fix commit `33fa574cbf82f559594ba360700173e08fed14b0`.
+  Replaced the two empty Torch profiler fallback blocks in `tests/conftest.py`
+  with explicit compatibility comments; compileall and Ruff passed.
+- Resolved both unresolved `github-code-quality` review threads after Code
+  Quality run `44998386806` completed successfully on the exact fix head.
+- A manifest-only `[skip ci]` refresh commit `eaa9574fd62a21e9dbfbcbea6299c7f24bfb32a6`
+  updated `CODEX_MANIFEST.json` and `.secrets.baseline`. Main remains an ancestor
+  of `0D_base_`; no issue closure or merge occurred.
+- Fresh exact-head ML/RAG reruns, exact-SHA approval, required checks, and issue
+  evidence are still required on the manifest or a subsequent PR head.

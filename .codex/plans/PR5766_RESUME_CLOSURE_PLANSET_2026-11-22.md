@@ -4,12 +4,12 @@ Status: implementation handoff; merge blocked
 
 ## Evidence anchor
 
-- Latest published 0D_base repair head: `0b0f799fa504cb169d738a05f6bd09bb6f46deb6`
+- Latest published 0D_base repair head: `eaa9574fd62a21e9dbfbcbea6299c7f24bfb32a6`
 - Historical ML evidence head: `42073ea3eeee218c3350816017fb92c5c6b2fa21`
 - Live main: `f6f822dde20e221eefffdbc133b82f4868cc5659`
 - PR: `5766`, open, not merged
-- Live exact-head ML run: `44997419065`, ML components pending
-- Live exact-head RAG run: `44997418906`, RAG validation queued
+- Manifest-only refresh: `eaa9574fd6` updated `CODEX_MANIFEST.json` and `.secrets.baseline` with commit marker `[skip ci]`
+- Prior exact reruns: ML `44998386741` and RAG `44998386782` ran at superseded review-fix head `33fa574cbf82f559594ba360700173e08fed14b0`; they do not validate manifest head `eaa9574fd6`
 - Prior aggregate runs: `44971752791` failed at historical head `42073ea3e`; `44996615353` ran at prior repair head `29b8f177e9`
 - Aggregate artifact: `14735719851`, `ml-slow-reports`
 - Integration: 1,797 tests, 0 failures/errors, 23 skipped
@@ -19,9 +19,9 @@ Status: implementation handoff; merge blocked
 - Coverage floor: 54; target: 70
 - Quarantine: 0 entries
 - Ratchet result: no quarantine growth and no floor decrease
-- Review: exact-SHA approval record applies only to the prior campaign head; the current head requires fresh review and checks
+- Review: two `github-code-quality` review threads were resolved after signed review-fix head `33fa574cbf82f559594ba360700173e08fed14b0` passed Code Quality; unresolved threads are 0. Manifest head `eaa9574fd6` requires fresh exact-SHA reruns and approval evidence.
 - Current cumulative repair head: hash-table, codex resilience, git metadata, refactoring, cognitive reconstruction, circuit breaker, checkpoint, task router, and once-label batches are local or already published across exact-SHA commits.
-- Published cumulative repair commits: OpenAI namespace `78e496d9f1`; model-loader fallback `10d6faf034`; tokenizer/CLI and refactoring compatibility `4c5ebbfe41`, `428742dfd8`, `ab2bd97697`; cognitive/session, task-router, checkpoint, once-label, Cuckoo, codex resilience, git metadata, and frontend repair commits through `29b8f177e9`.
+- Published cumulative repair commits: OpenAI namespace `78e496d9f1`; model-loader fallback `10d6faf034`; tokenizer/CLI and refactoring compatibility `4c5ebbfe41`, `428742dfd8`, `ab2bd97697`; cognitive/session, task-router, checkpoint, once-label, Cuckoo, codex resilience, git metadata, and frontend repair commits through `29b8f177e9`; signed Torch profiler review fix `33fa574cbf82f559594ba360700173e08fed14b0` and manifest refresh `eaa9574fd62a21e9dbfbcbea6299c7f24bfb32a6` followed.
 - Today’s local scorecard: 85/100, NOT READY; PDA/accountability, sync, action pins, ruff, Pattern 27, download-artifact v5, and AAIS pass; repository auto-fix remains red
 - Merge decision: do not merge until a fresh exact-head aggregate passes
 
@@ -214,8 +214,8 @@ Before close:
 
 Use this prompt in the next session:
 
-> Continue PR 5766 resume from live head 0b0f799fa504cb169d738a05f6bd09bb6f46deb6.
-> Refresh origin/main and origin/0D_base_, validate issue/PDA state, consume exact-head ML run
-> 44997419065 and RAG run 44997418906, and continue unit batches until a fresh exact-head aggregate reports zero failures.
+> Continue PR 5766 resume from live head eaa9574fd62a21e9dbfbcbea6299c7f24bfb32a6.
+> Refresh origin/main and origin/0D_base_, validate issue/PDA state, trigger and consume fresh exact-head ML/RAG reruns
+> plus exact-SHA review and required checks; continue unit batches until a fresh exact-head aggregate reports zero failures.
 > Preserve coverage floor 54, target 70, quarantine 0, and WEC selections. Do not merge,
 > dispatch workflows, or push to main without operation-specific authorization.
