@@ -8,6 +8,7 @@ This module provides server lifecycle management including:
 """
 
 import asyncio
+import inspect
 import logging
 import signal
 import time
@@ -165,14 +166,16 @@ class LifecycleManager:
         await self.transition_to(ServerState.INITIALIZING)
 
         try:
-            # Run startup hooks
+            # Run startup hooks, including async hooks where registered.
             for hook in self._startup_hooks:
-                hook()
+                result = hook()
+                if inspect.isawaitable(result):
+                    await result
 
             await self.transition_to(ServerState.READY)
             self._logger.info("Server initialized successfully")
 
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
+        except Exception as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             self._logger.error("Initialization failed: %s", e)
