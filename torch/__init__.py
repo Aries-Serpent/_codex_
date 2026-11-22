@@ -169,7 +169,19 @@ else:
             return self
 
         def numpy(self) -> Any:
-            return self._value
+            if self._value is None:
+                try:
+                    import numpy as np
+
+                    return np.zeros(self.shape)
+                except (ImportError, AttributeError):
+                    return None
+            try:
+                import numpy as np
+
+                return np.asarray(self._value).reshape(self.shape)
+            except (ImportError, AttributeError, ValueError):
+                return self._value
 
         def item(self) -> Any:
             return self._value
@@ -306,7 +318,11 @@ else:
 
     def randn(*shape: Any, **kwargs: Any) -> Tensor:
         normalized_shape = shape[0] if len(shape) == 1 and isinstance(shape[0], tuple) else shape
-        return Tensor(None, shape=tuple(normalized_shape))
+        normalized_shape = tuple(normalized_shape)
+        size = 1
+        for dimension in normalized_shape:
+            size *= dimension
+        return Tensor([1.0] * size, shape=normalized_shape)
 
     def randint(low: int, high: int, shape: tuple[int, ...] | list[int], **kwargs: Any) -> Tensor:
         normalized_shape = tuple(shape)
@@ -336,8 +352,33 @@ else:
             size *= dimension
         return Tensor([0] * size, shape=tuple(shape))
 
+    def is_tensor(value: Any) -> bool:
+        return isinstance(value, Tensor)
+
     def exp(value: Tensor) -> Tensor:
         return Tensor(__import__("math").exp(float(value.item())))
+
+    def softmax(value: Tensor, dim: int | None = None, **kwargs: Any) -> Tensor:
+        if hasattr(value, "softmax"):
+            return value.softmax(dim=dim)
+        return Tensor(value, shape=getattr(value, "shape", ()))
+
+    class _Device:
+        def __init__(self, name: Any) -> None:
+            self.type = str(name)
+
+        def __repr__(self) -> str:
+            return f"device(type='{self.type}')"
+
+        def __str__(self) -> str:
+            return self.type
+
+        def __eq__(self, other: Any) -> bool:
+            if isinstance(other, _Device):
+                return self.type == other.type
+            return self.type == str(other)
+
+    device = _Device
 
     def manual_seed(seed: Any, *args: Any, **kwargs: Any) -> None:
         return None
@@ -349,10 +390,20 @@ else:
         return None
 
     def zeros(*shape: Any, **kwargs: Any) -> Tensor:
-        return Tensor()
+        normalized_shape = shape[0] if len(shape) == 1 and isinstance(shape[0], tuple) else shape
+        normalized_shape = tuple(normalized_shape)
+        size = 1
+        for dimension in normalized_shape:
+            size *= dimension
+        return Tensor([0.0] * size, shape=normalized_shape)
 
     def ones(*shape: Any, **kwargs: Any) -> Tensor:
-        return Tensor()
+        normalized_shape = shape[0] if len(shape) == 1 and isinstance(shape[0], tuple) else shape
+        normalized_shape = tuple(normalized_shape)
+        size = 1
+        for dimension in normalized_shape:
+            size *= dimension
+        return Tensor([1.0] * size, shape=normalized_shape)
 
     float32 = "float32"
     float16 = "float16"
@@ -364,6 +415,9 @@ else:
         "randint",
         "argmax",
         "exp",
+        "is_tensor",
+        "softmax",
+        "device",
         "manual_seed",
         "save",
         "load",

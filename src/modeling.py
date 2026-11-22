@@ -93,9 +93,7 @@ def _assert_bf16_capability(
     try:
         device_obj = torch.device(device)
     except (AttributeError, ConnectionError, TimeoutError, RuntimeError):
-        if require:
-            raise RuntimeError(f"bf16 requested but device '{device}' is unavailable")
-        return
+        raise RuntimeError(f"bf16 requested but device '{device}' is unavailable")
 
     try:
         a = torch.ones((2, 2), dtype=bf16, device=device_obj)
@@ -152,8 +150,11 @@ def _resolve_device(name: str | None) -> str:
                 is_available = getattr(cuda, "is_available", lambda: False)
                 if callable(is_available) and is_available():
                     return "cuda"
-            except (AttributeError, ModuleNotFoundError, RuntimeError):
-                pass
+            except (AttributeError, ModuleNotFoundError, RuntimeError) as exc:
+                logger.debug(
+                    "CUDA auto-detection failed; falling back to CPU",
+                    exc_info=True,
+                )
         return "cpu"
     return name
 

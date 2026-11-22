@@ -331,8 +331,12 @@ def compute_perplexity(
                     probabilities = probabilities / _np.sum(probabilities)
                     entropy = -float(_np.sum(probabilities * _np.log(probabilities)))
                     return float(math.exp(max(0.0, entropy)))
-            except (ImportError, AttributeError, FloatingPointError):
-                pass
+            except (ImportError, AttributeError, FloatingPointError) as exc:
+                # NumPy optimization is optional; preserve the pure-Python fallback.
+                logger.debug(
+                    "NumPy perplexity optimization failed; using the pure-Python fallback",
+                    exc_info=True,
+                )
             max_value = max(float(value) for value in values)
             exps = [math.exp(float(value) - max_value) for value in values]
             total = sum(exps)

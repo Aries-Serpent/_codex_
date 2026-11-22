@@ -90,14 +90,18 @@ class AttentionScorer:
         self.model = model
         self.normalize = normalize
         self.epsilon = epsilon
-        self.device = device or "cpu"
+        self.device = torch.device(device or "cpu")
         if model is not None:
             to = getattr(model, "to", None)
             if callable(to):
                 try:
                     to(self.device)
-                except (TypeError, ValueError, RuntimeError):
-                    pass
+                except (TypeError, ValueError, RuntimeError) as exc:
+                    logger.debug(
+                        "Model .to(%s) failed; continuing with the current model placement",
+                        self.device,
+                        exc_info=True,
+                    )
             eval_model = getattr(model, "eval", None)
             if callable(eval_model):
                 eval_model()
@@ -212,6 +216,8 @@ class AttentionScorer:
         """
         if attention_weights is None:
             raise TypeError("Attention weights must not be None")
+        if method not in {"mean", "max", "norm"}:
+            raise ValueError(f"Unknown method: {method}")
 
         if isinstance(attention_weights, (list, tuple)):
             if not attention_weights:
@@ -228,6 +234,10 @@ class AttentionScorer:
             numpy_attention = stacked[np.newaxis, ...]
         elif stacked.ndim == 2:
             numpy_attention = stacked[np.newaxis, np.newaxis, ...]
+        elif stacked.ndim == 5:
+            if stacked.shape[1] != 1:
+                raise ValueError("Attention weights must use a single batch item")
+            numpy_attention = stacked[:, 0, ...]
         else:
             raise ValueError("Attention weights must be 2D, 3D, or 4D")
 

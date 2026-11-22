@@ -189,8 +189,13 @@ class StubAnalyzer:
                         "ABC" in stripped or "Protocol" in stripped
                     ):
                         return True
-        except Exception:
-            pass
+        except Exception as exc:
+            get_default_logger().debug(
+                "Textual stub fallback failed for %s at line %d; returning False",
+                file_path,
+                line_number,
+                exc_info=True,
+            )
 
         return False
 
