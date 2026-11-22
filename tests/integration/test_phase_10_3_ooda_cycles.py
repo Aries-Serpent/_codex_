@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 import pytest
+
 from aries_serpent_core.brain import ooda_orchestrator
 from aries_serpent_core.brain.ooda_observer import EnvironmentObserver
 from codex.brain import (
@@ -66,10 +67,19 @@ class TestEnvironmentObserverNetworkProbe:
 
     def test_network_probe_is_opt_in(self, monkeypatch):
         calls = []
-        monkeypatch.setattr(
-            "aries_serpent_core.brain.ooda_observer.subprocess.run",
-            lambda *a, **k: calls.append(a),
+        observer_module = __import__(
+            "aries_serpent_core.brain.ooda_observer", fromlist=["subprocess"]
         )
+        original_run = observer_module.subprocess.run
+
+        def record_ping_only(*args, **kwargs):
+            command = args[0] if args else kwargs.get("args", [])
+            if command and command[0] == "ping":
+                calls.append(tuple(command))
+                return None
+            return original_run(*args, **kwargs)
+
+        monkeypatch.setattr(observer_module.subprocess, "run", record_ping_only)
         metrics = EnvironmentObserver().observe()
         assert calls == [], "Network probe must be disabled by default"
         assert metrics.network_latency_ms is None
