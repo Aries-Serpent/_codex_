@@ -25,13 +25,21 @@ logger = logging.getLogger(__name__)
 
 __all__ = [
     "compute_bleu",
+    "compute_rouge",
     "compute_rouge_l",
+    "compute_meteor",
     "compute_perplexity",
     "compute_token_accuracy",
     "compute_accuracy",
+    "compute_precision",
+    "compute_recall",
     "compute_f1",
     "compute_classification_metrics",
     "batch_metrics_from_outputs",
+    "compute_metrics_batch",
+    "normalize_score",
+    "compare_outputs",
+    "compute_metric_summary",
 ]
 
 
@@ -115,6 +123,13 @@ def compute_bleu(
         >>> 0.0 <= score <= 1.0
         True
     """
+    if predictions is None or references is None:
+        raise TypeError("predictions and references must not be None")
+    if isinstance(predictions, str):
+        predictions = [predictions]
+    if isinstance(references, str):
+        references = [references]
+
     # Normalize references input
     norm_refs: list[list[str]] = []
     if len(references) > 0 and isinstance(references[0], str):
@@ -149,6 +164,8 @@ def compute_bleu(
                 total += hv
             num += clipped
             den += total
+        if den == 0:
+            continue
         precisions.append((num + smooth) / (max(1, den) + smooth))
 
     # geometric mean of precisions
@@ -199,6 +216,15 @@ def compute_rouge_l(
                     dp[i + 1][j + 1] = max(dp[i][j + 1], dp[i + 1][j])
         return dp[m][n]
 
+    if predictions is None or references is None:
+        raise TypeError("predictions and references must not be None")
+    if isinstance(predictions, str):
+        predictions = [predictions]
+    if isinstance(references, str):
+        references = [references]
+    if len(predictions) != len(references):
+        raise ValueError("predictions and references length must match")
+
     scores = []
     for h, r in zip(predictions, references, strict=False):
         ht, rt = _tokenize(h), _tokenize(r)
@@ -214,14 +240,53 @@ def compute_rouge_l(
     return float(sum(scores) / max(1, len(scores)))
 
 
+compute_rouge = compute_rouge_l
+
+
+def compute_meteor(
+    predictions: Sequence[str] | str,
+    references: Sequence[str] | str,
+) -> float:
+    """Compute a dependency-free unigram METEOR-style score."""
+    if predictions is None or references is None:
+        raise TypeError("predictions and references must not be None")
+    if isinstance(predictions, str):
+        predictions = [predictions]
+    if isinstance(references, str):
+        references = [references]
+    if len(predictions) != len(references):
+        raise ValueError("predictions and references length must match")
+
+    scores: list[float] = []
+    for hypothesis, reference in zip(predictions, references, strict=False):
+        hyp_tokens = set(_tokenize(str(hypothesis)))
+        ref_tokens = set(_tokenize(str(reference)))
+        if not hyp_tokens or not ref_tokens:
+            scores.append(0.0)
+            continue
+        overlap = len(hyp_tokens & ref_tokens)
+        if overlap == 0:
+            scores.append(0.0)
+            continue
+        precision = overlap / len(hyp_tokens)
+        recall = overlap / len(ref_tokens)
+        if precision + recall == 0:
+            scores.append(0.0)
+            continue
+        f_mean = 10 * precision * recall / (9 * precision + recall)
+        fragment_penalty = 0.5 * ((len(hyp_tokens) - overlap) / len(hyp_tokens))
+        scores.append(max(0.0, f_mean * (1.0 - fragment_penalty)))
+    return float(sum(scores) / len(scores)) if scores else 0.0
+
+
 # ============================================================================
 # Perplexity Metric (consolidated from 3 implementations)
 # ============================================================================
 
 
 def compute_perplexity(
-    logits_or_nll: Iterable[Any],
-    targets: Iterable[int],
+    logits_or_nll: Iterable[Any] | float,
+    targets: Iterable[int] | None = None,
     *,
     from_logits: bool = True,
     ignore_index: int = -100,
@@ -249,6 +314,33 @@ def compute_perplexity(
         >>> ppl > 0.0
         True
     """
+    if targets is None:
+        if isinstance(logits_or_nll, (int, float)):
+            return float(math.exp(float(logits_or_nll)))
+        values = list(logits_or_nll)
+        if not values:
+            raise ValueError("logit sequence is empty")
+        if all(isinstance(value, (int, float)) for value in values):
+            try:
+                import numpy as _np
+
+                arr = _np.asarray(values, dtype=float)
+                if arr.ndim == 1:
+                    max_value = float(_np.max(arr))
+                    probabilities = _np.exp(arr - max_value)
+                    probabilities = probabilities / _np.sum(probabilities)
+                    entropy = -float(_np.sum(probabilities * _np.log(probabilities)))
+                    return float(math.exp(max(0.0, entropy)))
+            except (ImportError, AttributeError, FloatingPointError):
+                pass
+            max_value = max(float(value) for value in values)
+            exps = [math.exp(float(value) - max_value) for value in values]
+            total = sum(exps)
+            probabilities = [value / total for value in exps]
+            entropy = -sum(prob * math.log(prob) for prob in probabilities if prob > 0)
+            return float(math.exp(max(0.0, entropy)))
+        raise ValueError("logits must be numeric sequences")
+
     tgt = list(targets)
     if from_logits:
         logits_list = list(logits_or_nll)
@@ -378,8 +470,8 @@ def compute_token_accuracy(
 
 
 def compute_accuracy(
-    predictions: Sequence[int],
-    targets: Sequence[int],
+    predictions: Sequence[int] | int | float,
+    targets: Sequence[int] | int | float,
 ) -> float:
     """
     Compute accuracy for classification.
@@ -391,6 +483,11 @@ def compute_accuracy(
     Returns:
         Accuracy as float in range [0, 1]
     """
+    if isinstance(predictions, (int, float)) and isinstance(targets, (int, float)):
+        total = float(targets)
+        if total <= 0:
+            return 0.0
+        return max(0.0, min(1.0, float(predictions) / total))
     if len(predictions) != len(targets):
         raise ValueError("predictions and targets length mismatch")
     if len(predictions) == 0:
@@ -409,9 +506,27 @@ def _precision_recall_f(tp: int, fp: int, fn: int, beta: float = 1.0) -> float:
     return float((1 + beta_sq) * precision * recall / (beta_sq * precision + recall))
 
 
+def compute_precision(
+    true_positives: int | float,
+    false_positives: int | float,
+) -> float:
+    """Compute precision from true-positive and false-positive counts."""
+    denominator = float(true_positives) + float(false_positives)
+    return float(true_positives) / denominator if denominator > 0 else 0.0
+
+
+def compute_recall(
+    true_positives: int | float,
+    false_negatives: int | float,
+) -> float:
+    """Compute recall from true-positive and false-negative counts."""
+    denominator = float(true_positives) + float(false_negatives)
+    return float(true_positives) / denominator if denominator > 0 else 0.0
+
+
 def compute_f1(
-    predictions: Sequence[int],
-    targets: Sequence[int],
+    predictions: Sequence[int] | float,
+    targets: Sequence[int] | float,
     labels: Optional[Sequence[int]] = None,
     average: str = "micro",
 ) -> float:
@@ -427,6 +542,13 @@ def compute_f1(
     Returns:
         F1 score as float in range [0, 1]
     """
+    if isinstance(predictions, (int, float)) and isinstance(targets, (int, float)):
+        precision_value = float(predictions)
+        recall_value = float(targets)
+        denominator = precision_value + recall_value
+        if denominator <= 0:
+            return 0.0
+        return max(0.0, min(1.0, 2 * precision_value * recall_value / denominator))
     if len(predictions) != len(targets):
         raise ValueError("predictions and targets length mismatch")
     if len(predictions) == 0:
@@ -647,3 +769,76 @@ def batch_metrics_from_outputs(
             pass
 
     return record
+
+
+def compute_metrics_batch(
+    references: Sequence[str],
+    hypotheses: Sequence[str],
+) -> dict[str, float]:
+    """Compute common text metrics for a batch of reference/hypothesis pairs."""
+    if len(references) != len(hypotheses):
+        raise ValueError("references and hypotheses length must match")
+    if not references:
+        return {
+            "exact_match": 0.0,
+            "bleu": 0.0,
+            "rouge": 0.0,
+            "meteor": 0.0,
+        }
+
+    exact_match = sum(
+        1
+        for reference, hypothesis in zip(references, hypotheses, strict=False)
+        if str(reference).strip() == str(hypothesis).strip()
+    ) / len(references)
+    bleu = compute_bleu(list(hypotheses), list(references))
+    rouge = compute_rouge_l(list(hypotheses), list(references))
+    meteor = compute_meteor(list(hypotheses), list(references))
+    return {
+        "exact_match": float(exact_match),
+        "bleu": float(bleu),
+        "rouge": float(rouge),
+        "meteor": float(meteor),
+    }
+
+
+def normalize_score(score: float, min_value: float, max_value: float) -> float:
+    """Normalize a scalar into the inclusive [0, 1] range."""
+    if max_value == min_value:
+        return 1.0 if float(score) >= float(min_value) else 0.0
+    normalized = (float(score) - float(min_value)) / (float(max_value) - float(min_value))
+    return max(0.0, min(1.0, normalized))
+
+
+def compare_outputs(reference: str, outputs: Sequence[str]) -> dict[str, float | str]:
+    """Compare candidate text outputs against a reference."""
+    scores: dict[str, float | str] = {}
+    best_output: str | None = None
+    best_score = -1.0
+    for index, output in enumerate(outputs, start=1):
+        bleu = compute_bleu(str(output), str(reference))
+        rouge = compute_rouge(str(output), str(reference))
+        combined = 0.5 * (bleu + rouge)
+        scores[f"output_{index}"] = combined
+        if combined > best_score:
+            best_score = combined
+            best_output = str(output)
+    if best_output is not None:
+        scores["best"] = best_output
+    return scores
+
+
+def compute_metric_summary(scores: Sequence[float]) -> dict[str, float]:
+    """Return mean, standard deviation, minimum, and maximum for metric scores."""
+    if not scores:
+        return {"mean": 0.0, "average": 0.0, "std": 0.0, "min": 0.0, "max": 0.0}
+    values = [float(score) for score in scores]
+    mean = sum(values) / len(values)
+    variance = sum((value - mean) ** 2 for value in values) / len(values)
+    return {
+        "mean": mean,
+        "average": mean,
+        "std": math.sqrt(variance),
+        "min": min(values),
+        "max": max(values),
+    }
