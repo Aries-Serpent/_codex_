@@ -284,6 +284,23 @@ else:
         def __exit__(self, exc_type: Any, exc: Any, tb: Any) -> None:
             return None
 
+    class _CudaStub:
+        def is_available(self) -> bool:
+            return False
+
+        def manual_seed_all(self, seed: Any) -> None:
+            return None
+
+        def device_count(self) -> int:
+            return 0
+
+    class _VersionStub:
+        cuda = None
+        hip = None
+
+    cuda = _CudaStub()
+    version = _VersionStub()
+
     def tensor(data: Any = None, *args: Any, **kwargs: Any) -> Tensor:
         return Tensor(data)
 
@@ -356,6 +373,8 @@ else:
         "float16",
         "bfloat16",
         "no_grad",
+        "cuda",
+        "version",
         "nn",
         "utils",
         "optim",
@@ -365,7 +384,7 @@ else:
     __path__ = [str(Path(__file__).resolve().parent)]
 
     def __getattr__(name: str) -> Any:
-        if name in {"nn", "utils", "optim", "distributed", "cuda"}:
+        if name in {"nn", "utils", "optim", "distributed"}:
             import importlib
 
             module = importlib.import_module(f".{name}", __name__)
