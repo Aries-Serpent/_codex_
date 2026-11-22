@@ -363,6 +363,7 @@ def disable_torch_profiler(monkeypatch):
             module = importlib.import_module(module_name)
             monkeypatch.setattr(module, attr_name, _NoopRecordFunction, raising=False)
         except (ImportError, AttributeError, ModuleNotFoundError):
+            # Optional profiling APIs differ across Torch builds.
             pass
 
     try:
@@ -375,6 +376,7 @@ def disable_torch_profiler(monkeypatch):
             if hasattr(torch_c, attr_name):
                 monkeypatch.setattr(torch_c, attr_name, lambda *args, **kwargs: None)
     except (ImportError, AttributeError, ModuleNotFoundError):
+        # The C-extension profiling flags are unavailable in some Torch builds.
         pass
 
     yield
