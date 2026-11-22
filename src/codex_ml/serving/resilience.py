@@ -157,10 +157,9 @@ class CircuitBreaker:
                     if not self.config.health_probe_func():
                         logger.warning("Health probe failed, keeping circuit open")
                         raise Exception("Health probe failed")
-                except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
-                    type(e).__name__
-                    logger.debug("Exception: <ERROR_TYPE>")
-                    logger.warning("Health probe error: <ERROR_TYPE>")
+                except Exception as e:
+                    logger.debug("Health probe error: %s", type(e).__name__)
+                    logger.warning("Health probe error: %s", type(e).__name__)
                     self._on_failure()
                     raise
 
@@ -173,7 +172,7 @@ class CircuitBreaker:
             result = func(*args, **kwargs)
             self._on_success()
             return result
-        except (ConnectionError, TimeoutError):
+        except Exception:
             self._on_failure()
             raise
 
