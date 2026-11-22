@@ -330,6 +330,56 @@ def _restore_real_torch_modules():
     _sys.modules.update(before)
 
 
+@pytest.fixture(autouse=False)
+def disable_torch_profiler(monkeypatch):
+    """Disable PyTorch profiler hooks for tests sensitive to profiler internals."""
+
+    try:
+        torch_mod = importlib.import_module("torch")
+    except (ImportError, ModuleNotFoundError):
+        yield
+        return
+
+    namespace = getattr(torch_mod, "__dict__", {})
+    if namespace.get("IS_CODEX_STUB") or namespace.get("__codex_stub__"):
+        yield
+        return
+
+    class _NoopRecordFunction:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            pass
+
+    for module_name, attr_name in (
+        ("torch.autograd.profiler", "record_function"),
+        ("torch.profiler", "record_function"),
+    ):
+        try:
+            module = importlib.import_module(module_name)
+            monkeypatch.setattr(module, attr_name, _NoopRecordFunction, raising=False)
+        except (ImportError, AttributeError, ModuleNotFoundError):
+            pass
+
+    try:
+        import torch._C as torch_c
+
+        for attr_name in (
+            "_jit_set_profiling_executor",
+            "_jit_set_profiling_mode",
+        ):
+            if hasattr(torch_c, attr_name):
+                monkeypatch.setattr(torch_c, attr_name, lambda *args, **kwargs: None)
+    except (ImportError, AttributeError, ModuleNotFoundError):
+        pass
+
+    yield
+
+
 _TRAINING_TORCH_ALLOWLIST_FILENAMES: frozenset[str] = frozenset(
     {
         "conftest.py",

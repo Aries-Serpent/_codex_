@@ -13,9 +13,10 @@ Version: 1.0.0
 
 import pytest
 
-pytest.importorskip("torch")
-
-pytest.importorskip("torch")
+_torch_module = pytest.importorskip("torch")
+_torch_namespace = getattr(_torch_module, "__dict__", {})
+if _torch_namespace.get("IS_CODEX_STUB") or _torch_namespace.get("__codex_stub__"):
+    pytest.skip("Full PyTorch runtime unavailable", allow_module_level=True)
 
 # Apply disable_torch_profiler fixture to all tests in this module
 # to avoid profiler type errors
@@ -66,15 +67,22 @@ class MultiGPUTestHarness:
         """Detect number of available GPUs."""
         if not TORCH_AVAILABLE:
             return 0
-        if not torch.cuda.is_available():
+        try:
+            cuda = torch.cuda
+            if not cuda.is_available():
+                return 0
+            return cuda.device_count()
+        except (AttributeError, ImportError, ModuleNotFoundError):
             return 0
-        return torch.cuda.device_count()
 
     def _check_distributed(self) -> bool:
         """Check if distributed training is available."""
         if not TORCH_AVAILABLE:
             return False
-        return dist.is_available() and dist.is_nccl_available()
+        try:
+            return dist.is_available() and dist.is_nccl_available()
+        except (AttributeError, ImportError, ModuleNotFoundError):
+            return False
 
     def has_gpus(self, min_gpus: int = 1) -> bool:
         """Check if minimum number of GPUs are available."""
@@ -346,9 +354,8 @@ class TestDistributedDataLoader(unittest.TestCase):
 
     def test_data_sharding(self):
         """Test data sharding across ranks."""
-        from torch.utils.data.distributed import DistributedSampler
-
         from torch.utils.data import DataLoader, Dataset
+        from torch.utils.data.distributed import DistributedSampler
 
         class DummyDataset(Dataset):
             def __init__(self, size=100):
@@ -400,7 +407,6 @@ if __name__ == "__main__":
         logger.info(f"CUDA Available: {torch.cuda.is_available()}")
         logger.info(f"Number of GPUs: {harness.num_gpus}")
         logger.info(f"Distributed Available: {harness.distributed_available}")
-
 
     # Run tests
     result = run_multi_gpu_tests()
