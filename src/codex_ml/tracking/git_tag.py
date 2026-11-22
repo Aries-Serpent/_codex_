@@ -36,7 +36,12 @@ def current_commit() -> str | None:
     try:
         out = subprocess.check_output(["git", "rev-parse", "HEAD"])
         return _decode(out).strip()
-    except (ValueError, TypeError):
+    except (
+        OSError,
+        subprocess.SubprocessError,
+        ValueError,
+        TypeError,
+    ):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
