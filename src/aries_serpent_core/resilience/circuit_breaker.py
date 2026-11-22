@@ -145,9 +145,9 @@ class CircuitBreaker:
         Raises:
             CircuitOpenError: When the circuit is OPEN and the recovery timeout
                 has not yet elapsed.
-            OSError: Counted as a failure and re-raised, including ``IOError``.
-            ImportError: Counted as a failure and re-raised, including
-                ``ModuleNotFoundError``.
+            Exception: Counted as a failure and re-raised.  ``BaseException``
+                subclasses such as ``KeyboardInterrupt`` and ``SystemExit`` are
+                not counted and are not swallowed.
 
         Other exceptions propagate without counting as failures. A successful
         CLOSED call clears the failure count; HALF_OPEN successes accumulate
@@ -173,7 +173,7 @@ class CircuitBreaker:
         # Execute outside the lock so we don't block other threads during I/O.
         try:
             result = fn(*args, **kwargs)
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+        except Exception as exc:
             self._on_failure()
             raise exc from exc
         else:
