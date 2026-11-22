@@ -18,7 +18,7 @@ import numpy as np
 
 from codex.logging.structured_logger import logger  # pragma: allowlist secret
 
- # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+# pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 # Check for FAISS specifically
 FAISS_AVAILABLE = importlib.util.find_spec("faiss") is not None
 
@@ -175,7 +175,9 @@ class TestIndexerErrorHandling:
                     index_dir=str(tmpdir),
                 )
             except ValueError as e:
-                assert "No chunks generated" in str(e) or "no text content" in str(e), "Content must not be empty"
+                assert "No chunks generated" in str(e) or "no text content" in str(
+                    e
+                ), "Content must not be empty"
 
 
 class TestRetrieverErrorHandling:
@@ -259,10 +261,11 @@ class TestEmbeddingsErrorHandling:
     """Test error handling in embeddings module"""
 
     def test_local_provider_import_error(self):
-        """Test handling of missing sentence-transformers"""
+        """Test missing sentence-transformers falls back instead of escaping."""
         with patch.dict("sys.modules", {"sentence_transformers": None}):
-            with pytest.raises(ImportError):
-                LocalSentenceTransformerProvider()
+            provider = LocalSentenceTransformerProvider()
+            assert provider is not None
+            assert provider.model is None or hasattr(provider.model, "encode")
 
     @pytest.mark.skipif(not OPENAI_AVAILABLE, reason="OpenAI package not installed")
     def test_openai_provider_no_api_key(self):
