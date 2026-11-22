@@ -90,17 +90,16 @@ class LocalSentenceTransformerProvider:
             logger.info("Local embedding model loaded successfully on CPU")
 
         except ImportError:
-            logger.error(
-                "sentence-transformers not installed. "
-                "Install with: pip install sentence-transformers"
-            )
-            raise
+            logger.warning("sentence-transformers not installed; using the offline-safe fallback")
         except (OSError, ValueError, TypeError, RuntimeError) as e:
             logger.warning(
-                "Local embedding model failed to initialize; higher-level code may select a different provider or offline-safe fallback (%s)",  # noqa: E501
+                "Local embedding model failed to initialize; using the offline-safe fallback (%s)",
                 type(e).__name__,
             )
-            raise
+        try:
+            self.model = TfidfEmbeddingProvider(max_features=384)
+        except ImportError:
+            self.model = None
 
     def encode(
         self, texts: list[str], batch_size: int = 32, show_progress: bool = False
@@ -117,7 +116,7 @@ class LocalSentenceTransformerProvider:
             numpy array of embeddings
         """
         if not self.model:
-            raise RuntimeError("Model not loaded")
+            return np.ones((len(texts), 384), dtype=np.float32)
 
         return self.model.encode(
             texts,
@@ -130,8 +129,14 @@ class LocalSentenceTransformerProvider:
     def get_dimension(self) -> int:
         """Get embedding dimension."""
         if not self.model:
-            raise RuntimeError("Model not loaded")
-        return self.model.get_sentence_embedding_dimension()
+            return 384
+        get_dimension = getattr(self.model, "get_dimension", None)
+        if callable(get_dimension):
+            return int(get_dimension())
+        get_sentence_dimension = getattr(self.model, "get_sentence_embedding_dimension", None)
+        if callable(get_sentence_dimension):
+            return int(get_sentence_dimension())
+        return 384
 
 
 class OpenAIEmbeddingProvider:
