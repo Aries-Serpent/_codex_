@@ -1,3 +1,25 @@
+## Session: PR #5766 exact ML evidence and clean wrap-up planset (2026-11-22)
+
+- Added a 2026-11-22 PDA entry for PR #5766 at exact head
+  `42073ea3eeee218c3350816017fb92c5c6b2fa21`.
+- Today's repository scorecard is 85/100 and NOT READY: PDA/accountability,
+  sync, action pins, ruff, Pattern 27, download-artifact v5, and AAIS pass;
+  the repository auto-fix dimension remains red and ML aggregate readiness is
+  blocked by 754 unit failures/errors.
+- ML run `44971752791`, attempt 2, completed component and downstream execution:
+  1,797 integration tests had 0 failures/errors; 32,258 unit tests had 754
+  failures/errors and 1,014 skips; combined unit coverage was 54.99%.
+- The coverage floor 54 passed and the target remains 70. The quarantine remained
+  empty. The PR-base ratchet reported no quarantine growth and no floor decrease.
+- `ml-slow-aggregate` failed because unit JUnit debt is real. This is not a pass
+  result and not an infrastructure-only cancellation.
+- PR #5766 remains open and unmerged. The new
+  [resume and closure planset](../../.codex/plans/PR5766_RESUME_CLOSURE_PLANSET_2026-11-22.md)
+  partitions the 754 failures into targeted implementation batches and records
+  the exact post-merge coverage-ratchet, issue-close, main-promotion, and review
+  gates.
+- No workflow dispatch, main ref mutation, or merge was authorized or performed.
+
 ## Session: PR #5766 Fast Validation YAML lint (2026-11-22)
 
 - Run `44969101570` failed strict yamllint on the RAG disk cleanup step.

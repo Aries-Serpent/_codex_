@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Added - PR #5766 exact ML evidence and resumable closure planset (2026-11-22)
+- Record ML run `44971752791` at campaign head `42073ea3eeee218c3350816017fb92c5c6b2fa21`: 1,797 integration tests pass with 0 failures, while 32,258 unit tests report 754 failures/errors and combined coverage is 54.99% against floor 54 and target 70.
+- Preserve an empty quarantine, passing no-growth/no-floor-decrease ratchet, and failed `ml-slow-aggregate` gate. PR #5766 remains open and unmerged.
+- Add [the resumable PR 5766 planset](.codex/plans/PR5766_RESUME_CLOSURE_PLANSET_2026-11-22.md) with targeted unit-failure batches, coverage ratcheting, issue closure gates, main-promotion checks, and clean Codespace resume instructions.
+
 ### Fixed - PR #5766 Fast Validation YAML lint (2026-11-22)
 - Reformat the RAG disk cleanup script as a YAML block without changing its commands.
 
