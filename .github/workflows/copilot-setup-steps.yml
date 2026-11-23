@@ -55,7 +55,7 @@ permissions:
 jobs:
   resource-profile:
     name: Probe Copilot runner headroom
-    runs-on: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       contents: read
@@ -78,7 +78,7 @@ jobs:
     - name: Select runtime resource profile
       id: profile
       env:
-        CURRENT_RUNNER_PROFILE: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}
+        CURRENT_RUNNER_PROFILE: ubuntu-latest
         HIGH_HEADROOM_RUNNER_PROFILE: ${{ vars.COPILOT_HIGH_HEADROOM_RUNNER_PROFILE }}
       run: |
         python3 scripts/ci/agent_resource_profile.py \

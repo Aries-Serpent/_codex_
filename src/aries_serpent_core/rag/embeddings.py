@@ -91,7 +91,8 @@ class LocalSentenceTransformerProvider:
             logger.info("Local embedding model loaded successfully on CPU")
 
         except ImportError:
-            logger.warning("sentence-transformers not installed; using the offline-safe fallback")
+            logger.warning("sentence-transformers not installed")
+            raise
         except (OSError, ValueError, TypeError, RuntimeError) as e:
             logger.warning(
                 "Local embedding model failed to initialize; using the offline-safe fallback (%s)",
@@ -117,7 +118,7 @@ class LocalSentenceTransformerProvider:
             numpy array of embeddings
         """
         if not self.model:
-            return np.ones((len(texts), 384), dtype=np.float32)
+            raise RuntimeError("Model not loaded")
 
         return self.model.encode(
             texts,
@@ -130,7 +131,7 @@ class LocalSentenceTransformerProvider:
     def get_dimension(self) -> int:
         """Get embedding dimension."""
         if not self.model:
-            return 384
+            raise RuntimeError("Model not loaded")
         get_dimension = getattr(self.model, "get_dimension", None)
         if callable(get_dimension):
             return int(get_dimension())
@@ -665,6 +666,20 @@ class TfidfEmbeddingProvider:
             f"Initialized TF-IDF provider (dimension={max_features}, offline-capable=True)"
         )  # codeql[py/clear-text-logging-sensitive-data]
 
+    def _hash_encode(self, texts: list[str]) -> np.ndarray:
+        rows = []
+        for text in texts:
+            row = np.zeros(self.max_features, dtype=np.float32)
+            for token in str(text).lower().split():
+                digest = hashlib.blake2b(token.encode("utf-8"), digest_size=8).digest()
+                index = int.from_bytes(digest, "big") % self.max_features
+                row[index] += 1.0
+            norm = float(np.linalg.norm(row))
+            if norm:
+                row /= norm
+            rows.append(row)
+        return np.asarray(rows, dtype=np.float32)
+
     def encode(self, texts: list[str], **kwargs) -> np.ndarray:
         """
         Encode texts using TF-IDF.
@@ -684,18 +699,7 @@ class TfidfEmbeddingProvider:
             return np.array([])
 
         if getattr(self, "vectorizer", None) is None:
-            rows = []
-            for text in texts:
-                row = np.zeros(self.max_features, dtype=np.float32)
-                for token in str(text).lower().split():
-                    digest = hashlib.blake2b(token.encode("utf-8"), digest_size=8).digest()
-                    index = int.from_bytes(digest, "big") % self.max_features
-                    row[index] += 1.0
-                norm = float(np.linalg.norm(row))
-                if norm:
-                    row /= norm
-                rows.append(row)
-            return np.asarray(rows, dtype=np.float32)
+            return self._hash_encode(texts)
 
         # Fit on first call
         if not self.is_fitted:
@@ -732,11 +736,13 @@ class TfidfEmbeddingProvider:
                     f"TF-IDF vectorizer fitted. Vocabulary size: {len(self.vectorizer.vocabulary_)}"
                 )
             except (ValueError, TypeError) as e:
-                type(e).__name__
-                logger.error(
-                    "Error fitting TF-IDF vectorizer: <ERROR_TYPE>"
-                )  # codeql[py/clear-text-logging-sensitive-data]
-                raise
+                logger.warning(
+                    "TF-IDF fitting failed; using deterministic hash embeddings: %s",
+                    type(e).__name__,
+                )
+                self.vectorizer = None
+                self.is_fitted = True
+                return self._hash_encode(texts)
 
         # Transform texts to embeddings
         try:

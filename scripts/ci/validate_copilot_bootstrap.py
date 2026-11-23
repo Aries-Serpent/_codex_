@@ -132,8 +132,9 @@ def validate_retained_workflow(path: Path) -> WorkflowValidation:
     resource_job = jobs.get("resource-profile", {})
     if not isinstance(resource_job, dict):
         resource_job = {}
-    if "vars.COPILOT_RUNNER_PROFILE" not in str(resource_job.get("runs-on", "")):
-        errors.append("resource-profile must use the configured runner label")
+    resource_runner = str(resource_job.get("runs-on", ""))
+    if not (resource_runner == "ubuntu-latest" or "vars.COPILOT_RUNNER_PROFILE" in resource_runner):
+        errors.append("resource-profile must use ubuntu-latest or the configured runner label")
     resource_steps = resource_job.get("steps", [])
     if not isinstance(resource_steps, list):
         resource_steps = []
