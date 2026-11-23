@@ -36,8 +36,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     try:
         import hydra
-    except ImportError as e:
-        error_type = type(e).__name__
+    except ImportError:
         logger.debug("hydra not available: <ERROR_TYPE>")
         import config_legacy as hydra
 
