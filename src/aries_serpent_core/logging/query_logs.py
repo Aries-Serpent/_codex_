@@ -358,7 +358,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             if args.tail is not None:
                 rows.reverse()
             if args.format == "json":
-                logger.info(json.dumps([dict(r) for r in rows], ensure_ascii=False, indent=2))
+                print(json.dumps([dict(r) for r in rows], ensure_ascii=False, indent=2))
             else:
                 _print_rich(rows, mapcol, args.show_meta)
         return 0

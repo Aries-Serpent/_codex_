@@ -115,9 +115,9 @@ def setup_logging(
     logger = logging.getLogger(logger_name)
     level = getattr(logging, config.level.upper(), logging.INFO)
     logger.setLevel(level)
-    # Tests and repeated setup calls can inherit a previously disabled named logger,
-    # so each setup must explicitly re-enable it before replacing handlers.
+    # Re-enable both the named logger and the global logging manager.
     logger.disabled = False
+    logging.disable(logging.NOTSET)
     handler = logging.StreamHandler(stream or sys.stderr)
     handler.setFormatter(StructuredFormatter(fmt=config.format, component=logger_name))
     logger.handlers.clear()

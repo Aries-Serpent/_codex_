@@ -9,6 +9,7 @@ import ast
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
+from textwrap import dedent
 from typing import Any, Optional
 
 
@@ -208,14 +209,14 @@ def test_pattern_library_init():
 
 def test_abstract_method_detection():
     """Test detection of abstract methods."""
-    source = """
+    source = dedent("""
     from abc import abstractmethod
 
-class Base:
-    @abstractmethod
-    def process(self):
-        pass
-"""
+    class Base:
+        @abstractmethod
+        def process(self):
+            pass
+    """)
     lib = ASTPatternLibrary()
     tree = ast.parse(source)
     matches = lib.find_matches(tree, "abstract_method")
@@ -241,17 +242,17 @@ def real_impl():
 
 def test_dataclass_detection():
     """Test detection of dataclasses."""
-    source = """
+    source = dedent("""
     from dataclasses import dataclass
 
-@dataclass
-class Point:
-    x: int
-    y: int
+    @dataclass
+    class Point:
+        x: int
+        y: int
 
-class Regular:
-    pass
-"""
+    class Regular:
+        pass
+    """)
     lib = ASTPatternLibrary()
     tree = ast.parse(source)
     matches = lib.find_matches(tree, "dataclass")
@@ -295,17 +296,17 @@ def sync_func():
 def test_analyze_file(tmp_path):
     """Test file analysis."""
     test_file = tmp_path / "test.py"
-    test_file.write_text("""
-    from dataclasses import dataclass
+    test_file.write_text(dedent("""
+            from dataclasses import dataclass
 
-@dataclass
-class Config:
-    name: str
-    value: int
+            @dataclass
+            class Config:
+                name: str
+                value: int
 
-def process():
-    raise NotImplementedError()
-""")
+            def process():
+                raise NotImplementedError()
+            """))
 
     lib = ASTPatternLibrary()
     results = lib.analyze_file(test_file)

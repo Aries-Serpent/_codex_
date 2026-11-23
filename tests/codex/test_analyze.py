@@ -11,6 +11,7 @@ Tests cover:
 import ast
 import json
 from pathlib import Path
+from textwrap import dedent
 
 
 class TestStaticAnalyzer:
@@ -308,10 +309,10 @@ class TestImportExtraction:
         """Test extracting simple imports."""
         from codex.analyze.static.analyzer import _extract_imports
 
-        code = """
+        code = dedent("""
         import os
         import sys
-"""
+        """)
         tree = ast.parse(code)
         imports = _extract_imports(tree)
 
@@ -322,10 +323,10 @@ class TestImportExtraction:
         """Test extracting from imports."""
         from codex.analyze.static.analyzer import _extract_imports
 
-        code = """
+        code = dedent("""
         from pathlib import Path
         from typing import List, Dict
-"""
+        """)
         tree = ast.parse(code)
         imports = _extract_imports(tree)
 
@@ -336,12 +337,12 @@ class TestImportExtraction:
         """Test that duplicate imports are deduplicated."""
         from codex.analyze.static.analyzer import _extract_imports
 
-        code = """
+        code = dedent("""
         import os
         from os import path
         from os.path import join
         from codex.logging.structured_logger import logger
-"""
+        """)
         tree = ast.parse(code)
         imports = _extract_imports(tree)
 

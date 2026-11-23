@@ -118,13 +118,13 @@ def _ensure_codex_ml_imports() -> None:
             yield
 
     try:
-        from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
-            dump_rng_state as _dump_rng_state,
-            load_rng_state as _load_rng_state,
+        from codex_ml.utils.checkpointing import dump_rng_state as _dump_rng_state  # type: ignore[attr-defined]
+        from codex_ml.utils.checkpointing import load_rng_state as _load_rng_state
+        from codex_ml.utils.checkpointing import (
             load_training_checkpoint as _load_training_checkpoint,
-            save_checkpoint as _save_checkpoint,
-            set_seed as _set_seed,
         )
+        from codex_ml.utils.checkpointing import save_checkpoint as _save_checkpoint
+        from codex_ml.utils.checkpointing import set_seed as _set_seed
 
         dump_rng_state = _dump_rng_state
         load_rng_state = _load_rng_state
@@ -135,10 +135,8 @@ def _ensure_codex_ml_imports() -> None:
         pass
 
     try:
-        from codex_ml.utils.experiment_tracking_mlflow import (
-            _as_flat_params as _FLAT_PARAMS,
-            maybe_mlflow as _maybe_mlflow,
-        )
+        from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params as _FLAT_PARAMS
+        from codex_ml.utils.experiment_tracking_mlflow import maybe_mlflow as _maybe_mlflow
 
         _as_flat_params = _FLAT_PARAMS
         maybe_mlflow = _maybe_mlflow
@@ -146,10 +144,8 @@ def _ensure_codex_ml_imports() -> None:
         pass
 
     try:
-        from codex_ml.utils.hf_pinning import (
-            ensure_pinned_kwargs as _ensure_pinned_kwargs,
-            load_from_pretrained as _load_from_pretrained,
-        )
+        from codex_ml.utils.hf_pinning import ensure_pinned_kwargs as _ensure_pinned_kwargs
+        from codex_ml.utils.hf_pinning import load_from_pretrained as _load_from_pretrained
 
         ensure_pinned_kwargs = _ensure_pinned_kwargs
         load_from_pretrained = _load_from_pretrained
@@ -617,13 +613,14 @@ def evaluate_dataloader(model, dataloader, cfg: TrainCfg, device: torch.device) 
 
 def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dict[str, Any]:
     """Train ``model`` on ``train_ds`` using a minimal deterministic loop."""
+    _ensure_codex_ml_imports()
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model.to(device)
     set_seed(cfg.seed, deterministic=cfg.deterministic)
-    if getattr(torch.backends, "cudnn", None) is not None:
-        if getattr(torch.backends.cudnn, "enabled", False):
-            if not torch.backends.cudnn.deterministic:
-                raise AssertionError("cuDNN must be deterministic; call set_reproducible()")
+    cudnn_backend = getattr(getattr(torch, "backends", None), "cudnn", None)
+    if cudnn_backend is not None and getattr(cudnn_backend, "enabled", False):
+        if not cudnn_backend.deterministic:
+            raise AssertionError("cuDNN must be deterministic; call set_reproducible()")
     loggers: CodexLoggers = _codex_logging_bootstrap(argparse.Namespace())
 
     if cfg.use_lora and LoraConfig is not None and get_peft_model is not None:

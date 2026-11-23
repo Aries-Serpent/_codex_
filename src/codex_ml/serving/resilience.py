@@ -105,7 +105,7 @@ class CircuitBreaker:
         self.lock = Lock()
 
         # Enhanced features
-        self.current_backoff = self.config.initial_backoff
+        self.current_backoff = min(self.config.initial_backoff, self.config.timeout)
         self.consecutive_failures = 0
         self.metrics: dict[str, Any] = {
             "total_calls": 0,
@@ -272,7 +272,7 @@ class CircuitBreaker:
 
                     # Initialize backoff
                     if self.config.use_exponential_backoff:
-                        self.current_backoff = self.config.initial_backoff
+                        self.current_backoff = min(self.config.initial_backoff, self.config.timeout)
 
                     self._record_state_change()
 

@@ -485,6 +485,10 @@ class EnsembleForecaster:
         self.config = config or EnsembleConfig()
         self.model_correlation = None
 
+    def calculate_mape(self, actual: np.ndarray, predicted: np.ndarray) -> float:
+        """Calculate ensemble prediction error using the common forecaster contract."""
+        return self.arima.calculate_mape(actual, predicted)
+
     def forecast(self, steps: int = 7) -> Tuple[np.ndarray, np.ndarray]:
         """
         Generate ensemble forecast using weighted voting

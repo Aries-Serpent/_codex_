@@ -144,7 +144,6 @@ class TokenizerAdapter(ABC):
         return None
 
 
-@tokenizers.register("whitespace")
 class _CallableInt(int):
     def __new__(cls, value: int):
         return super().__new__(cls, int(value))
@@ -153,6 +152,7 @@ class _CallableInt(int):
         return int(self)
 
 
+@tokenizers.register("whitespace")
 class WhitespaceTokenizer(TokenizerAdapter):
     """Deterministic whitespace tokenizer used when transformers is absent."""
 
