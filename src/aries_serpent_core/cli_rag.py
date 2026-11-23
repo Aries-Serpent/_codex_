@@ -63,6 +63,7 @@ app = typer.Typer(
     help="RAG (Retrieval-Augmented Generation) index management and querying",
     no_args_is_help=True,
 )
+app.help = app.info.help
 
 console = Console()
 
@@ -662,7 +663,7 @@ def merge(
         codex rag merge --source idx1 --source idx2 --target combined --tenant-id customer_a
     """
     try:
-        from aries_serpent_core.rag import merge_indices
+        from aries_serpent_core.rag import IndexOperation, manage_tenant_indices
 
         normalized_sources: list[str] = []
         for source in source_indices:
@@ -686,10 +687,11 @@ def merge(
         ) as progress:
             task = progress.add_task("Merging indices...", total=None)
 
-            result = merge_indices(
-                source_indices=source_indices,
-                destination_index=target_index,
+            result = manage_tenant_indices(
                 tenant_id=tenant_id,
+                operation=IndexOperation.MERGE,
+                index_names=source_indices,
+                merge_name=target_index,
             )
 
             progress.update(task, completed=True)

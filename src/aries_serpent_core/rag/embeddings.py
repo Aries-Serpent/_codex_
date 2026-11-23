@@ -3,6 +3,7 @@ RAG Embeddings Module
 Provides embedding provider abstraction with caching layer for expanded context workflows.
 """
 
+import hashlib
 import json
 import logging
 import os
@@ -645,10 +646,11 @@ class TfidfEmbeddingProvider:
         try:
             from sklearn.feature_extraction.text import TfidfVectorizer
         except ImportError:
-            logger.error(
-                "scikit-learn not installed. Install with: pip install scikit-learn"
-            )  # codeql[py/clear-text-logging-sensitive-data]
-            raise
+            logger.warning("scikit-learn not installed; using deterministic hash embeddings")
+            self.max_features = max_features
+            self.vectorizer = None
+            self.is_fitted = True
+            return
 
         self.max_features = max_features
         self.vectorizer = TfidfVectorizer(
@@ -680,6 +682,20 @@ class TfidfEmbeddingProvider:
         """
         if not texts:
             return np.array([])
+
+        if getattr(self, "vectorizer", None) is None:
+            rows = []
+            for text in texts:
+                row = np.zeros(self.max_features, dtype=np.float32)
+                for token in str(text).lower().split():
+                    digest = hashlib.blake2b(token.encode("utf-8"), digest_size=8).digest()
+                    index = int.from_bytes(digest, "big") % self.max_features
+                    row[index] += 1.0
+                norm = float(np.linalg.norm(row))
+                if norm:
+                    row /= norm
+                rows.append(row)
+            return np.asarray(rows, dtype=np.float32)
 
         # Fit on first call
         if not self.is_fitted:

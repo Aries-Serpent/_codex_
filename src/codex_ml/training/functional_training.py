@@ -50,8 +50,9 @@ logger = logging.getLogger(__name__)
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 if _HAS_TRANSFORMERS:
-    AutoModelForCausalLM = transformers.AutoModelForCausalLM
-    AutoTokenizer = transformers.AutoTokenizer
+    AutoModelForCausalLM = getattr(transformers, "AutoModelForCausalLM", None)
+    AutoTokenizer = getattr(transformers, "AutoTokenizer", None)
+    _HAS_TRANSFORMERS = AutoModelForCausalLM is not None and AutoTokenizer is not None
 else:  # pragma: no cover - optional dependency
     AutoModelForCausalLM = None
     AutoTokenizer = None

@@ -503,7 +503,8 @@ def build_index_from_files(
             raise ValueError("No valid input files found")
         if processing_errors:
             raise ValueError(
-                f"No chunks generated - {len(processing_errors)} file(s) failed to process: "
+                "Input files contain no text content; no chunks generated - "
+                f"{len(processing_errors)} file(s) failed to process: "
                 f"{', '.join(processing_errors[:3])}{'...' if len(processing_errors) > 3 else ''}"
             )
         if all(fm["chunks"] == 0 for fm in file_metadata if fm):
@@ -1056,7 +1057,7 @@ class RAGIndexer:
                 "sentence-transformers/all-MiniLM-L6-v2",
             )
             self.model = safe_model_to_device(self.model, self.device)
-        except (ValueError, TypeError, RuntimeError):
+        except (ImportError, ValueError, TypeError, RuntimeError):
             # Model unavailable (offline, missing dep, etc.) — leave as None.
             logger.debug(
                 "Suppressed exception in handler", exc_info=True

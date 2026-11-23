@@ -18,7 +18,8 @@ def export_zendesk_metrics(collector: MetricCollector) -> list[dict[str, Any]]:
     Returns:
         List of metric snapshots.
     """
-    register_zendesk_metrics()
+    if not any(metric.name == "zendesk_api_calls_total" for metric in metrics.registered()):
+        register_zendesk_metrics()
     snapshots: list[dict[str, Any]] = []
 
     for metric in metrics.registered():

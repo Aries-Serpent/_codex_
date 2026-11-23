@@ -32,12 +32,31 @@ SentencePieceUnigramTokenizer = getattr(
 )
 
 
+def _resolve_streaming_options(cfg: TrainTokenizerConfig) -> tuple[bool, int | None]:
+    """Resolve canonical streaming behavior for legacy compatibility callers."""
+    streaming = bool(getattr(cfg, "streaming", True))
+    chunk_size = getattr(cfg, "stream_chunk_size", None)
+    if chunk_size is not None and chunk_size <= 0:
+        raise ValueError("stream_chunk_size must be positive")
+    if not streaming:
+        return False, None
+    return True, chunk_size or 1024 * 1024
+
+
 def _iter_text(files: Sequence[str], cfg: TrainTokenizerConfig) -> Iterable[str]:
     """Compatibility iterator used by legacy streaming tests and callers."""
-    chunk_size = getattr(cfg, "stream_chunk_size", None) or 1024 * 1024
+    streaming, chunk_size = _resolve_streaming_options(cfg)
     for path in files:
         if ingest is not None:
-            yield from ingest(path, encoding="auto", chunk_size=chunk_size)
+            result = ingest(
+                path,
+                encoding="auto",
+                chunk_size=chunk_size if streaming else None,
+            )
+            if isinstance(result, str):
+                yield result
+            else:
+                yield from result
         else:
             for line in Path(path).read_text(encoding="utf-8").splitlines(True):
                 yield line
@@ -67,6 +86,7 @@ __all__ = [
     "SentencePieceUnigramTokenizer",
     "TrainTokenizerConfig",
     "_iter_text",
+    "_resolve_streaming_options",
     "_SPM_ERROR",
     "ingest",
     "main",
