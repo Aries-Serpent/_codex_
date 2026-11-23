@@ -38,8 +38,12 @@ from .server import start_metrics_server  # noqa: E402
 
 __all__ = [
     "EXAMPLES_PROCESSED",
+    "HealthReport",
+    "HealthStatus",
+    "MetricsRegistry",
     "REQUEST_LATENCY",
     "TRAIN_STEP_DURATION",
+    "render_prometheus",
     "start_metrics_server",
     "track_time",
 ]

@@ -137,7 +137,7 @@ class TestResourcePressure:
 
     def test_memory_pressure_graceful_degradation(self, chaos_client):
         """Test graceful degradation under memory pressure."""
-        with patch("src.codex_ml.serving.model_loader.ModelLoader.get_cache_stats") as mock_stats:
+        with patch("codex_ml.serving.model_loader.ModelLoader.get_cache_stats") as mock_stats:
             # Simulate high memory usage
             mock_stats.return_value = {"size": 3, "maxsize": 3, "hits": 100, "misses": 10}
 

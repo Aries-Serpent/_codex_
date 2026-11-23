@@ -190,7 +190,7 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
         )
     aggregate = jobs["ml-slow-aggregate"]
     assert aggregate["name"] == "ml-slow-aggregate"
-    assert aggregate["runs-on"] == "ubuntu-latest-m"
+    assert aggregate["runs-on"] == "ubuntu-latest"
     assert aggregate["if"] == "always()"
     assert set(aggregate["needs"]) == {"test-ml-components", "integration-shard", "coverage-shard"}
     assert aggregate["permissions"] == {"contents": "read"}
