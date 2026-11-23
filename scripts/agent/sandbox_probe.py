@@ -30,7 +30,9 @@ def read_workspace_sandbox_setting(repo_root: Path) -> str:
         if value in {"off", "on", "allowNetwork"}:
             return value
     except (OSError, json.JSONDecodeError):
-        pass
+        # Malformed or inaccessible workspace settings are a capability unknown,
+        # not an instruction to enable or disable sandboxing.
+        return "unknown"
     return "unknown"
 
 
@@ -72,7 +74,9 @@ def _read_proc_status() -> dict[str, Any]:
             if key in {"CapEff", "NoNewPrivs", "Seccomp", "Seccomp_filters"}:
                 status[key] = value.strip()
     except OSError:
-        pass
+        # Container filesystems can suppress proc status; report it explicitly
+        # while keeping the rest of the read-only probe usable.
+        status["proc_status_error"] = "unavailable"
 
     apparmor_path = Path("/proc/self/attr/current")
     try:
