@@ -15,6 +15,9 @@
     "PATH": "${env:HOME}/.local/bin:${env:PATH}",
     "PYTHONPATH": "${workspaceFolder}/src"
   },
+  // Sandboxing requires user-namespace support. The current host bwrap smoke test failed;
+  // keep off until the host capability gate passes. Use allowNetwork only for an approved task.
+  "github.copilot.chat.cli.sandbox.enabled": "off",
   "python.testing.cwd": "${workspaceFolder}",
   "python.testing.pytestEnabled": true,
   "python.testing.unittestEnabled": false,

@@ -81,6 +81,54 @@ credentials, blanket auto-approvals, automatic startup tasks or profile copies.
 Other machine-local `.vscode/` data stays ignored. Configuration and extension
 recommendations are reusable repository data, not a claim of hosted selection.
 
+## Copilot CLI sandbox activation
+
+The workspace sets `github.copilot.chat.cli.sandbox.enabled` to `off` until host
+namespace support is verified. The installed Copilot schema accepts `off`, `on`,
+and `allowNetwork`:
+
+- `off`: sandbox disabled; use only for a host that fails the capability gate.
+- `on`: workspace/process isolation with network behavior unchanged by the
+  sandbox setting only when the host namespace test passes.
+- `allowNetwork`: explicit network-enabled sandbox mode for approved Git, package,
+  API, or hosted-check tasks.
+
+Run `Codex: sandbox capability probe` or:
+
+```bash
+.venv/bin/python scripts/agent/sandbox_probe.py
+```
+
+The probe is read-only. It reports the configured setting and whether bubblewrap
+can create a namespace. Namespace denial is a host prerequisite blocker, not a
+repository setting failure. Do not change kernel parameters or container privileges
+without the host administrator's approval.
+
+Sandbox mode does not grant GitHub credentials or protected-environment approval.
+Pushes, workflow dispatch, issue/PR mutation, signing, merge, deployment, and secret
+access remain separate explicitly approved operations.
+
+### Namespace blocker resolution
+
+If the probe reports `namespace-denied`, use this administrator ladder:
+
+1. **Host namespace policy**: enable unprivileged user namespaces or permit bubblewrap
+   on the target host/container profile. Verify both `bwrap --ro-bind / / sh -c 'echo sandbox-smoke-ok'`
+   and `unshare -Ur sh -c 'echo userns-smoke-ok'` pass from the actual VS Code host.
+2. **Managed runtime alternative**: move the agent session to a VM, SSH host, or
+   devcontainer profile that supports namespaces. Do not copy credentials or weaken
+   the source runtime to enable it.
+3. **Container runtime policy**: request a runtime profile that permits the required
+   namespace operations. Do not add `SYS_ADMIN` or weaken AppArmor/seccomp from this
+   repository merely to force the smoke test green.
+4. **Bundle fallback**: keep the Copilot setting at `off`, continue explicitly approved
+   read-only or workspace work, and run `Codex: create sandbox patch bundle` to produce
+   a checksum-protected transfer under `.codex/sandbox-bundles/sandbox-transfer/`.
+
+The bundle fallback protects patch integrity but does not provide process, network,
+or credential isolation. Activate `on` or `allowNetwork` only after live namespace
+smoke tests pass on the same host where Copilot sessions execute.
+
 If a native task/terminal tool is unavailable to the current Copilot host, use
 the same task command/arguments in the existing integrated terminal or authorized
 CLI environment and report that limitation. The remote CLI needs its genuine

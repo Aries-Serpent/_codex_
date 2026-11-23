@@ -247,6 +247,9 @@
           "PATH": "${env:HOME}/.local/bin:${env:PATH}",
           "PYTHONPATH": "${workspaceFolder}/src"
         },
+        // Copilot CLI sandbox fallback. Activation is gated by a successful
+        // host namespace smoke test; never treat this setting as credential approval.
+        "github.copilot.chat.cli.sandbox.enabled": "off",
         // GitHub Copilot agent settings
         "github.copilot.enable": {
           "*": true,

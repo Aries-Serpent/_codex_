@@ -309,6 +309,31 @@
       "problemMatcher": []
     },
     {
+      "label": "Codex: sandbox capability probe",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "${workspaceFolder}/scripts/agent/sandbox_probe.py"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: create sandbox patch bundle",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "${workspaceFolder}/scripts/archive/git_patch_bundle.py",
+        "bundle",
+        "--repo-root",
+        "${workspaceFolder}",
+        "--output-dir",
+        "${workspaceFolder}/.codex/sandbox-bundles/sandbox-transfer",
+        "--bundle-name",
+        "sandbox-git-transfer"
+      ],
+      "problemMatcher": []
+    },
+    {
       "label": "Codex: local Codespace startup",
       "type": "process",
       "command": "bash",

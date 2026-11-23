@@ -9,6 +9,7 @@ Run selected jobs from PR checkboxes by exporting env flags and calling:
 ## Produces
 
 - `audit_artifacts/agent_env.json` - Agent environment snapshot
+- JSON from `python scripts/agent/sandbox_probe.py` - Copilot sandbox setting and host namespace capability
 - `artifacts/docs/**` - Generated documentation
 - `audit_artifacts/**` and `reports/**` - Audit artifacts and reports
 
