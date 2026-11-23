@@ -225,11 +225,9 @@ class HFTokenizerAdapter(TokenizerAdapter):
                 use_fast=use_fast,
                 revision=get_hf_revision(),
             )
-        except (ImportError, AttributeError, RuntimeError, ValueError, TypeError) as exc:
+        except (ImportError, AttributeError, RuntimeError, ValueError, TypeError):
             logger.warning(
-                "Falling back to whitespace tokenizer for '%s' after load failure (%s)",
-                target,
-                type(exc).__name__,
+                "Whitespace tokenizer fallback activated after Hugging Face load failure"
             )
             return cls(
                 _WhitespaceFallbackTokenizer(name_or_path=target or "whitespace", is_fast=use_fast)

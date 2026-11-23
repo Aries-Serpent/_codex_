@@ -73,11 +73,11 @@ try:
         pre_tokenizers,
         trainers,
     )
-except (ImportError, AttributeError) as exc:
+except (ImportError, AttributeError):
     SentencePieceUnigramTokenizer = None  # type: ignore[assignment]
     Tokenizer = None  # type: ignore[assignment]
     decoders = models = normalizers = pre_tokenizers = trainers = None
-    logger.warning("Optional tokenizers dependency unavailable: %s", type(exc).__name__)
+    logger.warning("Optional tokenizers dependency unavailable")
 
 DEFAULT_STREAM_CHUNK_SIZE = 1024 * 1024  # 1 MiB chunks when streaming
 
