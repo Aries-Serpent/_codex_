@@ -90,6 +90,7 @@ logger = logging.getLogger(__name__)
 # Shared utility: triple-quoted string tracker
 # ---------------------------------------------------------------------------
 
+
 def _advance_triple_quote_state(line: str, in_str: bool, delim: str) -> tuple[bool, str]:
     """Update multiline-string tracking state for one source line.
 
@@ -118,12 +119,14 @@ def _advance_triple_quote_state(line: str, in_str: bool, delim: str) -> tuple[bo
 # IMPORTANT: ``copilot-swe-agent[bot]`` is **not** an infra bot — it IS the
 # agent whose commits we are searching for. Only true CI infrastructure bots
 # (which run auto-merge, manifest refresh, etc.) belong here.
-_INFRA_BOT_AUTHORS = frozenset({
-    "github-actions[bot]",
-    "github-actions",
-    "dependabot[bot]",
-    "dependabot-preview[bot]",
-})
+_INFRA_BOT_AUTHORS = frozenset(
+    {
+        "github-actions[bot]",
+        "github-actions",
+        "dependabot[bot]",
+        "dependabot-preview[bot]",
+    }
+)
 
 # Subject prefixes/markers that identify infrastructure commits to skip.
 # dependabot[bot] is already in _INFRA_BOT_AUTHORS, but its rebase commits
@@ -136,9 +139,9 @@ _INFRA_COMMIT_MARKERS = (
     "chore(manifest):",
     "chore: Generate follow-up",
     "chore: generate follow-up",
-    "chore(deps): bump",        # dependabot dependency-update commits
-    "chore(deps-dev): bump",    # dependabot dev-dependency-update commits
-    "Rebase on ",               # dependabot auto-rebase commit subjects
+    "chore(deps): bump",  # dependabot dependency-update commits
+    "chore(deps-dev): bump",  # dependabot dev-dependency-update commits
+    "Rebase on ",  # dependabot auto-rebase commit subjects
 )
 
 
@@ -157,12 +160,14 @@ def _resolve_acct_diff_base(repo_root: "Path", max_lookback: int = 10) -> Option
     found within ``max_lookback``.  Callers should fall back to ``HEAD~1``.
     """
     import subprocess as _sp
+
     try:
         result = _sp.run(
-            ["git", "log",
-             f"-{max_lookback + 1}",
-             "--format=%H%x09%an%x09%s"],
-            capture_output=True, text=True, cwd=repo_root, timeout=10,
+            ["git", "log", f"-{max_lookback + 1}", "--format=%H%x09%an%x09%s"],
+            capture_output=True,
+            text=True,
+            cwd=repo_root,
+            timeout=10,
         )
     except (OSError, _sp.TimeoutExpired):
         return None
@@ -197,7 +202,10 @@ def _resolve_acct_diff_base(repo_root: "Path", max_lookback: int = 10) -> Option
     try:
         parent = _sp.run(
             ["git", "rev-parse", f"{agent_sha}^"],
-            capture_output=True, text=True, cwd=repo_root, timeout=5,
+            capture_output=True,
+            text=True,
+            cwd=repo_root,
+            timeout=5,
         )
     except (OSError, _sp.TimeoutExpired):
         return None
@@ -209,6 +217,7 @@ def _resolve_acct_diff_base(repo_root: "Path", max_lookback: int = 10) -> Option
 # ---------------------------------------------------------------------------
 # Cascade detection circuit breaker (S85 Pattern Prevention)
 # ---------------------------------------------------------------------------
+
 
 class CascadeDetector:
     """Detects and prevents auto-fix cascades using circuit breaker pattern.
@@ -275,8 +284,7 @@ class CascadeDetector:
             }
             # Convert int keys to strings for JSON serialization
             circuit_state_serialized = {
-                str(pattern_id): state
-                for pattern_id, state in self.circuit_state.items()
+                str(pattern_id): state for pattern_id, state in self.circuit_state.items()
             }
             data = {
                 "pattern_attempts": pattern_attempts_serialized,
@@ -313,7 +321,9 @@ class CascadeDetector:
         """Record a cascade detection and check if circuit should break."""
         if attempt > self.MAX_RETRIES:
             self.circuit_state[pattern_id] = "BROKEN"
-            logger.warning(f"⛔ Cascade circuit breaker BROKEN for Pattern {pattern_id} (attempt {attempt})")
+            logger.warning(
+                f"⛔ Cascade circuit breaker BROKEN for Pattern {pattern_id} (attempt {attempt})"
+            )
         else:
             self.circuit_state[pattern_id] = "OPEN"
             logger.warning(
@@ -333,7 +343,6 @@ class CascadeDetector:
         )
 
 
-
 def _lines_inside_string_literals(content: str) -> set[int]:
     """Return 0-based lines contained in multi-line string and f-string tokens."""
     import io
@@ -350,6 +359,7 @@ def _lines_inside_string_literals(content: str) -> set[int]:
         elif token.type == tokenize.ERRORTOKEN and token.string in ("'", '"'):
             raise tokenize.TokenError("unterminated string", token.start)
     return inside
+
 
 class CommonIssueFixer:
     """Automatically fix common CI issues."""
@@ -387,24 +397,24 @@ class CommonIssueFixer:
 
         # Define which patterns are auto-fixable vs manual-review
         self.auto_fixable_patterns = {
-            "Unused Imports",           # Pattern 1  - ruff --fix F401
-            "Coverage Thresholds",      # Pattern 4  - automated replacement
-            "Test Assertions",          # Pattern 6  - auto-fix: narrow except Exception → specific types
-            "Redundant Imports",        # Pattern 7  - auto-fix: remove duplicate inline imports
-            "Unsorted Imports",         # Pattern 9  - ruff --fix I001
-            "F-String Placeholders",    # Pattern 11 - ruff --fix F541
-            "Line Length",              # Pattern 12 - ruff format (E501)
-            "W-Series Warnings",        # Pattern 13 - ruff --fix W-series
-            "Link Checker Config",      # Pattern 14 - auto-update .markdown-link-check.json
-            "Stub Duplicate Defs",      # Pattern 16 - detect F811 duplicate method defs in stubs
-            "Duplicate Kwargs",         # Pattern 18 - auto-fixable: duplicate keyword arguments
-            "Secrets Baseline Plugins", # Pattern 23 - auto-fix: strip incompatible plugins from .secrets.baseline
-            "CodeQL Alerts",            # Pattern 8  - F401 unused imports auto-fixed; F841 informational
-            "Auto-Post Rebase Race",    # Pattern 26 - auto-fix: add --autostash to git pull --rebase
-            "Secrets FP Scan",          # Pattern 27 - auto-fix: merge false-positive detections into .secrets.baseline
+            "Unused Imports",  # Pattern 1  - ruff --fix F401
+            "Coverage Thresholds",  # Pattern 4  - automated replacement
+            "Test Assertions",  # Pattern 6  - auto-fix: narrow except Exception → specific types
+            "Redundant Imports",  # Pattern 7  - auto-fix: remove duplicate inline imports
+            "Unsorted Imports",  # Pattern 9  - ruff --fix I001
+            "F-String Placeholders",  # Pattern 11 - ruff --fix F541
+            "Line Length",  # Pattern 12 - ruff format (E501)
+            "W-Series Warnings",  # Pattern 13 - ruff --fix W-series
+            "Link Checker Config",  # Pattern 14 - auto-update .markdown-link-check.json
+            "Stub Duplicate Defs",  # Pattern 16 - detect F811 duplicate method defs in stubs
+            "Duplicate Kwargs",  # Pattern 18 - auto-fixable: duplicate keyword arguments
+            "Secrets Baseline Plugins",  # Pattern 23 - auto-fix: strip incompatible plugins from .secrets.baseline
+            "CodeQL Alerts",  # Pattern 8  - F401 unused imports auto-fixed; F841 informational
+            "Auto-Post Rebase Race",  # Pattern 26 - auto-fix: add --autostash to git pull --rebase
+            "Secrets FP Scan",  # Pattern 27 - auto-fix: merge false-positive detections into .secrets.baseline
             "Last-Commit Accountability",  # Pattern 25 - auto-fix: append minimal session entry
-            "PR Comment Triage",        # Pattern 29 - auto-fix: run remediation for known bot patterns
-            "Merge Readiness Dims",     # Pattern 30 - auto-fix: repair failing scorecard dimensions
+            "PR Comment Triage",  # Pattern 29 - auto-fix: run remediation for known bot patterns
+            "Merge Readiness Dims",  # Pattern 30 - auto-fix: repair failing scorecard dimensions
         }
         # Soft-warning patterns: auto-fixable (the --fix command works) but do NOT block
         # CI with an exit-code 1.  These are reported as informational "warning" in the
@@ -416,22 +426,22 @@ class CommonIssueFixer:
         # bot commit — an unbounded loop.  Copilot's --pre-push routine still fixes
         # these before every human/Copilot push.
         self.soft_warning_patterns = {
-            "Tracked File Sync",        # Pattern 22 - CODEX_MANIFEST hash drift from bot auto-commits
-            "mypy Baseline Freshness", # Pattern 15 - informational only; requires isolated-venv update
+            "Tracked File Sync",  # Pattern 22 - CODEX_MANIFEST hash drift from bot auto-commits
+            "mypy Baseline Freshness",  # Pattern 15 - informational only; requires isolated-venv update
             # Patterns 31-32 are useful hygiene auto-fixes, but in check-only mode they can
             # generate large codebase-wide churn unrelated to the current PR. Keep them
             # non-blocking so Fast Validation only fails on issues that require immediate PR action.
-            "Stale Type Ignore",        # Pattern 31 - optional hygiene cleanup
+            "Stale Type Ignore",  # Pattern 31 - optional hygiene cleanup
             "Bare Type Ignore Assign",  # Pattern 32 - optional hygiene cleanup
             # Pattern 33: Rate-limit checkpoint detection is informational only — it surfaces
             # an unresolved .codex/rate_limit_checkpoint.json from a prior interrupted session
             # so the agent loads it at session start. Never blocks CI.
-            "Rate Limit Checkpoint",    # Pattern 33 - rate-limit recovery awareness
+            "Rate Limit Checkpoint",  # Pattern 33 - rate-limit recovery awareness
         }
         self.manual_review_patterns = {
-            "Unused Variables",         # Pattern 2  - context-dependent
-            "YAML Indentation",         # Pattern 3  - manual review
-            "Tokenizer Fallbacks",      # Pattern 5  - code-flow dependent
+            "Unused Variables",  # Pattern 2  - context-dependent
+            "YAML Indentation",  # Pattern 3  - manual review
+            "Tokenizer Fallbacks",  # Pattern 5  - code-flow dependent
             # Pattern 6 (Test Assertions) promoted to auto_fixable_patterns — narrowing fix applied.
             # Pattern 7 (Redundant Imports) promoted to auto_fixable_patterns — inline re-import removal.
             # Pattern 8 - F401 is now auto-fixed; F841 (unused variables) remains informational.
@@ -443,7 +453,7 @@ class CommonIssueFixer:
             # baseline manually via: python scripts/ci/mypy_baseline.py --update
             # (inside the same isolated-venv as mypy-baseline.yml uses).
             "mypy Baseline Freshness",
-            "CI SHA Drift",             # Pattern 17 - informational: CI ran on wrong commit SHA
+            "CI SHA Drift",  # Pattern 17 - informational: CI ran on wrong commit SHA
             # Pattern 17 fires as a soft false-positive in the Copilot cloud agent sandbox
             # (GITHUB_SHA always differs from HEAD in that environment). Pattern 28 documents this.
             # Pattern 19: `from src.` absolute imports are valid in the editable-install / dev
@@ -451,11 +461,11 @@ class CommonIssueFixer:
             # but break in installed (non-editable) mode and with pytest-xdist workers that
             # don't inherit runtime sys.path changes.  Requires manual refactoring to
             # `from codex.xxx` / `from mcp.xxx` etc. (remove `src.` prefix).
-            "Src Absolute Imports",     # Pattern 19 - manual: change `from src.X` → `from X`
+            "Src Absolute Imports",  # Pattern 19 - manual: change `from src.X` → `from X`
             # Pattern 20: Multi-line bash string assignments in YAML run: blocks cause
             # actionlint to fail with "could not parse as YAML: could not find expected ':'"
             # (known recurring pattern from S193).  Fix: use printf → temp file pattern.
-            "YAML Multiline Strings",   # Pattern 20 - manual: use printf pipeline
+            "YAML Multiline Strings",  # Pattern 20 - manual: use printf pipeline
             # Pattern 22: Tracked file sync — CODEX_MANIFEST.json integrity_sha256,
             # .secrets.baseline, CHANGELOG.md, and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
             # consistency checks. Run sync_tracked_files.py --fix to repair.
@@ -464,10 +474,10 @@ class CommonIssueFixer:
             # Causes the pre-commit hook to abort with TypeError on every run regardless of
             # actual secrets in the diff.  Auto-fix: remove unknown plugins from .secrets.baseline.
             # Pattern 25: promoted to auto_fixable_patterns (appends minimal accountability entry).
-            "Codecov Token Missing",            # Pattern 24 - manual: add token: or continue-on-error
+            "Codecov Token Missing",  # Pattern 24 - manual: add token: or continue-on-error
             # Pattern 28: Copilot Sandbox Environment Guard — soft-warning (documents false positives,
             # no code change needed; the fix is awareness of sandbox behaviour).
-            "Copilot Sandbox Guard",            # Pattern 28 - informational: sandbox SHA drift
+            "Copilot Sandbox Guard",  # Pattern 28 - informational: sandbox SHA drift
         }
 
     def run_all_patterns(self, pattern_num: int = 0, pattern_name: str = "") -> bool:
@@ -488,51 +498,57 @@ class CommonIssueFixer:
         Returns True if any issues were found.
         """
         all_patterns = [
-            (1,  "Unused Imports",         self.fix_unused_imports),
-            (2,  "Unused Variables",        self.fix_unused_variables),
-            (3,  "YAML Indentation",        self.fix_yaml_indentation),
-            (4,  "Coverage Thresholds",     self.fix_coverage_thresholds),
-            (5,  "Tokenizer Fallbacks",     self.fix_tokenizer_fallbacks),
-            (6,  "Test Assertions",         self.fix_test_assertions),
-            (7,  "Redundant Imports",       self.fix_redundant_imports),
-            (8,  "CodeQL Alerts",           self.fix_codeql_alerts),
-            (9,  "Unsorted Imports",        self.fix_unsorted_imports),
-            (10, "Bandit Security",         self.fix_bandit_security),
-            (11, "F-String Placeholders",   self.fix_fstring_placeholders),
-            (12, "Line Length",             self.fix_line_length),
-            (13, "W-Series Warnings",       self.fix_w_series_warnings),
-            (14, "Link Checker Config",     self.fix_link_checker_config),
+            (1, "Unused Imports", self.fix_unused_imports),
+            (2, "Unused Variables", self.fix_unused_variables),
+            (3, "YAML Indentation", self.fix_yaml_indentation),
+            (4, "Coverage Thresholds", self.fix_coverage_thresholds),
+            (5, "Tokenizer Fallbacks", self.fix_tokenizer_fallbacks),
+            (6, "Test Assertions", self.fix_test_assertions),
+            (7, "Redundant Imports", self.fix_redundant_imports),
+            (8, "CodeQL Alerts", self.fix_codeql_alerts),
+            (9, "Unsorted Imports", self.fix_unsorted_imports),
+            (10, "Bandit Security", self.fix_bandit_security),
+            (11, "F-String Placeholders", self.fix_fstring_placeholders),
+            (12, "Line Length", self.fix_line_length),
+            (13, "W-Series Warnings", self.fix_w_series_warnings),
+            (14, "Link Checker Config", self.fix_link_checker_config),
             (15, "mypy Baseline Freshness", self.fix_mypy_baseline_freshness),
-            (16, "Stub Duplicate Defs",     self.fix_stub_duplicate_defs),
-            (17, "CI SHA Drift",            self.check_ci_sha_drift),
-            (18, "Duplicate Kwargs",         self.fix_duplicate_kwargs),
-            (19, "Src Absolute Imports",     self.check_src_absolute_imports),
-            (20, "YAML Multiline Strings",   self.check_yaml_multiline_strings),
-            (21, "Node.js 20 Actions",       self.check_nodejs20_actions),
-            (22, "Tracked File Sync",        self.check_tracked_file_sync),
+            (16, "Stub Duplicate Defs", self.fix_stub_duplicate_defs),
+            (17, "CI SHA Drift", self.check_ci_sha_drift),
+            (18, "Duplicate Kwargs", self.fix_duplicate_kwargs),
+            (19, "Src Absolute Imports", self.check_src_absolute_imports),
+            (20, "YAML Multiline Strings", self.check_yaml_multiline_strings),
+            (21, "Node.js 20 Actions", self.check_nodejs20_actions),
+            (22, "Tracked File Sync", self.check_tracked_file_sync),
             (23, "Secrets Baseline Plugins", self.check_secrets_baseline_plugins),
-            (24, "Codecov Token Missing",    self.check_codecov_token_missing),
+            (24, "Codecov Token Missing", self.check_codecov_token_missing),
             (25, "Last-Commit Accountability", self.fix_last_commit_accountability),
-            (26, "Auto-Post Rebase Race",    self.check_autopost_rebase_race),
-            (27, "Secrets FP Scan",          self.fix_secrets_baseline_false_positives),  # codeql[py/clear-text-logging-sensitive-data]
-            (28, "Copilot Sandbox Guard",    self.check_copilot_sandbox_env),
-            (29, "PR Comment Triage",        self.fix_pr_comment_triage),
-            (30, "Merge Readiness Dims",     self.fix_merge_readiness_dims),
-            (31, "Stale Type Ignore",        self.fix_stale_type_ignore),
-            (32, "Bare Type Ignore Assign",  self.fix_bare_type_ignore_assign),
-            (33, "Rate Limit Checkpoint",    self.check_rate_limit_checkpoint),  # codeql[py/clear-text-logging-sensitive-data]
-            (34, "Missing Newline at EOF",   self.fix_missing_newline_at_eof),
-            (35, "Markdown FP Secrets",      self.fix_markdown_false_positive_secrets),
-            (36, "Assert Messages",          self.fix_assert_messages),
-            (37, "Async Timeouts",           self.fix_async_tests_without_timeout),
-            (38, "Mock Cleanup",             self.fix_mock_cleanup),
+            (26, "Auto-Post Rebase Race", self.check_autopost_rebase_race),
+            (
+                27,
+                "Secrets FP Scan",
+                self.fix_secrets_baseline_false_positives,
+            ),  # codeql[py/clear-text-logging-sensitive-data]
+            (28, "Copilot Sandbox Guard", self.check_copilot_sandbox_env),
+            (29, "PR Comment Triage", self.fix_pr_comment_triage),
+            (30, "Merge Readiness Dims", self.fix_merge_readiness_dims),
+            (31, "Stale Type Ignore", self.fix_stale_type_ignore),
+            (32, "Bare Type Ignore Assign", self.fix_bare_type_ignore_assign),
+            (
+                33,
+                "Rate Limit Checkpoint",
+                self.check_rate_limit_checkpoint,
+            ),  # codeql[py/clear-text-logging-sensitive-data]
+            (34, "Missing Newline at EOF", self.fix_missing_newline_at_eof),
+            (35, "Markdown FP Secrets", self.fix_markdown_false_positive_secrets),
+            (36, "Assert Messages", self.fix_assert_messages),
+            (37, "Async Timeouts", self.fix_async_tests_without_timeout),
+            (38, "Mock Cleanup", self.fix_mock_cleanup),
         ]
         patterns = all_patterns
         skip_env = os.getenv("CODEX_SKIP_PATTERN_NUMS", "")
         skip_patterns = {
-            int(part.strip())
-            for part in skip_env.split(",")
-            if part.strip().isdigit()
+            int(part.strip()) for part in skip_env.split(",") if part.strip().isdigit()
         }
         if skip_patterns and not pattern_num:
             patterns = [(n, nm, f) for n, nm, f in patterns if n not in skip_patterns]
@@ -550,75 +566,86 @@ class CommonIssueFixer:
             # (e.g. "ruff-unused" → "Unused Imports", "import-*" → "Unused Imports")
             _aliases: dict[str, list[str]] = {
                 # ── Lint / formatting classifiers ─────────────────────────────
-                "ruff":        ["Unused Imports", "Redundant Imports", "Unsorted Imports", "CodeQL Alerts"],
-                "import":      ["Unused Imports", "Redundant Imports", "Unsorted Imports"],
-                "unused":      ["Unused Imports", "Unused Variables"],
-                "yaml":        ["YAML Indentation"],
-                "lint":        ["Unused Imports", "Redundant Imports", "Unsorted Imports",
-                                "YAML Indentation", "Line Length", "W-Series Warnings",
-                                "F-String Placeholders"],
+                "ruff": [
+                    "Unused Imports",
+                    "Redundant Imports",
+                    "Unsorted Imports",
+                    "CodeQL Alerts",
+                ],
+                "import": ["Unused Imports", "Redundant Imports", "Unsorted Imports"],
+                "unused": ["Unused Imports", "Unused Variables"],
+                "yaml": ["YAML Indentation"],
+                "lint": [
+                    "Unused Imports",
+                    "Redundant Imports",
+                    "Unsorted Imports",
+                    "YAML Indentation",
+                    "Line Length",
+                    "W-Series Warnings",
+                    "F-String Placeholders",
+                ],
                 # ── Coverage classifiers ──────────────────────────────────────
-                "coverage":          ["Coverage Thresholds"],
-                "coverage-timeout":  ["Coverage Thresholds"],
+                "coverage": ["Coverage Thresholds"],
+                "coverage-timeout": ["Coverage Thresholds"],
                 # ── Type-checking / mypy classifiers ──────────────────────────
-                "mypy":        ["mypy Baseline Freshness"],
-                "type-check":  ["mypy Baseline Freshness"],
+                "mypy": ["mypy Baseline Freshness"],
+                "type-check": ["mypy Baseline Freshness"],
                 # ── Security classifiers ──────────────────────────────────────
-                "bandit":      ["Bandit Security"],
+                "bandit": ["Bandit Security"],
                 "security-scan": ["Bandit Security", "CodeQL Alerts"],
-                "codeql":        ["CodeQL Alerts"],
+                "codeql": ["CodeQL Alerts"],
                 # ── Stub / type-annotation classifiers ────────────────────────
-                "stub":        ["Stub Duplicate Defs"],
+                "stub": ["Stub Duplicate Defs"],
                 # ── CI infrastructure / SHA drift ─────────────────────────────
-                "sha-drift":   ["CI SHA Drift"],
-                "ci-sha":      ["CI SHA Drift"],
+                "sha-drift": ["CI SHA Drift"],
+                "ci-sha": ["CI SHA Drift"],
                 # ── Copilot cloud agent hardening classifiers ─────────────────
-                "copilot-sandbox":    ["Copilot Sandbox Guard"],
-                "sandbox-guard":      ["Copilot Sandbox Guard"],
-                "comment-triage":     ["PR Comment Triage"],
-                "pr-comment":         ["PR Comment Triage"],
-                "review-gate":        ["PR Comment Triage"],
-                "secrets-enforcer":   ["PR Comment Triage", "Secrets FP Scan"],
-                "merge-readiness":    ["Merge Readiness Dims"],
-                "scorecard":          ["Merge Readiness Dims"],
-                "accountability":     ["Last-Commit Accountability"],
+                "copilot-sandbox": ["Copilot Sandbox Guard"],
+                "sandbox-guard": ["Copilot Sandbox Guard"],
+                "comment-triage": ["PR Comment Triage"],
+                "pr-comment": ["PR Comment Triage"],
+                "review-gate": ["PR Comment Triage"],
+                "secrets-enforcer": ["PR Comment Triage", "Secrets FP Scan"],
+                "merge-readiness": ["Merge Readiness Dims"],
+                "scorecard": ["Merge Readiness Dims"],
+                "accountability": ["Last-Commit Accountability"],
                 # ── Classifiers handled by branch_rebase_check.py (not here) ─
-                "rebase-gate":    [],  # handled by branch_rebase_check.py
+                "rebase-gate": [],  # handled by branch_rebase_check.py
                 "branch-diverged": [],
                 "auth-delegation": [],
                 # ── Classifiers handled externally ────────────────────────────
-                "changelog":          [],
-                "pip-cache":          [],
-                "policy-gate":        [],
-                "session-injector":   [],  # codeql[py/pythagorean]
-                "copilot-agent":      [],
-                "self-healing":       [],
-                "workflow-cascade":   [],
-                "pre-merge-cascade":  [],
+                "changelog": [],
+                "pip-cache": [],
+                "policy-gate": [],
+                "session-injector": [],  # codeql[py/pythagorean]
+                "copilot-agent": [],
+                "self-healing": [],
+                "workflow-cascade": [],
+                "pre-merge-cascade": [],
                 # ── Other telemetry classifiers (informational / no auto-fix) ─
-                "datetime-error":               [],
-                "build-config":                 [],
-                "packaging":                    [],
-                "docker-build":                 [],
-                "docker-smoke-test":            [],
-                "codespaces":                   [],
-                "embedding-rebuild":            [],
-                "documentation":                [],
-                "cache":                        [],
-                "cognitive-brain":              [],
-                "ci-health":                    [],
-                "deployment":                   [],
-                "filesystem-deadlock":          [],
-                "test-infrastructure":          [],
+                "datetime-error": [],
+                "build-config": [],
+                "packaging": [],
+                "docker-build": [],
+                "docker-smoke-test": [],
+                "codespaces": [],
+                "embedding-rebuild": [],
+                "documentation": [],
+                "cache": [],
+                "cognitive-brain": [],
+                "ci-health": [],
+                "deployment": [],
+                "filesystem-deadlock": [],
+                "test-infrastructure": [],
                 "integration-branch-direct-session": [],
                 # ── New classifiers from CI Triage #3911 ─────────────────────
-                "codecov-token":        ["Codecov Token Missing"],
+                "codecov-token": ["Codecov Token Missing"],
                 "accountability-report": ["Last-Commit Accountability"],
-                "autostash-race":       ["Auto-Post Rebase Race"],
-                "rebase-autostash":     ["Auto-Post Rebase Race"],
-                "session-done-push":    ["Auto-Post Rebase Race"],
+                "autostash-race": ["Auto-Post Rebase Race"],
+                "rebase-autostash": ["Auto-Post Rebase Race"],
+                "session-done-push": ["Auto-Post Rebase Race"],
                 # ── Unknown / unclassified (informational — escalate to human) ─
-                "unknown":                      [],
+                "unknown": [],
             }
             matched_names: set[str] = set()
             # Track whether this is a known-but-externally-handled classifier
@@ -631,8 +658,7 @@ class CommonIssueFixer:
                         # alias maps to [] → handled externally (or no-op)
                         _external_only = True
             patterns = [
-                (n, nm, f) for n, nm, f in patterns
-                if nm in matched_names or needle in nm.lower()
+                (n, nm, f) for n, nm, f in patterns if nm in matched_names or needle in nm.lower()
             ]
             if not patterns:
                 if needle == "unknown":
@@ -671,12 +697,12 @@ class CommonIssueFixer:
             # ── Cascade detection circuit breaker (S85 pattern prevention) ──
             # Check if this pattern's circuit is broken (exceeded max retries)
             if self.cascade_detector.should_skip_pattern(num):
-               # pattern names are hardcoded constants, not secrets
-               print(f"Pattern {num}: {name}")
-               print("  ⛔ Circuit breaker BROKEN — skipping (cascaded >3 times)")
-               self.cascade_detector.report_broken_circuit(num, name)
-               print()
-               continue
+                # pattern names are hardcoded constants, not secrets
+                print(f"Pattern {num}: {name}")
+                print("  ⛔ Circuit breaker BROKEN — skipping (cascaded >3 times)")
+                self.cascade_detector.report_broken_circuit(num, name)
+                print()
+                continue
 
             print(f"Pattern {num}: {name}")
 
@@ -690,20 +716,29 @@ class CommonIssueFixer:
                 # Extract file paths from issues where possible
                 files_from_issues = []
                 for issue_str in issues[:5]:  # Sample first 5 issues for files
-                    parts = issue_str.split(':')
-                    if parts and '/' in parts[0]:
+                    parts = issue_str.split(":")
+                    if parts and "/" in parts[0]:
                         files_from_issues.append(parts[0])
 
                 # Check for cascade on same files
                 if self.cascade_detector.check_cascade(num, files_from_issues):
-                    attempt = self.cascade_detector.pattern_attempts.get((num, files_from_issues[0] if files_from_issues else ''), 0) + 1
+                    attempt = (
+                        self.cascade_detector.pattern_attempts.get(
+                            (num, files_from_issues[0] if files_from_issues else ""), 0
+                        )
+                        + 1
+                    )
                     self.cascade_detector.record_cascade(num, files_from_issues, attempt)
 
                     if attempt > CascadeDetector.MAX_RETRIES:
                         print(f"  ⛔ Cascade detected (attempt {attempt}) — circuit broken")
-                        print(f"  ✗ Found {len(issues)} issues (skipped due to cascade)")  # codeql[py/code-injection]
+                        print(
+                            f"  ✗ Found {len(issues)} issues (skipped due to cascade)"
+                        )  # codeql[py/code-injection]
                     else:
-                        print(f"  ⚠️  Cascade detected (attempt {attempt}/{CascadeDetector.MAX_RETRIES})")
+                        print(
+                            f"  ⚠️  Cascade detected (attempt {attempt}/{CascadeDetector.MAX_RETRIES})"
+                        )
                         print(f"  ✗ Found {len(issues)} issues")
                     # Record issues even on cascade to track problems
                     self.cascade_detector.record_attempt(num, files_from_issues)
@@ -727,27 +762,47 @@ class CommonIssueFixer:
         try:
             # Run ruff to detect unused imports (F401)
             result = subprocess.run(
-                ["python", "-m", "ruff", "check", "--select", "F401",
-                 "tests/", "src/", "--output-format=json"],
+                [
+                    "python",
+                    "-m",
+                    "ruff",
+                    "check",
+                    "--select",
+                    "F401",
+                    "tests/",
+                    "src/",
+                    "--output-format=json",
+                ],
                 capture_output=True,
                 text=True,
-                cwd=self.repo_root
+                cwd=self.repo_root,
             )
 
             if result.returncode != 0 and result.stdout:
                 try:
                     ruff_output = json.loads(result.stdout)
                     for item in ruff_output:
-                        issues.append(f"{item['filename']}:{item['location']['row']} - {item['message']}")
+                        issues.append(
+                            f"{item['filename']}:{item['location']['row']} - {item['message']}"
+                        )
                 except json.JSONDecodeError:
                     logger.debug("Suppressed exception in handler", exc_info=True)
             if issues and not self.check_only:
                 if not self.dry_run:
                     # Auto-fix with ruff
                     subprocess.run(
-                        ["python", "-m", "ruff", "check", "--select", "F401",
-                         "--fix", "tests/", "src/"],
-                        cwd=self.repo_root
+                        [
+                            "python",
+                            "-m",
+                            "ruff",
+                            "check",
+                            "--select",
+                            "F401",
+                            "--fix",
+                            "tests/",
+                            "src/",
+                        ],
+                        cwd=self.repo_root,
                     )
                     self.fixes_applied["Unused Imports"] = len(issues)
                 else:
@@ -764,18 +819,29 @@ class CommonIssueFixer:
 
         try:
             result = subprocess.run(
-                ["python", "-m", "ruff", "check", "--select", "F841",
-                 "tests/", "src/", "--output-format=json"],
+                [
+                    "python",
+                    "-m",
+                    "ruff",
+                    "check",
+                    "--select",
+                    "F841",
+                    "tests/",
+                    "src/",
+                    "--output-format=json",
+                ],
                 capture_output=True,
                 text=True,
-                cwd=self.repo_root
+                cwd=self.repo_root,
             )
 
             if result.returncode != 0 and result.stdout:
                 try:
                     ruff_output = json.loads(result.stdout)
                     for item in ruff_output:
-                        issues.append(f"{item['filename']}:{item['location']['row']} - {item['message']}")
+                        issues.append(
+                            f"{item['filename']}:{item['location']['row']} - {item['message']}"
+                        )
 
                     # Note: F841 often needs manual review, so we don't auto-fix
                     if issues:
@@ -819,7 +885,7 @@ class CommonIssueFixer:
         if workflow_dir.exists():
             for yml_file in workflow_dir.glob("*.yml"):
                 content = yml_file.read_text()
-                matches = re.findall(r'fail-under[=\s]+(\d+)', content)
+                matches = re.findall(r"fail-under[=\s]+(\d+)", content)
                 if matches:
                     for threshold in matches:
                         key = f"{yml_file.name}"
@@ -837,15 +903,12 @@ class CommonIssueFixer:
                 content = yml_file.read_text()
                 # Replace fail-under=25 or fail-under=85 with fail-under=70
                 # Use word boundary to avoid matching 700, 170, etc.
-                new_content = re.sub(
-                    r'(fail-under[=\s]+)(?!70\b)\d+\b',
-                    r'\g<1>70',
-                    content
-                )
+                new_content = re.sub(r"(fail-under[=\s]+)(?!70\b)\d+\b", r"\g<1>70", content)
                 if new_content != content:
                     yml_file.write_text(new_content)
-                    self.fixes_applied["Coverage Thresholds"] = \
+                    self.fixes_applied["Coverage Thresholds"] = (
                         self.fixes_applied.get("Coverage Thresholds", 0) + 1
+                    )
 
         return issues
 
@@ -906,31 +969,31 @@ class CommonIssueFixer:
             return issues
 
         _NARROW_MAP = {
-            'optional_import': '(ImportError, AttributeError, ModuleNotFoundError)',
-            'torch_cleanup':   '(AttributeError, RuntimeError, TypeError)',
-            'stream_restore':  '(AttributeError, OSError, RuntimeError)',
-            'psutil_cleanup':  '(ImportError, AttributeError, OSError, RuntimeError)',
-            'cleanup':         '(AttributeError, OSError, RuntimeError)',
-            'generic_pass':    '(AttributeError, OSError, RuntimeError)',
+            "optional_import": "(ImportError, AttributeError, ModuleNotFoundError)",
+            "torch_cleanup": "(AttributeError, RuntimeError, TypeError)",
+            "stream_restore": "(AttributeError, OSError, RuntimeError)",
+            "psutil_cleanup": "(ImportError, AttributeError, OSError, RuntimeError)",
+            "cleanup": "(AttributeError, OSError, RuntimeError)",
+            "generic_pass": "(AttributeError, OSError, RuntimeError)",
         }
 
-        def _get_block(lines, idx, direction='after'):
+        def _get_block(lines, idx, direction="after"):
             """Return stripped body lines after (or before) the given index."""
             base_indent = len(lines[idx]) - len(lines[idx].lstrip())
             result = []
-            step = 1 if direction == 'after' else -1
+            step = 1 if direction == "after" else -1
             i = idx + step
-            limit = min(len(lines), idx + 20) if direction == 'after' else max(0, idx - 20)
-            while (i < limit if direction == 'after' else i >= limit):
+            limit = min(len(lines), idx + 20) if direction == "after" else max(0, idx - 20)
+            while i < limit if direction == "after" else i >= limit:
                 raw = lines[i]
                 if raw.strip():
                     cur = len(raw) - len(raw.lstrip())
-                    if direction == 'after':
+                    if direction == "after":
                         if cur <= base_indent:
                             break
                         result.append(raw.strip())
                     else:
-                        if cur == base_indent and raw.strip() == 'try:':
+                        if cur == base_indent and raw.strip() == "try:":
                             # Collect try body
                             j = i + 1
                             while j < idx:
@@ -942,48 +1005,46 @@ class CommonIssueFixer:
             return result
 
         def _classify(try_body, except_body):
-            tt = ' '.join(try_body).lower()
-            only_pass = all(line.strip() in ('pass', '') for line in except_body)
+            tt = " ".join(try_body).lower()
+            only_pass = all(line.strip() in ("pass", "") for line in except_body)
             if any(
-                re.search(r'error_occurred|error_type|error_count|was_raised', line)
+                re.search(r"error_occurred|error_type|error_count|was_raised", line)
                 for line in except_body
             ):
-                return 'branch_cov'
+                return "branch_cov"
             if only_pass:
-                if 'import' in tt or 'importlib' in tt:
-                    return 'optional_import'
-                if 'torch' in tt or 'set_default_device' in tt or '_torch' in tt:
-                    return 'torch_cleanup'
-                if 'stdout' in tt or 'stderr' in tt or 'sys.std' in tt:
-                    return 'stream_restore'
-                if 'psutil' in tt or 'resource' in tt or 'leak' in tt:
-                    return 'psutil_cleanup'
-                if 'close' in tt or 'cleanup' in tt or 'teardown' in tt:
-                    return 'cleanup'
-                return 'generic_pass'
-            return 'has_body'
+                if "import" in tt or "importlib" in tt:
+                    return "optional_import"
+                if "torch" in tt or "set_default_device" in tt or "_torch" in tt:
+                    return "torch_cleanup"
+                if "stdout" in tt or "stderr" in tt or "sys.std" in tt:
+                    return "stream_restore"
+                if "psutil" in tt or "resource" in tt or "leak" in tt:
+                    return "psutil_cleanup"
+                if "close" in tt or "cleanup" in tt or "teardown" in tt:
+                    return "cleanup"
+                return "generic_pass"
+            return "has_body"
 
-        _EXCEPT_RE = re.compile(r'^(\s*)except Exception(\s*):(.*)$')
+        _EXCEPT_RE = re.compile(r"^(\s*)except Exception(\s*):(.*)$")
 
         always_true = [
-            (r'assert\s+len\([^)]+\)\s*>=\s*0', "len() >= 0 is always true"),
-            (r'assert\s+\w+\s+or\s+True', "X or True is always true"),
+            (r"assert\s+len\([^)]+\)\s*>=\s*0", "len() >= 0 is always true"),
+            (r"assert\s+\w+\s+or\s+True", "X or True is always true"),
         ]
 
         for py_file in tests_dir.rglob("*.py"):
             content = py_file.read_text()
-            lines = content.split('\n')
+            lines = content.split("\n")
             modified = False
 
             for line_num, line in enumerate(lines, 1):
-                if '# noqa' in line:
+                if "# noqa" in line:
                     continue
                 # always-true assertions (report only, no auto-fix)
                 for pattern, desc in always_true:
                     if re.search(pattern, line):
-                        issues.append(
-                            f"{py_file.relative_to(self.repo_root)}:{line_num} - {desc}"
-                        )
+                        issues.append(f"{py_file.relative_to(self.repo_root)}:{line_num} - {desc}")
                 # catch-all exception handler — auto-fixable
                 m = _EXCEPT_RE.match(line)
                 if not m:
@@ -991,17 +1052,17 @@ class CommonIssueFixer:
                 idx = line_num - 1  # 0-indexed
                 indent = m.group(1)
                 trailing = m.group(3)
-                try_body = _get_block(lines, idx, direction='before')
-                except_body = _get_block(lines, idx, direction='after')
+                try_body = _get_block(lines, idx, direction="before")
+                except_body = _get_block(lines, idx, direction="after")
                 cat = _classify(try_body, except_body)
 
-                if cat == 'branch_cov':
-                    new_line = f'{indent}except Exception as _err:  # intentional: testing generic exception handler path{trailing}'
-                elif cat == 'has_body':
-                    new_line = f'{indent}except Exception as _err:{trailing}'
+                if cat == "branch_cov":
+                    new_line = f"{indent}except Exception as _err:  # intentional: testing generic exception handler path{trailing}"
+                elif cat == "has_body":
+                    new_line = f"{indent}except Exception as _err:{trailing}"
                 else:
-                    narrow = _NARROW_MAP.get(cat, '(AttributeError, OSError, RuntimeError)')
-                    new_line = f'{indent}except {narrow}:{trailing}'
+                    narrow = _NARROW_MAP.get(cat, "(AttributeError, OSError, RuntimeError)")
+                    new_line = f"{indent}except {narrow}:{trailing}"
 
                 if new_line != line:
                     issues.append(
@@ -1012,7 +1073,7 @@ class CommonIssueFixer:
                         modified = True
 
             if modified:
-                py_file.write_text('\n'.join(lines))
+                py_file.write_text("\n".join(lines))
                 self.fixes_applied.setdefault("Test Assertions", 0)
                 self.fixes_applied["Test Assertions"] += 1
 
@@ -1052,7 +1113,7 @@ class CommonIssueFixer:
                 if in_str:
                     continue  # skip imports inside string literals
                 # Match `import X` or `import X as Y` at column 0
-                m = re.match(r'^import\s+(\w+)(?:\s+as\s+\w+)?\s*(?:#.*)?$', line)
+                m = re.match(r"^import\s+(\w+)(?:\s+as\s+\w+)?\s*(?:#.*)?$", line)
                 if m:
                     module_imports.add(m.group(1))
 
@@ -1062,18 +1123,18 @@ class CommonIssueFixer:
             in_function = False
             in_str, str_delim = False, ""
             redundant: list[tuple[int, str, str]] = []  # (0-idx lineno, module, alias)
-            lines_list = content.split('\n')
+            lines_list = content.split("\n")
             for line_num, line in enumerate(lines_list, 1):
                 in_str, str_delim = _advance_triple_quote_state(line, in_str, str_delim)
 
-                if re.match(r'^\s*def\s+', line):
+                if re.match(r"^\s*def\s+", line):
                     in_function = True
-                elif re.match(r'^\S', line) and not line.startswith('#'):
+                elif re.match(r"^\S", line) and not line.startswith("#"):
                     in_function = False
 
                 if in_function and not in_str:
                     # Match `import X` or `import X as Y` inside function body
-                    match = re.match(r'^(\s+)import\s+(\w+)(?:\s+as\s+(\w+))?\s*$', line)
+                    match = re.match(r"^(\s+)import\s+(\w+)(?:\s+as\s+(\w+))?\s*$", line)
                     if match and match.group(2) in module_imports:
                         if "# noqa" not in line:
                             mod = match.group(2)
@@ -1082,7 +1143,7 @@ class CommonIssueFixer:
                                 f"{py_file.relative_to(self.repo_root)}:{line_num} - "
                                 f"Redundant import of {mod}"
                             )
-                            redundant.append((line_num - 1, mod, alias or ''))
+                            redundant.append((line_num - 1, mod, alias or ""))
 
             # ----------------------------------------------------------------
             # Step 3: auto-fix — replace inner import with alias assignment
@@ -1090,15 +1151,17 @@ class CommonIssueFixer:
             if redundant and not self.check_only:
                 for idx, mod, alias in redundant:
                     raw = lines_list[idx]
-                    leading = re.match(r'^(\s+)', raw)
-                    ind = leading.group(1) if leading else '    '
+                    leading = re.match(r"^(\s+)", raw)
+                    ind = leading.group(1) if leading else "    "
                     if alias:
                         # `import X as _alias` → `_alias = X`
-                        lines_list[idx] = f'{ind}{alias} = {mod}'
+                        lines_list[idx] = f"{ind}{alias} = {mod}"
                     else:
                         # plain `import X` — remove (the top-level import suffices)
-                        lines_list[idx] = f'{ind}pass  # removed redundant `import {mod}` (top-level import used)'
-                py_file.write_text('\n'.join(lines_list))
+                        lines_list[idx] = (
+                            f"{ind}pass  # removed redundant `import {mod}` (top-level import used)"
+                        )
+                py_file.write_text("\n".join(lines_list))
                 self.fixes_applied.setdefault("Redundant Imports", 0)
                 self.fixes_applied["Redundant Imports"] += len(redundant)
 
@@ -1127,8 +1190,18 @@ class CommonIssueFixer:
         try:
             # ── Step 1: auto-fix F401 unused imports ──────────────────────────
             f401_result = subprocess.run(
-                ["python", "-m", "ruff", "check", "--select", "F401",
-                 "tests/", "src/", "scripts/", "--output-format=concise"],
+                [
+                    "python",
+                    "-m",
+                    "ruff",
+                    "check",
+                    "--select",
+                    "F401",
+                    "tests/",
+                    "src/",
+                    "scripts/",
+                    "--output-format=concise",
+                ],
                 capture_output=True,
                 text=True,
                 cwd=self.repo_root,
@@ -1143,8 +1216,18 @@ class CommonIssueFixer:
             if f401_issues:
                 if not self.check_only and not self.dry_run:
                     subprocess.run(
-                        ["python", "-m", "ruff", "check", "--select", "F401",
-                         "--fix", "tests/", "src/", "scripts/"],
+                        [
+                            "python",
+                            "-m",
+                            "ruff",
+                            "check",
+                            "--select",
+                            "F401",
+                            "--fix",
+                            "tests/",
+                            "src/",
+                            "scripts/",
+                        ],
                         capture_output=True,
                         cwd=self.repo_root,
                     )
@@ -1155,8 +1238,18 @@ class CommonIssueFixer:
 
             # ── Step 2: detect F841 unused variables (informational only) ─────
             f841_result = subprocess.run(
-                ["python", "-m", "ruff", "check", "--select", "F841",
-                 "tests/", "src/", "scripts/", "--output-format=concise"],
+                [
+                    "python",
+                    "-m",
+                    "ruff",
+                    "check",
+                    "--select",
+                    "F841",
+                    "tests/",
+                    "src/",
+                    "scripts/",
+                    "--output-format=concise",
+                ],
                 capture_output=True,
                 text=True,
                 cwd=self.repo_root,
@@ -1238,16 +1331,19 @@ class CommonIssueFixer:
         try:
             result = subprocess.run(
                 [
-                    gh_cmd, "api",
+                    gh_cmd,
+                    "api",
                     f"/repos/{repo}/code-scanning/alerts",
-                    "--field", "state=open",
-                    "--field", "per_page=100",
+                    "--field",
+                    "state=open",
+                    "--field",
+                    "per_page=100",
                     "--jq",
                     (
-                        ".[] | \"[GAS alert #\\(.number)] \\(.rule.id // .rule.name)"
-                        " — \\(.most_recent_instance.location.path // \"unknown\")"
+                        '.[] | "[GAS alert #\\(.number)] \\(.rule.id // .rule.name)'
+                        ' — \\(.most_recent_instance.location.path // "unknown")'
                         ":\\(.most_recent_instance.location.start_line // 0)"
-                        " — \\(.html_url)\""
+                        ' — \\(.html_url)"'
                     ),
                 ],
                 capture_output=True,
@@ -1294,11 +1390,10 @@ class CommonIssueFixer:
 
         try:
             result = subprocess.run(
-                ["python", "-m", "ruff", "check", "--select", "I001",
-                 ".", "--output-format=json"],
+                ["python", "-m", "ruff", "check", "--select", "I001", ".", "--output-format=json"],
                 capture_output=True,
                 text=True,
-                cwd=self.repo_root
+                cwd=self.repo_root,
             )
 
             if result.returncode != 0 and result.stdout:
@@ -1314,7 +1409,7 @@ class CommonIssueFixer:
                 if not self.dry_run:
                     subprocess.run(
                         ["python", "-m", "ruff", "check", "--select", "I001", "--fix", "."],
-                        cwd=self.repo_root
+                        cwd=self.repo_root,
                     )
                     self.fixes_applied["Unsorted Imports"] = len(issues)
                 else:
@@ -1331,11 +1426,23 @@ class CommonIssueFixer:
 
         try:
             result = subprocess.run(
-                ["python", "-m", "bandit", "-r", "src/", "--configfile", ".bandit",
-                 "--severity-level", "medium", "-q", "-f", "json"],
+                [
+                    "python",
+                    "-m",
+                    "bandit",
+                    "-r",
+                    "src/",
+                    "--configfile",
+                    ".bandit",
+                    "--severity-level",
+                    "medium",
+                    "-q",
+                    "-f",
+                    "json",
+                ],
                 capture_output=True,
                 text=True,
-                cwd=self.repo_root
+                cwd=self.repo_root,
             )
 
             if result.stdout:
@@ -1352,9 +1459,7 @@ class CommonIssueFixer:
                 except json.JSONDecodeError:
                     logger.debug("Suppressed exception in handler", exc_info=True)
             if issues:
-                print(
-                    "  ℹ️ Bandit medium/high issues require manual # nosec annotation review"
-                )
+                print("  ℹ️ Bandit medium/high issues require manual # nosec annotation review")
 
         except FileNotFoundError:
             print("  ⚠️ bandit not installed, skipping security detection")
@@ -1367,11 +1472,10 @@ class CommonIssueFixer:
 
         try:
             result = subprocess.run(
-                ["python", "-m", "ruff", "check", "--select", "F541",
-                 ".", "--output-format=json"],
+                ["python", "-m", "ruff", "check", "--select", "F541", ".", "--output-format=json"],
                 capture_output=True,
                 text=True,
-                cwd=self.repo_root
+                cwd=self.repo_root,
             )
 
             if result.returncode != 0 and result.stdout:
@@ -1387,7 +1491,7 @@ class CommonIssueFixer:
                 if not self.dry_run:
                     subprocess.run(
                         ["python", "-m", "ruff", "check", "--select", "F541", "--fix", "."],
-                        cwd=self.repo_root
+                        cwd=self.repo_root,
                     )
                     self.fixes_applied["F-String Placeholders"] = len(issues)
                 else:
@@ -1404,8 +1508,16 @@ class CommonIssueFixer:
 
         try:
             result = subprocess.run(
-                ["python", "-m", "ruff", "check", "--select", "E501",
-                 "src/", "--output-format=json"],
+                [
+                    "python",
+                    "-m",
+                    "ruff",
+                    "check",
+                    "--select",
+                    "E501",
+                    "src/",
+                    "--output-format=json",
+                ],
                 capture_output=True,
                 text=True,
                 cwd=self.repo_root,
@@ -1430,8 +1542,7 @@ class CommonIssueFixer:
                     )
                     # Suppress unfixable long lines with noqa
                     subprocess.run(
-                        ["python", "-m", "ruff", "check", "--select", "E501",
-                         "--add-noqa", "src/"],
+                        ["python", "-m", "ruff", "check", "--select", "E501", "--add-noqa", "src/"],
                         cwd=self.repo_root,
                         capture_output=True,
                     )
@@ -1450,8 +1561,7 @@ class CommonIssueFixer:
 
         try:
             result = subprocess.run(
-                ["python", "-m", "ruff", "check", "--select", "W",
-                 ".", "--output-format=json"],
+                ["python", "-m", "ruff", "check", "--select", "W", ".", "--output-format=json"],
                 capture_output=True,
                 text=True,
                 cwd=self.repo_root,
@@ -1469,8 +1579,7 @@ class CommonIssueFixer:
             if issues and not self.check_only:
                 if not self.dry_run:
                     subprocess.run(
-                        ["python", "-m", "ruff", "check", "--select", "W",
-                         "--fix", "."],
+                        ["python", "-m", "ruff", "check", "--select", "W", "--fix", "."],
                         cwd=self.repo_root,
                         capture_output=True,
                     )
@@ -1482,7 +1591,6 @@ class CommonIssueFixer:
             print("  ⚠️ ruff not installed, skipping W-series check")
 
         return issues
-
 
     def fix_link_checker_config(self) -> list[str]:
         """Pattern 14: Ensure .markdown-link-check.json has safe ignore patterns.
@@ -1571,7 +1679,10 @@ class CommonIssueFixer:
         try:
             result = subprocess.run(
                 [
-                    "python3", "-m", "mypy", "src/",
+                    "python3",
+                    "-m",
+                    "mypy",
+                    "src/",
                     "--no-error-summary",
                     "--ignore-missing-imports",
                 ],
@@ -1636,8 +1747,8 @@ class CommonIssueFixer:
 
         try:
             result = subprocess.run(
-                ["python", "-m", "ruff", "check", "--select", "F811",
-                 "--output-format=json"] + targets,
+                ["python", "-m", "ruff", "check", "--select", "F811", "--output-format=json"]
+                + targets,
                 capture_output=True,
                 text=True,
                 cwd=self.repo_root,
@@ -1655,8 +1766,7 @@ class CommonIssueFixer:
             if issues and not self.check_only:
                 if not self.dry_run:
                     subprocess.run(
-                        ["python", "-m", "ruff", "check", "--select", "F811",
-                         "--fix"] + targets,
+                        ["python", "-m", "ruff", "check", "--select", "F811", "--fix"] + targets,
                         cwd=self.repo_root,
                         capture_output=True,
                     )
@@ -1703,7 +1813,8 @@ class CommonIssueFixer:
         try:
             result = subprocess.run(
                 ["git", "log", "-1", "--format=%H"],
-                capture_output=True, text=True,
+                capture_output=True,
+                text=True,
                 cwd=self.repo_root,
             )
             local_sha = result.stdout.strip()
@@ -1747,9 +1858,7 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _find_kwarg_removal_span(
-        line: str, kw: "ast.keyword"
-    ) -> "Optional[tuple[int, int]]":
+    def _find_kwarg_removal_span(line: str, kw: "ast.keyword") -> "Optional[tuple[int, int]]":
         """Return the ``(remove_start, remove_end)`` column indices to slice from
         *line* in order to delete the duplicate keyword ``kw``, including its name,
         ``=`` sign, value, trailing comma, and surrounding whitespace.
@@ -1767,7 +1876,7 @@ class CommonIssueFixer:
                     Must have ``end_lineno == value.lineno`` (single-line value).
         """
 
-        val_col: int = kw.value.col_offset          # 0-based column of value start
+        val_col: int = kw.value.col_offset  # 0-based column of value start
         val_end_col: int = kw.value.end_col_offset  # type: ignore[union-attr]
 
         # Locate "kwarg_name=" by scanning left from the value column.
@@ -1922,7 +2031,10 @@ class CommonIssueFixer:
         rescue loop (bot commit → drift → rescue → fix → bot commit → ...).
         """
         for pattern_name, issues in self.issues_found.items():
-            if pattern_name in self.auto_fixable_patterns and pattern_name not in self.soft_warning_patterns:
+            if (
+                pattern_name in self.auto_fixable_patterns
+                and pattern_name not in self.soft_warning_patterns
+            ):
                 fixed_count = self.fixes_applied.get(pattern_name, 0)
                 if len(issues) > fixed_count:
                     return True
@@ -1946,17 +2058,18 @@ class CommonIssueFixer:
             # Soft-warning patterns are reported as "warning" severity and do not
             # contribute to the count that causes pre-merge-validation to exit 1.
             "auto_fixable": sum(
-                len(issues) for name, issues in self.issues_found.items()
-                if name in self.auto_fixable_patterns
-                and name not in self.soft_warning_patterns
+                len(issues)
+                for name, issues in self.issues_found.items()
+                if name in self.auto_fixable_patterns and name not in self.soft_warning_patterns
             ),
             "manual_review": sum(
-                len(issues) for name, issues in self.issues_found.items()
+                len(issues)
+                for name, issues in self.issues_found.items()
                 if name in self.manual_review_patterns
             ),
             "issues": [],
             "fixes_applied": self.fixes_applied,
-            "next_steps": []
+            "next_steps": [],
         }
 
         # Build detailed issue list
@@ -2012,26 +2125,30 @@ class CommonIssueFixer:
 
                 file_parts = file_info.split(":")
                 file_path = file_parts[0] if file_parts else ""
-                line_num = int(file_parts[1]) if len(file_parts) > 1 and file_parts[1].isdigit() else 0
+                line_num = (
+                    int(file_parts[1]) if len(file_parts) > 1 and file_parts[1].isdigit() else 0
+                )
 
-                report["issues"].append({
-                    "pattern": pattern_num,
-                    "pattern_name": pattern_name,
-                    "type": pattern_name.lower().replace(" ", "_"),
-                    "severity": severity,
-                    "file": file_path,
-                    "line": line_num,
-                    "message": message or issue_str,
-                    "auto_fix_available": is_auto_fixable,
-                    "suggested_fix": f"Run: python scripts/ci/auto_fix_common_issues.py --pattern {pattern_num}",
-                })
+                report["issues"].append(
+                    {
+                        "pattern": pattern_num,
+                        "pattern_name": pattern_name,
+                        "type": pattern_name.lower().replace(" ", "_"),
+                        "severity": severity,
+                        "file": file_path,
+                        "line": line_num,
+                        "message": message or issue_str,
+                        "auto_fix_available": is_auto_fixable,
+                        "suggested_fix": f"Run: python scripts/ci/auto_fix_common_issues.py --pattern {pattern_num}",
+                    }
+                )
 
         # Add next steps
         if report["auto_fixable"] > 0:
             report["next_steps"] = [
                 "Run: python scripts/ci/auto_fix_common_issues.py",
                 "Or use Copilot Agent: @workspace Fix all auto-fixable CI issues",
-                f"Patterns to fix: {', '.join(str(pattern_map[n]) for n in self.auto_fixable_patterns if n in self.issues_found)}"
+                f"Patterns to fix: {', '.join(str(pattern_map[n]) for n in self.auto_fixable_patterns if n in self.issues_found)}",
             ]
         else:
             report["next_steps"] = ["All auto-fixable issues resolved!"]
@@ -2040,7 +2157,7 @@ class CommonIssueFixer:
         if output_path:
             output_file = Path(output_path)
             output_file.parent.mkdir(parents=True, exist_ok=True)
-            with open(output_file, 'w') as f:
+            with open(output_file, "w") as f:
                 json.dump(report, f, indent=2)
             print(f"JSON report written to {output_path}")
 
@@ -2115,7 +2232,6 @@ class CommonIssueFixer:
         else:
             print("✅ Pattern 19 (Src Absolute Imports): no actionable `from src.` imports found")
         return issues
-
 
     def check_yaml_multiline_strings(self) -> list[str]:
         """Pattern 20: Detect multi-line bash string assignments in YAML ``run:`` blocks.
@@ -2256,7 +2372,9 @@ class CommonIssueFixer:
                     + (f" …+{len(refs)-3}" if len(refs) > 3 else "")
                 )
             if len(affected) > 3:
-                issues.append(f"…and {len(affected) - 3} more workflow(s) ({total_refs} total refs)")
+                issues.append(
+                    f"…and {len(affected) - 3} more workflow(s) ({total_refs} total refs)"
+                )
             self.issues_found["Node.js 20 Actions"] = issues
             print(
                 f"⚠  Pattern 21 (Node.js 20 Actions): {len(affected)} workflow(s) / "
@@ -2298,6 +2416,7 @@ class CommonIssueFixer:
             return issues
 
         import subprocess as _sp
+
         result = _sp.run(
             [sys.executable, str(sync_script), "--check", "--quiet"],
             cwd=self.repo_root,
@@ -2376,6 +2495,7 @@ class CommonIssueFixer:
 
         try:
             import json as _json
+
             baseline = _json.loads(baseline_path.read_text(encoding="utf-8"))
         except Exception as exc:
             issues.append(f".secrets.baseline: failed to parse — {exc}")
@@ -2410,7 +2530,9 @@ class CommonIssueFixer:
             try:
                 _m = _im.import_module(f"detect_secrets.plugins.{_mod_info.name}")
                 _available_plugins.update(dir(_m))
-            except Exception as exc:  # noqa: BLE001 — skip unimportable plugin modules during discovery scan
+            except (
+                Exception
+            ) as exc:  # noqa: BLE001 — skip unimportable plugin modules during discovery scan
                 if "AUTO_FIX_DEBUG" in os.environ:
                     print(
                         f"DEBUG: skipping detect-secrets plugin module "
@@ -2456,8 +2578,7 @@ class CommonIssueFixer:
                 results = baseline.get("results", {})
                 for fname in list(results.keys()):
                     results[fname] = [
-                        s for s in results[fname]
-                        if s.get("type") not in unknown_plugins
+                        s for s in results[fname] if s.get("type") not in unknown_plugins
                     ]
                     if not results[fname]:
                         del results[fname]
@@ -2473,9 +2594,7 @@ class CommonIssueFixer:
                     self.fixes_applied["Secrets Baseline Plugins"] = len(unknown_plugins)
                     issues.clear()
                 else:
-                    print(
-                        f"   [dry-run] would remove plugin(s): {', '.join(unknown_plugins)}"
-                    )
+                    print(f"   [dry-run] would remove plugin(s): {', '.join(unknown_plugins)}")
         else:
             print("✅ Pattern 23 (Secrets Baseline Plugins): all baseline plugins available")
         return issues
@@ -2539,7 +2658,9 @@ class CommonIssueFixer:
                         continue
                     next_indent = len(next_line) - len(next_line.lstrip())
                     # If we encounter another step at the same/lower indent, stop.
-                    if next_indent < step_indent or (next_indent == step_indent and next_line.strip().startswith("-")):
+                    if next_indent < step_indent or (
+                        next_indent == step_indent and next_line.strip().startswith("-")
+                    ):
                         break
                     stripped = next_line.strip()
                     if stripped.startswith("token:"):
@@ -2697,7 +2818,12 @@ class CommonIssueFixer:
         import datetime as _dt
         import os as _os
 
-        abs_report = self.repo_root / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
+        abs_report = (
+            self.repo_root
+            / "docs"
+            / "accountability"
+            / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
+        )
         if not abs_report.exists():
             return False
 
@@ -2770,7 +2896,9 @@ class CommonIssueFixer:
             print("✅ Pattern 26 (Auto-Post Rebase Race): no .github/workflows directory")
             return issues
 
-        affected: list[tuple[Path, int, str]] = []  # (workflow, line_idx_0based, original_line_with_newline)
+        affected: list[tuple[Path, int, str]] = (
+            []
+        )  # (workflow, line_idx_0based, original_line_with_newline)
 
         for wf in sorted(workflow_dir.glob("*.yml")):
             try:
@@ -2827,7 +2955,9 @@ class CommonIssueFixer:
                 else:
                     print(f"   [dry-run] would add `--autostash` to {len(issues)} occurrence(s)")
         else:
-            print("✅ Pattern 26 (Auto-Post Rebase Race): no `git pull --rebase` without --autostash found")
+            print(
+                "✅ Pattern 26 (Auto-Post Rebase Race): no `git pull --rebase` without --autostash found"
+            )
         return issues
 
     # Pattern 27 — Targeted detect-secrets false-positive baseline update (auto-fixable)
@@ -2859,6 +2989,7 @@ class CommonIssueFixer:
         PDA pattern-id: PR3958-P3-AUTOFIX-P27-TARGETED-SCAN
         """
         import json as _json
+
         issues: list[str] = []
         baseline_path = self.repo_root / ".secrets.baseline"
 
@@ -2866,19 +2997,25 @@ class CommonIssueFixer:
         try:
             diff_result = subprocess.run(
                 ["git", "diff", "HEAD", "--name-only", "--diff-filter=ACM"],
-                capture_output=True, text=True, cwd=self.repo_root,
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
             )
             changed_files = [
-                f.strip() for f in diff_result.stdout.splitlines()
+                f.strip()
+                for f in diff_result.stdout.splitlines()
                 if f.strip() and not f.strip().startswith(".secrets.baseline")
             ]
             # Also include staged files
             staged_result = subprocess.run(
                 ["git", "diff", "--cached", "--name-only", "--diff-filter=ACM"],
-                capture_output=True, text=True, cwd=self.repo_root,
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
             )
             staged_files = [
-                f.strip() for f in staged_result.stdout.splitlines()
+                f.strip()
+                for f in staged_result.stdout.splitlines()
                 if f.strip() and not f.strip().startswith(".secrets.baseline")
             ]
             all_changed = list(dict.fromkeys(changed_files + staged_files))
@@ -2890,17 +3027,17 @@ class CommonIssueFixer:
             return issues
 
         # 2. Verify detect-secrets is available
-        if importlib.util.find_spec('detect_secrets') is None:
-            print(
-                "✅ Pattern 27 (Secrets FP Scan): detect-secrets not installed — skip"
-            )
+        if importlib.util.find_spec("detect_secrets") is None:
+            print("✅ Pattern 27 (Secrets FP Scan): detect-secrets not installed — skip")
             return issues
 
         # 3. Scan only the changed files
         try:
             scan_result = subprocess.run(
                 ["python3", "-m", "detect_secrets", "scan"] + all_changed,
-                capture_output=True, text=True, cwd=self.repo_root,
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
             )
             if scan_result.returncode != 0 and not scan_result.stdout.strip():
                 return issues
@@ -2943,9 +3080,7 @@ class CommonIssueFixer:
             print("✅ Pattern 27 (Secrets FP Scan): all detected secrets already in baseline")
             return issues
 
-        issues_desc = [
-            f"new false-positive detect-secrets entry: {a}" for a in added
-        ]
+        issues_desc = [f"new false-positive detect-secrets entry: {a}" for a in added]
         self.issues_found["Secrets FP Scan"] = issues_desc
         print(
             f"⚠  Pattern 27 (Secrets FP Scan): {len(added)} new false-positive "
@@ -2965,20 +3100,16 @@ class CommonIssueFixer:
             if sync_script.exists():
                 subprocess.run(
                     ["python3", str(sync_script), "--fix"],
-                    cwd=self.repo_root, capture_output=True,
+                    cwd=self.repo_root,
+                    capture_output=True,
                 )
             self.fixes_applied["Secrets FP Scan"] = len(added)
-            print(
-                f"   ✅ Auto-fixed: merged {len(added)} entry(ies) into .secrets.baseline"
-            )
+            print(f"   ✅ Auto-fixed: merged {len(added)} entry(ies) into .secrets.baseline")
             issues_desc.clear()
         elif self.dry_run:
-            print(
-                f"   [dry-run] would merge {len(added)} entry(ies) into .secrets.baseline"
-            )
+            print(f"   [dry-run] would merge {len(added)} entry(ies) into .secrets.baseline")
 
         return issues_desc
-
 
     # ------------------------------------------------------------------
     # Pattern 28 — Copilot Cloud Agent Sandbox Guard (informational)
@@ -3005,6 +3136,7 @@ class CommonIssueFixer:
         awareness that Pattern 17 is a known false positive in the sandbox.
         """
         import os as _os
+
         issues: list[str] = []
 
         github_sha = _os.environ.get("GITHUB_SHA", "")
@@ -3035,8 +3167,10 @@ class CommonIssueFixer:
         try:
             head_result = subprocess.run(
                 ["git", "log", "-1", "--format=%H"],
-                capture_output=True, text=True,
-                cwd=self.repo_root, timeout=10,
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
+                timeout=10,
             )
             head_sha = head_result.stdout.strip()
         except (subprocess.TimeoutExpired, FileNotFoundError):
@@ -3090,8 +3224,10 @@ class CommonIssueFixer:
         KNOWN_PATTERNS: dict = {
             "Secrets Baseline Enforcer": {
                 "triggers": [
-                    "🔐 Secrets Baseline Enforcer", "detect-secrets",
-                    ".secrets.baseline", "secrets.baseline",
+                    "🔐 Secrets Baseline Enforcer",
+                    "detect-secrets",
+                    ".secrets.baseline",
+                    "secrets.baseline",
                 ],
                 "fix_cmd": "sync_tracked_files",
                 "description": "Update .secrets.baseline and re-sync tracked files",
@@ -3099,8 +3235,10 @@ class CommonIssueFixer:
             },
             "Tracked File Sync": {
                 "triggers": [
-                    "sync_tracked_files", "CODEX_MANIFEST entry stale",
-                    "stale — stored=", "RP-007",
+                    "sync_tracked_files",
+                    "CODEX_MANIFEST entry stale",
+                    "stale — stored=",
+                    "RP-007",
                 ],
                 "fix_cmd": "sync_tracked_files",
                 "description": "Refresh CODEX_MANIFEST integrity hashes",
@@ -3114,8 +3252,11 @@ class CommonIssueFixer:
             },
             "Accountability Missing": {
                 "triggers": [
-                    "REQ-4", "REQ-5", "AGENT_ACCOUNTABILITY_REPORT",
-                    "agent-auth-delegation", "accountability report",
+                    "REQ-4",
+                    "REQ-5",
+                    "AGENT_ACCOUNTABILITY_REPORT",
+                    "agent-auth-delegation",
+                    "accountability report",
                 ],
                 "fix_cmd": "accountability_fix",
                 "description": "Auto-generate accountability report entry for last commit",
@@ -3123,8 +3264,11 @@ class CommonIssueFixer:
             },
             "Comment Review Gate": {
                 "triggers": [
-                    "Comment Review Gate", "BLOCKING — Must address",
-                    "🚨 BLOCKING", "blocking comment", "0/1 comments addressed",
+                    "Comment Review Gate",
+                    "BLOCKING — Must address",
+                    "🚨 BLOCKING",
+                    "blocking comment",
+                    "0/1 comments addressed",
                 ],
                 "fix_cmd": "reply_instructions",
                 "description": (
@@ -3135,7 +3279,9 @@ class CommonIssueFixer:
             },
             "CHANGELOG Missing": {
                 "triggers": [
-                    "CHANGELOG", "### Fixed (SN)", "Update CHANGELOG",
+                    "CHANGELOG",
+                    "### Fixed (SN)",
+                    "Update CHANGELOG",
                     "⑤ Update CHANGELOG",
                 ],
                 "fix_cmd": "changelog_instructions",
@@ -3145,9 +3291,13 @@ class CommonIssueFixer:
             # ── RP-024: Markdown False-Positive Secrets ──────────────────────
             "Markdown False-Positive Secrets": {
                 "triggers": [
-                    "RP-024", "detect-secrets-hook", "Potential Secret Detected",
-                    ".github/agents/", "pragma: allowlist secret",
-                    "password.*hunter2", "API_KEY.*sk-",
+                    "RP-024",
+                    "detect-secrets-hook",
+                    "Potential Secret Detected",
+                    ".github/agents/",
+                    "pragma: allowlist secret",
+                    "password.*hunter2",
+                    "API_KEY.*sk-",
                 ],
                 "fix_cmd": "markdown_secrets_allowlist",
                 "description": (
@@ -3160,8 +3310,11 @@ class CommonIssueFixer:
             # ── RP-025: Validation Pipeline Cascade ──────────────────────────
             "Validation Pipeline Cascade": {
                 "triggers": [
-                    "RP-025", "Full Validation (Daily)", "validate.yml",
-                    "16+ branches", "systemic test environment failure",
+                    "RP-025",
+                    "Full Validation (Daily)",
+                    "validate.yml",
+                    "16+ branches",
+                    "systemic test environment failure",
                     "cascading validate failure",
                 ],
                 "fix_cmd": "manual_triage",
@@ -3174,9 +3327,12 @@ class CommonIssueFixer:
             # ── RP-026: Auto-Fix Workflow Loop ───────────────────────────────
             "Auto-Fix Workflow Loop": {
                 "triggers": [
-                    "RP-026", "Fail if auto-fixable issues found",
-                    "auto-fix-common-issues", "auto-fix-pr-check",
-                    "auto_fix.*exit 1", "same issues persist",
+                    "RP-026",
+                    "Fail if auto-fixable issues found",
+                    "auto-fix-common-issues",
+                    "auto-fix-pr-check",
+                    "auto_fix.*exit 1",
+                    "same issues persist",
                 ],
                 "fix_cmd": "auto_fix_and_push",
                 "description": (
@@ -3245,8 +3401,10 @@ class CommonIssueFixer:
                 if sync_script.exists():
                     r = subprocess.run(
                         ["python3", str(sync_script), "--fix"],
-                        capture_output=True, text=True,
-                        cwd=self.repo_root, timeout=60,
+                        capture_output=True,
+                        text=True,
+                        cwd=self.repo_root,
+                        timeout=60,
                     )
                     if r.returncode == 0:
                         auto_applied.append(pname)
@@ -3255,8 +3413,10 @@ class CommonIssueFixer:
             elif cmd == "ruff_fix":
                 r = subprocess.run(
                     ["python3", "-m", "ruff", "check", "src/", "tests/", "--fix"],
-                    capture_output=True, text=True,
-                    cwd=self.repo_root, timeout=60,
+                    capture_output=True,
+                    text=True,
+                    cwd=self.repo_root,
+                    timeout=60,
                 )
                 if r.returncode == 0:
                     auto_applied.append(pname)
@@ -3304,6 +3464,7 @@ class CommonIssueFixer:
         """
         import importlib.util as _ilu
         import sys as _sys
+
         issues: list[str] = []
 
         swa_path = self.repo_root / "scripts" / "ci" / "session_wrapup_autofix.py"
@@ -3317,7 +3478,9 @@ class CommonIssueFixer:
             swa = _ilu.module_from_spec(spec)  # type: ignore[arg-type]
             spec.loader.exec_module(swa)  # safe: module loaded from verified file path
         except Exception as exc:
-            print(f"⚠  Pattern 30 (Merge Readiness): failed to import session_wrapup_autofix: {exc}")
+            print(
+                f"⚠  Pattern 30 (Merge Readiness): failed to import session_wrapup_autofix: {exc}"
+            )
             return issues
 
         try:
@@ -3355,17 +3518,23 @@ class CommonIssueFixer:
 
         # Dimension key → (fix_type, human-readable fix command)
         DIM_FIXES: dict[str, tuple[str, str]] = {
-            "ruff":               ("ruff_fix",      "python -m ruff check src/ tests/ --fix"),
-            "sync_tracked_files": ("sync_fix",      "python scripts/ci/sync_tracked_files.py --fix"),
-            "auto_fix":           ("auto_fix_sweep", "python scripts/ci/auto_fix_common_issues.py"),
-            "accountability_today": ("acct_fix",    "python scripts/ci/auto_fix_common_issues.py --pattern 25"),
-            "pda_entry_today":    ("pda_auto",      "Auto-append minimal PDA entry to .codex/aftermath/pda_iterations.jsonl"),
-            "pattern_27":         ("fp_fix",        "python scripts/ci/auto_fix_common_issues.py --pattern 27"),
-            "secrets":            ("fp_fix",        "python scripts/ci/auto_fix_common_issues.py --pattern 27"),
-            "action_versions":    ("manual",        "Review .github/workflows/ for outdated action SHA pins"),
-            "github-script":      ("manual",        "Upgrade actions/github-script to ≥v8"),
-            "download":           ("manual",        "Upgrade actions/download-artifact to ≥v5"),
-            "aais":               ("manual",        "Review AAIS sub-scores in session_wrapup_autofix.py"),
+            "ruff": ("ruff_fix", "python -m ruff check src/ tests/ --fix"),
+            "sync_tracked_files": ("sync_fix", "python scripts/ci/sync_tracked_files.py --fix"),
+            "auto_fix": ("auto_fix_sweep", "python scripts/ci/auto_fix_common_issues.py"),
+            "accountability_today": (
+                "acct_fix",
+                "python scripts/ci/auto_fix_common_issues.py --pattern 25",
+            ),
+            "pda_entry_today": (
+                "pda_auto",
+                "Auto-append minimal PDA entry to .codex/aftermath/pda_iterations.jsonl",
+            ),
+            "pattern_27": ("fp_fix", "python scripts/ci/auto_fix_common_issues.py --pattern 27"),
+            "secrets": ("fp_fix", "python scripts/ci/auto_fix_common_issues.py --pattern 27"),
+            "action_versions": ("manual", "Review .github/workflows/ for outdated action SHA pins"),
+            "github-script": ("manual", "Upgrade actions/github-script to ≥v8"),
+            "download": ("manual", "Upgrade actions/download-artifact to ≥v5"),
+            "aais": ("manual", "Review AAIS sub-scores in session_wrapup_autofix.py"),
         }
 
         auto_applied: list[str] = []
@@ -3393,8 +3562,10 @@ class CommonIssueFixer:
             if fix_type == "ruff_fix":
                 r = subprocess.run(
                     ["python3", "-m", "ruff", "check", "src/", "tests/", "--fix"],
-                    capture_output=True, text=True,
-                    cwd=self.repo_root, timeout=60,
+                    capture_output=True,
+                    text=True,
+                    cwd=self.repo_root,
+                    timeout=60,
                 )
                 if r.returncode == 0:
                     auto_applied.append(name)
@@ -3404,8 +3575,10 @@ class CommonIssueFixer:
                 if sync_script.exists():
                     r = subprocess.run(
                         ["python3", str(sync_script), "--fix"],
-                        capture_output=True, text=True,
-                        cwd=self.repo_root, timeout=60,
+                        capture_output=True,
+                        text=True,
+                        cwd=self.repo_root,
+                        timeout=60,
                     )
                     if r.returncode == 0:
                         auto_applied.append(name)
@@ -3423,9 +3596,7 @@ class CommonIssueFixer:
             elif fix_type == "pda_auto":
                 # Call fix_pda_entry_today from the already-loaded session_wrapup_autofix module.
                 try:
-                    swa.fix_pda_entry_today(
-                        pr_number="unknown", sha="", run_url="", dry_run=False
-                    )
+                    swa.fix_pda_entry_today(pr_number="unknown", sha="", run_url="", dry_run=False)
                     auto_applied.append(name)
                 except Exception as _pda_exc:
                     print(f"   ⚠  pda_auto fix failed: {_pda_exc}")
@@ -3469,7 +3640,9 @@ class CommonIssueFixer:
         try:
             result = _sub.run(
                 [
-                    "python3", "-m", "mypy",
+                    "python3",
+                    "-m",
+                    "mypy",
                     "--warn-unused-ignores",
                     "--no-error-summary",
                     "--ignore-missing-imports",
@@ -3486,9 +3659,7 @@ class CommonIssueFixer:
             return issues
 
         # Pattern: "<file>:<line>: error: Unused "type: ignore" comment  [unused-ignore]"
-        stale_re = _re.compile(
-            r'^(.+?):(\d+): \w+: Unused "type: ignore".*\[unused-ignore\]'
-        )
+        stale_re = _re.compile(r'^(.+?):(\d+): \w+: Unused "type: ignore".*\[unused-ignore\]')
         stale: dict[str, list[int]] = {}
         for line in output.splitlines():
             m = stale_re.match(line)
@@ -3504,9 +3675,7 @@ class CommonIssueFixer:
         print(f"   ⚠  Pattern 31 (Stale Type Ignore): {len(issues)} stale comment(s) found")
 
         # Strip the stale ignores
-        _ignore_suffix = _re.compile(
-            r'\s+#\s+type:\s+ignore(?:\[[^\]]*\])?\s*$'
-        )
+        _ignore_suffix = _re.compile(r"\s+#\s+type:\s+ignore(?:\[[^\]]*\])?\s*$")
         fixed = 0
         for path_str, line_nums in stale.items():
             fpath = Path(path_str)
@@ -3575,8 +3744,8 @@ class CommonIssueFixer:
         # Match only bare: <ident> = None/object()/Any  # type: ignore
         # Lines already narrowed to [assignment] are precise and mypy-clean.
         bare_re = _re.compile(
-            r'^(\s*\w+(?:\s*=\s*\w+(?:\.\w+)*)*\s*=\s*(?:None|object\(\)|Any))\s+'
-            r'(#\s*type:\s*ignore)\s*$'
+            r"^(\s*\w+(?:\s*=\s*\w+(?:\.\w+)*)*\s*=\s*(?:None|object\(\)|Any))\s+"
+            r"(#\s*type:\s*ignore)\s*$"
         )
         fixed = 0
         for py_file in sorted(src.rglob("*.py")):
@@ -3591,8 +3760,7 @@ class CommonIssueFixer:
                 if m:
                     new_line = m.group(1) + "  # type: ignore[assignment]\n"
                     issues.append(
-                        f"{py_file}:{i + 1}: fallback assignment ignore should use "
-                        "[assignment]"
+                        f"{py_file}:{i + 1}: fallback assignment ignore should use " "[assignment]"
                     )
                     if not self.dry_run and new_line.rstrip("\n") != lines[i].rstrip("\n"):
                         lines[i] = new_line
@@ -3615,10 +3783,7 @@ class CommonIssueFixer:
                 print(f"   ✅ Normalized {fixed} line(s) to [assignment]")
                 issues.clear()
         elif self.dry_run and issues:
-            print(
-                f"   [dry-run] would normalize {len(issues)} line(s) to "
-                "[assignment]"
-            )
+            print(f"   [dry-run] would normalize {len(issues)} line(s) to " "[assignment]")
 
         return issues
 
@@ -3675,15 +3840,9 @@ class CommonIssueFixer:
         issues.append(msg)
 
         print(f"   ⚠  Pattern 33 (Rate Limit Checkpoint): {msg}")
-        print(
-            "      → Load checkpoint:  python3 scripts/ci/rate_limit_handler.py --check"
-        )
-        print(
-            "      → Resolve conflict: python3 scripts/ci/push_conflict_resolver.py"
-        )
-        print(
-            "      → Mark resolved:    python3 scripts/ci/rate_limit_handler.py --resolve"
-        )
+        print("      → Load checkpoint:  python3 scripts/ci/rate_limit_handler.py --check")
+        print("      → Resolve conflict: python3 scripts/ci/push_conflict_resolver.py")
+        print("      → Mark resolved:    python3 scripts/ci/rate_limit_handler.py --resolve")
 
         return issues
 
@@ -3713,11 +3872,15 @@ class CommonIssueFixer:
                 if f.read(1) == b"\n":
                     continue
                 if self.check_only or self.dry_run:
-                    messages.append(f"Would fix missing newline in {py_file.relative_to(self.repo_root)}")
+                    messages.append(
+                        f"Would fix missing newline in {py_file.relative_to(self.repo_root)}"
+                    )
                 else:
                     with open(py_file, "ab") as f:
                         f.write(b"\n")
-                    messages.append(f"Fixed missing newline in {py_file.relative_to(self.repo_root)}")
+                    messages.append(
+                        f"Fixed missing newline in {py_file.relative_to(self.repo_root)}"
+                    )
         return messages
 
     # Pattern 35 — Markdown False-Positive Secrets (auto-fixable)
@@ -3736,8 +3899,8 @@ class CommonIssueFixer:
     _MARKDOWN_TABLE_ROW_RE = re.compile(r"^\s*\|")
     # Regex to detect common secret-keyword patterns that appear in docs
     _DOC_SECRET_INDICATORS = re.compile(
-        r'(?:api[_-]?key|password|secret|token|bearer|sk-|ghp_|'
-        r'sk[_-]|AKIAIOSFODNN7EXAMPLE|hunter2|sk-1234)',  # pragma: allowlist secret
+        r"(?:api[_-]?key|password|secret|token|bearer|sk-|ghp_|"
+        r"sk[_-]|AKIAIOSFODNN7EXAMPLE|hunter2|sk-1234)",  # pragma: allowlist secret
         re.IGNORECASE,
     )
 
@@ -3772,30 +3935,35 @@ class CommonIssueFixer:
             base_ref = _resolve_acct_diff_base(self.repo_root) or "HEAD~1"
             diff_result = subprocess.run(
                 ["git", "diff", "--name-only", "--diff-filter=ACM", base_ref, "HEAD"],
-                capture_output=True, text=True, cwd=self.repo_root,
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
             )
             if diff_result.returncode != 0:
                 # Shallow clone or no parent — fall back to staged + working tree
                 diff_result = subprocess.run(
                     ["git", "diff", "HEAD", "--name-only", "--diff-filter=ACM"],
-                    capture_output=True, text=True, cwd=self.repo_root,
+                    capture_output=True,
+                    text=True,
+                    cwd=self.repo_root,
                 )
                 staged_result = subprocess.run(
                     ["git", "diff", "--cached", "--name-only", "--diff-filter=ACM"],
-                    capture_output=True, text=True, cwd=self.repo_root,
+                    capture_output=True,
+                    text=True,
+                    cwd=self.repo_root,
                 )
-                all_changed = list(dict.fromkeys(
-                    diff_result.stdout.splitlines() + staged_result.stdout.splitlines()
-                ))
+                all_changed = list(
+                    dict.fromkeys(
+                        diff_result.stdout.splitlines() + staged_result.stdout.splitlines()
+                    )
+                )
             else:
                 all_changed = list(dict.fromkeys(diff_result.stdout.splitlines()))
         except FileNotFoundError:
             return issues
 
-        md_files = [
-            f.strip() for f in all_changed
-            if f.strip().endswith(".md") and f.strip()
-        ]
+        md_files = [f.strip() for f in all_changed if f.strip().endswith(".md") and f.strip()]
         if not md_files:
             print("✅ Pattern 35 (Markdown FP Secrets): no changed .md files")
             return issues
@@ -3843,7 +4011,7 @@ class CommonIssueFixer:
                 # treat these as Python because detect-secrets does the same —
                 # it applies the Secret Keyword plugin regardless of language
                 # label, so the Python-style inline comment is correct here.
-                trailing = raw_line[len(line.rstrip()):]  # preserves \n / whitespace
+                trailing = raw_line[len(line.rstrip()) :]  # preserves \n / whitespace
                 if in_code_fence and fence_lang in ("python", "py", ""):
                     pragma = "  # pragma: allowlist secret"
                     new_line = line.rstrip() + pragma + trailing
@@ -3868,13 +4036,13 @@ class CommonIssueFixer:
             print("✅ Pattern 35 (Markdown FP Secrets): no unannotated doc secrets found")
         else:
             action = "Would annotate" if (self.check_only or self.dry_run) else "Annotated"
-            print(f"   {'⚠' if self.check_only else '✅'} Pattern 35 (Markdown FP Secrets): "
-                  f"{action} {len(issues)} line(s)")
+            print(
+                f"   {'⚠' if self.check_only else '✅'} Pattern 35 (Markdown FP Secrets): "
+                f"{action} {len(issues)} line(s)"
+            )
             for msg in issues:
                 print(f"      {msg}")
         return issues
-
-
 
     # Pattern 36 — Assert Messages Without Context (RP-031)
     # ------------------------------------------------------------------
@@ -3891,43 +4059,43 @@ class CommonIssueFixer:
 
         # Keywords that commonly appear in assertions to generate context
         CONTEXT_KEYWORDS = {
-            'response': 'Response must not be empty',
-            'result': 'Result must not be empty',
-            'data': 'Data must not be empty',
-            'value': 'Value must be initialized',
-            'content': 'Content must not be empty',
-            'item': 'Item must not be empty',
-            'obj': 'Object must be initialized',
-            'error': 'Error should be raised or set',
-            'count': 'Count must be greater than zero',
-            'length': 'Length must be greater than zero',
+            "response": "Response must not be empty",
+            "result": "Result must not be empty",
+            "data": "Data must not be empty",
+            "value": "Value must be initialized",
+            "content": "Content must not be empty",
+            "item": "Item must not be empty",
+            "obj": "Object must be initialized",
+            "error": "Error should be raised or set",
+            "count": "Count must be greater than zero",
+            "length": "Length must be greater than zero",
         }
 
         def _extract_variable_name(condition: str) -> str:
             """Extract the primary variable from assertion condition."""
-            m = re.search(r'len\((\w+)\)', condition)
+            m = re.search(r"len\((\w+)\)", condition)
             if m:
                 return m.group(1)
-            m = re.search(r'(\w+)\s+(?:is|==|!=|>|<|>=|<=)', condition)
+            m = re.search(r"(\w+)\s+(?:is|==|!=|>|<|>=|<=)", condition)
             if m:
                 return m.group(1)
-            m = re.search(r'^(\w+)\s*(?:$|or|and)', condition)
+            m = re.search(r"^(\w+)\s*(?:$|or|and)", condition)
             if m:
                 return m.group(1)
             return ""
 
         def _generate_message(condition: str, var_name: str) -> str:
             """Generate a descriptive message for an assertion."""
-            if 'len(' in condition:
+            if "len(" in condition:
                 if var_name:
                     return f"{var_name.capitalize()} must not be empty"
                 return "Collection must not be empty"
-            if 'is not None' in condition or '!= None' in condition:
+            if "is not None" in condition or "!= None" in condition:
                 if var_name:
-                    return f"{var_name} must be initialized"
+                    return f"{var_name.capitalize()} must be initialized"
                 return "Value must be initialized"
-            if ' > ' in condition or '>=' in condition:
-                if 'count' in var_name.lower() or 'len' in condition:
+            if " > " in condition or ">=" in condition:
+                if "count" in var_name.lower() or "len" in condition:
                     return f"{var_name if var_name else 'Count'} must be positive"
                 return f"{var_name if var_name else 'Value'} must be greater than zero"
             for keyword, default_msg in CONTEXT_KEYWORDS.items():
@@ -3938,28 +4106,32 @@ class CommonIssueFixer:
             return "Condition must be true"
 
         for py_file in tests_dir.rglob("*.py"):
-            content = py_file.read_text(encoding='utf-8', errors='ignore')
-            lines = content.split('\n')
+            content = py_file.read_text(encoding="utf-8", errors="ignore")
+            lines = content.split("\n")
             modified = False
 
             for line_num, line in enumerate(lines):
-                if '# noqa' in line or '# pragma' in line:
+                if "# noqa" in line or "# pragma" in line:
                     continue
-                if not re.search(r'^\s*assert\s+', line):
+                if not re.search(r"^\s*assert\s+", line):
                     continue
                 if re.search(r',\s*["\'].*["\']', line):
                     continue
 
-                m = re.match(r'^(\s*)assert\s+(.+?)\s*(?:#.*)?$', line)
+                m = re.match(r"^(\s*)assert\s+(.+?)\s*(?:#.*)?$", line)
                 if not m:
                     continue
 
                 indent = m.group(1)
                 condition = m.group(2).strip()
 
-                if len(condition) > 80 or condition.count(' and ') > 1 or condition.count(' or ') > 1:
+                if (
+                    len(condition) > 80
+                    or condition.count(" and ") > 1
+                    or condition.count(" or ") > 1
+                ):
                     continue
-                if ',' in condition:
+                if "," in condition:
                     continue
 
                 var_name = _extract_variable_name(condition)
@@ -3976,7 +4148,7 @@ class CommonIssueFixer:
                         modified = True
 
             if modified:
-                py_file.write_text('\n'.join(lines), encoding='utf-8')
+                py_file.write_text("\n".join(lines), encoding="utf-8")
                 self.fixes_applied.setdefault("Assert Messages", 0)
                 self.fixes_applied["Assert Messages"] += 1
 
@@ -3984,7 +4156,9 @@ class CommonIssueFixer:
             print("  ✅ All assertions have descriptive messages")
         else:
             action = "Would add" if self.check_only else "Added"
-            print(f"  {'⚠' if self.check_only else '✅'} {action} {len(issues)} assertion message(s)")
+            print(
+                f"  {'⚠' if self.check_only else '✅'} {action} {len(issues)} assertion message(s)"
+            )
 
         return issues
 
@@ -4001,24 +4175,24 @@ class CommonIssueFixer:
         if not tests_dir.exists():
             return issues
 
-        ASYNCIO_DECORATOR_RE = re.compile(r'^\s*@pytest\.mark\.asyncio\s*$')
+        ASYNCIO_DECORATOR_RE = re.compile(r"^\s*@pytest\.mark\.asyncio\s*$")
         # Anchored with leading whitespace so indented (class-method) timeout
         # decorators are recognised; without this the fixer was not idempotent
         # and stacked duplicate timeout decorators on every run.
-        TIMEOUT_DECORATOR_RE = re.compile(r'^\s*@pytest\.mark\.timeout\b')
-        ASYNC_DEF_RE = re.compile(r'^\s*async\s+def\s+\w+')
-        PYTEST_MARK_RE = re.compile(r'^\s*@pytest\.mark\.')
+        TIMEOUT_DECORATOR_RE = re.compile(r"^\s*@pytest\.mark\.timeout\b")
+        ASYNC_DEF_RE = re.compile(r"^\s*async\s+def\s+\w+")
+        PYTEST_MARK_RE = re.compile(r"^\s*@pytest\.mark\.")
         DEFAULT_TIMEOUT_SECONDS = 30
 
         for py_file in tests_dir.rglob("*.py"):
-            content = py_file.read_text(encoding='utf-8', errors='ignore')
+            content = py_file.read_text(encoding="utf-8", errors="ignore")
             try:
                 string_lines = _lines_inside_string_literals(content)
             except (tokenize.TokenError, IndentationError, SyntaxError) as exc:
                 raise ValueError(
                     f"Cannot safely scan {py_file.relative_to(self.repo_root)}"
                 ) from exc
-            src_lines = content.split('\n')
+            src_lines = content.split("\n")
             lines: list[str] = []
             modified = False
 
@@ -4040,7 +4214,9 @@ class CommonIssueFixer:
                     if ASYNC_DEF_RE.match(next_line):
                         if not has_timeout:
                             indent = len(line) - len(line.lstrip())
-                            lines.append(' ' * indent + f'@pytest.mark.timeout({DEFAULT_TIMEOUT_SECONDS})')
+                            lines.append(
+                                " " * indent + f"@pytest.mark.timeout({DEFAULT_TIMEOUT_SECONDS})"
+                            )
                             modified = True
                             issues.append(
                                 f"{py_file.relative_to(self.repo_root)}:{len(lines)} - "
@@ -4054,7 +4230,7 @@ class CommonIssueFixer:
 
             if modified:
                 if not self.check_only and not self.dry_run:
-                    py_file.write_text('\n'.join(lines), encoding='utf-8')
+                    py_file.write_text("\n".join(lines), encoding="utf-8")
                 self.fixes_applied.setdefault("Async Timeouts", 0)
                 self.fixes_applied["Async Timeouts"] += 1
 
@@ -4062,7 +4238,9 @@ class CommonIssueFixer:
             print("  ✅ All async tests have timeout decorators")
         else:
             action = "Would add" if self.check_only else "Added"
-            print(f"  {'⚠' if self.check_only else '✅'} {action} {len(issues)} timeout decorator(s)")
+            print(
+                f"  {'⚠' if self.check_only else '✅'} {action} {len(issues)} timeout decorator(s)"
+            )
 
         return issues
 
@@ -4080,24 +4258,26 @@ class CommonIssueFixer:
             return issues
 
         MOCK_CREATION_RE = re.compile(
-            r'^\s*(\w+)\s*=\s*(?:Mock|MagicMock|AsyncMock|patch|PropertyMock)\s*\('
+            r"^\s*(\w+)\s*=\s*(?:Mock|MagicMock|AsyncMock|patch|PropertyMock)\s*\("
         )
         CLEANUP_PATTERNS = [
-            r'\.reset_mock\(\)',
-            r'\.stop\(\)',
-            r'\.clear\(\)',
-            r'\.close\(\)',
+            r"\.reset_mock\(\)",
+            r"\.stop\(\)",
+            r"\.clear\(\)",
+            r"\.close\(\)",
         ]
 
-        def _has_cleanup_in_scope(lines: list[str], start_idx: int, end_idx: int, mock_name: str) -> bool:
+        def _has_cleanup_in_scope(
+            lines: list[str], start_idx: int, end_idx: int, mock_name: str
+        ) -> bool:
             """Check if mock is cleaned up in the given scope."""
-            scope_text = '\n'.join(lines[start_idx:end_idx + 1])
+            scope_text = "\n".join(lines[start_idx : end_idx + 1])
             for pattern in CLEANUP_PATTERNS:
-                if re.search(f'{mock_name}.*{pattern}', scope_text):
+                if re.search(f"{mock_name}.*{pattern}", scope_text):
                     return True
-            if '@pytest.fixture' in scope_text and 'autouse=True' in scope_text:
+            if "@pytest.fixture" in scope_text and "autouse=True" in scope_text:
                 return True
-            if re.search(rf'with\s+.*{mock_name}', scope_text):
+            if re.search(rf"with\s+.*{mock_name}", scope_text):
                 return True
             return False
 
@@ -4110,17 +4290,17 @@ class CommonIssueFixer:
                     continue
                 current_indent = len(line) - len(line.lstrip())
                 if current_indent <= base_indent and (
-                    line.strip().startswith('def ') or
-                    line.strip().startswith('class ') or
-                    line.strip().startswith('@')
+                    line.strip().startswith("def ")
+                    or line.strip().startswith("class ")
+                    or line.strip().startswith("@")
                 ):
                     return i - 1
             return len(lines) - 1
 
         for py_file in tests_dir.rglob("*.py"):
-            content = py_file.read_text(encoding='utf-8', errors='ignore')
-            lines = content.split('\n')
-            test_func_pattern = re.compile(r'^\s*def\s+(test_\w+)')
+            content = py_file.read_text(encoding="utf-8", errors="ignore")
+            lines = content.split("\n")
+            test_func_pattern = re.compile(r"^\s*def\s+(test_\w+)")
 
             for i, line in enumerate(lines):
                 m = test_func_pattern.match(line)
@@ -4155,29 +4335,24 @@ class CommonIssueFixer:
         return issues
 
 
-
 def main():
     parser = argparse.ArgumentParser(
         description="Auto-fix common CI issues",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=__doc__
+        epilog=__doc__,
     )
     parser.add_argument(
-        "--check-only",
-        action="store_true",
-        help="Only check for issues, don't fix them"
+        "--check-only", action="store_true", help="Only check for issues, don't fix them"
     )
     parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Show what would be changed without making changes"
+        "--dry-run", action="store_true", help="Show what would be changed without making changes"
     )
     parser.add_argument(
         "--pattern",
         type=int,
         choices=range(1, 39),
         metavar="N",
-        help="Run only pattern N (1–38); see pattern list above"
+        help="Run only pattern N (1–38); see pattern list above",
     )
     parser.add_argument(
         "--pattern-name",
@@ -4187,12 +4362,12 @@ def main():
             "Run only patterns whose name matches NAME (case-insensitive substring). "
             "Accepts telemetry classifier names such as 'ruff', 'import', 'yaml', "
             "'coverage', 'mypy', 'bandit'. Falls back to all patterns when no match."
-        )
+        ),
     )
     parser.add_argument(
         "--json-output",
         type=str,
-        help="Write JSON report to specified path (e.g., .codex/diagnostic-report.json)"
+        help="Write JSON report to specified path (e.g., .codex/diagnostic-report.json)",
     )
     parser.add_argument(
         "--record-patterns",
@@ -4235,11 +4410,13 @@ def main():
     if getattr(args, "record_patterns", False):
         try:
             import importlib.util as _ilu
+
             _rec_path = Path(__file__).parent / "pattern_recorder.py"
             _spec = _ilu.spec_from_file_location("pattern_recorder", _rec_path)
             _rec = _ilu.module_from_spec(_spec)  # type: ignore[arg-type]
             _spec.loader.exec_module(_rec)  # type: ignore[union-attr]
             import os as _os
+
             _db = args.record_db or _os.environ.get(
                 "CODEX_DB_PATH",
                 _os.path.join(_os.path.expanduser("~"), ".codex", "cli_history.db"),
@@ -4250,11 +4427,10 @@ def main():
             # Write report to a temp path so record_from_report can ingest it
             import json as _json
             import tempfile as _tf
+
             _tmp_path = None
             try:
-                with _tf.NamedTemporaryFile(
-                    mode="w", suffix=".json", delete=False
-                ) as _tmp:
+                with _tf.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as _tmp:
                     _json.dump(report, _tmp)
                     _tmp_path = _tmp.name
                 _n = _rec.record_from_report(Path(_tmp_path), _conn, _session, _sha)

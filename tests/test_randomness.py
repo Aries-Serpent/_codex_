@@ -54,14 +54,14 @@ def test_set_seed_sets_numpy_seed_when_available():
 
 def test_set_seed_handles_missing_numpy_gracefully():
     """Test that set_seed works even if numpy is not available."""
-    with patch("src.common.randomness.np", None):
+    with patch("common.randomness.np", None):
         result = set_seed(42)
         assert result == 42, "Result must not be empty"
 
 
 def test_set_seed_handles_missing_torch_gracefully():
     """Test that set_seed works even if torch is not available."""
-    with patch("src.common.randomness.torch", None):
+    with patch("common.randomness.torch", None):
         result = set_seed(42)
         assert result == 42, "Result must not be empty"
 
@@ -75,7 +75,7 @@ def test_set_seed_sets_torch_seed_when_available():
     mock_torch.backends = Mock()
     mock_torch.backends.cudnn = Mock()
 
-    with patch("src.common.randomness.torch", mock_torch):
+    with patch("common.randomness.torch", mock_torch):
         result = set_seed(42)
         assert result == 42, "Result must not be empty"
         mock_torch.manual_seed.assert_called_once_with(42)
@@ -86,7 +86,7 @@ def test_set_seed_handles_torch_manual_seed_exception():
     mock_torch = Mock()
     mock_torch.manual_seed = Mock(side_effect=RuntimeError("test error"))
 
-    with patch("src.common.randomness.torch", mock_torch):
+    with patch("common.randomness.torch", mock_torch):
         result = set_seed(42)
         assert result == 42, "Result must not be empty"
 
@@ -101,7 +101,7 @@ def test_set_seed_sets_cuda_seeds_when_available():
     mock_torch.backends = Mock()
     mock_torch.backends.cudnn = Mock()
 
-    with patch("src.common.randomness.torch", mock_torch):
+    with patch("common.randomness.torch", mock_torch):
         result = set_seed(42)
         assert result == 42, "Result must not be empty"
         mock_torch.cuda.manual_seed_all.assert_called_once_with(42)
@@ -121,7 +121,7 @@ def test_set_seed_sets_cudnn_deterministic_flags():
     mock_backends.cudnn = mock_cudnn
     mock_torch.backends = mock_backends
 
-    with patch("src.common.randomness.torch", mock_torch):
+    with patch("common.randomness.torch", mock_torch):
         set_seed(42)
         # Check that the attributes were set correctly
         assert mock_cudnn.deterministic is True, "deterministic is not valid"
@@ -144,7 +144,7 @@ def test_set_seed_handles_cudnn_exception_gracefully():
     mock_backends.cudnn = mock_cudnn
     mock_torch.backends = mock_backends
 
-    with patch("src.common.randomness.torch", mock_torch):
+    with patch("common.randomness.torch", mock_torch):
         result = set_seed(42)
         assert result == 42, "Result must not be empty"
 

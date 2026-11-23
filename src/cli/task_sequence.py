@@ -7,6 +7,9 @@ Note: This is a stub implementation created during CI auto-healing (Phase B Trac
 Full implementation should be restored from git history or rebuilt.
 """
 
+import importlib
+import os
+from pathlib import Path
 from typing import Any, Optional
 
 
@@ -38,4 +41,29 @@ def create_sequence(config: dict[str, Any]) -> TaskSequence:
     return TaskSequence(config.get("tasks", []))
 
 
-__all__ = ["TaskSequence", "create_sequence"]
+def setup_mlflow_tracking(mlruns_dir: str | Path, dry_run: bool = False) -> bool:
+    """Configure MLflow to use a local file-backed tracking directory."""
+    try:
+        mlflow = importlib.import_module("mlflow")
+    except (ImportError, ModuleNotFoundError):
+        return False
+    if mlflow is None:
+        return False
+
+    mlruns_path = Path(mlruns_dir).resolve()
+    tracking_uri = mlruns_path.as_uri()
+    if dry_run:
+        return True
+
+    set_tracking_uri = getattr(mlflow, "set_tracking_uri", None)
+    if not callable(set_tracking_uri):
+        return False
+
+    mlruns_path.mkdir(parents=True, exist_ok=True)
+    set_tracking_uri(tracking_uri)
+    os.environ["MLFLOW_TRACKING_URI"] = tracking_uri
+    os.environ["CODEX_MLFLOW_LOCAL_DIR"] = str(mlruns_path)
+    return True
+
+
+__all__ = ["TaskSequence", "create_sequence", "setup_mlflow_tracking"]

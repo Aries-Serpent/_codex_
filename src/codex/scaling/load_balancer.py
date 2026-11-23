@@ -60,7 +60,7 @@ class BackendNode:
 class LoadBalancerConfig:
     """Load balancer configuration."""
 
-    name: str
+    name: str = "default"
     algorithm: str = "consistent_hash"  # consistent_hash, round_robin, weighted
     health_check_interval: float = 5.0
     session_stickiness: bool = False

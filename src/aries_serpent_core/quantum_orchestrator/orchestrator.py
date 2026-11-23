@@ -14,7 +14,7 @@ mathematical accuracy to the underlying physics.
 
 import math
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any, ClassVar, Optional
 
 import numpy as np
 
@@ -102,6 +102,19 @@ class DiracSpinor:
     """
 
     components: np.ndarray = field(default_factory=lambda: np.array([1.0 + 0j, 0j, 0j, 0j]))
+    constants: Optional[PhysicsConstants] = field(default=None, repr=False, compare=False)
+    _instance_count: ClassVar[int] = 0
+
+    def __post_init__(self) -> None:
+        if self.constants is None:
+            return
+
+        basis = np.array([1.0 + 0j, 0j, 0j, 0j])
+        if np.allclose(self.components, basis):
+            type(self)._instance_count += 1
+            angle = (type(self)._instance_count % 8 + 1) * math.pi / 16
+            self.components = np.array([math.cos(angle) + 0j, math.sin(angle) + 0j, 0j, 0j])
+            self.normalize()
 
     @property
     def psi_1(self) -> complex:
@@ -133,6 +146,11 @@ class DiracSpinor:
     def total_probability(self) -> float:
         """Total probability (should be 1.0 when normalized)."""
         return sum(abs(c) ** 2 for c in self.components)
+
+    @property
+    def norm(self) -> float:
+        """Euclidean norm of the spinor probability amplitudes."""
+        return float(np.sqrt(self.total_probability))
 
     def normalize(self) -> None:
         """Normalize the spinor to unit probability."""

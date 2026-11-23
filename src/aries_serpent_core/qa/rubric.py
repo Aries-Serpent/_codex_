@@ -17,6 +17,7 @@ Author: Codex Team
 
 from __future__ import annotations
 
+import ast
 import logging
 
 logger = logging.getLogger(__name__)
@@ -41,8 +42,70 @@ class RubricCriterion(BaseModel):
 class QARubric(BaseModel):
     """A QA rubric composed of multiple criteria."""
 
-    name: str
+    name: str = "default"
     criteria: list[RubricCriterion] = Field(default_factory=list)
+
+    @staticmethod
+    def _clamp_score(value: float) -> float:
+        return max(0.0, min(1.0, float(value)))
+
+    def score_code_quality(self, code: Any) -> float:
+        if not isinstance(code, str):
+            raise TypeError("code must be a string")
+        if not code.strip():
+            return 0.0
+
+        tree = ast.parse(code)
+        score = 0.5
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                score += 0.1
+            if isinstance(node, (ast.Return, ast.Assign, ast.AnnAssign)):
+                score += 0.05
+        return self._clamp_score(score)
+
+    def score_test_coverage(self, coverage_data: dict[str, Any]) -> float:
+        if not isinstance(coverage_data, dict):
+            raise TypeError("coverage_data must be a mapping")
+        covered = coverage_data.get("covered")
+        total = coverage_data.get("total")
+        if not isinstance(covered, (int, float)) or not isinstance(total, (int, float)):
+            return 0.0
+        if total <= 0:
+            return 0.0
+        return self._clamp_score(covered / total)
+
+    def score_documentation(self, code: Any) -> float:
+        if not isinstance(code, str):
+            raise TypeError("code must be a string")
+        if not code.strip():
+            return 0.0
+
+        tree = ast.parse(code)
+        docstrings = sum(
+            1
+            for node in ast.walk(tree)
+            if isinstance(node, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+            and ast.get_docstring(node, clean=False)
+        )
+        return self._clamp_score(0.5 + (0.1 * docstrings))
+
+    def aggregate_scores(self, scores: dict[str, Any]) -> float:
+        if not isinstance(scores, dict):
+            raise TypeError("scores must be a mapping")
+        numeric = [float(value) for value in scores.values() if isinstance(value, (int, float))]
+        if not numeric:
+            return 0.0
+        return self._clamp_score(sum(numeric) / len(numeric))
+
+    def evaluate(self, code: Any, threshold: float = 0.5) -> float:
+        score = self.aggregate_scores(
+            {
+                "code_quality": self.score_code_quality(code),
+                "documentation": self.score_documentation(code),
+            }
+        )
+        return score if score >= threshold else 0.0
 
 
 def load_rubric(path: Path) -> QARubric:

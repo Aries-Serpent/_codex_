@@ -99,6 +99,8 @@ class _WhitespaceFallbackTokenizer:
         max_length: Optional[int] = None,
         **_: Any,
     ) -> list[int]:
+        if not isinstance(text, str):
+            raise TypeError("text must be a string")
         tokens = [tok for tok in text.split() if tok]
         ids = [self._ensure_token(tok) for tok in tokens]
         if add_special_tokens:
@@ -257,6 +259,8 @@ class HFTokenizerAdapter(TokenizerAdapter):
             ``max_length`` tokens long.
         """
 
+        if not isinstance(text, str):
+            raise TypeError("text must be a string")
         return self.tokenizer.encode(  # type: ignore[attr-defined]
             text,
             add_special_tokens=False,
@@ -264,6 +268,34 @@ class HFTokenizerAdapter(TokenizerAdapter):
             truncation=max_length is not None,
             max_length=max_length,
         )
+
+    def encode_plus(
+        self,
+        text: str,
+        *,
+        max_length: Optional[int] = None,
+        truncation: bool | str = False,
+        **kwargs: Any,
+    ) -> dict[str, Any]:
+        input_ids = self.encode(
+            text,
+            pad_to_max=kwargs.get("padding") == "max_length",
+            max_length=max_length,
+        )
+        return {"input_ids": input_ids, "attention_mask": [1] * len(input_ids)}
+
+    def batch_encode_plus(
+        self,
+        texts: Iterable[str],
+        *,
+        add_special_tokens: bool = False,
+        **kwargs: Any,
+    ) -> dict[str, Any]:
+        input_ids = [self.encode_plus(text, **kwargs).get("input_ids", []) for text in texts]
+        return {
+            "input_ids": input_ids,
+            "attention_mask": [[1] * len(ids) for ids in input_ids],
+        }
 
     def decode(self, ids: Sequence[int]) -> str:
         return self.tokenizer.decode(ids, clean_up_tokenization_spaces=False)  # type: ignore[attr-defined]

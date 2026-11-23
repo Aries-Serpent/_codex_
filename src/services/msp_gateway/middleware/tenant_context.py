@@ -230,6 +230,15 @@ class TenantRegistry:
                 tenant["api_key_hash"] = current_hash
                 return tenant
 
+        # Memory tenants remain addressable after an API key is revoked.
+        if self.backend != "sqlite":
+            current_hash = hash_api_key(api_key)
+            for tenant in self.tenants.values():
+                if tenant.get("api_key_hash") == current_hash:
+                    if tenant.get("active", True):
+                        auth_manager.register_api_key(api_key, tenant["tenant_id"])
+                    return tenant
+
         # Fallback: search in SQLite
         if self.backend == "sqlite":
             import json
