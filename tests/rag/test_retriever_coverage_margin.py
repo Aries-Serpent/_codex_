@@ -2,10 +2,6 @@
 
 from __future__ import annotations
 
-from types import SimpleNamespace
-
-import pytest
-
 from aries_serpent_core.rag import retriever
 
 

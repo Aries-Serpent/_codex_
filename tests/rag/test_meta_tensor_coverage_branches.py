@@ -9,11 +9,9 @@ from datetime import UTC, datetime
 from types import SimpleNamespace
 
 from codex.rag.materialization_prevention import (
-    MaterializationMonitor,
     MaterializationPreventionFramework,
     MaterializationRecoveryStrategy,
     MatTensorDetector,
-    TensorLocation,
 )
 from codex.rag.meta_tensor_guard import GuardRailReport, GuardRailStatus, MetaTensorGuardRail
 
