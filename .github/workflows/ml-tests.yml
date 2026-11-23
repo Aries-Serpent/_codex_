@@ -374,7 +374,7 @@ jobs:
     name: ml-slow-aggregate
     permissions:
       contents: read
-    runs-on: ubuntu-latest-m
+    runs-on: ubuntu-latest
     needs: [test-ml-components, integration-shard, coverage-shard]
     if: always()
     timeout-minutes: 10
