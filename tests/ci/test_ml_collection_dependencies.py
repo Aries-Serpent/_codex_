@@ -109,7 +109,7 @@ def test_heavy_cognitive_app_and_rag_jobs_use_larger_runners():
 
     assert pages["jobs"]["build"]["runs-on"] == "ubuntu-latest-m"
     assert deploy["jobs"]["build_cognitive_app"]["runs-on"] == "ubuntu-latest-m"
-    assert rag["jobs"]["test-rag"]["runs-on"] == "ubuntu-latest-m"
+    assert rag["jobs"]["test-rag"]["runs-on"] == "ubuntu-latest"
 
 
 def test_rag_cleanup_skips_sufficient_disk_and_bounds_destructive_commands():
@@ -239,9 +239,9 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
         ".codex/baselines/ml_unit_*.json"
         in yaml.safe_load(workflow_path.read_text())["on"]["push"]["paths"]
     )
-    assert jobs["test-ml-components"]["strategy"]["matrix"]["os"] == ["ubuntu-latest-m"]
-    assert jobs["integration-shard"]["runs-on"] == "ubuntu-latest-m"
-    assert jobs["coverage-shard"]["runs-on"] == "ubuntu-latest-m"
+    assert jobs["test-ml-components"]["strategy"]["matrix"]["os"] == ["ubuntu-latest"]
+    assert jobs["integration-shard"]["runs-on"] == "ubuntu-latest"
+    assert jobs["coverage-shard"]["runs-on"] == "ubuntu-latest"
     for job in jobs.values():
         assert job["timeout-minutes"] <= 60
         for step in job["steps"]:
@@ -256,7 +256,7 @@ def test_frontend_diagnostics_are_observation_only():
     )
     job = workflow["jobs"]["frontend-diagnostics"]
 
-    assert job["runs-on"] == "ubuntu-latest-m"
+    assert job["runs-on"] == "ubuntu-latest"
     assert job["timeout-minutes"] <= 45
     steps = {step.get("name"): step for step in job["steps"]}
     assert "Install cognitive_app dependencies" in steps

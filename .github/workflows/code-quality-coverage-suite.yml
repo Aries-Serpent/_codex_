@@ -428,7 +428,7 @@ jobs:
     name: Cognitive App Frontend Diagnostics
     needs:
     - change_filter
-    runs-on: ubuntu-latest-m
+    runs-on: ubuntu-latest
     if: '(github.event_name == ''pull_request'') ||
 
       (github.event_name == ''push'') ||
