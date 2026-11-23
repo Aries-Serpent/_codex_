@@ -403,21 +403,20 @@ class GitHubMCPPoster(
     def __setattr__(self, name: str, value: Any) -> None:
         """Keep the façade hooks monkeypatchable without creating a recursive alias loop."""
         super().__setattr__(name, value)
-        if name == "_record_cb_pattern":
+        if name in {"_record_cb_pattern", "_request", "_get"}:
             try:
                 setattr(self._api, name, value)
             except AttributeError:
                 logger.debug("Unable to propagate %s to API client", name, exc_info=True)
-        elif name == "_request":
+
+    def __delattr__(self, name: str) -> None:
+        """Restore instance hook patches on the API collaborator as well."""
+        super().__delattr__(name)
+        if name in {"_record_cb_pattern", "_request", "_get"}:
             try:
-                setattr(self._api, name, value)
+                setattr(self._api, name, getattr(self, name))
             except AttributeError:
-                logger.debug("Unable to propagate %s to API client", name, exc_info=True)
-        elif name == "_get":
-            try:
-                setattr(self._api, name, value)
-            except AttributeError:
-                logger.debug("Unable to propagate %s to API client", name, exc_info=True)
+                logger.debug("Unable to restore %s on API client", name, exc_info=True)
 
     def __init__(self, token: str | None = None) -> None:
         """Initialize the MCP poster with all specialized managers.

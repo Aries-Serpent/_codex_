@@ -345,8 +345,9 @@ def query(
         codex rag query "logging" --format json
     """
     try:
-        query_text = query_option if query_option is not None else query_text
-        if query_text is None or not query_text.strip():
+        if isinstance(query_option, str):
+            query_text = query_option
+        if not isinstance(query_text, str) or not query_text.strip():
             console.print("[red]❌ Query text is required[/red]")
             raise typer.Exit(1)
         if not index_name or not index_name.strip():
@@ -498,7 +499,13 @@ def list_indices(
                                 "path": index_path,
                             }
                         )
-                    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
+                    except (
+                        json.JSONDecodeError,
+                        IOError,
+                        OSError,
+                        ModuleNotFoundError,
+                        ImportError,
+                    ) as e:
                         type(e).__name__
                         logger.warning(
                             f"Failed to read metadata for {index_path}: <ERROR_TYPE>"
@@ -688,9 +695,7 @@ def merge(
             progress.update(task, completed=True)
 
         if result is True:
-            console.print(
-                "\n[green]✅ Indices merged successfully![/green]"
-            )
+            console.print("\n[green]✅ Indices merged successfully![/green]")
             console.print(f"[dim]   Target: {target_index}[/dim]")
         elif hasattr(result, "success") and result.success:
             console.print(

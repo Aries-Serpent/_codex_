@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 import logging
 import os
 import re
@@ -38,6 +39,9 @@ KNOWN_MODEL_REVISIONS: dict[str, str] = {  # pragma: allowlist secret
     "gpt2": "607a30d783dfa663caf39e06633721c8d4cfcd7e",  # pragma: allowlist secret
     "sshleifer/tiny-gpt2": "5f91d94bd9cd7190a9f3216ff93cd1dd95f2c7be",  # pragma: allowlist secret
     "hf-internal-testing/llama-tokenizer": "99b822d16c88d1d1130b3806c97ee9d89a9c9999",  # pragma: allowlist secret  # noqa: E501
+    "hf-internal-testing/tiny-random-bert": "f171d7baecaf37b5da5a3616d8833b9969753535",  # pragma: allowlist secret  # noqa: E501
+    "bert-base-multilingual-cased": "3f076fdb1ab68d5b2880cb87a0886f315b8146f8",  # pragma: allowlist secret  # noqa: E501
+    "google-bert/bert-base-multilingual-cased": "3f076fdb1ab68d5b2880cb87a0886f315b8146f8",  # pragma: allowlist secret  # noqa: E501
     "sentence-transformers/all-MiniLM-L6-v2": "8b3219a92973c328a8e22fadcfa821b5dc75636a",  # pragma: allowlist secret  # noqa: E501
 }
 
@@ -91,6 +95,9 @@ def ensure_pinned_kwargs(
 
     norm_id = _normalize_identifier(identifier)
     other = dict(kwargs or {})
+    allow_unpinned_local = bool(other.pop("_codex_allow_unpinned_local", False))
+    if allow_unpinned_local:
+        return None, other
     if "commit_id" in other:
         other["commit_id"] = _validate_revision(str(other["commit_id"]))
         return other["commit_id"], other
@@ -141,17 +148,45 @@ def load_from_pretrained(factory: Any, identifier: Any, **kwargs: Any) -> Any:
     if revision is not None:
         call_kwargs["revision"] = revision
 
+    try:
+        method_signature = inspect.signature(method)
+        accepts_var_kwargs = any(
+            parameter.kind == inspect.Parameter.VAR_KEYWORD
+            for parameter in method_signature.parameters.values()
+        )
+        accepted_kwargs = {
+            name
+            for name, parameter in method_signature.parameters.items()
+            if parameter.kind
+            in (
+                inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                inspect.Parameter.KEYWORD_ONLY,
+            )
+        }
+    except (TypeError, ValueError):
+        accepts_var_kwargs = True
+        accepted_kwargs = set()
+
+    def compatible_kwargs(kwargs: Mapping[str, Any]) -> dict[str, Any]:
+        if accepts_var_kwargs:
+            return dict(kwargs)
+        return {name: value for name, value in kwargs.items() if name in accepted_kwargs}
+
     cache_exc: Exception | None = None
 
     # Attempt 1: local cache only (fast, works offline)
     if not call_kwargs.get("local_files_only"):
         try:
-            return method(identifier, local_files_only=True, **call_kwargs)
+            local_kwargs = compatible_kwargs({**call_kwargs, "local_files_only": True})
+            return method(identifier, **local_kwargs)
         except (
             IOError,
             OSError,
             ModuleNotFoundError,
             ImportError,
+            RuntimeError,
+            TypeError,
+            ValueError,
         ) as exc:  # OSError / EnvironmentError for cache miss
             cache_exc = exc
             logger.debug(
@@ -163,7 +198,7 @@ def load_from_pretrained(factory: Any, identifier: Any, **kwargs: Any) -> Any:
 
     # Attempt 2: full network download
     try:
-        return method(identifier, **call_kwargs)
+        return method(identifier, **compatible_kwargs(call_kwargs))
     except (ValueError, TypeError) as network_exc:
         # Both attempts failed — raise a named error so callers can skip gracefully
         errors = []

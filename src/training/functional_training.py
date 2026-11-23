@@ -452,6 +452,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             tokenizer.pad_token = tokenizer.eos_token
 
         tokenized = tokenizer(list(texts), padding=True, return_tensors="pt")
+        input_ids = tokenized["input_ids"]
+        if not hasattr(input_ids, "clone"):
+            input_ids = torch.tensor(input_ids, dtype=torch.long)
+            tokenized["input_ids"] = input_ids
+        attention_mask = tokenized.get("attention_mask")
+        if attention_mask is not None and not hasattr(attention_mask, "clone"):
+            attention_mask = torch.tensor(attention_mask, dtype=torch.long)
+            tokenized["attention_mask"] = attention_mask
         tokenized["labels"] = tokenized["input_ids"].clone()
         tokenized["labels"][tokenized["attention_mask"] == 0] = -100
         tokenized_np = {k: v.numpy() for k, v in tokenized.items()}
@@ -460,6 +468,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         val_ds = None
         if val_texts:
             val_tok = tokenizer(list(val_texts), padding=True, return_tensors="pt")
+            val_input_ids = val_tok["input_ids"]
+            if not hasattr(val_input_ids, "clone"):
+                val_input_ids = torch.tensor(val_input_ids, dtype=torch.long)
+                val_tok["input_ids"] = val_input_ids
+            val_attention_mask = val_tok.get("attention_mask")
+            if val_attention_mask is not None and not hasattr(val_attention_mask, "clone"):
+                val_attention_mask = torch.tensor(val_attention_mask, dtype=torch.long)
+                val_tok["attention_mask"] = val_attention_mask
             val_tok["labels"] = val_tok["input_ids"].clone()
             val_tok["labels"][val_tok["attention_mask"] == 0] = -100
             val_ds = Dataset.from_dict({k: v.numpy() for k, v in val_tok.items()})

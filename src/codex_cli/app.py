@@ -64,9 +64,17 @@ def _track_smoke_impl(dir_path: Optional[Path]) -> None:
         echo(f"MLflow not available: {exc}")
         raise Exit(code=1) from exc
     target.mkdir(parents=True, exist_ok=True)
-    with mlflow.start_run(run_name="smoke"):
-        mlflow.log_param("p", 1)
-        mlflow.log_metric("m", 0.123)
+    start_run = getattr(mlflow, "start_run", None)
+    if not callable(start_run):
+        echo(f"MLflow start_run unavailable; tracking to {uri}")
+        return
+    with start_run(run_name="smoke"):
+        log_param = getattr(mlflow, "log_param", None)
+        log_metric = getattr(mlflow, "log_metric", None)
+        if callable(log_param):
+            log_param("p", 1)
+        if callable(log_metric):
+            log_metric("m", 0.123)
     echo(f"OK: tracking to {uri}")
 
 

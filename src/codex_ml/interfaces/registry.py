@@ -94,10 +94,14 @@ def get_component(cfg_key: str, default_path: str) -> Any:
     try:
         cls = load_component(path)
     except (
+        AttributeError,
         IOError,
         OSError,
         ModuleNotFoundError,
         ImportError,
+        RuntimeError,
+        ValueError,
+        TypeError,
     ) as exc:  # pragma: no cover - error path
         raise RuntimeError(f"failed to load component: {path}") from exc
     return cls()

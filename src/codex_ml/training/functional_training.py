@@ -589,9 +589,19 @@ def train(
 
     if writer is not None:
         try:
-            writer.flush()
-            writer.close()
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
+            if hasattr(writer, "flush"):
+                writer.flush()
+            if hasattr(writer, "close"):
+                writer.close()
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+            AttributeError,
+            RuntimeError,
+            TypeError,
+        ) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)

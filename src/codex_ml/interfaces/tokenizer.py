@@ -546,6 +546,9 @@ class HFTokenizer(TokenizerAdapter):
             OSError,
             ModuleNotFoundError,
             ImportError,
+            ValueError,
+            TypeError,
+            RuntimeError,
         ) as exc:  # pragma: no cover - defensive
             LOGGER.warning(
                 "Falling back to whitespace backend for '%s' after load failure (%s)",

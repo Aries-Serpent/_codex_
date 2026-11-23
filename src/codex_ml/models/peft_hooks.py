@@ -49,12 +49,16 @@ def build_lora(model: Any, cfg: Optional[LoraBuildCfg] = None) -> Any:
     if LoraConfig is None or get_peft_model is None:
         return model
     cfg = cfg or LoraBuildCfg()
-    lcfg = LoraConfig(
-        r=cfg.r,
-        lora_alpha=cfg.alpha,
-        lora_dropout=cfg.dropout,
-        target_modules=cfg.target_modules,
-        bias=cfg.bias,
-        task_type=cfg.task_type,
-    )
-    return get_peft_model(model, lcfg)
+    target_modules = cfg.target_modules or ["q_proj", "v_proj"]
+    try:
+        lcfg = LoraConfig(
+            r=cfg.r,
+            lora_alpha=cfg.alpha,
+            lora_dropout=cfg.dropout,
+            target_modules=target_modules,
+            bias=cfg.bias,
+            task_type=cfg.task_type,
+        )
+        return get_peft_model(model, lcfg)
+    except (ImportError, AttributeError, RuntimeError, ValueError, TypeError):
+        return model

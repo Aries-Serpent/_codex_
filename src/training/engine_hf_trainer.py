@@ -25,8 +25,13 @@ Features:
 from __future__ import annotations
 
 import logging
+import sys
 
 logger = logging.getLogger(__name__)
+
+# Keep legacy and src-qualified imports on the same module object.
+sys.modules["training.engine_hf_trainer"] = sys.modules[__name__]
+sys.modules["src.training.engine_hf_trainer"] = sys.modules[__name__]
 
 # ruff: noqa: E402, I001
 
@@ -1253,13 +1258,16 @@ def run_hf_trainer(
     tokenizer_name = tokenizer_name or cast(Optional[str], cfg.get("tokenizer_name")) or model_name
     source = tokenizer_path or tokenizer_name
     tokenizer_kwargs: dict[str, Any] = {"use_fast": use_fast_tokenizer}
-    if not _looks_like_local_source(source):
-        tokenizer_kwargs["revision"] = get_hf_revision(source)
-    tokenizer = load_from_pretrained(
-        AutoTokenizer,
-        source,
-        **tokenizer_kwargs,
-    )
+    if tokenizer_path:
+        tokenizer = AutoTokenizer.from_pretrained(source, **tokenizer_kwargs)
+    else:
+        if not _looks_like_local_source(source):
+            tokenizer_kwargs["revision"] = get_hf_revision(source)
+        tokenizer = load_from_pretrained(
+            AutoTokenizer,
+            source,
+            **tokenizer_kwargs,
+        )
     if tokenizer.pad_token is None:
         logger.warning(
             "Text backend from '%s' has no pad token; falling back to eos padding. "

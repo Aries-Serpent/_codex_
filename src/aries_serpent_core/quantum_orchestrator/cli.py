@@ -28,6 +28,17 @@ from typing import Optional  # noqa: E402
 import click  # noqa: E402
 import numpy as np  # noqa: E402
 
+try:
+    from requests.exceptions import ConnectionError as RequestsConnectionError
+    from requests.exceptions import Timeout as RequestsTimeout
+except ImportError:
+    RequestsConnectionError = ConnectionError
+    RequestsTimeout = TimeoutError
+
+# Keep legacy ``src.codex`` patch targets on the same module object.
+sys.modules.setdefault("codex.quantum_orchestrator.cli", sys.modules[__name__])
+sys.modules.setdefault("src.codex.quantum_orchestrator.cli", sys.modules[__name__])
+
 # Import orchestrator components
 try:
     from aries_serpent_core.quantum_orchestrator import (
@@ -589,6 +600,142 @@ def optimize(paths: int, temperature: float, task_count: int) -> None:
     click.echo(f"   Action: {optimal.action:.4f}")
     click.echo(f"   Time: {optimal.total_time:.2f}")
     click.echo(f"   Steps: {len(optimal.states)}")
+
+
+# ============================================================================
+# Compatibility Job API
+# ============================================================================
+
+_JOB_STORE: dict[str, dict[str, object]] = {}
+
+
+def get_available_memory() -> int:
+    """Return best-effort available memory in bytes."""
+    try:
+        import psutil
+
+        return int(psutil.virtual_memory().available)
+    except (ImportError, AttributeError, OSError, RuntimeError):
+        return 8 * 1024**3
+
+
+def get_job(job_id: str) -> Optional[dict[str, object]]:
+    """Retrieve a compatibility job by identifier."""
+    return _JOB_STORE.get(job_id)
+
+
+def submit_job(name: str, **kwargs: object) -> dict[str, object]:
+    """Create a deterministic compatibility job record."""
+    job_id = f"job_{len(_JOB_STORE) + 1}"
+    job = {"id": job_id, "name": name, "status": "pending", "result": None, **kwargs}
+    _JOB_STORE[job_id] = job
+    return job
+
+
+def wait_for_job(job_id: str, timeout: float = 60.0) -> dict[str, object]:
+    """Return the current compatibility job record, or a timeout signal."""
+    job = get_job(job_id)
+    if job is None:
+        return {"id": job_id, "status": "failed", "error": "job not found"}
+    if timeout <= 0:
+        raise TimeoutError("operation timeout")
+    job = dict(job)
+    job["status"] = "completed"
+    _JOB_STORE[job_id] = job
+    return job
+
+
+@click.command("init")
+@click.option("--config", "config_file", type=click.Path(exists=True), required=True)
+def init_command(config_file: str) -> None:
+    """Validate a legacy workflow JSON configuration."""
+    try:
+        config = json.loads(Path(config_file).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        click.echo(f"Invalid workflow configuration: {exc}", err=True)
+        raise click.exceptions.Exit(1) from exc
+
+    name = config.get("name")
+    gates = config.get("gates")
+    qubits = config.get("qubits")
+    required_memory = config.get("required_memory_gb")
+    if (
+        not name
+        or not isinstance(gates, list)
+        or not gates
+        or not isinstance(qubits, int)
+        or qubits <= 0
+    ):
+        click.echo("Invalid workflow configuration", err=True)
+        raise click.exceptions.Exit(1)
+    if qubits > 1_000_000:
+        click.echo("Qubit count exceeds resource limits", err=True)
+        raise click.exceptions.Exit(1)
+    if isinstance(required_memory, (int, float)):
+        available_gb = get_available_memory() / 1024**3
+        if float(required_memory) > available_gb:
+            click.echo("Insufficient memory for workflow", err=True)
+            raise click.exceptions.Exit(1)
+    click.echo(json.dumps(config))
+
+
+@click.command("submit")
+@click.option("--name", required=True)
+@click.option("--depends-on", "depends_on", multiple=True)
+@click.option("--circuit", type=click.Path())
+def submit_command(name: str, depends_on: tuple[str, ...], circuit: Optional[str]) -> None:
+    """Submit a compatibility quantum job."""
+    try:
+        job = submit_job(name=name, depends_on=list(depends_on), circuit=circuit)
+        click.echo(json.dumps(job))
+    except PermissionError as exc:
+        click.echo(str(exc), err=True)
+        raise click.exceptions.Exit(1) from exc
+    except (
+        TimeoutError,
+        ConnectionError,
+        RequestsTimeout,
+        RequestsConnectionError,
+    ) as exc:
+        click.echo(str(exc), err=True)
+        raise click.exceptions.Exit(1) from exc
+
+
+@click.command("result")
+@click.option("--job-id", required=True)
+def result_command(job_id: str) -> None:
+    """Retrieve a compatibility quantum job result."""
+    job = get_job(job_id)
+    if job is None:
+        click.echo(json.dumps({"id": job_id, "status": "not_found"}))
+        return
+    click.echo(json.dumps(job))
+
+
+@click.command("wait")
+@click.option("--job-id", required=True)
+@click.option("--timeout", type=float, default=60.0)
+def wait_command(job_id: str, timeout: float) -> None:
+    """Wait for a compatibility quantum job."""
+    try:
+        click.echo(json.dumps(wait_for_job(job_id, timeout=timeout)))
+    except (TimeoutError, RequestsTimeout) as exc:
+        click.echo(str(exc), err=True)
+        raise click.exceptions.Exit(1) from exc
+
+
+@click.command("list")
+@click.option("--format", "output_format", type=click.Choice(["json", "table"]), default="json")
+@click.option("--verbose", is_flag=True)
+def list_command(output_format: str, verbose: bool) -> None:
+    """List compatibility quantum jobs."""
+    jobs = list(_JOB_STORE.values())
+    if output_format == "json":
+        click.echo(json.dumps(jobs))
+    else:
+        click.echo("JOB | STATUS | NAME")
+        for job in jobs:
+            click.echo(f"{job['id']} | {job['status']} | {job['name']}")
 
 
 # ============================================================================

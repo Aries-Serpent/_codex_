@@ -123,6 +123,8 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
     # Build kwargs for LoraConfig without duplicating task_type or control flags
     control_keys = {"task_type", "enabled"}
     config_kwargs = {k: v for k, v in merged.items() if k not in control_keys}
+    if "target_modules" not in config_kwargs:
+        config_kwargs["target_modules"] = ["q_proj", "v_proj"]
     if LoraConfig is not None:
         try:
             sig = inspect.signature(LoraConfig)
@@ -145,7 +147,13 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
             get_default_logger().warning("Exception occurred", exc_info=True)
             # Ignore attribute setting failures but continue with adapted model
         return adapted
-    except (ImportError, AttributeError):  # pragma: no cover - defensive fallback
+    except (
+        ImportError,
+        AttributeError,
+        RuntimeError,
+        ValueError,
+        TypeError,
+    ):  # pragma: no cover - defensive fallback
         # If adaptation fails for any reason, return original model with config attached
         try:
             model.peft_config = dict(merged)

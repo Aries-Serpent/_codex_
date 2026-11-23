@@ -216,12 +216,22 @@ class HFTokenizerAdapter(TokenizerAdapter):
             return cls(
                 _WhitespaceFallbackTokenizer(name_or_path=target or "whitespace", is_fast=use_fast)
             )
-        tok = load_from_pretrained(
-            AutoTokenizer,
-            target,
-            use_fast=use_fast,
-            revision=get_hf_revision(),
-        )
+        try:
+            tok = load_from_pretrained(
+                AutoTokenizer,
+                target,
+                use_fast=use_fast,
+                revision=get_hf_revision(),
+            )
+        except (ImportError, AttributeError, RuntimeError, ValueError, TypeError) as exc:
+            logger.warning(
+                "Falling back to whitespace tokenizer for '%s' after load failure (%s)",
+                target,
+                type(exc).__name__,
+            )
+            return cls(
+                _WhitespaceFallbackTokenizer(name_or_path=target or "whitespace", is_fast=use_fast)
+            )
         tok.add_special_tokens(_SPECIAL_TOKENS)
         return cls(tok)
 
