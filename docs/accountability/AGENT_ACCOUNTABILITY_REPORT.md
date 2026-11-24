@@ -1,3 +1,16 @@
+## Session: PR #5851 connection-pooling pytest fixtures (2026-11-24)
+
+### Agents Used
+
+- None — direct execution (no delegated agents).
+
+### Execution and evidence
+
+- Reproduced the missing `clean_connection_pool` fixture in `tests/test_pooling_advanced.py`.
+- Restored the pooling fixture family in `tests/conftest.py`, including pool cleanup, isolated DBManager state, and parametrized pooling modes.
+- Focused test module passes `7/7`; Ruff, Black, compileall, and `git diff --check` pass for the changed fixture support.
+- No workflow dispatch, owner-control change, secret change, merge, or deployment was performed.
+
 ## Session: PR #5766 exact ML evidence and clean wrap-up planset (2026-11-22)
 
 - Refreshed 2026-11-22 PDA accountability for PR #5766 at published handoff head
