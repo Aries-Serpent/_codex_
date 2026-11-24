@@ -10,6 +10,7 @@
 - Addressed the two unresolved Copilot review findings by rejecting missing/malformed PR states and separating label-inspection failures from verified missing or expired WEC labels.
 - Added offline regression coverage for PR-only and SHA-plus-PR modes, malformed PR states, direct label inspection, and denied lookup outcomes.
 - Preserved existing closed-PR and missing-WEC skip semantics; malformed inventory and unavailable label evidence remain denied.
+- Fixed merge-gate required-check deduplication so the latest rerun outcome wins over older duplicate check runs.
 - No workflow dispatch, owner-control change, secret change, merge, or deployment was performed.
 
 ### Validation

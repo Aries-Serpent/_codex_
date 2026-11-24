@@ -24,7 +24,7 @@ Continue PR #5850 (`Fix Auto-Approve closed and unapproved PR handling`) through
 
 ## Current CI Evidence
 
-- Auto-Approve run `45493088673`: missing-WEC branch on PR head, exit code 1. The trusted workflow helper may be from the default branch, so exact-SHA behavior must be rechecked after the fix.
+- Historical Auto-Approve run `45493088673`: missing-WEC branch on PR head, exit code 1. Labeled rerun `45499276143` later completed success at head `492f14fccc`.
 - Cognitive Pre-flight run `45493087810`: session-plan/accountability prerequisites were incomplete at that SHA. Cache save conflicts were infrastructure-only in the log.
 - Many later checks were success or neutral; do not claim merge readiness until refreshed exact-SHA checks are terminal and green.
 
@@ -55,4 +55,5 @@ Continue PR #5850 (`Fix Auto-Approve closed and unapproved PR handling`) through
 ## Residual Risks
 
 - The trusted approval helper is checked out from workflow SHA/default branch controls, so a PR-only source fix is not proof until a new exact-SHA rerun executes the repaired helper.
+- The merge gate now deduplicates required checks by newest timestamp/ID to prevent historical failures from overriding later successes.
 - Existing unrelated dirty/untracked files remain outside this lane.

@@ -8,6 +8,7 @@ Resolve the two open Copilot review findings on PR #5850 without weakening WEC o
 2. Added a tri-state WEC label result: authorized, missing/expired, or inspection error.
 3. Made label lookup/history failures deny approval instead of being recorded as successful no-action skips.
 4. Added focused PR-only and SHA-plus-PR regressions plus direct label-inspection and authorization coverage.
+5. Fixed merge-gate required-check deduplication by timestamp/ID so historical failed reruns cannot override later successes.
 
 ### Validation
 - Approval integrity, evidence-gated approval, and unified approval hub test modules pass.

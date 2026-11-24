@@ -220,6 +220,20 @@ def _check_conclusion(check: Mapping[str, Any]) -> str:
     return ""
 
 
+def _check_sort_key(check: Mapping[str, Any]) -> tuple[str, int]:
+    timestamp = ""
+    for key in ("completed_at", "updated_at", "started_at", "created_at"):
+        value = check.get(key)
+        if isinstance(value, str) and value.strip():
+            timestamp = value.strip()
+            break
+    try:
+        check_id = int(check.get("id", 0))
+    except (TypeError, ValueError):
+        check_id = 0
+    return timestamp, check_id
+
+
 def _normalize_rollup(check_rollup: object) -> list[Mapping[str, Any]]:
     if isinstance(check_rollup, Mapping):
         rollup = check_rollup
@@ -288,8 +302,12 @@ def check_required_checks(
     by_name: dict[str, Mapping[str, Any]] = {}
     for check_item in checks:
         name = _check_name(check_item)
-        if name:
-            by_name[name.lower()] = check_item
+        if not name:
+            continue
+        normalized_name = name.lower()
+        existing = by_name.get(normalized_name)
+        if existing is None or _check_sort_key(check_item) >= _check_sort_key(existing):
+            by_name[normalized_name] = check_item
 
     passed = 0
     pending = 0

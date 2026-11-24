@@ -70,6 +70,27 @@ def test_required_checks_fail_closed_for_pending_missing_or_failure() -> None:
     assert missing["missing"] == [required[1]]
 
 
+def test_required_checks_use_latest_duplicate_outcome() -> None:
+    name = "Approve independently reviewed pending workflow runs"
+    old = {
+        "name": name,
+        "status": "completed",
+        "conclusion": "failure",
+        "id": 138814799287,
+        "completed_at": "2026-11-24T22:10:57Z",
+    }
+    latest = {
+        "name": name,
+        "status": "completed",
+        "conclusion": "success",
+        "id": 138817911439,
+        "completed_at": "2026-11-24T22:16:55Z",
+    }
+
+    assert gate.check_required_checks([old, latest], [name])["pass"] is True
+    assert gate.check_required_checks([latest, old], [name])["pass"] is True
+
+
 def test_branch_freshness_rejects_behind_or_unknown() -> None:
     pr = _pr()
 

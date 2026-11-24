@@ -6,6 +6,7 @@
 - Reject malformed or missing PR states in PR-only and SHA-plus-PR Auto-Approve target paths.
 - Distinguish verified missing/expired WEC labels from unavailable or malformed label-inspection evidence; inspection failures remain denied.
 - Add focused regressions for closed PRs, malformed states, missing WEC labels, and label lookup/history failures.
+- Dedupe merge-gate required checks by newest timestamp/ID so a historical failed rerun cannot override a later successful rerun.
 
 ### Added - PR #5766 exact ML evidence and resumable closure planset (2026-11-22)
 - Published handoff commit `1212dbbcf52a1a208eb0921265e4a9604575028f` to `0D_base_`; ML run `44971752791` evidence remains at prior campaign head `42073ea3eeee218c3350816017fb92c5c6b2fa21` and is not current-head merge evidence until rerun.
