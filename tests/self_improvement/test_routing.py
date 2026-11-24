@@ -79,3 +79,34 @@ def test_denied_plan_has_no_preferred_adapter() -> None:
     assert plan.decision is RouteDecision.ALLOW
     assert unavailable_plan.decision is RouteDecision.DENY
     assert unavailable_plan.preferred_adapter is None
+
+
+def test_agent_task_routes_are_registered_and_writes_remain_dry_run() -> None:
+    from codex.cognitive_brain.routing import RouteRequest, plan_route
+
+    read_plan = plan_route(
+        RouteRequest("github.agent_tasks.read", "list_agent_tasks", "Aries-Serpent/_codex_"),
+        {"github_mcp": RouteState.VERIFIED},
+    )
+    write_plan = plan_route(
+        RouteRequest("github.write", "create_agent_task", "Aries-Serpent/_codex_"),
+        {"github_mcp": RouteState.VERIFIED},
+    )
+
+    assert read_plan.decision is RouteDecision.ALLOW
+    assert write_plan.decision is RouteDecision.DRY_RUN_ONLY
+
+
+def test_custom_agent_resolver_maps_known_and_rejects_unknown_agents() -> None:
+    from codex.cognitive_brain.routing import (
+        resolve_custom_agent,
+        resolve_custom_agent_route,
+    )
+
+    assert resolve_custom_agent("CI Failure Diagnostician") == "ci-failure-diagnostician"
+    assert resolve_custom_agent_route("session-wrapup-autofix-agent") == (
+        "github.write",
+        "continue_agent_task",
+    )
+    assert resolve_custom_agent("unknown-agent") is None
+    assert resolve_custom_agent_route("unknown-agent") is None

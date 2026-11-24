@@ -1,0 +1,857 @@
+name: Copilot Session Chain
+
+'on':
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: Source branch for the session chain
+        required: true
+        default: 0D_base_
+        type: choice
+        options:
+          - 0D_base_
+          - main
+      session_title:
+        description: Short title for the session
+        required: true
+        default: Continue agent session
+        type: string
+      continuation_prompt:
+        description: Prompt to post on the session or promotion PR
+        required: true
+        default: Continue the repository task and verify the branch before stopping.
+        type: string
+      custom_agent:
+        description: Repository custom-agent name to use
+        required: true
+        default: cognitive-brain-manager
+        type: string
+      model:
+        description: Copilot model or model alias to request
+        required: true
+        default: claude-sonnet-4.6
+        type: string
+      create_pull_request:
+        description: Create or reuse the session/promotion PR
+        required: true
+        default: true
+        type: boolean
+      auto_start:
+        description: Post the Copilot continuation comment
+        required: true
+        default: true
+        type: boolean
+      merge_when_ready:
+        description: Merge automatically only after every gate passes
+        required: true
+        default: false
+        type: boolean
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 0D_base_
+
+concurrency:
+  group: copilot-session-chain-${{ github.repository }}
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+  contents: read
+  issues: read
+  pull-requests: read
+
+env:
+  AGENT_KILL_SWITCH: ${{ vars.AGENT_KILL_SWITCH || '0' }}
+  COPILOT_SESSION_CHAIN_ENABLED: ${{ vars.COPILOT_SESSION_CHAIN_ENABLED || 'true' }}
+
+jobs:
+  preflight:
+    name: Owner, kill-switch, branch and PR preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: read
+      issues: read
+      pull-requests: read
+    outputs:
+      approved: ${{ steps.validate.outputs.approved }}
+      owner_authorized: ${{ steps.validate.outputs.owner_authorized }}
+      mode: ${{ steps.validate.outputs.mode }}
+      base_branch: ${{ steps.validate.outputs.base_branch }}
+      head_branch: ${{ steps.validate.outputs.head_branch }}
+      pr_number: ${{ steps.validate.outputs.pr_number }}
+      lock_key: ${{ steps.validate.outputs.lock_key }}
+      dedupe_key: ${{ steps.validate.outputs.dedupe_key }}
+      create_pr: ${{ steps.validate.outputs.create_pr }}
+      auto_start: ${{ steps.validate.outputs.auto_start }}
+      merge_when_ready: ${{ steps.validate.outputs.merge_when_ready }}
+      custom_agent: ${{ steps.validate.outputs.custom_agent }}
+      model: ${{ steps.validate.outputs.model }}
+    steps:
+      - name: Validate owner and repository controls
+        id: validate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          MERGED_BY: ${{ github.event.pull_request.merged_by.login || '' }}
+          EVENT_PR: ${{ github.event.pull_request.number || '' }}
+          SOURCE_BRANCH: ${{ github.event_name == 'workflow_dispatch' && inputs.source_branch || '0D_base_' }}
+          CREATE_PR: ${{ github.event_name == 'workflow_dispatch' && inputs.create_pull_request || 'true' }}
+          AUTO_START: ${{ github.event_name == 'workflow_dispatch' && inputs.auto_start || 'true' }}
+          MERGE_WHEN_READY: ${{ github.event_name == 'workflow_dispatch' && inputs.merge_when_ready || 'false' }}
+          CUSTOM_AGENT: ${{ github.event_name == 'workflow_dispatch' && inputs.custom_agent || 'cognitive-brain-manager' }}
+          MODEL: ${{ github.event_name == 'workflow_dispatch' && inputs.model || 'claude-sonnet-4.6' }}
+        run: |
+          set -euo pipefail
+
+          kill_value=$(printf '%s' "${AGENT_KILL_SWITCH}" | tr '[:upper:]' '[:lower:]')
+          chain_value=$(printf '%s' "${COPILOT_SESSION_CHAIN_ENABLED}" | tr '[:upper:]' '[:lower:]')
+
+          if [[ "$kill_value" == "1" || "$kill_value" == "true" || "$kill_value" == "yes" || "$kill_value" == "on" ]]; then
+            echo "approved=false" >> "$GITHUB_OUTPUT"
+            echo "owner_authorized=false" >> "$GITHUB_OUTPUT"
+            echo "::error::AGENT_KILL_SWITCH is enabled; all session-chain actuation is halted."
+            exit 1
+          fi
+
+          if [[ "$chain_value" == "0" || "$chain_value" == "false" || "$chain_value" == "no" || "$chain_value" == "off" ]]; then
+            echo "approved=false" >> "$GITHUB_OUTPUT"
+            echo "owner_authorized=false" >> "$GITHUB_OUTPUT"
+            echo "::error::COPILOT_SESSION_CHAIN_ENABLED is false; session-chain actuation is halted."
+            exit 1
+          fi
+
+          authorized_actor="$GITHUB_ACTOR"
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            authorized_actor="${MERGED_BY:-$GITHUB_ACTOR}"
+            if [[ "${{ github.event.pull_request.merged }}" != "true" ]]; then
+              echo "approved=false" >> "$GITHUB_OUTPUT"
+              echo "owner_authorized=false" >> "$GITHUB_OUTPUT"
+              echo "::notice::Closed non-merged PR; no session chain will be opened."
+              exit 0
+            fi
+          fi
+
+          if [[ "$authorized_actor" != "mbaetiong" ]]; then
+            echo "approved=false" >> "$GITHUB_OUTPUT"
+            echo "owner_authorized=false" >> "$GITHUB_OUTPUT"
+            echo "::error::Owner authorization failed. Sole owner login: mbaetiong."
+            exit 1
+          fi
+          echo "owner_authorized=true" >> "$GITHUB_OUTPUT"
+
+          case "$SOURCE_BRANCH" in
+            0D_base_)
+              mode="sub_pr"
+              base_branch="0D_base_"
+              head_branch=""
+              ;;
+            main)
+              mode="promotion"
+              base_branch="main"
+              head_branch="0D_base_"
+              ;;
+            *)
+              echo "approved=false" >> "$GITHUB_OUTPUT"
+              echo "::error::Invalid source_branch '$SOURCE_BRANCH'."
+              exit 1
+              ;;
+          esac
+
+          if [[ "$mode" == "sub_pr" ]]; then
+            gh api "repos/${GITHUB_REPOSITORY}/branches/0D_base_" --jq '.name' >/dev/null
+            pr_number=$(gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --base "0D_base_" \
+              --json number,headRefName \
+              --jq '.[] | select(.headRefName | startswith("copilot/session-")) | .number' \
+              | head -n 1)
+            dedupe_key="sub_pr:0D_base_:copilot/session-*"
+          else
+            gh api "repos/${GITHUB_REPOSITORY}/branches/0D_base_" --jq '.name' >/dev/null
+            gh api "repos/${GITHUB_REPOSITORY}/branches/main" --jq '.name' >/dev/null
+            pr_number=$(gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --base main \
+              --head 0D_base_ \
+              --json number,headRefName \
+              --jq '.[0].number // empty')
+            dedupe_key="promotion:0D_base_->main"
+          fi
+
+          lock_key="copilot-session-chain:${GITHUB_REPOSITORY}:${mode}:${base_branch}"
+
+          approved="true"
+          if [[ "$mode" == "promotion" && -z "$pr_number" && "$CREATE_PR" != "true" ]]; then
+            approved="false"
+            echo "::error::Promotion mode requires an open 0D_base_ -> main PR or create_pull_request=true."
+            exit 1
+          fi
+
+          echo "approved=${approved}" >> "$GITHUB_OUTPUT"
+          echo "mode=${mode}" >> "$GITHUB_OUTPUT"
+          echo "base_branch=${base_branch}" >> "$GITHUB_OUTPUT"
+          echo "head_branch=${head_branch}" >> "$GITHUB_OUTPUT"
+          echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
+          echo "lock_key=${lock_key}" >> "$GITHUB_OUTPUT"
+          echo "dedupe_key=${dedupe_key}" >> "$GITHUB_OUTPUT"
+          echo "create_pr=${CREATE_PR}" >> "$GITHUB_OUTPUT"
+          echo "auto_start=${AUTO_START}" >> "$GITHUB_OUTPUT"
+          echo "merge_when_ready=${MERGE_WHEN_READY}" >> "$GITHUB_OUTPUT"
+          echo "custom_agent=${CUSTOM_AGENT}" >> "$GITHUB_OUTPUT"
+          echo "model=${MODEL}" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "## Copilot Session Chain Preflight"
+            echo ""
+            echo "- Owner: \`mbaetiong\`"
+            echo "- Authorized actor: \`${authorized_actor}\`"
+            echo "- Mode: \`${mode}\`"
+            echo "- Base: \`${base_branch}\`"
+            echo "- Existing PR: ${pr_number:-none}"
+            echo "- Lock: \`${lock_key}\`"
+            echo "- Dedup: \`${dedupe_key}\`"
+            echo "- Kill switch: \`${AGENT_KILL_SWITCH:-0}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  task_controller_preflight:
+    name: Task controller dry-run preflight
+    needs: preflight
+    if: needs.preflight.outputs.approved == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: read
+    env:
+      COPILOT_AGENT_TASK_TOKEN: ${{ secrets.COPILOT_AGENT_TASK_TOKEN || '' }}
+    outputs:
+      live_dispatch: ${{ steps.controller.outputs.live_dispatch }}
+    steps:
+      - name: Checkout controller source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+
+      - name: Run repository controller preflight
+        id: controller
+        env:
+          MODE: ${{ needs.preflight.outputs.mode }}
+          CUSTOM_AGENT: ${{ needs.preflight.outputs.custom_agent }}
+          MODEL: ${{ needs.preflight.outputs.model }}
+          PR_NUMBER: ${{ needs.preflight.outputs.pr_number }}
+          BASE_BRANCH: ${{ needs.preflight.outputs.base_branch }}
+          CONTINUATION_PROMPT: >-
+            ${{ github.event_name == 'workflow_dispatch' &&
+            inputs.continuation_prompt ||
+            'Continue the repository task and verify the branch before stopping.' }}
+        run: |
+          set -euo pipefail
+
+          echo "live_dispatch=false" >> "$GITHUB_OUTPUT"
+          controller_args=(
+            --repo "$GITHUB_REPOSITORY"
+            --json
+            --skip-budget
+            preflight
+            "$CONTINUATION_PROMPT"
+            --base "$BASE_BRANCH"
+          )
+          if [[ "$MODE" == "promotion" ]]; then
+            controller_args+=(--promote --head 0D_base_)
+          fi
+          python3 scripts/ci/copilot_agent_task.py "${controller_args[@]}" \
+            > "${RUNNER_TEMP}/agent-task-preflight.json"
+
+          python3 -m json.tool "${RUNNER_TEMP}/agent-task-preflight.json" >/dev/null
+          {
+            echo "## Task Controller Preflight"
+            echo ""
+            echo "- Mode: \`${MODE}\`"
+            echo "- Custom agent: \`${CUSTOM_AGENT}\`"
+            echo "- Model: \`${MODEL}\`"
+            echo "- Existing PR: ${PR_NUMBER:-none}"
+            echo "- Repository controller: \`scripts/ci/copilot_agent_task.py\`"
+            echo "- Live dispatch: \`false\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  prepare_session:
+    name: Prepare session or promotion PR
+    needs:
+      - preflight
+      - task_controller_preflight
+    if: needs.preflight.outputs.approved == 'true' && needs.preflight.outputs.create_pr == 'true' && needs.preflight.outputs.pr_number == ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: owner-approval
+    permissions:
+      actions: read
+      contents: write
+      issues: read
+      pull-requests: write
+    outputs:
+      pr_number: ${{ steps.open_pr.outputs.pr_number }}
+      new_branch: ${{ steps.create_session_branch.outputs.new_branch }}
+    steps:
+      - name: Checkout source branch
+        if: needs.preflight.outputs.mode == 'sub_pr'
+        uses: actions/checkout@v5
+        with:
+          ref: 0D_base_
+          persist-credentials: true
+          token: ${{ github.token }}
+          fetch-depth: 1
+
+      - name: Create session branch and marker
+        id: create_session_branch
+        if: needs.preflight.outputs.mode == 'sub_pr'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$GITHUB_ACTOR" != "mbaetiong" ]]; then
+            echo "::error::Owner authorization changed before branch creation."
+            exit 1
+          fi
+
+          timestamp=$(date -u +"%Y%m%d-%H%M%S")
+          new_branch="copilot/session-${timestamp}-${GITHUB_RUN_ID}"
+          marker_file=".codex/sessions/chain-${timestamp}.md"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$new_branch"
+
+          mkdir -p .codex/sessions
+          {
+            echo "# Session Chain Marker - ${timestamp}"
+            echo ""
+            echo "- Branch: \`${new_branch}\`"
+            echo "- Base: \`0D_base_\`"
+            echo "- Opened by: \`copilot-session-chain.yml\`"
+            echo "- Run: ${GITHUB_RUN_ID}"
+          } > "$marker_file"
+
+          git add "$marker_file"
+          git diff --cached --quiet || git commit -m "chore(session): initialize agent session ${timestamp}"
+          git push origin "HEAD:refs/heads/${new_branch}"
+
+          echo "new_branch=${new_branch}" >> "$GITHUB_OUTPUT"
+
+      - name: Open or draft the approved PR
+        id: open_pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          MODE: ${{ needs.preflight.outputs.mode }}
+          BASE_BRANCH: ${{ needs.preflight.outputs.base_branch }}
+          HEAD_BRANCH: ${{ needs.preflight.outputs.head_branch }}
+          NEW_BRANCH: ${{ steps.create_session_branch.outputs.new_branch }}
+          SESSION_TITLE: ${{ github.event_name == 'workflow_dispatch' && inputs.session_title || 'Continue agent session' }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$GITHUB_ACTOR" != "mbaetiong" ]]; then
+            echo "::error::Owner authorization changed before PR creation."
+            exit 1
+          fi
+
+          if [[ "$MODE" == "sub_pr" ]]; then
+            if [[ -z "$NEW_BRANCH" || "$NEW_BRANCH" != copilot/session-* ]]; then
+              echo "::error::Refusing to open a sub-PR for invalid head '$NEW_BRANCH'."
+              exit 1
+            fi
+            head_branch="$NEW_BRANCH"
+            base_branch="0D_base_"
+            pr_title="[Agent Session] ${SESSION_TITLE}"
+          else
+            head_branch="0D_base_"
+            base_branch="main"
+            pr_title="[Promotion] ${SESSION_TITLE}"
+          fi
+
+          body_file="${RUNNER_TEMP}/copilot-session-pr.md"
+          {
+            echo "## Copilot Session Chain"
+            echo ""
+            echo "- Architecture: \`${head_branch} -> ${base_branch} -> main\`"
+            echo "- Mode: \`${MODE}\`"
+            echo "- Opened by: \`copilot-session-chain.yml\`"
+            echo ""
+            echo "This PR may only be used through the repository integration-branch model."
+            echo "No direct push or force push is permitted on the integration or promotion branch."
+          } > "$body_file"
+
+          pr_url=$(gh pr create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$pr_title" \
+            --body-file "$body_file" \
+            --base "$base_branch" \
+            --head "$head_branch" \
+            --draft)
+
+          pr_number=$(gh pr view "$pr_url" --repo "$GITHUB_REPOSITORY" --json number --jq '.number')
+          echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
+
+  trigger_session:
+    name: Post continuation prompt
+    needs:
+      - preflight
+      - prepare_session
+    if: >-
+      needs.preflight.outputs.approved == 'true' &&
+      needs.preflight.outputs.auto_start == 'true' &&
+      (needs.preflight.outputs.pr_number != '' ||
+      needs.prepare_session.outputs.pr_number != '')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: owner-approval
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+    steps:
+      - name: Post owner-authorized Copilot trigger
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          PR_NUMBER: ${{ needs.prepare_session.outputs.pr_number || needs.preflight.outputs.pr_number }}
+          CONTINUATION_PROMPT: ${{ github.event_name == 'workflow_dispatch' && inputs.continuation_prompt || '' }}
+          CUSTOM_AGENT: ${{ needs.preflight.outputs.custom_agent }}
+          MODEL: ${{ needs.preflight.outputs.model }}
+          MODE: ${{ needs.preflight.outputs.mode }}
+          BASE_BRANCH: ${{ needs.preflight.outputs.base_branch }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$GITHUB_ACTOR" != "mbaetiong" ]]; then
+            echo "::error::Owner authorization changed before posting the trigger comment."
+            exit 1
+          fi
+
+          trigger_file="${RUNNER_TEMP}/copilot-session-trigger.md"
+          if [[ "$CONTINUATION_PROMPT" == @copilot* ]]; then
+            printf '%s\n' "$CONTINUATION_PROMPT" > "$trigger_file"
+          else
+            {
+              printf '@copilot+%s /plan\n\n' "$MODEL"
+              printf 'Custom agent: `%s`\n\n' "$CUSTOM_AGENT"
+              if [[ -n "$CONTINUATION_PROMPT" ]]; then
+                printf '%s\n\n' "$CONTINUATION_PROMPT"
+              fi
+            } > "$trigger_file"
+          fi
+
+          {
+            echo "Repository mode: \`${MODE}\`"
+            echo "Base branch: \`${BASE_BRANCH}\`"
+            echo "Do not push directly to \`0D_base_\` or \`main\`."
+            echo ""
+            echo "Workflow run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          } >> "$trigger_file"
+
+          gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file "$trigger_file"
+
+  state_poll:
+    name: Poll task and PR state
+    needs:
+      - preflight
+      - task_controller_preflight
+      - prepare_session
+      - trigger_session
+    if: >-
+      needs.preflight.outputs.approved == 'true' &&
+      (needs.preflight.outputs.pr_number != '' ||
+      needs.prepare_session.outputs.pr_number != '')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: read
+    outputs:
+      pr_number: ${{ steps.poll.outputs.pr_number }}
+      head_sha: ${{ steps.poll.outputs.head_sha }}
+      state: ${{ steps.poll.outputs.state }}
+      merge_state: ${{ steps.poll.outputs.merge_state }}
+    steps:
+      - name: Poll current PR state
+        id: poll
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ needs.prepare_session.outputs.pr_number || needs.preflight.outputs.pr_number }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "$PR_NUMBER" ]]; then
+            echo "::error::No PR number is available for state polling."
+            exit 1
+          fi
+
+          head_sha=""
+          pr_state=""
+          merge_state=""
+          for attempt in $(seq 1 12); do
+            pr_json=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json state,mergeStateStatus,mergeable,headRefOid)
+            head_sha=$(printf '%s' "$pr_json" | jq -r '.headRefOid')
+            pr_state=$(printf '%s' "$pr_json" | jq -r '.state')
+            merge_state=$(printf '%s' "$pr_json" | jq -r '.mergeStateStatus // "UNKNOWN"')
+            echo "poll attempt=${attempt} pr=${PR_NUMBER} head=${head_sha} state=${pr_state} merge_state=${merge_state}"
+
+            if [[ "$pr_state" == "MERGED" || "$pr_state" == "CLOSED" ]]; then
+              break
+            fi
+            if [[ "$attempt" -lt 12 ]]; then
+              sleep 30
+            fi
+          done
+
+          echo "pr_number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+          echo "head_sha=${head_sha}" >> "$GITHUB_OUTPUT"
+          echo "state=${pr_state}" >> "$GITHUB_OUTPUT"
+          echo "merge_state=${merge_state}" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "## Session State Poll"
+            echo ""
+            echo "- PR: #${PR_NUMBER}"
+            echo "- Head SHA: \`${head_sha}\`"
+            echo "- State: \`${pr_state}\`"
+            echo "- Merge state: \`${merge_state}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  ai_review_gate:
+    name: Exact-SHA AI review gate
+    needs:
+      - preflight
+      - state_poll
+    if: needs.preflight.outputs.pr_number != '' || needs.state_poll.outputs.pr_number != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      ai_approved: ${{ steps.review.outputs.ai_approved }}
+    steps:
+      - name: Require exact-SHA AI approval
+        id: review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ needs.state_poll.outputs.pr_number || needs.preflight.outputs.pr_number }}
+          HEAD_SHA: ${{ needs.state_poll.outputs.head_sha }}
+        run: |
+          set -euo pipefail
+
+          owner="${GITHUB_REPOSITORY%%/*}"
+          repo="${GITHUB_REPOSITORY#*/}"
+          query='query($owner:String!, $repo:String!, $pr:Int!) {
+            repository(owner:$owner, name:$repo) {
+              pullRequest(number:$pr) {
+                headRefOid
+                reviews(last:100) {
+                  nodes {
+                    state
+                    author { login }
+                    commit { oid }
+                  }
+                }
+              }
+            }
+          }'
+
+          review_json=$(gh api graphql \
+            -F owner="$owner" \
+            -F repo="$repo" \
+            -F pr="$PR_NUMBER" \
+            -f query="$query")
+
+          ai_approved=$(printf '%s' "$review_json" | jq -r --arg sha "$HEAD_SHA" '
+            [.data.repository.pullRequest.reviews.nodes[]?
+              | select(.commit.oid == $sha)
+              | select(.state == "APPROVED")
+              | select((.author.login // "") | test("copilot|github-copilot"; "i"))]
+            | length > 0'
+          )
+
+          echo "ai_approved=${ai_approved}" >> "$GITHUB_OUTPUT"
+          {
+            echo "## AI Review Gate"
+            echo ""
+            echo "- PR: #${PR_NUMBER}"
+            echo "- Current head: \`${HEAD_SHA}\`"
+            echo "- Exact-SHA AI approval: \`${ai_approved}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  required_check_gate:
+    name: Required check and merge-state gate
+    needs:
+      - preflight
+      - state_poll
+    if: needs.preflight.outputs.pr_number != '' || needs.state_poll.outputs.pr_number != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: read
+    outputs:
+      checks_ready: ${{ steps.check.outputs.checks_ready }}
+    steps:
+      - name: Inspect required checks
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ needs.state_poll.outputs.pr_number || needs.preflight.outputs.pr_number }}
+        run: |
+          set -euo pipefail
+
+          pr_json=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --json mergeable,mergeStateStatus,statusCheckRollup)
+          pending=$(printf '%s' "$pr_json" | jq '
+            [.statusCheckRollup[]?
+              | select(.status != "COMPLETED" or .conclusion == null)]
+            | length')
+          failures=$(printf '%s' "$pr_json" | jq '
+            [.statusCheckRollup[]?
+              | select(.conclusion != null)
+              | select((.conclusion | ascii_upcase) as $c
+                | $c != "SUCCESS"
+                and $c != "NEUTRAL"
+                and $c != "SKIPPED")]
+            | length')
+          mergeable=$(printf '%s' "$pr_json" | jq -r '.mergeable')
+          merge_state=$(printf '%s' "$pr_json" | jq -r '.mergeStateStatus // "UNKNOWN"')
+
+          checks_ready="false"
+          if [[ "$pending" == "0" && "$failures" == "0" && "$mergeable" == "MERGEABLE" && "$merge_state" == "CLEAN" ]]; then
+            checks_ready="true"
+          fi
+
+          echo "checks_ready=${checks_ready}" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Required Check Gate"
+            echo ""
+            echo "- PR: #${PR_NUMBER}"
+            echo "- Pending checks: ${pending}"
+            echo "- Failed checks: ${failures}"
+            echo "- Mergeable: \`${mergeable}\`"
+            echo "- Merge state: \`${merge_state}\`"
+            echo "- Checks ready: \`${checks_ready}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  merge_gate:
+    name: Merge only through the readiness gate
+    needs:
+      - preflight
+      - prepare_session
+      - state_poll
+      - ai_review_gate
+      - required_check_gate
+    if: >-
+      needs.preflight.outputs.merge_when_ready == 'true' &&
+      (needs.preflight.outputs.pr_number != '' ||
+      needs.state_poll.outputs.pr_number != '')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: owner-approval
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: write
+    outputs:
+      merged: ${{ steps.merge.outputs.merged }}
+      pr_number: ${{ steps.merge.outputs.pr_number }}
+    steps:
+      - name: Recheck and merge when ready
+        id: merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          PR_NUMBER: ${{ needs.state_poll.outputs.pr_number || needs.preflight.outputs.pr_number }}
+          MODE: ${{ needs.preflight.outputs.mode }}
+          BASE_BRANCH: ${{ needs.preflight.outputs.base_branch }}
+        run: |
+          set -euo pipefail
+
+          echo "merged=false" >> "$GITHUB_OUTPUT"
+          echo "pr_number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+          merge_result="false"
+
+          kill_value=$(printf '%s' "${AGENT_KILL_SWITCH}" | tr '[:upper:]' '[:lower:]')
+          if [[ "$GITHUB_ACTOR" != "mbaetiong" ]]; then
+            echo "::error::Owner authorization failed at merge time."
+            exit 1
+          fi
+          if [[ "$kill_value" == "1" || "$kill_value" == "true" || "$kill_value" == "yes" || "$kill_value" == "on" ]]; then
+            echo "::error::AGENT_KILL_SWITCH is enabled; merge halted."
+            exit 1
+          fi
+
+          owner="${GITHUB_REPOSITORY%%/*}"
+          repo="${GITHUB_REPOSITORY#*/}"
+          query='query($owner:String!, $repo:String!, $pr:Int!) {
+            repository(owner:$owner, name:$repo) {
+              pullRequest(number:$pr) {
+                headRefOid
+                baseRefName
+                headRefName
+                mergeable
+                mergeStateStatus
+                reviews(last:100) {
+                  nodes {
+                    state
+                    author { login }
+                    commit { oid }
+                  }
+                }
+                statusCheckRollup {
+                  contexts(last:100) {
+                    nodes {
+                      ... on CheckRun { status conclusion }
+                      ... on StatusContext { state }
+                    }
+                  }
+                }
+              }
+            }
+          }'
+
+          for attempt in $(seq 1 12); do
+            json_fields="state,mergeable,mergeStateStatus,headRefOid,"
+            json_fields="${json_fields}baseRefName,headRefName,statusCheckRollup"
+            pr_json=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" \
+              --json "$json_fields")
+            head_sha=$(printf '%s' "$pr_json" | jq -r '.headRefOid')
+            state=$(printf '%s' "$pr_json" | jq -r '.state')
+            mergeable=$(printf '%s' "$pr_json" | jq -r '.mergeable')
+            merge_state=$(printf '%s' "$pr_json" | jq -r '.mergeStateStatus // "UNKNOWN"')
+            base_ref=$(printf '%s' "$pr_json" | jq -r '.baseRefName')
+            head_ref=$(printf '%s' "$pr_json" | jq -r '.headRefName')
+
+            pending=$(printf '%s' "$pr_json" | jq '
+              [.statusCheckRollup[]?
+                | select(.status != "COMPLETED" or .conclusion == null)]
+              | length')
+            failures=$(printf '%s' "$pr_json" | jq '
+              [.statusCheckRollup[]?
+                | select(.conclusion != null)
+                | select((.conclusion | ascii_upcase) as $c
+                  | $c != "SUCCESS"
+                  and $c != "NEUTRAL"
+                  and $c != "SKIPPED")]
+              | length')
+
+            review_json=$(gh api graphql \
+              -F owner="$owner" \
+              -F repo="$repo" \
+              -F pr="$PR_NUMBER" \
+              -f query="$query")
+            ai_approved=$(printf '%s' "$review_json" | jq -r --arg sha "$head_sha" '
+              [.data.repository.pullRequest.reviews.nodes[]?
+                | select(.commit.oid == $sha)
+                | select(.state == "APPROVED")
+                | select((.author.login // "") | test("copilot|github-copilot"; "i"))]
+              | length > 0'
+            )
+
+            branch_ok="false"
+            if [[ "$MODE" == "sub_pr" && "$base_ref" == "0D_base_" && "$head_ref" == copilot/session-* ]]; then
+              branch_ok="true"
+            elif [[ "$MODE" == "promotion" && "$base_ref" == "main" && "$head_ref" == "0D_base_" ]]; then
+              branch_ok="true"
+            fi
+
+            echo "merge-poll attempt=${attempt} state=${state} head=${head_sha}" \
+              "branch_ok=${branch_ok} ai=${ai_approved} pending=${pending}" \
+              "failures=${failures} mergeable=${mergeable} merge_state=${merge_state}"
+
+            if [[ "$state" == "MERGED" ]]; then
+              merge_result="true"
+              echo "merged=true" >> "$GITHUB_OUTPUT"
+              break
+            fi
+
+            if [[ "$branch_ok" == "true" &&
+                  "$ai_approved" == "true" &&
+                  "$pending" == "0" &&
+                  "$failures" == "0" &&
+                  "$mergeable" == "MERGEABLE" &&
+                  "$merge_state" == "CLEAN" ]]; then
+              if [[ "$MODE" == "sub_pr" ]]; then
+                gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --squash --match-head-commit "$head_sha"
+              else
+                gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --merge --match-head-commit "$head_sha"
+              fi
+              merge_result="true"
+              echo "merged=true" >> "$GITHUB_OUTPUT"
+              break
+            fi
+
+            if [[ "$attempt" -lt 12 ]]; then
+              sleep 30
+            fi
+          done
+
+          {
+            echo "## Merge Gate"
+            echo ""
+            echo "- Owner: \`mbaetiong\`"
+            echo "- PR: #${PR_NUMBER}"
+            echo "- Mode: \`${MODE}\`"
+            echo "- Merge result: \`${merge_result}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  post_merge_validation:
+    name: Post-merge validation hook
+    needs:
+      - preflight
+      - state_poll
+      - merge_gate
+    if: needs.merge_gate.outputs.merged == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Verify merged PR state
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ needs.merge_gate.outputs.pr_number || needs.state_poll.outputs.pr_number || '' }}
+          MODE: ${{ needs.preflight.outputs.mode }}
+        run: |
+          set -euo pipefail
+
+          pr_number="${PR_NUMBER}"
+          if [[ -z "$pr_number" ]]; then
+            pr_number="${{ needs.state_poll.outputs.pr_number }}"
+          fi
+
+          if [[ -n "$pr_number" ]]; then
+            pr_json=$(gh pr view "$pr_number" --repo "$GITHUB_REPOSITORY" --json state,mergeCommit,url)
+            echo "$pr_json" | jq '.'
+            {
+              echo "## Post-Merge Validation"
+              echo ""
+              echo "- Mode: \`${MODE}\`"
+              echo "- PR: #${pr_number}"
+              echo "- State: \`$(printf '%s' "$pr_json" | jq -r '.state')\`"
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::notice::Merge completed but no PR number was available for the post-merge hook."
+          fi
