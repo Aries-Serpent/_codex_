@@ -349,6 +349,77 @@ def test_missing_wec_label_is_legitimate_skip(offline, monkeypatch):
     assert decision["decisions"][0]["outcome"] == "skipped"
 
 
+@pytest.mark.parametrize("with_head_sha", [False, True])
+@pytest.mark.parametrize("state", [None, "merged", "invalid"])
+def test_malformed_pr_state_is_denied(offline, monkeypatch, with_head_sha, state):
+    install, _ = offline
+    monkeypatch.setenv("PR_NUMBER", "5849")
+    if with_head_sha:
+        monkeypatch.setenv("HEAD_SHA", SHA)
+    else:
+        monkeypatch.delenv("HEAD_SHA", raising=False)
+
+    payload = {
+        "number": 5849,
+        "head": {"sha": SHA},
+        "labels": [{"name": "wec:auto-approve"}],
+    }
+    if state is not None:
+        payload["state"] = state
+
+    install(lambda path: (200, payload))
+    assert approval.main() == 1
+    with open("approval-decision.json", encoding="utf-8") as f:
+        decision = json.load(f)
+    assert decision["decisions"][0]["rule"] == "malformed-pr-state"
+    assert decision["decisions"][0]["outcome"] == "denied"
+
+
+@pytest.mark.parametrize(
+    "status,payload",
+    [(403, {"message": "Forbidden"}), (200, {}), (200, {"labels": None})],
+)
+def test_wec_inspector_rejects_inspection_failures(monkeypatch, status, payload):
+    monkeypatch.setattr(approval, "_gh", lambda *args, **kwargs: (status, payload))
+    assert (
+        approval._inspect_wec_auto_approve_label("fixture", "o/r", "5849")
+        == "label-inspection-error"
+    )
+
+
+@pytest.mark.parametrize("with_head_sha", [False, True])
+def test_wec_lookup_failure_is_denied(offline, monkeypatch, with_head_sha):
+    install, _ = offline
+    monkeypatch.setenv("PR_NUMBER", "5849")
+    if with_head_sha:
+        monkeypatch.setenv("HEAD_SHA", SHA)
+    else:
+        monkeypatch.delenv("HEAD_SHA", raising=False)
+
+    pull_calls = 0
+
+    def response(path):
+        nonlocal pull_calls
+        if path == "/repos/o/r/pulls/5849":
+            pull_calls += 1
+            if pull_calls == 1:
+                return 200, {
+                    "number": 5849,
+                    "state": "open",
+                    "head": {"sha": SHA},
+                    "labels": [],
+                }
+            return 403, {"message": "Forbidden"}
+        return 403, {}
+
+    install(response)
+    assert approval.main() == 1
+    with open("approval-decision.json", encoding="utf-8") as f:
+        decision = json.load(f)
+    assert decision["decisions"][0]["rule"] == "label-inspection-error"
+    assert decision["decisions"][0]["outcome"] == "denied"
+
+
 def test_complete_run_pagination_preserves_all_identities(offline):
     install, _ = offline
     runs = [{"id": number, "head_sha": SHA} for number in range(1, 102)]

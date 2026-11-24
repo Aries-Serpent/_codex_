@@ -110,6 +110,7 @@ def test_review_evidence_must_be_current_and_independent(api, monkeypatch, case)
         ("self", "self-approval"),
         ("bot", "unknown-approver-identity"),
         ("closed", "stale-head-sha"),
+        ("malformed-state", "malformed-pr-state"),
     ],
 )
 def test_negative_authorization(api, case, expected):
@@ -124,6 +125,8 @@ def test_negative_authorization(api, case, expected):
         identity["login"] = "author"
     elif case == "bot":
         identity["type"] = "Bot"
+    elif case == "malformed-state":
+        pr["state"] = None
     else:
         pr["state"] = "closed"
     assert approval._authorize_run("", "o/r", "1", SHA, run) == expected

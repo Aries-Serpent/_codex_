@@ -1,3 +1,23 @@
+## Session: PR #5850 Auto-Approve review remediation (2026-11-24)
+
+### Agents Used
+
+- None — direct execution (no delegated agents).
+
+### Execution and evidence
+
+- Resumed pre-existing PR `#5850` on `copilot/session-autoapprove-postmerge-20261124`.
+- Addressed the two unresolved Copilot review findings by rejecting missing/malformed PR states and separating label-inspection failures from verified missing or expired WEC labels.
+- Added offline regression coverage for PR-only and SHA-plus-PR modes, malformed PR states, direct label inspection, and denied lookup outcomes.
+- Preserved existing closed-PR and missing-WEC skip semantics; malformed inventory and unavailable label evidence remain denied.
+- No workflow dispatch, owner-control change, secret change, merge, or deployment was performed.
+
+### Validation
+
+- Approval integrity, evidence-gated approval, and unified approval hub test modules pass.
+- Black, Ruff, mypy, compileall, and `git diff --check` pass for the changed slice.
+- Exact-SHA hosted review and required checks remain pending; unresolved review threads are not resolved until a matching pushed head is verified.
+
 ## Session: PR #5766 exact ML evidence and clean wrap-up planset (2026-11-22)
 
 - Refreshed 2026-11-22 PDA accountability for PR #5766 at published handoff head
