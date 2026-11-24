@@ -15,6 +15,8 @@ from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
 
 np = pytest.importorskip("numpy")
 torch = pytest.importorskip("torch")
+if not all(hasattr(torch, name) for name in ("rand", "randn", "manual_seed", "from_numpy")):
+    pytest.skip("real torch API unavailable (possible repo-local shadow)", allow_module_level=True)
 
 
 def test_rng_restoration_roundtrip(tmp_path: Path, disable_torch_profiler) -> None:

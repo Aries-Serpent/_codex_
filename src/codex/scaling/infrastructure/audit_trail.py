@@ -18,6 +18,7 @@ import logging
 import sqlite3
 import threading
 import time
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -234,6 +235,7 @@ class AuditTrail:
         action: Optional[str] = None,
         details: Optional[Dict] = None,
         severity: AuditSeverity = AuditSeverity.INFO,
+        status: str = "success",
         source_ip: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> str:
@@ -242,7 +244,7 @@ class AuditTrail:
 
         Gate Criterion 7: All tenant operations logged
         """
-        event_id = f"evt-{int(time.time() * 1000)}-{id(threading.current_thread())}"
+        event_id = f"evt-{uuid.uuid4().hex}"
 
         event = AuditEvent(
             event_id=event_id,
@@ -254,6 +256,7 @@ class AuditTrail:
             resource_type=resource_type,
             action=action,
             severity=severity,
+            status=status,
             details=details or {},
             source_ip=source_ip,
             user_agent=user_agent,

@@ -171,6 +171,12 @@ class DiracMatrices:
     iℏ∂ψ/∂t = -iℏα·∇ψ + βmc²ψ
     """
 
+    def __init__(self) -> None:
+        self.alpha_x = self.alpha_x()
+        self.alpha_y = self.alpha_y()
+        self.alpha_z = self.alpha_z()
+        self.beta = self.beta()
+
     @staticmethod
     def alpha_x() -> np.ndarray:
         """α₁ matrix (x-direction)."""
@@ -217,6 +223,10 @@ class TaskState:
     required_resources: dict[str, float] = field(default_factory=dict)
 
     _constants: PhysicsConstants = field(default_factory=PhysicsConstants, repr=False)
+
+    def __post_init__(self) -> None:
+        if self.rest_mass < 0:
+            raise ValueError("rest_mass must be non-negative")
 
     @property
     def amplitude(self) -> complex:
@@ -374,7 +384,7 @@ class DiracOperator:
             kinetic += -1j * hbar * alpha_vec[i] @ psi * gradient[i]
 
         # Mass term: βmc²ψ
-        beta = self.matrices.beta()
+        beta = DiracMatrices.beta()
         mass_term = beta @ psi * m * c * c
 
         # Total Hamiltonian
@@ -510,6 +520,10 @@ class ProbabilityCurrentOperator:
         self.constants = constants
         self.hbar = constants.hbar
         self.c = constants.c
+
+    def positive_energy_contribution(self, spinor: DiracSpinor) -> float:
+        """Return the non-negative probability in positive-energy states."""
+        return float(max(0.0, spinor.positive_energy_prob))
 
     def task_current(
         self,

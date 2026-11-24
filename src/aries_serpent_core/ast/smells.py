@@ -517,7 +517,9 @@ class CodeSmellDetector:
                             suggestion="Specify the exception type: except (IOError, OSError, ModuleNotFoundError, ImportError):",  # noqa: E501
                         )
                     )
-                elif isinstance(node.type, ast.Name) and node.type.id == "Exception":
+                elif (
+                    isinstance(node.type, ast.Name) and node.type.id == "Exception"
+                ) or isinstance(node.type, ast.Tuple):
                     smells.append(
                         CodeSmell(
                             rule_id="SMELL-S002",

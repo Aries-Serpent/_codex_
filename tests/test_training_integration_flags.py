@@ -19,6 +19,12 @@ try:
 except (ImportError, AttributeError) as exc:  # pragma: no cover - runtime guard
     pytest.skip(f"PyTorch runtime not available: {exc}", allow_module_level=True)
 
+if not all(
+    hasattr(torch, name)
+    for name in ("Tensor", "arange", "ones_like", "rand", "randn", "manual_seed", "from_numpy")
+) or not hasattr(getattr(torch, "optim", None), "AdamW"):
+    pytest.skip("real torch API unavailable (possible repo-local shadow)", allow_module_level=True)
+
 
 class _TinyTokenizer:
     """Tokenizer stub that emits deterministic integer tensors."""

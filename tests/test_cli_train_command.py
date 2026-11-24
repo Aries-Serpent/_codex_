@@ -8,7 +8,9 @@ import pytest
 
 pytest.importorskip("yaml")
 pytest.importorskip("omegaconf")
-pytest.importorskip("torch")
+torch = pytest.importorskip("torch")
+if not all(hasattr(torch, name) for name in ("rand", "randn", "manual_seed", "from_numpy")):
+    pytest.skip("real torch API unavailable (possible repo-local shadow)", allow_module_level=True)
 
 import yaml
 from click.testing import CliRunner

@@ -272,10 +272,17 @@ class PatternCompressor:
             RuntimeError: If compressor has not been fitted yet
         """
         if not self.is_fitted:
-            raise RuntimeError("Compressor must be fitted before compressing patterns")
+            raise ValueError("Compressor not fitted")
 
         if self.projection_matrix is None:
             raise RuntimeError("Projection matrix is None - fit() may have failed")
+
+        pattern_keys = set(pattern)
+        fitted_keys = set(self.feature_keys)
+        if pattern_keys != fitted_keys:
+            missing = sorted(fitted_keys - pattern_keys)
+            extra = sorted(pattern_keys - fitted_keys)
+            raise ValueError(f"Feature mismatch: missing keys {missing}; extra keys {extra}")
 
         # Extract features in consistent order
         feature_vec = np.array([pattern.get(k, 0.0) for k in self.feature_keys])

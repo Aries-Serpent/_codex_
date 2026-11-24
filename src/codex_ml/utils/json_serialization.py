@@ -49,7 +49,18 @@ except (ImportError, AttributeError):
 try:
     import torch
 
-    TORCH_AVAILABLE = True
+    TORCH_AVAILABLE = all(
+        hasattr(torch, name)
+        for name in (
+            "Tensor",
+            "tensor",
+            "from_numpy",
+            "rand",
+            "manual_seed",
+            "save",
+            "load",
+        )
+    )
 except (ImportError, AttributeError):
     torch = None  # type: ignore[assignment]
     TORCH_AVAILABLE = False
@@ -249,6 +260,11 @@ class CustomJSONDecoder(json.JSONDecoder):
         if not isinstance(obj, dict):
             return obj
 
+        try:
+            import numpy as np
+        except (ImportError, AttributeError):
+            np = None
+
         # ──── TORCH TENSOR ──────────────────────────────────────────
         if obj.get("__tensor__"):
             self._decoded_types.add("torch.Tensor")
@@ -256,9 +272,21 @@ class CustomJSONDecoder(json.JSONDecoder):
                 logger.warning("Cannot restore torch.Tensor: torch not available")
                 return obj
             try:
-                import numpy as np
-
-                data = np.array(obj["data"], dtype=obj.get("dtype", "float32"))
+                dtype = str(obj.get("dtype", "float32"))
+                if dtype.startswith("torch."):
+                    dtype = dtype.removeprefix("torch.")
+                dtype_map = {
+                    "bfloat16": "float32",
+                    "float16": "float16",
+                    "float32": "float32",
+                    "float64": "float64",
+                    "int8": "int8",
+                    "int16": "int16",
+                    "int32": "int32",
+                    "int64": "int64",
+                    "bool": "bool",
+                }
+                data = np.array(obj["data"], dtype=dtype_map.get(dtype, dtype))
                 tensor = torch.from_numpy(data)
                 if obj.get("requires_grad"):
                     tensor = tensor.requires_grad_(True)
@@ -274,7 +302,10 @@ class CustomJSONDecoder(json.JSONDecoder):
                 logger.warning("Cannot restore numpy.ndarray: numpy not available")
                 return obj
             try:
-                return np.array(obj["data"], dtype=obj.get("dtype", "float32"))
+                dtype = str(obj.get("dtype", "float32"))
+                if dtype.startswith("torch."):
+                    dtype = dtype.removeprefix("torch.")
+                return np.array(obj["data"], dtype=dtype)
             except Exception as e:
                 logger.error("Failed to decode numpy.ndarray: %s", e)
                 return obj

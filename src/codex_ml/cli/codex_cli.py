@@ -536,9 +536,41 @@ def train(
         metrics_path.parent.mkdir(parents=True, exist_ok=True)
         metrics_logger = SystemMetricsLogger(metrics_path)
 
+    effective_training = OmegaConf.to_container(training_cfg, resolve=True)
+    if not isinstance(effective_training, dict):
+        effective_training = dict(effective_training)
+
+    root_container = OmegaConf.to_container(raw_cfg, resolve=True)
+    if isinstance(root_container, dict):
+        for key in (
+            "seed",
+            "output_dir",
+            "model",
+            "learning_rate",
+            "batch_size",
+            "max_epochs",
+            "gradient_accumulation",
+            "dataset",
+            "optimizer",
+            "scheduler",
+            "warmup_steps",
+            "lora_enable",
+            "lora_r",
+            "lora_alpha",
+            "lora_dropout",
+            "logging",
+        ):
+            if key in root_container:
+                effective_training[key] = root_container[key]
+
+    if "output_dir" in effective_training:
+        cfg_obj.training.output_dir = str(effective_training["output_dir"])
+    if "dataset" in effective_training:
+        cfg_obj.training.dataset = dict(effective_training["dataset"])
+
     try:
         with metrics_logger if metrics_logger else nullcontext():
-            run_functional_training(config=training_cfg, resume=resume)
+            run_functional_training(config=effective_training, resume=resume)
         provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
         _emit_provenance_summary(provenance_dir)
         click.echo("Training complete")

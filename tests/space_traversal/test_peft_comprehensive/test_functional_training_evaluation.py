@@ -13,8 +13,20 @@ import pytest
 
 torch = pytest.importorskip("torch")
 
-if not hasattr(torch, "tensor") or not hasattr(torch, "utils"):
-    pytest.skip("PyTorch runtime not available", allow_module_level=True)
+if not all(
+    hasattr(torch, name)
+    for name in (
+        "Tensor",
+        "tensor",
+        "arange",
+        "ones_like",
+        "rand",
+        "randn",
+        "manual_seed",
+        "from_numpy",
+    )
+):
+    pytest.skip("real torch API unavailable (possible repo-local shadow)", allow_module_level=True)
 
 
 class DummyDataset(torch.utils.data.Dataset):

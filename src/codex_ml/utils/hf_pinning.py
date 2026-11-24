@@ -31,6 +31,7 @@ class HFModelUnavailableError(RuntimeError):
 _COMMIT_PATTERN = re.compile(r"^[0-9a-fA-F]{7,}$")
 _ENV_VARS = ("CODEX_HF_REVISION", "HF_REVISION", "HF_MODEL_REVISION")
 _LOCAL_PREFIXES = ("./", "../", "/")
+_LOCAL_MODEL_ALIASES = frozenset({"dummy", "minilm", "MiniLM"})
 
 # Stable revisions for built-in examples and smoke tests. These values were
 # retrieved from Hugging Face's model metadata on 2025-09-25.
@@ -58,6 +59,8 @@ def _looks_like_local(identifier: str | None) -> bool:
     """Heuristically determine whether an identifier points to local files."""
 
     if identifier is None:
+        return True
+    if identifier in _LOCAL_MODEL_ALIASES:
         return True
     if identifier.startswith(_LOCAL_PREFIXES):
         return True

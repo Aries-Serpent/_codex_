@@ -60,7 +60,8 @@ class TestPerformanceBenchmarks:
 
         # Target: >= 1000 patterns/second
         # Relaxed for test environment: >= 500 patterns/second
-        assert (patterns_per_second >= 500, "patterns_per_second must be greater than zero"
+        assert (
+            patterns_per_second >= 500
         ), f"Compression speed: {patterns_per_second:.0f} patterns/s (target: 1000)"
 
     def test_retrieval_speed_benchmark(self):
@@ -98,7 +99,8 @@ class TestPerformanceBenchmarks:
 
         # Target: < 10ms average
         # Relaxed for test environment: < 50ms
-        assert (avg_retrieval_time < 50, "avg_retrieval_time is not valid"
+        assert (
+            avg_retrieval_time < 50
         ), f"Avg retrieval time: {avg_retrieval_time:.2f}ms (target: <10ms)"
 
     def test_cache_hit_rate_realistic_workload(self):
@@ -171,7 +173,8 @@ class TestPerformanceBenchmarks:
 
         # Target: < 100MB for 10k patterns
         # Relaxed: < 200MB
-        assert (estimated_10k_memory < 200, "estimated_10k_memory is not valid"
+        assert (
+            estimated_10k_memory < 200
         ), f"Estimated memory for 10k: {estimated_10k_memory:.1f}MB (target: <100MB)"
 
     def test_consolidation_throughput(self):
@@ -198,6 +201,7 @@ class TestPerformanceBenchmarks:
 
         # Target: >= 100 patterns/second
         # Relaxed: >= 50 patterns/second
-        assert (patterns_per_second >= 50, "patterns_per_second must be greater than zero"
+        assert (
+            patterns_per_second >= 50
         ), f"Consolidation throughput: {patterns_per_second:.0f} patterns/s (target: 100)"
         assert result.promoted > 0, "No patterns were promoted during consolidation"
