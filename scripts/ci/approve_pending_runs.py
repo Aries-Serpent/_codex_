@@ -895,6 +895,29 @@ def _run_decisions(decisions: list[dict[str, Any]]) -> int:
 
     # Collect (pr_number, head_sha) targets ───────────────────────────────────
     if head_sha and pr_number:
+        status, pr = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
+        if status != 200 or not isinstance(pr, dict):
+            decisions.append(
+                {"rule": "unknown-pr", "pr": pr_number, "head_sha": head_sha, "outcome": "denied"}
+            )
+            return 1
+        if pr.get("state") != "open":
+            decisions.append(
+                {"rule": "closed-pr", "pr": pr_number, "head_sha": head_sha, "outcome": "skipped"}
+            )
+            print(f"ℹ️  PR #{pr_number} is closed; nothing to approve.")
+            return 0
+        pr_sha = (pr.get("head") or {}).get("sha")
+        if not isinstance(pr_sha, str) or pr_sha != head_sha:
+            decisions.append(
+                {
+                    "rule": "stale-head-sha",
+                    "pr": pr_number,
+                    "head_sha": head_sha,
+                    "outcome": "denied",
+                }
+            )
+            return 1
         if not _has_wec_auto_approve_label(token, repo, pr_number):
             print(
                 f"⏭️  Skipping PR #{pr_number}: missing or expired required WEC approval label "
@@ -905,21 +928,51 @@ def _run_decisions(decisions: list[dict[str, Any]]) -> int:
                     "rule": "missing-or-expired-label",
                     "pr": pr_number,
                     "head_sha": head_sha,
-                    "outcome": "denied",
+                    "outcome": "skipped",
                 }
             )
-            return 1
+            return 0
         targets = [(pr_number, head_sha)]
     elif pr_number:
         status, pr = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
         sha = (
             (pr.get("head") or {}).get("sha", "") if status == 200 and isinstance(pr, dict) else ""
         )
+        if status != 200 or not isinstance(pr, dict):
+            decisions.append(
+                {"rule": "unknown-pr", "pr": pr_number, "head_sha": None, "outcome": "denied"}
+            )
+            return 1
+        if pr.get("state") != "open":
+            decisions.append(
+                {
+                    "rule": "closed-pr",
+                    "pr": pr_number,
+                    "head_sha": sha or None,
+                    "outcome": "skipped",
+                }
+            )
+            print(f"ℹ️  PR #{pr_number} is closed; nothing to approve.")
+            return 0
         if not sha:
             decisions.append(
                 {"rule": "unknown-pr", "pr": pr_number, "head_sha": None, "outcome": "denied"}
             )
             return 1
+        if not _has_wec_auto_approve_label(token, repo, pr_number):
+            print(
+                f"⏭️  Skipping PR #{pr_number}: missing or expired required WEC approval label "
+                "('wec:auto-approve' or active 'wec:auto-approve-once')"
+            )
+            decisions.append(
+                {
+                    "rule": "missing-or-expired-label",
+                    "pr": pr_number,
+                    "head_sha": sha,
+                    "outcome": "skipped",
+                }
+            )
+            return 0
         targets = [(pr_number, sha)]
     else:
         # Sweep mode: use Search API to find only WEC-labelled PRs in one query
