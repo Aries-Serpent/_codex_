@@ -13,5 +13,5 @@ def test_launch_key_and_preflight_contract() -> None:
 
 def test_sub_pr_and_promotion_branch_contract() -> None:
     assert task.validate_branch_pair("0D_base_", "copilot/session-resume")
-    assert task.validate_branch_pair("0D_base_", "main", promotion=True)
+    assert task.validate_branch_pair("main", "0D_base_", promotion=True)
     assert not task.validate_branch_pair("0D_base_", "feature/tests")

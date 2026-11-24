@@ -97,6 +97,14 @@ def test_sub_pr_and_promotion_readiness_use_branch_contract() -> None:
     promotion = _pr(base="main", head="0D_base_")
     assert gate.check_sub_pr_promotion_readiness(promotion, "promotion")["pass"]
 
+    fork_pr = _pr(base="main", head="0D_base_")
+    fork_pr["head"] = {
+        "sha": "c" * 40,
+        "ref": "0D_base_",
+        "repo": {"full_name": "fork-owner/_codex_"},
+    }
+    assert gate.check_sub_pr_promotion_readiness(fork_pr, "promotion")["pass"] is False
+
 
 def test_evaluate_merge_gate_is_read_only_and_fail_closed() -> None:
     sha = "e" * 40

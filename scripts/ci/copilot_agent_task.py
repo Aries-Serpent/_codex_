@@ -305,7 +305,7 @@ def validate_branch_pair(
     head = str(head_branch or "").strip()
 
     if promotion:
-        return base == "0D_base_" and head == "main"
+        return base == "main" and head == "0D_base_"
 
     if base == "0D_base_":
         return head.startswith("copilot/session-") or head.startswith("copilot/sub-pr-")

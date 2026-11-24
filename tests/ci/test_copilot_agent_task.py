@@ -113,7 +113,7 @@ def test_branch_validation_rejects_direct_0d_base_launch() -> None:
     assert not task.validate_branch_name("feature..bad")
     assert not task.validate_branch_pair("0D_base_", "feature/tests")
     assert task.validate_branch_pair("0D_base_", "copilot/session-20261124-120000")
-    assert task.validate_branch_pair("0D_base_", "main", promotion=True)
+    assert task.validate_branch_pair("main", "0D_base_", promotion=True)
 
 
 def test_custom_agent_slug_resolution_and_rejection() -> None:

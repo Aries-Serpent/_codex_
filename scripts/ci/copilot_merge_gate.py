@@ -39,7 +39,7 @@ def _normalize_sha(value: object) -> str:
     if not isinstance(value, str):
         return ""
     sha = value.strip().lower()
-    return sha if SHA_PATTERN.fullmatch(sha) else ""
+    return sha if re.fullmatch(r"^[0-9a-f]{40}$", sha) else ""
 
 
 def _mapping(value: object) -> Mapping[str, Any]:
@@ -47,7 +47,13 @@ def _mapping(value: object) -> Mapping[str, Any]:
 
 
 def _is_ai_login(login: object) -> bool:
-    return isinstance(login, str) and bool(AI_LOGIN_PATTERN.search(login.strip()))
+    if not isinstance(login, str):
+        return False
+    return login.strip().lower() in {
+        "github-copilot[bot]",
+        "copilot-swe-agent[bot]",
+        "cognitive-brain[bot]",
+    }
 
 
 def _review_commit_id(review: Mapping[str, Any]) -> str:
@@ -85,6 +91,21 @@ def _pr_head_ref(pr: Mapping[str, Any]) -> str:
         if isinstance(value, str) and value.strip():
             return value.strip()
     return ""
+
+
+def _pr_head_owner(pr: Mapping[str, Any]) -> str:
+    head = _mapping(pr.get("head"))
+    repo = _mapping(head.get("repo"))
+    full_name = repo.get("full_name")
+    if isinstance(full_name, str) and "/" in full_name:
+        return full_name.split("/", 1)[0]
+    owner = _mapping(repo.get("owner"))
+    login = owner.get("login")
+    if isinstance(login, str):
+        return login
+    owner = _mapping(head.get("owner"))
+    login = owner.get("login")
+    return login if isinstance(login, str) else ""
 
 
 def _pr_base_ref(pr: Mapping[str, Any]) -> str:
@@ -136,8 +157,6 @@ def check_current_sha_ai_review(
         if not review_sha:
             continue
         sha_matches = review_sha == head_sha
-        if not sha_matches and len(review_sha) >= 7 and len(head_sha) >= 7:
-            sha_matches = review_sha.startswith(head_sha[:7]) or head_sha.startswith(review_sha[:7])
         if sha_matches and state == "APPROVED" and _is_ai_login(login):
             matching.append({"login": login, "commit_id": review_sha, "state": state})
 
@@ -459,6 +478,15 @@ def check_sub_pr_promotion_readiness(
             normalized_mode = "promotion"
 
     draft = pr.get("draft") is True
+    head_owner = _pr_head_owner(pr)
+    if head_owner and head_owner.lower() != "aries-serpent":
+        return {
+            "pass": False,
+            "mode": normalized_mode or "unknown",
+            "head": head_ref,
+            "base": base_ref,
+            "reason": f"fork head owner is not authorized: {head_owner}",
+        }
     if draft:
         return {
             "pass": False,

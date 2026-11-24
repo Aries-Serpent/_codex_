@@ -545,20 +545,129 @@ class ActionExecutor:
         target = task.get("target", "internal")
 
         if target == "workflow_dispatch":
-            # Real implementation: POST /repos/{owner}/{repo}/actions/workflows/{id}/dispatches
-            # Requires CODEX_MASTER_KEY (repo + workflow scopes).
-            # Stub: always succeeds in test/offline mode.
-            return True
+            payload = task.get("payload") or {}
+            if payload.get("execute") is not True:
+                return True
+            if os.environ.get("AGENT_KILL_SWITCH", "0") == "1":
+                return False
+            repo = str(
+                payload.get("repo")
+                or os.environ.get("GITHUB_REPOSITORY")
+                or "Aries-Serpent/_codex_"
+            )
+            workflow_id = str(payload.get("workflow_id") or payload.get("workflow") or "")
+            ref = str(payload.get("ref") or "0D_base_")
+            if not workflow_id:
+                return False
+            import json
+            import urllib.request
+
+            token = (
+                os.environ.get("COPILOT_AGENT_TASK_TOKEN")
+                or os.environ.get("CODEX_MASTER_KEY")
+                or os.environ.get("GITHUB_TOKEN")
+            )
+            if not token:
+                return False
+            body = json.dumps({"ref": ref, "inputs": payload.get("inputs") or {}}).encode("utf-8")
+            request = urllib.request.Request(
+                f"https://api.github.com/repos/{repo}/actions/workflows/{workflow_id}/dispatches",
+                data=body,
+                method="POST",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Accept": "application/vnd.github+json",
+                    "X-GitHub-Api-Version": "2026-03-10",
+                    "Content-Type": "application/json",
+                },
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=30) as response:
+                    return response.status in {200, 204}
+            except Exception:
+                return False
 
         if target == "post_comment":
-            # Real implementation: POST /repos/{owner}/{repo}/issues/{number}/comments
-            # Stub: always succeeds in test/offline mode.
-            return True
+            payload = task.get("payload") or {}
+            if payload.get("execute") is not True:
+                return True
+            if os.environ.get("AGENT_KILL_SWITCH", "0") == "1":
+                return False
+            repo = str(
+                payload.get("repo")
+                or os.environ.get("GITHUB_REPOSITORY")
+                or "Aries-Serpent/_codex_"
+            )
+            pr_number = payload.get("pr_number")
+            body = str(payload.get("body") or "")
+            if not pr_number or not body:
+                return False
+            import json
+            import urllib.request
+
+            token = (
+                os.environ.get("COPILOT_AGENT_TASK_TOKEN")
+                or os.environ.get("CODEX_MASTER_KEY")
+                or os.environ.get("GITHUB_TOKEN")
+            )
+            if not token:
+                return False
+            request = urllib.request.Request(
+                f"https://api.github.com/repos/{repo}/issues/{int(pr_number)}/comments",
+                data=json.dumps({"body": body}).encode("utf-8"),
+                method="POST",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Accept": "application/vnd.github+json",
+                    "X-GitHub-Api-Version": "2026-03-10",
+                    "Content-Type": "application/json",
+                },
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=30) as response:
+                    return response.status in {200, 201}
+            except Exception:
+                return False
 
         if target == "approve_run":
-            # Real implementation: POST /repos/{owner}/{repo}/actions/runs/{id}/approve
-            # Stub: always succeeds in test/offline mode.
-            return True
+            payload = task.get("payload") or {}
+            if payload.get("execute") is not True:
+                return True
+            if os.environ.get("AGENT_KILL_SWITCH", "0") == "1":
+                return False
+            repo = str(
+                payload.get("repo")
+                or os.environ.get("GITHUB_REPOSITORY")
+                or "Aries-Serpent/_codex_"
+            )
+            run_id = payload.get("run_id")
+            if not run_id:
+                return False
+            import urllib.request
+
+            token = (
+                os.environ.get("COPILOT_AGENT_TASK_TOKEN")
+                or os.environ.get("CODEX_MASTER_KEY")
+                or os.environ.get("GITHUB_TOKEN")
+            )
+            if not token:
+                return False
+            request = urllib.request.Request(
+                f"https://api.github.com/repos/{repo}/actions/runs/{int(run_id)}/approve",
+                data=b"{}",
+                method="POST",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Accept": "application/vnd.github+json",
+                    "X-GitHub-Api-Version": "2026-03-10",
+                    "Content-Type": "application/json",
+                },
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=30) as response:
+                    return response.status in {200, 201, 202, 204}
+            except Exception:
+                return False
 
         if target == "rerun_failed_jobs":
             payload = task.get("payload") or {}
@@ -569,8 +678,8 @@ class ActionExecutor:
             return bool(payload.get("run_id"))
 
         if target == "set_repo_variable":
-            payload = task.get("payload") or {}
-            return bool(payload.get("name")) and "value" in payload
+            # Repository variables are intentionally out of the autonomous mutation contract.
+            return False
 
         if target == "create_agent_task":
             payload = task.get("payload") or {}

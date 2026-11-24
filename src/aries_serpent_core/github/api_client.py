@@ -118,7 +118,7 @@ class APIClient:
             req = urllib.request.Request(
                 _validated_github_api_url(f"{_GITHUB_API}/user"),
                 headers={
-                    "Authorization": "******",
+                    "Authorization": f"Bearer {self._token}",
                     "Accept": "application/vnd.github+json",
                     "X-GitHub-Api-Version": _API_VERSION,
                 },
@@ -317,7 +317,7 @@ class APIClient:
         req = urllib.request.Request(
             url,
             headers={
-                "Authorization": "******",
+                "Authorization": f"Bearer {self._token}",
                 "Accept": _ACCEPT,
                 "X-GitHub-Api-Version": _API_VERSION,
             },
@@ -372,7 +372,7 @@ class APIClient:
         )
         last_exc: urllib.error.HTTPError | None = None
         request_headers = {
-            "Authorization": "******",
+            "Authorization": f"Bearer {self._token}",
             "Accept": _ACCEPT,
             "X-GitHub-Api-Version": _API_VERSION,
             "Content-Type": "application/json",
