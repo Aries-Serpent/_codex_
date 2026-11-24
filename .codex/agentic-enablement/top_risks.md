@@ -116,7 +116,7 @@ permissions:
 Every health-check completion automatically chains to agent orchestration — no human step in the chain.
 
 **Remediation (FIX):**
-1. Add an `environment: agent-operations` protection rule requiring human reviewer approval before jobs run.
+1. Use a protected `owner-approval` environment with zero human required reviewers, the sole owner marker, exact-SHA AI review, and no admin bypass.
 2. Change trigger to `workflow_dispatch` only until proper canary/staging is established.
 3. Downgrade to `contents: read` until orchestration needs to write.
 

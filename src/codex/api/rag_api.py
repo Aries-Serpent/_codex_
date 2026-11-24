@@ -5,6 +5,9 @@ from __future__ import annotations
 from aries_serpent_core.api.rag_api import (  # noqa: F401
     BuildIndexRequest,
     BuildIndexResponse,
+    DeleteIndexRequest,
+    DeleteIndexResponse,
+    HealthResponse,
     MergeIndicesRequest,
     QueryRequest,
     QueryResult,
@@ -41,6 +44,9 @@ class RAGAPI:
 __all__ = [
     "BuildIndexRequest",
     "BuildIndexResponse",
+    "DeleteIndexRequest",
+    "DeleteIndexResponse",
+    "HealthResponse",
     "MergeIndicesRequest",
     "QueryRequest",
     "QueryResult",

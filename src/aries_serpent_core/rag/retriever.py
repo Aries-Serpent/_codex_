@@ -84,6 +84,11 @@ class Retriever:
 
     def _load_model(self) -> None:
         """Load embedding model for query encoding."""
+        if not self.chunks_metadata:
+            logger.info("No indexed chunks loaded; retriever model remains unloaded")
+            self.model = None
+            return
+
         if SentenceTransformer is None:
             logger.warning(
                 "sentence-transformers not installed; using TF-IDF fallback for query encoding"
@@ -119,7 +124,9 @@ class Retriever:
             if chunk.get("text", "").strip()
         ]
         if not chunk_texts:
-            raise ImportError("TF-IDF fallback requires chunk text metadata to fit query encoder")
+            logger.info("No chunk text available; retriever model remains unloaded")
+            self.model = None
+            return
 
         dimension = int(
             self.index_metadata.get("dimension")
@@ -164,6 +171,10 @@ class Retriever:
         if top_k <= 0:
             logger.warning("top_k must be positive, using default of 5")
             top_k = 5
+
+        if self.model is None:
+            logger.error("No query embedding model loaded. Cannot perform query.")
+            return []
 
         # Encode query
         logger.debug("Encoding query input")
@@ -288,9 +299,10 @@ class Retriever:
         }
 
     def reload(self) -> None:
-        """Reload the index from disk (useful if index was updated)."""
+        """Reload the index and encoder from disk after an index update."""
         logger.info("Reloading index from disk")
         self._load_index()
+        self._load_model()
 
 
 class MultiIndexRetriever:

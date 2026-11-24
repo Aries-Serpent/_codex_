@@ -39,8 +39,8 @@ class TestRetrieverInitialization:
 
         assert retriever.index_dir == str(tmp_path)
         assert retriever.model_name == "test-model"
-        assert retriever.model is model_loader.return_value
-        model_loader.assert_called_once_with("test-model", None)
+        assert retriever.model is None
+        model_loader.assert_not_called()
 
     def test_retriever_has_required_attributes(self):
         """Test Retriever has required attributes."""
@@ -92,6 +92,38 @@ class TestRetrieverQuery:
 
             assert result == [], "Result must not be empty"
 
+    def test_query_without_model_returns_empty_list(self):
+        """A loaded index with an unavailable encoder fails closed."""
+        from codex.rag.retriever import Retriever
+
+        with patch.object(Retriever, "_load_index"), patch.object(Retriever, "_load_model"):
+            retriever = Retriever()
+            retriever.faiss_index = MagicMock()
+            retriever.model = None
+
+            assert retriever.query("test query") == []
+            retriever.faiss_index.search.assert_not_called()
+
+    def test_reload_initializes_model_after_missing_index_becomes_available(self):
+        """A retriever can transition from missing index to query-ready state."""
+        from codex.rag.retriever import Retriever
+
+        with patch.object(Retriever, "_load_index"), patch.object(Retriever, "_load_model"):
+            retriever = Retriever()
+
+        def load_index():
+            retriever.chunks_metadata = [{"text": "indexed text"}]
+            retriever.faiss_index = MagicMock()
+
+        with (
+            patch.object(retriever, "_load_index", side_effect=load_index),
+            patch.object(retriever, "_load_model") as load_model,
+        ):
+            retriever.reload()
+
+        load_model.assert_called_once_with()
+        assert retriever.faiss_index is not None
+
     def test_query_invalid_top_k_uses_default(self):
         """Test query with invalid top_k uses default."""
         from codex.rag.retriever import Retriever
@@ -118,13 +150,14 @@ class TestRetrieverModelLoading:
         assert hasattr(Retriever, "_load_model")
 
     @patch("codex.rag.retriever.SentenceTransformer", None)
-    def test_load_model_without_sentence_transformers_raises(self):
-        """Without neural dependencies, an empty corpus cannot fit the fallback."""
+    def test_load_model_without_sentence_transformers_remains_unloaded(self):
+        """Without neural dependencies, an empty corpus leaves the retriever unloaded."""
         from codex.rag.retriever import Retriever
 
         with patch.object(Retriever, "_load_index"):
-            with pytest.raises(ImportError, match="TF-IDF fallback requires chunk text metadata"):
-                Retriever()
+            retriever = Retriever()
+
+        assert retriever.model is None
 
     def test_load_model_uses_hf_token(self, monkeypatch, tmp_path):
         """Exercise the shared loader and assert the external constructor contract."""
@@ -139,7 +172,10 @@ class TestRetrieverModelLoading:
             patch.dict("sys.modules", {"sentence_transformers": dependency}),
             patch("codex.rag.retriever.SentenceTransformer", constructor),
             patch("aries_serpent_core.rag.utils.safe_model_to_device", return_value=model) as move,
-            patch.object(Retriever, "_load_index"),
+            patch(
+                "aries_serpent_core.rag.indexer.load_index",
+                return_value=(None, [{"text": "indexed chunk"}], {"dimension": 8}),
+            ),
         ):
             retriever = Retriever(model_name="test-model", cache_dir=str(tmp_path))
 
@@ -156,23 +192,28 @@ class TestRetrieverModelLoading:
 
     @patch("codex.rag.retriever.SentenceTransformer", None)
     def test_load_model_without_sentence_transformers_fits_indexed_chunks(self):
-        """The supported offline fallback must fit real TF-IDF query embeddings."""
-        from aries_serpent_core.rag.embeddings import TfidfEmbeddingProvider
+        """The supported offline fallback configures its provider for indexed chunks."""
         from codex.rag.retriever import Retriever
 
         chunks = [{"text": "oranges fruit orchard"}, {"text": "python software code"}]
-        with patch(
-            "aries_serpent_core.rag.indexer.load_index",
-            return_value=(None, chunks, {"dimension": 8}),
+        provider = Mock()
+        provider.is_fitted = True
+        provider.encode.return_value = np.array([[1.0, 0.0]])
+        with (
+            patch(
+                "aries_serpent_core.rag.indexer.load_index",
+                return_value=(None, chunks, {"dimension": 8}),
+            ),
+            patch(
+                "aries_serpent_core.rag.embeddings.TfidfEmbeddingProvider",
+                return_value=provider,
+            ) as provider_class,
         ):
             retriever = Retriever()
 
-        # The provider is imported canonically by the retriever.
-        assert isinstance(retriever.model, TfidfEmbeddingProvider)
-        embedding = retriever.model.encode(["oranges fruit"])
-        assert embedding.shape[0] == 1
-        assert np.isfinite(embedding).all()
-        assert np.linalg.norm(embedding) > 0
+        provider_class.assert_called_once_with(max_features=8)
+        provider.encode.assert_called_once_with(["oranges fruit orchard", "python software code"])
+        assert retriever.model is provider
         assert retriever.model.is_fitted
 
 
@@ -258,7 +299,8 @@ class TestRetrieverConfiguration:
             retriever = Retriever(index_dir=str(tmp_path))
 
         assert retriever.index_dir == str(tmp_path)
-        model_loader.assert_called_once_with(retriever.model_name, None)
+        assert retriever.model is None
+        model_loader.assert_not_called()
 
     def test_retriever_custom_tenant_id(self, model_loader):
         """Test Retriever with custom tenant_id."""
@@ -268,7 +310,8 @@ class TestRetrieverConfiguration:
             retriever = Retriever(tenant_id="custom-tenant")
 
         assert retriever.tenant_id == "custom-tenant"
-        model_loader.assert_called_once_with(retriever.model_name, None)
+        assert retriever.model is None
+        model_loader.assert_not_called()
 
     def test_retriever_custom_cache_dir(self, model_loader, tmp_path):
         """Test Retriever with custom cache_dir."""
@@ -278,4 +321,5 @@ class TestRetrieverConfiguration:
             retriever = Retriever(cache_dir=str(tmp_path))
 
         assert retriever.cache_dir == str(tmp_path)
-        model_loader.assert_called_once_with(retriever.model_name, str(tmp_path))
+        assert retriever.model is None
+        model_loader.assert_not_called()

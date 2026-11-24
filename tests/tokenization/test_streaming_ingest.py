@@ -29,8 +29,16 @@ def test_iter_text_uses_configured_chunk_size(monkeypatch):
     cfg = module.TrainTokenizerConfig(corpus_glob=[], streaming=True, stream_chunk_size=128)
     output = list(module._iter_text(["foo.txt", "bar.txt"], cfg))
 
-    # Fixed malformed assertion: assert calls ==
-    assert output == ["full\n", "text"]
+    assert calls == [
+        ("foo.txt", "auto", 128),
+        ("bar.txt", "auto", 128),
+    ]
+    assert output == [
+        "foo.txt-line-1\n",
+        "foo.txt-line-2\n",
+        "bar.txt-line-1\n",
+        "bar.txt-line-2\n",
+    ]
 
 
 def test_iter_text_reads_entire_file_when_streaming_disabled(monkeypatch):

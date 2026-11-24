@@ -342,20 +342,24 @@ class TestREQ1Validator(unittest.TestCase):
         self.assertEqual(result.score, 0.0)
 
     @patch.object(REQ1EligibilityValidator, "_get_pr_details")
-    def test_missing_reviewers(self, mock_get_pr):
-        """Test when reviewers not assigned."""
+    def test_missing_reviewers_uses_ai_review_policy(self, mock_get_pr):
+        """Missing human reviewers route to exact-SHA AI review, not failure."""
         mock_get_pr.return_value = {
             "head": {"ref": "feat/compliance"},
             "title": "Add compliance framework",
-            "body": "Description with enough content",
+            "body": (
+                "This pull request adds the compliance framework and complete "
+                "validation coverage for agent review."
+            ),
             "requested_reviewers": [],
         }
 
         validator = REQ1EligibilityValidator("3575")
         result = validator.validate()
 
-        self.assertEqual(result.status, "fail")
-        self.assertEqual(result.score, 0.0)
+        self.assertEqual(result.status, "warn")
+        self.assertEqual(result.score, 0.5)
+        self.assertEqual(result.metadata["reviewer_exemption"], "single_owner_ai_review_policy")
 
 
 class TestComplianceResultPerformance(unittest.TestCase):

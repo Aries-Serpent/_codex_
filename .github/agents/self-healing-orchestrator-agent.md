@@ -210,7 +210,7 @@ repairs, this agent:
 2. **Classifies** failures into the RP pattern catalog
 3. **Dispatches** fix work to the appropriate specialist agent
 4. **Verifies** the fix passes CI gate checks
-5. **Escalates** to a human reviewer when max iterations are exhausted
+5. **Escalates** to the AI reviewer/governance fleet and posts an owner-visible handoff when max iterations are exhausted
 
 ---
 
@@ -249,7 +249,7 @@ flowchart TD
     CHECKLIST --> COMMIT[Commit fix +\nupdate tracking log]
     COMMIT --> IDLE
 
-    ESCALATE[Escalate:\nPost full-context PR comment\nTag human reviewer] --> IDLE
+    ESCALATE[Escalate:\nPost full-context PR comment\nRoute to AI reviewer/governance] --> IDLE
 
     subgraph CooldownGuard [Cooldown Guard]
         SUPPRESS

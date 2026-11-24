@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+### Added - PR #5766 exact ML evidence and resumable closure planset (2026-11-22)
+- Published handoff commit `1212dbbcf52a1a208eb0921265e4a9604575028f` to `0D_base_`; ML run `44971752791` evidence remains at prior campaign head `42073ea3eeee218c3350816017fb92c5c6b2fa21` and is not current-head merge evidence until rerun.
+- Record ML run `44971752791` at prior campaign head `42073ea3eeee218c3350816017fb92c5c6b2fa21`: 1,797 integration tests pass with 0 failures, while 32,258 unit tests report 754 failures/errors and combined coverage is 54.99% against floor 54 and target 70.
+- Preserve an empty quarantine, passing no-growth/no-floor-decrease ratchet, and failed `ml-slow-aggregate` gate. PR #5766 remains open and unmerged.
+- Add [the resumable PR 5766 planset](.codex/plans/PR5766_RESUME_CLOSURE_PLANSET_2026-11-22.md) with targeted unit-failure batches, coverage ratcheting, issue closure gates, main-promotion checks, and clean Codespace resume instructions.
+
+### Fixed - PR #5766 Fast Validation YAML lint (2026-11-22)
+- Reformat the RAG disk cleanup script as a YAML block without changing its commands.
+
+### Fixed - PR #5766 Fast Validation fixture (2026-11-21)
+- Make the logging-adapter fallback test disable the `codex.logging.db` module that the implementation actually imports.
+
+### Fixed - PR #5766 CI validation (2026-11-21)
+- Repair the setup-validation summary script and the broken policy link reported by fast validation.
+
 ### Fixed - PR #5766 live review-comment and RAG readiness repair (2026-11-20)
 - Add a locked `brain-api` Codespace extra, bind route reconciliation to the live execution owner, hash safety-audit fragments, and clean up the tenant, Torch-stub, and API test review findings without weakening behavior.
 - Remove the stale ChromaDB prerequisite from the RAG workflow now that FAISS is the supported store, and record the four `_update_path` findings as current-signature false positives rather than applying a no-op rename.

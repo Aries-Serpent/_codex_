@@ -64,7 +64,7 @@ def test_append_error_block(tmp_path, monkeypatch):
 
     # Mock the error report directory
     mock_dir = tmp_path / "reports"
-    monkeypatch.setattr("src.tokenization.cli._ERROR_REPORT_DIR", mock_dir)
+    monkeypatch.setattr("tokenization.cli._ERROR_REPORT_DIR", mock_dir)
 
     # Call the function
     _append_error_block(step="test_step", message="Test error message", context={"key": "value"})
@@ -86,7 +86,7 @@ def test_fail_helper(tmp_path, monkeypatch):
 
     # Mock the error report directory
     mock_dir = tmp_path / "reports"
-    monkeypatch.setattr("src.tokenization.cli._ERROR_REPORT_DIR", mock_dir)
+    monkeypatch.setattr("tokenization.cli._ERROR_REPORT_DIR", mock_dir)
 
     # Should raise typer.Exit (not SystemExit when using typer)
     with pytest.raises((SystemExit, Exception)):  # typer raises click.exceptions.Exit
@@ -129,7 +129,7 @@ def test_load_tokenizer_helper(tmp_path):
     tokenizer_dir.mkdir()
 
     # Mock the build_tokenizer function
-    with patch("src.tokenization.cli.build_tokenizer") as mock_build:
+    with patch("tokenization.cli.build_tokenizer") as mock_build:
         mock_tokenizer = MagicMock()
         mock_build.return_value = mock_tokenizer
 
@@ -147,7 +147,7 @@ def test_vocab_command_with_limit(tmp_path, capsys):
     tokenizer_path = tmp_path / "tokenizer"
 
     # Mock the _load_tokenizer function
-    with patch("src.tokenization.cli._load_tokenizer") as mock_load:
+    with patch("tokenization.cli._load_tokenizer") as mock_load:
         mock_tokenizer = MagicMock()
         mock_tokenizer.vocab_size = 1000
         mock_tokenizer.convert_ids_to_tokens = lambda idx: f"token_{idx}"
@@ -180,7 +180,7 @@ def test_vocab_command_zero_limit(tmp_path, capsys):
 
     tokenizer_path = tmp_path / "tokenizer"
 
-    with patch("src.tokenization.cli._load_tokenizer") as mock_load:
+    with patch("tokenization.cli._load_tokenizer") as mock_load:
         mock_tokenizer = MagicMock()
         mock_tokenizer.vocab_size = 1000
         mock_load.return_value = mock_tokenizer
@@ -200,7 +200,7 @@ def test_vocab_command_callable_vocab_size(tmp_path, capsys):
 
     tokenizer_path = tmp_path / "tokenizer"
 
-    with patch("src.tokenization.cli._load_tokenizer") as mock_load:
+    with patch("tokenization.cli._load_tokenizer") as mock_load:
         mock_tokenizer = MagicMock()
         # Make vocab_size a callable method
         mock_tokenizer.vocab_size = MagicMock(return_value=500)
@@ -224,7 +224,7 @@ def test_inspect_command(tmp_path, capsys):
     manifest = {"config": {"padding": "max_length", "truncation": True, "max_length": 512}}
     (tokenizer_dir / "manifest.json").write_text(json.dumps(manifest))
 
-    with patch("src.tokenization.cli._load_tokenizer") as mock_load:
+    with patch("tokenization.cli._load_tokenizer") as mock_load:
         mock_tokenizer = MagicMock()
         mock_tokenizer.vocab_size = 30000
         mock_tokenizer.all_special_tokens = lambda: ["[PAD]", "[CLS]", "[SEP]"]
@@ -245,7 +245,7 @@ def test_inspect_command_missing_manifest(tmp_path, capsys):
     tokenizer_dir = tmp_path / "tokenizer"
     tokenizer_dir.mkdir()
 
-    with patch("src.tokenization.cli._load_tokenizer") as mock_load:
+    with patch("tokenization.cli._load_tokenizer") as mock_load:
         mock_tokenizer = MagicMock()
         mock_tokenizer.vocab_size = 1000
         mock_tokenizer.all_special_tokens = lambda: []
@@ -274,7 +274,7 @@ def test_inspect_command_with_tokenizer_json(tmp_path, capsys):
     }
     (tokenizer_dir / "tokenizer.json").write_text(json.dumps(tokenizer_config))
 
-    with patch("src.tokenization.cli._load_tokenizer") as mock_load:
+    with patch("tokenization.cli._load_tokenizer") as mock_load:
         mock_tokenizer = MagicMock()
         mock_tokenizer.vocab_size = 5000
         # Return None/empty for all_special_tokens to trigger tokenizer.json parsing
@@ -293,7 +293,7 @@ def test_vocab_command_no_converter(tmp_path, capsys):
 
     tokenizer_path = tmp_path / "tokenizer"
 
-    with patch("src.tokenization.cli._load_tokenizer") as mock_load:
+    with patch("tokenization.cli._load_tokenizer") as mock_load:
         mock_tokenizer = MagicMock()
         mock_tokenizer.vocab_size = 100
         # No convert_ids_to_tokens method
@@ -318,7 +318,7 @@ def test_inspect_command_manifest_parse_error(tmp_path, capsys, monkeypatch):
     valid_manifest = {"model_type": "bert", "version": "1.0"}
     (tokenizer_dir / "manifest.json").write_text(json.dumps(valid_manifest))
 
-    with patch("src.tokenization.cli._load_tokenizer") as mock_load:
+    with patch("tokenization.cli._load_tokenizer") as mock_load:
         mock_tokenizer = MagicMock()
         mock_tokenizer.vocab_size = 100
         mock_tokenizer.all_special_tokens = lambda: []

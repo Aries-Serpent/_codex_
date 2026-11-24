@@ -26,8 +26,10 @@ from typing import Any, Dict, List, Optional
 
 # ==================== ENUMS ====================
 
+
 class WorkflowStatus(Enum):
     """Workflow execution status."""
+
     PENDING = "pending"
     RUNNING = "running"
     APPROVED = "approved"
@@ -38,6 +40,7 @@ class WorkflowStatus(Enum):
 
 class StageStatus(Enum):
     """Individual stage status."""
+
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     APPROVED = "approved"
@@ -48,6 +51,7 @@ class StageStatus(Enum):
 
 class ApprovalType(Enum):
     """Approval stage type."""
+
     SEQUENTIAL = "sequential"
     PARALLEL = "parallel"
     CONDITIONAL = "conditional"
@@ -55,6 +59,7 @@ class ApprovalType(Enum):
 
 class EscalationAction(Enum):
     """Escalation behavior when timeout occurs."""
+
     AUTO_APPROVE = "auto_approve"
     AUTO_REJECT = "auto_reject"
     ESCALATE_TO_OWNER = "escalate_to_owner"
@@ -63,6 +68,7 @@ class EscalationAction(Enum):
 
 class AuditEventType(Enum):
     """Audit event classifications."""
+
     WORKFLOW_STARTED = "workflow_started"
     STAGE_STARTED = "stage_started"
     APPROVAL_GRANTED = "approval_granted"
@@ -75,9 +81,11 @@ class AuditEventType(Enum):
 
 # ==================== DATA CLASSES ====================
 
+
 @dataclass
 class Approver:
     """An individual approver (user or role)."""
+
     id: str
     type: str  # "user" or "role"
     name: str
@@ -87,6 +95,7 @@ class Approver:
 @dataclass
 class ApprovalDecision:
     """A single approval or rejection decision."""
+
     approver_id: str
     approver_name: str
     decision: str  # "approved" or "rejected"
@@ -98,6 +107,7 @@ class ApprovalDecision:
 @dataclass
 class StageRequirement:
     """Requirements for a single approval stage."""
+
     id: str
     name: str
     approval_type: ApprovalType
@@ -112,6 +122,7 @@ class StageRequirement:
 @dataclass
 class AuditEvent:
     """Immutable audit trail event."""
+
     event_id: str
     event_type: AuditEventType
     timestamp: str  # ISO-8601
@@ -127,9 +138,11 @@ class AuditEvent:
 
 # ==================== WORKFLOW STATE MACHINE ====================
 
+
 @dataclass
 class WorkflowState:
     """Mutable state of a workflow during execution."""
+
     workflow_id: str
     status: WorkflowStatus = WorkflowStatus.PENDING
     created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
@@ -143,6 +156,7 @@ class WorkflowState:
 
 
 # ==================== CORE ENGINE ====================
+
 
 class ApprovalWorkflowEngine:
     """
@@ -172,9 +186,7 @@ class ApprovalWorkflowEngine:
         # Performance tracking
         self.latencies: List[float] = []
 
-    def register_workflow_definition(
-        self, workflow_id: str, definition: Dict[str, Any]
-    ) -> None:
+    def register_workflow_definition(self, workflow_id: str, definition: Dict[str, Any]) -> None:
         """Register a workflow definition (from YAML DSL)."""
         with self._lock:
             self.workflow_definitions[workflow_id] = definition
@@ -396,7 +408,13 @@ class ApprovalWorkflowEngine:
             state = self.workflows.get(execution_id)
             if not state:
                 return None
-            return asdict(state)
+            payload = asdict(state)
+            payload["status"] = state.status.value
+            payload["stage_statuses"] = {
+                stage_id: stage_status.value
+                for stage_id, stage_status in state.stage_statuses.items()
+            }
+            return payload
 
     def get_p99_latency(self) -> float:
         """Get 99th percentile latency in milliseconds."""
@@ -408,6 +426,7 @@ class ApprovalWorkflowEngine:
 
 
 # ==================== AUDIT LOGGING ====================
+
 
 class AuditLogger:
     """Immutable, append-only audit trail logger."""
@@ -484,6 +503,7 @@ class AuditLogger:
 
 # ==================== DSL PARSER ====================
 
+
 class WorkflowDSLParser:
     """Parse YAML-based workflow definitions into executable workflows."""
 
@@ -524,6 +544,7 @@ class WorkflowDSLParser:
 
 
 # ==================== MAIN EXPORTS ====================
+
 
 def create_engine() -> ApprovalWorkflowEngine:
     """Factory: Create a new approval workflow engine."""
@@ -568,9 +589,7 @@ if __name__ == "__main__":
     print(f"Started workflow: {execution_id}")
 
     # Grant approval
-    engine.grant_approval(
-        execution_id, "code-review", "alice", "Alice", reason="LGTM"
-    )
+    engine.grant_approval(execution_id, "code-review", "alice", "Alice", reason="LGTM")
     print("Approval granted")
 
     # Check p99 latency
@@ -580,4 +599,3 @@ if __name__ == "__main__":
     print("\nAudit Trail:")
     for event in engine.audit_logger.get_events():
         print(f"  {event['event_type']}: {event['actor_id']}")
-

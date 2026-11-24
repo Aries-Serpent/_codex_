@@ -35,25 +35,41 @@ from .text import perplexity, token_accuracy
 # Import unified API - these are the canonical implementations
 from .unified_api import (
     batch_metrics_from_outputs,
+    compare_outputs,
     compute_accuracy,
     compute_bleu,
     compute_classification_metrics,
     compute_f1,
+    compute_meteor,
+    compute_metric_summary,
+    compute_metrics_batch,
     compute_perplexity,
+    compute_precision,
+    compute_recall,
+    compute_rouge,
     compute_rouge_l,
     compute_token_accuracy,
+    normalize_score,
 )
 
 __all__ = [
     # Unified API (canonical implementations) - PREFERRED
     "batch_metrics_from_outputs",
+    "compare_outputs",
     "compute_accuracy",
     "compute_bleu",
     "compute_classification_metrics",
     "compute_f1",
+    "compute_meteor",
+    "compute_metric_summary",
+    "compute_metrics_batch",
     "compute_perplexity",
+    "compute_precision",
+    "compute_recall",
+    "compute_rouge",
     "compute_rouge_l",
     "compute_token_accuracy",
+    "normalize_score",
     # Legacy (backward compat)
     "BLEUScore",
     "F1Score",

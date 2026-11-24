@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 from collections.abc import Iterable, Sequence  # noqa: E402
+from typing import Any  # noqa: E402
 
 from codex_ml.interfaces.tokenizer import TokenizerAdapter  # noqa: E402
 
@@ -97,8 +98,31 @@ class HFTokenizerAdapter(TokenizerAdapter):
         return int(default)
 
     def encode(self, text: str, *, add_special_tokens: bool = True) -> list[int]:
+        if not isinstance(text, str):
+            raise TypeError("text must be a string")
         encoding = self._tokenizer.encode(text, add_special_tokens=add_special_tokens)
         return list(getattr(encoding, "ids", []))
+
+    def encode_plus(self, text: str, **kwargs: Any) -> dict[str, Any]:
+        input_ids = self.encode(
+            text,
+            add_special_tokens=bool(kwargs.get("add_special_tokens", True)),
+        )
+        max_length = kwargs.get("max_length")
+        if isinstance(max_length, int):
+            input_ids = input_ids[:max_length]
+        return {"input_ids": input_ids, "attention_mask": [1] * len(input_ids)}
+
+    def batch_encode_plus(
+        self,
+        texts: Iterable[str],
+        **kwargs: Any,
+    ) -> dict[str, Any]:
+        input_ids = [self.encode_plus(text, **kwargs)["input_ids"] for text in texts]
+        return {
+            "input_ids": input_ids,
+            "attention_mask": [[1] * len(ids) for ids in input_ids],
+        }
 
     def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
         return self._tokenizer.decode(list(ids), skip_special_tokens=skip_special_tokens)

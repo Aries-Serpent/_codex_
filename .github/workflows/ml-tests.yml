@@ -386,7 +386,7 @@ jobs:
           fetch-depth: 2
 
       - name: Set up aggregate Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
         with:
           python-version: '3.12'
 
@@ -419,15 +419,20 @@ jobs:
       - name: Ratchet quarantine and coverage floor against PR base
         if: always() && github.event_name == 'pull_request'
         env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           ML_QUARANTINE_GROWTH_APPROVED: ${{ contains(github.event.pull_request.labels.*.name, 'quarantine-approved') && '1' || '0' }}
         run: |
           set -euo pipefail
-          parents="$(git rev-list --parents -n 1 HEAD | wc -w)"
-          if [ "$parents" -ne 3 ]; then
-            echo "::error::Expected the pull_request merge commit; cannot identify the base"
+          if ! printf '%s' "${PR_BASE_SHA}" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "::error::Unexpected pull_request base SHA"
             exit 1
           fi
-          python scripts/ci/ml_slow_aggregate.py ratchet --base-ref HEAD^1 \
+          git fetch --no-tags --depth=1 origin "${PR_BASE_SHA}"
+          if ! git cat-file -e "${PR_BASE_SHA}^{commit}"; then
+            echo "::error::Fetched pull_request base SHA is unavailable"
+            exit 1
+          fi
+          python scripts/ci/ml_slow_aggregate.py ratchet --base-ref "${PR_BASE_SHA}" \
             --floor-file .codex/baselines/ml_unit_coverage_floor.json \
             --quarantine .codex/baselines/ml_unit_quarantine.json
 

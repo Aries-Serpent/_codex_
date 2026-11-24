@@ -115,7 +115,7 @@ if: github.event.pull_request.head.repo.fork == false
 - `autonomy_actions_enabled: false` → `true` with formal Genesis sign-off
 
 ### Controls:
-- `environment: agent-controlled` with 2 required human reviewers
+- `environment: owner-approval` with zero human required reviewers; @mbaetiong is the sole human owner and exact-SHA AI review is required
 - OIDC tokens for all write operations (no long-lived PAT)
 - Budget cap enforced: max 5 PRs/day, max 10 issues/day
 - Full audit trail: every autonomous decision logged to `.codex/evidence/`

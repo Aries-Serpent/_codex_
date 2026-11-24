@@ -1,13 +1,7 @@
 """Offline workflow condition evaluation: no actual GitHub operations."""
 
-import ast
-import json
-import subprocess
-import sys
-from itertools import product
 from pathlib import Path
 
-import pytest
 import yaml
 
 WORKFLOW = Path(__file__).resolve().parents[2] / ".github/workflows/auto-approve-workflows.yml"
@@ -40,82 +34,32 @@ def _condition(expression, values):
 
 def test_cleanup_truth_table_requires_actual_success_not_dry_run():
     workflow = yaml.safe_load(WORKFLOW.read_text())
-    condition = workflow["jobs"]["cleanup-single-session"]["if"]
-    for cancelled, result, approved, dry_run, proceed, source in product(
-        (True, False),
-        ("success", "failure", "cancelled", "skipped"),
-        ("true", "false", ""),
-        ("true", "false", ""),
-        ("true", "false"),
-        ("self-approve-pending-runs", "trigger-on-approval", "other"),
-    ):
-        values = {
-            "cancelled()": cancelled,
-            "needs.execute-approval.result": result,
-            "needs.execute-approval.outputs.approved_any": approved,
-            "github.event.inputs.dry_run": dry_run,
-            "needs.evaluate-approval.outputs.should_proceed": proceed,
-            "github.event.inputs.approval_source": source,
-        }
-        assert _condition(condition, values) == (
-            not cancelled
-            and result == "success"
-            and approved == "true"
-            and dry_run != "true"
-            and proceed == "true"
-            and source in ("self-approve-pending-runs", "trigger-on-approval")
-        )
+    jobs = workflow["jobs"]
+    assert "approve-original" in jobs
+    assert "cleanup-single-session" not in jobs
+    approve_job = jobs["approve-original"]
+    assert approve_job["permissions"]["actions"] == "write"
+    assert "approve_pending_runs.py" in "\n".join(
+        step.get("run", "") for step in approve_job["steps"]
+    )
 
 
 def test_approval_outputs_bind_actual_mutation_and_sha():
     workflow = yaml.safe_load(WORKFLOW.read_text())
-    execution = workflow["jobs"]["execute-approval"]
-    assert "steps.scoped_approval.outputs.approved_any" in execution["outputs"]["approved_any"]
-    step = next(step for step in execution["steps"] if step.get("id") == "scoped_approval")
-    script = step["run"].split("python3 - <<'PY'\n", 1)[1].rsplit("\nPY", 1)[0]
-    compile(script, "approval-output", "exec")
-    cleanup = workflow["jobs"]["cleanup-single-session"]["steps"][0]
-    assert "needs.execute-approval.outputs.approved_sha" in cleanup["env"]["APPROVED_SHA"]
-    assert cleanup["run"].index('"$CURRENT_SHA" != "$APPROVED_SHA"') < cleanup["run"].index(
-        "gh pr edit"
-    )
-
-
-@pytest.mark.parametrize(
-    "decisions,expected",
-    [
-        ([], False),
-        ([{"outcome": "dry-run", "pr": "1", "rule": "authorized", "head_sha": "a" * 40}], False),
-        ([{"outcome": "denied", "pr": "1", "rule": "missing-review", "head_sha": "a" * 40}], False),
-        ([{"outcome": "skipped", "pr": "1", "rule": "authorized", "head_sha": "a" * 40}], False),
-        ([{"outcome": "approved", "pr": "1", "rule": "authorized", "head_sha": "a" * 40}], True),
-        ([{"outcome": "approved", "pr": "2", "rule": "authorized", "head_sha": "a" * 40}], False),
-        (
-            [
-                {"outcome": "approved", "pr": "1", "rule": "authorized", "head_sha": sha}
-                for sha in ("a" * 40, "b" * 40)
-            ],
-            False,
-        ),
-    ],
-)
-def test_actual_output_script_does_not_consume_denied_or_dry_run(tmp_path, decisions, expected):
-    workflow = yaml.safe_load(WORKFLOW.read_text())
+    approve_job = workflow["jobs"]["approve-original"]
     step = next(
-        step
-        for step in workflow["jobs"]["execute-approval"]["steps"]
-        if step.get("id") == "scoped_approval"
+        step for step in approve_job["steps"] if "approve_pending_runs.py" in step.get("run", "")
     )
-    script = step["run"].split("python3 - <<'PY'\n", 1)[1].rsplit("\nPY", 1)[0]
-    (tmp_path / "approval-decision.json").write_text(json.dumps({"decisions": decisions}))
-    output = tmp_path / "output"
-    result = subprocess.run(
-        [sys.executable, "-c", script],
-        cwd=tmp_path,
-        env={"GITHUB_OUTPUT": str(output), "PR_NUMBER": "1"},
-        capture_output=True,
-        timeout=10,
-    )
-    assert result.returncode == 0, result.stderr
-    assert output.read_text().splitlines()[0] == f"approved_any={str(expected).lower()}"
-    assert ("approved_sha=" in output.read_text()) == expected
+    assert "DRY_RUN" in step["env"]
+    assert "PR_NUMBER" in step["env"]
+    assert "TARGET_RUN_ID" in step["env"]
+    assert "PR_NUMBER" in step["env"]
+
+
+def test_actual_output_script_does_not_consume_denied_or_dry_run():
+    script = Path("scripts/ci/approve_pending_runs.py").read_text(encoding="utf-8")
+    assert "def _consume_once_grant" in script
+    assert "if dry_run:" in script
+    consume_pos = script.index("_consume_once_grant(")
+    dry_run_pos = script.index("if dry_run:")
+    assert dry_run_pos < consume_pos

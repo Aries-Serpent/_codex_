@@ -122,6 +122,10 @@ def validate_checkpoint(
 if typer is not None:  # pragma: no cover - exercised via CLI tests
     app = typer.Typer(help="Validate Codex checkpoint directories and manifests.")
 
+    @app.callback()
+    def app_callback() -> None:
+        return None
+
     @app.command("validate")
     def validate_cmd(
         path: Annotated[
@@ -133,7 +137,6 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
         schema: Annotated[
             Optional[str],
             typer.Option(
-                None,
                 "--schema",
                 help="Expected schema version (e.g. '2').",
             ),
@@ -141,7 +144,6 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
         show: Annotated[
             bool,
             typer.Option(
-                False,
                 "--show",
                 help="Print metadata JSON on success.",
             ),

@@ -852,11 +852,20 @@ class DuckDBBackend:
         with self._lock:
             self._ensure_table(view_name)
             tbl = self._table(view_name)
-            arrow_table: pa.Table = (
-                self._conn.execute(f"SELECT * FROM {tbl}")  # nosec B608 — tbl validated by _table()
-                .arrow()
-                .read_all()
-            )
+            cursor = self._conn.execute(
+                f"SELECT * FROM {tbl}"
+            )  # nosec B608 — tbl validated by _table()
+            if hasattr(cursor, "arrow"):
+                arrow_table: pa.Table = cursor.arrow().read_all()
+            elif hasattr(cursor, "fetch_arrow_table"):
+                arrow_table = cursor.fetch_arrow_table()
+            else:
+                rows = cursor.fetchall()
+                column_names = [column[0] for column in cursor.description]
+                data = {
+                    name: [row[index] for row in rows] for index, name in enumerate(column_names)
+                }
+                arrow_table = pa.table(data)
         with pa_ipc.new_file(str(output_path), arrow_table.schema) as writer:
             writer.write_table(arrow_table)
         get_default_logger().info("Materialized view '%s' → %s (Arrow IPC)", view_name, output_path)

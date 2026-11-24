@@ -40,6 +40,27 @@ fi
 # shellcheck source=/dev/null
 [ -f "$HOME/.codex_env" ] && source "$HOME/.codex_env"
 
+# Normalize Codespaces App secrets for every Copilot Agent shell/process.
+export GITHUB_APP_ID="${GITHUB_APP_ID:-${_GITHUB_APP_ID:-}}"
+export GITHUB_APP_INSTALLATION_ID="${GITHUB_APP_INSTALLATION_ID:-${_GITHUB_APP_INSTALLATION_ID:-}}"
+export GITHUB_APP_CLIENT_SECRET="${GITHUB_APP_CLIENT_SECRET:-${_GITHUB_APP_CLIENT_SECRET:-}}"
+export GITHUB_APP_PRIVATE_KEY_PATH="${GITHUB_APP_PRIVATE_KEY_PATH:-${HOME}/.config/codex/github-app.pem}"
+if [ -n "${_GITHUB_APP_PRIVATE_KEY:-}" ] && [[ "${_GITHUB_APP_PRIVATE_KEY}" == -----BEGIN*PRIVATE\ KEY-----* ]]; then
+    mkdir -p "${HOME}/.config/codex"
+    umask 077
+    printf '%s' "${_GITHUB_APP_PRIVATE_KEY}" > "${GITHUB_APP_PRIVATE_KEY_PATH}"
+    chmod 0600 "${GITHUB_APP_PRIVATE_KEY_PATH}"
+fi
+if [ -s "${GITHUB_APP_PRIVATE_KEY_PATH}" ]; then
+    export GITHUB_APP_PRIVATE_KEY="$(cat "${GITHUB_APP_PRIVATE_KEY_PATH}")"
+    export GITHUB_APP_PRIVATE_KEY_PEM="${GITHUB_APP_PRIVATE_KEY}"
+fi
+
+# Idempotently configure persistent SSH commit signing.
+if [ -x "${WORKSPACE}/.venv/bin/python" ]; then
+    "${WORKSPACE}/.venv/bin/python" scripts/ci/setup_git_signing.py --register --sync-codespace-secret --json || true
+fi
+
 # ── 0. Install safe_git_show guard (mirrors copilot-setup-steps.yml) ──────────
 LOCAL_BIN="${HOME}/.local/bin"
 mkdir -p "$LOCAL_BIN"
@@ -185,7 +206,24 @@ else
     exit 1
 fi
 
-# ── 4b. Start the Cognitive App when enabled by the Codespace contract ────────
+# ── 4b. Start the owned Codespace active-session connection ──────────────────
+if [ -n "${CODESPACE_NAME:-}" ] && [ "${CODEX_KEEPALIVE_ENABLED:-true}" = "true" ]; then
+    KEEPALIVE_INTERVAL="${CODEX_KEEPALIVE_INTERVAL_SECONDS:-60}"
+    KEEPALIVE_ACTIVE_WINDOW="${CODEX_KEEPALIVE_ACTIVE_WINDOW_SECONDS:-28800}"
+    KEEPALIVE_MAX_DURATION="${CODEX_KEEPALIVE_MAX_DURATION_SECONDS:-28800}"
+    "$PYTHON_BIN" scripts/autonomous/codespace_keepalive.py start \
+        --runtime-dir "$CODEX_RUNTIME_DIR" \
+        --repo-root "$WORKSPACE" \
+        --interval-seconds "$KEEPALIVE_INTERVAL" \
+        --marker-ttl-seconds "$KEEPALIVE_ACTIVE_WINDOW" \
+        --max-duration-seconds "$KEEPALIVE_MAX_DURATION" \
+        --service-url "$LOCAL_CLI_API_URL/api/health" \
+        --json
+else
+    echo "  ℹ️  Codespace keepalive disabled or local non-Codespace environment"
+fi
+
+# ── 4c. Start the Cognitive App when enabled by the Codespace contract ────────
 if [ "${CODEX_START_COGNITIVE_APP:-true}" = "true" ]; then
     UI_PORT="${CODEX_COGNITIVE_APP_PORT_NUMBER:-5173}"
     UI_LOG_FILE="${CODEX_RUNTIME_DIR}/cognitive_app.log"
@@ -222,7 +260,7 @@ if [ "${CODEX_START_COGNITIVE_APP:-true}" = "true" ]; then
     echo "  ✅ Cognitive App ready on port ${UI_PORT}"
 fi
 
-# ── 4c. Auto-update Codespace-scoped repo variables ──────────────────────────
+# ── 4d. Auto-update Codespace-scoped repo variables ──────────────────────────
 # If running in a Codespace, construct the public forwarded URL and update
 # the repo variable so GitHub webhooks can deliver to this Codespace.
 # Also records the active Codespace name so tooling can reference it.
@@ -323,6 +361,15 @@ mkdir -p "$(dirname "${CODESPACE_REPORT}")"
   if [ "${CODEX_START_COGNITIVE_APP:-true}" = "true" ] && [ "${UI_READY:-0}" = "1" ]; then
     echo "STATUS=ready"
     echo "URL=http://127.0.0.1:${UI_PORT}"
+  else
+    echo "STATUS=disabled"
+  fi
+  echo ""
+  echo "## Codespace Keepalive"
+  if [ -n "${CODESPACE_NAME:-}" ] && [ "${CODEX_KEEPALIVE_ENABLED:-true}" = "true" ]; then
+    "$PYTHON_BIN" scripts/autonomous/codespace_keepalive.py status \
+      --runtime-dir "$CODEX_RUNTIME_DIR" --repo-root "$WORKSPACE" --json \
+      2>/dev/null || echo "STATUS=unknown"
   else
     echo "STATUS=disabled"
   fi

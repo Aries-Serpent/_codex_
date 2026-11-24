@@ -46,6 +46,7 @@ def set_deterministic(seed: int = 42, deterministic: bool = True) -> None:
             try:
                 torch.cuda.manual_seed_all(seed)
             except (
+                AttributeError,
                 IOError,
                 OSError,
                 ModuleNotFoundError,
@@ -55,13 +56,13 @@ def set_deterministic(seed: int = 42, deterministic: bool = True) -> None:
         if deterministic:
             try:
                 torch.use_deterministic_algorithms(True, warn_only=False)
-            except (IOError, OSError, ModuleNotFoundError, ImportError):
+            except (AttributeError, IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.warning("Exception occurred", exc_info=True)
                 logger.debug("torch.use_deterministic_algorithms unavailable", exc_info=True)
             try:
                 torch.backends.cudnn.deterministic = True
                 torch.backends.cudnn.benchmark = False
-            except (ValueError, TypeError, RuntimeError):
+            except (AttributeError, ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 logger.debug("torch.backends.cudnn unavailable", exc_info=True)
             os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
@@ -74,7 +75,12 @@ def set_cudnn_deterministic(enable: bool, benchmark: bool = False) -> None:
         return
     try:
         backend = torch.backends.cudnn
-    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - backend unavailable
+    except (
+        AttributeError,
+        ValueError,
+        TypeError,
+        RuntimeError,
+    ):  # pragma: no cover - backend unavailable
         logger.debug("torch.backends.cudnn missing", exc_info=True)
         return
     try:

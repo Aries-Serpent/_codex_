@@ -82,6 +82,7 @@ _FALLBACK_CHUNKS = [
     {"id": 0, "text": "python retrieval augmented generation"},
     {"id": 1, "text": "faiss vector index similarity search"},
 ]
+_FALLBACK_CHUNKS_TEXT = [chunk["text"] for chunk in _FALLBACK_CHUNKS]
 
 
 # ===========================================================================
@@ -95,13 +96,13 @@ class TestRetrieverLoadModelErrors:
     Current contract (src/aries_serpent_core/rag/retriever.py::_load_model):
     * sentence-transformers missing, or RuntimeError/OSError/ValueError while
       loading -> offline TF-IDF fallback fitted on the indexed chunk texts;
-    * TF-IDF fallback without any chunk text -> ImportError;
+    * no indexed chunk text -> model remains unloaded;
     * TypeError while loading -> re-raised.
     """
 
     _SAFE_LOAD = "aries_serpent_core.rag._model_utils.safe_load_sentence_transformer"
 
-    def test_load_model_without_st_and_chunks_raises_import_error(self):
+    def test_load_model_without_st_and_chunks_remains_unloaded(self):
         _mod = _import_retriever()
 
         with (
@@ -109,22 +110,27 @@ class TestRetrieverLoadModelErrors:
             patch(self._SAFE_LOAD) as mock_safe_load,
         ):
             r = _bare_retriever(_mod)
-            with pytest.raises(ImportError, match="TF-IDF fallback requires chunk text"):
-                r._load_model()
+            r._load_model()
         mock_safe_load.assert_not_called()
+        assert r.model is None
 
     def test_load_model_uses_tfidf_when_sentence_transformers_none(self):
         _mod = _import_retriever()
-        from aries_serpent_core.rag.embeddings import TfidfEmbeddingProvider
+        provider = MagicMock()
 
         with (
             patch.object(_mod, "SentenceTransformer", None),
             patch(self._SAFE_LOAD) as mock_safe_load,
+            patch(
+                "aries_serpent_core.rag.embeddings.TfidfEmbeddingProvider",
+                return_value=provider,
+            ),
         ):
             r = _bare_retriever(_mod, _FALLBACK_CHUNKS)
             r._load_model()
         mock_safe_load.assert_not_called()
-        assert isinstance(r.model, TfidfEmbeddingProvider), "expected TF-IDF fallback model"
+        assert r.model is provider
+        provider.encode.assert_called_once_with(_FALLBACK_CHUNKS_TEXT)
 
     @pytest.mark.parametrize(
         "exc",
@@ -133,19 +139,24 @@ class TestRetrieverLoadModelErrors:
     )
     def test_load_model_falls_back_to_tfidf_on_load_error(self, exc):
         _mod = _import_retriever()
-        from aries_serpent_core.rag.embeddings import TfidfEmbeddingProvider
+        provider = MagicMock()
 
         with (
             patch.object(_mod, "SentenceTransformer", MagicMock()),
             patch(self._SAFE_LOAD, side_effect=exc) as mock_safe_load,
+            patch(
+                "aries_serpent_core.rag.embeddings.TfidfEmbeddingProvider",
+                return_value=provider,
+            ),
         ):
             r = _bare_retriever(_mod, _FALLBACK_CHUNKS)
             r._load_model()
         mock_safe_load.assert_called_once_with("test-model", None)
-        assert isinstance(r.model, TfidfEmbeddingProvider), "expected TF-IDF fallback model"
+        assert r.model is provider
+        provider.encode.assert_called_once_with(_FALLBACK_CHUNKS_TEXT)
 
-    def test_load_model_error_without_chunks_raises_import_error(self):
-        """A load failure with no chunk text cannot fall back and surfaces ImportError."""
+    def test_load_model_error_without_chunks_remains_unloaded(self):
+        """A load failure with no chunk text leaves the retriever unloaded."""
         _mod = _import_retriever()
 
         with (
@@ -153,9 +164,9 @@ class TestRetrieverLoadModelErrors:
             patch(self._SAFE_LOAD, side_effect=RuntimeError("load failed")) as mock_safe_load,
         ):
             r = _bare_retriever(_mod)
-            with pytest.raises(ImportError, match="TF-IDF fallback requires chunk text"):
-                r._load_model()
-        mock_safe_load.assert_called_once()
+            r._load_model()
+        mock_safe_load.assert_not_called()
+        assert r.model is None
 
     def test_load_model_propagates_type_error(self):
         _mod = _import_retriever()

@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from codex.cognitive.task_router import (
     RoutingRequest,
     RoutingResult,
@@ -132,7 +133,7 @@ class TestTaskRouterWithRegistry:
         registry_yaml = tmp_path / "AGENT_REGISTRY.yaml"
         registry_yaml.write_text(
             """
-    agents:
+agents:
   - name: ci-testing-agent
     status: active
     capability_tags:
@@ -149,7 +150,7 @@ class TestTaskRouterWithRegistry:
     status: deprecated
     capability_tags:
       - ci_failure
-    """,
+""",
             encoding="utf-8",
         )
         return TaskRouter(

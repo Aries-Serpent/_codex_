@@ -7,7 +7,6 @@ Test module for loader registry.
 from __future__ import annotations
 
 import os
-
 import tempfile
 
 import pytest
@@ -32,6 +31,26 @@ def test_register_and_get_model():
         assert "dummy-model" in list_models(), "Condition must be true"
     finally:
         unregister_model("dummy-model")
+
+
+def test_get_registry_factory_treats_missing_model_as_no_factory(monkeypatch):
+    import sys
+    import types
+
+    from codex_ml.modeling import codex_model_loader
+
+    parent = types.ModuleType("codex_ml.models")
+    parent.__path__ = []
+    registry = types.ModuleType("codex_ml.models.loader_registry")
+
+    def missing(name):
+        raise KeyError(name)
+
+    registry.get_model = missing
+    monkeypatch.setitem(sys.modules, "codex_ml.models", parent)
+    monkeypatch.setitem(sys.modules, "codex_ml.models.loader_registry", registry)
+
+    assert codex_model_loader._get_registry_factory("missing-model") is None
 
 
 def test_registry_disable_env(monkeypatch):

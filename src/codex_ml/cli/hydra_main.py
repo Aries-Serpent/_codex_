@@ -308,18 +308,7 @@ def main(argv: Optional[Sequence[str]] = None) -> Any:
     _pre.add_argument("--probe-json", action="store_true", dest="probe_json")
     _pre_ns, _ = _pre.parse_known_args(argv if argv is not None else sys.argv[1:])
     if _pre_ns.probe_json:
-        logger = init_json_logging()
-        with capture_exceptions(logger):
-            log_event(logger, "cli.start", prog="codex-train", args=list(argv or []))
-            get_default_logger().info(json.dumps(_probe_payload()))
-            log_event(
-                logger,
-                "cli.finish",
-                prog="codex-train",
-                status="ok",
-                mode="probe-json",
-                rc=0,
-            )
+        print(json.dumps(_probe_payload()))
         return 0
 
     # Check for hydra availability early
@@ -381,19 +370,8 @@ def main(argv: Optional[Sequence[str]] = None) -> Any:
     namespace, remaining = parser.parse_known_args(arg_list)
 
     if namespace.probe_json:
-        logger = init_json_logging()
-        with capture_exceptions(logger):
-            log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
-            get_default_logger().info(json.dumps(_probe_payload()))
-            log_event(
-                logger,
-                "cli.finish",
-                prog=parser.prog,
-                status="ok",
-                mode="probe-json",
-                rc=0,
-            )
-            return 0
+        print(json.dumps(_probe_payload()))
+        return 0
 
     overrides = list(remaining)
     if getattr(namespace, "curriculum", None):

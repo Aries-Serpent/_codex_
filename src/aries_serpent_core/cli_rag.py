@@ -63,6 +63,7 @@ app = typer.Typer(
     help="RAG (Retrieval-Augmented Generation) index management and querying",
     no_args_is_help=True,
 )
+app.help = app.info.help
 
 console = Console()
 
@@ -280,8 +281,14 @@ def build(
 
 @app.command("query")
 def query(
-    query_text: str = typer.Argument(
-        ...,
+    query_text: Optional[str] = typer.Argument(
+        None,
+        help="Query text for semantic search",
+    ),
+    query_option: Optional[str] = typer.Option(
+        None,
+        "--query",
+        "-q",
         help="Query text for semantic search",
     ),
     index_name: str = typer.Option(
@@ -339,6 +346,15 @@ def query(
         codex rag query "logging" --format json
     """
     try:
+        if isinstance(query_option, str):
+            query_text = query_option
+        if not isinstance(query_text, str) or not query_text.strip():
+            console.print("[red]❌ Query text is required[/red]")
+            raise typer.Exit(1)
+        if not index_name or not index_name.strip():
+            console.print("[red]❌ Index name is required[/red]")
+            raise typer.Exit(1)
+
         console.print(
             f"[cyan]🔍 Querying index '{index_name}' for tenant '{tenant_id}'[/cyan]\n"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -484,7 +500,13 @@ def list_indices(
                                 "path": index_path,
                             }
                         )
-                    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
+                    except (
+                        json.JSONDecodeError,
+                        IOError,
+                        OSError,
+                        ModuleNotFoundError,
+                        ImportError,
+                    ) as e:
                         type(e).__name__
                         logger.warning(
                             f"Failed to read metadata for {index_path}: <ERROR_TYPE>"
@@ -533,6 +555,7 @@ def delete(
     index_name: str = typer.Option(
         ...,
         "--index-name",
+        "--index",
         "-i",
         help="Name of the index to delete",
     ),
@@ -551,6 +574,7 @@ def delete(
     confirm: bool = typer.Option(
         False,
         "--yes",
+        "--confirm",
         "-y",
         help="Skip confirmation prompt",
     ),
@@ -608,12 +632,14 @@ def merge(
     source_indices: list[str] = typer.Option(
         ...,
         "--source",
+        "--sources",
         "-s",
         help="Source index names to merge",
     ),
     target_index: str = typer.Option(
         ...,
         "--target",
+        "--destination",
         "-t",
         help="Target index name",
     ),
@@ -638,6 +664,11 @@ def merge(
     """
     try:
         from aries_serpent_core.rag import IndexOperation, manage_tenant_indices
+
+        normalized_sources: list[str] = []
+        for source in source_indices:
+            normalized_sources.extend(part.strip() for part in source.split(",") if part.strip())
+        source_indices = normalized_sources
 
         if not source_indices or len(source_indices) < 2:
             console.print(
@@ -665,7 +696,10 @@ def merge(
 
             progress.update(task, completed=True)
 
-        if result.success:
+        if result is True:
+            console.print("\n[green]✅ Indices merged successfully![/green]")
+            console.print(f"[dim]   Target: {target_index}[/dim]")
+        elif hasattr(result, "success") and result.success:
             console.print(
                 "\n[green]✅ Indices merged successfully![/green]"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -677,8 +711,9 @@ def merge(
                     f"[dim]   Total chunks: {result.details['chunks_count']}[/dim]"
                 )  # codeql[py/clear-text-logging-sensitive-data]
         else:
+            message = getattr(result, "message", str(result))
             console.print(
-                f"[red]❌ Merge failed: {result.message}[/red]"
+                f"[red]❌ Merge failed: {message}[/red]"
             )  # codeql[py/clear-text-logging-sensitive-data]
             raise typer.Exit(1)
 
@@ -708,6 +743,7 @@ def stats(
     index_name: str = typer.Option(
         "default",
         "--index-name",
+        "--index",
         "-i",
         help="Name of the index",
     ),
@@ -744,21 +780,25 @@ def stats(
     try:
         index_path = Path(index_dir) / tenant_id / index_name
 
-        if not index_path.exists():
-            console.print(
-                f"[red]❌ Index '{index_name}' not found for tenant '{tenant_id}'[/red]"
-            )  # codeql[py/clear-text-logging-sensitive-data]
-            raise typer.Exit(1)
+        from aries_serpent_core.rag import get_index_metadata
 
-        # Read metadata
-        metadata_file = index_path / "metadata.json"
-        if not metadata_file.exists():
-            console.print(
-                "[red]❌ Index metadata not found[/red]"
-            )  # codeql[py/clear-text-logging-sensitive-data]
-            raise typer.Exit(1)
+        try:
+            metadata = get_index_metadata(index_name, tenant_id, index_dir)
+        except (FileNotFoundError, json.JSONDecodeError, TypeError):
+            if not index_path.exists():
+                console.print(
+                    f"[red]❌ Index '{index_name}' not found for tenant '{tenant_id}'[/red]"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                raise typer.Exit(1)
 
-        metadata = json.loads(metadata_file.read_text())
+            metadata_file = index_path / "metadata.json"
+            if not metadata_file.exists():
+                console.print(
+                    "[red]❌ Index metadata not found[/red]"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                raise typer.Exit(1)
+
+            metadata = json.loads(metadata_file.read_text())
 
         # Calculate directory size
         total_size = sum(f.stat().st_size for f in index_path.rglob("*") if f.is_file())
@@ -828,9 +868,27 @@ def metrics(
         metrics_obj = get_metrics()
 
         if output_format == "prometheus":
-            content = metrics_obj.export_prometheus()
+            if isinstance(metrics_obj, Mapping):
+                content = "\n".join(
+                    [
+                        "# HELP rag_indices_total Total RAG indices",
+                        "# TYPE rag_indices_total gauge",
+                        f'rag_indices_total {metrics_obj.get("indices_total", 0)}',
+                        "# HELP rag_chunks_total Total indexed RAG chunks",
+                        "# TYPE rag_chunks_total gauge",
+                        f'rag_chunks_total {metrics_obj.get("chunks_total", 0)}',
+                        "# HELP rag_avg_chunk_size Average RAG chunk size",
+                        "# TYPE rag_avg_chunk_size gauge",
+                        f'rag_avg_chunk_size {metrics_obj.get("avg_chunk_size", 0)}',
+                    ]
+                )
+            else:
+                content = metrics_obj.export_prometheus()
         elif output_format == "json":
-            stats = metrics_obj.get_statistics()
+            if isinstance(metrics_obj, Mapping):
+                stats = dict(metrics_obj)
+            else:
+                stats = metrics_obj.get_statistics()
             content = json.dumps(stats, indent=2, default=str)
         else:
             console.print(

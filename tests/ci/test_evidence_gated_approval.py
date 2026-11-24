@@ -368,8 +368,7 @@ def test_once_activation_requires_complete_history(case):
     [
         ("protected", None),
         ("missing-marker", "missing-or-invalid-environment-marker"),
-        ("no-reviewers", "missing-independent-environment-review"),
-        ("self-review", "missing-independent-environment-review"),
+        ("human-reviewer-rule", "human-reviewer-rule-not-supported-for-agent-only-repository"),
         ("bypass", "environment-allows-administrator-bypass"),
         ("unrestricted", "unrestricted-environment-deployment-branches"),
         ("protected-branches-only", "unrestricted-environment-deployment-branches"),
@@ -384,23 +383,21 @@ def test_once_activation_requires_complete_history(case):
 )
 def test_owner_marker_never_substitutes_for_protection(case, error):
     environment = {
-        "protection_rules": [
-            {
-                "type": "required_reviewers",
-                "prevent_self_review": True,
-                "reviewers": [{"type": "User", "reviewer": {"id": 1}}],
-            }
-        ],
+        "protection_rules": [],
         "can_admins_bypass": False,
         "deployment_branch_policy": {"protected_branches": False, "custom_branch_policies": True},
     }
     marker = "true"
     if case == "missing-marker":
         marker = ""
-    elif case == "no-reviewers":
-        environment["protection_rules"] = []
-    elif case == "self-review":
-        environment["protection_rules"][0]["prevent_self_review"] = False
+    elif case == "human-reviewer-rule":
+        environment["protection_rules"] = [
+            {
+                "type": "required_reviewers",
+                "prevent_self_review": True,
+                "reviewers": [{"type": "User", "reviewer": {"id": 1}}],
+            }
+        ]
     elif case == "bypass":
         environment["can_admins_bypass"] = True
     elif case == "unrestricted":
@@ -427,24 +424,14 @@ def test_owner_marker_never_substitutes_for_protection(case, error):
     assert owner_gate.protection_error(environment, marker, policies) == error
 
 
-@pytest.mark.parametrize(
-    "reviewers",
-    [
-        [None],
-        [{"type": "Unknown", "reviewer": {"id": 1}}],
-        [{"type": "User", "reviewer": {"id": 0}}],
-        [{"type": "Team", "reviewer": {"id": "1"}}],
-        [{"type": "User", "reviewer": {"id": True}}],
-        [{"type": "User", "reviewer": None}],
-    ],
-)
-def test_owner_marker_rejects_malformed_or_unknown_reviewers(reviewers):
+@pytest.mark.parametrize("reviewer_type", ["User", "Team", "Bot"])
+def test_owner_marker_rejects_any_human_environment_reviewer_rule(reviewer_type):
     environment = {
         "protection_rules": [
             {
                 "type": "required_reviewers",
                 "prevent_self_review": True,
-                "reviewers": reviewers,
+                "reviewers": [{"type": reviewer_type, "reviewer": {"id": 1}}],
             }
         ],
         "can_admins_bypass": False,
@@ -452,7 +439,7 @@ def test_owner_marker_rejects_malformed_or_unknown_reviewers(reviewers):
     }
     assert (
         owner_gate.protection_error(environment, "true", _branch_policies("main", "0D_base_"))
-        == "invalid-environment-reviewer"
+        == "human-reviewer-rule-not-supported-for-agent-only-repository"
     )
 
 
@@ -465,13 +452,7 @@ def _branch_policies(*names):
 
 def test_owner_verifier_checks_branch_policies_listing(monkeypatch, capsys):
     environment = {
-        "protection_rules": [
-            {
-                "type": "required_reviewers",
-                "prevent_self_review": True,
-                "reviewers": [{"type": "User", "reviewer": {"id": 1}}],
-            }
-        ],
+        "protection_rules": [],
         "can_admins_bypass": False,
         "deployment_branch_policy": {"protected_branches": False, "custom_branch_policies": True},
     }
@@ -689,10 +670,17 @@ def delegated_app(api, monkeypatch):
 
     _, run, _, _ = api
     monkeypatch.setattr(approval, "_app_identity", None)
+    monkeypatch.delenv("_GITHUB_APP_ID", raising=False)
+    monkeypatch.delenv("_GITHUB_APP_INSTALLATION_ID", raising=False)
+    monkeypatch.delenv("_GITHUB_APP_PRIVATE_KEY", raising=False)
+    monkeypatch.delenv("_GITHUB_APP_PRIVATE_KEY_PEM", raising=False)
     monkeypatch.setenv("REPO", "o/r")
     monkeypatch.setenv("GITHUB_APP_ID", "1")
     monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "2")
     monkeypatch.setenv("GITHUB_APP_PRIVATE_KEY", "fixture")
+    monkeypatch.setattr(
+        approval, "resolve_app_private_key", lambda: ("fixture", "GITHUB_APP_PRIVATE_KEY")
+    )
     monkeypatch.setitem(
         sys.modules, "jwt", SimpleNamespace(encode=lambda *args, **kwargs: "jwt-fixture")
     )
@@ -730,6 +718,16 @@ def delegated_app(api, monkeypatch):
 
     monkeypatch.setattr(approval, "_gh", request)
     return evidence, run
+
+
+def test_copilot_bot_review_satisfies_single_owner_agent_model(delegated_app, monkeypatch):
+    evidence, run = delegated_app
+    evidence["review"]["user"]["login"] = "copilot-pull-request-reviewer[bot]"
+    monkeypatch.setenv("GITHUB_ACTOR", "author")
+    monkeypatch.setenv("GITHUB_TRIGGERING_ACTOR", "author")
+    token, source = approval._resolve_token()
+    assert source == "cognitive-brain-app"
+    assert approval._authorize_run(token, "o/r", "1", SHA, run) == "authorized"
 
 
 def test_verified_agent_maintainer_needs_no_second_human(delegated_app, monkeypatch):

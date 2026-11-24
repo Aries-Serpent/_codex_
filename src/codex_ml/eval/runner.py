@@ -28,10 +28,8 @@ from codex_ml.metrics import (  # noqa: E402
     compute_rouge_l,
     compute_token_accuracy,
 )
-from codex_ml.metrics.registry import (
-    append_error_entry,  # noqa: E402
-    list_metrics,  # noqa: E402
-)
+from codex_ml.metrics.registry import append_error_entry  # noqa: E402
+from codex_ml.metrics.registry import list_metrics  # noqa: E402
 from codex_ml.metrics.registry import get as get_registered_metric  # noqa: E402
 from codex_ml.metrics.sinks import create_sink  # noqa: E402
 from codex_ml.registry.base import RegistryNotFoundError  # noqa: E402
@@ -400,8 +398,46 @@ def _compute_metrics(
         elif key == "rouge_l":
             if not all(isinstance(value, str) for value in predictions + targets):
                 raise EvaluationError("ROUGE-L requires string predictions and targets")
-            rouge_score = compute_rouge_l(predictions, targets)
-            # Unified API always returns float
+
+            rouge_result: Any = None
+            try:
+                from codex_ml.metrics import registry as metric_registry_module
+
+                injected_metric = metric_registry_module._METRIC_REGISTRY.get("rouge_l")
+            except (ImportError, AttributeError):
+                injected_metric = None
+
+            if injected_metric is not None:
+                rouge_result = _invoke_registry_metric(
+                    metric_name,
+                    injected_metric,
+                    predictions,
+                    targets,
+                    records,
+                )
+            else:
+                try:
+                    import codex_ml.eval.metrics as legacy_metrics
+
+                    rouge_result = legacy_metrics.rouge_l(predictions, targets)
+                except (ImportError, AttributeError):
+                    rouge_result = compute_rouge_l(predictions, targets)
+
+            if isinstance(rouge_result, dict):
+                rouge_score = next(
+                    (
+                        float(rouge_result[key])
+                        for key in ("rougeL_f", "rougeL", "f1", "score")
+                        if isinstance(rouge_result.get(key), (int, float))
+                    ),
+                    0.0,
+                )
+            elif isinstance(rouge_result, (int, float)):
+                rouge_score = float(rouge_result)
+            elif rouge_result is None:
+                rouge_score = 0.0
+            else:
+                rouge_score = compute_rouge_l(predictions, targets)
             results[metric_name] = rouge_score
         else:
             if key in registry_metrics:

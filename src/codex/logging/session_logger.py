@@ -42,22 +42,18 @@ DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 # Prefer the legacy codex compatibility adapter when present, then the modern
 # package-local implementations, and only then the local fallback.
 try:
-    from src.codex.logging.db import _DB_LOCK as _shared_DB_LOCK
-    from src.codex.logging.db import init_db as _shared_init_db
-    from src.codex.logging.db import log_event as _shared_log_event
+    from codex.logging.db import _DB_LOCK as _shared_DB_LOCK
+    from codex.logging.db import log_event as _shared_log_event
 except (ImportError, AttributeError, ModuleNotFoundError):
     logger.debug("src.codex.logging.db not available; using built-in fallbacks", exc_info=True)
     _shared_DB_LOCK = None  # type: ignore[assignment]
-    _shared_init_db = None  # type: ignore[assignment]
     try:
         from codex.monkeypatch.log_adapters import (
             log_event as _shared_log_event,  # type: ignore[no-redef]
         )
     except (IOError, OSError, ModuleNotFoundError, ImportError):
         try:
-            from aries_serpent_core.monkeypatch.log_adapters import (  # type: ignore[no-redef]
-                log_event as _shared_log_event,
-            )
+            from aries_serpent_core.monkeypatch.log_adapters import log_event as _shared_log_event  # type: ignore[no-redef]
         except (IOError, OSError, ModuleNotFoundError, ImportError):
             _shared_log_event = None  # type: ignore[assignment]
 

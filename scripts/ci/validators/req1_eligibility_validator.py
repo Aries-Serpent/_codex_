@@ -34,8 +34,17 @@ logger = logging.getLogger(__name__)
 
 # Valid branch prefixes
 VALID_BRANCH_PREFIXES = {
-    "feat", "fix", "docs", "test", "chore",
-    "refactor", "perf", "ci", "build", "revert", "copilot",
+    "feat",
+    "fix",
+    "docs",
+    "test",
+    "chore",
+    "refactor",
+    "perf",
+    "ci",
+    "build",
+    "revert",
+    "copilot",
 }
 
 # Minimum requirements
@@ -72,7 +81,9 @@ class REQ1EligibilityValidator(RequirementValidator):
         metadata["branch"] = branch_name
         branch_valid = _check_branch_name(branch_name)
         if not branch_valid:
-            issues.append(f"Branch name '{branch_name}' doesn't follow convention (use feat/, fix/, docs/, etc.)")
+            issues.append(
+                f"Branch name '{branch_name}' doesn't follow convention (use feat/, fix/, docs/, etc.)"
+            )
             metadata["branch_valid"] = False
         else:
             metadata["branch_valid"] = True
@@ -103,21 +114,10 @@ class REQ1EligibilityValidator(RequirementValidator):
         metadata["reviewers_count"] = len(reviewers)
         reviewer_warning: str | None = None
         if not reviewers:
-            # Exempt bot/copilot-authored PRs from the hard reviewer requirement.
-            # Use user.type == "Bot" as the primary (server-side, unforgeable) signal.
-            # Fall back to login suffix and branch prefix as secondary signals.
-            pr_author = pr_details.get("user", {}).get("login", "")
-            pr_author_type = pr_details.get("user", {}).get("type", "")
-            is_bot_pr = (
-                pr_author_type == "Bot"
-                or pr_author.endswith("[bot]")
-                or branch_name.startswith("copilot/")
+            reviewer_warning = (
+                "No requested reviewer assigned; require an exact-SHA AI review before approval"
             )
-            if is_bot_pr:
-                reviewer_warning = "No reviewers assigned (bot/copilot PR — warning only)"
-                metadata["reviewer_exemption"] = "bot_or_copilot_branch"
-            else:
-                issues.append("No reviewers assigned")
+            metadata["reviewer_exemption"] = "single_owner_ai_review_policy"
 
         # Determine overall status
         if issues:
@@ -130,7 +130,7 @@ class REQ1EligibilityValidator(RequirementValidator):
                     "Ensure branch name follows convention (feat/, fix/, docs/, etc.)",
                     "Use a descriptive PR title (minimum 10 characters)",
                     "Add detailed PR description (minimum 50 characters)",
-                    "Assign at least one reviewer",
+                    "Request an authorized AI reviewer or verify exact-SHA agent review",
                 ],
                 metadata=metadata,
             )
@@ -141,7 +141,7 @@ class REQ1EligibilityValidator(RequirementValidator):
                 status="warn",
                 score=0.5,
                 reason=reviewer_warning,
-                remediation=["Consider assigning a human reviewer for visibility"],
+                remediation=["Request Copilot or codex-reviewer for exact-SHA review"],
                 metadata=metadata,
             )
 
@@ -196,7 +196,9 @@ def _check_description_quality(body: str) -> list[str]:
     # Count words (rough estimate)
     words = len(body.split())
     if words < MIN_DESCRIPTION_WORDS:
-        issues.append(f"PR description has too few words (got {words}, min {MIN_DESCRIPTION_WORDS})")
+        issues.append(
+            f"PR description has too few words (got {words}, min {MIN_DESCRIPTION_WORDS})"
+        )
 
     return issues
 

@@ -81,8 +81,10 @@ the assessment CLI, this API can make one disposable local attempt only when
 the caller explicitly authorizes execution, supplies human approval, a
 matching executor and a trusted independent review verifier.
 
-The verifier must affirm the bound review with exactly `True`; distinct names
-in an exported record are not independent approval. The actual UTF-8 patch
+The AI verifier must affirm the bound review with exactly `True`; distinct
+agent identities, exact-SHA binding, and @mbaetiong's standing D-tier owner grant
+form the approval context. Adding a second human reviewer is not required or
+expected. The actual UTF-8 patch
 bytes, SHA-256, immutable base and reviewed commands must agree. Template
 descriptions are never executable patches. Production freshness uses the UTC
 clock; injected observation time requires explicit synthetic fixture mode.

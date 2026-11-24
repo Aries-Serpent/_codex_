@@ -14,6 +14,11 @@ from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.autonomous.codespace_keepalive import runtime_dir_default, touch_active_marker
+from scripts.autonomous.maintainer_control import maintainer_status
 
 
 def approved_api_base(value: str) -> str:
@@ -86,6 +91,16 @@ TOOLS = [
             "additionalProperties": False,
         },
     },
+    {
+        "name": "cognitive_brain_maintainer_status",
+        "description": "Read the canonical owner, auth, keepalive, and maintainer procedures",
+        "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False},
+    },
+    {
+        "name": "cognitive_brain_keepalive_touch",
+        "description": "Renew the bounded active-agent Codespace keepalive window",
+        "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False},
+    },
 ]
 
 
@@ -139,6 +154,12 @@ class BrainTransport:
 
 async def call_tool(name: str, arguments: Mapping[str, Any], transport: BrainTransport) -> Any:
     def invoke() -> Any:
+        touch_active_marker(runtime_dir_default())
+        if name == "cognitive_brain_maintainer_status":
+            return maintainer_status()
+        if name == "cognitive_brain_keepalive_touch":
+            marker = touch_active_marker(runtime_dir_default())
+            return {"active": True, "marker": str(marker)}
         if name == "cognitive_brain_capabilities":
             return transport.request("GET", "/api/capabilities")
         if name == "cognitive_brain_route_plan":

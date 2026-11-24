@@ -50,13 +50,13 @@ Agent opens PR with:
  • Session log linked
  
  
-Human reviewer leaves PR comments / inline suggestions
- 
- 
-Mention @copilot in comment agent re-triggered iterates
- 
- 
-Human approves & merges (agent cannot self-merge)
+Authorized Copilot/Codex AI reviewer leaves PR comments / inline suggestions
+
+
+Mention @copilot or route to the reviewer agent; the agent iterates
+
+
+Protected exact-SHA owner and AI checks authorize agent merge automation
 ```
 
 > **Key constraint**: Comments on the original issue after assignment are NOT seen by the

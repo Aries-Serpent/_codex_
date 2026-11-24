@@ -8,6 +8,7 @@ from typing import Any
 
 import pytest
 
+from scripts.autonomous import mcp_server
 from scripts.autonomous.mcp_server import TOOLS, approved_api_base, handle_message
 
 
@@ -64,6 +65,53 @@ def test_route_plan_tool_uses_local_middleware() -> None:
     payload = json.loads(response["result"]["content"][0]["text"])
     assert payload["method"] == "POST"
     assert payload["path"] == "/api/routes/plan"
+
+
+def test_keepalive_tool_renews_activity_marker(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Any
+) -> None:
+    monkeypatch.setattr(mcp_server, "runtime_dir_default", lambda: tmp_path)
+
+    response = asyncio.run(
+        handle_message(
+            {
+                "jsonrpc": "2.0",
+                "id": 20,
+                "method": "tools/call",
+                "params": {"name": "cognitive_brain_keepalive_touch", "arguments": {}},
+            },
+            transport=FakeTransport(),
+        )
+    )
+
+    assert response is not None
+    payload = json.loads(response["result"]["content"][0]["text"])
+    assert payload["active"] is True
+    assert (tmp_path / "agent-session.active").is_file()
+
+
+def test_maintainer_tool_uses_single_owner_catalog(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("GITHUB_TOKEN", "secret-rate-limit-sentinel")
+    response = asyncio.run(
+        handle_message(
+            {
+                "jsonrpc": "2.0",
+                "id": 21,
+                "method": "tools/call",
+                "params": {"name": "cognitive_brain_maintainer_status", "arguments": {}},
+            },
+            transport=FakeTransport(),
+        )
+    )
+
+    assert response is not None
+    payload = json.loads(response["result"]["content"][0]["text"])
+    assert payload["owner"]["human_login"] == "mbaetiong"
+    assert payload["owner"]["human_reviewers_required"] == 0
+    assert payload["session_liveness"]["max_duration_seconds"] == 28_800
+    assert "github_rate_limit" in payload
+    assert "credentials" in payload["github_rate_limit"]
+    assert "secret-rate-limit-sentinel" not in json.dumps(payload["github_rate_limit"])
 
 
 def test_unknown_tool_returns_json_rpc_error() -> None:

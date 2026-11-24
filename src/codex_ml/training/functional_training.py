@@ -50,8 +50,9 @@ logger = logging.getLogger(__name__)
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 if _HAS_TRANSFORMERS:
-    AutoModelForCausalLM = transformers.AutoModelForCausalLM
-    AutoTokenizer = transformers.AutoTokenizer
+    AutoModelForCausalLM = getattr(transformers, "AutoModelForCausalLM", None)
+    AutoTokenizer = getattr(transformers, "AutoTokenizer", None)
+    _HAS_TRANSFORMERS = AutoModelForCausalLM is not None and AutoTokenizer is not None
 else:  # pragma: no cover - optional dependency
     AutoModelForCausalLM = None
     AutoTokenizer = None
@@ -589,9 +590,19 @@ def train(
 
     if writer is not None:
         try:
-            writer.flush()
-            writer.close()
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
+            if hasattr(writer, "flush"):
+                writer.flush()
+            if hasattr(writer, "close"):
+                writer.close()
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+            AttributeError,
+            RuntimeError,
+            TypeError,
+        ) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)

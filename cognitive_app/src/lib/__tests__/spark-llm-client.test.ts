@@ -22,8 +22,8 @@ describe('SparkLLMClient', () => {
       const request = {
         prompt: 'Create a hello world function',
         context: {
-          language: 'python',
-          tier: 'B'
+          language: 'python' as const,
+          tier: 'B' as const
         }
       };
 
@@ -75,8 +75,8 @@ describe('SparkLLMClient', () => {
       const request = {
         prompt: 'Create a test function',
         context: {
-          language: 'python',
-          tier: 'B'
+          language: 'python' as const,
+          tier: 'B' as const
         }
       };
 
@@ -102,8 +102,8 @@ describe('SparkLLMClient', () => {
       const request = {
         prompt: 'Create a data validator',
         context: {
-          language: 'python',
-          tier: 'A'
+          language: 'python' as const,
+          tier: 'A' as const
         }
       };
 
@@ -125,8 +125,8 @@ describe('SparkLLMClient', () => {
       const request = {
         prompt: 'Create an async handler',
         context: {
-          language: 'javascript',
-          tier: 'B'
+          language: 'javascript' as const,
+          tier: 'B' as const
         }
       };
 
@@ -147,8 +147,8 @@ describe('SparkLLMClient', () => {
       const request = {
         prompt: 'Create something',
         context: {
-          language: 'ruby',
-          tier: 'B'
+          language: 'ruby' as any,
+          tier: 'B' as const
         }
       };
 

@@ -33,8 +33,7 @@ def _run_python(source: str, *, standalone: bool = True) -> subprocess.Completed
 
 
 def test_evaluation_forwards_contracts_without_replacing_legacy_runner() -> None:
-    result = _run_python(
-        """
+    result = _run_python("""
         import inspect
         import sys
         import types
@@ -56,9 +55,7 @@ def test_evaluation_forwards_contracts_without_replacing_legacy_runner() -> None
         assert legacy.ScalarEvaluationRunner is codex_evaluation.EvaluationRunner, "ScalarEvaluationRunner is not valid"
         assert legacy.EvaluationRunner is not codex_evaluation.EvaluationRunner, "EvaluationRunner is not valid"
         assert "model" in inspect.signature(legacy.EvaluationRunner).parameters, "Condition must be true"
-        assert "metrics" in inspect.signature(, "Condition must be true"
-            codex_evaluation.EvaluationRunner
-        ).parameters
+        assert "metrics" in inspect.signature(codex_evaluation.EvaluationRunner).parameters, "Condition must be true"
         assert not [item for item in caught if item.category is DeprecationWarning], "Item must not be empty"
 
         class Model:
@@ -73,14 +70,12 @@ def test_evaluation_forwards_contracts_without_replacing_legacy_runner() -> None
         warnings_seen = [item for item in caught if item.category is DeprecationWarning]
         assert len(warnings_seen) == 1, "Warnings_seen must not be empty"
         assert "0.5.0" in str(warnings_seen[0].message), "Condition must be true"
-        """
-    )
+        """)
     assert result.returncode == 0, result.stderr
 
 
 def test_lora_forwards_types_and_preserves_legacy_apply_signature() -> None:
-    result = _run_python(
-        """
+    result = _run_python("""
         import inspect
         import sys
         import warnings
@@ -110,14 +105,12 @@ def test_lora_forwards_types_and_preserves_legacy_apply_signature() -> None:
         assert len(warnings_seen) == 1, "Warnings_seen must not be empty"
         assert "0.5.0" in str(warnings_seen[0].message), "Condition must be true"
         assert not [item for item in repeated if item.category is DeprecationWarning], "Item must not be empty"
-        """
-    )
+        """)
     assert result.returncode == 0, result.stderr
 
 
 def test_telemetry_root_delegates_with_legacy_fallback_modules() -> None:
-    result = _run_python(
-        """
+    result = _run_python("""
         import warnings
         import codex_ml_telemetry
 
@@ -130,6 +123,7 @@ def test_telemetry_root_delegates_with_legacy_fallback_modules() -> None:
             import codex_ml.telemetry.server as server
 
         assert legacy.MetricsRegistry is codex_ml_telemetry.MetricsRegistry, "MetricsRegistry is not valid"
+        assert {"HealthReport", "HealthStatus", "MetricsRegistry", "render_prometheus"}.issubset(legacy.__all__)
         assert legacy.track_time is metrics.track_time, "track_time is not valid"
         assert legacy.start_metrics_server is server.start_metrics_server, "start_metrics_server is not valid"
         assert metrics._standalone_track_time is codex_ml_telemetry.track_time, "_standalone_track_time is not valid"
@@ -142,8 +136,7 @@ def test_telemetry_root_delegates_with_legacy_fallback_modules() -> None:
         warnings_seen = [item for item in caught if item.category is DeprecationWarning]
         assert len(warnings_seen) == 1, "Warnings_seen must not be empty"
         assert "0.5.0" in str(warnings_seen[0].message), "Condition must be true"
-        """
-    )
+        """)
     assert result.returncode == 0, result.stderr
 
 

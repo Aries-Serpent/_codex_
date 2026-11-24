@@ -130,7 +130,10 @@ class TestRetrieverInitialization:
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
     ):
         """Test initialization with default parameters."""
-        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, [], {})):
+        with patch(
+            _LOAD_INDEX,
+            return_value=(mock_faiss_index, [{"id": 0, "text": "indexed chunk"}], {}),
+        ):
             with patch(
                 "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
             ):
@@ -197,7 +200,10 @@ class TestRetrieverInitialization:
 
     def test_initialization_loads_embedding_model(self, temp_index_dir, mock_faiss_index):
         """Test that initialization loads the embedding model."""
-        with patch(_LOAD_INDEX, return_value=(mock_faiss_index, [], {})):
+        with patch(
+            _LOAD_INDEX,
+            return_value=(mock_faiss_index, [{"id": 0, "text": "indexed chunk"}], {}),
+        ):
             # Model loading goes through _model_utils which does a local import from
             # sentence_transformers — patch at the source module level.
             with patch("sentence_transformers.SentenceTransformer") as mock_st:
@@ -208,13 +214,12 @@ class TestRetrieverInitialization:
                 mock_st.assert_called_once()
 
     def test_initialization_model_import_error(self, temp_index_dir, mock_faiss_index):
-        """Test initialization handles missing sentence-transformers."""
+        """Test that initialization remains unloaded when sentence-transformers is missing."""
         with patch(_LOAD_INDEX, return_value=(mock_faiss_index, [], {})):
-            # Setting the module-level sentinel to None triggers the ImportError guard
-            # inside _load_model before safe_load_sentence_transformer is called.
             with patch("aries_serpent_core.rag.retriever.SentenceTransformer", new=None):
-                with pytest.raises(ImportError):
-                    Retriever(index_dir=str(temp_index_dir))
+                retriever = Retriever(index_dir=str(temp_index_dir))
+
+                assert retriever.model is None, "Data must not be set"
 
 
 class TestRetrieverQuery:

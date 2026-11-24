@@ -33,7 +33,7 @@ def extract_ast_signature(code: str) -> Optional[dict]:
             counts[type(node).__name__] += 1
         # Create a normalized AST dump for structural hashing
         dump = ast.dump(tree, annotate_fields=False)
-        struct_hash = hashlib.md5(dump.encode('utf-8'), usedforsecurity=False).hexdigest()
+        struct_hash = hashlib.md5(dump.encode("utf-8"), usedforsecurity=False).hexdigest()
         return {"nodes": dict(counts), "hash": struct_hash}
     except SyntaxError as e:
         logger.warning(f"SyntaxError: {e}", exc_info=True)
@@ -67,7 +67,7 @@ def signature_similarity(sig1: dict, sig2: dict) -> float:
     return 0.7 * node_sim + 0.3 * hash_sim
 
 
-def compute_uniqueness(paths: list[Path], min_nodes: int = 10) -> float:
+def compute_uniqueness(paths: list[Path], min_nodes: int = 0) -> float:
     """
     Compute AST uniqueness score for a set of Python files.
 
@@ -132,11 +132,13 @@ def main():
                     py_paths.append(p)
 
         uniqueness = compute_uniqueness(py_paths, min_nodes)
-        results.append({
-            "id": cap["id"],
-            "ast_uniqueness": round(uniqueness, 4),
-            "python_files_analyzed": len(py_paths),
-        })
+        results.append(
+            {
+                "id": cap["id"],
+                "ast_uniqueness": round(uniqueness, 4),
+                "python_files_analyzed": len(py_paths),
+            }
+        )
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({"capabilities": results}, indent=2), encoding="utf-8")

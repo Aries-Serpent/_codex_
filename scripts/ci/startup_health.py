@@ -32,6 +32,16 @@ CONTEXT = ROOT / ".codex" / "agent_context.json"
 PACKET = ROOT / ".codex" / "session_startup_packet.json"
 
 
+def build_maintainer_context() -> dict:
+    from scripts.autonomous.maintainer_control import load_catalog
+
+    return {"maintainer_control_plane": load_catalog()}
+
+
+def build_discovery_context() -> dict:
+    return build_cdx_context() | build_maintainer_context()
+
+
 def _score(manifest: dict, context: dict, token_ok: bool) -> tuple[int, list[str]]:
     score = 100
     fixes: list[str] = []
@@ -97,13 +107,13 @@ def build_packet(manifest: dict | None = None, context: dict | None = None) -> d
         "status": "GREEN" if score >= 80 else "YELLOW" if score >= 50 else "RED",
         "must_fix_before_editing": fixes if score < 80 else [],
     }
-    packet.update(build_cdx_context())
+    packet.update(build_discovery_context())
     return packet
 
 
 def validate_packet(packet: dict) -> None:
     """Reject omitted or stale catalog fields against current explicit local sources."""
-    expected = build_cdx_context()
+    expected = build_discovery_context()
     if not isinstance(packet, dict) or any(key not in packet for key in expected):
         raise ValueError("startup packet CDX catalog missing or stale")
     try:
@@ -123,6 +133,7 @@ def validate_packet(packet: dict) -> None:
             if isinstance(row, dict)
             and (row.get("id") == CANDIDATE_ID or row.get("path") in {CANDIDATE, LEGACY_CANDIDATE})
         ]
+        actual["maintainer_control_plane"] = packet["maintainer_control_plane"]
         actual_json = json.dumps(actual, sort_keys=True, allow_nan=False)
     except (ValueError, TypeError, KeyError) as exc:
         raise ValueError("startup packet CDX catalog missing or stale") from exc
@@ -154,6 +165,7 @@ def main(argv: list[str] | None = None) -> int:
             print("Startup packet CDX catalog validated (offline)")
             return 0
         refresh_cdx_context(packet)
+        packet.update(build_maintainer_context())
     else:
         packet = build_packet()
     validate_packet(packet)

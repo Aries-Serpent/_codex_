@@ -105,7 +105,7 @@ class CircuitBreaker:
         self.lock = Lock()
 
         # Enhanced features
-        self.current_backoff = self.config.initial_backoff
+        self.current_backoff = min(self.config.initial_backoff, self.config.timeout)
         self.consecutive_failures = 0
         self.metrics: dict[str, Any] = {
             "total_calls": 0,
@@ -157,10 +157,9 @@ class CircuitBreaker:
                     if not self.config.health_probe_func():
                         logger.warning("Health probe failed, keeping circuit open")
                         raise Exception("Health probe failed")
-                except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
-                    type(e).__name__
-                    logger.debug("Exception: <ERROR_TYPE>")
-                    logger.warning("Health probe error: <ERROR_TYPE>")
+                except Exception as e:
+                    logger.debug("Health probe error: %s", type(e).__name__)
+                    logger.warning("Health probe error: %s", type(e).__name__)
                     self._on_failure()
                     raise
 
@@ -173,7 +172,7 @@ class CircuitBreaker:
             result = func(*args, **kwargs)
             self._on_success()
             return result
-        except (ConnectionError, TimeoutError):
+        except Exception:
             self._on_failure()
             raise
 
@@ -273,7 +272,7 @@ class CircuitBreaker:
 
                     # Initialize backoff
                     if self.config.use_exponential_backoff:
-                        self.current_backoff = self.config.initial_backoff
+                        self.current_backoff = min(self.config.initial_backoff, self.config.timeout)
 
                     self._record_state_change()
 

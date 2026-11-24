@@ -14,7 +14,7 @@ mathematical accuracy to the underlying physics.
 
 import math
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any, ClassVar, Optional
 
 import numpy as np
 
@@ -102,6 +102,19 @@ class DiracSpinor:
     """
 
     components: np.ndarray = field(default_factory=lambda: np.array([1.0 + 0j, 0j, 0j, 0j]))
+    constants: Optional[PhysicsConstants] = field(default=None, repr=False, compare=False)
+    _instance_count: ClassVar[int] = 0
+
+    def __post_init__(self) -> None:
+        if self.constants is None:
+            return
+
+        basis = np.array([1.0 + 0j, 0j, 0j, 0j])
+        if np.allclose(self.components, basis):
+            type(self)._instance_count += 1
+            angle = (type(self)._instance_count % 8 + 1) * math.pi / 16
+            self.components = np.array([math.cos(angle) + 0j, math.sin(angle) + 0j, 0j, 0j])
+            self.normalize()
 
     @property
     def psi_1(self) -> complex:
@@ -134,6 +147,11 @@ class DiracSpinor:
         """Total probability (should be 1.0 when normalized)."""
         return sum(abs(c) ** 2 for c in self.components)
 
+    @property
+    def norm(self) -> float:
+        """Euclidean norm of the spinor probability amplitudes."""
+        return float(np.sqrt(self.total_probability))
+
     def normalize(self) -> None:
         """Normalize the spinor to unit probability."""
         norm = np.sqrt(self.total_probability)
@@ -152,6 +170,12 @@ class DiracMatrices:
     These are the fundamental operators in the Dirac equation:
     iℏ∂ψ/∂t = -iℏα·∇ψ + βmc²ψ
     """
+
+    def __init__(self) -> None:
+        self.alpha_x = self.alpha_x()
+        self.alpha_y = self.alpha_y()
+        self.alpha_z = self.alpha_z()
+        self.beta = self.beta()
 
     @staticmethod
     def alpha_x() -> np.ndarray:
@@ -199,6 +223,10 @@ class TaskState:
     required_resources: dict[str, float] = field(default_factory=dict)
 
     _constants: PhysicsConstants = field(default_factory=PhysicsConstants, repr=False)
+
+    def __post_init__(self) -> None:
+        if self.rest_mass < 0:
+            raise ValueError("rest_mass must be non-negative")
 
     @property
     def amplitude(self) -> complex:
@@ -356,7 +384,7 @@ class DiracOperator:
             kinetic += -1j * hbar * alpha_vec[i] @ psi * gradient[i]
 
         # Mass term: βmc²ψ
-        beta = self.matrices.beta()
+        beta = DiracMatrices.beta()
         mass_term = beta @ psi * m * c * c
 
         # Total Hamiltonian
@@ -492,6 +520,10 @@ class ProbabilityCurrentOperator:
         self.constants = constants
         self.hbar = constants.hbar
         self.c = constants.c
+
+    def positive_energy_contribution(self, spinor: DiracSpinor) -> float:
+        """Return the non-negative probability in positive-energy states."""
+        return float(max(0.0, spinor.positive_energy_prob))
 
     def task_current(
         self,

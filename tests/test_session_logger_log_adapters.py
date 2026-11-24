@@ -14,7 +14,7 @@ from pathlib import Path
 def test_session_logger_falls_back_to_log_adapters(monkeypatch, tmp_path):
     repo_root = Path(__file__).resolve().parents[1]
     monkeypatch.syspath_prepend(str(repo_root / "src"))
-    monkeypatch.setitem(sys.modules, "src.codex.logging.db", None)
+    monkeypatch.setitem(sys.modules, "codex.logging.db", None)
     monkeypatch.delitem(sys.modules, "src.codex.logging.session_logger", raising=False)
     monkeypatch.delitem(sys.modules, "codex.monkeypatch.log_adapters", raising=False)
     db = tmp_path / "codex_data.sqlite3"

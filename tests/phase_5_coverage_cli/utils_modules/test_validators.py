@@ -161,7 +161,9 @@ class TestValidateFileStructureEdgeCases:
     def test_validate_multiline_strings(self, tmp_path: Path) -> None:
         """Test validation with multiline strings."""
         test_file = tmp_path / "test.py"
-        content = '''def func():\n    """Docstring\n    with multiple lines\n    """\n    return True\n'''
+        content = (
+            '''def func():\n    """Docstring\n    with multiple lines\n    """\n    return True\n'''
+        )
         test_file.write_text(content)
         result = validate_file_structure(str(test_file))
         assert isinstance(result["balanced_parens"], bool)
@@ -169,9 +171,7 @@ class TestValidateFileStructureEdgeCases:
     def test_validate_nested_structures(self, tmp_path: Path) -> None:
         """Test validation with deeply nested structures."""
         test_file = tmp_path / "test.py"
-        test_file.write_text(
-            "data = {'a': {'b': {'c': [1, 2, (3, 4)]}}}\n"
-        )
+        test_file.write_text("data = {'a': {'b': {'c': [1, 2, (3, 4)]}}}\n")
         result = validate_file_structure(str(test_file))
         assert result["balanced_braces"] is True, "Result must not be empty"
         assert result["balanced_brackets"] is True, "Result must not be empty"
@@ -194,9 +194,10 @@ class TestValidateFileStructureEdgeCases:
         assert isinstance(result, dict)
 
     def test_validate_nonexistent_file(self) -> None:
-        """Test validation of nonexistent file."""
-        with pytest.raises((FileNotFoundError, IOError)):
-            validate_file_structure("/nonexistent/path/file.py")
+        """Test validation of nonexistent file returns failed checks."""
+        result = validate_file_structure("/nonexistent/path/file.py")
+        assert isinstance(result, dict)
+        assert result["has_shebang"] is False
 
 
 class TestValidateWithChecksum:
@@ -359,6 +360,7 @@ class DataProcessor:
         assert isinstance(result, dict)
 
     def test_quality_nonexistent_file(self) -> None:
-        """Test quality check on nonexistent file."""
-        with pytest.raises((FileNotFoundError, IOError)):
-            validate_code_quality("/nonexistent/file.py")
+        """Test quality check on nonexistent file returns failed checks."""
+        result = validate_code_quality("/nonexistent/file.py")
+        assert isinstance(result, dict)
+        assert result["syntax_valid"] is False

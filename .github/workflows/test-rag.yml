@@ -100,47 +100,80 @@ jobs:
 
           '
     - name: Free disk space
-      run: "echo \"[DISK-CLEANUP] Starting disk cleanup...\"\necho \"\"\necho \"[DISK-CLEANUP]\
-        \ Disk space BEFORE cleanup:\"\ndf -h / | tail -1 | awk '{print \"  Available:\
-        \ \" $4 \", Used: \" $3 \", Size: \" $2}'\necho \"\"\n \n# CRITICAL: These\
-        \ steps must NOT affect the venv or build tools\necho \"[DISK-CLEANUP] Removing\
-        \ large system packages that don't affect test runs...\"\n \n# Remove dotnet\
-        \ (safe \u2014 Python/pytest don't depend on it)\nif [ -d /usr/share/dotnet\
-        \ ]; then\n  echo \"[DISK-CLEANUP] Removing /usr/share/dotnet...\"\n  sudo\
-        \ rm -rf /usr/share/dotnet 2>&1 | grep -v \"Permission denied\" || true\n\
-        fi\n \n# Remove GHC (safe \u2014 Python/pytest don't depend on it)\nif [ -d\
-        \ /opt/ghc ]; then\n  echo \"[DISK-CLEANUP] Removing /opt/ghc...\"\n  sudo\
-        \ rm -rf /opt/ghc 2>&1 | grep -v \"Permission denied\" || true\nfi\n \n# Remove\
-        \ boost (safe \u2014 Python/pytest don't depend on it)\nif [ -d /usr/local/share/boost\
-        \ ]; then\n  echo \"[DISK-CLEANUP] Removing /usr/local/share/boost...\"\n\
-        \  sudo rm -rf /usr/local/share/boost 2>&1 | grep -v \"Permission denied\"\
-        \ || true\nfi\n \n# Remove Android NDK (safe \u2014 not needed for Python)\n\
-        if [ -d /usr/local/lib/android ]; then\n  echo \"[DISK-CLEANUP] Removing /usr/local/lib/android...\"\
-        \n  sudo rm -rf /usr/local/lib/android 2>&1 | grep -v \"Permission denied\"\
-        \ || true\nfi\n \n# Remove large developer tools\nif [ -d /opt/hostedtoolcache/CodeQL\
-        \ ]; then\n  echo \"[DISK-CLEANUP] Removing /opt/hostedtoolcache/CodeQL...\"\
-        \n  sudo rm -rf /opt/hostedtoolcache/CodeQL 2>&1 | grep -v \"Permission denied\"\
-        \ || true\nfi\n \n# Perform safe apt cleanup\necho \"[DISK-CLEANUP] Running\
-        \ apt-get cleanup (safe, doesn't remove test deps)...\"\nsudo apt-get clean\
-        \ 2>&1 | grep -v \"Permission denied\" || true\nsudo apt-get autoclean 2>&1\
-        \ | grep -v \"Permission denied\" || true\n \n# Docker cleanup (safe \u2014\
-        \ only removes dangling images/volumes)\necho \"[DISK-CLEANUP] Docker cleanup\
-        \ (images, containers, dangling volumes)...\"\n# CRITICAL: Use --volumes=false\
-        \ to preserve named volumes (avoid breaking cache)\n# Only remove dangling\
-        \ volumes, not all volumes\nsudo docker system prune --all --force --volumes=false\
-        \ 2>/dev/null || true\n \necho \"\"\necho \"[DISK-CLEANUP] Disk space AFTER\
-        \ cleanup:\"\ndf -h / | tail -1 | awk '{print \"  Available: \" $4 \", Used:\
-        \ \" $3 \", Size: \" $2}'\n \n# Verify we have enough disk space (need ~5GB\
-        \ for torch/transformers)\nAVAILABLE=$(df / | tail -1 | awk '{print int($4\
-        \ / 1024 / 1024)}')  # in GB\nif [ \"$AVAILABLE\" -lt 5 ]; then\n  echo \"\
-        [DISK-CLEANUP] \u26A0\uFE0F  WARNING: Only ${AVAILABLE}GB disk space available\
-        \ (need \u22655GB)\"\n  echo \"[DISK-CLEANUP] This may cause PyTorch/transformers\
-        \ installation to fail\"\nelse\n  echo \"[DISK-CLEANUP] \u2713 Sufficient\
-        \ disk space: ${AVAILABLE}GB available\"\nfi\n \n# Verify AGENT_TOOLSDIRECTORY\
-        \ is intact (preserve hosted Python cache)\nif [ -d \"$AGENT_TOOLSDIRECTORY\"\
-        \ ]; then\n  echo \"[DISK-CLEANUP] \u2713 AGENT_TOOLSDIRECTORY is intact:\
-        \ $AGENT_TOOLSDIRECTORY\"\nelse\n  echo \"[DISK-CLEANUP] \u26A0\uFE0F  AGENT_TOOLSDIRECTORY\
-        \ not found: $AGENT_TOOLSDIRECTORY\"\nfi\n"
+      run: |
+        echo "[DISK-CLEANUP] Starting disk cleanup..."
+        AVAILABLE_KB=$(df --output=avail / | tail -1 | tr -d ' ')
+        AVAILABLE_GB=$((AVAILABLE_KB / 1024 / 1024))
+        echo "[DISK-CLEANUP] Available before cleanup: ${AVAILABLE_GB}GB"
+        if [ "$AVAILABLE_GB" -ge 15 ]; then echo "[DISK-CLEANUP] Sufficient disk space; skipping destructive cleanup"; exit 0; fi
+        echo ""
+        echo "[DISK-CLEANUP] Disk space BEFORE cleanup:"
+        df -h / | tail -1 | awk '{print "  Available: " $4 ", Used: " $3 ", Size: " $2}'
+        echo ""
+
+        # CRITICAL: These steps must NOT affect the venv or build tools
+        echo "[DISK-CLEANUP] Removing large system packages that don't affect test runs..."
+
+        # Remove dotnet (safe — Python/pytest don't depend on it)
+        if [ -d /usr/share/dotnet ]; then
+          echo "[DISK-CLEANUP] Removing /usr/share/dotnet..."
+          timeout 120 sudo rm -rf /usr/share/dotnet 2>&1 | grep -v "Permission denied" || true
+        fi
+
+        # Remove GHC (safe — Python/pytest don't depend on it)
+        if [ -d /opt/ghc ]; then
+          echo "[DISK-CLEANUP] Removing /opt/ghc..."
+          timeout 120 sudo rm -rf /opt/ghc 2>&1 | grep -v "Permission denied" || true
+        fi
+
+        # Remove boost (safe — Python/pytest don't depend on it)
+        if [ -d /usr/local/share/boost ]; then
+          echo "[DISK-CLEANUP] Removing /usr/local/share/boost..."
+          timeout 120 sudo rm -rf /usr/local/share/boost 2>&1 | grep -v "Permission denied" || true
+        fi
+
+        # Remove Android NDK (safe — not needed for Python)
+        if [ -d /usr/local/lib/android ]; then
+          echo "[DISK-CLEANUP] Removing /usr/local/lib/android..."
+          timeout 120 sudo rm -rf /usr/local/lib/android 2>&1 | grep -v "Permission denied" || true
+        fi
+
+        # Remove large developer tools
+        if [ -d /opt/hostedtoolcache/CodeQL ]; then
+          echo "[DISK-CLEANUP] Removing /opt/hostedtoolcache/CodeQL..."
+          timeout 120 sudo rm -rf /opt/hostedtoolcache/CodeQL 2>&1 | grep -v "Permission denied" || true
+        fi
+
+        # Perform safe apt cleanup
+        echo "[DISK-CLEANUP] Running apt-get cleanup (safe, doesn't remove test deps)..."
+        timeout 120 sudo apt-get clean 2>&1 | grep -v "Permission denied" || true
+        timeout 120 sudo apt-get autoclean 2>&1 | grep -v "Permission denied" || true
+
+        # Docker cleanup (safe — only removes dangling images/volumes)
+        echo "[DISK-CLEANUP] Docker cleanup (images, containers, dangling volumes)..."
+        # CRITICAL: Use --volumes=false to preserve named volumes (avoid breaking cache)
+        # Only remove dangling volumes, not all volumes
+        timeout 120 sudo docker system prune --all --force --volumes=false 2>/dev/null || true
+
+        echo ""
+        echo "[DISK-CLEANUP] Disk space AFTER cleanup:"
+        df -h / | tail -1 | awk '{print "  Available: " $4 ", Used: " $3 ", Size: " $2}'
+
+        # Verify we have enough disk space (need ~5GB for torch/transformers)
+        AVAILABLE=$(df / | tail -1 | awk '{print int($4 / 1024 / 1024)}')  # in GB
+        if [ "$AVAILABLE" -lt 5 ]; then
+          echo "[DISK-CLEANUP] ⚠️  WARNING: Only ${AVAILABLE}GB disk space available (need ≥5GB)"
+          echo "[DISK-CLEANUP] This may cause PyTorch/transformers installation to fail"
+        else
+          echo "[DISK-CLEANUP] ✓ Sufficient disk space: ${AVAILABLE}GB available"
+        fi
+
+        # Verify AGENT_TOOLSDIRECTORY is intact (preserve hosted Python cache)
+        if [ -d "$AGENT_TOOLSDIRECTORY" ]; then
+          echo "[DISK-CLEANUP] ✓ AGENT_TOOLSDIRECTORY is intact: $AGENT_TOOLSDIRECTORY"
+        else
+          echo "[DISK-CLEANUP] ⚠️  AGENT_TOOLSDIRECTORY not found: $AGENT_TOOLSDIRECTORY"
+        fi
     - name: Install dependencies
       run: "PYTHON_BIN=\"${VENV_PYTHON:-python3}\"\necho \"[INSTALL] Using Python:\
         \ $PYTHON_BIN\"\n\"$PYTHON_BIN\" --version\n \necho \"\"\necho \"[INSTALL]\

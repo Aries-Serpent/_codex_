@@ -139,7 +139,7 @@ export interface CreateAgentConfig {
  */
 export class BundleBuilder {
   // Energy weights (λ coefficients)
-  private weights = {
+  weights = {
     missing: 1.0,
     ui_map: 0.8,
     source: 0.7,

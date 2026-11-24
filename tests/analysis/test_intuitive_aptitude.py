@@ -305,7 +305,9 @@ def greet(name):
         assert "greet" in analyzer.functions, "Condition must be true"
         assert analyzer.functions["greet"].name == "greet", "name is not valid"
         assert analyzer.functions["greet"].args == ["name"], "args is not valid"
-        assert analyzer.functions["greet"].docstring == "Say hello to name.", "docstring is not valid"
+        assert (
+            analyzer.functions["greet"].docstring == "Say hello to name."
+        ), "docstring is not valid"
 
     def test_ingest_with_class(self):
         """Test ingesting code with a class."""
@@ -319,7 +321,9 @@ class Calculator:
         result = analyzer.ingest(code)
         assert result is True, "Result must not be empty"
         assert "Calculator" in analyzer.classes, "Condition must be true"
-        assert analyzer.classes["Calculator"].docstring == "Simple calculator.", "docstring is not valid"
+        assert (
+            analyzer.classes["Calculator"].docstring == "Simple calculator."
+        ), "docstring is not valid"
         assert "add" in analyzer.classes["Calculator"].methods, "Condition must be true"
 
     def test_ingest_with_imports(self):
@@ -758,6 +762,7 @@ else:
         """Test _find_calls utility method."""
         code = """
 def test():
+    print("hello")
     logger.info("hello")
     len([1, 2, 3])
     result = calculate(10)

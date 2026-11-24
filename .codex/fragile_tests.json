@@ -81,6 +81,9 @@
   "tests/agents/test_quantum_game_core_flows.py": [
     "numpy"
   ],
+  "tests/agents/test_round3_agent_type_contracts.py": [
+    "numpy"
+  ],
   "tests/ast/test_ast_cli.py": [
     "typer.testing"
   ],
@@ -208,10 +211,25 @@
     "torch"
   ],
   "tests/codex_ml/test_train_loop_comprehensive.py": [
+    "numpy",
+    "torch",
     "torch",
     "torch.utils.data"
   ],
+  "tests/codex_ml/test_training_helper_import_contracts.py": [
+    "torch",
+    "torch",
+    "torch.utils.data"
+  ],
+  "tests/codex_ml/test_training_initialization_contracts.py": [
+    "torch.optim",
+    "torch.optim",
+    "torch.optim"
+  ],
   "tests/cognitive/test_context_injector.py": [
+    "numpy"
+  ],
+  "tests/cognitive_brain/quantum/test_memory.py": [
     "numpy"
   ],
   "tests/data/test_cache_flush_threshold.py": [
@@ -290,6 +308,9 @@
     "hypothesis",
     "hypothesis"
   ],
+  "tests/integration/test_rag_retrieval.py": [
+    "numpy"
+  ],
   "tests/logging/test_cli_logging_integration.py": [
     "typer.testing"
   ],
@@ -324,6 +345,9 @@
   "tests/peft/test_peft_smoke.py": [
     "torch"
   ],
+  "tests/phase_5_coverage_cli/cli_modules/test_cli.py": [
+    "numpy"
+  ],
   "tests/phase_5b/test_cli_rag_unit.py": [
     "typer"
   ],
@@ -337,14 +361,14 @@
     "hypothesis",
     "hypothesis"
   ],
+  "tests/quantum_orchestrator/test_gauge.py": [
+    "numpy"
+  ],
   "tests/quantum_orchestrator/test_mlops_bridge.py": [
     "numpy"
   ],
   "tests/quantum_orchestrator/test_orchestrator_physics.py": [
     "numpy"
-  ],
-  "tests/rag/test_device_placement.py": [
-    "torch"
   ],
   "tests/rag/test_rag_functionality_comprehensive.py": [
     "numpy"
@@ -488,6 +512,9 @@
   "tests/test_codex_model.py": [
     "torch"
   ],
+  "tests/test_core_cli_typing_regressions.py": [
+    "typer.testing"
+  ],
   "tests/test_dataset_wrapper.py": [
     "datasets",
     "datasets"
@@ -522,6 +549,9 @@
     "torch",
     "torch.optim",
     "torch.utils.data"
+  ],
+  "tests/test_phase7b_gap_fill_batch3.py": [
+    "torch"
   ],
   "tests/test_plugins_cli.py": [
     "typer.testing"

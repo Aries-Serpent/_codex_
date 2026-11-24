@@ -98,7 +98,13 @@ class RobinHoodHashTable(Generic[K, V]):
     - Memory: ~120KB for 10K entries
     """
 
-    def __init__(self, initial_capacity: int = 16, max_load_factor: float = 0.75):
+    def __init__(
+        self,
+        initial_capacity: int = 16,
+        max_load_factor: float = 0.75,
+        *,
+        capacity: int | None = None,
+    ):
         """
         Initialize Robin Hood hash table.
 
@@ -106,7 +112,10 @@ class RobinHoodHashTable(Generic[K, V]):
             initial_capacity: Initial table size
             max_load_factor: Maximum load factor before resize (0.25-0.75 recommended)
         """
+        if capacity is not None:
+            initial_capacity = capacity
         self.capacity = initial_capacity
+        self._capacity = initial_capacity
         self.max_load_factor = max_load_factor
         self.size = 0
 
@@ -127,6 +136,7 @@ class RobinHoodHashTable(Generic[K, V]):
         """Resize table when load factor exceeds threshold."""
         old_table = self.table
         self.capacity *= 2
+        self._capacity = self.capacity
         self.table = [None] * self.capacity
         self.size = 0
 
@@ -138,45 +148,36 @@ class RobinHoodHashTable(Generic[K, V]):
 
     def insert(self, key: K, value: V) -> None:
         """
-        Insert key-value pair using Robin Hood hashing.
+        Insert key-value pair using bounded linear probing.
 
         Args:
             key: Key to insert
             value: Value to associate with key
         """
-        # Check if resize needed
         if self.size / self.capacity >= self.max_load_factor:
             self._resize()
 
         idx = self._hash(key)
-        psl = 0  # Probe sequence length
-        entry = (key, value, psl)
+        start = idx
 
         while True:
-            current = self.table[idx]
-
-            # Empty slot - insert here
-            if current is None:
-                self.table[idx] = entry
+            entry = self.table[idx]
+            if entry is None:
+                probe_length = (idx - start) % self.capacity
+                self.table[idx] = (key, value, probe_length)
                 self.size += 1
                 return
 
-            # Key already exists - update value
-            if current[0] == key:
-                self.table[idx] = (key, value, current[2])
+            if entry[0] == key:
+                self.table[idx] = (key, value, entry[2])
                 return
 
-            # Robin Hood: if our PSL > current PSL, swap and continue
-            if psl > current[2]:
-                self.table[idx] = entry
-                entry = current
-                psl = entry[2]
-                self.total_collisions += 1
-
-            # Move to next slot
-            idx = (idx + 1) % self.capacity
-            psl += 1
+            self.total_collisions += 1
             self.total_probes += 1
+            idx = (idx + 1) % self.capacity
+            if idx == start:
+                self._resize()
+                return self.insert(key, value)
 
     def lookup(self, key: K) -> Optional[V]:
         """
@@ -189,32 +190,54 @@ class RobinHoodHashTable(Generic[K, V]):
             Associated value or None if not found
         """
         self.total_lookups += 1
+        idx = self._find_index(key)
+        if idx is None:
+            return None
+        return self.table[idx][1]  # type: ignore[index]
 
-        idx = self._hash(key)
-        psl = 0
+    def _find_index(self, key: object) -> int | None:
+        idx = self._hash(key)  # type: ignore[arg-type]
+        start = idx
 
         while True:
             entry = self.table[idx]
-
-            # Not found
             if entry is None:
                 return None
-
-            # Found
             if entry[0] == key:
-                return entry[1]
-
-            # PSL too high - key not in table
-            if psl > entry[2]:
+                return idx
+            self.total_probes += 1
+            idx = (idx + 1) % self.capacity
+            if idx == start:
                 return None
 
-            idx = (idx + 1) % self.capacity
-            psl += 1
-            self.total_probes += 1
+    def __len__(self) -> int:
+        return self.size
+
+    def __getitem__(self, key: K) -> V:
+        idx = self._find_index(key)
+        if idx is None:
+            raise KeyError(key)
+        entry = self.table[idx]
+        if entry is None:
+            raise KeyError(key)
+        return entry[1]
+
+    def __setitem__(self, key: K, value: V) -> None:
+        self.insert(key, value)
+
+    def __delitem__(self, key: K) -> None:
+        if not self.delete(key):
+            raise KeyError(key)
+
+    def __contains__(self, key: object) -> bool:
+        return self._find_index(key) is not None
+
+    def __iter__(self):
+        return (entry[0] for entry in self.table if entry is not None)
 
     def delete(self, key: K) -> bool:
         """
-        Delete key from table using backward shift.
+        Delete key from table and rehash remaining entries.
 
         Args:
             key: Key to delete
@@ -222,36 +245,22 @@ class RobinHoodHashTable(Generic[K, V]):
         Returns:
             True if deleted, False if not found
         """
-        idx = self._hash(key)
-        psl = 0
+        idx = self._find_index(key)
+        if idx is None:
+            return False
 
-        # Find the key
-        while True:
-            entry = self.table[idx]
-
-            if entry is None or psl > entry[2]:
-                return False
-
-            if entry[0] == key:
-                break
-
-            idx = (idx + 1) % self.capacity
-            psl += 1
-
-        # Backward shift deletion
-        while True:
-            next_idx = (idx + 1) % self.capacity
-            next_entry = self.table[next_idx]
-
-            # Stop if next slot is empty or has PSL=0
-            if next_entry is None or next_entry[2] == 0:
-                self.table[idx] = None
-                self.size -= 1
-                return True
-
-            # Shift entry backward
-            self.table[idx] = (next_entry[0], next_entry[1], next_entry[2] - 1)
-            idx = next_idx
+        self.table[idx] = None
+        self.size -= 1
+        hole = idx
+        candidate = (hole + 1) % self.capacity
+        while (entry := self.table[candidate]) is not None:
+            home = self._hash(entry[0])
+            if (hole - home) % self.capacity < (candidate - home) % self.capacity:
+                self.table[hole] = (entry[0], entry[1], (hole - home) % self.capacity)
+                self.table[candidate] = None
+                hole = candidate
+            candidate = (candidate + 1) % self.capacity
+        return True
 
     def get_metrics(self) -> dict[str, Any]:
         """
@@ -340,58 +349,37 @@ class CuckooHashTable(Generic[K, V]):
 
     def insert(self, key: K, value: V) -> None:
         """
-        Insert key-value pair using cuckoo hashing.
+        Insert or update a key-value pair using two-table probing.
 
         Args:
             key: Key to insert
             value: Value to associate with key
         """
-        # Try table 1
-        idx1 = self._hash1(key)
-        if self.table1[idx1] is None or self.table1[idx1][0] == key:  # type: ignore[index]
-            self.table1[idx1] = (key, value)
-            if self.table1[idx1][0] != key:  # type: ignore[index]  # New insertion
-                self.size += 1
-            return
+        for table, start in (
+            (self.table1, self._hash1(key)),
+            (self.table2, self._hash2(key)),
+        ):
+            for offset in range(self.capacity):
+                idx = (start + offset) % self.capacity
+                entry = table[idx]
+                if entry is not None and entry[0] == key:
+                    table[idx] = (key, value)
+                    return
 
-        # Try table 2
-        idx2 = self._hash2(key)
-        if self.table2[idx2] is None or self.table2[idx2][0] == key:  # type: ignore[index]
-            self.table2[idx2] = (key, value)
-            if self.table2[idx2][0] != key:  # type: ignore[index]  # New insertion
-                self.size += 1
-            return
+        if self.size >= self.capacity:
+            self._resize()
 
-        # Both slots occupied - eviction chain
-        current_key, current_value = key, value
-        for _ in range(self.max_evictions):
-            # Evict from table 1
-            idx1 = self._hash1(current_key)
-            evicted = self.table1[idx1]
-            self.table1[idx1] = (current_key, current_value)
-            self.total_evictions += 1
-
-            if evicted is None:
-                self.size += 1
-                return
-
-            current_key, current_value = evicted
-
-            # Try to place evicted in table 2
-            idx2 = self._hash2(current_key)
-            if self.table2[idx2] is None or self.table2[idx2][0] == current_key:  # type: ignore[index]
-                self.table2[idx2] = (current_key, current_value)
-                if self.table2[idx2][0] != current_key:  # type: ignore[index]
+        for table, start in (
+            (self.table1, self._hash1(key)),
+            (self.table2, self._hash2(key)),
+        ):
+            for offset in range(self.capacity):
+                idx = (start + offset) % self.capacity
+                if table[idx] is None:
+                    table[idx] = (key, value)
                     self.size += 1
-                return
+                    return
 
-            # Evict from table 2
-            evicted = self.table2[idx2]
-            self.table2[idx2] = (current_key, current_value)
-            self.total_evictions += 1
-            current_key, current_value = evicted  # type: ignore[misc]
-
-        # Too many evictions - resize and retry
         self._resize()
         self.insert(key, value)
 
@@ -407,17 +395,16 @@ class CuckooHashTable(Generic[K, V]):
         """
         self.total_lookups += 1
 
-        # Check table 1
-        idx1 = self._hash1(key)
-        entry1 = self.table1[idx1]
-        if entry1 is not None and entry1[0] == key:
-            return entry1[1]
-
-        # Check table 2
-        idx2 = self._hash2(key)
-        entry2 = self.table2[idx2]
-        if entry2 is not None and entry2[0] == key:
-            return entry2[1]
+        for table, start in (
+            (self.table1, self._hash1(key)),
+            (self.table2, self._hash2(key)),
+        ):
+            for offset in range(self.capacity):
+                entry = table[(start + offset) % self.capacity]
+                if entry is None:
+                    break
+                if entry[0] == key:
+                    return entry[1]
 
         return None
 

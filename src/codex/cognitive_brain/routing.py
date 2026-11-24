@@ -79,10 +79,23 @@ _ROUTE_CHAINS: dict[str, tuple[str, ...]] = {
         "playwright",
     ),
     "github.write": ("github_mcp", "vscode_github", "gh", "rest_graphql", "playwright"),
+    "github.agent_tasks.read": (
+        "github_mcp",
+        "vscode_github",
+        "gh",
+        "rest_graphql",
+    ),
+    "github.agent_tasks.write": (
+        "github_mcp",
+        "vscode_github",
+        "gh",
+        "rest_graphql",
+    ),
     "git.local": ("vscode_scm", "git", "brain_cli"),
     "shell.read": ("vscode_terminal", "brain_cli", "shell"),
     "browser.read": ("playwright_mcp", "playwright_cli", "brain_proxy"),
     "brain.read": ("brain_api",),
+    "maintainer.read": ("brain_api",),
 }
 
 
@@ -103,6 +116,14 @@ _OPERATION_REGISTRY: dict[tuple[str, str], OperationDefinition] = {
     ("github.read", "list_pull_requests"): OperationDefinition("github.read", "list_pull_requests"),
     ("github.read", "list_workflow_runs"): OperationDefinition("github.read", "list_workflow_runs"),
     ("github.read", "list_checks"): OperationDefinition("github.read", "list_checks"),
+    ("github.read", "list_agent_tasks"): OperationDefinition("github.read", "list_agent_tasks"),
+    ("github.read", "get_agent_task"): OperationDefinition("github.read", "get_agent_task"),
+    ("github.agent_tasks.read", "list_agent_tasks"): OperationDefinition(
+        "github.agent_tasks.read", "list_agent_tasks"
+    ),
+    ("github.agent_tasks.read", "get_agent_task"): OperationDefinition(
+        "github.agent_tasks.read", "get_agent_task"
+    ),
     ("github.actions.read", "list_workflow_runs"): OperationDefinition(
         "github.actions.read", "list_workflow_runs"
     ),
@@ -139,6 +160,51 @@ _OPERATION_REGISTRY: dict[tuple[str, str], OperationDefinition] = {
     ("github.write", "create_deployment"): OperationDefinition(
         "github.write", "create_deployment", "deployments", "high", "inactive", True
     ),
+    ("github.write", "create_agent_task"): OperationDefinition(
+        "github.write", "create_agent_task", "agent_tasks", "high", "cancel", True
+    ),
+    ("github.write", "continue_agent_task"): OperationDefinition(
+        "github.write", "continue_agent_task", "agent_tasks", "high", "cancel", True
+    ),
+    ("github.write", "cancel_agent_task"): OperationDefinition(
+        "github.write", "cancel_agent_task", "agent_tasks", "high", "terminal_state", True
+    ),
+    ("github.write", "assign_agent_task"): OperationDefinition(
+        "github.write", "assign_agent_task", "agent_tasks", "high", "restore", True
+    ),
+    ("github.agent_tasks.write", "create_agent_task"): OperationDefinition(
+        "github.agent_tasks.write", "create_agent_task", "agent_tasks", "high", "cancel", True
+    ),
+    ("github.agent_tasks.write", "continue_agent_task"): OperationDefinition(
+        "github.agent_tasks.write", "continue_agent_task", "agent_tasks", "high", "cancel", True
+    ),
+    ("github.agent_tasks.write", "cancel_agent_task"): OperationDefinition(
+        "github.agent_tasks.write",
+        "cancel_agent_task",
+        "agent_tasks",
+        "high",
+        "terminal_state",
+        True,
+    ),
+    ("github.agent_tasks.write", "assign_agent_task"): OperationDefinition(
+        "github.agent_tasks.write", "assign_agent_task", "agent_tasks", "high", "restore", True
+    ),
+    ("github.agent_tasks.write", "assign_issue_to_copilot"): OperationDefinition(
+        "github.agent_tasks.write",
+        "assign_issue_to_copilot",
+        "agent_tasks",
+        "high",
+        "restore",
+        True,
+    ),
+    ("github.agent_tasks.write", "assign_issue_to_copilot"): OperationDefinition(
+        "github.agent_tasks.write",
+        "assign_issue_to_copilot",
+        "agent_tasks",
+        "high",
+        "restore",
+        True,
+    ),
     ("github.write", "create_discussion"): OperationDefinition(
         "github.write", "create_discussion", "discussions", "high", "close", True
     ),
@@ -162,7 +228,93 @@ _OPERATION_REGISTRY: dict[tuple[str, str], OperationDefinition] = {
     ("shell.read", "run_read_only"): OperationDefinition("shell.read", "run_read_only"),
     ("browser.read", "navigate"): OperationDefinition("browser.read", "navigate"),
     ("brain.read", "capabilities"): OperationDefinition("brain.read", "capabilities"),
+    ("maintainer.read", "status"): OperationDefinition("maintainer.read", "status"),
+    ("maintainer.read", "keepalive_status"): OperationDefinition(
+        "maintainer.read", "keepalive_status"
+    ),
 }
+
+CUSTOM_AGENT_RESOLVER: dict[str, str] = {
+    "cdx-archive-lifecycle": "cdx-archive-lifecycle",
+    "deep-research-analysis-agent": "deep-research-analysis-agent",
+    "cognitive-brain-manager": "cognitive-brain-manager",
+    "ci-failure-diagnostician": "ci-failure-diagnostician",
+    "ci-pattern-guardian": "ci-pattern-guardian",
+    "workflow-compliance-guardian": "workflow-compliance-guardian",
+    "codebase-health-guardian": "codebase-health-guardian",
+    "branch-divergence-resolution-agent": "branch-divergence-resolution-agent",
+    "session-wrapup-autofix-agent": "session-wrapup-autofix-agent",
+    "security-audit-agent": "security-audit-agent",
+    "test-failure-analyzer-agent": "test-failure-analyzer-agent",
+    "ci-failure-resolution-agent": "ci-failure-resolution-agent",
+    "ci-failure-resolution-agent.agent.md": "ci-failure-resolution-agent",
+    "security-alert-verification-agent": "security-alert-verification-agent",
+    "security-alert-verification-agent.agent.md": "security-alert-verification-agent",
+    "unified-documentation-agent": "unified-documentation-agent",
+    "unified-documentation-agent.agent.md": "unified-documentation-agent",
+    "agent-orchestrator": "agent-orchestrator",
+    "github-copilot": "github-copilot[bot]",
+    "github-copilot-bot": "github-copilot[bot]",
+    "github-copilot[bot]": "github-copilot[bot]",
+    "copilot": "github-copilot[bot]",
+    "codex": "github-copilot[bot]",
+}
+
+CUSTOM_AGENT_ROUTE_MAP: dict[str, tuple[str, str]] = {
+    "cognitive-brain-manager": ("github.write", "create_agent_task"),
+    "ci-failure-diagnostician": ("github.write", "create_agent_task"),
+    "ci-pattern-guardian": ("github.read", "list_agent_tasks"),
+    "workflow-compliance-guardian": ("github.read", "get_agent_task"),
+    "codebase-health-guardian": ("github.read", "list_agent_tasks"),
+    "branch-divergence-resolution-agent": ("github.write", "assign_agent_task"),
+    "assign_issue_to_copilot": ("github.agent_tasks.write", "assign_issue_to_copilot"),
+    "session-wrapup-autofix-agent": ("github.write", "continue_agent_task"),
+    "security-audit-agent": ("github.write", "create_agent_task"),
+    "test-failure-analyzer-agent": ("github.write", "create_agent_task"),
+    "ci-failure-resolution-agent": ("github.write", "create_agent_task"),
+    "security-alert-verification-agent": ("github.write", "create_agent_task"),
+    "unified-documentation-agent": ("github.write", "create_agent_task"),
+    "agent-orchestrator": ("github.write", "create_agent_task"),
+    "assign_issue_to_copilot": ("github.agent_tasks.write", "assign_issue_to_copilot"),
+    "cdx-archive-lifecycle": ("github.read", "get_agent_task"),
+}
+
+
+def resolve_custom_agent(agent: str | Mapping[str, Any]) -> str | None:
+    """Resolve a custom-agent name or descriptor to a canonical route ID."""
+
+    if isinstance(agent, Mapping):
+        candidate = next(
+            (
+                agent.get(key)
+                for key in ("id", "agent_id", "name", "agent", "custom_agent")
+                if isinstance(agent.get(key), str)
+            ),
+            None,
+        )
+        if not isinstance(candidate, str):
+            return None
+        name = candidate
+    else:
+        name = agent
+
+    normalized = name.strip().lower().replace(" ", "-").replace("_", "-")
+    normalized = normalized.removesuffix(".agent.md").removesuffix(".agent")
+    return CUSTOM_AGENT_RESOLVER.get(normalized)
+
+
+def resolve_custom_agent_route(
+    agent: str | Mapping[str, Any],
+) -> tuple[str, str] | None:
+    """Resolve a custom agent to its conservative GitHub route operation."""
+
+    resolved = resolve_custom_agent(agent)
+    if resolved is None:
+        return None
+    if resolved not in CUSTOM_AGENT_RESOLVER:
+        return None
+    return CUSTOM_AGENT_ROUTE_MAP.get(resolved)
+
 
 _AVAILABLE_STATES = frozenset({RouteState.VERIFIED, RouteState.EXPOSED, RouteState.INSTALLED})
 _EXECUTABLE_STATES = frozenset({RouteState.VERIFIED})
@@ -255,11 +407,14 @@ def plan_route(
         )
 
     if selected_state not in _EXECUTABLE_STATES:
+        state_reason = (
+            selected_state.value if selected_state is not None else "route state unavailable"
+        )
         return RoutePlan(
             decision=RouteDecision.DRY_RUN_ONLY,
             preferred_adapter=selected,
             candidates=tuple(candidates),
-            reasons=(f"route is not operation-verified: {selected_state.value}",),
+            reasons=(f"route is not operation-verified: {state_reason}",),
             permission_family=operation.permission_family,
             risk=operation.risk,
             rollback_class=operation.rollback_class,
@@ -290,4 +445,8 @@ __all__ = [
     "capability_catalog",
     "normalize_route_state",
     "plan_route",
+    "CUSTOM_AGENT_RESOLVER",
+    "CUSTOM_AGENT_ROUTE_MAP",
+    "resolve_custom_agent",
+    "resolve_custom_agent_route",
 ]

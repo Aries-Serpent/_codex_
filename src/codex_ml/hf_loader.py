@@ -370,9 +370,6 @@ def load_causal_lm(
 
     Reduced complexity through strategic helper extraction.
     """
-    if not TRANSFORMERS_AVAILABLE or AutoModelForCausalLM is None:
-        raise ImportError("transformers is required to load causal language models")
-
     if isinstance(repo_id, str):
         ctor = get_registered_causal_lm(repo_id)
         if ctor is not None:
@@ -384,6 +381,9 @@ def load_causal_lm(
             if peft_cfg is not None:
                 kwargs["peft_cfg"] = peft_cfg
             return ctor(**kwargs)
+
+    if not TRANSFORMERS_AVAILABLE or AutoModelForCausalLM is None:
+        raise ImportError("transformers is required to load causal language models")
 
     # Extract model loading with helper
     _, loader_kwargs = _build_loader_kwargs(repo_id, revision, trust_remote_code, dtype)

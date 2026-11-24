@@ -987,7 +987,8 @@ class MLflowMetricWriter:
 
             mlflow.set_tracking_uri(self.tracking_uri)
             mlflow.set_experiment(self.experiment_name)
-            self._client = MlflowClient(self.tracking_uri)
+            if callable(MlflowClient):
+                self._client = MlflowClient(self.tracking_uri)
             self._initialized = True
             get_default_logger().info(f"MLflow initialized: {self.tracking_uri}")
         except (IOError, OSError, ModuleNotFoundError, ImportError) as e:

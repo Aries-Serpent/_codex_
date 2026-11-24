@@ -21,21 +21,11 @@ if TYPE_CHECKING:
     from starlette.middleware.trustedhost import TrustedHostMiddleware
 else:
     try:
-        from fastapi import (
-            FastAPI as _FastAPI,
-        )
-        from fastapi import (
-            Header as _Header,
-        )
-        from fastapi import (
-            HTTPException as _HTTPException,
-        )
-        from fastapi import (
-            Request as _Request,
-        )
-        from fastapi import (
-            Security as _Security,
-        )
+        from fastapi import FastAPI as _FastAPI
+        from fastapi import Header as _Header
+        from fastapi import HTTPException as _HTTPException
+        from fastapi import Request as _Request
+        from fastapi import Security as _Security
         from fastapi.middleware.cors import CORSMiddleware as _CORSMiddleware
         from fastapi.security import APIKeyHeader as _APIKeyHeader
         from pydantic import BaseModel as _BaseModel
@@ -736,11 +726,14 @@ if FASTAPI_AVAILABLE:
             except RuntimeError as e:
                 raise HTTPException(status_code=500, detail=str(e)) from e
             except (ConnectionError, TimeoutError) as e:
-                type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")
+                logger.debug("Exception: %s", type(e).__name__)
                 if "Circuit breaker" in str(e):
                     raise HTTPException(status_code=503, detail=str(e)) from e
                 raise
+            except Exception as e:
+                if "Circuit breaker" in str(e):
+                    raise HTTPException(status_code=503, detail=str(e)) from e
+                raise HTTPException(status_code=500, detail=str(e)) from e
 
             return PredictionResponse(
                 predictions=preds,

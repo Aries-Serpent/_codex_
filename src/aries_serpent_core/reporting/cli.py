@@ -1,5 +1,6 @@
 """Reporting CLI - Phase 3 implementation stub."""
 
+import argparse
 import html
 import json
 import logging
@@ -116,9 +117,71 @@ if __name__ == "__main__":
 class ReportingCLI:
     """CLI interface for reporting functionality."""
 
-    def __init__(self):
-        self.config = {}
+    def __init__(self, config: dict[str, Any] | None = None):
+        self.config = dict(config or {})
 
-    def generate_report(self, format="html"):
-        """Generate a report."""
-        return f"Report generated in {format} format"
+    def generate_report(self, data: dict[str, Any] | None = None, format: str = "html") -> str:
+        """Generate a report for text, JSON, HTML, Markdown or PDF-like output."""
+        data = {} if data is None else data
+        if not isinstance(data, dict):
+            raise TypeError("Report data must be a mapping")
+
+        normalized = format.lower()
+        if normalized not in {"text", "json", "html", "markdown", "yaml", "pdf"}:
+            raise ValueError(f"Unsupported report format: {format}")
+
+        if normalized == "json":
+            return json.dumps(data, indent=2, sort_keys=True)
+        if normalized == "html":
+            title = html.escape(str(data.get("title", "Codex Report")))
+            summary = html.escape(str(data.get("summary", data)))
+            return f"<!doctype html><html><head><title>{title}</title></head><body><h1>{title}</h1><p>{summary}</p></body></html>"
+        if normalized == "text":
+            lines = [f"{key}: {value}" for key, value in data.items()]
+            return "\n".join(lines) if lines else "No report data"
+        if normalized == "markdown":
+            lines = [f"# {data.get('title', 'Codex Report')}\n"]
+            for key, value in data.items():
+                if key != "title":
+                    lines.append(f"- **{key}:** {value}")
+            return "\n".join(lines)
+        if normalized == "yaml":
+            return "\n".join(f"{key}: {value}" for key, value in data.items())
+        return f"Report generated in {normalized} format"
+
+    def format_metrics(self, metrics: dict[str, Any]) -> str:
+        """Format a metrics mapping as readable text."""
+        return "\n".join(f"{key}: {value}" for key, value in metrics.items())
+
+    def format_percentage(self, value: float) -> str:
+        """Format a numeric fraction as a percentage string."""
+        return f"{float(value) * 100:.2f}%"
+
+    def format_number(self, number: int | float) -> str:
+        """Format an integer or float with thousands separators."""
+        if isinstance(number, float):
+            return f"{number:,.2f}"
+        return f"{number:,}"
+
+    def parse_args(self, args: list[str] | None = None) -> argparse.Namespace:
+        """Parse reporting CLI arguments."""
+        parser = argparse.ArgumentParser(prog="codex-report")
+        parser.add_argument(
+            "--format", choices=["text", "json", "html", "markdown", "yaml", "pdf"], default="html"
+        )
+        parser.add_argument("--output", default=None)
+        return parser.parse_args(args)
+
+    def write_report(self, report: str, output_path: str) -> None:
+        """Write report text to a file or stdout."""
+        if output_path == "-":
+            print(report)
+            return
+        path = Path(output_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(report, encoding="utf-8")
+
+    def get_output_path(self, format: str = "html") -> str:
+        """Return an output path for the selected format."""
+        suffix = {"markdown": "md", "text": "txt"}.get(format.lower(), format.lower())
+        return self.config.get("output") or f"report.{suffix}"

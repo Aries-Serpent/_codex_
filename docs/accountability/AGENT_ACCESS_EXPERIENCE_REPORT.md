@@ -33,7 +33,7 @@
 ### F-001 — Environment gate re-approval loop (CRITICAL — 5 occurrences)
 **What happened:** Each time I ended a session (even just one small commit), mbaetiong had to manually re-approve the `agent-auth-delegation` environment gate in the GitHub Actions UI. This happened 6 times total (runs 22524551368, 22524590412, 22524659644, 22524840253, 22524865839, 22525150876).
 
-**Root cause:** The agent-auth-delegation workflow's `await-approval` job uses a GitHub Environment with `mbaetiong` as required reviewer. Once I stop and a new session starts, the environment gate is consumed and a new workflow run is needed.
+**Historical root cause:** The old agent-auth-delegation environment used `mbaetiong` as a required reviewer, which consumed a human-only gate on every run. The active model is now corrected: this repository has one human owner, so environment reviewer lists stay empty; @mbaetiong's protected marker grants D-tier owner authorization and exact-SHA Copilot/AI review supplies review evidence.
 
 **Cost to mbaetiong:** ~6 manual approvals × ~2 min each = 12+ minutes of manual overhead PLUS premium Copilot session tokens wasted on re-exploration each time.
 

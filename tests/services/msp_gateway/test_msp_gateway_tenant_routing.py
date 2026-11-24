@@ -46,12 +46,12 @@ def test_tenant_routing_single_endpoint_different_keys(
         # Request with tenant-a key
         response_a = client.get(
             "/v1/resource",
-            headers={"Authorization": "******"},
+            headers={"Authorization": "Bearer key-a"},
         )
         # Request with tenant-b key
         response_b = client.get(
             "/v1/resource",
-            headers={"Authorization": "******"},
+            headers={"Authorization": "Bearer key-b"},
         )
 
     assert response_a.status_code == 200, "Tenant A request must succeed"
@@ -86,11 +86,11 @@ def test_tenant_routing_multiple_endpoints_same_tenant(
     with TestClient(app) as client:
         resource_resp = client.get(
             "/v1/resource",
-            headers={"Authorization": "******"},
+            headers={"Authorization": "Bearer key-shared"},
         )
         query_resp = client.post(
             "/v1/query",
-            headers={"Authorization": "******"},
+            headers={"Authorization": "Bearer key-shared"},
         )
 
     assert resource_resp.status_code == 200, "Resource endpoint must be accessible"
@@ -121,12 +121,12 @@ def test_tenant_routing_invalid_key_rejection(
         # Valid key
         valid_resp = client.get(
             "/v1/protected",
-            headers={"Authorization": "******"},
+            headers={"Authorization": "Bearer key-valid"},
         )
         # Invalid key
         invalid_resp = client.get(
             "/v1/protected",
-            headers={"Authorization": "******"},
+            headers={"Authorization": "Bearer invalid-key"},
         )
         # Missing key
         missing_resp = client.get("/v1/protected")
@@ -160,12 +160,12 @@ def test_tenant_routing_inactive_tenant_forbidden(
         # Active tenant request
         active_resp = client.get(
             "/v1/resource",
-            headers={"Authorization": "******"},
+            headers={"Authorization": "Bearer key-active"},
         )
         # Inactive tenant request
         inactive_resp = client.get(
             "/v1/resource",
-            headers={"Authorization": "******"},
+            headers={"Authorization": "Bearer key-inactive"},
         )
 
     assert active_resp.status_code == 200, "Active tenant must be allowed"
@@ -197,9 +197,9 @@ def test_tenant_routing_context_isolation(
 
     with TestClient(app) as client:
         # Multiple requests from different tenants
-        client.get("/v1/capture", headers={"Authorization": "******"})
-        client.get("/v1/capture", headers={"Authorization": "******"})
-        client.get("/v1/capture", headers={"Authorization": "******"})
+        client.get("/v1/capture", headers={"Authorization": "Bearer key-x"})
+        client.get("/v1/capture", headers={"Authorization": "Bearer key-y"})
+        client.get("/v1/capture", headers={"Authorization": "Bearer key-x"})
 
     # Verify each request captured its own tenant ID
     assert len(captured_tenants) == 3, "All requests must be processed"
@@ -265,11 +265,11 @@ def test_tenant_routing_per_tenant_quotas(
     with TestClient(app) as client:
         limited_resp = client.get(
             "/v1/quota",
-            headers={"Authorization": "******"},
+            headers={"Authorization": "Bearer key-limited"},
         )
         unlimited_resp = client.get(
             "/v1/quota",
-            headers={"Authorization": "******"},
+            headers={"Authorization": "Bearer key-unlimited"},
         )
 
     assert limited_resp.json()["quota"]["requests_per_minute"] == 10, "Condition must be true"

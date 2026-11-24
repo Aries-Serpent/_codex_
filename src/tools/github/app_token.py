@@ -21,24 +21,67 @@ import importlib
 import importlib.util
 import json
 import os
+import sys
 import time
 import urllib.request
+from pathlib import Path
 
 _JWT_SPEC = importlib.util.find_spec("jwt")
 jwt = importlib.import_module("jwt") if _JWT_SPEC is not None else None
 
 GITHUB_API = os.environ.get("GITHUB_API", "https://api.github.com")
 
+REPO_ROOT = Path(__file__).resolve().parents[3]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+try:
+    from scripts.ci._token_resolver import (
+        resolve_app_id,
+        resolve_app_installation_id,
+        resolve_app_private_key,
+    )
+except ImportError:
+
+    def resolve_app_private_key() -> tuple[str, str]:
+        for name in (
+            "_GITHUB_APP_PRIVATE_KEY_PEM",
+            "_GITHUB_APP_PRIVATE_KEY",
+            "GITHUB_APP_PRIVATE_KEY_PEM",
+            "GITHUB_APP_PRIVATE_KEY",
+        ):
+            value = os.environ.get(name, "").strip()
+            if value.startswith("-----BEGIN") and "PRIVATE KEY" in value:
+                return value, name
+        path_value = os.environ.get("GITHUB_APP_PRIVATE_KEY_PATH", "").strip()
+        if path_value:
+            path = Path(path_value).expanduser()
+            if path.is_file():
+                value = path.read_text(encoding="utf-8").strip()
+                if value.startswith("-----BEGIN") and "PRIVATE KEY" in value:
+                    return value, str(path)
+        return "", ""
+
+    def resolve_app_id() -> tuple[str, str]:
+        for name in ("_GITHUB_APP_ID", "GITHUB_APP_ID"):
+            value = os.environ.get(name, "").strip()
+            if value.isdecimal():
+                return value, name
+        return "", ""
+
+    def resolve_app_installation_id() -> tuple[str, str]:
+        for name in ("_GITHUB_APP_INSTALLATION_ID", "GITHUB_APP_INSTALLATION_ID"):
+            value = os.environ.get(name, "").strip()
+            if value.isdecimal():
+                return value, name
+        return "", ""
+
 
 def _read_private_key() -> bytes:
-    pem = os.environ.get("GITHUB_APP_PRIVATE_KEY", "")
-    key_path = os.environ.get("GITHUB_APP_PRIVATE_KEY_PATH", "")
+    pem, _ = resolve_app_private_key()
     if pem:
         return pem.encode("utf-8")
-    if key_path:
-        with open(key_path, "rb") as fh:
-            return fh.read()
-    raise SystemExit("[app_token] Set GITHUB_APP_PRIVATE_KEY or GITHUB_APP_PRIVATE_KEY_PATH")
+    raise SystemExit("[app_token] Set a PEM GitHub App private key or private-key path")
 
 
 def build_app_jwt(app_id: str, now: int | None = None, ttl_seconds: int = 540) -> str:
@@ -97,12 +140,14 @@ def main() -> int:
     )
     p.add_argument(
         "--app-id",
-        default=os.environ.get("GITHUB_APP_ID", ""),
+        default=(resolve_app_id()[0] or os.environ.get("GITHUB_APP_ID", "")),
         help="GitHub App ID (env GITHUB_APP_ID)",
     )
     p.add_argument(
         "--installation-id",
-        default=os.environ.get("GITHUB_APP_INSTALLATION_ID", ""),
+        default=(
+            resolve_app_installation_id()[0] or os.environ.get("GITHUB_APP_INSTALLATION_ID", "")
+        ),
         help="Installation ID (env GITHUB_APP_INSTALLATION_ID)",
     )
     args = p.parse_args()

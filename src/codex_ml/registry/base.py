@@ -35,7 +35,7 @@ class RegistryNotFoundError(RegistryError):
     """Raised when a requested key does not exist in the registry."""
 
 
-class RegistryConflictError(RegistryError):
+class RegistryConflictError(RegistryError, ValueError):
     """Raised when attempting to register a duplicate key without override."""
 
 
@@ -57,7 +57,7 @@ class Registry:
 
     def __init__(
         self,
-        component: str,
+        component: str = "component",
         *,
         entry_point_group: str | None = None,
         allow_entrypoint_overrides: bool = False,
@@ -156,6 +156,15 @@ class Registry:
         self._ensure_entry_points_loaded()
         return sorted(self._items.keys())
 
+    def get_metadata(self, name: str) -> dict[str, Any] | None:
+        """Return provenance metadata for a registered component."""
+
+        key = self._normalise(name)
+        entry = self._items.get(key)
+        if entry is None:
+            return None
+        return {"name": entry.name, "source": entry.source, "value": entry.value}
+
     # ------------------------------------------------------------------
     # Entry point handling
     # ------------------------------------------------------------------
@@ -174,7 +183,7 @@ class Registry:
                 continue
             try:
                 value = ep.load()
-            except (ValueError, TypeError) as exc:  # pragma: no cover - plugin failure
+            except (AttributeError, ImportError, RuntimeError, ValueError, TypeError) as exc:
                 self._failed_entry_points[key] = exc
                 continue
             try:

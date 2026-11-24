@@ -193,7 +193,17 @@ def detect_config_drift(
         True if no drift, False if drift detected
     """
     drift = ConfigDrift(current_config)
-    return drift.validate_against_baseline(baseline_path, strict=strict)
+
+    if strict:
+        baseline = drift.load_baseline(baseline_path)
+        diff = drift.compare(baseline)
+        if diff["added"] or diff["removed"] or diff["modified"]:
+            raise ValueError(
+                "Configuration drift detected: "
+                f"added={diff['added']}, removed={diff['removed']}, modified={diff['modified']}"
+            )
+
+    return drift.has_drift(baseline_path)
 
 
 def embed_config_hash(config: dict[str, Any], checkpoint_data: dict[str, Any]) -> dict[str, Any]:

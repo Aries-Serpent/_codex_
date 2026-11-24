@@ -53,11 +53,16 @@ import os
 import random
 import sys
 import time
-import urllib.error
 import urllib.parse
-import urllib.request
 from datetime import datetime, timezone
 from typing import Any
+
+from scripts.ci.github_rate_limit import (
+    Credential,
+    GitHubRateLimitError,
+    discover_credentials,
+    request,
+)
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -91,34 +96,30 @@ _MAX_RETRIES = 3
 _MAX_BACKOFF = 60  # seconds
 
 # Workflow names that must never be cancelled by the orchestrator (safety guard).
-_PROTECTED_WORKFLOWS: frozenset[str] = frozenset({
-    "iterative-self-healing-ci.yml",
-    "copilot-setup-steps.yml",
-    "workflow-execution-gate.yml",
-    "agent-auth-delegation.yml",
-    "deferral-language-gate.yml",
-    "comment-review-gate.yml",
-    "pre-merge-validation.yml",
-    "cost-gate.yml",
-    "token-expiry-monitor.yml",
-    "admin-action-notifier.yml",
-})
+_PROTECTED_WORKFLOWS: frozenset[str] = frozenset(
+    {
+        "iterative-self-healing-ci.yml",
+        "copilot-setup-steps.yml",
+        "workflow-execution-gate.yml",
+        "agent-auth-delegation.yml",
+        "deferral-language-gate.yml",
+        "comment-review-gate.yml",
+        "pre-merge-validation.yml",
+        "cost-gate.yml",
+        "token-expiry-monitor.yml",
+        "admin-action-notifier.yml",
+    }
+)
 
 
 # ---------------------------------------------------------------------------
 # GitHub API helper
 # ---------------------------------------------------------------------------
 
+
 def _discover_tokens() -> list[str]:
-    """Return all non-empty tokens in priority order."""
-    names = [
-        "CODEX_MASTER_KEY",
-        "CODEX_BACKUP_KEY",
-        "CODEX_ADMIN_KEY",
-        "GH_TOKEN",
-        "GITHUB_TOKEN",
-    ]
-    return [t for name in names if (t := os.environ.get(name, "").strip())]
+    """Return distinct non-empty credentials in priority order."""
+    return [credential.token for credential in discover_credentials()]
 
 
 def _gh_api(
@@ -129,27 +130,20 @@ def _gh_api(
     *,
     accept: str = "application/vnd.github+json",
 ) -> tuple[int, Any]:
-    """Make a single GitHub API call; return (status_code, parsed_body)."""
-    url = f"{_GH_API_BASE}{path}"
-    data = json.dumps(body).encode() if body else None
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Accept": accept,
-        "X-GitHub-Api-Version": "2022-11-28",
-        "Content-Type": "application/json",
-    }
-    req = urllib.request.Request(url, data=data, headers=headers, method=method)
+    """Make one classified GitHub API attempt; retry rotation is owned by the caller."""
     try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            raw = resp.read()
-            parsed = json.loads(raw) if raw.strip() else {}
-            return resp.status, parsed
-    except urllib.error.HTTPError as exc:
-        try:
-            err_body = json.loads(exc.read())
-        except Exception:
-            err_body = {}
-        return exc.code, err_body
+        response = request(
+            method,
+            f"{_GH_API_BASE}{path}",
+            credentials=[Credential("orchestrator-selected", token)],
+            body=body,
+            accept=accept,
+            max_retries=1,
+            user_agent="codex-rate-limit-orchestrator/1.1",
+        )
+        return response.status, response.payload
+    except GitHubRateLimitError:
+        return 429, {"message": "Selected credential is rate-limited"}
 
 
 def _gh_api_with_retry(
@@ -175,7 +169,12 @@ def _gh_api_with_retry(
         if last_status in (429, 403):
             # Cap exponent at 6 so max pre-cap wait is 2^6 = 64s; _MAX_BACKOFF clamps further.
             wait = min(_MAX_BACKOFF, (2 ** min(attempt, 6)) + random.uniform(0, 1))
-            logger.warning("Rate-limited (HTTP %d) — sleeping %.1fs before retry %d", last_status, wait, attempt + 1)
+            logger.warning(
+                "Rate-limited (HTTP %d) — sleeping %.1fs before retry %d",
+                last_status,
+                wait,
+                attempt + 1,
+            )
             time.sleep(wait)
             continue
 
@@ -184,16 +183,21 @@ def _gh_api_with_retry(
             return last_status, last_result
 
         # Other errors — log and retry
-        logger.warning("HTTP %d on %s %s (attempt %d): %s", last_status, method, path, attempt + 1, last_result)
+        logger.warning(
+            "HTTP %d on %s %s (attempt %d): %s", last_status, method, path, attempt + 1, last_result
+        )
         time.sleep(_POLITE_SLEEP)
 
-    logger.error("All %d retries exhausted for %s %s (last HTTP %d)", _MAX_RETRIES, method, path, last_status)
+    logger.error(
+        "All %d retries exhausted for %s %s (last HTTP %d)", _MAX_RETRIES, method, path, last_status
+    )
     return last_status, last_result
 
 
 # ---------------------------------------------------------------------------
 # Pattern A — Rate-limit status check
 # ---------------------------------------------------------------------------
+
 
 def check_rate_limit_status(tokens: list[str]) -> dict[str, Any]:
     """Return rate-limit status for all tokens.
@@ -248,6 +252,7 @@ def check_rate_limit_status(tokens: list[str]) -> dict[str, Any]:
 # Pattern B — Workflow deduplication
 # ---------------------------------------------------------------------------
 
+
 def deduplicate_workflow(
     workflow_file: str,
     branch: str,
@@ -271,7 +276,12 @@ def deduplicate_workflow(
 
     runs: list[dict[str, Any]] = data.get("workflow_runs", []) if status == 200 else []
     if len(runs) <= 1:
-        logger.info("✅ %s on '%s': %d in-progress run(s) — no duplicates to cancel", workflow_file, branch, len(runs))
+        logger.info(
+            "✅ %s on '%s': %d in-progress run(s) — no duplicates to cancel",
+            workflow_file,
+            branch,
+            len(runs),
+        )
         return 0
 
     # Sort by run number descending (newest first)
@@ -284,15 +294,21 @@ def deduplicate_workflow(
         run_id = run["id"]
         run_number = run.get("run_number", 0)
         if dry_run:
-            logger.info("[DRY-RUN] Would cancel run #%s (id=%s) of %s", run_number, run_id, workflow_file)
+            logger.info(
+                "[DRY-RUN] Would cancel run #%s (id=%s) of %s", run_number, run_id, workflow_file
+            )
             cancelled += 1
             continue
-        cancel_status, _ = _gh_api_with_retry("POST", f"/repos/{repo}/actions/runs/{run_id}/cancel", tokens)
+        cancel_status, _ = _gh_api_with_retry(
+            "POST", f"/repos/{repo}/actions/runs/{run_id}/cancel", tokens
+        )
         if cancel_status in (202, 204, 422):
             logger.info("🛑 Cancelled run #%s (id=%s) of %s", run_number, run_id, workflow_file)
             cancelled += 1
         else:
-            logger.warning("⚠️  Failed to cancel run #%s (id=%s) — HTTP %d", run_number, run_id, cancel_status)
+            logger.warning(
+                "⚠️  Failed to cancel run #%s (id=%s) — HTTP %d", run_number, run_id, cancel_status
+            )
 
     return cancelled
 
@@ -321,6 +337,7 @@ def cancel_superseded_runs(
 # Pattern D — Concurrent cap enforcement
 # ---------------------------------------------------------------------------
 
+
 def enforce_concurrent_cap(
     branch: str,
     repo: str,
@@ -341,19 +358,25 @@ def enforce_concurrent_cap(
 
     # Filter out protected workflows
     cancellable = [
-        r for r in runs
+        r
+        for r in runs
         if r.get("path", "").split("/")[-1] not in _PROTECTED_WORKFLOWS
         and r.get("name", "") not in _PROTECTED_WORKFLOWS
     ]
 
     if len(cancellable) <= max_concurrent:
-        logger.info("✅ In-progress runs on '%s': %d total, %d cancellable — within cap (%d)",
-                    branch, len(runs), len(cancellable), max_concurrent)
+        logger.info(
+            "✅ In-progress runs on '%s': %d total, %d cancellable — within cap (%d)",
+            branch,
+            len(runs),
+            len(cancellable),
+            max_concurrent,
+        )
         return 0
 
     # Sort oldest first (ascending run_number); cancel oldest excess
     cancellable.sort(key=lambda r: r.get("run_number", 0))
-    excess = cancellable[:len(cancellable) - max_concurrent]
+    excess = cancellable[: len(cancellable) - max_concurrent]
     cancelled = 0
 
     for run in excess:
@@ -364,12 +387,19 @@ def enforce_concurrent_cap(
             logger.info("[DRY-RUN] Would cancel run #%s '%s' (id=%s)", run_number, wf_name, run_id)
             cancelled += 1
             continue
-        cancel_status, _ = _gh_api_with_retry("POST", f"/repos/{repo}/actions/runs/{run_id}/cancel", tokens)
+        cancel_status, _ = _gh_api_with_retry(
+            "POST", f"/repos/{repo}/actions/runs/{run_id}/cancel", tokens
+        )
         if cancel_status in (202, 204, 422):
             logger.info("🛑 CAP: Cancelled run #%s '%s' (id=%s)", run_number, wf_name, run_id)
             cancelled += 1
         else:
-            logger.warning("⚠️  CAP: Failed to cancel run #%s '%s' — HTTP %d", run_number, wf_name, cancel_status)
+            logger.warning(
+                "⚠️  CAP: Failed to cancel run #%s '%s' — HTTP %d",
+                run_number,
+                wf_name,
+                cancel_status,
+            )
 
     return cancelled
 
@@ -409,7 +439,13 @@ def orchestrate(
     logger.info("Rate-limit status: %s", rate_status["overall_status"])
     for t in rate_status["tokens"]:
         if "remaining" in t:
-            logger.info("  Token[%d]: %d/%d remaining (%d%%)", t["token_index"], t["remaining"], t["limit"], t["pct"])
+            logger.info(
+                "  Token[%d]: %d/%d remaining (%d%%)",
+                t["token_index"],
+                t["remaining"],
+                t["limit"],
+                t["pct"],
+            )
 
     if rate_status["overall_status"] == "critical":
         logger.error("🚨 Rate-limit critical — aborting orchestration to preserve quota")
@@ -422,7 +458,9 @@ def orchestrate(
         total_cancelled_dedup += n
 
     # Step 3: Enforce concurrent cap
-    total_cancelled_cap = enforce_concurrent_cap(branch, repo, tokens, max_concurrent, dry_run=dry_run)
+    total_cancelled_cap = enforce_concurrent_cap(
+        branch, repo, tokens, max_concurrent, dry_run=dry_run
+    )
 
     result = {
         "status": "ok",
@@ -434,13 +472,16 @@ def orchestrate(
         "dry_run": dry_run,
         "rate_status": rate_status,
     }
-    logger.info("═══ Orchestration complete — cancelled %d run(s) total ═══", result["total_cancelled"])
+    logger.info(
+        "═══ Orchestration complete — cancelled %d run(s) total ═══", result["total_cancelled"]
+    )
     return result
 
 
 # ---------------------------------------------------------------------------
 # CLI entry point
 # ---------------------------------------------------------------------------
+
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(
@@ -449,15 +490,39 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         epilog=__doc__,
     )
     p.add_argument("--status", action="store_true", help="Print rate-limit status for all tokens")
-    p.add_argument("--deduplicate", action="store_true", help="Cancel duplicate in-progress runs for a workflow")
-    p.add_argument("--cap", action="store_true", help="Enforce max-concurrent cap across all workflows on a branch")
-    p.add_argument("--orchestrate", action="store_true", help="Run full orchestration (dedup + cap + status)")
-    p.add_argument("--workflow", default="", help="Workflow filename for --deduplicate (e.g. validate.yml)")
+    p.add_argument(
+        "--deduplicate",
+        action="store_true",
+        help="Cancel duplicate in-progress runs for a workflow",
+    )
+    p.add_argument(
+        "--cap",
+        action="store_true",
+        help="Enforce max-concurrent cap across all workflows on a branch",
+    )
+    p.add_argument(
+        "--orchestrate", action="store_true", help="Run full orchestration (dedup + cap + status)"
+    )
+    p.add_argument(
+        "--workflow", default="", help="Workflow filename for --deduplicate (e.g. validate.yml)"
+    )
     p.add_argument("--branch", default="", help="Branch name to scope operations")
     p.add_argument("--repo", default=os.environ.get("REPO", _DEFAULT_REPO), help="owner/repo")
-    p.add_argument("--max-concurrent", type=int, default=_DEFAULT_MAX_CONCURRENT, help="Max concurrent runs (--cap)")
-    p.add_argument("--keep-latest", action=argparse.BooleanOptionalAction, default=True, help="Keep newest run when deduplicating (use --no-keep-latest to cancel all)")
-    p.add_argument("--dry-run", action="store_true", help="Show what would be cancelled without doing it")
+    p.add_argument(
+        "--max-concurrent",
+        type=int,
+        default=_DEFAULT_MAX_CONCURRENT,
+        help="Max concurrent runs (--cap)",
+    )
+    p.add_argument(
+        "--keep-latest",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Keep newest run when deduplicating (use --no-keep-latest to cancel all)",
+    )
+    p.add_argument(
+        "--dry-run", action="store_true", help="Show what would be cancelled without doing it"
+    )
     p.add_argument("--json-output", metavar="FILE", default="", help="Write JSON result to FILE")
     return p.parse_args(argv)
 
@@ -490,30 +555,44 @@ def main(argv: list[str] | None = None) -> int:
             keep_latest=args.keep_latest,
             dry_run=args.dry_run,
         )
-        result = {"cancelled": n, "workflow": args.workflow, "branch": args.branch, "dry_run": args.dry_run}
+        result = {
+            "cancelled": n,
+            "workflow": args.workflow,
+            "branch": args.branch,
+            "dry_run": args.dry_run,
+        }
         print(json.dumps(result, indent=2))
 
     elif args.cap:
         if not args.branch:
             logger.error("--branch is required for --cap")
             return 1
-        n = enforce_concurrent_cap(args.branch, args.repo, tokens,
-                                   args.max_concurrent, dry_run=args.dry_run)
-        result = {"cancelled": n, "branch": args.branch, "max_concurrent": args.max_concurrent, "dry_run": args.dry_run}
+        n = enforce_concurrent_cap(
+            args.branch, args.repo, tokens, args.max_concurrent, dry_run=args.dry_run
+        )
+        result = {
+            "cancelled": n,
+            "branch": args.branch,
+            "max_concurrent": args.max_concurrent,
+            "dry_run": args.dry_run,
+        }
         print(json.dumps(result, indent=2))
 
     elif args.orchestrate:
         if not args.branch:
             logger.error("--branch is required for --orchestrate")
             return 1
-        result = orchestrate(args.branch, args.repo, tokens,
-                             args.max_concurrent, dry_run=args.dry_run)
+        result = orchestrate(
+            args.branch, args.repo, tokens, args.max_concurrent, dry_run=args.dry_run
+        )
         print(json.dumps(result, indent=2))
         if result.get("status") == "aborted":
             return 2
 
     else:
-        logger.error("No operation specified. Use --status, --deduplicate, --cap, or --orchestrate.")
+        logger.error(
+            "No operation specified. Use --status, --deduplicate, --cap, or --orchestrate."
+        )
         return 1
 
     if args.json_output:

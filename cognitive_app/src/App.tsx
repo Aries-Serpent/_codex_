@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Code, Brain, Atom, Database, Lightning, ChartLine, Play, BookOpen } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -16,20 +16,24 @@ import { DocumentationViewer } from '@/components/documentation';
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [generatedCode, setGeneratedCode] = useState<string>('print("Hello from Codex AI!")');
+  const particles = useMemo(
+    () => Array.from({ length: 20 }, (_, index) => ({
+      left: `${(index * 37) % 100}%`,
+      top: `${(index * 53) % 100}%`,
+      animationDelay: `${((index * 29) % 30) / 10}s`,
+    })),
+    [],
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="relative border-b border-border bg-gradient-to-r from-[oklch(0.45_0.18_295)] via-[oklch(0.50_0.20_280)] to-[oklch(0.75_0.15_195)] overflow-hidden">
         <div className="absolute inset-0 opacity-20">
-          {[...Array(20)].map((_, i) => (
+          {particles.map((particle, index) => (
             <div
-              key={i}
+              key={index}
               className="particle absolute w-1 h-1 bg-white rounded-full"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-              }}
+              style={particle}
             />
           ))}
         </div>
@@ -110,9 +114,6 @@ function App() {
               <InteractiveDemo
                 script={generatedCode || 'print("Hello from Codex AI!")'}
                 language="python"
-                onExecute={(result) => {
-                  console.log('Execution result:', result);
-                }}
               />
             </Card>
           </TabsContent>

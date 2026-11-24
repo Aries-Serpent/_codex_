@@ -42,8 +42,6 @@ import json
 import os
 import re
 import sys
-import urllib.error
-import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -51,6 +49,7 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from scripts.ci._token_resolver import get_token
+from scripts.ci.github_rate_limit import GitHubRateLimitError, credentials_for_token, request
 
 
 def _resolve_gh_token() -> str:
@@ -71,11 +70,13 @@ REPO = os.environ.get("GITHUB_REPOSITORY", "")
 GH_TOKEN = _resolve_gh_token()
 
 # Error codes / messages that indicate a weekly rate-limit (not per-minute)
-_RATE_LIMIT_CODES: frozenset[str] = frozenset({
-    "user_weekly_rate_limited",
-    "rate_limit_exceeded",
-    "ratelimited",
-})
+_RATE_LIMIT_CODES: frozenset[str] = frozenset(
+    {
+        "user_weekly_rate_limited",
+        "rate_limit_exceeded",
+        "ratelimited",
+    }
+)
 _RATE_LIMIT_PHRASES: tuple[str, ...] = (
     "weekly rate limit",
     "user_weekly_rate_limited",
@@ -96,15 +97,12 @@ KNOWN_BOT_COMMIT_SUBJECTS: tuple[str, ...] = (
 
 # ── Detection helpers ───────────────────────────────────────────────────────────
 
+
 def is_rate_limit_error(error_data: dict) -> bool:
     """Return True if *error_data* represents a weekly rate-limit response."""
     code = str(error_data.get("code", "")).lower()
     status = str(error_data.get("status", ""))
-    text = (
-        str(error_data.get("text", ""))
-        + " "
-        + str(error_data.get("message", ""))
-    ).lower()
+    text = (str(error_data.get("text", "")) + " " + str(error_data.get("message", ""))).lower()
     return (
         code in _RATE_LIMIT_CODES
         or status == "429"
@@ -136,6 +134,7 @@ def format_retry_time(reset_minutes: int | None) -> str:
 
 # ── Checkpoint I/O ─────────────────────────────────────────────────────────────
 
+
 def save_checkpoint(
     pr_number: int,
     error_data: dict,
@@ -153,15 +152,13 @@ def save_checkpoint(
         "session": session or f"rl-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M')}",
         "rate_limit": {
             "code": error_data.get("code", "unknown"),
-            "request_id": (
-                error_data.get("ghRequestId")
-                or error_data.get("request_id", "")
-            ),
+            "request_id": (error_data.get("ghRequestId") or error_data.get("request_id", "")),
             "reset_minutes": reset_minutes,
             "retry_after_utc": format_retry_time(reset_minutes),
             # Keep the raw payload so callers can extract extra fields
             "raw_error": {
-                k: v for k, v in error_data.items()
+                k: v
+                for k, v in error_data.items()
                 if k not in {"stack"}  # omit stack trace — too large
             },
         },
@@ -189,9 +186,13 @@ def save_checkpoint(
     # This is a best-effort call — failures are logged but do not affect the checkpoint.
     try:
         import subprocess as _sp  # noqa: PLC0415
+
         _cmd = [
-            sys.executable, "scripts/ci/rate_limit_cooldown.py", "hit429",
-            "--session", checkpoint["session"],
+            sys.executable,
+            "scripts/ci/rate_limit_cooldown.py",
+            "hit429",
+            "--session",
+            checkpoint["session"],
         ]
         if pr_number:
             _cmd += ["--pr", str(pr_number)]
@@ -234,22 +235,21 @@ def mark_checkpoint_resolved(session: str = "") -> None:
 
 # ── GitHub API ─────────────────────────────────────────────────────────────────
 
+
 def _gh_api(method: str, path: str, body: dict | None = None) -> tuple[int, object]:
-    url = f"https://api.github.com{path}"
-    headers = {
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-        "User-Agent": "codex-rate-limit-handler/1.1",
-    }
-    if GH_TOKEN:
-        headers["Authorization"] = f"Bearer {GH_TOKEN}"
-    data = json.dumps(body).encode() if body else None
-    req = urllib.request.Request(url, data=data, headers=headers, method=method)
+    if not GH_TOKEN:
+        return -1, {"error": "No GitHub credential available"}
     try:
-        with urllib.request.urlopen(req) as resp:
-            return resp.status, json.loads(resp.read())
-    except urllib.error.HTTPError as exc:
-        return exc.code, json.loads(exc.read() or b"{}")
+        response = request(
+            method,
+            f"https://api.github.com{path}",
+            credentials=credentials_for_token(GH_TOKEN),
+            body=body,
+            user_agent="codex-rate-limit-handler/1.2",
+        )
+        return response.status, response.payload
+    except GitHubRateLimitError:
+        return 429, {"message": "Rate-limit checkpoint credential is rate-limited"}
 
 
 def post_pr_comment(pr_number: int, checkpoint: dict) -> bool:
@@ -378,6 +378,7 @@ def post_pr_comment(pr_number: int, checkpoint: dict) -> bool:
 
 
 # ── CLI ────────────────────────────────────────────────────────────────────────
+
 
 def _parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(

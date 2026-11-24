@@ -61,22 +61,21 @@ def parse_command(args) -> int:
     try:
         file_path = Path(args.file)
         if not file_path.exists():
-            logger.error(f"Error: File not found: {file_path}")
+            logger.error("File not found: %s", file_path)
+            print(f"Error: File not found: {file_path}", file=sys.stderr)
             return 1
 
         adapter = get_adapter(args.language)
         root = adapter.parse_file(str(file_path))
 
-        # Convert AST to dictionary representation
         ast_dict = root.to_dict()
-
-        # Output as formatted JSON
         logger.info(json.dumps(ast_dict, indent=2))
+        print(json.dumps(ast_dict, indent=2))
         return 0
 
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
-        type(e).__name__
-        logger.error("Error parsing file: <ERROR_TYPE>")
+    except (IOError, OSError, ModuleNotFoundError, ImportError, SyntaxError, ValueError) as e:
+        logger.error("Error parsing file: %s: %s", type(e).__name__, e)
+        print(f"Error parsing file: {type(e).__name__}: {e}", file=sys.stderr)
         return 1
 
 
@@ -92,22 +91,21 @@ def stats_command(args) -> int:
     try:
         file_path = Path(args.file)
         if not file_path.exists():
-            logger.error(f"Error: File not found: {file_path}")
+            logger.error("File not found: %s", file_path)
+            print(f"Error: File not found: {file_path}", file=sys.stderr)
             return 1
 
         adapter = get_adapter(args.language)
         adapter.parse_file(str(file_path))
 
-        # Get statistics
         stats = adapter.get_stats()
-
-        # Output as formatted JSON
         logger.info(json.dumps(stats, indent=2))
+        print(json.dumps(stats, indent=2))
         return 0
 
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
-        type(e).__name__
-        logger.error("Error getting statistics: <ERROR_TYPE>")
+    except (IOError, OSError, ModuleNotFoundError, ImportError, SyntaxError, ValueError) as e:
+        logger.error("Error getting statistics: %s: %s", type(e).__name__, e)
+        print(f"Error getting statistics: {type(e).__name__}: {e}", file=sys.stderr)
         return 1
 
 
@@ -123,16 +121,15 @@ def query_command(args) -> int:
     try:
         file_path = Path(args.file)
         if not file_path.exists():
-            logger.error(f"Error: File not found: {file_path}")
+            logger.error("File not found: %s", file_path)
+            print(f"Error: File not found: {file_path}", file=sys.stderr)
             return 1
 
         adapter = get_adapter(args.language)
         adapter.parse_file(str(file_path))
 
-        # Query for nodes
         nodes = adapter.find_nodes_by_type(args.type)
 
-        # Build result list
         result = []
         for node in nodes:
             node_info = {
@@ -143,18 +140,17 @@ def query_command(args) -> int:
                 "column_start": node.column_start,
                 "column_end": node.column_end,
             }
-            # Add metadata if requested
             if args.metadata:
                 node_info["metadata"] = node.metadata
             result.append(node_info)
 
-        # Output as formatted JSON
         logger.info(json.dumps(result, indent=2))
+        print(json.dumps(result, indent=2))
         return 0
 
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
-        type(e).__name__
-        logger.error("Error querying nodes: <ERROR_TYPE>")
+    except (IOError, OSError, ModuleNotFoundError, ImportError, SyntaxError, ValueError) as e:
+        logger.error("Error querying nodes: %s: %s", type(e).__name__, e)
+        print(f"Error querying nodes: {type(e).__name__}: {e}", file=sys.stderr)
         return 1
 
 

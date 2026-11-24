@@ -26,7 +26,7 @@ const CodexResponseSchema = z.object({
 
 const StatusResponseSchema = z.object({
   healthy: z.boolean(),
-  metrics: z.record(z.number()),
+  metrics: z.record(z.string(), z.number()),
 });
 
 const SuperpositionScenarioSchema = z.object({

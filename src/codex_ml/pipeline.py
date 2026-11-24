@@ -79,10 +79,14 @@ def _resolve_tokenizer() -> TokenizerAdapter:
         logger.info("Using text backend: %s", tokenizer.__class__.__name__)
         return tokenizer
     except (
+        AttributeError,
         IOError,
         OSError,
         ModuleNotFoundError,
         ImportError,
+        RuntimeError,
+        ValueError,
+        TypeError,
     ) as exc:  # pragma: no cover - fallback path
         logger.warning("Falling back to whitespace backend: %s", type(exc).__name__)
         return WhitespaceTokenizer()
@@ -94,10 +98,14 @@ def _resolve_reward_model() -> RewardModel:
         logger.info("Using reward model: %s", model.__class__.__name__)
         return model
     except (
+        AttributeError,
         IOError,
         OSError,
         ModuleNotFoundError,
         ImportError,
+        RuntimeError,
+        ValueError,
+        TypeError,
     ) as exc:  # pragma: no cover - fallback path
         logger.warning("Falling back to HeuristicRewardModel: %s", exc)
         return HeuristicRewardModel()
@@ -109,10 +117,14 @@ def _resolve_rl_agent() -> RLAgent:
         logger.info("Using RL agent: %s", agent.__class__.__name__)
         return agent
     except (
+        AttributeError,
         IOError,
         OSError,
         ModuleNotFoundError,
         ImportError,
+        RuntimeError,
+        ValueError,
+        TypeError,
     ) as exc:  # pragma: no cover - fallback path
         logger.warning("Falling back to BanditRLAgent: %s", exc)
         return BanditRLAgent()

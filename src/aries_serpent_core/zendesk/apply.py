@@ -369,15 +369,6 @@ def _log_pending(resource: str, operations: PlanOperations, env: str) -> None:
     if not ops:
         LOGGER.info("No changes required for resource '%s'.", resource)
     try:
-        _metrics.emit_counter("zendesk_diff_operations", len(ops))
-    except (
-        ValueError,
-        TypeError,
-        RuntimeError,
-    ):  # pragma: no cover - metrics are best effort in offline runs
-        LOGGER.debug("Skipping metrics emission for resource '%s'.", resource)
-
-    try:
         metric = _metrics.get("zendesk_diff_operations")
         if metric is not None and hasattr(metric, "observe"):
             metric.observe(float(len(ops)))

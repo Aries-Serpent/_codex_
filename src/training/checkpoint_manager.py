@@ -315,7 +315,12 @@ class CheckpointManager:  # type: ignore[no-redef]
         """Return a ``TrainerCallback`` that uses this manager."""
         if not self.save_steps:
             raise RuntimeError("save_steps must be set to use callback()")
-        from transformers import TrainerCallback  # lazy import
+        try:
+            from transformers import TrainerCallback
+        except (ImportError, AttributeError):
+
+            class TrainerCallback:  # type: ignore[no-redef]
+                """Minimal callback base for lightweight/offline environments."""
 
         manager = self
         save_every = self.save_steps
@@ -344,8 +349,9 @@ class CheckpointManager:  # type: ignore[no-redef]
             def on_step_end(self, args, state, control, **kwargs) -> None:
                 step = state.global_step
                 # Keep explicit None handling because some legacy/test state shims
-                # initialize global_step lazily before first step.
-                if step is not None and save_every > 0 and step % save_every == 0:
+                # initialize global_step lazily before first step. Step 0 is the
+                # pre-training state, never a checkpoint boundary.
+                if step is not None and step > 0 and save_every > 0 and step % save_every == 0:
                     if self.model is None or self.optimizer is None:
                         raise RuntimeError(
                             "Checkpoint callback missing model/optimizer; on_train_begin not called"
@@ -392,6 +398,10 @@ class CheckpointManager:  # type: ignore[no-redef]
     def _update_best(self, path: Path, step: int, metrics: Optional[dict[str, float]]) -> None:
         if not self.metric or not metrics or self.metric not in metrics:
             return
+        if self.best_k <= 0:
+            self._best_records = []
+            self._best = None
+            return
         val = float(metrics[self.metric])
         better = False
         if self._best is None:
@@ -402,7 +412,25 @@ class CheckpointManager:  # type: ignore[no-redef]
             better = val > self._best
         if better:
             record = {"step": step, "value": val, "path": path.name}
-            existing = [r for r in self._best_records if r["path"] != path.name]
+            existing: list[dict[str, Any]] = []
+            for item in self._best_records:
+                if item.get("path") == path.name:
+                    continue
+                if not {"path", "value", "step"}.issubset(item):
+                    logger.warning(
+                        "Dropping invalid best-record entry missing required keys: %s", item
+                    )
+                    continue
+                try:
+                    clean_value = float(item["value"])
+                    clean_step = int(item["step"])
+                    clean_path = str(item["path"])
+                except (TypeError, ValueError, OverflowError):
+                    logger.warning(
+                        "Dropping invalid best-record entry with non-numeric fields: %s", item
+                    )
+                    continue
+                existing.append({"path": clean_path, "value": clean_value, "step": clean_step})
             existing.append(record)
 
             def keyfn(item: dict[str, Any]) -> tuple[float, int]:

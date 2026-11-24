@@ -19,7 +19,7 @@ class TestTrackTimeDecorator:
 
     def test_track_time_with_prometheus_installed(self):
         """Test track_time decorator records execution time when prometheus is available.
-        
+
         Targets: Lines in decorator wrapper when _HAS_PROM=True
         """
         from codex_ml.telemetry.metrics import track_time
@@ -44,7 +44,7 @@ class TestTrackTimeDecorator:
 
     def test_track_time_with_none_histogram(self):
         """Test track_time decorator handles None histogram gracefully.
-        
+
         Targets: Lines handling histogram=None case
         """
         from codex_ml.telemetry.metrics import track_time
@@ -58,7 +58,7 @@ class TestTrackTimeDecorator:
 
     def test_track_time_decorator_preserves_args_kwargs(self):
         """Test track_time decorator preserves function arguments and keyword arguments.
-        
+
         Targets: Lines handling *args, **kwargs in wrapper
         """
         from codex_ml.telemetry.metrics import track_time
@@ -75,7 +75,7 @@ class TestTrackTimeDecorator:
 
     def test_track_time_with_exception_still_records_time(self):
         """Test track_time decorator records time even if function raises exception.
-        
+
         Targets: Lines in finally block
         """
         from codex_ml.telemetry.metrics import track_time
@@ -94,7 +94,7 @@ class TestTrackTimeDecorator:
 
     def test_track_time_without_prometheus_dependency(self):
         """Test track_time decorator gracefully handles missing prometheus.
-        
+
         Targets: Lines handling _HAS_PROM=False branch
         """
         from codex_ml.telemetry.metrics import track_time
@@ -115,7 +115,7 @@ class TestMetricsServer:
     @patch("codex_ml.telemetry.server.start_http_server")
     def test_start_metrics_server_success(self, mock_start):
         """Test start_metrics_server returns True when server starts successfully.
-        
+
         Targets: Success path in start_metrics_server
         """
         from codex_ml.telemetry.server import start_metrics_server
@@ -130,7 +130,7 @@ class TestMetricsServer:
     @patch("codex_ml.telemetry.server.start_http_server")
     def test_start_metrics_server_oserror_handling(self, mock_start):
         """Test start_metrics_server returns False when OSError is raised.
-        
+
         Targets: OSError exception handling
         """
         from codex_ml.telemetry.server import start_metrics_server
@@ -144,7 +144,7 @@ class TestMetricsServer:
     @patch("codex_ml.telemetry.server._HAS_PROM", False)
     def test_start_metrics_server_no_prometheus(self):
         """Test start_metrics_server returns False when prometheus is not installed.
-        
+
         Targets: _HAS_PROM=False branch
         """
         from codex_ml.telemetry.server import start_metrics_server
@@ -156,7 +156,7 @@ class TestMetricsServer:
     @patch("codex_ml.telemetry.server.start_http_server")
     def test_start_metrics_server_default_parameters(self, mock_start):
         """Test start_metrics_server uses correct default parameters.
-        
+
         Targets: Default port and address
         """
         from codex_ml.telemetry.server import start_metrics_server
@@ -170,7 +170,7 @@ class TestMetricsServer:
     @patch("codex_ml.telemetry.server.start_http_server")
     def test_start_metrics_server_custom_parameters(self, mock_start):
         """Test start_metrics_server accepts custom port and address.
-        
+
         Targets: Custom parameter handling
         """
         from codex_ml.telemetry.server import start_metrics_server
@@ -186,29 +186,33 @@ class TestMetricsModuleExports:
 
     def test_telemetry_module_imports(self):
         """Test telemetry module exports are accessible.
-        
+
         Targets: __init__.py import statements
         """
         from codex_ml import telemetry
 
         # Verify all expected exports are available
-        assert hasattr(telemetry, 'track_time')
-        assert hasattr(telemetry, 'start_metrics_server')
-        assert hasattr(telemetry, '__all__')
+        assert hasattr(telemetry, "track_time")
+        assert hasattr(telemetry, "start_metrics_server")
+        assert hasattr(telemetry, "__all__")
 
         # Verify __all__ contains expected items
         expected_items = {
-            'track_time',
-            'start_metrics_server',
-            'EXAMPLES_PROCESSED',
-            'REQUEST_LATENCY',
-            'TRAIN_STEP_DURATION',
+            "track_time",
+            "start_metrics_server",
+            "EXAMPLES_PROCESSED",
+            "REQUEST_LATENCY",
+            "TRAIN_STEP_DURATION",
+            "HealthReport",
+            "HealthStatus",
+            "MetricsRegistry",
+            "render_prometheus",
         }
         assert set(telemetry.__all__) == expected_items, "Item must not be empty"
 
     def test_metrics_objects_are_none_when_prometheus_missing(self):
         """Test metrics objects are None when prometheus is not available.
-        
+
         Targets: Conditional metric object initialization
         """
         from codex_ml.telemetry import metrics as telemetry_metrics
@@ -221,16 +225,22 @@ class TestMetricsModuleExports:
 
     def test_metrics_objects_are_initialized_when_prometheus_available(self):
         """Test metrics objects are initialized when prometheus is available.
-        
+
         Targets: Metric objects initialization when prometheus is available
         """
         from codex_ml.telemetry import metrics as telemetry_metrics
 
         # Check if _HAS_PROM is True, then objects should not be None
         if telemetry_metrics._HAS_PROM:
-            assert telemetry_metrics.EXAMPLES_PROCESSED is not None, "EXAMPLES_PROCESSED must be initialized"
-            assert telemetry_metrics.REQUEST_LATENCY is not None, "REQUEST_LATENCY must be initialized"
-            assert telemetry_metrics.TRAIN_STEP_DURATION is not None, "TRAIN_STEP_DURATION must be initialized"
+            assert (
+                telemetry_metrics.EXAMPLES_PROCESSED is not None
+            ), "EXAMPLES_PROCESSED must be initialized"
+            assert (
+                telemetry_metrics.REQUEST_LATENCY is not None
+            ), "REQUEST_LATENCY must be initialized"
+            assert (
+                telemetry_metrics.TRAIN_STEP_DURATION is not None
+            ), "TRAIN_STEP_DURATION must be initialized"
 
 
 class TestDecoratorFunctionality:
@@ -238,7 +248,7 @@ class TestDecoratorFunctionality:
 
     def test_track_time_with_return_value(self):
         """Test track_time preserves return values of decorated functions.
-        
+
         Targets: Return value handling in decorator wrapper
         """
         from codex_ml.telemetry.metrics import track_time
@@ -254,7 +264,7 @@ class TestDecoratorFunctionality:
 
     def test_track_time_with_generator_function(self):
         """Test track_time with generator functions.
-        
+
         Targets: Generator function handling
         """
         from codex_ml.telemetry.metrics import track_time
@@ -269,11 +279,13 @@ class TestDecoratorFunctionality:
 
         gen = generator_function()
         # Note: timing is recorded when generator is created, not when exhausted
-        assert mock_histogram.observe.called or not mock_histogram.observe.called, "Condition must be true"
+        assert (
+            mock_histogram.observe.called or not mock_histogram.observe.called
+        ), "Condition must be true"
 
     def test_track_time_timing_accuracy(self):
         """Test track_time records timing with reasonable accuracy.
-        
+
         Targets: Timing precision in decorator
         """
         from codex_ml.telemetry.metrics import track_time

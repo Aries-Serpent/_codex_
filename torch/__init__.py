@@ -45,18 +45,46 @@ else:
     IS_CODEX_STUB = True
     __version__ = "stub"
 
+    def _infer_shape(value: Any) -> tuple[int, ...]:
+        if isinstance(value, Tensor):
+            return value.shape
+        if not isinstance(value, (list, tuple)):
+            return ()
+        if not value:
+            return (0,)
+        child_shape = _infer_shape(value[0])
+        if child_shape:
+            return (len(value), *child_shape)
+        return (len(value),)
+
+    def _flatten_values(value: Any) -> list[Any]:
+        if isinstance(value, Tensor):
+            value = value._value
+        if isinstance(value, (list, tuple)):
+            flattened: list[Any] = []
+            for item in value:
+                flattened.extend(_flatten_values(item))
+            return flattened
+        if value is None:
+            return []
+        return [value]
+
     class Tensor:
         """Minimal Tensor stand-in for type resolution and guardrails."""
 
-        shape: tuple[int, ...] = ()
         dtype: Any = "float32"
         device: str = "cpu"
-        ndim: int = 0
         requires_grad: bool = False
 
         def __init__(self, value: Any = None, *args: Any, **kwargs: Any) -> None:
             self._value = value
             self.grad = None
+            shape = kwargs.pop("shape", None)
+            if shape is not None:
+                self.shape = tuple(shape)
+            else:
+                self.shape = _infer_shape(value)
+            self.ndim = len(self.shape)
 
         def __repr__(self) -> str:
             return f"Tensor({self._value!r})"
@@ -69,6 +97,51 @@ else:
                 return iter(())
             return iter(self._value)
 
+        def __getitem__(self, key: Any) -> "Tensor":
+            if isinstance(key, Tensor):
+                values = _flatten_values(self)
+                mask = _flatten_values(key)
+                selected = [
+                    value for value, include in zip(values, mask, strict=False) if bool(include)
+                ]
+                return Tensor(selected, shape=(len(selected),))
+            if isinstance(key, tuple):
+                ellipsis_index = key.index(Ellipsis) if Ellipsis in key else None
+                if ellipsis_index is not None:
+                    trailing = key[ellipsis_index + 1 :]
+                    if trailing and isinstance(trailing[0], slice):
+                        stop = trailing[0].stop
+                        shape = list(self.shape)
+                        if stop is not None:
+                            shape[-1] = min(stop, shape[-1]) if shape else stop
+                        return Tensor(self._value, shape=tuple(shape))
+            return Tensor(self._value, shape=self.shape)
+
+        def __eq__(self, other: Any) -> "Tensor":
+            left = _flatten_values(self)
+            right = _flatten_values(other)
+            if len(right) == 1 and len(left) > 1:
+                right = right * len(left)
+            values = [
+                left_value == right_value
+                for left_value, right_value in zip(left, right, strict=False)
+            ]
+            return Tensor(values, shape=self.shape)
+
+        def __ne__(self, other: Any) -> "Tensor":
+            left = _flatten_values(self)
+            if isinstance(other, Tensor):
+                right = _flatten_values(other)
+            else:
+                right = [other]
+            if len(right) == 1 and len(left) > 1:
+                right = right * len(left)
+            values = [
+                left_value != right_value
+                for left_value, right_value in zip(left, right, strict=False)
+            ]
+            return Tensor(values, shape=self.shape)
+
         def to(self, *args: Any, **kwargs: Any) -> "Tensor":
             return self
 
@@ -80,11 +153,9 @@ else:
             self.device = "cpu"
             return self
 
-        @property
         def float(self) -> "Tensor":
             return self
 
-        @property
         def half(self) -> "Tensor":
             return self
 
@@ -98,7 +169,19 @@ else:
             return self
 
         def numpy(self) -> Any:
-            return self._value
+            if self._value is None:
+                try:
+                    import numpy as np
+
+                    return np.zeros(self.shape)
+                except (ImportError, AttributeError):
+                    return None
+            try:
+                import numpy as np
+
+                return np.asarray(self._value).reshape(self.shape)
+            except (ImportError, AttributeError, ValueError):
+                return self._value
 
         def item(self) -> Any:
             return self._value
@@ -123,7 +206,12 @@ else:
             return self.ndim
 
         def numel(self) -> int:
-            return 1 if self.shape == () else 1
+            if not self.shape:
+                return 1
+            size = 1
+            for dimension in self.shape:
+                size *= dimension
+            return size
 
         def view(self, *shape: Any) -> "Tensor":
             return self
@@ -153,7 +241,16 @@ else:
             return self
 
         def mean(self, *args: Any, **kwargs: Any) -> "Tensor":
-            return self
+            values = _flatten_values(self)
+            if not values:
+                return Tensor(0.0)
+            try:
+                return Tensor(sum(float(value) for value in values) / len(values))
+            except (TypeError, ValueError):
+                return Tensor(0.0)
+
+        def any(self, *args: Any, **kwargs: Any) -> "Tensor":
+            return Tensor(any(bool(value) for value in _flatten_values(self)))
 
         def var(self, *args: Any, **kwargs: Any) -> "Tensor":
             return self
@@ -199,11 +296,89 @@ else:
         def __exit__(self, exc_type: Any, exc: Any, tb: Any) -> None:
             return None
 
+    class _CudaStub:
+        def is_available(self) -> bool:
+            return False
+
+        def manual_seed_all(self, seed: Any) -> None:
+            return None
+
+        def device_count(self) -> int:
+            return 0
+
+    class _VersionStub:
+        cuda = None
+        hip = None
+
+    cuda = _CudaStub()
+    version = _VersionStub()
+
     def tensor(data: Any = None, *args: Any, **kwargs: Any) -> Tensor:
         return Tensor(data)
 
     def randn(*shape: Any, **kwargs: Any) -> Tensor:
-        return Tensor()
+        normalized_shape = shape[0] if len(shape) == 1 and isinstance(shape[0], tuple) else shape
+        normalized_shape = tuple(normalized_shape)
+        size = 1
+        for dimension in normalized_shape:
+            size *= dimension
+        return Tensor([1.0] * size, shape=normalized_shape)
+
+    def randint(low: int, high: int, shape: tuple[int, ...] | list[int], **kwargs: Any) -> Tensor:
+        normalized_shape = tuple(shape)
+        size = 1
+        for dimension in normalized_shape:
+            size *= dimension
+        values = [low] * size
+        if len(normalized_shape) == 1:
+            nested: Any = values
+        else:
+            nested = values
+            for dimension in reversed(normalized_shape[1:]):
+                nested = [
+                    nested[index : index + dimension] for index in range(0, len(nested), dimension)
+                ]
+        return Tensor(nested, shape=normalized_shape)
+
+    def argmax(value: Tensor, dim: int | None = None, **kwargs: Any) -> Tensor:
+        if dim is None:
+            return Tensor(0, shape=())
+        shape = list(value.shape)
+        if not shape:
+            return Tensor(0)
+        shape.pop(dim if dim >= 0 else dim + len(shape))
+        size = 1
+        for dimension in shape:
+            size *= dimension
+        return Tensor([0] * size, shape=tuple(shape))
+
+    def is_tensor(value: Any) -> bool:
+        return isinstance(value, Tensor)
+
+    def exp(value: Tensor) -> Tensor:
+        return Tensor(__import__("math").exp(float(value.item())))
+
+    def softmax(value: Tensor, dim: int | None = None, **kwargs: Any) -> Tensor:
+        if hasattr(value, "softmax"):
+            return value.softmax(dim=dim)
+        return Tensor(value, shape=getattr(value, "shape", ()))
+
+    class _Device:
+        def __init__(self, name: Any) -> None:
+            self.type = str(name)
+
+        def __repr__(self) -> str:
+            return f"device(type='{self.type}')"
+
+        def __str__(self) -> str:
+            return self.type
+
+        def __eq__(self, other: Any) -> bool:
+            if isinstance(other, _Device):
+                return self.type == other.type
+            return self.type == str(other)
+
+    device = _Device
 
     def manual_seed(seed: Any, *args: Any, **kwargs: Any) -> None:
         return None
@@ -215,10 +390,20 @@ else:
         return None
 
     def zeros(*shape: Any, **kwargs: Any) -> Tensor:
-        return Tensor()
+        normalized_shape = shape[0] if len(shape) == 1 and isinstance(shape[0], tuple) else shape
+        normalized_shape = tuple(normalized_shape)
+        size = 1
+        for dimension in normalized_shape:
+            size *= dimension
+        return Tensor([0.0] * size, shape=normalized_shape)
 
     def ones(*shape: Any, **kwargs: Any) -> Tensor:
-        return Tensor()
+        normalized_shape = shape[0] if len(shape) == 1 and isinstance(shape[0], tuple) else shape
+        normalized_shape = tuple(normalized_shape)
+        size = 1
+        for dimension in normalized_shape:
+            size *= dimension
+        return Tensor([1.0] * size, shape=normalized_shape)
 
     float32 = "float32"
     float16 = "float16"
@@ -227,6 +412,12 @@ else:
         "Tensor",
         "tensor",
         "randn",
+        "randint",
+        "argmax",
+        "exp",
+        "is_tensor",
+        "softmax",
+        "device",
         "manual_seed",
         "save",
         "load",
@@ -236,6 +427,8 @@ else:
         "float16",
         "bfloat16",
         "no_grad",
+        "cuda",
+        "version",
         "nn",
         "utils",
         "optim",
@@ -245,7 +438,7 @@ else:
     __path__ = [str(Path(__file__).resolve().parent)]
 
     def __getattr__(name: str) -> Any:
-        if name in {"nn", "utils", "optim", "distributed", "cuda"}:
+        if name in {"nn", "utils", "optim", "distributed"}:
             import importlib
 
             module = importlib.import_module(f".{name}", __name__)

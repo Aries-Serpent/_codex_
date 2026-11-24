@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-11-19T08:09:42Z",
+  "generated_at": "2026-11-24T10:33:33Z",
   "agents": [
     {
       "name": "cdx-archive-lifecycle",
@@ -831,6 +831,11 @@
       "has_concurrency": true
     },
     {
+      "name": "copilot-session-chain",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "copilot-setup-steps",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -1386,5 +1391,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "d6ade9f1d39aad748e58489135d7165e0dfe1fbe5dad095e3d35f76177a3785d"
+  "integrity_sha256": "89a542e2163362d1eb0cb443dedcac937581e38ef8ab54d971179cd9b9645ad9"
 }

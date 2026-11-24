@@ -17,6 +17,7 @@ Author: Codex Team
 
 from __future__ import annotations
 
+import inspect
 import logging
 
 logger = logging.getLogger(__name__)
@@ -285,8 +286,29 @@ def _call_tokenizer(
     if return_tensors is not None:
         kwargs["return_tensors"] = return_tensors
     kwargs.setdefault("return_attention_mask", True)
+
     try:
-        encoding = tokenizer(text, **kwargs)
+        signature = inspect.signature(tokenizer)
+        accepts_var_kwargs = any(
+            parameter.kind == inspect.Parameter.VAR_KEYWORD
+            for parameter in signature.parameters.values()
+        )
+        accepted_kwargs = {
+            name
+            for name, parameter in signature.parameters.items()
+            if parameter.kind
+            in (inspect.Parameter.POSITIONAL_OR_KEYWORD, inspect.Parameter.KEYWORD_ONLY)
+        }
+        compatible_kwargs = (
+            dict(kwargs)
+            if accepts_var_kwargs
+            else {name: value for name, value in kwargs.items() if name in accepted_kwargs}
+        )
+    except (TypeError, ValueError):
+        compatible_kwargs = dict(kwargs)
+
+    try:
+        encoding = tokenizer(text, **compatible_kwargs)
     except TypeError as e:
         type(e).__name__
         logger.debug("TypeError: <ERROR_TYPE>")

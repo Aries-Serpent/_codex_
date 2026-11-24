@@ -36,6 +36,18 @@ class Module:
     def to(self, *args: Any, **kwargs: Any) -> "Module":
         return self
 
+    def named_modules(self, *args: Any, **kwargs: Any) -> list[tuple[str, "Module"]]:
+        return [("", self)]
+
+    def register_forward_hook(self, hook: Any) -> Any:
+        return lambda: None
+
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        forward = getattr(self, "forward", None)
+        if callable(forward):
+            return forward(*args, **kwargs)
+        return None
+
 
 class Parameter(Tensor):
     def __init__(self, *args: Any, **kwargs: Any) -> None:

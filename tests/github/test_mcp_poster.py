@@ -1486,10 +1486,8 @@ class TestCheckTokenHealth:
         monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
         result = poster.check_token_health()
         assert result["healthy"] is False, "Result must not be empty"
-        assert (
-            "expired" in str(result["expiry_warning"]).lower(),
-            "Result must not be empty" or "invalid" in str(result["expiry_warning"]).lower(),
-        )
+        warning = str(result["expiry_warning"]).lower()
+        assert "expired" in warning or "invalid" in warning
 
     def test_healthy_token_with_full_scopes(self, monkeypatch):
         """200 response with repo+workflow scopes → healthy=True."""
@@ -1573,10 +1571,40 @@ class TestCheckTokenHealth:
 # Operation-family compatibility contracts
 # ---------------------------------------------------------------------------
 
+
+def test_assign_issue_to_copilot_alias_builds_agent_assignment_payload(monkeypatch):
+    from aries_serpent_core.github import mcp_poster as poster_module
+
+    poster = poster_module.GitHubMCPPoster()
+    captured: dict[str, object] = {}
+
+    def fake_request(method, url, payload=None):
+        captured.update(method=method, url=url, payload=payload)
+        return {"state": "assigned"}
+
+    monkeypatch.setattr(poster._api, "_request", fake_request)
+
+    result = poster.assign_issue_to_copilot(
+        "Aries-Serpent/_codex_",
+        5810,
+        prompt="Fix remaining issue",
+        custom_agent="ci-failure-resolution-agent",
+        model="claude-sonnet-4.6",
+        launch_key="a" * 40,
+    )
+
+    assert result["state"] == "assigned"
+    assert captured["method"] == "POST"
+    assert captured["payload"]["assignees"]
+    assert captured["payload"]["agent_assignment"]["issue_number"] == 5810
+    assert captured["payload"]["agent_assignment"]["custom_agent"] == "ci-failure-resolution-agent"
+
+
 _POSTER_METHODS = (
     "__init__ __setattr__ _token check_token_health "
     "post_pr_comment post_pr_comment_from_file create_ref create_pull_request "
-    "list_pull_requests merge_branch commit_files create_discussion "
+    "list_pull_requests merge_branch commit_files create_agent_task "
+    "list_agent_tasks get_agent_task continue_agent_task cancel_agent_task assign_agent_task assign_issue_to_copilot create_discussion "
     "post_session_summary_discussion find_or_create_pr_discussion update_discussion "
     "lock_discussion unlock_discussion delete_discussion list_discussions get_discussion "
     "pin_discussion unpin_discussion list_discussion_categories _resolve_discussion_node_id "

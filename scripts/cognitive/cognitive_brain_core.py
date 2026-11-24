@@ -7,6 +7,7 @@ S898 enhancements:
 - MemoryLayer: SQLite-backed LTM (Long-Term Memory) persistence
 - ActionExecutor: GitHub workflow-dispatch targets
 """
+
 import json
 import logging
 import os
@@ -39,11 +40,7 @@ class CognitiveBrain:
         self.aftermath = AfterMathEvaluator(self.workspace / "aftermath")
 
         self.cycle_count = 0
-        self.state = {
-            "status": "initialized",
-            "last_cycle": None,
-            "total_cycles": 0
-        }
+        self.state = {"status": "initialized", "last_cycle": None, "total_cycles": 0}
 
     def run_pda_cycle(self) -> dict[str, Any]:
         """
@@ -61,7 +58,7 @@ class CognitiveBrain:
         results: dict[str, Any] = {
             "cycle_number": self.cycle_count,
             "started_at": cycle_start.isoformat(),
-            "stages": {}
+            "stages": {},
         }
 
         try:
@@ -97,7 +94,7 @@ class CognitiveBrain:
                 "status": "success",
                 "decisions_made": len(decisions.get("tasks", [])),
                 "agents_allocated": decisions.get("agents_allocated", []),
-                "confidence": decisions.get("avg_confidence", 0)
+                "confidence": decisions.get("avg_confidence", 0),
             }
             print(f"✅ Decision complete: {results['stages']['decision']}")
 
@@ -109,7 +106,7 @@ class CognitiveBrain:
                 "status": "success",
                 "tasks_executed": action_results.get("tasks_completed", 0),
                 "success_rate": action_results.get("success_rate", 0),
-                "failures": action_results.get("failures", [])
+                "failures": action_results.get("failures", []),
             }
             print(f"✅ Action complete: {results['stages']['action']}")
 
@@ -117,15 +114,13 @@ class CognitiveBrain:
             print("\n🔄 STAGE 4: AFTERMATH")
             print("-" * 60)
             learnings = self.aftermath.evaluate_and_learn(
-                perception_data,
-                decisions,
-                action_results
+                perception_data, decisions, action_results
             )
             results["stages"]["aftermath"] = {
                 "status": "success",
                 "learnings_extracted": learnings.get("learnings_count", 0),
                 "models_updated": learnings.get("models_updated", []),
-                "improvement_rate": learnings.get("improvement_rate", 0)
+                "improvement_rate": learnings.get("improvement_rate", 0),
             }
             print(f"✅ AfterMath complete: {results['stages']['aftermath']}")
 
@@ -199,7 +194,7 @@ class PerceptionLayer:
             default=None,
         )
         disk_free_gb = with_fallback(
-            lambda: psutil.disk_usage("/").free / (1024 ** 3) if psutil else None,
+            lambda: psutil.disk_usage("/").free / (1024**3) if psutil else None,
             default=None,
         )
         disk_usage_percent = with_fallback(
@@ -226,7 +221,8 @@ class PerceptionLayer:
         ci_failure_count = self._read_ci_failure_count()
 
         sensors_active = [
-            name for name, val in [
+            name
+            for name, val in [
                 ("cpu_percent", system_load),
                 ("memory_available_mb", memory_available_mb),
                 ("disk_free_gb", disk_free_gb),
@@ -237,7 +233,8 @@ class PerceptionLayer:
                 ("process_count", process_count),
                 ("python_version", python_version),
                 ("ci_failure_count", ci_failure_count),
-            ] if val is not None
+            ]
+            if val is not None
         ]
 
         return {
@@ -320,9 +317,7 @@ class MemoryLayer:
                 conn.execute(self._DDL)
                 conn.commit()
         except Exception as e:  # noqa: BLE001
-            logger.warning(
-                "LTM database initialization failed, running in degraded mode: %s", e
-            )
+            logger.warning("LTM database initialization failed, running in degraded mode: %s", e)
 
     def store_perception(self, perception_data: dict[str, Any], cycle: int) -> bool:
         """
@@ -357,10 +352,7 @@ class MemoryLayer:
                     f" ORDER BY id DESC LIMIT ?",
                     (limit,),
                 ).fetchall()
-            return [
-                {"cycle": r[0], "timestamp": r[1], **json.loads(r[2])}
-                for r in rows
-            ]
+            return [{"cycle": r[0], "timestamp": r[1], **json.loads(r[2])} for r in rows]
         except Exception:  # noqa: BLE001
             return []
 
@@ -457,11 +449,11 @@ class DecisionEngine:
         return {
             "tasks": [
                 {"agent": 1, "task": "pattern_analysis"},
-                {"agent": 2, "task": "performance_monitoring"}
+                {"agent": 2, "task": "performance_monitoring"},
             ],
             "agents_allocated": [1, 2],
             "avg_confidence": 0.85,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
 
@@ -480,13 +472,19 @@ class ActionExecutor:
 
     # Supported dispatch target types
     DISPATCH_TARGETS: tuple[str, ...] = (
-        "internal",          # in-process agent task (default)
+        "internal",  # in-process agent task (default)
         "workflow_dispatch",  # GitHub Actions workflow_dispatch event
-        "post_comment",      # GitHub PR comment via REST API
-        "approve_run",       # GitHub Actions run approval via REST API
+        "post_comment",  # GitHub PR comment via REST API
+        "approve_run",  # GitHub Actions run approval via REST API
         "rerun_failed_jobs",  # GitHub Actions re-run failed jobs
-        "cancel_run",        # GitHub Actions cancel run
+        "cancel_run",  # GitHub Actions cancel run
         "set_repo_variable",  # Repository variable mutation
+        "create_agent_task",  # GitHub Copilot Agent Task creation
+        "list_agent_tasks",  # GitHub Copilot Agent Task listing
+        "get_agent_task",  # GitHub Copilot Agent Task lookup
+        "continue_agent_task",  # Continue an existing Agent Task
+        "cancel_agent_task",  # Cancel an existing Agent Task
+        "assign_agent_task",  # Assign an Agent Task to a custom agent
     )
 
     def __init__(self, workspace: Path):
@@ -513,7 +511,9 @@ class ActionExecutor:
                     completed += 1
                 else:
                     failures.append(task)
-            except Exception as exc:  # noqa: BLE001  # broad catch intentional: individual task failures must not abort the full execution loop
+            except (
+                Exception
+            ) as exc:  # noqa: BLE001  # broad catch intentional: individual task failures must not abort the full execution loop
                 failures.append({"task": task, "error": str(exc)})
 
         success_rate = completed / len(tasks) if tasks else 1.0
@@ -545,20 +545,129 @@ class ActionExecutor:
         target = task.get("target", "internal")
 
         if target == "workflow_dispatch":
-            # Real implementation: POST /repos/{owner}/{repo}/actions/workflows/{id}/dispatches
-            # Requires CODEX_MASTER_KEY (repo + workflow scopes).
-            # Stub: always succeeds in test/offline mode.
-            return True
+            payload = task.get("payload") or {}
+            if payload.get("execute") is not True:
+                return True
+            if os.environ.get("AGENT_KILL_SWITCH", "0") == "1":
+                return False
+            repo = str(
+                payload.get("repo")
+                or os.environ.get("GITHUB_REPOSITORY")
+                or "Aries-Serpent/_codex_"
+            )
+            workflow_id = str(payload.get("workflow_id") or payload.get("workflow") or "")
+            ref = str(payload.get("ref") or "0D_base_")
+            if not workflow_id:
+                return False
+            import json
+            import urllib.request
+
+            token = (
+                os.environ.get("COPILOT_AGENT_TASK_TOKEN")
+                or os.environ.get("CODEX_MASTER_KEY")
+                or os.environ.get("GITHUB_TOKEN")
+            )
+            if not token:
+                return False
+            body = json.dumps({"ref": ref, "inputs": payload.get("inputs") or {}}).encode("utf-8")
+            request = urllib.request.Request(
+                f"https://api.github.com/repos/{repo}/actions/workflows/{workflow_id}/dispatches",
+                data=body,
+                method="POST",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Accept": "application/vnd.github+json",
+                    "X-GitHub-Api-Version": "2026-03-10",
+                    "Content-Type": "application/json",
+                },
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=30) as response:
+                    return response.status in {200, 204}
+            except Exception:
+                return False
 
         if target == "post_comment":
-            # Real implementation: POST /repos/{owner}/{repo}/issues/{number}/comments
-            # Stub: always succeeds in test/offline mode.
-            return True
+            payload = task.get("payload") or {}
+            if payload.get("execute") is not True:
+                return True
+            if os.environ.get("AGENT_KILL_SWITCH", "0") == "1":
+                return False
+            repo = str(
+                payload.get("repo")
+                or os.environ.get("GITHUB_REPOSITORY")
+                or "Aries-Serpent/_codex_"
+            )
+            pr_number = payload.get("pr_number")
+            body = str(payload.get("body") or "")
+            if not pr_number or not body:
+                return False
+            import json
+            import urllib.request
+
+            token = (
+                os.environ.get("COPILOT_AGENT_TASK_TOKEN")
+                or os.environ.get("CODEX_MASTER_KEY")
+                or os.environ.get("GITHUB_TOKEN")
+            )
+            if not token:
+                return False
+            request = urllib.request.Request(
+                f"https://api.github.com/repos/{repo}/issues/{int(pr_number)}/comments",
+                data=json.dumps({"body": body}).encode("utf-8"),
+                method="POST",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Accept": "application/vnd.github+json",
+                    "X-GitHub-Api-Version": "2026-03-10",
+                    "Content-Type": "application/json",
+                },
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=30) as response:
+                    return response.status in {200, 201}
+            except Exception:
+                return False
 
         if target == "approve_run":
-            # Real implementation: POST /repos/{owner}/{repo}/actions/runs/{id}/approve
-            # Stub: always succeeds in test/offline mode.
-            return True
+            payload = task.get("payload") or {}
+            if payload.get("execute") is not True:
+                return True
+            if os.environ.get("AGENT_KILL_SWITCH", "0") == "1":
+                return False
+            repo = str(
+                payload.get("repo")
+                or os.environ.get("GITHUB_REPOSITORY")
+                or "Aries-Serpent/_codex_"
+            )
+            run_id = payload.get("run_id")
+            if not run_id:
+                return False
+            import urllib.request
+
+            token = (
+                os.environ.get("COPILOT_AGENT_TASK_TOKEN")
+                or os.environ.get("CODEX_MASTER_KEY")
+                or os.environ.get("GITHUB_TOKEN")
+            )
+            if not token:
+                return False
+            request = urllib.request.Request(
+                f"https://api.github.com/repos/{repo}/actions/runs/{int(run_id)}/approve",
+                data=b"{}",
+                method="POST",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Accept": "application/vnd.github+json",
+                    "X-GitHub-Api-Version": "2026-03-10",
+                    "Content-Type": "application/json",
+                },
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=30) as response:
+                    return response.status in {200, 201, 202, 204}
+            except Exception:
+                return False
 
         if target == "rerun_failed_jobs":
             payload = task.get("payload") or {}
@@ -569,8 +678,80 @@ class ActionExecutor:
             return bool(payload.get("run_id"))
 
         if target == "set_repo_variable":
+            # Repository variables are intentionally out of the autonomous mutation contract.
+            return False
+
+        if target == "create_agent_task":
             payload = task.get("payload") or {}
-            return bool(payload.get("name")) and "value" in payload
+            if not (
+                payload.get("title") or payload.get("prompt") or payload.get("problem_statement")
+            ):
+                return False
+            if payload.get("execute") is True:
+                from scripts.ci.copilot_agent_task import create_agent_task
+
+                return bool(create_agent_task(**payload).get("ok"))
+            payload = dict(payload)
+            payload["dry_run"] = True
+            from scripts.ci.copilot_agent_task import create_agent_task
+
+            return bool(create_agent_task(**payload).get("ok"))
+
+        if target == "list_agent_tasks":
+            payload = task.get("payload") or {}
+            if not payload.get("repo"):
+                return False
+            if payload.get("execute") is True:
+                from scripts.ci.copilot_agent_task import list_agent_tasks
+
+                return bool(list_agent_tasks(**payload).get("ok"))
+            return True
+
+        if target == "get_agent_task":
+            payload = task.get("payload") or {}
+            if not (payload.get("repo") and payload.get("task_id")):
+                return False
+            if payload.get("execute") is True:
+                from scripts.ci.copilot_agent_task import get_agent_task
+
+                return bool(get_agent_task(payload["task_id"], **payload).get("ok"))
+            return True
+
+        if target == "continue_agent_task":
+            payload = task.get("payload") or {}
+            if not (payload.get("repo") and payload.get("task_id") and payload.get("prompt")):
+                return False
+            if payload.get("execute") is True:
+                from scripts.ci.copilot_agent_task import continue_agent_task
+
+                return bool(continue_agent_task(payload["task_id"], **payload).get("ok"))
+            payload = dict(payload)
+            payload["dry_run"] = True
+            from scripts.ci.copilot_agent_task import continue_agent_task
+
+            return bool(continue_agent_task(payload["task_id"], **payload).get("ok"))
+
+        if target == "cancel_agent_task":
+            payload = task.get("payload") or {}
+            if not (payload.get("repo") and payload.get("task_id")):
+                return False
+            if payload.get("execute") is True:
+                from scripts.ci.copilot_agent_task import cancel_agent_task
+
+                return bool(cancel_agent_task(payload["task_id"], **payload).get("ok"))
+            payload = dict(payload)
+            payload["dry_run"] = True
+            from scripts.ci.copilot_agent_task import cancel_agent_task
+
+            return bool(cancel_agent_task(payload["task_id"], **payload).get("ok"))
+
+        if target in {"assign_agent_task", "assign_issue_to_copilot"}:
+            payload = task.get("payload") or {}
+            return bool(
+                payload.get("repo")
+                and payload.get("task_id")
+                and (payload.get("agent") or payload.get("assignee"))
+            )
 
         # Default: internal in-process dispatch
         return True
@@ -587,7 +768,7 @@ class AfterMathEvaluator:
         self,
         perception_data: dict[str, Any],
         decisions: dict[str, Any],
-        action_results: dict[str, Any]
+        action_results: dict[str, Any],
     ) -> dict[str, Any]:
         """Evaluate outcomes and extract learnings."""
         print("Evaluating outcomes and extracting learnings...")
@@ -597,7 +778,7 @@ class AfterMathEvaluator:
             "learnings_count": 3,
             "models_updated": ["R1", "R10"],
             "improvement_rate": 0.05,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
 
@@ -608,7 +789,7 @@ def main():
 
     # Save results
     results_file = Path("cognitive/cycle_results.json")
-    with open(results_file, 'w') as f:
+    with open(results_file, "w") as f:
         json.dump(results, f, indent=2)
 
     print(f"\n📊 Results saved to: {results_file}")

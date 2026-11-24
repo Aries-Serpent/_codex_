@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 import ast  # noqa: E402
 import hashlib  # noqa: E402
+import textwrap  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
@@ -106,6 +107,7 @@ class UniversalParser:
             Root StandardizedASTNode or None on failure
         """
         file_path = file_path or Path("<string>")
+        code = textwrap.dedent(code)
 
         if self.use_libcst:
             return self._parse_with_libcst(code, file_path)
@@ -137,6 +139,11 @@ class UniversalParser:
                 root.add_child(child)
 
             return root
+
+        except cst.ParserSyntaxError as e:
+            if self.strict:
+                raise ParseError(str(e), file_path) from e
+            return self._parse_with_ast(code, file_path)
 
         except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__

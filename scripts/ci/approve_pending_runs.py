@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Approve only independently requested, labelled, current PR workflow runs.
+"""Approve only AI-reviewed, labelled, current PR workflow runs.
 
 Mirrors the post_rescue_comment.py pattern — uses the Cognitive Brain GitHub
 App installation token (primary) or CODEX_MASTER_KEY PAT (fallback) to call
@@ -58,13 +58,39 @@ import json
 import os
 import sys
 import time
-import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+try:
+    from scripts.ci._token_resolver import (
+        resolve_app_id,
+        resolve_app_installation_id,
+        resolve_app_private_key,
+    )
+    from scripts.ci.github_rate_limit import (
+        Credential,
+        GitHubInvalidResponseError,
+        GitHubRateLimitError,
+        request,
+        source_for_token,
+    )
+except ImportError:
+    from _token_resolver import (  # type: ignore[no-redef]
+        resolve_app_id,
+        resolve_app_installation_id,
+        resolve_app_private_key,
+    )
+    from github_rate_limit import (  # type: ignore[no-redef]
+        Credential,
+        GitHubInvalidResponseError,
+        GitHubRateLimitError,
+        request,
+        source_for_token,
+    )
 
 if __package__ or __name__ != "__main__":
     from scripts.ci import require_wec_auto_approve as package_gate
@@ -80,6 +106,13 @@ else:
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 COPILOT_BOT_LOGINS = {"Copilot", "github-copilot[bot]", "copilot-swe-agent[bot]"}
+AI_REVIEWER_BOT_LOGINS = {
+    "cognitive-brain[bot]",
+    "codex-reviewer[bot]",
+    "copilot-pull-request-reviewer",
+    "copilot-pull-request-reviewer[bot]",
+    "github-copilot[bot]",
+}
 
 
 @dataclass(frozen=True)
@@ -103,11 +136,6 @@ def _verified_identity(token: str) -> dict[str, Any] | None:
     return None
 
 
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, req, fp, code, msg, headers, newurl):
-        return None
-
-
 def _gh(
     method: str,
     path: str,
@@ -123,33 +151,22 @@ def _gh(
         or any(char in path for char in ("\r", "\n", "\0", "\\"))
     ):
         raise ValueError("invalid GitHub API path")
-    url = f"https://api.github.com{path}"
-    data = json.dumps(body).encode() if body else None
-    headers = {
-        "Authorization": "Bearer " + token,
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-        "Content-Type": "application/json",
-        "User-Agent": "codex-approve-pending-runs/1.0",
-    }
-    req = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
-        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
-        with opener.open(req, timeout=timeout) as resp:
-            body_bytes = resp.read(1024 * 1024 + 1)
-            if len(body_bytes) > 1024 * 1024:
-                return 502, {"error": "GitHub API response exceeds size limit"}
-            try:
-                parsed = json.loads(body_bytes) if body_bytes.strip() else {}
-            except json.JSONDecodeError:
-                return 502, {"error": "Invalid JSON from GitHub API"}
-            return resp.status, parsed
-    except urllib.error.HTTPError as exc:
-        try:
-            err_body = json.loads(exc.read())
-        except Exception:
-            err_body = {"message": str(exc)}
-        return exc.code, err_body
+        response = request(
+            method,
+            f"https://api.github.com{path}",
+            credentials=[Credential(source_for_token(token, "ephemeral-github-token"), token)],
+            body=body,
+            timeout=timeout,
+            user_agent="codex-approve-pending-runs/1.1",
+        )
+        return response.status, response.payload
+    except GitHubRateLimitError:
+        return 429, {"message": "GitHub API credential is rate-limited"}
+    except GitHubInvalidResponseError as exc:
+        if "size limit" in str(exc):
+            return 502, {"error": "GitHub API response exceeds size limit"}
+        return 502, {"error": "Invalid JSON from GitHub API"}
 
 
 class AppTokenRevocationError(RuntimeError):
@@ -305,14 +322,9 @@ def _resolve_token() -> tuple[str, str]:
     """Return (token, source_label) using the priority chain:
     CB App → CODEX_MASTER_KEY → CODEX_BACKUP_KEY → GH_TOKEN.
     """
-    app_key = (
-        os.environ.get("GITHUB_APP_PRIVATE_KEY") or os.environ.get("_GITHUB_APP_PRIVATE_KEY", "")
-    ).strip()
-    app_id = (os.environ.get("GITHUB_APP_ID") or os.environ.get("_GITHUB_APP_ID", "")).strip()
-    inst_id = (
-        os.environ.get("GITHUB_APP_INSTALLATION_ID")
-        or os.environ.get("_GITHUB_APP_INSTALLATION_ID", "")
-    ).strip()
+    app_key, _ = resolve_app_private_key()
+    app_id, _ = resolve_app_id()
+    inst_id, _ = resolve_app_installation_id()
 
     if app_key and app_id and inst_id:
         print(
@@ -643,7 +655,7 @@ def _cleanup_copilot_eyes_reactions(
 def _authorize_run(
     token: str, repo: str, pr_number: str, head_sha: str, run: dict[str, Any]
 ) -> str:
-    """Revalidate independently attributed maintainer approval at the current SHA."""
+    """Revalidate owner delegation and approved AI review at the current SHA."""
     identity = _verified_identity(token)
     if identity is None:
         return "unknown-approver-identity"
@@ -692,7 +704,7 @@ def _authorize_run(
         return "self-approval"
     if not _has_wec_auto_approve_label(token, repo, pr_number):
         return "missing-or-expired-label"
-    # A label expresses opt-in, not independent review of the current commit.
+    # A label expresses the sole owner's D-tier opt-in, not an exact-SHA AI review.
     reviews: dict[str, dict[str, Any]] = {}
     for page in range(1, 11):
         status, batch = _gh(
@@ -719,8 +731,8 @@ def _authorize_run(
             )
             or (
                 identity["type"] == "Bot"
-                and reviewer == approver
                 and (review.get("user") or {}).get("type") == "Bot"
+                and (reviewer == approver or reviewer in AI_REVIEWER_BOT_LOGINS)
             )
         )
         and review.get("state") == "APPROVED"

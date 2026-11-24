@@ -62,6 +62,7 @@ import argparse
 import logging
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from collections.abc import Callable
 from pathlib import Path
@@ -164,6 +165,275 @@ class _RepositoryOperations:
     ) -> str:
         """Commit files via Git Data API. See GitOperations.commit_files()."""
         return self._git.commit_files(repo, branch, files, message, force)
+
+
+class _AgentTaskOperations:
+    """GitHub Copilot Agent Task lifecycle operations.
+
+    Agent Tasks are exposed through the repository's GraphQL agentAssignment
+    API for creation and through a small repository-scoped task endpoint for
+    lifecycle operations.  Methods remain ordinary delegating facades so
+    transport behavior is injectable and testable.
+    """
+
+    _api: APIClient
+
+    @staticmethod
+    def _agent_task_repo_parts(repo: str) -> tuple[str, str]:
+        parts = repo.strip().split("/", 1)
+        if len(parts) != 2 or not all(parts):
+            raise ValueError("repo must use owner/name format")
+        return parts[0], parts[1]
+
+    @_poster_method
+    def create_agent_task(
+        self,
+        repo: str,
+        title: str = "",
+        description: str = "",
+        instructions: str = "",
+        files: list[str] | None = None,
+        branch: str | None = None,
+        *,
+        prompt: str | None = None,
+        problem_statement: str | None = None,
+        base: str | None = None,
+        base_branch: str | None = None,
+        base_ref: str | None = None,
+        head_ref: str | None = None,
+        head_branch: str | None = None,
+        launch_key: str | None = None,
+        issue_number: int | None = None,
+        assignees: list[str] | str | None = None,
+        custom_agent: str | None = None,
+        model: str | None = None,
+        custom_instructions: str | None = None,
+    ) -> dict[str, Any]:
+        """Create a GitHub Copilot Agent Task in a repository."""
+        self._api._require_token()
+        owner, name = self._agent_task_repo_parts(repo)
+        prompt_value = str(prompt or problem_statement or title or description or "").strip()
+        if not prompt_value:
+            raise ValueError("Agent Task prompt or title is required")
+
+        payload: dict[str, Any] = {"prompt": prompt_value}
+        base_value = str(base_ref or base_branch or base or "").strip()
+        head_value = str(head_ref or head_branch or branch or "").strip()
+        if base_value:
+            payload["base_ref" if base_ref else "base_branch"] = base_value
+        if head_value:
+            payload["head_ref" if head_ref else "head_branch"] = head_value
+        if instructions:
+            payload["custom_instructions"] = instructions
+        if custom_instructions:
+            payload["custom_instructions"] = custom_instructions
+        if launch_key:
+            payload["launch_key"] = launch_key
+        if issue_number is not None:
+            payload["issue_number"] = issue_number
+        if assignees:
+            if isinstance(assignees, str):
+                assignee_values = [value.strip() for value in assignees.split(",") if value.strip()]
+            else:
+                assignee_values = [str(value).strip() for value in assignees if str(value).strip()]
+            if assignee_values:
+                payload["assignees"] = list(
+                    dict.fromkeys(value.lstrip("@") for value in assignee_values)
+                )
+        if custom_agent:
+            payload["custom_agent"] = custom_agent
+        if model:
+            payload["model"] = model
+        if files:
+            payload["files"] = list(files)
+
+        url = (
+            "https://api.github.com/agents/repos/"
+            f"{urllib.parse.quote(owner, safe='')}/{urllib.parse.quote(name, safe='')}/tasks"
+        )
+        return self._api._request("POST", url, payload)
+
+    @_poster_method
+    def list_agent_tasks(
+        self,
+        repo: str,
+        state: str = "all",
+        per_page: int = 30,
+        *,
+        status: str = "",
+    ) -> dict[str, Any] | list[dict[str, Any]]:
+        """List repository Agent Tasks."""
+        self._api._require_token()
+        self._agent_task_repo_parts(repo)
+        if per_page < 1 or per_page > 100:
+            raise ValueError("per_page must be between 1 and 100")
+        owner, name = self._agent_task_repo_parts(repo)
+        url = (
+            "https://api.github.com/agents/repos/"
+            f"{urllib.parse.quote(owner, safe='')}/{urllib.parse.quote(name, safe='')}/tasks"
+            f"?per_page={per_page}"
+        )
+        filter_value = status.strip() or ("" if state == "all" else state.strip())
+        if filter_value:
+            url += f"&status={urllib.parse.quote(filter_value.lower(), safe='')}"
+        return cast(dict[str, Any] | list[dict[str, Any]], self._api._get(url))
+
+    @_poster_method
+    def get_agent_task(self, repo: str, task_id: str) -> dict[str, Any]:
+        """Get one repository Agent Task by ID."""
+        self._api._require_token()
+        self._agent_task_repo_parts(repo)
+        task_id = str(task_id).strip()
+        if not task_id:
+            raise ValueError("task_id is required")
+        owner, name = self._agent_task_repo_parts(repo)
+        url = (
+            "https://api.github.com/agents/repos/"
+            f"{urllib.parse.quote(owner, safe='')}/{urllib.parse.quote(name, safe='')}/tasks/"
+            f"{urllib.parse.quote(task_id, safe='')}"
+        )
+        return self._api._get(url)
+
+    @_poster_method
+    def continue_agent_task(
+        self,
+        repo: str,
+        task_id: str,
+        prompt: str = "",
+        *,
+        message: str = "",
+        instructions: str = "",
+    ) -> dict[str, Any]:
+        """Continue an existing Agent Task with a new prompt."""
+        self._api._require_token()
+        self._agent_task_repo_parts(repo)
+        task_id = str(task_id).strip()
+        prompt = (prompt or message).strip()
+        if not task_id:
+            raise ValueError("task_id is required")
+        if not prompt:
+            raise ValueError("prompt is required")
+        payload: dict[str, Any] = {"prompt": prompt}
+        if instructions:
+            payload["instructions"] = instructions
+        owner, name = self._agent_task_repo_parts(repo)
+        url = (
+            "https://api.github.com/agents/repos/"
+            f"{urllib.parse.quote(owner, safe='')}/{urllib.parse.quote(name, safe='')}/tasks/"
+            f"{urllib.parse.quote(task_id, safe='')}/continue"
+        )
+        return self._api._request("POST", url, payload)
+
+    @_poster_method
+    def cancel_agent_task(self, repo: str, task_id: str) -> dict[str, Any]:
+        """Cancel an existing Agent Task."""
+        self._api._require_token()
+        self._agent_task_repo_parts(repo)
+        task_id = str(task_id).strip()
+        if not task_id:
+            raise ValueError("task_id is required")
+        owner, name = self._agent_task_repo_parts(repo)
+        url = (
+            "https://api.github.com/agents/repos/"
+            f"{urllib.parse.quote(owner, safe='')}/{urllib.parse.quote(name, safe='')}/tasks/"
+            f"{urllib.parse.quote(task_id, safe='')}/cancel"
+        )
+        return self._api._request("POST", url, {})
+
+    @_poster_method
+    def assign_agent_task(
+        self,
+        repo: str,
+        task_id: str,
+        agent: str = "",
+        *,
+        assignee: str | None = None,
+        assignees: list[str] | str | None = None,
+        issue_number: int | None = None,
+        prompt: str = "",
+        custom_agent: str = "",
+        model: str = "",
+        launch_key: str = "",
+    ) -> dict[str, Any]:
+        """Assign an Agent Task to a custom agent or collaborator."""
+        self._api._require_token()
+        self._agent_task_repo_parts(repo)
+        task_id = str(task_id).strip()
+        assigned_agent = (assignee or agent).strip()
+        if not assigned_agent and assignees:
+            if isinstance(assignees, str):
+                assigned_agent = assignees.split(",", 1)[0].strip()
+            else:
+                assigned_agent = str(assignees[0]).strip() if assignees else ""
+        if not task_id:
+            raise ValueError("task_id is required")
+        if not assigned_agent:
+            raise ValueError("agent or assignee is required")
+        owner, name = self._agent_task_repo_parts(repo)
+        issue_target = str(issue_number) if issue_number is not None else task_id
+        if issue_target.isdigit():
+            url = (
+                f"https://api.github.com/repos/{urllib.parse.quote(owner, safe='')}/"
+                f"{urllib.parse.quote(name, safe='')}/issues/{issue_target}/assignees"
+            )
+            if isinstance(assignees, str):
+                assignee_values = [
+                    value.strip().lstrip("@") for value in assignees.split(",") if value.strip()
+                ]
+            elif assignees:
+                assignee_values = [
+                    str(value).strip().lstrip("@") for value in assignees if str(value).strip()
+                ]
+            else:
+                assignee_values = [assigned_agent.lstrip("@")]
+            payload: dict[str, Any] = {"assignees": list(dict.fromkeys(assignee_values))}
+            agent_assignment: dict[str, Any] = {
+                key: value
+                for key, value in {
+                    "task_id": task_id,
+                    "launch_key": launch_key,
+                    "prompt": prompt,
+                    "custom_agent": custom_agent,
+                    "model": model,
+                    "issue_number": issue_number,
+                }.items()
+                if value not in (None, "")
+            }
+            if agent_assignment:
+                payload["agent_assignment"] = agent_assignment
+        else:
+            url = (
+                "https://api.github.com/agents/repos/"
+                f"{urllib.parse.quote(owner, safe='')}/{urllib.parse.quote(name, safe='')}/tasks/"
+                f"{urllib.parse.quote(task_id, safe='')}/assign"
+            )
+            payload = {"assignee": assigned_agent}
+        return self._api._request("POST", url, payload)
+
+    @_poster_method
+    def assign_issue_to_copilot(
+        self,
+        repo: str,
+        issue_number: int,
+        *,
+        prompt: str = "",
+        custom_agent: str = "",
+        model: str = "",
+        assignees: list[str] | str | None = None,
+        launch_key: str = "",
+    ) -> dict[str, Any]:
+        """Assign Copilot to an issue with repository-native agent metadata."""
+        return self.assign_agent_task(
+            repo,
+            str(issue_number),
+            assignee="copilot-swe-agent",
+            assignees=assignees or ["copilot-swe-agent[bot]"],
+            issue_number=issue_number,
+            prompt=prompt,
+            custom_agent=custom_agent,
+            model=model,
+            launch_key=launch_key,
+        )
 
 
 class _DiscussionLifecycleOperations:
@@ -374,7 +644,10 @@ class _DiscussionCommentOperations:
 
 
 class GitHubMCPPoster(
-    _RepositoryOperations, _DiscussionLifecycleOperations, _DiscussionCommentOperations
+    _RepositoryOperations,
+    _AgentTaskOperations,
+    _DiscussionLifecycleOperations,
+    _DiscussionCommentOperations,
 ):
     """Thin GitHub REST client authenticated with CODEX_MASTER_KEY.
 
@@ -403,21 +676,20 @@ class GitHubMCPPoster(
     def __setattr__(self, name: str, value: Any) -> None:
         """Keep the façade hooks monkeypatchable without creating a recursive alias loop."""
         super().__setattr__(name, value)
-        if name == "_record_cb_pattern":
+        if name in {"_record_cb_pattern", "_request", "_get"}:
             try:
                 setattr(self._api, name, value)
             except AttributeError:
                 logger.debug("Unable to propagate %s to API client", name, exc_info=True)
-        elif name == "_request":
+
+    def __delattr__(self, name: str) -> None:
+        """Restore instance hook patches on the API collaborator as well."""
+        super().__delattr__(name)
+        if name in {"_record_cb_pattern", "_request", "_get"}:
             try:
-                setattr(self._api, name, value)
+                setattr(self._api, name, getattr(self, name))
             except AttributeError:
-                logger.debug("Unable to propagate %s to API client", name, exc_info=True)
-        elif name == "_get":
-            try:
-                setattr(self._api, name, value)
-            except AttributeError:
-                logger.debug("Unable to propagate %s to API client", name, exc_info=True)
+                logger.debug("Unable to restore %s on API client", name, exc_info=True)
 
     def __init__(self, token: str | None = None) -> None:
         """Initialize the MCP poster with all specialized managers.
@@ -694,6 +966,53 @@ def _build_parser() -> argparse.ArgumentParser:
     cpr.add_argument("--base", default="main", help="Base (target) branch name (default: main)")
     cpr.add_argument("--draft", action="store_true", help="Open as draft PR")
 
+    # agent-tasks
+    cat = sub.add_parser("create-agent-task", help="Create a GitHub Copilot Agent Task")
+    cat.add_argument("--repo", required=True, help="owner/repo")
+    cat.add_argument("--title", default="")
+    cat.add_argument("--description", default="")
+    cat.add_argument("--instructions", default="")
+    cat.add_argument("--file", dest="files", action="append", default=[])
+    cat.add_argument("--branch", "--head-ref", dest="branch", default=None)
+    cat.add_argument("--base", "--base-ref", dest="base", default=None)
+    cat.add_argument("--prompt", default=None)
+    cat.add_argument("--launch-key", default=None)
+    cat.add_argument("--issue", type=int, default=None)
+    cat.add_argument("--assignee", dest="assignees", action="append", default=[])
+    cat.add_argument("--custom-agent", default=None)
+    cat.add_argument("--model", default=None)
+
+    lat = sub.add_parser("list-agent-tasks", help="List GitHub Copilot Agent Tasks")
+    lat.add_argument("--repo", required=True, help="owner/repo")
+    lat.add_argument("--state", default="all")
+    lat.add_argument("--per-page", type=int, default=30)
+
+    gat = sub.add_parser("get-agent-task", help="Get a GitHub Copilot Agent Task")
+    gat.add_argument("--repo", required=True, help="owner/repo")
+    gat.add_argument("--task-id", required=True)
+
+    cot = sub.add_parser("continue-agent-task", help="Continue a GitHub Copilot Agent Task")
+    cot.add_argument("--repo", required=True, help="owner/repo")
+    cot.add_argument("--task-id", required=True)
+    cot.add_argument("--prompt", required=True)
+    cot.add_argument("--instructions", default="")
+
+    cnt = sub.add_parser("cancel-agent-task", help="Cancel a GitHub Copilot Agent Task")
+    cnt.add_argument("--repo", required=True, help="owner/repo")
+    cnt.add_argument("--task-id", required=True)
+
+    aat = sub.add_parser("assign-agent-task", help="Assign a GitHub Copilot Agent Task")
+    aat.add_argument("--repo", required=True, help="owner/repo")
+    aat.add_argument("--task-id", required=True)
+    aat.add_argument("--agent", required=True)
+
+    ait = sub.add_parser("assign-issue-to-copilot", help="Assign Copilot to a GitHub issue")
+    ait.add_argument("--repo", required=True, help="owner/repo")
+    ait.add_argument("--issue", "--issue-number", dest="issue", required=True, type=int)
+    ait.add_argument("--prompt", default="")
+    ait.add_argument("--custom-agent", default="")
+    ait.add_argument("--model", default="")
+
     # merge-branch  (IMP-001 / IMP-010 — S174)
     mb = sub.add_parser(
         "merge-branch",
@@ -748,6 +1067,7 @@ def main(argv: list[str] | None = None) -> int:
     poster = GitHubMCPPoster()
 
     try:
+        result: Any
         if args.command == "post-comment":
             body = args.body or Path(args.body_file).read_text()
             result = poster.post_pr_comment(args.repo, args.pr, body)
@@ -888,6 +1208,59 @@ def main(argv: list[str] | None = None) -> int:
                 args.repo, args.title, body, args.head, args.base, args.draft
             )
             logger.info(f"✅ PR #{result.get('number')} opened: {result.get('html_url', result)}")
+
+        elif args.command == "create-agent-task":
+            result = poster.create_agent_task(
+                args.repo,
+                args.title,
+                args.description,
+                args.instructions,
+                args.files,
+                args.branch,
+                prompt=args.prompt,
+                base=args.base,
+                launch_key=args.launch_key,
+                issue_number=args.issue,
+                assignees=args.assignees,
+                custom_agent=args.custom_agent,
+                model=args.model,
+            )
+            logger.info("Agent Task created: %s", result)
+
+        elif args.command == "list-agent-tasks":
+            result = poster.list_agent_tasks(args.repo, args.state, args.per_page)
+            logger.info("Agent Tasks: %s", result)
+
+        elif args.command == "get-agent-task":
+            result = poster.get_agent_task(args.repo, args.task_id)
+            logger.info("Agent Task: %s", result)
+
+        elif args.command == "continue-agent-task":
+            result = poster.continue_agent_task(
+                args.repo,
+                args.task_id,
+                args.prompt,
+                instructions=args.instructions,
+            )
+            logger.info("Agent Task continued: %s", result)
+
+        elif args.command == "cancel-agent-task":
+            result = poster.cancel_agent_task(args.repo, args.task_id)
+            logger.info("Agent Task cancelled: %s", result)
+
+        elif args.command == "assign-agent-task":
+            result = poster.assign_agent_task(args.repo, args.task_id, args.agent)
+            logger.info("Agent Task assigned: %s", result)
+
+        elif args.command == "assign-issue-to-copilot":
+            result = poster.assign_issue_to_copilot(
+                args.repo,
+                args.issue,
+                prompt=args.prompt,
+                custom_agent=args.custom_agent,
+                model=args.model,
+            )
+            logger.info("Copilot issue assignment: %s", result)
 
         elif args.command == "merge-branch":
             result = poster.merge_branch(args.repo, args.base, args.head, args.message)

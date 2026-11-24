@@ -17,6 +17,7 @@ from typing import Any, Optional
 
 try:
     import httpx
+
     HTTPX_AVAILABLE = True
 except ImportError:
     HTTPX_AVAILABLE = False
@@ -34,6 +35,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class GitHubConfig:
     """GitHub API configuration."""
+
     token: Optional[str] = None
     base_url: str = "https://api.github.com"
     timeout: int = 30
@@ -98,7 +100,9 @@ class GitHubAPIClient:
         self.base_url = self.config.base_url
 
         if not self.config.token:
-            logger.warning("No GitHub token configured - API requests will fail")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning(
+                "No GitHub token configured - API requests will fail"
+            )  # codeql[py/clear-text-logging-sensitive-data]
 
     def _get_headers(self) -> dict[str, str]:
         """Get headers for API requests."""
@@ -134,7 +138,9 @@ class GitHubAPIClient:
             raise ValueError("Repository must be in the format 'owner/repo'")
 
         owner, name = candidate.split("/", 1)
-        if not re.fullmatch(r"[A-Za-z0-9._-]+", owner) or not re.fullmatch(r"[A-Za-z0-9._-]+", name):
+        if not re.fullmatch(r"[A-Za-z0-9._-]+", owner) or not re.fullmatch(
+            r"[A-Za-z0-9._-]+", name
+        ):
             raise ValueError("Repository owner and name may only use GitHub-safe characters")
         return f"{owner}/{name}"
 
@@ -190,6 +196,7 @@ class GitHubAPIClient:
         body: str,
         event: str = "COMMENT",
         comments: Optional[list[dict[str, Any]]] = None,
+        commit_id: Optional[str] = None,
     ) -> dict[str, Any]:
         """
         Post a review to a pull request.
@@ -214,10 +221,16 @@ class GitHubAPIClient:
             "event": event,
         }
 
+        if commit_id is not None:
+            if re.fullmatch(r"[0-9a-fA-F]{40}", commit_id) is None:
+                raise ValueError("commit_id must be a 40-character commit SHA")
+            payload["commit_id"] = commit_id
         if comments:
             payload["comments"] = comments
 
-        logger.info(f"Posting {event} review to {repo}#{pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            f"Posting {event} review to {repo}#{pr_number}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         return await self._make_request(url, payload)
 
     async def _make_request(self, url: str, payload: dict[str, Any]) -> dict[str, Any]:
@@ -252,14 +265,18 @@ class GitHubAPIClient:
                         raise
 
                     if attempt < self.config.max_retries - 1:
-                        wait_time = 2 ** attempt
-                        logger.warning(f"Request failed, retrying in {wait_time}s...")  # codeql[py/clear-text-logging-sensitive-data]
+                        wait_time = 2**attempt
+                        logger.warning(
+                            f"Request failed, retrying in {wait_time}s..."
+                        )  # codeql[py/clear-text-logging-sensitive-data]
                         await asyncio.sleep(wait_time)
                     else:
                         raise
 
                 except Exception as e:
-                    logger.error(f"Unexpected error posting review: {e}")  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.error(
+                        f"Unexpected error posting review: {e}"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     raise
 
         return {}  # unreachable: loop always returns or raises
@@ -289,17 +306,23 @@ class GitHubAPIClient:
             except requests.HTTPError as e:
                 status = e.response.status_code if e.response is not None else 0
                 if status == 422:
-                    logger.error("GitHub API validation error (status=%d).", status)  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.error(
+                        "GitHub API validation error (status=%d).", status
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     raise
 
                 if attempt < self.config.max_retries - 1:
-                    wait_time = 2 ** attempt
-                    logger.warning(f"Request failed, retrying in {wait_time}s...")  # codeql[py/clear-text-logging-sensitive-data]
+                    wait_time = 2**attempt
+                    logger.warning(
+                        f"Request failed, retrying in {wait_time}s..."
+                    )  # codeql[py/clear-text-logging-sensitive-data]
                     await asyncio.sleep(wait_time)
                 else:
                     raise
             except Exception as e:
-                logger.error(f"Unexpected error posting review: {e}")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.error(
+                    f"Unexpected error posting review: {e}"
+                )  # codeql[py/clear-text-logging-sensitive-data]
                 raise
 
         return {}  # unreachable: loop always returns or raises
@@ -325,7 +348,9 @@ class GitHubAPIClient:
 
         payload = {"body": body}
 
-        logger.info(f"Adding comment to {repo}#{pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info(
+            f"Adding comment to {repo}#{pr_number}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
 
         if HTTPX_AVAILABLE:
             return await self._post_with_httpx(url, payload)

@@ -40,6 +40,17 @@ and model settings may be deliberate; do not widen them indiscriminately.
 The registry, profile candidates and archived sources are not evidence of
 hosted activation or selection.
 
+## Single-owner AI governance
+
+This repository has exactly one human owner and maintainer: Marc Baetiong
+(`@mbaetiong`). Never invent, request, or wait for a second human reviewer.
+Keep `required_reviewers` empty on agent-controlled and `owner-approval`
+environments. Require current-SHA review from Copilot or an authorized AI agent,
+preserve the sole owner's protected environment marker, and keep admin bypass
+disabled. `COPILOT_AGENT_MAX_AUTONOMY_LEVEL=D` is the active autonomy ceiling;
+it authorizes agent publication within credential scopes and genuine platform
+controls, not bypass of those controls.
+
 ## Project and quality conventions
 
 - Packaging: `pyproject.toml`; Python tasks include `src/codex/cli.py`.

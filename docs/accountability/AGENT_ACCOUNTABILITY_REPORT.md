@@ -1,3 +1,37 @@
+## Session: PR #5766 exact ML evidence and clean wrap-up planset (2026-11-22)
+
+- Refreshed 2026-11-22 PDA accountability for PR #5766 at published handoff head
+  `1212dbbcf52a1a208eb0921265e4a9604575028f`. ML run
+  `44971752791` evidence remains anchored to prior campaign head
+  `42073ea3eeee218c3350816017fb92c5c6b2fa21` and must be rerun at the live new head
+  before merge readiness is claimed.
+- Today's repository scorecard is 85/100 and NOT READY: PDA/accountability,
+  sync, action pins, ruff, Pattern 27, download-artifact v5, and AAIS pass;
+  the repository auto-fix dimension remains red and ML aggregate readiness is
+  blocked by 754 unit failures/errors.
+- ML run `44971752791`, attempt 2, completed component and downstream execution:
+  1,797 integration tests had 0 failures/errors; 32,258 unit tests had 754
+  failures/errors and 1,014 skips; combined unit coverage was 54.99%.
+- The coverage floor 54 passed and the target remains 70. The quarantine remained
+  empty. The PR-base ratchet reported no quarantine growth and no floor decrease.
+- `ml-slow-aggregate` failed because unit JUnit debt is real. This is not a pass
+  result and not an infrastructure-only cancellation.
+- PR #5766 remains open and unmerged. The new
+  [resume and closure planset](../../.codex/plans/PR5766_RESUME_CLOSURE_PLANSET_2026-11-22.md)
+  partitions the 754 failures into targeted implementation batches and records
+  the exact post-merge coverage-ratchet, issue-close, main-promotion, and review
+  gates.
+- No workflow dispatch, main ref mutation, or merge was authorized or performed.
+
+## Session: PR #5766 Fast Validation YAML lint (2026-11-22)
+
+- Run `44969101570` failed strict yamllint on the RAG disk cleanup step.
+- Reformatted the step without changing its shell commands; strict YAML lint,
+  shell syntax and 13 focused workflow tests passed locally.
+- Actionlint and automated secret scanning were unavailable; additions were
+  reviewed manually. Hosted checks on the fix remain unverified.
+- Direct implementation; a code-review agent reviewed the workflow diff.
+
 ## Session: resolve #5766 merge conflicts after #5812 (2026-11-14)
 
 ### Agents Used
@@ -25694,3 +25728,35 @@ has not been recorded.
 - The exact final governance SHA must receive fresh hosted RAG/CodeQL/ML checks before review-thread closure or merge readiness is claimed. A numerical score is diagnostic only and does not replace review, security, or protected merge controls.
 
 ---
+## Session: PR #5766 CI rescue (2026-11-21)
+
+- Direct implementation with an independent code-review agent. Fixed the
+  setup-validation summary script syntax and the policy link reported by fast
+  validation.
+- The prior preflight auto-fix push was denied (HTTP 403); this entry and the
+  changelog update provide the requested last-commit documentation. Hosted
+  checks remain subject to a new run and actual platform permissions.
+- Fast Validation run `44948234628` failed because the logging-adapter test
+  patched `src.codex.logging.db` while the implementation imports
+  `codex.logging.db`. Corrected the fixture target; the same four-file CI test
+  set passed locally (6 tests), as did Ruff, Black, isort, compilation, and
+  `git diff --check`.
+- The CodeQL check on `74fc83f9` remains unresolved: check-log lookup returned
+  404 and code-scanning alert listing returned 403. The subsequent hosted
+  validation run is `action_required`; no hosted-green or security-clearance
+  claim is made. The PR body still needs an authorized body-edit interface.
+
+---
+## Session: PR #5766 exact-head evidence (2026-11-22)
+
+- Direct execution; no delegated agents were invoked.
+- Published signed review-fix commit `33fa574cbf82f559594ba360700173e08fed14b0`.
+  Replaced the two empty Torch profiler fallback blocks in `tests/conftest.py`
+  with explicit compatibility comments; compileall and Ruff passed.
+- Resolved both unresolved `github-code-quality` review threads after Code
+  Quality run `44998386806` completed successfully on the exact fix head.
+- A manifest-only `[skip ci]` refresh commit `eaa9574fd62a21e9dbfbcbea6299c7f24bfb32a6`
+  updated `CODEX_MANIFEST.json` and `.secrets.baseline`. Main remains an ancestor
+  of `0D_base_`; no issue closure or merge occurred.
+- Fresh exact-head ML/RAG reruns, exact-SHA approval, required checks, and issue
+  evidence are still required on the manifest or a subsequent PR head.

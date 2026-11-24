@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-21T20:22:20Z",
+  "repository": "Aries-Serpent/_codex_",
+  "branch": "0D_base_",
+  "sha_encoding": "concatenate chunks without separators",
+  "pre_publication_base_chunks": ["cdd9f3c6", "b7b4d0c5", "6023f887", "7188ce8d", "3f7336fc"],
+  "pre_handoff_head_chunks": ["f710c156", "bbba2457", "58433a0f", "8e235903", "f6cd03ff"],
+  "publication_state": "prior closeout and rate-limit campaign publication verified on 0D_base_",
+  "post_closeout_base_chunks": ["8c3261af", "f162152d", "4f80c8a0", "0b4b76e2", "e8167d7a"],
+  "original_dirty_worktree": {
+    "tracked_modified": 83,
+    "untracked": 7,
+    "staged": 0,
+    "stashes": 0,
+    "total_paths": 90
+  },
+  "publication_commits": [
+    {
+      "sha_chunks": ["94edd1f8", "70"],
+      "subject": "feat(codespace): add bounded active-session keepalive",
+      "files": 17,
+      "signed": true
+    },
+    {
+      "sha_chunks": ["2e282564", "ce"],
+      "subject": "feat(auth): unify Codespace App and signing bootstrap",
+      "files": 16,
+      "signed": true
+    },
+    {
+      "sha_chunks": ["5a32fb11", "be"],
+      "subject": "ci: align self-managed governance and workflow validation",
+      "files": 18,
+      "signed": true
+    },
+    {
+      "sha_chunks": ["31465dde", "8a"],
+      "subject": "fix(cognitive-app): stabilize imports and render effects",
+      "files": 22,
+      "signed": true
+    },
+    {
+      "sha_chunks": ["f710c156", "bb"],
+      "subject": "fix(core): stabilize RAG, archive, and validation utilities",
+      "files": 17,
+      "signed": true
+    }
+  ],
+  "validation": {
+    "codespace_control_plane": {
+      "focused_tests": 87,
+      "status": "passed",
+      "checks": ["Black", "isort", "Ruff", "py_compile", "bash -n", "JSON/JSONC", "startup packet"]
+    },
+    "auth_signing_approval": {
+      "focused_tests": 316,
+      "status": "passed",
+      "checks": ["Black", "isort", "Ruff", "py_compile", "bash -n", "CLI help", "auth bootstrap dry-run", "detect-secrets"]
+    },
+    "governance_workflows": {
+      "policy_tests": 176,
+      "decision_tests": 126,
+      "status": "passed",
+      "checks": ["yamllint strict", "Black", "Ruff", "py_compile", "git diff --check"]
+    },
+    "cognitive_app": {
+      "contract_tests_passed": 13,
+      "contract_tests_skipped": 1,
+      "status": "static validation passed",
+      "checks": ["package JSON", "lock consistency", "Lucide deep-import scan", "CI contract tests", "detect-secrets"]
+    },
+    "core_rag_validation": {
+      "focused_tests_passed": 238,
+      "focused_tests_skipped": 4,
+      "status": "passed",
+      "checks": ["Black", "isort", "Ruff", "py_compile", "git diff --check"]
+    },
+    "credential_scan": "passed for staged content in every publication lane",
+    "signed_commits": "all five source commits verified with SSH signatures"
+  },
+  "known_limits": [
+    {
+      "code": "actionlint_unavailable",
+      "detail": "No actionlint executable existed on PATH or in the configured user-local location; strict yamllint passed."
+    },
+    {
+      "code": "node_runtime_unavailable",
+      "detail": "Node/npm executables were unavailable, so TypeScript and frontend build execution were not rerun locally. Installed node_modules were inspected through static/package contract checks."
+    },
+    {
+      "code": "torch_stub",
+      "detail": "The repository-local torch package is present but does not persist serialization; one checkpoint test skips after a real save/load capability probe."
+    }
+  ],
+  "rate_limit_campaign": {
+    "state": "published; 278 focused checks passed with one Node-dependent task skipped",
+    "published_commit_chunks": ["deddec93", "89efe3bf", "2f40962b", "643aa695", "c98f70fa"],
+    "pr_carryover_commit_chunks": ["f02346b8", "118889f3", "a632881b", "8d3126dc", "015ca00e"],
+    "shared_transport": "scripts/ci/github_rate_limit.py",
+    "auth_surfaces": [
+      "GitHub App JWT and installation-token operations",
+      "Codespaces secret and SSH signing APIs",
+      "exact-SHA AI review",
+      "approval/preflight routes",
+      "REST, GraphQL, security snapshot, cooldown, checkpoint, and workflow orchestration"
+    ],
+    "protections": [
+      "primary and secondary rate-limit classification",
+      "distinct credential rotation",
+      "explicit App-token isolation",
+      "bounded Retry-After and reset waits",
+      "no ambiguous POST network retry",
+      "proxy-disabled and redirect-denied requests",
+      "one-megabyte JSON response bound",
+      "credential-scoped GET caching",
+      "redacted quota status in preflight and maintainer control"
+    ],
+    "live_evidence": {
+      "app_route": "verified-installation",
+      "core_remaining": 4932,
+      "all_observed_core_buckets_exhausted": false,
+      "deferred_credentials": 0
+    },
+    "tests": "278 focused tests passed with one Node-dependent task skipped; strict formatting, lint, compile, JSON, startup, and patch checks passed.",
+    "draft_pr_reconciliation": {
+      "5842": "fully incorporated; exact reverse patch applies",
+      "5840_5841": "RAG/ML objectives incorporated; unique base-fetch and aggregate-runner hardening carried into 0D_base_",
+      "5843_5845": "larger runners, Zod 4.6.6, and frontend diagnostics incorporated with stronger direct implementations",
+      "decision": "completed on 2026-11-21; PRs 5840-5845 closed as superseded against the published 0D_base_"
+    }
+  },
+  "tracking_issue_campaign": {
+    "updated_issues": [5798, 5799, 5800, 5801, 5802, 5803, 5804, 5805, 5806, 5807, 5808, 5809, 5810, 5811],
+    "closed_verified": [5806],
+    "remaining_open": [5798, 5799, 5800, 5801, 5802, 5803, 5804, 5805, 5807, 5808, 5809, 5810, 5811],
+    "close_policy": "Keep broad or unverified objectives open with exact remaining evidence; do not close from stale or local-only checks."
+  },
+  "active_draft_pull_requests": [
+    {"number": 5840, "title": "fix(ci): remediate Pattern 19 src-prefixed imports", "head_ref": "copilot/session-pattern19-20261120", "head_sha_chunks": ["e12da35e", "1b6ae718", "2153ecd0", "a8b02f6c", "f73e9e84"], "base": "0D_base_"},
+    {"number": 5841, "title": "test(rag): add Retriever behavior coverage batch", "head_ref": "copilot/session-rag-retriever-20261120", "head_sha_chunks": ["b9992103", "a7194c40", "9b5b6c57", "2fe63995", "41078663"], "base": "0D_base_"},
+    {"number": 5842, "title": "fix(ci): add EOF newlines for Pattern 34", "head_ref": "copilot/session-autofix-eof-20261120", "head_sha_chunks": ["60c2ac1c", "fc3a586b", "ddd81adf", "5fe5a721", "1864019a"], "base": "0D_base_"},
+    {"number": 5843, "title": "ci(cognitive-app): use larger runners for existing builds", "head_ref": "copilot/session-cognitive-app-gate-20261120", "head_sha_chunks": ["629f11ae", "68b4f5e3", "2a529969", "af4e990c", "2abdff9f"], "base": "0D_base_"},
+    {"number": 5844, "title": "fix(deps): upgrade Zod to advisory-fixed 4.6.6", "head_ref": "copilot/session-zod-20261120", "head_sha_chunks": ["36a422eb", "5d7d148b", "9c510717", "dec8f751", "1380b72d"], "base": "0D_base_"},
+    {"number": 5845, "title": "ci(cognitive-app): add hosted frontend diagnostics", "head_ref": "copilot/session-cognitive-app-diagnostics-20261120", "head_sha_chunks": ["30d4ec3f", "0051f0ca", "b3711a8b", "ae952165", "1bec3e07"], "base": "0D_base_"}
+  ],
+  "open_tracking_issues": [5798, 5799, 5800, 5801, 5802, 5803, 5804, 5805, 5806, 5807, 5808, 5809, 5810, 5811],
+  "next_actions": [
+    "Commit this handoff with SSH signing, push 0D_base_ using ordinary fast-forward semantics, and verify local HEAD equals the live origin branch SHA.",
+    "After the push, re-evaluate draft PRs 5840-5845 for overlap with the direct 0D_base_ publication; reconcile or close duplicate work only after exact diff/check evidence.",
+    "Continue issues 5798-5811 from the signed publication and refreshed PR bases; do not recreate a second-human reviewer gate.",
+    "Stop only repository-owned CLI API and keepalive processes after remote equality and a clean Git status are proven.",
+    "Do not stop or delete the Codespace until the owner requests that terminal action."
+  ],
+  "resume_commands": [
+    "git fetch origin --prune",
+    "git switch 0D_base_",
+    "git status --short --branch",
+    "git rev-list --left-right --count HEAD...origin/0D_base_",
+    "git ls-remote origin refs/heads/0D_base_",
+    "python scripts/autonomous/codespace_readiness.py --worktree . --json",
+    "python -m scripts.ci.startup_health --validate"
+  ]
+}

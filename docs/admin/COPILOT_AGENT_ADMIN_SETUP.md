@@ -339,17 +339,26 @@ For each variable in the table above:
 > **Why:** The `agent-auth-delegation.yml` workflow gates autonomous operations behind
 > an `environment:` block. If that environment has **required reviewers**, every agent
 > action waits indefinitely for a human to click "Approve deployment."
-> Setting zero required reviewers lets the agent self-activate.
+> Setting zero required reviewers is required in this single-human-owner repo;
+> it lets the protected environment activate under @mbaetiong's D-tier grant,
+> while exact-SHA AI review and the CI approval runner provide review evidence.
 
 ### Step 6.1 — Remove required reviewers from the environment
 
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings/environments**
  *(Repo Settings Environments)*
-2. Click **agent-auth-delegation** (create it if it doesn't exist — see Step 6.2).
+2. Apply the same zero-human-review rule to `agent-auth-delegation` and
+   `owner-approval`; create either environment if it is missing.
 3. Under **Required reviewers**, remove any names in the list (click the `×` next to each).
 4. Ensure the list is empty.
-5. Under **Deployment branches**, select **No restriction** (or **All branches**).
+5. Under **Deployment branches**, select custom branches and allow only `main`
+   and `0D_base_`; disable administrator bypass.
 6. Click **Save protection rules**.
+7. Do not add a second human reviewer. `@mbaetiong` is the sole human owner;
+   `cognitive-brain[bot]`, `codex-reviewer`, or Copilot supplies current-SHA AI
+   review evidence through the PR and approval-runner workflow. The exact-SHA
+   local driver is `scripts/ci/run_ai_review.py --pr <N> --sha <SHA>`; it uses a
+   short-lived App token and revokes it after posting.
 
 ### Step 6.2 — Create the environment if it doesn't exist
 
@@ -358,7 +367,8 @@ For each variable in the table above:
 3. Name: `agent-auth-delegation`
 4. Click **Configure environment**.
 5. Leave **Required reviewers** empty.
-6. Set **Deployment branches** to **No restriction**.
+6. Set **Deployment branches** to custom branches and allow only `main` and
+   `0D_base_`; disable administrator bypass.
 7. Click **Save protection rules**.
 
 ---

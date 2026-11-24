@@ -36,8 +36,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     try:
         import hydra
-    except ImportError as e:
-        error_type = type(e).__name__
+    except ImportError:
         logger.debug("hydra not available: <ERROR_TYPE>")
         import config_legacy as hydra
 
@@ -63,15 +62,21 @@ except (ImportError, AttributeError) as exc:  # pragma: no cover
 else:  # pragma: no cover - import succeeded
     _SPM_ERROR = None  # type: ignore[assignment]
 
-from tokenizers import (  # noqa: E402
-    SentencePieceUnigramTokenizer,
-    Tokenizer,
-    decoders,
-    models,
-    normalizers,
-    pre_tokenizers,
-    trainers,
-)
+try:
+    from tokenizers import (  # noqa: E402
+        SentencePieceUnigramTokenizer,
+        Tokenizer,
+        decoders,
+        models,
+        normalizers,
+        pre_tokenizers,
+        trainers,
+    )
+except (ImportError, AttributeError):
+    SentencePieceUnigramTokenizer = None  # type: ignore[assignment]
+    Tokenizer = None  # type: ignore[assignment]
+    decoders = models = normalizers = pre_tokenizers = trainers = None
+    logger.warning("Optional tokenizers dependency unavailable")
 
 DEFAULT_STREAM_CHUNK_SIZE = 1024 * 1024  # 1 MiB chunks when streaming
 
@@ -214,7 +219,7 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             train_kwargs["input"] = ",".join(files)
         try:
             spm.SentencePieceTrainer.Train(**train_kwargs)
-        except OSError as exc:
+        except (OSError, RuntimeError, ValueError) as exc:
             type(exc).__name__
             logger.debug("OSError: <ERROR_TYPE>")
             if "seed_sentencepiece" not in str(exc):
@@ -228,12 +233,17 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         if "sentencepiece_model_pb2" not in sys.modules:
             # pragma: no cover - optional dependency handling
             try:
-                _sp_model_pb2 = spm.sentencepiece_model_pb2
+                _sp_model_pb2 = getattr(spm, "sentencepiece_model_pb2", None)
+                if _sp_model_pb2 is None:
+                    raise AttributeError("sentencepiece_model_pb2 unavailable")
             except (
                 IOError,
                 OSError,
                 ModuleNotFoundError,
                 ImportError,
+                AttributeError,
+                RuntimeError,
+                TypeError,
             ):  # pragma: no cover - dependency still missing
                 logger.warning("Exception occurred", exc_info=True)
             else:

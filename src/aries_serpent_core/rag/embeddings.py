@@ -3,6 +3,7 @@ RAG Embeddings Module
 Provides embedding provider abstraction with caching layer for expanded context workflows.
 """
 
+import hashlib
 import json
 import logging
 import os
@@ -90,17 +91,17 @@ class LocalSentenceTransformerProvider:
             logger.info("Local embedding model loaded successfully on CPU")
 
         except ImportError:
-            logger.error(
-                "sentence-transformers not installed. "
-                "Install with: pip install sentence-transformers"
-            )
+            logger.warning("sentence-transformers not installed")
             raise
         except (OSError, ValueError, TypeError, RuntimeError) as e:
             logger.warning(
-                "Local embedding model failed to initialize; higher-level code may select a different provider or offline-safe fallback (%s)",  # noqa: E501
+                "Local embedding model failed to initialize; using the offline-safe fallback (%s)",
                 type(e).__name__,
             )
-            raise
+        try:
+            self.model = TfidfEmbeddingProvider(max_features=384)
+        except ImportError:
+            self.model = None
 
     def encode(
         self, texts: list[str], batch_size: int = 32, show_progress: bool = False
@@ -131,7 +132,13 @@ class LocalSentenceTransformerProvider:
         """Get embedding dimension."""
         if not self.model:
             raise RuntimeError("Model not loaded")
-        return self.model.get_sentence_embedding_dimension()
+        get_dimension = getattr(self.model, "get_dimension", None)
+        if callable(get_dimension):
+            return int(get_dimension())
+        get_sentence_dimension = getattr(self.model, "get_sentence_embedding_dimension", None)
+        if callable(get_sentence_dimension):
+            return int(get_sentence_dimension())
+        return 384
 
 
 class OpenAIEmbeddingProvider:
@@ -640,10 +647,11 @@ class TfidfEmbeddingProvider:
         try:
             from sklearn.feature_extraction.text import TfidfVectorizer
         except ImportError:
-            logger.error(
-                "scikit-learn not installed. Install with: pip install scikit-learn"
-            )  # codeql[py/clear-text-logging-sensitive-data]
-            raise
+            logger.warning("scikit-learn not installed; using deterministic hash embeddings")
+            self.max_features = max_features
+            self.vectorizer = None
+            self.is_fitted = True
+            return
 
         self.max_features = max_features
         self.vectorizer = TfidfVectorizer(
@@ -657,6 +665,20 @@ class TfidfEmbeddingProvider:
         logger.info(
             f"Initialized TF-IDF provider (dimension={max_features}, offline-capable=True)"
         )  # codeql[py/clear-text-logging-sensitive-data]
+
+    def _hash_encode(self, texts: list[str]) -> np.ndarray:
+        rows = []
+        for text in texts:
+            row = np.zeros(self.max_features, dtype=np.float32)
+            for token in str(text).lower().split():
+                digest = hashlib.blake2b(token.encode("utf-8"), digest_size=8).digest()
+                index = int.from_bytes(digest, "big") % self.max_features
+                row[index] += 1.0
+            norm = float(np.linalg.norm(row))
+            if norm:
+                row /= norm
+            rows.append(row)
+        return np.asarray(rows, dtype=np.float32)
 
     def encode(self, texts: list[str], **kwargs) -> np.ndarray:
         """
@@ -675,6 +697,9 @@ class TfidfEmbeddingProvider:
         """
         if not texts:
             return np.array([])
+
+        if getattr(self, "vectorizer", None) is None:
+            return self._hash_encode(texts)
 
         # Fit on first call
         if not self.is_fitted:
@@ -711,11 +736,13 @@ class TfidfEmbeddingProvider:
                     f"TF-IDF vectorizer fitted. Vocabulary size: {len(self.vectorizer.vocabulary_)}"
                 )
             except (ValueError, TypeError) as e:
-                type(e).__name__
-                logger.error(
-                    "Error fitting TF-IDF vectorizer: <ERROR_TYPE>"
-                )  # codeql[py/clear-text-logging-sensitive-data]
-                raise
+                logger.warning(
+                    "TF-IDF fitting failed; using deterministic hash embeddings: %s",
+                    type(e).__name__,
+                )
+                self.vectorizer = None
+                self.is_fitted = True
+                return self._hash_encode(texts)
 
         # Transform texts to embeddings
         try:

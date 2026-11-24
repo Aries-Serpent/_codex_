@@ -18,11 +18,29 @@ try:
         TenantOperationResult,
         build_index_from_files,
         chunk_text,
+        delete_index,
         embed_chunks,
+        get_index_metadata,
+        list_indices,
         load_index,
         manage_tenant_indices,
         persist_index,
     )
+
+    def merge_indices(
+        source_indices: list[str],
+        destination_index: str,
+        tenant_id: str = "default",
+        index_dir: str = ".codex/tenants",
+    ) -> TenantOperationResult:
+        """Merge tenant indices through the package-level lifecycle API."""
+        return manage_tenant_indices(
+            tenant_id=tenant_id,
+            operation=IndexOperation.MERGE,
+            index_names=source_indices,
+            index_dir=index_dir,
+            merge_name=destination_index,
+        )
     from .monitoring import (
         MetricDataPoint,
         MetricsConfig,
@@ -87,6 +105,10 @@ if _expanded_context_available:
             "persist_index",
             "load_index",
             "build_index_from_files",
+            "delete_index",
+            "list_indices",
+            "get_index_metadata",
+            "merge_indices",
             "manage_tenant_indices",
             "TenantOperationResult",
             "IndexOperation",

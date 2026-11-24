@@ -103,6 +103,10 @@
     "CODEX_RUNTIME_DIR": "/home/codex/.codex/runtime",
     "CODEX_SESSION_LOG_DIR": "/home/codex/.codex/sessions",
     "CODEX_SQLITE_POOL": "1",
+    "CODEX_KEEPALIVE_ENABLED": "true",
+    "CODEX_KEEPALIVE_INTERVAL_SECONDS": "60",
+    "CODEX_KEEPALIVE_ACTIVE_WINDOW_SECONDS": "28800",
+    "CODEX_KEEPALIVE_MAX_DURATION_SECONDS": "28800",
     // Codespaces APT prebuild controls (consumed by on-create.sh)
     "CODESPACES_APT_UPDATE_RETRY": "true",
     "CODESPACES_APT_CLEANUP_AGGRESSIVE": "true",
@@ -164,6 +168,10 @@
     "_GITHUB_APP_CLIENT_SECRET": {
       "description": "GitHub App OAuth client secret. Used for OAuth web flow and device-flow installations. Required alongside _GITHUB_APP_ID for OAuth-based GitHub App auth.",
       "documentationUrl": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/agent/GITHUB_APP_CLI_MAPPING.md"
+    },
+    "_GIT_SIGNING_PRIVATE_KEY": {
+      "description": "Persistent Ed25519 SSH private key for signed Git commits and tags in Copilot Agent Codespaces.",
+      "documentationUrl": "https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key"
     },
     "WEBHOOK_SECRET": {
       "description": "Shared HMAC-SHA256 secret for GitHub webhook signature verification (X-Hub-Signature-256 header). Must match the value set on the webhook in GitHub.",
@@ -239,6 +247,9 @@
           "PATH": "${env:HOME}/.local/bin:${env:PATH}",
           "PYTHONPATH": "${workspaceFolder}/src"
         },
+        // Copilot CLI sandbox fallback. Activation is gated by a successful
+        // host namespace smoke test; never treat this setting as credential approval.
+        "github.copilot.chat.cli.sandbox.enabled": "off",
         // GitHub Copilot agent settings
         "github.copilot.enable": {
           "*": true,

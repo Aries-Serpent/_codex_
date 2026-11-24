@@ -144,7 +144,6 @@ class TokenizerAdapter(ABC):
         return None
 
 
-@tokenizers.register("whitespace")
 class _CallableInt(int):
     def __new__(cls, value: int):
         return super().__new__(cls, int(value))
@@ -153,6 +152,7 @@ class _CallableInt(int):
         return int(self)
 
 
+@tokenizers.register("whitespace")
 class WhitespaceTokenizer(TokenizerAdapter):
     """Deterministic whitespace tokenizer used when transformers is absent."""
 
@@ -546,6 +546,9 @@ class HFTokenizer(TokenizerAdapter):
             OSError,
             ModuleNotFoundError,
             ImportError,
+            ValueError,
+            TypeError,
+            RuntimeError,
         ) as exc:  # pragma: no cover - defensive
             LOGGER.warning(
                 "Falling back to whitespace backend for '%s' after load failure (%s)",

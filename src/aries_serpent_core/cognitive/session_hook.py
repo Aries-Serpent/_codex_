@@ -261,7 +261,15 @@ class SessionContextInjector:
             payload = self._build_payload(raw, session_metadata, reconstructed=False)
             self._write_cache(payload)
             return payload
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+            RuntimeError,
+            ValueError,
+            TypeError,
+        ) as exc:
             live_error = exc
             logger.warning("Live context fetch failed: %s", exc)
 
@@ -453,7 +461,15 @@ class SessionContextInjector:
         )
         try:
             self._api.store_memory(lesson, tags=["api-failure", "reconstruction"])
-        except (IOError, OSError, ModuleNotFoundError, ImportError):
+        except (
+            IOError,
+            OSError,
+            ModuleNotFoundError,
+            ImportError,
+            RuntimeError,
+            ValueError,
+            TypeError,
+        ):
             logger.debug("Suppressed exception in handler", exc_info=True)
         return SessionContextPayload(
             session_id=(f"reconstructed-{hashlib.sha256(str(meta).encode()).hexdigest()[:8]}"),

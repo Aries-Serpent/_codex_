@@ -50,6 +50,30 @@ class ConsolidationResult(int):
         return self
 
 
+class PruningCount(int):
+    """Integer-compatible result for cache pruning operations."""
+
+    aged_pruned: int
+    access_pruned: int
+    confidence_pruned: int
+    total_pruned: int
+
+    def __new__(
+        cls,
+        count: int,
+        *,
+        aged_pruned: int = 0,
+        access_pruned: int = 0,
+        confidence_pruned: int = 0,
+    ) -> "PruningCount":
+        obj = int.__new__(cls, count)
+        obj.aged_pruned = aged_pruned
+        obj.access_pruned = access_pruned
+        obj.confidence_pruned = confidence_pruned
+        obj.total_pruned = count
+        return obj
+
+
 @dataclass
 class PruningResult:
     """Result of cache pruning operations."""
@@ -146,6 +170,10 @@ class QuantumMemoryManager:
 
         # Long-term memory (dict for fast lookup)
         self.ltm: dict[str, MemoryPattern] = {}
+
+        # Compatibility aliases for existing quantum integrations and callers.
+        self.short_term_memory = self.stm
+        self.long_term_memory = self.ltm
 
         # Statistics
         self.total_patterns_stored = 0
@@ -454,23 +482,37 @@ class QuantumMemoryManager:
         """
         now = datetime.now(timezone.utc)
         max_age_delta = timedelta(hours=max_age_hours)
+        prune_all = max_age_hours <= 0.000001
 
         pruned_count = 0
         patterns_to_remove = []
 
         for pattern_id, pattern in self.ltm.items():
             age = now - pattern.timestamp
-            if age > max_age_delta:
+            if prune_all or age > max_age_delta:
                 patterns_to_remove.append(pattern_id)
 
         for pattern_id in patterns_to_remove:
             del self.ltm[pattern_id]
             pruned_count += 1
 
+        stm_patterns = list(self.stm)
+        if stm_patterns:
+            retained_stm = (
+                []
+                if prune_all
+                else [
+                    pattern for pattern in stm_patterns if now - pattern.timestamp <= max_age_delta
+                ]
+            )
+            pruned_count += len(stm_patterns) - len(retained_stm)
+            self.stm.clear()
+            self.stm.extend(retained_stm)
+
         if pruned_count > 0:
             logger.info(f"Pruned {pruned_count} patterns older than {max_age_hours}h from LTM")
 
-        return pruned_count
+        return PruningCount(pruned_count, aged_pruned=pruned_count)
 
     def prune_by_access(self, keep_top_n: int = 5000) -> int:
         """
@@ -486,7 +528,7 @@ class QuantumMemoryManager:
             Number of patterns pruned
         """
         if len(self.ltm) <= keep_top_n:
-            return 0
+            return PruningCount(0, access_pruned=0)
 
         # Sort by access count (descending), then by last_accessed (recent first)
         sorted_patterns = sorted(
@@ -507,7 +549,7 @@ class QuantumMemoryManager:
                 f"Pruned {pruned_count} least accessed patterns from LTM (kept top {keep_top_n})"
             )
 
-        return pruned_count
+        return PruningCount(pruned_count, access_pruned=pruned_count)
 
     def prune_low_confidence(self, min_confidence: float = 0.5) -> int:
         """
@@ -536,7 +578,7 @@ class QuantumMemoryManager:
                 f"Pruned {pruned_count} low-confidence patterns (<{min_confidence}) from LTM"
             )
 
-        return pruned_count
+        return PruningCount(pruned_count, confidence_pruned=pruned_count)
 
     def get_cache_health(self) -> dict[str, Any]:
         """

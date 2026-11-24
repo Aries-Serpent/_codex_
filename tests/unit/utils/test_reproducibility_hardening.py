@@ -78,7 +78,7 @@ def test_enable_deterministic_training_exceptions():
 
     with (
         patch("random.seed", side_effect=Exception("mock random error")),
-        patch("src.codex_ml.utils.reproducibility_hardening.os.environ", MockEnviron()),
+        patch("codex_ml.utils.reproducibility_hardening.os.environ", MockEnviron()),
     ):
         status = enable_deterministic_training(42)
         assert status["python_random"] is False, "Condition must be true"
@@ -237,9 +237,9 @@ def test_save_env_snapshot_no_cuda_available(tmp_path):
 def test_create_reproducibility_manifest_no_config_no_hash(tmp_path):
     with (
         patch(
-            "src.codex_ml.utils.reproducibility_hardening.enable_deterministic_training"
+            "codex_ml.utils.reproducibility_hardening.enable_deterministic_training"
         ) as mock_enable,
-        patch("src.codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save,
+        patch("codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save,
     ):
 
         mock_enable.return_value = {"python_random": True}
@@ -264,9 +264,9 @@ def test_create_reproducibility_manifest_no_config_no_hash(tmp_path):
 def test_create_reproducibility_manifest(tmp_path):
     with (
         patch(
-            "src.codex_ml.utils.reproducibility_hardening.enable_deterministic_training"
+            "codex_ml.utils.reproducibility_hardening.enable_deterministic_training"
         ) as mock_enable,
-        patch("src.codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save,
+        patch("codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save,
     ):
 
         mock_enable.return_value = {"python_random": True}
@@ -295,9 +295,9 @@ def test_create_reproducibility_manifest(tmp_path):
 def test_reproducibility_manager(tmp_path):
     with (
         patch(
-            "src.codex_ml.utils.reproducibility_hardening.enable_deterministic_training"
+            "codex_ml.utils.reproducibility_hardening.enable_deterministic_training"
         ) as mock_enable,
-        patch("src.codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save,
+        patch("codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save,
     ):
 
         mock_enable.return_value = {"status": "ok"}
@@ -317,7 +317,7 @@ def test_reproducibility_manager(tmp_path):
 
         # Test finalize
         with patch(
-            "src.codex_ml.utils.reproducibility_hardening.create_reproducibility_manifest"
+            "codex_ml.utils.reproducibility_hardening.create_reproducibility_manifest"
         ) as mock_create:
             mock_create.return_value = {"manifest": "data"}
 

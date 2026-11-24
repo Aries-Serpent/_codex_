@@ -45,7 +45,7 @@ def _get_registry_factory(name: str):
         from codex_ml.models.loader_registry import get_model
 
         return get_model(name)
-    except (ImportError, AttributeError):
+    except (ImportError, AttributeError, KeyError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 

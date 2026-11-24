@@ -5,6 +5,32 @@ from unittest.mock import MagicMock
 import pytest
 
 
+@pytest.fixture
+def mock_transformer_model():
+    """Provide a small reusable mock model for fixture behavior tests."""
+
+    class MockTransformerModel:
+        num_layers = 2
+
+        def get_attention_weights(self) -> list[float]:
+            return [0.25, 0.75]
+
+    return MockTransformerModel()
+
+
+@pytest.fixture
+def serializable_mock_model():
+    """Provide a JSON-serializable mock model pattern."""
+
+    class SerializableMockModel:
+        call_count = 1
+
+        def to_dict(self) -> dict[str, object]:
+            return {"config": {"mock": True}, "call_count": self.call_count}
+
+    return SerializableMockModel()
+
+
 class TestFixtureReusability:
     """Verify fixtures can be called multiple times without exhaustion."""
 

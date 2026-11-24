@@ -144,6 +144,14 @@ bash OFFLINE_BOOTSTRAP.sh \
 - [Optional Dependencies](docs/optional_dependencies.md) - Detailed dependency information
 ---
 ## Genesis and autonomy status
+
+**Operating model:** Aries-Serpent/_codex_ is an agentic self-managed repository
+with exactly one human owner and maintainer: Marc Baetiong (`@mbaetiong`). The
+repository does not assume or require a second human reviewer. AI agents,
+Copilot, and the registered Cognitive Brain reviewer perform exact-SHA review;
+protected environment approval represents @mbaetiong's standing D-tier
+owner authorization, with no human reviewer list and no admin bypass.
+
 **Status:** Configuration is enabled, but repository evidence does not prove a completed
 Genesis ceremony or unrestricted autonomy.
 

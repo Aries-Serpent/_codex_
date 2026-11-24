@@ -117,7 +117,7 @@ class GitHubHTTPClient:
 
         # Prepare headers
         headers = {
-            "Authorization": f"******",
+            "Authorization": f"Bearer {self._token}",
             "Accept": _ACCEPT,
             "X-GitHub-Api-Version": _API_VERSION,
         }

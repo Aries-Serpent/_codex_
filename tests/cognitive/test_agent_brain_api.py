@@ -19,15 +19,18 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from codex.cognitive.agent_brain_api import (
+from aries_serpent_core.cognitive.agent_brain_api import (
     AGENT_CAPABILITIES,
     AgentBrainAPI,
     AgentSessionContext,
     CognitiveBrain,
     CompletionReport,
 )
-from codex.cognitive.planset_orchestrator import PlansetOrchestrator
-from codex.cognitive.quantum_planset_engine import ImprovementArea, QuantumPlansetEngine
+from aries_serpent_core.cognitive.planset_orchestrator import PlansetOrchestrator
+from aries_serpent_core.cognitive.quantum_planset_engine import (
+    ImprovementArea,
+    QuantumPlansetEngine,
+)
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -36,6 +39,10 @@ from codex.cognitive.quantum_planset_engine import ImprovementArea, QuantumPlans
 
 def _make_api(tmp_path: Path, agent_id: str = "copilot-coding-agent") -> AgentBrainAPI:
     """Build an AgentBrainAPI with an in-memory planset dir."""
+    (tmp_path / ".codex" / "cognitive_brain").mkdir(parents=True, exist_ok=True)
+    (tmp_path / ".codex" / "cognitive_brain" / "pattern_learning_store.json").write_text(
+        "{}", encoding="utf-8"
+    )
     d = tmp_path / "plans"
     d.mkdir(exist_ok=True)
     (d / "CODEQL_ALERT_RESOLUTION_PLANSET.md").write_text(
@@ -56,6 +63,10 @@ def _make_api(tmp_path: Path, agent_id: str = "copilot-coding-agent") -> AgentBr
 
 
 def _make_brain(tmp_path: Path) -> CognitiveBrain:
+    (tmp_path / ".codex" / "cognitive_brain").mkdir(parents=True, exist_ok=True)
+    (tmp_path / ".codex" / "cognitive_brain" / "pattern_learning_store.json").write_text(
+        "{}", encoding="utf-8"
+    )
     d = tmp_path / "plans"
     d.mkdir(exist_ok=True)
     (d / "CODEQL_ALERT_RESOLUTION_PLANSET.md").write_text(
@@ -241,7 +252,8 @@ class TestAgentCapabilitiesMap:
         assert set(caps) == set(ImprovementArea), "Condition must be true"
 
     def test_codeql_agent_covers_security(self):
-        assert (ImprovementArea.SECURITY_REMEDIATION, "Condition must be true"
+        assert (
+            ImprovementArea.SECURITY_REMEDIATION
             in AGENT_CAPABILITIES["codeql-alert-resolution-agent"]
         )
 
@@ -275,7 +287,7 @@ class TestCognitiveBrain:
         cb = _make_brain(tmp_path)
         result = cb.next()
         # Either a PromptSet or None (all done)
-        from codex.cognitive.planset_orchestrator import PromptSet
+        from aries_serpent_core.cognitive.planset_orchestrator import PromptSet
 
         assert result is None or isinstance(result, PromptSet)
 
@@ -318,7 +330,9 @@ class TestCognitiveBrain:
     def test_discover_all_12_areas(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
         d = cb.discover()
-        assert set(d["improvement_areas"]) == {a.value for a in ImprovementArea}, "Value must be initialized"
+        assert set(d["improvement_areas"]) == {
+            a.value for a in ImprovementArea
+        }, "Value must be initialized"
 
     def test_discover_is_json_serialisable(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
@@ -375,36 +389,35 @@ class TestCognitiveBrain:
 
 class TestBrainSingleton:
     def test_brain_importable(self):
-        from codex.cognitive import brain
+        from aries_serpent_core.cognitive import brain
 
         assert isinstance(brain, CognitiveBrain)
 
     def test_brain_has_help(self):
-        from codex.cognitive import brain
+        from aries_serpent_core.cognitive import brain
 
-        assert callable(brain.help, "Condition must be true"
-        ), "Condition must be true"
+        assert callable(brain.help), "brain.help must be callable"
 
     def test_brain_has_discover(self):
-        from codex.cognitive import brain
+        from aries_serpent_core.cognitive import brain
 
         d = brain.discover()
         assert "improvement_areas" in d, "Condition must be true"
 
     def test_brain_has_health(self):
-        from codex.cognitive import brain
+        from aries_serpent_core.cognitive import brain
 
         h = brain.health()
         assert "status" in h, "Condition must be true"
 
     def test_brain_for_agent_works(self):
-        from codex.cognitive import brain
+        from aries_serpent_core.cognitive import brain
 
         api = brain.for_agent("copilot-coding-agent")
         assert isinstance(api, AgentBrainAPI)
 
     def test_all_exports_importable(self):
-        from codex.cognitive import (
+        from aries_serpent_core.cognitive import (
             CognitiveBrain,
             brain,
         )

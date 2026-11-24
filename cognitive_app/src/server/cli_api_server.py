@@ -35,9 +35,11 @@ import sqlite3
 import struct
 import subprocess  # nosec B404 — used only for PTY shell (ws_cli); Popen call has nosec B603
 from pathlib import Path
+from urllib.parse import urlencode as _urlencode
 from urllib.parse import urlparse as _urlparse
 from urllib.parse import urlunparse as _urlunparse
 
+from scripts.ci import github_rate_limit as gh_rate_limit
 from scripts.ci._token_resolver import TokenResolutionError, get_token
 
 # Safe JSON parser for external/untrusted inputs (sanitises C0 control chars).
@@ -759,7 +761,9 @@ def _observed_adapter_states() -> dict[str, str]:
         "vscode_scm": _RouteState.EXPOSED.value,
         "vscode_terminal": _RouteState.EXPOSED.value,
         "gh": _RouteState.INSTALLED.value if shutil.which("gh") else _RouteState.UNAVAILABLE.value,
-        "rest_graphql": _RouteState.INSTALLED.value,
+        "rest_graphql": (
+            _RouteState.VERIFIED.value if httpx is not None else _RouteState.UNAVAILABLE.value
+        ),
         "playwright": (
             _RouteState.INSTALLED.value
             if playwright_cli.is_dir()
@@ -792,6 +796,23 @@ async def health():
             "otel_enabled": _OTEL_ENABLED,
             "startup_nonce": os.environ.get("CODEX_STARTUP_NONCE"),
         }
+
+
+@app.get("/api/maintainer/status")
+async def maintainer_status():
+    """Return the secret-free canonical maintainer control plane."""
+    from scripts.autonomous.maintainer_control import maintainer_status as build_status
+
+    return build_status()
+
+
+@app.post("/api/maintainer/keepalive/touch")
+async def maintainer_keepalive_touch(_auth: None = Depends(_require_operation_auth)):
+    """Renew the bounded active-agent keepalive marker."""
+    from scripts.autonomous.codespace_keepalive import runtime_dir_default, touch_active_marker
+
+    marker = touch_active_marker(runtime_dir_default())
+    return {"active": True, "marker": str(marker)}
 
 
 @app.post("/api/session")
@@ -926,9 +947,97 @@ def _run_gh(args: list[str], token: str) -> dict[str, Any]:
         raise RouteExecutionConflict("GitHub operation returned invalid JSON") from exc
 
 
+def _github_rest_headers() -> tuple[dict[str, str], str | None]:
+    """Build read-only GitHub REST headers without exposing a credential value."""
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    for source in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GH_TOKEN", "GITHUB_TOKEN"):
+        token = os.environ.get(source, "").strip()
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+            return headers, source
+    return headers, None
+
+
+def _validate_github_repo_target(target: str) -> str:
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", target):
+        raise RouteExecutionConflict("target must be a repository in OWNER/REPO form")
+    return target
+
+
+def _validate_github_sha(value: object) -> str:
+    sha = str(value or "")
+    if not re.fullmatch(r"[0-9A-Fa-f]{40}", sha):
+        raise RouteExecutionConflict("a 40-character commit SHA is required")
+    return sha
+
+
+def _run_github_rest(
+    path: str,
+    *,
+    params: dict[str, Any] | None = None,
+) -> tuple[Any, str | None]:
+    """Execute a read with bounded credential fallback and accurate provenance."""
+    if re.match(r"^https?://", path, flags=re.IGNORECASE):
+        raise RouteExecutionConflict("GitHub REST paths must not be absolute URLs")
+    url = f"https://api.github.com/{path.lstrip('/')}"
+    if params:
+        url = f"{url}?{_urlencode(params)}"
+
+    credentials = gh_rate_limit.discover_credentials()
+    if not credentials:
+        headers, _ = _github_rest_headers()
+        response = httpx.get(url, headers=headers, timeout=10, follow_redirects=False)
+        if response.status_code < 200 or response.status_code >= 300:
+            raise RouteExecutionConflict(
+                f"GitHub REST read failed with HTTP {response.status_code}"
+            )
+        try:
+            payload = response.json()
+        except (json.JSONDecodeError, ValueError) as exc:
+            raise RouteExecutionConflict("GitHub REST read returned invalid JSON") from exc
+        if not isinstance(payload, (dict, list)):
+            raise RouteExecutionConflict("GitHub REST read returned an unsupported payload")
+        return payload, None
+
+    last_status: int | None = None
+    for credential in credentials:
+        try:
+            response = gh_rate_limit.request(
+                "GET",
+                url,
+                credentials=[credential],
+                max_retries=1,
+                max_wait_seconds=0,
+                user_agent="codex-cognitive-brain-rest/1.0",
+            )
+        except (gh_rate_limit.GitHubRateLimitError, OSError, TimeoutError):
+            continue
+        last_status = response.status
+        if 200 <= response.status < 300:
+            if not isinstance(response.payload, (dict, list)):
+                raise RouteExecutionConflict("GitHub REST read returned an unsupported payload")
+            return response.payload, response.source
+        if response.status not in (401, 403):
+            raise RouteExecutionConflict(f"GitHub REST read failed with HTTP {response.status}")
+    raise RouteExecutionConflict(
+        f"GitHub REST credentials exhausted with HTTP {last_status or 'unavailable'}"
+    )
+
+
 def _execute_route_operation(req: RouteExecuteRequest, adapter: str) -> dict[str, Any]:
     if req.capability == "brain.read" and req.action == "capabilities":
         return {"routes": _capability_catalog(), "adapter_states": _observed_adapter_states()}
+
+    if req.capability == "maintainer.read":
+        from scripts.autonomous.maintainer_control import maintainer_status as build_status
+
+        result = build_status()
+        if req.action == "keepalive_status":
+            return result["keepalive"]
+        return result
 
     if req.capability == "git.local" and req.action == "status":
         completed = subprocess.run(
@@ -942,6 +1051,67 @@ def _execute_route_operation(req: RouteExecuteRequest, adapter: str) -> dict[str
         if completed.returncode != 0:
             raise RouteExecutionConflict("Git status operation failed")
         return {"status": completed.stdout}
+
+    if adapter == "rest_graphql":
+        if req.capability not in {"github.read", "github.actions.read"}:
+            raise RouteExecutionConflict("REST route does not execute mutating GitHub actions")
+
+        if req.action == "get_repository":
+            repo = _validate_github_repo_target(req.target)
+            result, credential_source = _run_github_rest(f"repos/{repo}")
+            return {"credential_source": credential_source, "repository": result}
+
+        if req.action == "list_pull_requests":
+            repo = _validate_github_repo_target(req.target)
+            state = str(req.arguments.get("state", "open"))
+            if state not in {"open", "closed", "all"}:
+                raise RouteExecutionConflict("pull-request state must be open, closed, or all")
+            per_page = int(req.arguments.get("per_page", 100))
+            if per_page < 1 or per_page > 100:
+                raise RouteExecutionConflict("per_page must be between 1 and 100")
+            result, credential_source = _run_github_rest(
+                f"repos/{repo}/pulls",
+                params={"state": state, "per_page": str(per_page)},
+            )
+            return {"credential_source": credential_source, "pull_requests": result}
+
+        if req.action == "list_workflow_runs":
+            repo = _validate_github_repo_target(req.target)
+            params: dict[str, Any] = {}
+            per_page = int(req.arguments.get("per_page", 100))
+            if per_page < 1 or per_page > 100:
+                raise RouteExecutionConflict("per_page must be between 1 and 100")
+            params["per_page"] = str(per_page)
+            for name in ("branch", "status", "event", "actor"):
+                value = req.arguments.get(name)
+                if value:
+                    params[name] = str(value)
+            sha = req.arguments.get("sha")
+            if sha:
+                params["head_sha"] = _validate_github_sha(sha)
+            workflow_id = str(req.arguments.get("workflow_id", "")).strip()
+            if workflow_id:
+                if not re.fullmatch(r"[A-Za-z0-9_./-]+", workflow_id):
+                    raise RouteExecutionConflict("workflow_id contains invalid characters")
+                path = f"repos/{repo}/actions/workflows/{workflow_id}/runs"
+            else:
+                path = f"repos/{repo}/actions/runs"
+            result, credential_source = _run_github_rest(path, params=params)
+            return {"credential_source": credential_source, "workflow_runs": result}
+
+        if req.action == "list_checks":
+            repo = _validate_github_repo_target(req.target)
+            sha = _validate_github_sha(req.arguments.get("sha"))
+            per_page = int(req.arguments.get("per_page", 100))
+            if per_page < 1 or per_page > 100:
+                raise RouteExecutionConflict("per_page must be between 1 and 100")
+            result, credential_source = _run_github_rest(
+                f"repos/{repo}/commits/{sha}/check-runs",
+                params={"per_page": str(per_page)},
+            )
+            return {"credential_source": credential_source, "check_runs": result}
+
+        raise RouteExecutionConflict(f"REST route cannot execute: {req.capability}/{req.action}")
 
     if adapter != "gh":
         raise RouteExecutionConflict(f"adapter has no execution handler: {adapter}")

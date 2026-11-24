@@ -1,8 +1,10 @@
 """Tests for hash_table utility module."""
 
+# ruff: noqa: I001
 from __future__ import annotations
 
 import pytest
+
 from codex.utils.hash_table import HashTable, murmur_hash3_32
 
 

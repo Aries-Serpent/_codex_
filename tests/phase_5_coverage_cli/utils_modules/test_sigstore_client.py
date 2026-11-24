@@ -41,13 +41,14 @@ class TestSignerInitialization:
         """Test Signer has expected attributes."""
         signer = sigstore_client.Signer()
         # Check for standard signer interface
-        assert hasattr(signer, '__call__') or callable(signer)
+        assert hasattr(signer, "__call__") or callable(signer)
 
-    @patch.dict('os.environ', {'CODEX_ENABLE_SIGNING': 'false'})
+    @patch.dict("os.environ", {"CODEX_ENABLE_SIGNING": "false"})
     def test_signer_with_disabled_signing(self) -> None:
         """Test Signer with signing disabled."""
         # Reload to pick up new environment
         import importlib
+
         importlib.reload(sigstore_client)
         assert sigstore_client is not None, "sigstore_client must be initialized"
 
@@ -60,7 +61,7 @@ class TestSignOperations:
         data = b"test data"
         signer = sigstore_client.Signer()
         # Mock signing should work
-        with patch.object(signer, 'sign', return_value=b"signature"):
+        with patch.object(signer, "sign", return_value=b"signature"):
             result = signer.sign(data)
             assert isinstance(result, bytes)
 
@@ -68,7 +69,7 @@ class TestSignOperations:
         """Test signing empty data."""
         data = b""
         signer = sigstore_client.Signer()
-        with patch.object(signer, 'sign', return_value=b"signature"):
+        with patch.object(signer, "sign", return_value=b"signature"):
             result = signer.sign(data)
             assert isinstance(result, bytes)
 
@@ -76,29 +77,29 @@ class TestSignOperations:
         """Test signing large data."""
         data = b"x" * 1000000  # 1 MB
         signer = sigstore_client.Signer()
-        with patch.object(signer, 'sign', return_value=b"signature"):
+        with patch.object(signer, "sign", return_value=b"signature"):
             result = signer.sign(data)
             assert isinstance(result, bytes)
 
     def test_sign_unicode_data(self) -> None:
         """Test signing unicode data."""
-        data = "hello 世界".encode('utf-8')
+        data = "hello 世界".encode("utf-8")
         signer = sigstore_client.Signer()
-        with patch.object(signer, 'sign', return_value=b"signature"):
+        with patch.object(signer, "sign", return_value=b"signature"):
             result = signer.sign(data)
             assert isinstance(result, bytes)
 
     def test_sign_returns_bytes(self) -> None:
         """Test that sign returns bytes."""
         signer = sigstore_client.Signer()
-        with patch.object(signer, 'sign', return_value=b"signature"):
+        with patch.object(signer, "sign", return_value=b"signature"):
             result = signer.sign(b"data")
             assert isinstance(result, bytes)
 
     def test_sign_deterministic(self) -> None:
         """Test that signing is deterministic with mock."""
         signer = sigstore_client.Signer()
-        with patch.object(signer, 'sign', return_value=b"signature"):
+        with patch.object(signer, "sign", return_value=b"signature"):
             sig1 = signer.sign(b"data")
             sig2 = signer.sign(b"data")
             assert sig1 == sig2, "sig1 is not valid"
@@ -122,7 +123,7 @@ class TestVerificationOperations:
         data = b"test data"
         signature = b"valid_signature"
 
-        with patch.object(verifier, 'verify', return_value=True):
+        with patch.object(verifier, "verify", return_value=True):
             result = verifier.verify(data, signature)
             assert result is True, "Result must not be empty"
 
@@ -132,21 +133,21 @@ class TestVerificationOperations:
         data = b"test data"
         signature = b"invalid_signature"
 
-        with patch.object(verifier, 'verify', return_value=False):
+        with patch.object(verifier, "verify", return_value=False):
             result = verifier.verify(data, signature)
             assert result is False, "Result must not be empty"
 
     def test_verify_empty_data(self) -> None:
         """Test verifying signature of empty data."""
         verifier = sigstore_client.Verifier()
-        with patch.object(verifier, 'verify', return_value=True):
+        with patch.object(verifier, "verify", return_value=True):
             result = verifier.verify(b"", b"signature")
             assert isinstance(result, bool)
 
     def test_verify_empty_signature(self) -> None:
         """Test verifying empty signature."""
         verifier = sigstore_client.Verifier()
-        with patch.object(verifier, 'verify', return_value=False):
+        with patch.object(verifier, "verify", return_value=False):
             result = verifier.verify(b"data", b"")
             assert result is False, "Result must not be empty"
 
@@ -157,11 +158,12 @@ class TestSigningFallback:
     def test_fallback_available(self) -> None:
         """Test that fallback mechanism is available."""
         # Should have fallback when sigstore not available
-        assert hasattr(sigstore_client, '_HAS_SIGSTORE')
+        assert hasattr(sigstore_client, "_HAS_SIGSTORE")
 
     def test_fallback_signing_deterministic(self) -> None:
         """Test fallback signing is deterministic."""
         import hashlib
+
         data = b"test"
         hash1 = hashlib.sha256(data).digest()
         hash2 = hashlib.sha256(data).digest()
@@ -170,6 +172,7 @@ class TestSigningFallback:
     def test_fallback_produces_valid_hash(self) -> None:
         """Test fallback produces valid SHA-256 hash."""
         import hashlib
+
         data = b"test data"
         result = hashlib.sha256(data).digest()
         assert len(result) == 32, "Result must not be empty"
@@ -177,6 +180,7 @@ class TestSigningFallback:
     def test_fallback_different_data_different_hash(self) -> None:
         """Test fallback produces different hash for different data."""
         import hashlib
+
         data1 = b"test1"
         data2 = b"test2"
         hash1 = hashlib.sha256(data1).digest()
@@ -186,6 +190,7 @@ class TestSigningFallback:
     def test_fallback_empty_data(self) -> None:
         """Test fallback hashing empty data."""
         import hashlib
+
         result = hashlib.sha256(b"").digest()
         assert isinstance(result, bytes)
         assert len(result) == 32, "Result must not be empty"
@@ -197,25 +202,27 @@ class TestSigningInterface:
     def test_signer_has_sign_method(self) -> None:
         """Test Signer has sign method."""
         signer = sigstore_client.Signer()
-        assert hasattr(signer, 'sign')
+        assert hasattr(signer, "sign")
 
     def test_verifier_has_verify_method(self) -> None:
         """Test Verifier has verify method."""
         verifier = sigstore_client.Verifier()
-        assert hasattr(verifier, 'verify')
+        assert hasattr(verifier, "verify")
 
-    @patch.dict('os.environ', {'CODEX_ENABLE_SIGNING': 'true'})
+    @patch.dict("os.environ", {"CODEX_ENABLE_SIGNING": "true"})
     def test_enable_signing_environment(self) -> None:
         """Test signing enabled via environment variable."""
         # Environment variable check should work
         import os
-        assert os.environ.get('CODEX_ENABLE_SIGNING') == 'true', "Condition must be true"
 
-    @patch.dict('os.environ', {}, clear=True)
+        assert os.environ.get("CODEX_ENABLE_SIGNING") == "true", "Condition must be true"
+
+    @patch.dict("os.environ", {}, clear=True)
     def test_disable_signing_by_default(self) -> None:
         """Test signing disabled by default."""
         import os
-        assert os.environ.get('CODEX_ENABLE_SIGNING') is None, "Condition must be true"
+
+        assert os.environ.get("CODEX_ENABLE_SIGNING") is None, "Condition must be true"
 
 
 class TestDataEncoding:
@@ -229,15 +236,15 @@ class TestDataEncoding:
     def test_string_to_bytes_conversion(self) -> None:
         """Test string to bytes conversion."""
         text = "test"
-        data = text.encode('utf-8')
+        data = text.encode("utf-8")
         assert isinstance(data, bytes)
         assert data == b"test", "Data must not be empty"
 
     def test_utf8_encoding(self) -> None:
         """Test UTF-8 encoding."""
         text = "hello 世界 мир"
-        data = text.encode('utf-8')
-        decoded = data.decode('utf-8')
+        data = text.encode("utf-8")
+        decoded = data.decode("utf-8")
         assert decoded == text, "decoded is not valid"
 
     def test_binary_data_handling(self) -> None:
@@ -251,7 +258,7 @@ class TestDataEncoding:
         """Test JSON can be serialized for signing."""
         obj = {"key": "value", "number": 42}
         json_str = json.dumps(obj)
-        data = json_str.encode('utf-8')
+        data = json_str.encode("utf-8")
         assert isinstance(data, bytes)
 
 
@@ -260,19 +267,19 @@ class TestLogging:
 
     def test_module_has_logger(self) -> None:
         """Test module has logger configured."""
-        assert hasattr(sigstore_client, 'logger')
+        assert hasattr(sigstore_client, "logger")
 
     def test_logger_is_logger(self) -> None:
         """Test logger is proper logger instance."""
         logger = sigstore_client.logger
-        assert hasattr(logger, 'debug')
-        assert hasattr(logger, 'info')
-        assert hasattr(logger, 'warning')
-        assert hasattr(logger, 'error')
+        assert hasattr(logger, "debug")
+        assert hasattr(logger, "info")
+        assert hasattr(logger, "warning")
+        assert hasattr(logger, "error")
 
     def test_logger_can_log(self) -> None:
         """Test logger can log messages."""
-        with patch.object(sigstore_client.logger, 'info') as mock_log:
+        with patch.object(sigstore_client.logger, "info") as mock_log:
             sigstore_client.logger.info("Test message")
             mock_log.assert_called_once_with("Test message")
 
@@ -282,7 +289,7 @@ class TestModuleConstants:
 
     def test_has_sigstore_flag_exists(self) -> None:
         """Test _HAS_SIGSTORE flag exists."""
-        assert hasattr(sigstore_client, '_HAS_SIGSTORE')
+        assert hasattr(sigstore_client, "_HAS_SIGSTORE")
 
     def test_has_sigstore_flag_is_bool(self) -> None:
         """Test _HAS_SIGSTORE is boolean."""
@@ -290,11 +297,11 @@ class TestModuleConstants:
 
     def test_signer_class_exists(self) -> None:
         """Test Signer class is defined."""
-        assert hasattr(sigstore_client, 'Signer')
+        assert hasattr(sigstore_client, "Signer")
 
     def test_verifier_class_exists(self) -> None:
         """Test Verifier class is defined."""
-        assert hasattr(sigstore_client, 'Verifier')
+        assert hasattr(sigstore_client, "Verifier")
 
 
 class TestErrorHandling:
@@ -303,23 +310,24 @@ class TestErrorHandling:
     def test_sign_with_none_data(self) -> None:
         """Test signing with None data."""
         signer = sigstore_client.Signer()
-        with patch.object(signer, 'sign', side_effect=TypeError):
+        with patch.object(signer, "sign", side_effect=TypeError):
             with pytest.raises(TypeError):
                 signer.sign(None)
 
     def test_verify_with_invalid_types(self) -> None:
         """Test verify with invalid types."""
         verifier = sigstore_client.Verifier()
-        with patch.object(verifier, 'verify', side_effect=TypeError):
+        with patch.object(verifier, "verify", side_effect=TypeError):
             with pytest.raises(TypeError):
                 verifier.verify(None, None)
 
     def test_invalid_environment_variable(self) -> None:
         """Test invalid environment variable value."""
-        with patch.dict('os.environ', {'CODEX_ENABLE_SIGNING': 'invalid'}):
+        with patch.dict("os.environ", {"CODEX_ENABLE_SIGNING": "invalid"}):
             # Should handle gracefully
             import os
-            value = os.environ.get('CODEX_ENABLE_SIGNING')
+
+            value = os.environ.get("CODEX_ENABLE_SIGNING")
             assert isinstance(value, str)
 
 
@@ -332,10 +340,10 @@ class TestIntegration:
         signer = sigstore_client.Signer()
         verifier = sigstore_client.Verifier()
 
-        with patch.object(signer, 'sign', return_value=b"signature"):
+        with patch.object(signer, "sign", return_value=b"signature"):
             signature = signer.sign(data)
 
-            with patch.object(verifier, 'verify', return_value=True):
+            with patch.object(verifier, "verify", return_value=True):
                 result = verifier.verify(data, signature)
                 assert result is True, "Result must not be empty"
 
@@ -347,9 +355,9 @@ class TestIntegration:
         signer = sigstore_client.Signer()
         verifier = sigstore_client.Verifier()
 
-        with patch.object(signer, 'sign', return_value=b"signature"):
+        with patch.object(signer, "sign", return_value=b"signature"):
             signature = signer.sign(original_data)
 
-            with patch.object(verifier, 'verify', return_value=False):
+            with patch.object(verifier, "verify", return_value=False):
                 result = verifier.verify(modified_data, signature)
                 assert result is False, "Result must not be empty"

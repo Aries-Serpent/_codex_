@@ -51,8 +51,7 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
       setApiStatus(status.status);
       setError(status.error);
       setInfoMessage(status.message);
-    } catch (err) {
-      console.error('App service status check failed:', err);
+    } catch {
       setApiStatus('error');
       setError('Unable to check service status');
       setInfoMessage(null);
@@ -60,11 +59,14 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
   }, [useAIMode]);
 
   useEffect(() => {
-    void checkApiStatus();
+    const initialCheck = window.setTimeout(() => void checkApiStatus(), 0);
     const interval = setInterval(() => {
       void checkApiStatus();
     }, 30000);
-    return () => clearInterval(interval);
+    return () => {
+      window.clearTimeout(initialCheck);
+      clearInterval(interval);
+    };
   }, [checkApiStatus]);
 
   const finishWithResult = useCallback(
@@ -156,8 +158,7 @@ export function CodeGenerator({ onCodeGenerated }: CodeGeneratorProps) {
         .then(() => {
           toast.success('Code copied to clipboard');
         })
-        .catch((err) => {
-          console.error('Failed to copy to clipboard:', err);
+        .catch(() => {
           toast.error('Failed to copy', {
             description: 'Could not write to clipboard. Check browser permissions.',
           });

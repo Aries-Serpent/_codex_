@@ -25,14 +25,11 @@ try:
         SafetySettings,
         SchedulerSettings,
         TrainingRunConfig,
-        _evaluate_model,
-        build_dataloader,
-        export_environment,
-        get_hf_revision,
-        sanitize_prompt,
-        set_reproducible,
     )
+    from .legacy_api import _evaluate_model as _legacy_evaluate_model
+    from .legacy_api import build_dataloader, export_environment, get_hf_revision
     from .legacy_api import run_functional_training as _legacy_run_functional_training
+    from .legacy_api import sanitize_prompt, set_reproducible
     from .rng_checkpoint import RNGState, set_seed
     from .unified_training import UnifiedTrainingConfig, run_unified_training  # re-export
 except (ImportError, AttributeError, ModuleNotFoundError, RuntimeError):  # pragma: no cover
@@ -46,7 +43,7 @@ except (ImportError, AttributeError, ModuleNotFoundError, RuntimeError):  # prag
     SafetySettings = None  # type: ignore[assignment]
     SchedulerSettings = None  # type: ignore[assignment]
     TrainingRunConfig = None  # type: ignore[assignment]
-    _evaluate_model = _missing_training_dependency
+    _legacy_evaluate_model = _missing_training_dependency
     build_dataloader = _missing_training_dependency
     export_environment = _missing_training_dependency
     get_hf_revision = _missing_training_dependency
@@ -72,6 +69,20 @@ try:
     from codex_ml.utils.train_helpers import maybe_autocast
 except ImportError:  # pragma: no cover - optional
     maybe_autocast = None
+
+
+def _evaluate_model(
+    model: Any,
+    dataset: Any,
+    *,
+    batch_size: int = 8,
+    cfg: Any = None,
+) -> dict[str, float]:
+    """Evaluate with the package-level compatibility autocast patch target."""
+    if _legacy_api_module is not None:
+        _legacy_api_module.maybe_autocast = maybe_autocast
+    return _legacy_evaluate_model(model, dataset, batch_size=batch_size, cfg=cfg)
+
 
 try:
     from codex_ml.utils.hf_pinning import load_from_pretrained
@@ -136,4 +147,14 @@ def run_functional_training(
         _legacy_api_module.sanitize_prompt = sanitize_prompt
         _legacy_api_module.set_reproducible = set_reproducible
         _legacy_api_module.export_environment = export_environment
+        _legacy_api_module.load_from_pretrained = load_from_pretrained
+        _legacy_api_module.get_hf_revision = get_hf_revision
+        _legacy_api_module.maybe_autocast = maybe_autocast
+        _legacy_api_module.mlflow_run = mlflow_run
+    try:
+        import codex_ml.training.functional_training as functional_training
+
+        functional_training.mlflow_run = mlflow_run
+    except (ImportError, AttributeError):  # pragma: no cover - optional training stack
+        pass
     return _legacy_run_functional_training(*args, **kwargs)

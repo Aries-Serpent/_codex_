@@ -1829,6 +1829,7 @@ def resume_cmd(run_dir: Path) -> None:
         OSError,
         ModuleNotFoundError,
         ImportError,
+        json.JSONDecodeError,
     ) as exc:  # pragma: no cover - robust CLI behavior
         click.echo(f"ERROR: failed to read resume_manifest.json: {exc}", err=True)
         raise SystemExit(2) from exc
@@ -1846,7 +1847,13 @@ def resume_cmd(run_dir: Path) -> None:
             try:
                 parsed = json.loads(content)
                 click.echo(json.dumps(parsed, indent=2, sort_keys=True))
-            except (IOError, OSError, ModuleNotFoundError, ImportError):
+            except (
+                IOError,
+                OSError,
+                ModuleNotFoundError,
+                ImportError,
+                json.JSONDecodeError,
+            ):
                 logger.warning(
                     "Exception occurred", exc_info=True
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1862,7 +1869,13 @@ def resume_cmd(run_dir: Path) -> None:
                 try:
                     parsed = json.loads(content)
                     click.echo(json.dumps(parsed, indent=2, sort_keys=True))
-                except (IOError, OSError, ModuleNotFoundError, ImportError):
+                except (
+                    IOError,
+                    OSError,
+                    ModuleNotFoundError,
+                    ImportError,
+                    json.JSONDecodeError,
+                ):
                     logger.warning(
                         "Exception occurred", exc_info=True
                     )  # codeql[py/clear-text-logging-sensitive-data]

@@ -228,7 +228,9 @@ class TestContentDiffer:
         normalized = differ._normalize_content(text)
 
         # Should have normalized whitespace
-        assert "  " not in normalized or normalized.count("  ") < text.count("  "), "Count must be greater than zero"
+        assert "  " not in normalized or normalized.count("  ") < text.count(
+            "  "
+        ), "Count must be greater than zero"
 
     def test_normalize_content_without_html_stripping(self):
         """Test normalization without HTML stripping."""
@@ -625,7 +627,8 @@ class TestSemanticDiffer:
                 differ_with_embeddings, "compute_semantic_similarity", return_value=similarity
             ):
                 result = differ_with_embeddings.compute_semantic_diff("old", "new")
-                assert (result["significance"] == expected_sig, "Result must not be empty"
+                assert (
+                    result["significance"] == expected_sig
                 ), f"Similarity {similarity} should be '{expected_sig}'"
 
     def test_should_resync_identical(self, differ_with_embeddings):
@@ -711,9 +714,10 @@ class TestSemanticDifferIntegration:
         content_differ = ContentDiffer(ignore_whitespace=False)
         content_diff_result = content_differ.diff(old, new, normalize=False)
         # Content-based diff detects formatting change
-        assert (content_diff_result.change_type != ChangeType.NO_CHANGE, "Result must not be empty"
+        assert (
+            content_diff_result.change_type != ChangeType.NO_CHANGE
             or content_diff_result.semantic_similarity < 1.0
-        )
+        ), "Formatting change should remain distinguishable"
 
         # Semantic differ should recognize semantic equivalence
         semantic_differ = SemanticDiffer()
@@ -733,8 +737,9 @@ class TestSemanticDifferIntegration:
 
         # Should be consistent
         assert should_resync == diff["should_update"], "should_resync is not valid"
-        assert diff["is_semantically_similar"] == (not should_resync, "Condition must be true"
-        ), "Condition must be true"
+        assert diff["is_semantically_similar"] == (
+            not should_resync
+        ), "Semantic similarity and resync decisions must agree"
 
 
 # ============================================================================

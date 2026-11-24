@@ -159,6 +159,40 @@ class TestRobinHoodHashTable:
         assert result is False, "Result must not be empty"
         assert table.size == 0, "size is not valid"
 
+    def test_robin_hood_delete_repairs_only_probe_cluster(self, monkeypatch):
+        """Deletion shifts the affected cluster without reinserting the full table."""
+        table = RobinHoodHashTable[str, int](initial_capacity=8)
+        monkeypatch.setattr(table, "_hash", lambda _key: 0)
+        for key, value in (("a", 1), ("b", 2), ("c", 3)):
+            table.insert(key, value)
+        monkeypatch.setattr(
+            table,
+            "insert",
+            lambda *_args, **_kwargs: (_ for _ in ()).throw(
+                AssertionError("delete must not reinsert the full table")
+            ),
+        )
+
+        delete_result = table.delete("b")
+        assert delete_result is True
+        assert table.size == 2
+        assert table.lookup("a") == 1
+        assert table.lookup("c") == 3
+        assert table.lookup("b") is None
+
+    def test_robin_hood_delete_moves_entry_across_different_home_bucket(self, monkeypatch):
+        table = RobinHoodHashTable[str, int](initial_capacity=8)
+        homes = {"a": 0, "b": 1, "c": 0}
+        monkeypatch.setattr(table, "_hash", lambda key: homes[key])
+        for key, value in (("a", 1), ("b", 2), ("c", 3)):
+            table.insert(key, value)
+
+        delete_result = table.delete("a")
+        assert delete_result is True
+        assert table.lookup("a") is None
+        assert table.lookup("b") == 2
+        assert table.lookup("c") == 3
+
     def test_robin_hood_resize(self):
         """Test table resizing."""
         table = RobinHoodHashTable[str, int](initial_capacity=4, max_load_factor=0.75)

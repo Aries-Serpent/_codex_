@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import ast
 import re
+import textwrap
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
@@ -156,7 +157,20 @@ class intuitive_aptitude:
         """Parse *code* and populate analysis artefacts."""
 
         self.reset()
-        self._source = code or ""
+        self._source = textwrap.dedent(code or "")
+        try:
+            ast.parse(self._source)
+        except (IndentationError, SyntaxError):
+            lines = self._source.splitlines()
+            normalized: list[str] = []
+            for line in lines:
+                stripped = line.lstrip()
+                leading = len(line) - len(stripped)
+                if leading >= 8 and stripped.startswith(("import ", "from ")):
+                    normalized.append(line[leading:])
+                else:
+                    normalized.append(line)
+            self._source = "\n".join(normalized)
         try:
             self.metrics["loc"] = float(len(self._source.splitlines()))
             self.ast_tree = ast.parse(self._source)
@@ -170,7 +184,7 @@ class intuitive_aptitude:
 
     def _extract_all_optimized(self) -> None:
         """OPTIMIZATION: Single-pass extraction replacing 7 separate ast.walk() calls.
-        
+
         Consolidates:
         - _extract_imports (1 walk)
         - _extract_globals (direct body iteration)
@@ -178,7 +192,7 @@ class intuitive_aptitude:
         - _extract_classes (1 walk)
         - _analyze_patterns (1 walk)
         - Naming classification (embedded)
-        
+
         Result: O(n) instead of O(7n) where n = AST nodes
         """
         assert self.ast_tree is not None
@@ -213,21 +227,25 @@ class intuitive_aptitude:
             # Imports
             if isinstance(node, ast.Import):
                 for alias in node.names:
-                    self.imports.append(ImportInfo(
-                        module=None,
-                        name=alias.name,
-                        alias=alias.asname,
-                        level=0,
-                    ))
+                    self.imports.append(
+                        ImportInfo(
+                            module=None,
+                            name=alias.name,
+                            alias=alias.asname,
+                            level=0,
+                        )
+                    )
                     cache_name(alias.name)
             elif isinstance(node, ast.ImportFrom):
                 for alias in node.names:
-                    self.imports.append(ImportInfo(
-                        module=node.module,
-                        name=alias.name,
-                        alias=alias.asname,
-                        level=getattr(node, "level", 0) or 0,
-                    ))
+                    self.imports.append(
+                        ImportInfo(
+                            module=node.module,
+                            name=alias.name,
+                            alias=alias.asname,
+                            level=getattr(node, "level", 0) or 0,
+                        )
+                    )
                     cache_name(alias.name)
 
             # Classes and methods
@@ -243,7 +261,9 @@ class intuitive_aptitude:
                         cache_name(body_node.name)
                         args = [a.arg for a in body_node.args.args]
                         kwonly = [a.arg for a in body_node.args.kwonlyargs]
-                        decorators_m = [d for d in (self._expr_to_str(d) for d in body_node.decorator_list) if d]
+                        decorators_m = [
+                            d for d in (self._expr_to_str(d) for d in body_node.decorator_list) if d
+                        ]
                         returns = self._expr_to_str(body_node.returns)
                         doc_m = ast.get_docstring(body_node)
                         calls = self._find_calls(body_node)
@@ -274,35 +294,43 @@ class intuitive_aptitude:
 
             # Patterns
             if isinstance(node, ast.Try):
-                self.patterns["error_handling"].append({
-                    "lineno": getattr(node, "lineno", 0),
-                    "handlers": [self._expr_to_str(h.type) for h in node.handlers if h.type],
-                    "has_finally": bool(node.finalbody),
-                    "has_else": bool(node.orelse),
-                })
+                self.patterns["error_handling"].append(
+                    {
+                        "lineno": getattr(node, "lineno", 0),
+                        "handlers": [self._expr_to_str(h.type) for h in node.handlers if h.type],
+                        "has_finally": bool(node.finalbody),
+                        "has_else": bool(node.orelse),
+                    }
+                )
             elif isinstance(node, (ast.For, ast.AsyncFor, ast.While)):
                 kind = "for" if isinstance(node, (ast.For, ast.AsyncFor)) else "while"
-                self.patterns["iteration"].append({
-                    "lineno": getattr(node, "lineno", 0),
-                    "kind": kind,
-                    "target": self._expr_to_str(getattr(node, "target", None)),
-                    "iter": self._expr_to_str(getattr(node, "iter", None)),
-                    "has_else": bool(node.orelse),
-                })
+                self.patterns["iteration"].append(
+                    {
+                        "lineno": getattr(node, "lineno", 0),
+                        "kind": kind,
+                        "target": self._expr_to_str(getattr(node, "target", None)),
+                        "iter": self._expr_to_str(getattr(node, "iter", None)),
+                        "has_else": bool(node.orelse),
+                    }
+                )
             elif isinstance(node, ast.If):
-                self.patterns["conditional"].append({
-                    "lineno": getattr(node, "lineno", 0),
-                    "test": self._expr_to_str(node.test),
-                    "branches": 1 + self._count_elifs(node),
-                    "has_else": bool(node.orelse),
-                })
+                self.patterns["conditional"].append(
+                    {
+                        "lineno": getattr(node, "lineno", 0),
+                        "test": self._expr_to_str(node.test),
+                        "branches": 1 + self._count_elifs(node),
+                        "has_else": bool(node.orelse),
+                    }
+                )
             elif isinstance(node, ast.Call):
-                self.patterns["function_calls"].append({
-                    "lineno": getattr(node, "lineno", 0),
-                    "call": self._expr_to_str(node.func),
-                    "args": len(getattr(node, "args", []) or []),
-                    "keywords": [kw.arg for kw in getattr(node, "keywords", []) if kw.arg],
-                })
+                self.patterns["function_calls"].append(
+                    {
+                        "lineno": getattr(node, "lineno", 0),
+                        "call": self._expr_to_str(node.func),
+                        "args": len(getattr(node, "args", []) or []),
+                        "keywords": [kw.arg for kw in getattr(node, "keywords", []) if kw.arg],
+                    }
+                )
 
         # Module-level functions and variables (NOT inside classes)
         # These are only in the module body, not nested deeper
@@ -478,7 +506,9 @@ class intuitive_aptitude:
                     if isinstance(body_node, ast.FunctionDef):
                         args = [a.arg for a in body_node.args.args]
                         kwonly = [a.arg for a in body_node.args.kwonlyargs]
-                        decorators_m = [d for d in (self._expr_to_str(d) for d in body_node.decorator_list) if d]
+                        decorators_m = [
+                            d for d in (self._expr_to_str(d) for d in body_node.decorator_list) if d
+                        ]
                         returns = self._expr_to_str(body_node.returns)
                         doc_m = ast.get_docstring(body_node)
                         calls = self._find_calls(body_node)
@@ -664,7 +694,9 @@ class intuitive_aptitude:
                 styles["Simple"] += 1
 
         try:
-            if isinstance(self.ast_tree, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            if isinstance(
+                self.ast_tree, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+            ):
                 module_doc = ast.get_docstring(self.ast_tree)
             else:
                 module_doc = None

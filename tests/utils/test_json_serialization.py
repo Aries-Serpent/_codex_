@@ -41,7 +41,10 @@ except (ImportError, AttributeError):
 try:
     import torch
 
-    TORCH_AVAILABLE = True
+    TORCH_AVAILABLE = all(
+        hasattr(torch, name)
+        for name in ("Tensor", "tensor", "from_numpy", "rand", "manual_seed", "save", "load")
+    )
 except (ImportError, AttributeError):
     torch = None
     TORCH_AVAILABLE = False
@@ -249,12 +252,16 @@ class TestEnumandDataclass:
         dt = datetime(2024, 1, 15, 10, 30, 45, tzinfo=UTC)
         simple = SimpleDataclass(name="inner", value=99, timestamp=dt)
         nested = NestedDataclass(
-            simple=simple, uuid_val=UUID("12345678-1234-5678-1234-567812345678"), decimal_val=Decimal("3.14")
+            simple=simple,
+            uuid_val=UUID("12345678-1234-5678-1234-567812345678"),
+            decimal_val=Decimal("3.14"),
         )
         result = safe_json_dumps(nested)
         loaded = json.loads(result)
         assert loaded["simple"]["name"] == "inner", "Condition must be true"
-        assert "12345678-1234-5678-1234-567812345678" in loaded["uuid_val"], "Condition must be true"
+        assert (
+            "12345678-1234-5678-1234-567812345678" in loaded["uuid_val"]
+        ), "Condition must be true"
         assert "3.14" in loaded["decimal_val"], "Condition must be true"
 
 
@@ -442,6 +449,7 @@ class TestValidation:
 
     def test_validate_non_serializable_type(self):
         """Test detection of non-serializable types."""
+
         class CustomObject:
             pass
 
@@ -527,6 +535,7 @@ class TestErrorHandling:
 
     def test_non_serializable_object_strict_mode(self):
         """Test error on non-serializable object in strict mode."""
+
         class CustomObject:
             pass
 

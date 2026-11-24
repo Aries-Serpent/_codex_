@@ -132,7 +132,7 @@ def _cpu_metadata() -> MutableMapping[str, Any]:
                 details["max_frequency_mhz"] = round(float(freq.max), 3)
             if getattr(freq, "min", None):
                 details["min_frequency_mhz"] = round(float(freq.min), 3)
-    except (ValueError, TypeError, RuntimeError) as exc:
+    except (ImportError, ModuleNotFoundError, ValueError, TypeError, RuntimeError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         LOGGER.debug("Failed to collect psutil CPU metadata: %s", exc)

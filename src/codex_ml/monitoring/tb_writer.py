@@ -64,18 +64,29 @@ class TBWriter:
         ):  # pragma: no cover - tensorboard runtime errors
             logger.debug("Suppressed exception in handler", exc_info=True)
 
-    def close(self) -> None:
+    def flush(self) -> None:
         if self._writer is None:
             return
+        flush = getattr(self._writer, "flush", None)
+        if not callable(flush):
+            return
         try:
-            self._writer.flush()
+            flush()
         except (
             IOError,
             OSError,
             ModuleNotFoundError,
             ImportError,
+            AttributeError,
+            RuntimeError,
+            TypeError,
         ):  # pragma: no cover - flushing is best-effort
             logger.debug("Suppressed exception in handler", exc_info=True)
+
+    def close(self) -> None:
+        if self._writer is None:
+            return
+        self.flush()
         try:
             self._writer.close()
         except (

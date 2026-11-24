@@ -25,8 +25,13 @@ Features:
 from __future__ import annotations
 
 import logging
+import sys
 
 logger = logging.getLogger(__name__)
+
+# Keep legacy and src-qualified imports on the same module object.
+sys.modules["training.engine_hf_trainer"] = sys.modules[__name__]
+sys.modules["src.training.engine_hf_trainer"] = sys.modules[__name__]
 
 # ruff: noqa: E402, I001
 
@@ -333,13 +338,11 @@ def _ensure_hf_trainer_imports() -> None:
         pass
 
     try:
-        from codex_ml.monitoring.codex_logging import (
-            CodexLoggers as _CodexLoggers,
-            _codex_log_all as _CODEX_LOG_ALL,
-            _codex_logging_bootstrap as _CODEX_BOOTSTRAP,
-            _codex_patch_argparse as _CODEX_PATCH,
-            _codex_sample_system as _CODEX_SAMPLE,
-        )
+        from codex_ml.monitoring.codex_logging import CodexLoggers as _CodexLoggers
+        from codex_ml.monitoring.codex_logging import _codex_log_all as _CODEX_LOG_ALL
+        from codex_ml.monitoring.codex_logging import _codex_logging_bootstrap as _CODEX_BOOTSTRAP
+        from codex_ml.monitoring.codex_logging import _codex_patch_argparse as _CODEX_PATCH
+        from codex_ml.monitoring.codex_logging import _codex_sample_system as _CODEX_SAMPLE
 
         CodexLoggers = _CodexLoggers
         _codex_log_all = _CODEX_LOG_ALL
@@ -376,11 +379,9 @@ def _ensure_hf_trainer_imports() -> None:
         pass
 
     try:
-        from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
-            build_payload_bytes as _build_payload_bytes,
-            load_payload as _load_payload,
-            set_seed as _set_seed,
-        )
+        from codex_ml.utils.checkpointing import build_payload_bytes as _build_payload_bytes  # type: ignore[attr-defined]
+        from codex_ml.utils.checkpointing import load_payload as _load_payload
+        from codex_ml.utils.checkpointing import set_seed as _set_seed
 
         build_payload_bytes = _build_payload_bytes
         load_payload = _load_payload
@@ -398,10 +399,8 @@ def _ensure_hf_trainer_imports() -> None:
             pass
 
     try:
-        from codex_ml.utils.hf_pinning import (
-            ensure_pinned_kwargs as _ensure_pinned_kwargs,
-            load_from_pretrained as _load_from_pretrained,
-        )
+        from codex_ml.utils.hf_pinning import ensure_pinned_kwargs as _ensure_pinned_kwargs
+        from codex_ml.utils.hf_pinning import load_from_pretrained as _load_from_pretrained
 
         ensure_pinned_kwargs = _ensure_pinned_kwargs
         load_from_pretrained = _load_from_pretrained
@@ -423,11 +422,9 @@ def _ensure_hf_trainer_imports() -> None:
         pass
 
     try:
-        from codex_ml.utils.yaml_support import (
-            safe_load as _safe_load,
-            MissingPyYAMLError as _MissingPyYAMLError,
-            YAMLError as _YAMLError,
-        )
+        from codex_ml.utils.yaml_support import MissingPyYAMLError as _MissingPyYAMLError
+        from codex_ml.utils.yaml_support import YAMLError as _YAMLError
+        from codex_ml.utils.yaml_support import safe_load as _safe_load
 
         safe_load = _safe_load
         MissingPyYAMLError = _MissingPyYAMLError
@@ -830,6 +827,7 @@ class NDJSONMetricsWriter:
     def write(self, obj: dict[str, Any] | LogRecord) -> None:
         """Write ``obj`` as a JSON line respecting the strict schema."""
 
+        _ensure_hf_trainer_imports()
         if isinstance(obj, LogRecord):
             data = obj.redacted().dict()
         else:
@@ -839,7 +837,7 @@ class NDJSONMetricsWriter:
                 valid_keys = {f.name for f in _dc.fields(LogRecord)}
                 filtered = {k: v for k, v in obj.items() if k in valid_keys}
                 data = LogRecord(**filtered).redacted().dict()
-            except (IOError, OSError, ModuleNotFoundError, ImportError):
+            except (TypeError, ValueError):
                 logger.warning("Exception occurred", exc_info=True)
                 data = obj
         if self._async is not None:
@@ -865,6 +863,7 @@ class CSVMetricsWriter:
         self._header: list[str] | None = None
 
     def write(self, obj: Mapping[str, Any] | LogRecord) -> None:
+        _ensure_hf_trainer_imports()
         row = obj.redacted().dict() if isinstance(obj, LogRecord) else dict(obj)
         new_keys = set(row)
         if self._header is None:
@@ -1259,13 +1258,16 @@ def run_hf_trainer(
     tokenizer_name = tokenizer_name or cast(Optional[str], cfg.get("tokenizer_name")) or model_name
     source = tokenizer_path or tokenizer_name
     tokenizer_kwargs: dict[str, Any] = {"use_fast": use_fast_tokenizer}
-    if not _looks_like_local_source(source):
-        tokenizer_kwargs["revision"] = get_hf_revision(source)
-    tokenizer = load_from_pretrained(
-        AutoTokenizer,
-        source,
-        **tokenizer_kwargs,
-    )
+    if tokenizer_path:
+        tokenizer = AutoTokenizer.from_pretrained(source, **tokenizer_kwargs)
+    else:
+        if not _looks_like_local_source(source):
+            tokenizer_kwargs["revision"] = get_hf_revision(source)
+        tokenizer = load_from_pretrained(
+            AutoTokenizer,
+            source,
+            **tokenizer_kwargs,
+        )
     if tokenizer.pad_token is None:
         logger.warning(
             "Text backend from '%s' has no pad token; falling back to eos padding. "

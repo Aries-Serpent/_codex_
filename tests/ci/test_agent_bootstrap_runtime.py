@@ -100,7 +100,7 @@ def test_baseline_guard_rejects_compatibility_and_dump_regressions(tmp_path, mut
     if mutation == "extra_job":
         data["jobs"]["unexpected"] = {"runs-on": "ubuntu-latest", "steps": []}
     elif mutation == "runner":
-        data["jobs"]["resource-profile"]["runs-on"] = "ubuntu-latest"
+        data["jobs"]["resource-profile"]["runs-on"] = "ubuntu-latest-m"
     elif mutation == "timeout":
         job["timeout-minutes"] = 60
     elif mutation == "permissions":

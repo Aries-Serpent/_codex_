@@ -1,3 +1,13 @@
+## SESSION SUMMARY — 2026-11-22 — PR #5766 CI rescue
+
+- Fast Validation run `44969101570` failed strict yamllint on the RAG cleanup step.
+- Converted that step to a YAML block scalar without changing its shell commands.
+- Strict yamllint, shell syntax and 13 focused workflow tests passed locally;
+  actionlint was unavailable. Hosted checks on the fix remain unverified.
+- Direct implementation; a code-review agent reviewed the workflow diff.
+
+---
+
 ## SESSION SUMMARY — 2026-10-29 — PR #5719 CI rescue
 
 ### Objective

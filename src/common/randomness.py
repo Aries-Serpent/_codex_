@@ -58,7 +58,7 @@ def set_seed(seed: int | None) -> int:
         if manual_seed is not None:
             try:
                 manual_seed(seed)
-            except (ImportError, AttributeError) as exc:  # pragma: no cover - fallback logging only
+            except (ImportError, AttributeError, OSError, RuntimeError) as exc:
                 logger.debug("Unable to invoke torch.manual_seed: %s", exc)
             else:
                 try:

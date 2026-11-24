@@ -96,14 +96,19 @@ class MemoryAugmentedComplianceAssessor:
             enable_memory: Whether to use memory (feature flag)
         """
         self.config = config or QuantumConfig()
-        self.monitor = monitor or CoherenceMonitor()
         self.repository = repository or QuantumMetricRepository()
+        self.monitor = monitor or CoherenceMonitor(
+            config=self.config,
+            repository=self.repository,
+        )
         self.confidence_threshold = confidence_threshold
         self.enable_memory = enable_memory
 
         # Create base assessor (full quantum assessment)
         self.base_assessor = QuantumComplianceAssessor(
-            config=config, monitor=monitor, repository=repository
+            config=self.config,
+            monitor=self.monitor,
+            repository=self.repository,
         )
 
         # Create or use provided memory manager
@@ -111,6 +116,7 @@ class MemoryAugmentedComplianceAssessor:
             self.memory = QuantumMemoryManager(self.config)
         else:
             self.memory = memory_manager
+        self.memory_manager = self.memory
 
         # Statistics
         self.total_assessments = 0

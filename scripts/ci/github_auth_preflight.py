@@ -16,8 +16,14 @@ from contextlib import redirect_stdout
 from typing import Any
 from urllib.parse import quote
 
-from scripts.ci._token_resolver import CANONICAL_HIERARCHY
+from scripts.ci._token_resolver import (
+    CANONICAL_HIERARCHY,
+    resolve_app_id,
+    resolve_app_installation_id,
+    resolve_app_private_key,
+)
 from scripts.ci.approve_pending_runs import AppTokenRevocationError, _gh, _mint_app_token
+from scripts.ci.github_rate_limit import quota_status
 
 READ_ONLY_APP_PERMISSIONS = {
     "actions": "read",
@@ -53,11 +59,13 @@ def inspect_access(repo: str, environment: str, branch: str) -> dict[str, Any]:
         (name, os.environ.get(name, "").strip())
         for name in (*CANONICAL_HIERARCHY, "CODEX_ADMIN_KEY")
     ]
-    app_values = [
-        os.environ.get(name) or os.environ.get("_" + name, "")
-        for name in ("GITHUB_APP_ID", "GITHUB_APP_PRIVATE_KEY", "GITHUB_APP_INSTALLATION_ID")
-    ]
+    app_id, _ = resolve_app_id()
+    private_key, _ = resolve_app_private_key()
+    installation_id, _ = resolve_app_installation_id()
+    app_values = [app_id, private_key, installation_id]
     app_status = "incomplete-configuration" if any(app_values) else "not-configured"
+    if app_id and installation_id and not private_key:
+        app_status = "private-key-not-pem"
     if all(app_values):
         ambient_repo = os.environ.get("REPO") or os.environ.get("GITHUB_REPOSITORY")
         if not app_values[1].lstrip().startswith("-----BEGIN "):
@@ -102,6 +110,7 @@ def inspect_access(repo: str, environment: str, branch: str) -> dict[str, Any]:
         "branch": branch,
         "app_route": app_status,
         "routes": routes,
+        "rate_limit": quota_status(),
         "verified_reads": verified_reads,
         "write_authority": "unverified; no repository mutations performed",
         "protected_approval": "unverified; requires protected runtime evidence",
