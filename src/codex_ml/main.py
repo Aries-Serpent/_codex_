@@ -24,7 +24,7 @@ _HELP_EPILOG = "Run `python -m codex_ml.cli --help` for full subcommands."
 def _resolve_version() -> str:
     try:
         mod = importlib.import_module("codex_ml")
-    except (ValueError, TypeError):
+    except (ImportError, ValueError, TypeError):
         get_default_logger().warning("Exception occurred", exc_info=True)
         return "unknown"
     return str(getattr(mod, "__version__", "unknown"))

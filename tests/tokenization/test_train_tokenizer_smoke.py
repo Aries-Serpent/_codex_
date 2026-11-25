@@ -9,12 +9,11 @@ import json
 import pytest
 
 pytest.importorskip("sentencepiece")
-pytest.importorskip("sentencepiece")
+pytest.importorskip("tokenizers")
 from tokenization.train_tokenizer import TrainTokenizerConfig, train
 
 
 def test_train_tokenizer_smoke(tmp_path):
-    pytest.importorskip("sentencepiece")
     from tokenizers import Tokenizer
 
     corpus = tmp_path / "corpus.txt"

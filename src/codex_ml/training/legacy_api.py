@@ -61,14 +61,46 @@ from codex_ml.utils.train_helpers import maybe_autocast
 logger = logging.getLogger(__name__)
 
 
-def _fallback_metrics_result(cfg: "TrainingRunConfig", train_texts: list[str]) -> dict[str, Any]:
-    """Return minimal offline metrics when training deps are unavailable."""
+def _fallback_metrics_result(
+    cfg: "TrainingRunConfig",
+    train_texts: list[str],
+    *,
+    val_texts: list[str] | None = None,
+    missing_optional: list[str] | None = None,
+    dataset_format: str = "text",
+    deterministic: bool = True,
+    resume: bool = False,
+) -> dict[str, Any]:
+    """Return and persist minimal offline metrics when training deps are unavailable."""
 
     tokens = sum(len(text.split()) for text in train_texts)
     metrics = [
         {"epoch": epoch, "tokens": tokens, "loss": round(1.0 / (epoch + 1), 4)}
         for epoch in range(max(cfg.max_epochs, 1))
     ]
+
+    metrics_target = Path(cfg.metrics_out)
+    metrics_root = metrics_target.parent if str(metrics_target.parent) else Path(".")
+    log_formats = tuple(getattr(cfg, "log_formats", ("ndjson",)))
+    file_logger = FileLogger(
+        root=metrics_root,
+        formats=log_formats,
+        filename_stem=metrics_target.stem,
+    )
+    log_run_metadata(
+        file_logger,
+        seed=getattr(cfg, "seed", None),
+        deterministic=deterministic,
+        resume=resume,
+        dataset_format=dataset_format,
+        train_examples=len(train_texts),
+        eval_examples=len(val_texts) if val_texts else 0,
+        missing_optional=missing_optional,
+        extras={"log_formats": list(log_formats)},
+    )
+    for metric in metrics:
+        file_logger.log(metric)
+
     return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
 
 
@@ -1006,9 +1038,25 @@ def run_functional_training(
             from torch.utils.data import DataLoader
         except (ValueError, TypeError):
             logger.warning("Exception occurred", exc_info=True)
-            return _fallback_metrics_result(cfg, train_texts)
+            return _fallback_metrics_result(
+                cfg,
+                train_texts,
+                val_texts=val_texts,
+                missing_optional=missing_optional,
+                dataset_format=dataset_format,
+                deterministic=deterministic_flag,
+                resume=resume,
+            )
         if not _torch_manual_training_available(torch):
-            return _fallback_metrics_result(cfg, train_texts)
+            return _fallback_metrics_result(
+                cfg,
+                train_texts,
+                val_texts=val_texts,
+                missing_optional=missing_optional,
+                dataset_format=dataset_format,
+                deterministic=deterministic_flag,
+                resume=resume,
+            )
 
         # Continue with manual encoding (torch available but not transformers)
         def _encode_texts(
