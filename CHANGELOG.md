@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5857 merge conflict resolution and continuity handoff (2026-11-25)
+- Merge `origin/0D_base_` into the Copilot session-continuity branch and resolve the
+  session-handoff, secret-pattern, and AI-review integrity conflicts semantically.
+- Preserve live PR #5857 mergeability and exact-SHA check evidence without claiming
+  merge readiness until terminal checks and exact-SHA AI approval pass.
+- Keep the PR draft, preserve 0D/main controls, and add the continuation checkpoint
+  to `.codex/session_handoff.json` and `.codex/NEXT_CONTINUATION_PROMPT.md`.
+
 ### Fixed - Agentic Codespace relaunch and PR review remediation (2026-11-25)
 - Published exact-SHA routing remediation on PR #5855 and CodeQL remediation on PR #5856.
 - Preserved the cognitive-preflight workflow as a read-only PR gate; no github-actions bot commit or push is permitted by the workflow.

@@ -1,3 +1,25 @@
+## Session: PR #5857 merge-conflict resolution and Codespace continuity (2026-11-25)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Merged `origin/0D_base_` at `d8c2e69446d64ee60af8dc923bcc93d8408574d2` into
+  `copilot/session-codespace-continuity-20261125` and published merge commit
+  `88d4bed2a5768cb1bc89c21d0eaf6c04b0c3b2ce` through the PR branch.
+- Resolved three merge conflicts: retained canonical v2
+  `.codex/session_handoff.json`, combined source-file secret-classification safeguards,
+  and preserved the 0D source-file integrity regression test.
+- Live PR #5857 mergeability is `true`; GitHub no longer reports merge conflicts.
+- The resolved merge tip was validated with the AI-review integrity and workflow
+  validation suites: 62 focused tests passed.
+- The PR remains draft and merge readiness remains pending because exact-SHA checks,
+  review/approval, and the Cognitive Pre-flight rerun must terminalize at the live head.
+- No issue was closed and no merge, promotion, deployment, direct 0D/main push,
+  workflow dispatch, or secret mutation was performed.
+
 ## Session: 2026-11-25 Codespace relaunch, PR 5855, and PR 5856
 
 ### Agents Used
