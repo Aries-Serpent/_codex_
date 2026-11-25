@@ -8,7 +8,24 @@
   "authority_sha_chunks": ["496da57d", "a8f46fec", "3bf52715", "020028be", "88491ca5"],
   "closeout_branch": "copilot/session-codespace-closeout-20261125",
   "closeout_source_commit_chunks": ["62f3f85e", "b8d3da30", "0cc16f2d", "1d68a18e", "88957d07"],
+  "closeout_handoff_commit_chunks": ["474cef81", "5a98d40b", "b9949011", "5977a9df", "ee3f0c06"],
+  "closeout_evidence_commit_chunks": ["01aeda9f", "6b66ac9f", "3378588b", "86b07c25", "1946c4d3"],
   "closeout_base": "origin/0D_base_",
+  "closeout_feature": {
+    "number": 5854,
+    "html_url": "https://github.com/Aries-Serpent/_codex_/issues/5854",
+    "state": "open"
+  },
+  "remote_publication": {
+    "main_closeout_branch": "copilot/session-codespace-closeout-20261125",
+    "main_closeout_sha_chunks": ["01aeda9f", "6b66ac9f", "3378588b", "86b07c25", "1946c4d3"],
+    "pooling_branch": "copilot/session-closeout-unit-pooling-20261125",
+    "pooling_sha_chunks": ["5cff6b21", "e2914dc1", "f8e2f22a", "faa7d2d8", "7a4135b9"],
+    "error_logging_branch": "copilot/session-closeout-unit-error-logging-20261125",
+    "error_logging_sha_chunks": ["b63cfbae", "efb1f502", "252e5e1c", "3b1fae0d", "752e7a92"],
+    "telemetry_branch": "copilot/session-closeout-unit-telemetry-20261125",
+    "telemetry_sha_chunks": ["88042c15", "c4a08253", "ecb94b80", "6b0f6a93", "3882cc73"]
+  },
   "preservation_bundle": {
     "path": "/workspaces/_codex_/.codex/sandbox-bundles/codespace-closeout/codespace-closeout-main-20261125T044616Z.bundle.tar.gz",
     "sha256_chunks": ["54d0fce0", "3462d5e2", "b05263f9", "605ac085", "0828cb82", "22d21a7f", "b548e916", "05a55b68"],

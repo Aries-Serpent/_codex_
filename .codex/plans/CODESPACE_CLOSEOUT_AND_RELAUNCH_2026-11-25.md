@@ -1,6 +1,6 @@
 # Codespace Closeout and Relaunch Plan
 
-**Status:** Implementation in progress; source commit `62f3f85eb8d3da300cc16f2d1d68a18e88957d07` created locally, remote publication pending
+**Status:** Implementation complete for remote closeout preservation. Source, handoff, and protected-evidence commits are published on `copilot/session-codespace-closeout-20261125`; closeout feature issue #5854 is open.
 
 ## Live Truth
 
