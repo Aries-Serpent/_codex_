@@ -1,6 +1,6 @@
 {
   "active_issue": 5854,
-  "active_pr": null,
+  "active_pr": 5857,
   "branch": "copilot/session-codespace-continuity-20261125",
   "checkpoint": {
     "checkpoint_id": "cp_20261125_1ac488f2",
@@ -16,34 +16,16 @@
     "Added runtime-only periodic checkpoints and reindex support",
     "Added focused continuity tests and documentation",
     "Completed final formatting, lint, compile, focused tests, shell, JSONC, and type validation",
-    "Refined staged bundle to archive and SHA256 only"
+    "Refined staged bundle to archive and SHA256 only",
+    "Opened draft sub-PR #5857 for exact-SHA terminalization"
   ],
   "files": {
-    "created": [
-      ".codex/NEXT_CONTINUATION_PROMPT.md",
-      ".codex/checkpoints/v1/codespace-closeout/checkpoint_cp_20261125_1ac488f2.json.gz",
-      ".codex/checkpoints/v1/codespace-continuity-20261125/checkpoint_cp_20261125_0d2988c1.json.gz",
-      ".codex/sandbox-bundles/codespace-session/codespace-session-continuity-20261125T201952Z.bundle.tar.gz",
-      ".codex/sandbox-bundles/codespace-session/codespace-session-continuity-20261125T201952Z.bundle.tar.gz.sha256",
-      "scripts/autonomous/codespace_session_guard.py",
-      "tests/autonomous/test_codespace_session_guard.py"
-    ],
+    "created": [],
     "deleted": [],
-    "modified": [
-      ".codex/campaign_metrics.jsonl",
-      ".codex/session_handoff.json",
-      ".devcontainer/scripts/post-create.sh",
-      ".devcontainer/scripts/post-start.sh",
-      ".vscode/settings.json",
-      ".vscode/tasks.json",
-      "docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md",
-      "docs/plans/COPILOT_SESSION_HANDOFF_DESIGN.md",
-      "scripts/autonomous/codespace_keepalive.py",
-      "tests/autonomous/test_codespace_keepalive.py"
-    ]
+    "modified": []
   },
-  "generated_at": "2026-11-25T20:23:24Z",
-  "head": "ab7937ffbe28c6bb02cc2f014ecf179477419f9a",
+  "generated_at": "2026-11-25T20:26:55Z",
+  "head": "7d36fe68c4559864ef3007915fd76389b6f852ce",
   "next_continuation_prompt": ".codex/NEXT_CONTINUATION_PROMPT.md",
   "objective": "Implement durable Copilot Codespace continuity",
   "origin_refs": {
@@ -52,7 +34,7 @@
   },
   "owner": "mbaetiong",
   "pending_tasks": [
-    "Prepare sub-PR and exact-SHA review"
+    "Monitor PR #5857 exact-SHA checks and AI review"
   ],
   "preservation_bundle": {
     "path": "/workspaces/_codex_/.codex/sandbox-bundles/codespace-session/codespace-session-continuity-20261125T201952Z.bundle.tar.gz",
@@ -80,15 +62,11 @@
   "validation": {
     "blockers": [
       {
-        "code": "dirty_worktree",
-        "path": "/workspaces/_codex_"
-      },
-      {
         "code": "repository_process_running",
         "path": "/workspaces/_codex_"
       }
     ],
-    "generated_at": "2026-11-25T20:23:24Z",
+    "generated_at": "2026-11-25T20:26:55Z",
     "keepalive": {
       "overrides_platform_idle_policy": false,
       "reason": "status_missing",
@@ -108,13 +86,16 @@
     "worktrees": [
       {
         "branch": "copilot/session-codespace-continuity-20261125",
-        "dirty": true,
-        "divergence": null,
-        "head": "ab7937ffbe28c6bb02cc2f014ecf179477419f9a",
+        "dirty": false,
+        "divergence": {
+          "ahead": 0,
+          "behind": 0
+        },
+        "head": "7d36fe68c4559864ef3007915fd76389b6f852ce",
         "operation_state": "none",
         "path": "/workspaces/_codex_",
-        "status_entries": 17,
-        "upstream": null
+        "status_entries": 0,
+        "upstream": "origin/copilot/session-codespace-continuity-20261125"
       }
     ]
   }

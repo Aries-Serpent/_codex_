@@ -1,14 +1,14 @@
 ## Next Continuation Prompt
 
 ```text
-Continue Aries-Serpent/_codex_ from Issue #5854 and No active PR.
+Continue Aries-Serpent/_codex_ from Issue #5854 and PR #5857.
 
 Objective:
 Implement durable Copilot Codespace continuity
 
 Verified handoff state:
 - Branch: copilot/session-codespace-continuity-20261125
-- HEAD: ab7937ffbe28c6bb02cc2f014ecf179477419f9a
+- HEAD: 7d36fe68c4559864ef3007915fd76389b6f852ce
 - origin/main: 4e0b834d369dc4ff6acf92932bc1f678ec7d70f3
 - origin/0D_base_: d8c2e69446d64ee60af8dc923bcc93d8408574d2
 - Checkpoint: cp_20261125_1ac488f2
@@ -25,9 +25,10 @@ Completed:
 - [x] Added focused continuity tests and documentation
 - [x] Completed final formatting, lint, compile, focused tests, shell, JSONC, and type validation
 - [x] Refined staged bundle to archive and SHA256 only
+- [x] Opened draft sub-PR #5857 for exact-SHA terminalization
 
 Pending:
-- [ ] Prepare sub-PR and exact-SHA review
+- [ ] Monitor PR #5857 exact-SHA checks and AI review
 
 First checks:
 1. Fetch origin and verify live branch, issue, PR, SHA, review, and check state.
