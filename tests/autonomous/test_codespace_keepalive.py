@@ -114,6 +114,14 @@ def test_start_is_idempotent_when_owned_process_exists(
     assert result == {"started": False, "already_running": True, "pid": 12345}
 
 
+def test_periodic_continuity_checkpoint_interval_parser() -> None:
+    args = codespace_keepalive.build_parser().parse_args(
+        ["run", "--continuity-checkpoint-interval-seconds", "900"]
+    )
+
+    assert args.continuity_checkpoint_interval_seconds == 900
+
+
 def test_status_reports_platform_policy_boundary(tmp_path: Path) -> None:
     status_path = tmp_path / "runtime" / "codespace_keepalive.json"
     status_path.parent.mkdir()

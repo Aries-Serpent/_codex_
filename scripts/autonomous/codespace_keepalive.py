@@ -21,6 +21,7 @@ from typing import Any
 
 DEFAULT_ACTIVE_MARKER_TTL_SECONDS = 8 * 60 * 60
 DEFAULT_INTERVAL_SECONDS = 60
+DEFAULT_CONTINUITY_CHECKPOINT_INTERVAL_SECONDS = 15 * 60
 DEFAULT_MAX_DURATION_SECONDS = 8 * 60 * 60
 DEFAULT_SERVICE_URL = "http://127.0.0.1:8765/api/health"
 PID_NAME = "codespace_keepalive.pid"
@@ -197,6 +198,7 @@ def start_daemon(
     marker_ttl_seconds: int = DEFAULT_ACTIVE_MARKER_TTL_SECONDS,
     max_duration_seconds: int = DEFAULT_MAX_DURATION_SECONDS,
     service_url: str = DEFAULT_SERVICE_URL,
+    continuity_checkpoint_interval_seconds: int = DEFAULT_CONTINUITY_CHECKPOINT_INTERVAL_SECONDS,
 ) -> dict[str, Any]:
     runtime_dir.mkdir(parents=True, exist_ok=True)
     pid_file = runtime_dir / PID_NAME
@@ -227,6 +229,8 @@ def start_daemon(
                 str(max_duration_seconds),
                 "--service-url",
                 service_url,
+                "--continuity-checkpoint-interval-seconds",
+                str(continuity_checkpoint_interval_seconds),
             ],
             cwd=repo_root,
             stdin=subprocess.DEVNULL,
@@ -368,6 +372,7 @@ def run_daemon(args: argparse.Namespace) -> int:
     pid_file.write_text(f"{os.getpid()}\n", encoding="utf-8")
     marker = touch_active_marker(runtime_dir)
     started_at = utc_now()
+    continuity_checkpoint_elapsed = 0.0
     stopping = False
     stop_event = threading.Event()
     ssh_process: subprocess.Popen[bytes] | None = None
@@ -399,6 +404,38 @@ def run_daemon(args: argparse.Namespace) -> int:
             elif not active and ssh_process is not None:
                 stop_connection(ssh_process, runtime_dir)
                 ssh_process = None
+            elapsed_after_checkpoint = (utc_now() - started_at).total_seconds()
+            checkpoint_interval = getattr(
+                args,
+                "continuity_checkpoint_interval_seconds",
+                DEFAULT_CONTINUITY_CHECKPOINT_INTERVAL_SECONDS,
+            )
+            if elapsed_after_checkpoint - continuity_checkpoint_elapsed >= checkpoint_interval:
+                continuity_checkpoint_elapsed = elapsed_after_checkpoint
+                guard_path = (
+                    Path(args.repo_root).expanduser().resolve()
+                    / "scripts"
+                    / "autonomous"
+                    / "codespace_session_guard.py"
+                )
+                if guard_path.is_file():
+                    subprocess.run(
+                        [
+                            sys.executable,
+                            str(guard_path),
+                            "checkpoint",
+                            "--runtime-only",
+                            "--session-id",
+                            f"codespace-{utc_timestamp(started_at)}",
+                            "--task",
+                            "Periodic Codespace continuity checkpoint",
+                        ],
+                        cwd=str(Path(args.repo_root).expanduser().resolve()),
+                        stdin=subprocess.DEVNULL,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        check=False,
+                    )
             heartbeat = write_heartbeat(
                 runtime_dir=runtime_dir,
                 marker=marker,
@@ -437,6 +474,11 @@ def build_parser() -> argparse.ArgumentParser:
     start.add_argument("--marker-ttl-seconds", type=int, default=DEFAULT_ACTIVE_MARKER_TTL_SECONDS)
     start.add_argument("--max-duration-seconds", type=int, default=DEFAULT_MAX_DURATION_SECONDS)
     start.add_argument("--service-url", default=DEFAULT_SERVICE_URL)
+    start.add_argument(
+        "--continuity-checkpoint-interval-seconds",
+        type=int,
+        default=DEFAULT_CONTINUITY_CHECKPOINT_INTERVAL_SECONDS,
+    )
     status = subparsers.add_parser("status", parents=[common])
     status.set_defaults(action="status")
     stop = subparsers.add_parser("stop", parents=[common])
@@ -448,6 +490,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     restart.add_argument("--max-duration-seconds", type=int, default=DEFAULT_MAX_DURATION_SECONDS)
     restart.add_argument("--service-url", default=DEFAULT_SERVICE_URL)
+    restart.add_argument(
+        "--continuity-checkpoint-interval-seconds",
+        type=int,
+        default=DEFAULT_CONTINUITY_CHECKPOINT_INTERVAL_SECONDS,
+    )
     touch = subparsers.add_parser("touch", parents=[common])
     touch.set_defaults(action="touch")
     run = subparsers.add_parser("run", parents=[common])
@@ -455,6 +502,11 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--marker-ttl-seconds", type=int, default=DEFAULT_ACTIVE_MARKER_TTL_SECONDS)
     run.add_argument("--max-duration-seconds", type=int, default=DEFAULT_MAX_DURATION_SECONDS)
     run.add_argument("--service-url", default=DEFAULT_SERVICE_URL)
+    run.add_argument(
+        "--continuity-checkpoint-interval-seconds",
+        type=int,
+        default=DEFAULT_CONTINUITY_CHECKPOINT_INTERVAL_SECONDS,
+    )
     return parser
 
 
@@ -472,6 +524,7 @@ def main(argv: list[str] | None = None) -> int:
             marker_ttl_seconds=args.marker_ttl_seconds,
             max_duration_seconds=args.max_duration_seconds,
             service_url=args.service_url,
+            continuity_checkpoint_interval_seconds=args.continuity_checkpoint_interval_seconds,
         )
     elif args.command == "stop":
         payload = stop_daemon(runtime_dir, repo_root)
@@ -484,6 +537,7 @@ def main(argv: list[str] | None = None) -> int:
             marker_ttl_seconds=args.marker_ttl_seconds,
             max_duration_seconds=args.max_duration_seconds,
             service_url=args.service_url,
+            continuity_checkpoint_interval_seconds=args.continuity_checkpoint_interval_seconds,
         )
     elif args.command == "touch":
         marker = touch_active_marker(runtime_dir)

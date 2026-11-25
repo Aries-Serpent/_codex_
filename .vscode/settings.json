@@ -3,6 +3,7 @@
   "python.analysis.extraPaths": [
     "${workspaceFolder}/src"
   ],
+  "github.copilot.chat.localIndex.enabled": true,
   "python.analysis.typeCheckingMode": "basic",
   "ruff.lint.args": [
     "--config=${workspaceFolder}/pyproject.toml"
