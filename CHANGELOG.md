@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed - Unit error logging test namespace (2026-11-25)
+- Correct the `test_error_logging.py` monkeypatch target to `utils.error_logging._ERROR_LOG_PATH`, matching the module imported by the implementation.
+- The five error-log nodes pass locally without changing production error-log behavior.
+
 ### Fixed - Unit telemetry MetricsServer standalone fallback (2026-11-25)
 - Prevent the legacy telemetry server facade from delegating to an optional standalone package before local `_HAS_PROM` and `start_http_server` behavior is applied.
 - Preserve disabled-Prometheus, success, custom/default parameter, and OSError behavior covered by `tests/test_telemetry_gap_fill.py::TestMetricsServer`.
