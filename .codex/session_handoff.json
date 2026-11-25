@@ -20,15 +20,16 @@
     "Opened draft sub-PR #5857 for exact-SHA terminalization",
     "Opened draft sub-PR #5857",
     "Posted issue #5854 implementation checkpoint comment 7173694825",
-    "Verified remote branch and live PR status"
+    "Verified remote branch and live PR status",
+    "Published implementation and live PR/issue handoff"
   ],
   "files": {
     "created": [],
     "deleted": [],
     "modified": []
   },
-  "generated_at": "2026-11-25T20:28:09Z",
-  "head": "56388a9d5267e1ef89f96012ffe77685833962c4",
+  "generated_at": "2026-11-25T20:29:09Z",
+  "head": "714755d116564161a02856fd368e8c961a7f41a2",
   "live": {
     "issue_comment_id": 7173694825,
     "issue_comment_url": "https://github.com/Aries-Serpent/_codex_/issues/5854#issuecomment-7173694825",
@@ -57,6 +58,11 @@
     "path": "/workspaces/_codex_/.codex/sandbox-bundles/codespace-session/codespace-session-continuity-20261125T201952Z.bundle.tar.gz",
     "sha256": "6ce4bd49b13b499a285fba6fea8acd5766ec6b9e56ef09eeb6cf9f217f1de650"
   },
+  "publication_commits": [
+    "7d36fe68c4559864ef3007915fd76389b6f852ce",
+    "56388a9d5267e1ef89f96012ffe77685833962c4",
+    "714755d116564161a02856fd368e8c961a7f41a2"
+  ],
   "reindex": {
     "database": "/home/vscode/.vscode-remote/data/User/globalStorage/github.copilot-chat/session-store.db",
     "output": "/home/vscode/.codex/runtime/chronicle_search_index.json",
@@ -83,7 +89,7 @@
         "path": "/workspaces/_codex_"
       }
     ],
-    "generated_at": "2026-11-25T20:28:09Z",
+    "generated_at": "2026-11-25T20:29:09Z",
     "keepalive": {
       "overrides_platform_idle_policy": false,
       "reason": "status_missing",
@@ -108,7 +114,7 @@
           "ahead": 0,
           "behind": 0
         },
-        "head": "56388a9d5267e1ef89f96012ffe77685833962c4",
+        "head": "714755d116564161a02856fd368e8c961a7f41a2",
         "operation_state": "none",
         "path": "/workspaces/_codex_",
         "status_entries": 0,
