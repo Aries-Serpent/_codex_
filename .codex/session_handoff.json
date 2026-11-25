@@ -2,6 +2,7 @@
   "active_issue": 5854,
   "active_pr": 5857,
   "branch": "copilot/session-codespace-continuity-20261125",
+  "branch_head": "cf2459d5e42d46cbc9ae049560f72a2fba048d5d",
   "checkpoint": {
     "checkpoint_id": "cp_20261125_1ac488f2",
     "path": "/workspaces/_codex_/.codex/checkpoints/v1/codespace-closeout/checkpoint_cp_20261125_1ac488f2.json.gz"
@@ -21,14 +22,15 @@
     "Opened draft sub-PR #5857",
     "Posted issue #5854 implementation checkpoint comment 7173694825",
     "Verified remote branch and live PR status",
-    "Published implementation and live PR/issue handoff"
+    "Published implementation and live PR/issue handoff",
+    "Added live branch-head publication metadata"
   ],
   "files": {
     "created": [],
     "deleted": [],
     "modified": []
   },
-  "generated_at": "2026-11-25T20:29:09Z",
+  "generated_at": "2026-11-25T20:30:16Z",
   "head": "714755d116564161a02856fd368e8c961a7f41a2",
   "live": {
     "issue_comment_id": 7173694825,
@@ -61,7 +63,8 @@
   "publication_commits": [
     "7d36fe68c4559864ef3007915fd76389b6f852ce",
     "56388a9d5267e1ef89f96012ffe77685833962c4",
-    "714755d116564161a02856fd368e8c961a7f41a2"
+    "714755d116564161a02856fd368e8c961a7f41a2",
+    "cf2459d5e42d46cbc9ae049560f72a2fba048d5d"
   ],
   "reindex": {
     "database": "/home/vscode/.vscode-remote/data/User/globalStorage/github.copilot-chat/session-store.db",
@@ -89,7 +92,7 @@
         "path": "/workspaces/_codex_"
       }
     ],
-    "generated_at": "2026-11-25T20:29:09Z",
+    "generated_at": "2026-11-25T20:30:16Z",
     "keepalive": {
       "overrides_platform_idle_policy": false,
       "reason": "status_missing",
@@ -114,7 +117,7 @@
           "ahead": 0,
           "behind": 0
         },
-        "head": "714755d116564161a02856fd368e8c961a7f41a2",
+        "head": "cf2459d5e42d46cbc9ae049560f72a2fba048d5d",
         "operation_state": "none",
         "path": "/workspaces/_codex_",
         "status_entries": 0,
