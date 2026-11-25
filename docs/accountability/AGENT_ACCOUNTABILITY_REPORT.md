@@ -1,3 +1,16 @@
+## Session: Unit error logging namespace batch (2026-11-25)
+
+### Agents Used
+
+- None — direct execution (no delegated agents).
+
+### Execution and evidence
+
+- Reproduced all five `tests/test_error_logging.py` nodes in the isolated worktree.
+- Corrected the monkeypatch namespace from `src.utils.error_logging` to `utils.error_logging`, matching the imported implementation module.
+- Focused module passes `5/5`; Black, Ruff, compileall, and `git diff --check` pass.
+- No workflow dispatch, owner-control change, secret change, merge, or deployment was performed.
+
 ## Session: Unit telemetry MetricsServer batch (2026-11-25)
 
 ### Agents Used
