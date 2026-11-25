@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "closed_at": "2026-11-24",
+  "repository": "Aries-Serpent/_codex_",
+  "owner": "mbaetiong",
+  "branch": "0D_base_",
+  "local_head": "3202ed81943ac4f7dfd722186b4fa0f9b3e867dd",
+  "origin_0d_base": "3202ed81943ac4f7dfd722186b4fa0f9b3e867dd",
+  "origin_main": "4e0b834d369dc4ff6acf92932bc1f678ec7d70f3",
+  "promotion": {
+    "pr": 5766,
+    "state": "merged",
+    "merge_commit": "4e0b834d369dc4ff6acf92932bc1f678ec7d70f3",
+    "pre_merge_head": "3202ed81943ac4f7dfd722186b4fa0f9b3e867dd",
+    "method": "merge"
+  },
+  "merge_sha_runs": {
+    "count": 37,
+    "terminal_success": 19,
+    "terminal_failure": 4,
+    "active_or_queued_count": 2,
+    "terminal_skipped": 8,
+    "cancelled": 4,
+    "failures": [
+      {
+        "id": 45467386072,
+        "name": "Codespaces: .devcontainer/devcontainer.json",
+        "failed_step": "Install Agent"
+      },
+      {
+        "id": 45467394432,
+        "name": "Art_CodeQL GA Security Gate",
+        "failed_step": "Gate Decision & Policy Enforcement"
+      },
+      {
+        "id": 45467861373,
+        "name": "Auto-Approve Pending Workflow Runs",
+        "failed_step": "Approve only labelled current PR runs"
+      },
+      {
+        "id": 45467394553,
+        "name": "ML Components Test Suite",
+        "failed_step": "exact failing step pending job-log review"
+      }
+    ],
+    "active_or_queued_runs": [
+      {
+        "id": 45467394633,
+        "name": "Deploy Pages (MkDocs)",
+        "status": "queued"
+      },
+      {
+        "id": 45467394654,
+        "name": "Unified Deployment Suite",
+        "status": "queued"
+      }
+    ]
+  },
+  "issues": {
+    "5798": "open",
+    "5805": "closed",
+    "5809": "closed",
+    "5810": "open"
+  },
+  "dirty_paths": {
+    "tracked_modified": [
+      ".codex/aftermath/pda_iterations.jsonl",
+      ".codex/evidence/zendesk_fields.jsonl",
+      ".github/agents/codex_reviewer/secret_patterns.py",
+      ".github/agents/codex_reviewer/security.py",
+      "scripts/ci/copilot_merge_gate.py",
+      "scripts/ci/run_ai_review.py",
+      "src/aries_serpent_core/rag/embeddings.py",
+      "tests/ci/test_copilot_merge_gate.py",
+      "tests/ci/test_run_ai_review_integrity.py"
+    ],
+    "untracked": [
+      ".codex/plans/POST_5766_CONTINUATION_2026-11-24.md",
+      ".codex/plans/POST_MERGE_CONTINUATION_EXECUTION_2026-11-24.md",
+      "CLEANUP_VALIDATION_INFRASTRUCTURE.md",
+      "src/__init__.py"
+    ]
+  },
+  "validation": {
+    "focused_tests": "23 passed",
+    "git_diff_check": "passed",
+    "codespace_keepalive": "not running",
+    "active_repository_server": "none detected",
+    "main_ancestry": "verified",
+    "0d_base_ancestry": "verified"
+  },
+  "next_objective": "Diagnose merge-SHA post-merge failures by exact run/JUnit/log evidence, then open bounded sub-PR lanes to 0D_base_.",
+  "next_pr": "copilot/session-postmerge-<UTC timestamp> -> 0D_base_",
+  "stop_conditions": [
+    "kill switch enabled",
+    "budget or rate limit exhausted",
+    "live write scope unverified",
+    "required checks fail",
+    "exact-SHA AI approval absent",
+    "finding lacks reproducible evidence"
+  ]
+}

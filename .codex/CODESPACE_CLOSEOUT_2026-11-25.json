@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "closed_for_relaunch": false,
+  "generated_at": "2026-11-25T04:46:16Z",
+  "repository": "Aries-Serpent/_codex_",
+  "owner": "mbaetiong",
+  "authority_branch": "0D_base_",
+  "authority_sha_chunks": ["496da57d", "a8f46fec", "3bf52715", "020028be", "88491ca5"],
+  "closeout_branch": "copilot/session-codespace-closeout-20261125",
+  "closeout_source_commit_chunks": ["62f3f85e", "b8d3da30", "0cc16f2d", "1d68a18e", "88957d07"],
+  "closeout_base": "origin/0D_base_",
+  "preservation_bundle": {
+    "path": "/workspaces/_codex_/.codex/sandbox-bundles/codespace-closeout/codespace-closeout-main-20261125T044616Z.bundle.tar.gz",
+    "sha256_chunks": ["54d0fce0", "3462d5e2", "b05263f9", "605ac085", "0828cb82", "22d21a7f", "b548e916", "05a55b68"],
+    "verification": "verified"
+  },
+  "merged_pr_lanes": {
+    "5850": {
+      "merged_head_chunks": ["250f1ced", "618b6630", "67b74697", "e1bbd572", "2a61d15b"],
+      "merge_commit_chunks": ["877a183a", "83f9a1e3", "f600cf5d", "a2e4b068", "650e67ca"]
+    },
+    "5851": {
+      "merge_commit_chunks": ["89e50781", "de26525f", "2f3d4c56", "2fe88087", "3a18b7c5"]
+    },
+    "5852": {
+      "merge_commit_chunks": ["ade470bb", "7f6b6e5b", "135e8f9b", "66839f56", "e6d51e32"]
+    },
+    "5853": {
+      "merged_head_chunks": ["b70c56c4", "9b57fd60", "941261cc", "91c33cd5", "67dc505c"],
+      "merge_commit_chunks": ["496da57d", "a8f46fec", "3bf52715", "020028be", "88491ca5"]
+    }
+  },
+  "main_dirty_paths": {
+    "tracked_modified": [
+      ".codex/aftermath/pda_iterations.jsonl",
+      ".codex/evidence/zendesk_fields.jsonl",
+      ".codex/fragile_tests.json",
+      ".github/agents/codex_reviewer/secret_patterns.py",
+      ".github/agents/codex_reviewer/security.py",
+      "scripts/ci/run_ai_review.py",
+      "src/aries_serpent_core/rag/embeddings.py",
+      "tests/ci/test_run_ai_review_integrity.py"
+    ],
+    "untracked": [
+      ".codex/SESSION_CLOSURE_HANDOFF_2026-11-24.md",
+      ".codex/plans/POST_5766_CONTINUATION_2026-11-24.md",
+      ".codex/plans/POST_MERGE_CONTINUATION_EXECUTION_2026-11-24.md",
+      ".codex/sandbox-bundles/codespace-closeout/",
+      ".codex/session_handoff.json",
+      "CLEANUP_VALIDATION_INFRASTRUCTURE.md",
+      "src/__init__.py"
+    ]
+  },
+  "worktrees": {
+    "main": {
+      "relative_name": "_codex",
+      "branch": "copilot/session-codespace-closeout-20261125",
+      "state": "dirty-preserved"
+    },
+    "engine-hf": {
+      "relative_name": "_codex-unit-engine-hf-trainer-20261125",
+      "branch": "copilot/session-unit-engine-hf-trainer-20261125",
+      "state": "clean",
+      "head_chunks": ["496da57d", "a8f46fec", "3bf52715", "020028be", "88491ca5"],
+      "blocker": "repo-local transformers directory is not a Python package; real Transformers availability is unproven"
+    },
+    "error-logging": {
+      "relative_name": "_codex-unit-error-logging-20261125",
+      "branch": "copilot/session-closeout-unit-error-logging-20261125",
+      "state": "dirty",
+      "modified": [".codex/fragile_tests.json"]
+    },
+    "pda-integrity": {
+      "relative_name": "_codex-unit-pda-integrity-20261125",
+      "branch": "copilot/session-unit-pda-integrity-20261125",
+      "state": "clean"
+    },
+    "pooling": {
+      "relative_name": "_codex-unit-pooling-20261124",
+      "branch": "copilot/session-closeout-unit-pooling-20261125",
+      "state": "dirty",
+      "modified": [
+        ".codex/coverage/DETERMINISM_VALIDATION_REPORT.json",
+        "docs/troubleshooting/error_log.md"
+      ]
+    },
+    "routing-api": {
+      "relative_name": "_codex-unit-routing-api-20261125",
+      "branch": "copilot/session-unit-routing-api-20261125",
+      "state": "clean"
+    },
+    "telemetry": {
+      "relative_name": "_codex-unit-telemetry-20261125",
+      "branch": "copilot/session-closeout-unit-telemetry-20261125",
+      "state": "dirty",
+      "modified": [".codex/fragile_tests.json"]
+    }
+  },
+  "issues": {
+    "existing_open": [5798, 5800, 5801, 5802, 5804, 5808, 5810],
+    "closeout_feature": null,
+    "policy": "No issue is closed until its documented stop condition is proven by exact live evidence"
+  },
+  "next_objectives": [
+    "Publish and verify the closeout branch and any required unit evidence branches",
+    "Create and update the closeout feature and existing issue checkpoints",
+    "Stop the Codespace after remote verification",
+    "On relaunch: refresh origin, switch to the closeout branch, run readiness and startup checks",
+    "Resume issue 5800 with one reproducible cluster, preferably routing/PDA/coverage-gate evidence",
+    "Resume engine-HF only after real Transformers availability is proven",
+    "Keep ML Components scheduled/manual and out of pull-request gates"
+  ],
+  "excluded_mutations": [
+    "Direct push to 0D_base_",
+    "Merge or promotion of 0D_base_ into main",
+    "PR merge or issue closure",
+    "Workflow dispatch or activation",
+    "Deployment or environment mutation",
+    "Secret or host/container privilege changes"
+  ]
+}
