@@ -517,7 +517,7 @@ def test_cli_recover_passwords_from_wordlist(tmp_path: Path, capsys: pytest.Capt
     assert code == 0
     assert "Recovered ZIP password" in captured.out
     assert "mask42" not in captured.out
-    assert "sha256:" in captured.out
+    assert "[REDACTED]" in captured.out
 
 
 def test_cli_recover_and_unpack_writes_sanitized_report(
@@ -551,7 +551,7 @@ def test_cli_recover_and_unpack_writes_sanitized_report(
     assert report_path.exists()
     report = json.loads(report_path.read_text(encoding="utf-8"))
     assert "mask42" not in json.dumps(report, sort_keys=True)
-    assert report["password_masked"].startswith("sha256:")
+    assert report["password_masked"] == "[REDACTED]"
 
 
 def test_cli_generate_key_is_sanitized_and_successful(

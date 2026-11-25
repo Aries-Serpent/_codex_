@@ -42,9 +42,7 @@ try:
     from aries_serpent_core.security.storage import (
         SecureStorage,
     )
-    from aries_serpent_core.security.storage import (
-        generate_key as storage_generate_key,
-    )
+    from aries_serpent_core.security.storage import generate_key as storage_generate_key
 except ImportError:  # pragma: no cover - fallback for lightweight runtime
     from utils.log_sanitizer import sanitize_log_input as sanitize_log
     from utils.sensitive_data import mask_token
@@ -64,15 +62,9 @@ try:
     from security.encryption import (
         EncryptionError,
     )
-    from security.encryption import (
-        decrypt as crypto_decrypt,
-    )
-    from security.encryption import (
-        encrypt as crypto_encrypt,
-    )
-    from security.encryption import (
-        generate_key as crypto_generate_key,
-    )
+    from security.encryption import decrypt as crypto_decrypt
+    from security.encryption import encrypt as crypto_encrypt
+    from security.encryption import generate_key as crypto_generate_key
 except ImportError:  # pragma: no cover - optional crypto fallback
     crypto_generate_key = None  # type: ignore[assignment]
     crypto_encrypt = None  # type: ignore[assignment]
@@ -100,21 +92,23 @@ def _safe_log(message: str) -> str:
 
 
 def _mask_secret(value: str | None, *, keep: int = 2) -> str:
-    if value is None:
-        return "***"
-    text = str(value).strip()
-    if not text:
-        return "***"
-    # Passwords and candidate values must never be emitted in recover logs or
-    # report artifacts. Keep a stable digest for correlation without exposing the
-    # original secret material.
-    return f"sha256:{_sha256_hex(text)[:max(8, min(16, max(keep, 1) * 4))]}"
+    del keep
+    return "[REDACTED]" if value and str(value).strip() else "***"
 
 
 def _sha256_hex(data: str | bytes) -> str:
     if isinstance(data, str):
         data = data.encode("utf-8")
     return hashlib.sha256(data).hexdigest()
+
+
+def _key_fingerprint(key: str | bytes) -> str:
+    if isinstance(key, str):
+        key_bytes = key.encode("utf-8")
+    else:
+        key_bytes = key
+    salt = hashlib.sha256(b"offline-zip-keymaster:key-fingerprint:v1").digest()
+    return hashlib.pbkdf2_hmac("sha256", key_bytes, salt, 200_000).hex()
 
 
 def _canonical_json(data: Any) -> str:

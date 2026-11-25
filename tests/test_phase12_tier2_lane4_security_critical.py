@@ -14,6 +14,7 @@ Authority: D-tier autonomous
 
 import hashlib
 import hmac  # pragma: allowlist secret  # pragma: allowlist secret
+import secrets
 import time
 from datetime import datetime, timedelta, timezone
 
@@ -161,6 +162,7 @@ class TestTokenManagementEdgeCases:
     def _generate_token():
         """Helper: generate token."""
         import secrets
+
         return secrets.token_urlsafe(32)
 
     @staticmethod
@@ -183,6 +185,7 @@ class TestTokenManagementEdgeCases:
         if not token:
             raise ValueError("invalid token")
         import secrets
+
         return secrets.token_urlsafe(32)
 
     @staticmethod
@@ -343,6 +346,7 @@ class TestCryptographicEdgeCases:
     def _generate_nonce():
         """Helper: generate nonce."""
         import secrets
+
         return secrets.token_hex(16)
 
     @staticmethod
@@ -378,7 +382,7 @@ class TestPasswordManagementEdgeCases:
             "password\n\t",
             "password with spaces",
             "пароль",  # Cyrillic
-            "密码",     # Chinese
+            "密码",  # Chinese
         ]
 
         for pwd in passwords:
@@ -407,18 +411,25 @@ class TestPasswordManagementEdgeCases:
         """Helper: hash password."""
         if not password or password is None:
             raise ValueError("password cannot be empty")
-        pass  # removed redundant `import hashlib` (top-level import used)
-        return hashlib.sha256(password.encode()).hexdigest()
+        iterations = 200_000
+        salt = secrets.token_bytes(16)
+        digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, iterations).hex()
+        return f"pbkdf2_sha256${iterations}${salt.hex()}${digest}"
 
     @staticmethod
     def _verify_password(password, hash_value):
         """Helper: verify password."""
-        pass  # removed redundant `import hashlib` (top-level import used)
-        return hashlib.sha256(password.encode()).hexdigest() == hash_value
-
-
-class TestErrorRecoveryEdgeCases:
-    """Test error recovery and exception handling edge cases."""
+        if not password or not hash_value:
+            return False
+        try:
+            _, iterations_text, salt_hex, digest = hash_value.split("$", 3)
+            iterations = int(iterations_text)
+            candidate = hashlib.pbkdf2_hmac(
+                "sha256", password.encode(), bytes.fromhex(salt_hex), iterations
+            ).hex()
+            return hmac.compare_digest(candidate, digest)
+        except (TypeError, ValueError):
+            return False
 
     def test_retry_logic_with_immediate_success(self):
         """Test retry logic succeeds immediately."""
@@ -448,6 +459,7 @@ class TestErrorRecoveryEdgeCases:
 
     def test_retry_logic_exhausts_retries(self):
         """Test retry logic exhausts retries and raises."""
+
         def operation():
             raise ValueError("persistent error")
 
@@ -481,7 +493,7 @@ class TestErrorRecoveryEdgeCases:
             except Exception as e:
                 if attempt == max_retries - 1:
                     raise
-                time.sleep(0.01 * (2 ** attempt))
+                time.sleep(0.01 * (2**attempt))
 
     @staticmethod
     def _circuit_breaker_call(operation):
@@ -563,6 +575,7 @@ class TestInputSanitizationEdgeCases:
     def _sanitize_path(path):
         """Helper: sanitize file path."""
         import os
+
         return os.path.normpath(path).lstrip("../")
 
 

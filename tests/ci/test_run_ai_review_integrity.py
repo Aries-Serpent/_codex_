@@ -16,6 +16,7 @@ if str(AGENTS_ROOT) not in sys.path:
 
 from codex_reviewer.github_client import GitHubAPIClient
 from codex_reviewer.main import CodexQuantumReviewer, ReviewContext, ReviewResult
+from codex_reviewer.secret_patterns import SecretPatterns
 from codex_reviewer.security import SecurityValidator
 
 from scripts.ci import run_ai_review
@@ -81,6 +82,32 @@ def test_load_review_context_paginates_all_changed_files(monkeypatch: Any) -> No
     assert names[-1] == "file-100.py"
 
 
+@pytest.mark.asyncio
+async def test_xss_scan_requires_identifier_boundary() -> None:
+    validator = SecurityValidator()
+    review_context = context()
+    review_context.diff = "diff --git a/src/connection.py b/src/connection.py\n--- a/src/connection.py\n+++ b/src/connection.py\n+RequestsConnectionError = ConnectionError"
+    review_context.files_changed = ["src/connection.py"]
+
+    vulnerabilities = await validator._check_xss(review_context.files_changed, review_context.diff)
+
+    assert vulnerabilities == []
+
+
+def test_secrets_baseline_is_not_high_risk_source() -> None:
+    assert not SecretPatterns.is_high_risk_file(".secrets.baseline")
+    assert SecretPatterns.should_exclude_file(".secrets.baseline")
+
+
+def test_security_source_files_are_not_high_risk_artifacts() -> None:
+    for filename in (
+        ".github/agents/codex_reviewer/secret_patterns.py",
+        "scripts/ci/secrets_findings_formatter.py",
+        "scripts/github_secrets_sync.py",
+    ):
+        assert not SecretPatterns.is_high_risk_file(filename)
+
+
 def test_load_review_context_rejects_incomplete_file_listing(monkeypatch: Any) -> None:
     def request(_method: str, path: str, _token: str, **_kwargs: Any) -> tuple[int, Any]:
         if path == "/repos/o/r/pulls/1":
@@ -93,6 +120,31 @@ def test_load_review_context_rejects_incomplete_file_listing(monkeypatch: Any) -
 
     with pytest.raises(RuntimeError, match="incomplete"):
         run_ai_review.load_review_context("o/r", 1, "read-token")
+
+
+def test_load_review_context_uses_file_patches_without_diff_media(monkeypatch: Any) -> None:
+    def request(_method: str, path: str, _token: str, **kwargs: Any) -> tuple[int, Any]:
+        if path == "/repos/o/r/pulls/1":
+            return 200, pull_request(changed_files=1)
+        if path.endswith("page=1"):
+            return 200, [
+                {
+                    "filename": "src/example.py",
+                    "patch": "@@ -1 +1 @@\n-old\n+new",
+                }
+            ]
+        raise AssertionError(f"unexpected path: {path}; {kwargs}")
+
+    monkeypatch.setattr(run_ai_review, "github_request", request)
+
+    _pr, names, diff = run_ai_review.load_review_context("o/r", 1, "read-token")
+
+    assert names == ["src/example.py"]
+    assert "diff --git a/src/example.py b/src/example.py" in diff
+    assert "--- a/src/example.py" in diff
+    assert "+++ b/src/example.py" in diff
+    assert "-old" in diff
+    assert "+new" in diff
 
 
 def test_python_quality_analysis_is_substantive() -> None:

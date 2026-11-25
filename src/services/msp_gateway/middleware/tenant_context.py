@@ -17,7 +17,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from utils.log_sanitizer import sanitize_log_input
 
 from ..config import settings
-from ..security import auth_manager, candidate_api_key_hashes, hash_api_key
+from ..security import auth_manager, hash_api_key
 
 logger = logging.getLogger(__name__)
 
@@ -243,10 +243,7 @@ class TenantRegistry:
         if self.backend == "sqlite":
             import json
 
-            # legacy SHA-256 for backward-compat
-            # lookup only; any SHA-256 match is immediately re-hashed to PBKDF2 below.
-            api_key_hashes = candidate_api_key_hashes(api_key)  # (pbkdf2_hash, sha256_hash)
-
+            pbkdf2_hash = hash_api_key(api_key)
             conn = sqlite3.connect(settings.db_path)
             cursor = conn.cursor()
 
@@ -254,47 +251,21 @@ class TenantRegistry:
                 """
                 SELECT tenant_id, name, api_key, quota_json, policies_json,
                        metadata_json, active, created_at, updated_at
-                FROM tenants WHERE api_key IN (?, ?)
+                FROM tenants WHERE api_key = ?
             """,
-                api_key_hashes,
+                (pbkdf2_hash,),
             )
 
             row = cursor.fetchone()
-
-            if row:
-                tenant_id = row[0]
-                stored_hash = row[2]
-                pbkdf2_hash, legacy_sha256_hash = api_key_hashes
-
-                # Lazy migration: upgrade legacy SHA-256 hash to PBKDF2 on first use.
-                # Reuse the same connection to avoid race conditions and duplicate opens.
-                if stored_hash == legacy_sha256_hash:
-                    try:
-                        cursor.execute(
-                            "UPDATE tenants SET api_key = ? WHERE tenant_id = ?",
-                            (pbkdf2_hash, tenant_id),
-                        )
-                        conn.commit()
-                        logger.info(
-                            "Migrated legacy SHA-256 API key hash to PBKDF2 for tenant %s",
-                            sanitize_log_input(tenant_id),
-                        )
-                        stored_hash = pbkdf2_hash
-                    except Exception as exc:
-                        logger.warning(
-                            "Failed to migrate API key hash for tenant %s: %s",
-                            sanitize_log_input(tenant_id),
-                            type(exc).__name__,
-                        )
-
             conn.close()
 
             if row:
+                tenant_id = row[0]
                 tenant_data = {
                     "tenant_id": tenant_id,
                     "name": row[1],
                     "api_key": None,
-                    "api_key_hash": stored_hash,
+                    "api_key_hash": pbkdf2_hash,
                     "quota": json.loads(row[3]) if row[3] else {},
                     "policies": json.loads(row[4]) if row[4] else [],
                     "metadata": json.loads(row[5]) if row[5] else {},
@@ -310,7 +281,6 @@ class TenantRegistry:
                     # Return the inactive record so middleware retains its 403
                     # response, but never resurrect a revoked credential.
                     auth_manager.revoke_api_key_hash(pbkdf2_hash)
-                auth_manager.revoke_api_key_hash(legacy_sha256_hash)
                 return tenant_data
 
         return None

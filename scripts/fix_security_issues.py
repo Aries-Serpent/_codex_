@@ -97,9 +97,9 @@ def fix_subprocess_security(file_path: Path, dry_run: bool = False) -> int:
     fixes = 0
 
     # .codex/codex_repo_scout.py - subprocess.run with cmd from trusted source
-    if 'codex_repo_scout.py' in str(file_path):
-        pattern = r'(subprocess\.run\(cmd, cwd=ROOT, capture_output=True, text=True\))'
-        replacement = r'\1  # nosec B603 - cmd constructed from trusted paths'
+    if "codex_repo_scout.py" in str(file_path):
+        pattern = r"(subprocess\.run\(cmd, cwd=ROOT, capture_output=True, text=True\))"
+        replacement = r"\1  # nosec B603 - cmd constructed from trusted paths"
         if re.search(pattern, content):
             new_content = re.sub(pattern, replacement, content)
             if dry_run:
@@ -131,7 +131,7 @@ def fix_sql_injection(file_path: Path, dry_run: bool = False) -> int:
     fixes = 0
 
     # .codex/run_db_utils_workflow.py - PRAGMA table_info
-    if 'run_db_utils_workflow.py' in str(file_path):
+    if "run_db_utils_workflow.py" in str(file_path):
         # PRAGMA statements don't support parameters, suppress warning
         pattern = r'cur\.execute\(f"PRAGMA table_info\({table}\)"\)'
         replacement = r'cur.execute(f"PRAGMA table_info({table})")  # nosec B608 - PRAGMA doesn\'t support params'
@@ -169,10 +169,10 @@ def add_subprocess_import_nosec(file_path: Path, dry_run: bool = False) -> int:
     fixes = 0
 
     # Add nosec to import if subprocess is used safely
-    pattern = r'^(import subprocess)$'
-    replacement = r'\1  # nosec B404 - subprocess usage validated'
+    pattern = r"^(import subprocess)$"
+    replacement = r"\1  # nosec B404 - subprocess usage validated"
 
-    if re.search(pattern, content, re.MULTILINE) and '# nosec B404' not in content:
+    if re.search(pattern, content, re.MULTILINE) and "# nosec B404" not in content:
         new_content = re.sub(pattern, replacement, content, flags=re.MULTILINE)
         if dry_run:
             print(f"  [DRY RUN] Would fix B404 in {file_path}")
@@ -191,9 +191,9 @@ def run_bandit_verification() -> dict[str, int]:
     Returns:
         Dictionary of issue counts by severity
     """
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("🔍 VERIFICATION: Running Bandit security scan")
-    print("="*70)
+    print("=" * 70)
 
     try:
         bandit_bin = shutil.which("bandit")
@@ -214,14 +214,14 @@ def run_bandit_verification() -> dict[str, int]:
         # Parse issue counts
         counts = {"high": 0, "medium": 0, "low": 0, "total": 0}
 
-        for line in output.split('\n'):
-            if '>> Issue:' in line:
+        for line in output.split("\n"):
+            if ">> Issue:" in line:
                 counts["total"] += 1
-                if 'Severity: High' in line:
+                if "Severity: High" in line:
                     counts["high"] += 1
-                elif 'Severity: Medium' in line:
+                elif "Severity: Medium" in line:
                     counts["medium"] += 1
-                elif 'Severity: Low' in line:
+                elif "Severity: Low" in line:
                     counts["low"] += 1
 
         if counts["total"] == 0 and "No issues identified" in output:
@@ -242,16 +242,12 @@ def run_bandit_verification() -> dict[str, int]:
 
 def main() -> int:
     """Main entry point."""
-    parser = argparse.ArgumentParser(
-        description="Automated security fixes for PR #3133"
+    parser = argparse.ArgumentParser(description="Automated security fixes for PR #3133")
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Show what would be fixed without making changes"
     )
     parser.add_argument(
-        "--dry-run", action="store_true",
-        help="Show what would be fixed without making changes"
-    )
-    parser.add_argument(
-        "--verify-only", action="store_true",
-        help="Only run Bandit verification, no fixes"
+        "--verify-only", action="store_true", help="Only run Bandit verification, no fixes"
     )
 
     args = parser.parse_args()
@@ -291,12 +287,12 @@ def main() -> int:
     if not args.dry_run:
         run_bandit_verification()
 
-    print("\n" + "="*70)
-    if args.dry_run:  # codeql[py/clear-text-logging-sensitive-data]
+    print("\n" + "=" * 70)
+    if args.dry_run:
         print(f"✅ Dry run completed: {total_fixes} potential fixes identified")
         print("\nTo apply fixes, run without --dry-run:")
         print("  python scripts/fix_security_issues.py")
-    else:  # codeql[py/clear-text-logging-sensitive-data]
+    else:
         print(f"✅ Security fixes completed: {total_fixes} automatic fixes applied")
         print("\nNext steps:")
         print("  1. Review changes: git diff .codex/")

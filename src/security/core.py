@@ -151,17 +151,19 @@ def _validate_path_input(value: str) -> None:
     Raises:
         SecurityError: If path contains traversal attempts or invalid characters
     """
-    # Check for null bytes and control characters
-    if any(char in value for char in ["\0", "\n", "\r"]):
+    safe_value = sanitize_for_logging(value)
+
+    # Reject control characters before any filesystem resolution.
+    if any(ord(char) < 32 or ord(char) == 127 for char in value):
         raise SecurityError("Invalid characters in path")
 
     # Reject absolute paths
     if os.path.isabs(value):
-        raise SecurityError(f"Path traversal attempt detected: {value}")
+        raise SecurityError(f"Path traversal attempt detected: {safe_value}")
 
     # Reject home directory expansion attempts
     if value.startswith("~"):
-        raise SecurityError(f"Path traversal attempt detected: {value}")
+        raise SecurityError(f"Path traversal attempt detected: {safe_value}")
 
     # Use pathlib.Path.resolve() to resolve symlinks and normalize the path
     # This prevents bypassing security checks via symlink escape attacks
@@ -172,20 +174,22 @@ def _validate_path_input(value: str) -> None:
         # Reject paths with ".." components before resolution
         # This catches explicit traversal attempts
         if ".." in input_path.parts:
-            raise SecurityError(f"Path traversal attempt detected: {value}")
+            raise SecurityError(f"Path traversal attempt detected: {safe_value}")
 
-        # Resolve the path relative to current directory
-        resolved_path = (current_dir / input_path).resolve()
+        # Build and resolve the candidate from explicit path parts, then verify
+        # that it remains a child of the current directory.
+        candidate_path = current_dir.joinpath(*input_path.parts)
+        resolved_path = candidate_path.resolve()
 
-        # Verify that the resolved path is within or a child of current directory
-        # This prevents symlink escape attacks and ensures containment
         try:
             resolved_path.relative_to(current_dir)
         except ValueError as err:
-            raise SecurityError(f"Path '{value}' attempts to escape current directory") from err
+            raise SecurityError(
+                f"Path '{safe_value}' attempts to escape current directory"
+            ) from err
 
     except (RuntimeError, OSError) as err:
-        raise SecurityError(f"Invalid path: {value}") from err
+        raise SecurityError(f"Invalid path: {safe_value}") from err
 
 
 def enforce_absolute_path(path: str) -> Path:
