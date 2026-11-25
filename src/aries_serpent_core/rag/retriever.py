@@ -12,6 +12,15 @@ from typing import Any, Optional
 
 import numpy as np
 
+try:
+    from aries_serpent_core.logging_safe import sanitize_for_log
+except ImportError:  # pragma: no cover - optional package layout
+
+    def sanitize_for_log(value: Any) -> str:
+        text = str(value) if value is not None else "None"
+        return "".join(" " if ord(char) < 32 or ord(char) == 127 else char for char in text)
+
+
 logger = logging.getLogger(__name__)
 
 try:
@@ -183,7 +192,7 @@ class Retriever:
         )
 
         # Search index
-        logger.debug("Searching index for top %d results", top_k)
+        logger.debug("Searching index for top %s results", sanitize_for_log(top_k))
         distances, indices = self.faiss_index.search(query_embedding.astype(np.float32), top_k)
 
         # Build results with provenance

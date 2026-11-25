@@ -46,15 +46,20 @@ except ImportError:
         def sanitize_log_message(message: str) -> str:
             """Fallback sanitization: redact common sensitive patterns."""
             import re
+
             patterns = [
-                (r'ghp_[A-Za-z0-9]{36,}', '[REDACTED_GITHUB_TOKEN]'),
-                (r'github_pat_[A-Za-z0-9_]{82}', '[REDACTED_GITHUB_PAT]'),
-                (r'(?:api[_-]?key|token|secret|password|passwd)["\']?\s*[:=]\s*["\']?([^"\'\s]+)', '[REDACTED]'),
+                (r"ghp_[A-Za-z0-9]{36,}", "[REDACTED_GITHUB_TOKEN]"),
+                (r"github_pat_[A-Za-z0-9_]{82}", "[REDACTED_GITHUB_PAT]"),
+                (
+                    r'(?:api[_-]?key|token|secret|password|passwd)["\']?\s*[:=]\s*["\']?([^"\'\s]+)',
+                    "[REDACTED]",
+                ),
             ]
             result = message
             for pattern, replacement in patterns:
                 result = re.sub(pattern, replacement, result, flags=re.IGNORECASE)
             return result
+
 
 # Import existing automation scripts
 try:
@@ -68,8 +73,7 @@ except ImportError:
     Phase10Validator = None
 
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -89,7 +93,7 @@ class AdminAutomationAgent:
         self,
         github_token: Optional[str] = None,
         credentials_path: Optional[str] = None,
-        config_path: Optional[str] = None
+        config_path: Optional[str] = None,
     ):
         """
         Initialize Admin Automation Agent.
@@ -99,7 +103,9 @@ class AdminAutomationAgent:
             credentials_path: Path to credentials JSON file
             config_path: Path to agent.yml config
         """
-        self.github_token = github_token or os.getenv("GITHUB_TOKEN") or get_token(required_elevated=False)[0]
+        self.github_token = (
+            github_token or os.getenv("GITHUB_TOKEN") or get_token(required_elevated=False)[0]
+        )
         self.credentials_path = credentials_path
         self.config_path = config_path or Path(__file__).parent.parent / "config" / "agent.yml"
 
@@ -110,7 +116,7 @@ class AdminAutomationAgent:
             "timestamp": datetime.now(UTC).isoformat(),
             "tasks": [],
             "success": False,
-            "error": None
+            "error": None,
         }
 
         # Initialize managers (if available)
@@ -119,9 +125,7 @@ class AdminAutomationAgent:
 
         if GitHubSecretsManager and self.github_token:
             self.secrets_manager = GitHubSecretsManager(
-                owner="Aries-Serpent",
-                repo="_codex_",
-                token=self.github_token
+                owner="Aries-Serpent", repo="_codex_", token=self.github_token
             )
 
         if Phase10Validator:
@@ -132,18 +136,14 @@ class AdminAutomationAgent:
         try:
             if self.config_path and self.config_path.exists():
                 import yaml
+
                 with open(self.config_path) as f:
                     return yaml.safe_load(f)
         except Exception as e:
             logger.warning("Could not load config: %s", _safe_error(e))
 
         # Return default config
-        return {
-            "agent": {
-                "name": "admin-automation-agent",
-                "version": "1.0.0"
-            }
-        }
+        return {"agent": {"name": "admin-automation-agent", "version": "1.0.0"}}
 
     def log_task(self, task: str, status: str, message: str, details: Optional[dict] = None):
         """
@@ -160,23 +160,19 @@ class AdminAutomationAgent:
             "status": status,
             "message": safe_message,  # Store sanitized version
             "details": details or {},
-            "timestamp": datetime.now(UTC).isoformat()
-        }  # codeql[py/clear-text-logging-sensitive-data]
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
         self.results["tasks"].append(task_result)
-  # codeql[py/clear-text-logging-sensitive-data]
-        # Security: Use a masked fingerprint to prevent clear-text logging of any
-        # residual sensitive content — CodeQL py/clear-text-logging-sensitive-data.  # codeql[py/clear-text-logging-sensitive-data]
-        # The full sanitized message is already stored in task_result above.
-        # Fingerprint is first 8 chars only  # codeql[py/clear-text-logging-sensitive-data]
-        _msg_fp = (str(safe_message)[:8] + "…") if safe_message else "<none>"
+        # Do not emit even a prefix of task messages: they may contain residual credentials.
+        _msg_fp = "<redacted>" if safe_message else "<none>"
         if status == "success":
-            logger.info("✅ Task completed: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info("✅ Task completed: %s", _msg_fp)
         elif status == "error":
-            logger.error("❌ Task error: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error("❌ Task error: %s", _msg_fp)
         elif status == "warning":
-            logger.warning("⚠️  Task warning: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("⚠️  Task warning: %s", _msg_fp)
         else:
-            logger.info("ℹ️  Task info: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info("ℹ️  Task info: %s", _msg_fp)
 
     # ====================================================================
     # TASK 1: Setup Phase 10 (Automated)
@@ -199,7 +195,11 @@ class AdminAutomationAgent:
 
         if not env_check["success"]:
             self.log_task("setup_phase10", "error", "Environment validation failed", env_check)
-            return {"success": False, "error": "Environment validation failed", "details": env_check}
+            return {
+                "success": False,
+                "error": "Environment validation failed",
+                "details": env_check,
+            }
 
         # Step 2: Generate CODEX_MASTER_KEY (if not exists)
         if self.secrets_manager:
@@ -211,9 +211,15 @@ class AdminAutomationAgent:
             task_results.append({"step": "secrets", "result": redacted_result})
             # Break taint flow: calculate count from redacted data, not original tainted data
             secret_count = len(redacted_result)
-            self.log_task("setup_secrets", "success", f"Secrets configuration complete: {secret_count} items processed")
+            self.log_task(
+                "setup_secrets",
+                "success",
+                f"Secrets configuration complete: {secret_count} items processed",
+            )
         else:
-            self.log_task("setup_secrets", "warning", "Secrets manager not available (missing GitHub token)")
+            self.log_task(
+                "setup_secrets", "warning", "Secrets manager not available (missing GitHub token)"
+            )
 
         # Step 3: Validate configuration files
         logger.info("\n📁 Step 3: Configuration Validation")
@@ -234,8 +240,7 @@ class AdminAutomationAgent:
 
         # Summary
         all_success = all(
-            r.get("success", True) for r in task_results
-            if isinstance(r, dict) and "success" in r
+            r.get("success", True) for r in task_results if isinstance(r, dict) and "success" in r
         )
 
         logger.info("\n" + "=" * 70)
@@ -249,7 +254,7 @@ class AdminAutomationAgent:
         return {
             "success": all_success,
             "tasks": task_results,
-            "summary": self._generate_summary(task_results)
+            "summary": self._generate_summary(task_results),
         }
 
     # ====================================================================
@@ -264,10 +269,7 @@ class AdminAutomationAgent:
         logger.info("=" * 70)
 
         if not self.validator:
-            return {
-                "success": False,
-                "error": "Validator not available"
-            }
+            return {"success": False, "error": "Validator not available"}
 
         # Run validation suite
         validation_success = self.validator.run_all_tests()
@@ -277,11 +279,14 @@ class AdminAutomationAgent:
             "success": validation_success,
             "summary": self.validator.results["summary"],
             "tests": self.validator.results["tests"],
-            "timestamp": self.validator.results["timestamp"]
+            "timestamp": self.validator.results["timestamp"],
         }
 
-        self.log_task("health_check", "success" if validation_success else "warning",
-                     f"Health check complete: {results['summary']}")
+        self.log_task(
+            "health_check",
+            "success" if validation_success else "warning",
+            f"Health check complete: {results['summary']}",
+        )
 
         return results
 
@@ -290,10 +295,7 @@ class AdminAutomationAgent:
     # ====================================================================
 
     def task_rotate_secrets(
-        self,
-        secrets: list[str],
-        backup: bool = True,
-        notify: bool = True
+        self, secrets: list[str], backup: bool = True, notify: bool = True
     ) -> dict:
         """
         Rotate repository secrets with backup and validation.
@@ -304,7 +306,7 @@ class AdminAutomationAgent:
         if not self.secrets_manager:
             return {
                 "success": False,
-                "error": "Secrets manager not available (missing GitHub token)"
+                "error": "Secrets manager not available (missing GitHub token)",
             }
 
         results_list = []  # Use list instead of dict to avoid secret names as keys
@@ -318,7 +320,7 @@ class AdminAutomationAgent:
                 {
                     "secret_index": idx,
                     "timestamp": datetime.now(UTC).isoformat(),
-                    "action": "rotation_backup"
+                    "action": "rotation_backup",
                 }
                 logger.info("  ✅ Backup metadata recorded")
 
@@ -344,15 +346,18 @@ class AdminAutomationAgent:
         success_count = sum(1 for r in results_list if r.get("status") == "success")
         all_success = success_count == len(secrets)
 
-        self.log_task("rotate_secrets", "success" if all_success else "warning",
-                     f"Rotated {success_count}/{len(secrets)} secrets")
+        self.log_task(
+            "rotate_secrets",
+            "success" if all_success else "warning",
+            f"Rotated {success_count}/{len(secrets)} secrets",
+        )
 
         # Security: Return results using indices, not secret names
         return {
             "success": all_success,
             "results": results_list,
             "total": len(secrets),
-            "successful": success_count
+            "successful": success_count,
         }
 
     # ====================================================================
@@ -378,7 +383,7 @@ class AdminAutomationAgent:
             "github_token": self.github_token is not None,
             "secrets_manager": self.secrets_manager is not None,
             "validator": self.validator is not None,
-            "repo_root": self.repo_root.exists()
+            "repo_root": self.repo_root.exists(),
         }
 
         for check, passed in checks.items():
@@ -387,10 +392,7 @@ class AdminAutomationAgent:
             else:
                 logger.warning(f"  ⚠️  {check}")
 
-        return {
-            "success": checks["repo_root"],  # Minimum requirement
-            "checks": checks
-        }
+        return {"success": checks["repo_root"], "checks": checks}  # Minimum requirement
 
     def _validate_configuration(self) -> dict:
         """Validate configuration files exist and are valid."""
@@ -399,7 +401,8 @@ class AdminAutomationAgent:
             "repomix-instruction.md": self.repo_root / "repomix-instruction.md",
             "notebooklm-sync.yml": self.repo_root / ".github" / "workflows" / "notebooklm-sync.yml",
             "COGNITIVE_BRAIN_STATUS_V3.md": self.repo_root / "COGNITIVE_BRAIN_STATUS_V3.md",
-            "PHASE_10_MASTER_INTEGRATION_PLANSET.md": self.repo_root / "PHASE_10_MASTER_INTEGRATION_PLANSET.md"
+            "PHASE_10_MASTER_INTEGRATION_PLANSET.md": self.repo_root
+            / "PHASE_10_MASTER_INTEGRATION_PLANSET.md",
         }
 
         results = {}
@@ -411,10 +414,7 @@ class AdminAutomationAgent:
             else:
                 logger.warning(f"  ❌ {name}")
 
-        return {
-            "success": all(results.values()),
-            "files": results
-        }
+        return {"success": all(results.values()), "files": results}
 
     def _generate_setup_report(self, task_results: list[dict]) -> Path:
         """Generate setup completion report."""
@@ -450,7 +450,7 @@ class AdminAutomationAgent:
         report += "4. Create NotebookLM notebook (HA-NB-001)\n"
 
         # Security: Don't log sensitive paths - CodeQL alert #3325
-        with open(report_path, 'w') as f:
+        with open(report_path, "w") as f:
             f.write(report)
 
         logger.info("  📄 Report saved")
@@ -462,11 +462,7 @@ class AdminAutomationAgent:
         total = len(task_results)
         return f"{completed}/{total} tasks completed successfully"
 
-    def execute_task(
-        self,
-        task: str,
-        **kwargs
-    ) -> dict:
+    def execute_task(self, task: str, **kwargs) -> dict:
         """
         Execute specified task.
 
@@ -492,10 +488,7 @@ class AdminAutomationAgent:
             elif task == "validate_configuration":
                 result = self.task_validate_configuration()
             else:
-                result = {
-                    "success": False,
-                    "error": f"Unknown task: {sanitize_log_message(task)}"
-                }
+                result = {"success": False, "error": f"Unknown task: {sanitize_log_message(task)}"}
 
             self.results["success"] = result.get("success", False)
             self.results["result"] = result
@@ -506,10 +499,7 @@ class AdminAutomationAgent:
             logger.error("❌ Task execution failed. See results for details.", exc_info=True)
             self.results["success"] = False
             self.results["error"] = _safe_error(e)
-            return {
-                "success": False,
-                "error": _safe_error(e)
-            }
+            return {"success": False, "error": _safe_error(e)}
 
 
 def main():
@@ -521,58 +511,38 @@ def main():
         "--task",
         required=True,
         choices=["setup_phase10", "health_check", "rotate_secrets", "validate_configuration"],
-        help="Task to execute"
+        help="Task to execute",
     )
+    parser.add_argument("--credentials", help="Path to credentials JSON file")
     parser.add_argument(
-        "--credentials",
-        help="Path to credentials JSON file"
+        "--secrets", help="Comma-separated list of secrets to rotate (for rotate_secrets task)"
     )
+    parser.add_argument("--validate", action="store_true", help="Run validation after task")
     parser.add_argument(
-        "--secrets",
-        help="Comma-separated list of secrets to rotate (for rotate_secrets task)"
-    )
-    parser.add_argument(
-        "--validate",
-        action="store_true",
-        help="Run validation after task"
-    )
-    parser.add_argument(
-        "--report",
-        action="store_true",
-        default=True,
-        help="Generate completion report"
+        "--report", action="store_true", default=True, help="Generate completion report"
     )
     parser.add_argument(
         "--comprehensive",
         action="store_true",
-        help="Run comprehensive checks (for health_check task)"
+        help="Run comprehensive checks (for health_check task)",
     )
 
     args = parser.parse_args()
 
     # Initialize agent
-    agent = AdminAutomationAgent(
-        credentials_path=args.credentials
-    )
+    agent = AdminAutomationAgent(credentials_path=args.credentials)
 
     # Prepare kwargs
     kwargs = {}
     if args.task == "setup_phase10":
-        kwargs = {
-            "validate": args.validate,
-            "report": args.report
-        }
+        kwargs = {"validate": args.validate, "report": args.report}
     elif args.task == "health_check":
         kwargs = {"comprehensive": args.comprehensive}
     elif args.task == "rotate_secrets":
         if not args.secrets:
             print("❌ --secrets required for rotate_secrets task")
             return 1
-        kwargs = {
-            "secrets": args.secrets.split(","),
-            "backup": True,
-            "notify": True
-        }
+        kwargs = {"secrets": args.secrets.split(","), "backup": True, "notify": True}
 
     # Execute task
     result = agent.execute_task(args.task, **kwargs)

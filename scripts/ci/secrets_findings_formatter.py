@@ -18,6 +18,15 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
+try:
+    from codex.logging_safe import sanitize_for_log
+except ImportError:  # pragma: no cover - fallback for partial installations
+
+    def sanitize_for_log(value: Any) -> str:
+        text = str(value) if value is not None else ""
+        return text.replace("\r", " ").replace("\n", " ").replace("\t", " ")
+
+
 # Secret Type Classification Database
 SECRET_TYPES: Dict[str, Dict[str, Any]] = {
     "AWS_API_KEY": {
@@ -423,10 +432,10 @@ def _generate_markdown_report(formatted: Dict[str, Any]) -> str:
         for i, finding in enumerate(category["findings"], 1):
             lines.append(f"#### Secret {i}")
             lines.append("")
-            lines.append(f"- **Location**: `{finding['file']}`")
-            lines.append(f"- **Tool**: {finding['tool']}")
-            lines.append(f"- **Confidence**: {finding['confidence']}")
-            lines.append(f"- **Remediation**: {finding['remediation']}")
+            lines.append(f"- **Location**: `{sanitize_for_log(finding['file'])}`")
+            lines.append(f"- **Tool**: {sanitize_for_log(finding['tool'])}")
+            lines.append(f"- **Confidence**: {sanitize_for_log(finding['confidence'])}")
+            lines.append(f"- **Remediation**: {sanitize_for_log(finding['remediation'])}")
             lines.append("")
 
     lines.append("---")
@@ -474,13 +483,9 @@ def main() -> int:
 
     try:
         # Categorize findings
-        # lgtm[py/clear-text-storage]: Processing secret metadata only (types, locations),
-        # not actual secret values. Secret hashes never stored/written in output.
         formatted = categorize_secret_findings(args.findings)
 
         # Write JSON output
-        # lgtm[py/clear-text-storage]: Output contains only finding metadata (file, type,
-        # remediation steps), not actual secret values or hashes
         output_path = Path(args.output)
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(formatted, f, indent=2)
@@ -488,12 +493,9 @@ def main() -> int:
 
         # Write markdown report if requested
         if args.markdown:
-            # lgtm[py/clear-text-storage]: Markdown report contains only finding metadata
-            # (file paths, secret types, rotation urgency), not actual secret values
             markdown_content = _generate_markdown_report(formatted)
             md_path = Path(args.markdown)
             with open(md_path, "w", encoding="utf-8") as f:
-                # lgtm[py/clear-text-storage]: Metadata-only report for agent handoff
                 f.write(markdown_content)
             print(f"✓ Markdown report written to: {args.markdown}")
 

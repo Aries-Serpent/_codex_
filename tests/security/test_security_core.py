@@ -167,6 +167,15 @@ def test_validate_input_path_absolute_blocked() -> None:
         core.validate_input("/etc/passwd", input_type="path")
 
 
+def test_validate_input_path_error_sanitizes_credentials() -> None:
+    with pytest.raises(core.SecurityError) as exc:
+        core.validate_input("/tmp/token=supersecret", input_type="path")
+
+    message = str(exc.value)
+    assert "supersecret" not in message
+    assert "[REDACTED]" in message
+
+
 def test_validate_input_path_accepts_relative() -> None:
     result = core.validate_input("subdir/file.txt", input_type="path")
     assert result == "subdir/file.txt", "Result must not be empty"

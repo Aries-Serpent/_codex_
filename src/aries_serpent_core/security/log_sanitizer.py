@@ -26,23 +26,25 @@ from typing import Any
 
 # Patterns for detecting sensitive data
 SENSITIVE_PATTERNS: list[tuple[re.Pattern[str], str]] = [
-    # API keys and tokens
-    (
-        re.compile(r'(api[_-]?key|token|secret|password)\s*[=:]\s*["\']?(\S+)', re.IGNORECASE),
-        r"\1=***REDACTED***",
-    ),
-    # Bearer tokens
-    (re.compile(r"Bearer\s+\S+", re.IGNORECASE), "Bearer ***REDACTED***"),
-    # Base64-encoded secrets (40+ chars)
-    (re.compile(r"[a-zA-Z0-9+/]{40,}={0,2}"), "***BASE64_REDACTED***"),
-    # Hex-encoded secrets (32+ chars)
-    (re.compile(r"\b[a-fA-F0-9]{32,}\b"), "***HEX_REDACTED***"),
-    # AWS keys
-    (re.compile(r"AKIA[0-9A-Z]{16}"), "***AWS_KEY_REDACTED***"),
-    # JWT tokens
+    # JWT tokens before generic token assignments.
     (
         re.compile(r"eyJ[a-zA-Z0-9_-]*\.eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*"),
         "***JWT_REDACTED***",
+    ),
+    # Bearer tokens.
+    (re.compile(r"Bearer\s+\S+", re.IGNORECASE), "Bearer ***REDACTED***"),
+    # Hex-encoded secrets before generic Secret assignments.
+    (re.compile(r"\b[a-fA-F0-9]{32,}\b"), "***HEX_REDACTED***"),
+    # Base64-encoded secrets (40+ chars).
+    (re.compile(r"[a-zA-Z0-9+/]{40,}={0,2}"), "***BASE64_REDACTED***"),
+    # AWS keys.
+    (re.compile(r"AKIA[0-9A-Z]{16}"), "***AWS_KEY_REDACTED***"),
+    # API keys and tokens.
+    (
+        re.compile(
+            r'(api[_-]?key|token|secret|password)\s*[=:]\s*["\']?(?!\*)(\S+)', re.IGNORECASE
+        ),
+        r"\1=***REDACTED***",
     ),
     # Private keys
     (
@@ -175,13 +177,18 @@ def sanitize_dict_for_log(
         >>> sanitize_dict_for_log({"user": "test\\ninjection", "token": "abc123"})
         {'user': 'testinjection', 'token': '***REDACTED***'}
     """
-    result = {}
+    sensitive_key_pattern = re.compile(
+        r"(?i)(password|passwd|secret|token|api[_-]?key|authorization|bearer|private[_-]?key|credential)"
+    )
+    result: dict[str, Any] = {}
     for key, value in data.items():
-        if isinstance(value, dict):
+        if mask_secrets and isinstance(key, str) and sensitive_key_pattern.search(key):
+            result[key] = "***REDACTED***"
+        elif isinstance(value, dict):
             result[key] = sanitize_dict_for_log(value, max_length, mask_secrets)
         elif isinstance(value, (list, tuple)):
             if mask_secrets:
-                result[key] = [  # type: ignore[assignment]
+                result[key] = [
                     (
                         mask_sensitive(sanitize_log(str(item), max_length))
                         if not isinstance(item, dict)
@@ -190,7 +197,7 @@ def sanitize_dict_for_log(
                     for item in value
                 ]
             else:
-                result[key] = [  # type: ignore[assignment]
+                result[key] = [
                     (
                         sanitize_log(str(item), max_length)
                         if not isinstance(item, dict)
@@ -202,7 +209,7 @@ def sanitize_dict_for_log(
             str_value = sanitize_log(value, max_length)
             if mask_secrets:
                 str_value = mask_sensitive(str_value)
-            result[key] = str_value  # type: ignore[assignment]
+            result[key] = str_value
     return result
 
 

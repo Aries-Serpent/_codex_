@@ -44,7 +44,12 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from utils.safe_pickle import RestrictedUnpickler, safe_pickle_load, trusted_pickle_dumps
+from utils.safe_pickle import (
+    RestrictedUnpickler,
+    safe_pickle_dump,
+    safe_pickle_load,
+    trusted_pickle_dumps,
+)
 from utils.safe_torch_loader import safe_load
 
 
@@ -109,6 +114,18 @@ class TestSafePickle:
             assert loaded == data, "Data must not be empty"
         finally:
             os.unlink(temp_path)
+
+    def test_safe_pickle_dump_redacts_secret_fields(self, tmp_path):
+        file_path = tmp_path / "redacted.pkl"
+        safe_pickle_dump(
+            {"api_key": "supersecret", "mode": "training"},
+            file_path,
+        )
+
+        loaded = safe_pickle_load(file_path, use_restricted_unpickler=True)
+        assert loaded["api_key"] == "[REDACTED]"
+        assert loaded["mode"] == "training"
+        assert b"supersecret" not in file_path.read_bytes()
 
     def test_unrestricted_pickle_load_logs_warning(self, caplog):
         """Test unrestricted pickle loads emit an explicit trust-boundary warning."""
@@ -322,7 +339,9 @@ def test_security_documentation_exists():
 
     assert (docs_dir / "SECURITY.md").exists(), "Condition must be true"
     assert (docs_dir / "PYTORCH_MIGRATION_GUIDE.md").exists(), "Condition must be true"
-    assert (docs_dir / "ERROR_HANDLING_IMPROVEMENT_GUIDE.md").exists(), "Error should be raised or set"
+    assert (
+        docs_dir / "ERROR_HANDLING_IMPROVEMENT_GUIDE.md"
+    ).exists(), "Error should be raised or set"
 
 
 if __name__ == "__main__":

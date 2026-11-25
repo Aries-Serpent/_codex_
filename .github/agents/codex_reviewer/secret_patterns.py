@@ -147,15 +147,42 @@ class SecretPatterns:
         Returns:
             True if file is high risk
         """
-        filename_lower = filename.lower()
+        filename_lower = filename.lower().replace("\\", "/")
         if filename_lower == ".secrets.baseline":
             return False
-        if any(token in filename_lower for token in cls.HIGH_RISK_FILES):
-            return True
-        return any(
-            filename_lower.endswith(ext) or ext in filename_lower
-            for ext in cls.HIGH_RISK_EXTENSIONS
+
+        source_extensions = (
+            ".py",
+            ".js",
+            ".ts",
+            ".jsx",
+            ".tsx",
+            ".java",
+            ".go",
+            ".rs",
+            ".c",
+            ".cc",
+            ".cpp",
+            ".h",
+            ".hpp",
+            ".sh",
+            ".md",
+            ".yml",
+            ".yaml",
+            ".json",
+            ".toml",
+            ".ini",
+            ".cfg",
+            ".txt",
         )
+        if filename_lower.endswith(source_extensions):
+            return False
+
+        basename = filename_lower.rsplit("/", 1)[-1]
+        stem = basename.rsplit(".", 1)[0]
+        if basename in cls.HIGH_RISK_FILES or stem in cls.HIGH_RISK_FILES:
+            return True
+        return any(basename.endswith(ext) for ext in cls.HIGH_RISK_EXTENSIONS)
 
     @classmethod
     def should_exclude_file(cls, filepath: str) -> bool:

@@ -10,6 +10,7 @@ Tests cover:
 """
 
 import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
 from codex.security.log_sanitizer import (
     mask_secrets,
     mask_sensitive,
@@ -253,10 +254,10 @@ class TestMaskSensitiveTokens:
     """Test token masking."""
 
     def test_bearer_token_masking(self):
-        """Test masking of ******"""
-        result = mask_sensitive("******")
+        """Test masking of bearer tokens."""
+        result = mask_sensitive("Bearer eyJfixture1.eyJfixture2.signature")  # synthetic fixture
         assert "***REDACTED***" in result, "Result must not be empty"
-        assert "eyJ" not in result or "******" in result, "Result must not be empty"
+        assert "eyJfixture" not in result
 
     def test_bearer_token_case_insensitive(self):
         """Test case-insensitive ******"""
@@ -274,7 +275,7 @@ class TestMaskSensitivePasswords:
 
     def test_password_equals_pattern(self):
         """Test masking of 'password=' patterns."""
-        result = mask_sensitive("******")
+        result = mask_sensitive("password=supersecret")
         assert "***REDACTED***" in result, "Result must not be empty"
 
     def test_password_colon_pattern(self):
@@ -293,7 +294,7 @@ class TestMaskSensitiveJwt:
 
     def test_jwt_token_masking(self):
         """Test masking of JWT tokens."""
-        jwt = "******"
+        jwt = "eyJfixture1.eyJfixture2.signature"  # synthetic fixture
         result = mask_sensitive(f"Token: {jwt}")
         assert "***JWT_REDACTED***" in result, "Result must not be empty"
 
@@ -464,7 +465,9 @@ class TestSanitizeDictForLog:
         """Test deeply nested dictionary."""
         data = {"level1": {"level2": {"level3": {"message": "test\ninjection", "token": "******"}}}}
         result = sanitize_dict_for_log(data)
-        assert "\n" not in result["level1"]["level2"]["level3"]["message"], "Result must not be empty"
+        assert (
+            "\n" not in result["level1"]["level2"]["level3"]["message"]
+        ), "Result must not be empty"
 
 
 # ============================================================================
