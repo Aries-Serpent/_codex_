@@ -255,9 +255,9 @@ class TestMaskSensitiveTokens:
 
     def test_bearer_token_masking(self):
         """Test masking of bearer tokens."""
-        result = mask_sensitive("Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.signature")
+        result = mask_sensitive("Bearer eyJfixture1.eyJfixture2.signature")  # synthetic fixture
         assert "***REDACTED***" in result, "Result must not be empty"
-        assert "eyJ" not in result or "******" in result, "Result must not be empty"
+        assert "eyJfixture" not in result
 
     def test_bearer_token_case_insensitive(self):
         """Test case-insensitive ******"""
@@ -294,7 +294,7 @@ class TestMaskSensitiveJwt:
 
     def test_jwt_token_masking(self):
         """Test masking of JWT tokens."""
-        jwt = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.signature"
+        jwt = "eyJfixture1.eyJfixture2.signature"  # synthetic fixture
         result = mask_sensitive(f"Token: {jwt}")
         assert "***JWT_REDACTED***" in result, "Result must not be empty"
 

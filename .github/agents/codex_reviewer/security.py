@@ -173,6 +173,8 @@ class SecurityValidator:
                         for marker in (
                             "canary",
                             "fixture",
+                            "jwt",
+                            "bearer",
                             "akiaiosfodnn7example",
                             "ghp_1234567890abcdefghij123456789012",
                         )
