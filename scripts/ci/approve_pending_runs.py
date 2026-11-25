@@ -350,6 +350,21 @@ def _resolve_token() -> tuple[str, str]:
     raise SystemExit(1)
 
 
+def _inspect_wec_auto_approve_label(
+    token: str, repo: str, pr_number: str | int, *, ttl_hours: int = 1
+) -> str:
+    """Return authorized, missing/expired, or inspection-error WEC disposition."""
+    status, payload = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
+    if status != 200 or not isinstance(payload, dict):
+        return "label-inspection-error"
+    try:
+        if label_valid(token, repo, pr_number, payload, _gh, ttl_hours=ttl_hours):
+            return "authorized"
+    except (OSError, RuntimeError, ValueError):
+        return "label-inspection-error"
+    return "missing-or-expired-label"
+
+
 def _has_wec_auto_approve_label(
     token: str, repo: str, pr_number: str | int, *, ttl_hours: int = 1
 ) -> bool:
@@ -358,11 +373,9 @@ def _has_wec_auto_approve_label(
     The permanent label (wec:auto-approve) is always allowed. The one-session label
     (wec:auto-approve-once) is also allowed only while it remains within the TTL window.
     """
-    status, payload = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
-    if status != 200 or not isinstance(payload, dict):
-        return False
-
-    return label_valid(token, repo, pr_number, payload, _gh, ttl_hours=ttl_hours)
+    return (
+        _inspect_wec_auto_approve_label(token, repo, pr_number, ttl_hours=ttl_hours) == "authorized"
+    )
 
 
 def _filter_prs_by_wec_label(
@@ -374,8 +387,11 @@ def _filter_prs_by_wec_label(
         pr_number = pr.get("number")
         if pr_number is None:
             continue
-        if _has_wec_auto_approve_label(token, repo, pr_number):
+        disposition = _inspect_wec_auto_approve_label(token, repo, pr_number)
+        if disposition == "authorized":
             authorized.append(pr)
+        elif disposition == "label-inspection-error":
+            raise RuntimeError(f"WEC label inspection unavailable for PR #{pr_number}")
         else:
             print(f"⏭️  Skipping PR #{pr_number}: missing or expired required auto-approve label")
     return authorized
@@ -682,7 +698,10 @@ def _authorize_run(
     status, pr = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
     if status != 200 or not isinstance(pr, dict):
         return "unknown-pr"
-    if pr.get("state") != "open" or (pr.get("head") or {}).get("sha") != head_sha:
+    pr_state = pr.get("state")
+    if pr_state not in {"open", "closed"}:
+        return "malformed-pr-state"
+    if pr_state != "open" or (pr.get("head") or {}).get("sha") != head_sha:
         return "stale-head-sha"
     author = str((pr.get("user") or {}).get("login", "")).casefold()
     run_actors = {
@@ -702,7 +721,10 @@ def _authorize_run(
         approval_actors.update({requester, triggering_requester})
     if approval_actors & (run_actors | {author}):
         return "self-approval"
-    if not _has_wec_auto_approve_label(token, repo, pr_number):
+    label_disposition = _inspect_wec_auto_approve_label(token, repo, pr_number)
+    if label_disposition == "label-inspection-error":
+        return "label-inspection-error"
+    if label_disposition == "missing-or-expired-label":
         return "missing-or-expired-label"
     # A label expresses the sole owner's D-tier opt-in, not an exact-SHA AI review.
     reviews: dict[str, dict[str, Any]] = {}
@@ -895,7 +917,52 @@ def _run_decisions(decisions: list[dict[str, Any]]) -> int:
 
     # Collect (pr_number, head_sha) targets ───────────────────────────────────
     if head_sha and pr_number:
-        if not _has_wec_auto_approve_label(token, repo, pr_number):
+        status, pr = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
+        if status != 200 or not isinstance(pr, dict):
+            decisions.append(
+                {"rule": "unknown-pr", "pr": pr_number, "head_sha": head_sha, "outcome": "denied"}
+            )
+            return 1
+        pr_state = pr.get("state")
+        if pr_state not in {"open", "closed"}:
+            decisions.append(
+                {
+                    "rule": "malformed-pr-state",
+                    "pr": pr_number,
+                    "head_sha": head_sha,
+                    "outcome": "denied",
+                }
+            )
+            return 1
+        if pr_state == "closed":
+            decisions.append(
+                {"rule": "closed-pr", "pr": pr_number, "head_sha": head_sha, "outcome": "skipped"}
+            )
+            print(f"ℹ️  PR #{pr_number} is closed; nothing to approve.")
+            return 0
+        pr_sha = (pr.get("head") or {}).get("sha")
+        if not isinstance(pr_sha, str) or pr_sha != head_sha:
+            decisions.append(
+                {
+                    "rule": "stale-head-sha",
+                    "pr": pr_number,
+                    "head_sha": head_sha,
+                    "outcome": "denied",
+                }
+            )
+            return 1
+        label_disposition = _inspect_wec_auto_approve_label(token, repo, pr_number)
+        if label_disposition == "label-inspection-error":
+            decisions.append(
+                {
+                    "rule": "label-inspection-error",
+                    "pr": pr_number,
+                    "head_sha": head_sha,
+                    "outcome": "denied",
+                }
+            )
+            return 1
+        if label_disposition == "missing-or-expired-label":
             print(
                 f"⏭️  Skipping PR #{pr_number}: missing or expired required WEC approval label "
                 "('wec:auto-approve' or active 'wec:auto-approve-once')"
@@ -905,21 +972,73 @@ def _run_decisions(decisions: list[dict[str, Any]]) -> int:
                     "rule": "missing-or-expired-label",
                     "pr": pr_number,
                     "head_sha": head_sha,
-                    "outcome": "denied",
+                    "outcome": "skipped",
                 }
             )
-            return 1
+            return 0
         targets = [(pr_number, head_sha)]
     elif pr_number:
         status, pr = _gh("GET", f"/repos/{repo}/pulls/{pr_number}", token)
         sha = (
             (pr.get("head") or {}).get("sha", "") if status == 200 and isinstance(pr, dict) else ""
         )
+        if status != 200 or not isinstance(pr, dict):
+            decisions.append(
+                {"rule": "unknown-pr", "pr": pr_number, "head_sha": None, "outcome": "denied"}
+            )
+            return 1
+        pr_state = pr.get("state")
+        if pr_state not in {"open", "closed"}:
+            decisions.append(
+                {
+                    "rule": "malformed-pr-state",
+                    "pr": pr_number,
+                    "head_sha": sha or None,
+                    "outcome": "denied",
+                }
+            )
+            return 1
+        if pr_state == "closed":
+            decisions.append(
+                {
+                    "rule": "closed-pr",
+                    "pr": pr_number,
+                    "head_sha": sha or None,
+                    "outcome": "skipped",
+                }
+            )
+            print(f"ℹ️  PR #{pr_number} is closed; nothing to approve.")
+            return 0
         if not sha:
             decisions.append(
                 {"rule": "unknown-pr", "pr": pr_number, "head_sha": None, "outcome": "denied"}
             )
             return 1
+        label_disposition = _inspect_wec_auto_approve_label(token, repo, pr_number)
+        if label_disposition == "label-inspection-error":
+            decisions.append(
+                {
+                    "rule": "label-inspection-error",
+                    "pr": pr_number,
+                    "head_sha": sha,
+                    "outcome": "denied",
+                }
+            )
+            return 1
+        if label_disposition == "missing-or-expired-label":
+            print(
+                f"⏭️  Skipping PR #{pr_number}: missing or expired required WEC approval label "
+                "('wec:auto-approve' or active 'wec:auto-approve-once')"
+            )
+            decisions.append(
+                {
+                    "rule": "missing-or-expired-label",
+                    "pr": pr_number,
+                    "head_sha": sha,
+                    "outcome": "skipped",
+                }
+            )
+            return 0
         targets = [(pr_number, sha)]
     else:
         # Sweep mode: use Search API to find only WEC-labelled PRs in one query

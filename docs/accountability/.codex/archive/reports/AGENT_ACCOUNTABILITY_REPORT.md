@@ -1,3 +1,26 @@
+## SESSION SUMMARY — 2026-11-24 — PR #5850 Auto-Approve review remediation
+
+### Objective
+Resolve the two open Copilot review findings on PR #5850 without weakening WEC or approval controls.
+
+### Actions
+1. Rejected missing and malformed PR states with `malformed-pr-state/outcome=denied` in both target paths.
+2. Added a tri-state WEC label result: authorized, missing/expired, or inspection error.
+3. Made label lookup/history failures deny approval instead of being recorded as successful no-action skips.
+4. Added focused PR-only and SHA-plus-PR regressions plus direct label-inspection and authorization coverage.
+5. Fixed merge-gate required-check deduplication by timestamp/ID so historical failed reruns cannot override later successes.
+6. Removed ML Components from PR triggers, changed it to weekly schedule plus manual dispatch, and filtered observation-only ML/cancelled Copilot checks out of sub-PR merge gates.
+
+### Validation
+- Approval integrity, evidence-gated approval, and unified approval hub test modules pass.
+- Black, Ruff, mypy, compileall, and `git diff --check` pass.
+- No merge or issue closure claim is made until exact-SHA review and required checks are terminal.
+
+### Agents Used
+- Direct execution; no custom agents were invoked.
+
+---
+
 ## SESSION SUMMARY — 2026-11-22 — PR #5766 CI rescue
 
 - Fast Validation run `44969101570` failed strict yamllint on the RAG cleanup step.

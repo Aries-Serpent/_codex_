@@ -173,7 +173,11 @@ def test_run_inventory_failure_is_denied(offline, monkeypatch, status, payload):
 
     def response(path):
         if path == "/repos/o/r/pulls/1":
-            return 200, {"labels": [{"name": "wec:auto-approve"}]}
+            return 200, {
+                "state": "open",
+                "head": {"sha": SHA},
+                "labels": [{"name": "wec:auto-approve"}],
+            }
         return status, payload
 
     install(response)
@@ -189,7 +193,11 @@ def test_run_pagination_must_finish_before_approval(offline, monkeypatch, failur
 
     def response(path):
         if path == "/repos/o/r/pulls/1":
-            return 200, {"labels": [{"name": "wec:auto-approve"}]}
+            return 200, {
+                "state": "open",
+                "head": {"sha": SHA},
+                "labels": [{"name": "wec:auto-approve"}],
+            }
         if first_page(path):
             return 200, {"workflow_runs": first, "total_count": 101}
         if failure == "denied":
@@ -274,7 +282,14 @@ def test_complete_empty_run_inventory_is_success(offline, monkeypatch):
     monkeypatch.setenv("HEAD_SHA", SHA)
     install(
         lambda path: (
-            (200, {"labels": [{"name": "wec:auto-approve"}]})
+            (
+                200,
+                {
+                    "state": "open",
+                    "head": {"sha": SHA},
+                    "labels": [{"name": "wec:auto-approve"}],
+                },
+            )
             if path == "/repos/o/r/pulls/1"
             else (200, {"workflow_runs": [], "total_count": 0})
         )
@@ -283,6 +298,126 @@ def test_complete_empty_run_inventory_is_success(offline, monkeypatch):
     with open("approval-decision.json", encoding="utf-8") as f:
         decision = json.load(f)
     assert decision["decisions"][0]["rule"] == "no-pending-runs"
+
+
+@pytest.mark.parametrize("with_head_sha", [False, True])
+def test_closed_pr_is_legitimate_skip(offline, monkeypatch, with_head_sha):
+    install, _ = offline
+    monkeypatch.setenv("PR_NUMBER", "5849")
+    if with_head_sha:
+        monkeypatch.setenv("HEAD_SHA", SHA)
+    else:
+        monkeypatch.delenv("HEAD_SHA", raising=False)
+
+    install(
+        lambda path: (
+            200,
+            {
+                "number": 5849,
+                "state": "closed",
+                "head": {"sha": "b" * 40},
+                "labels": [],
+            },
+        )
+    )
+    assert approval.main() == 0
+    with open("approval-decision.json", encoding="utf-8") as f:
+        decision = json.load(f)
+    assert decision["decisions"][0]["rule"] == "closed-pr"
+    assert decision["decisions"][0]["outcome"] == "skipped"
+
+
+def test_missing_wec_label_is_legitimate_skip(offline, monkeypatch):
+    install, _ = offline
+    monkeypatch.setenv("PR_NUMBER", "5849")
+    monkeypatch.setenv("HEAD_SHA", SHA)
+    install(
+        lambda path: (
+            200,
+            {
+                "number": 5849,
+                "state": "open",
+                "head": {"sha": SHA},
+                "labels": [],
+            },
+        )
+    )
+    assert approval.main() == 0
+    with open("approval-decision.json", encoding="utf-8") as f:
+        decision = json.load(f)
+    assert decision["decisions"][0]["rule"] == "missing-or-expired-label"
+    assert decision["decisions"][0]["outcome"] == "skipped"
+
+
+@pytest.mark.parametrize("with_head_sha", [False, True])
+@pytest.mark.parametrize("state", [None, "merged", "invalid"])
+def test_malformed_pr_state_is_denied(offline, monkeypatch, with_head_sha, state):
+    install, _ = offline
+    monkeypatch.setenv("PR_NUMBER", "5849")
+    if with_head_sha:
+        monkeypatch.setenv("HEAD_SHA", SHA)
+    else:
+        monkeypatch.delenv("HEAD_SHA", raising=False)
+
+    payload = {
+        "number": 5849,
+        "head": {"sha": SHA},
+        "labels": [{"name": "wec:auto-approve"}],
+    }
+    if state is not None:
+        payload["state"] = state
+
+    install(lambda path: (200, payload))
+    assert approval.main() == 1
+    with open("approval-decision.json", encoding="utf-8") as f:
+        decision = json.load(f)
+    assert decision["decisions"][0]["rule"] == "malformed-pr-state"
+    assert decision["decisions"][0]["outcome"] == "denied"
+
+
+@pytest.mark.parametrize(
+    "status,payload",
+    [(403, {"message": "Forbidden"}), (200, {}), (200, {"labels": None})],
+)
+def test_wec_inspector_rejects_inspection_failures(monkeypatch, status, payload):
+    monkeypatch.setattr(approval, "_gh", lambda *args, **kwargs: (status, payload))
+    assert (
+        approval._inspect_wec_auto_approve_label("fixture", "o/r", "5849")
+        == "label-inspection-error"
+    )
+
+
+@pytest.mark.parametrize("with_head_sha", [False, True])
+def test_wec_lookup_failure_is_denied(offline, monkeypatch, with_head_sha):
+    install, _ = offline
+    monkeypatch.setenv("PR_NUMBER", "5849")
+    if with_head_sha:
+        monkeypatch.setenv("HEAD_SHA", SHA)
+    else:
+        monkeypatch.delenv("HEAD_SHA", raising=False)
+
+    pull_calls = 0
+
+    def response(path):
+        nonlocal pull_calls
+        if path == "/repos/o/r/pulls/5849":
+            pull_calls += 1
+            if pull_calls == 1:
+                return 200, {
+                    "number": 5849,
+                    "state": "open",
+                    "head": {"sha": SHA},
+                    "labels": [],
+                }
+            return 403, {"message": "Forbidden"}
+        return 403, {}
+
+    install(response)
+    assert approval.main() == 1
+    with open("approval-decision.json", encoding="utf-8") as f:
+        decision = json.load(f)
+    assert decision["decisions"][0]["rule"] == "label-inspection-error"
+    assert decision["decisions"][0]["outcome"] == "denied"
 
 
 def test_complete_run_pagination_preserves_all_identities(offline):

@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed (SN) - PR #5850 Auto-Approve review remediation (2026-11-24)
+- Reject malformed or missing PR states in PR-only and SHA-plus-PR Auto-Approve target paths.
+- Distinguish verified missing/expired WEC labels from unavailable or malformed label-inspection evidence; inspection failures remain denied.
+- Add focused regressions for closed PRs, malformed states, missing WEC labels, and label lookup/history failures.
+- Dedupe merge-gate required checks by newest timestamp/ID so a historical failed rerun cannot override a later successful rerun.
+- Move ML Components to weekly scheduled/manual evidence execution and remove it from pull-request gate triggers; merge-gate rollups ignore observation-only ML and cancelled Copilot checks while real required checks still fail closed.
+
 ### Fixed - PR #5851 pooling fixture restoration (2026-11-24)
 - Restore the `pool_state_tracker`, `clean_connection_pool`, `pooling_db_manager`, and `pooling_mode` pytest fixtures used by connection-pooling tests.
 - Add PEP 660 plugin activation, offline torch/version fallbacks, persistent training metadata, and scoped optional-dependency guards for the remaining missing-module batch.
