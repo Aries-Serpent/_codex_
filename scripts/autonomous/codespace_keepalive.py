@@ -359,6 +359,24 @@ def stop_daemon(runtime_dir: Path, repo_root: Path) -> dict[str, Any]:
     return {"stopped": True, "pid": pid}
 
 
+def periodic_checkpoint_command(
+    *, runtime_dir: Path, repo_root: Path, started_at: datetime
+) -> list[str]:
+    guard_path = repo_root / "scripts" / "autonomous" / "codespace_session_guard.py"
+    return [
+        sys.executable,
+        str(guard_path),
+        "checkpoint",
+        "--runtime-only",
+        "--runtime-dir",
+        str(runtime_dir),
+        "--session-id",
+        f"codespace-{utc_timestamp(started_at)}",
+        "--task",
+        "Periodic Codespace continuity checkpoint",
+    ]
+
+
 def run_daemon(args: argparse.Namespace) -> int:
     runtime_dir = Path(args.runtime_dir).expanduser().resolve()
     runtime_dir.mkdir(parents=True, exist_ok=True)
@@ -420,16 +438,11 @@ def run_daemon(args: argparse.Namespace) -> int:
                 )
                 if guard_path.is_file():
                     subprocess.run(
-                        [
-                            sys.executable,
-                            str(guard_path),
-                            "checkpoint",
-                            "--runtime-only",
-                            "--session-id",
-                            f"codespace-{utc_timestamp(started_at)}",
-                            "--task",
-                            "Periodic Codespace continuity checkpoint",
-                        ],
+                        periodic_checkpoint_command(
+                            runtime_dir=runtime_dir,
+                            repo_root=Path(args.repo_root).expanduser().resolve(),
+                            started_at=started_at,
+                        ),
                         cwd=str(Path(args.repo_root).expanduser().resolve()),
                         stdin=subprocess.DEVNULL,
                         stdout=subprocess.DEVNULL,

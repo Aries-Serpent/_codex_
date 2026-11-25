@@ -204,11 +204,26 @@ def is_sensitive_path(relative_path: str) -> bool:
     return False
 
 
-def validate_bundle_paths(entries: dict[str, list[str]]) -> list[str]:
+def validate_bundle_paths(entries: dict[str, list[str]], repo: Path | None = None) -> list[str]:
     blocked: list[str] = []
-    for path in entries["created"] + entries["modified"]:
+    for path in entries["created"] + entries["modified"] + entries["deleted"]:
         if is_sensitive_path(path):
             blocked.append(path)
+
+    if repo is not None:
+        repo_resolved = repo.resolve()
+        for path in entries["created"] + entries["modified"]:
+            source = repo / path
+            if source.is_symlink():
+                blocked.append(f"symlink:{path}")
+                continue
+            if not source.exists():
+                continue
+            try:
+                resolved = source.resolve(strict=True)
+                resolved.relative_to(repo_resolved)
+            except (FileNotFoundError, OSError, RuntimeError, ValueError):
+                blocked.append(f"outside_repo:{path}")
     return sorted(set(blocked))
 
 
@@ -484,7 +499,7 @@ def create_checkpoint(
 
 def create_bundle(repo: Path) -> dict[str, Any]:
     entries = worktree_entries(repo)
-    blocked = validate_bundle_paths(entries)
+    blocked = validate_bundle_paths(entries, repo)
     if blocked:
         return {
             "created": False,
@@ -527,8 +542,18 @@ def reindex_session_store(repo: Path, runtime_dir: Path) -> dict[str, Any]:
         str(output),
     ]
     result = subprocess.run(command, cwd=repo, check=False, capture_output=True, text=True)
+    if result.returncode == 0:
+        return {
+            "reindexed": True,
+            "database": str(store),
+            "output": str(output),
+            "returncode": result.returncode,
+            "stdout": result.stdout.strip()[-500:],
+            "stderr": result.stderr.strip()[-500:],
+        }
     return {
-        "reindexed": result.returncode == 0,
+        "reindexed": False,
+        "reason": "reindex_failed",
         "database": str(store),
         "output": str(output),
         "returncode": result.returncode,
@@ -597,6 +622,25 @@ def resume_report(repo: Path, runtime_dir: Path, checkpoint_id: str | None) -> d
                 storage_path=str(checkpoint_root), compression_algorithm="gzip"
             )
             try:
+                validation = manager.validate_checkpoint(target_id, quick_check=False)
+            except Exception:
+                continue
+            if not validation.is_valid:
+                errors = [getattr(error, "message", str(error)) for error in validation.errors]
+                return {
+                    "resumed": False,
+                    "mode": "cold_bootstrap",
+                    "checkpoint_id": target_id,
+                    "reason": "checkpoint_failed_validation",
+                    "validation": {
+                        "is_valid": validation.is_valid,
+                        "recoverable": validation.recoverable,
+                        "integrity_score": validation.integrity_score,
+                        "errors": errors,
+                    },
+                    "continuation_prompt": str(CONTINUATION_PATH),
+                }
+            try:
                 context = SessionResumeEngine(
                     checkpoint_manager=manager, enable_warmup=False
                 ).warm_start(target_id)
@@ -631,6 +675,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     status.add_argument("--refresh", action="store_true", help="Fetch origin refs before reporting")
     status.add_argument("--strict", action="store_true", help="Exit nonzero when blockers exist")
     status.add_argument("--json", action="store_true", help="Emit the JSON status report")
+    status.add_argument("--runtime-dir", type=Path)
 
     checkpoint = subparsers.add_parser("checkpoint", help="Create a continuity checkpoint")
     checkpoint.add_argument("--session-id", default="codespace-session")
@@ -640,11 +685,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     checkpoint.add_argument("--active-pr", type=int)
     checkpoint.add_argument("--active-issue", type=int)
     checkpoint.add_argument("--runtime-only", action="store_true")
+    checkpoint.add_argument("--runtime-dir", type=Path)
 
     resume = subparsers.add_parser("resume", help="Restore the latest verified checkpoint")
     resume.add_argument("--checkpoint-id")
+    resume.add_argument("--runtime-dir", type=Path)
 
     reindex = subparsers.add_parser("reindex", help="Rebuild the local Chronicle session index")
+    reindex.add_argument("--runtime-dir", type=Path)
 
     closeout = subparsers.add_parser("closeout", help="Create the canonical closeout handoff")
     closeout.add_argument("--active-pr", type=int)
@@ -654,15 +702,21 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     closeout.add_argument("--objective", default="Resume the live repository objective.")
     closeout.add_argument("--no-bundle", action="store_true")
     closeout.add_argument("--no-reindex", action="store_true")
+    closeout.add_argument("--runtime-dir", type=Path)
 
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    runtime_dir = Path(
-        os.environ.get("CODEX_RUNTIME_DIR") or (Path.home() / ".codex" / "runtime")
-    ).expanduser()
+    runtime_dir_arg = getattr(args, "runtime_dir", None)
+    runtime_dir = (
+        runtime_dir_arg.expanduser().resolve()
+        if isinstance(runtime_dir_arg, Path)
+        else Path(os.environ.get("CODEX_RUNTIME_DIR") or (Path.home() / ".codex" / "runtime"))
+        .expanduser()
+        .resolve()
+    )
 
     if args.command == "status":
         report = status_report(ROOT, runtime_dir, refresh=args.refresh)
@@ -711,7 +765,7 @@ def main(argv: list[str] | None = None) -> int:
             handoff["reindex"] = result
             handoff["generated_at"] = utc_timestamp()
             atomic_json_write(HANDOFF_PATH, handoff)
-        return 0 if result["reindexed"] or result["reason"] in {"session_store_missing"} else 1
+        return 0 if result["reindexed"] or result.get("reason") in {"session_store_missing"} else 1
 
     if args.command == "closeout":
         checkpoint = create_checkpoint(
@@ -750,7 +804,21 @@ def main(argv: list[str] | None = None) -> int:
         atomic_json_write(HANDOFF_PATH, handoff)
         atomic_text_write(CONTINUATION_PATH, continuation_prompt(handoff))
 
+        failures: list[str] = []
+        if not checkpoint["created"]:
+            failures.append("checkpoint_failed")
+        if not args.no_bundle and not bundle["created"]:
+            failures.append(str(bundle.get("reason", "bundle_failed")))
+        if not args.no_reindex:
+            if not reindex["reindexed"] and reindex.get("reason") not in {
+                "session_store_missing",
+                "disabled",
+            }:
+                failures.append(str(reindex.get("reason", "reindex_failed")))
+
         closeout_result: dict[str, Any] = {
+            "success": not failures,
+            "failures": failures,
             "checkpoint": checkpoint,
             "bundle": bundle,
             "reindex": reindex,
@@ -759,7 +827,7 @@ def main(argv: list[str] | None = None) -> int:
         }
         atomic_json_write(runtime_dir / "session_closeout.json", closeout_result)
         print(json.dumps(closeout_result, indent=2, sort_keys=True))
-        return 0
+        return 0 if closeout_result["success"] else 1
 
     return 1
 

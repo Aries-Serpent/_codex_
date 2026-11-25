@@ -1,3 +1,27 @@
+## Session: PR #5857 Copilot review remediation (2026-11-25)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Resolved six Copilot review findings in `codespace_session_guard.py` and
+  `codespace_keepalive.py`.
+- Deleted-path sensitivity now includes removed `.env`, private-key, and token-named paths.
+- Symlinked untracked files and resolved targets outside the repository are rejected.
+- Resume now performs strict checkpoint validation and reports
+  `checkpoint_failed_validation` instead of verified recovery.
+- Closeout now propagates checkpoint, bundle, and reindex failures; missing session
+  stores remain an explicit allowed degraded condition.
+- Keepalive now forwards custom runtime directories to periodic guard checkpoints.
+- Added adversarial tests for deleted sensitive paths, symlinks, corrupt checkpoints,
+  reindex failures, closeout failures, and custom-runtime discovery.
+- Focused continuity suite passes 23 tests; Black, isort, Ruff, mypy, compileall,
+  shell syntax, and `git diff --check` pass.
+- No merge, issue closure, workflow dispatch, secret mutation, or direct 0D/main push
+  was performed.
+
 ## Session: PR #5857 merge-conflict resolution and Codespace continuity (2026-11-25)
 
 ### Agents Used

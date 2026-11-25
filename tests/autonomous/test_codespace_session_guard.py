@@ -129,9 +129,101 @@ def test_sensitive_bundle_paths_are_refused() -> None:
         {
             "created": [".env", "config/private_key.pem", "secrets.txt"],
             "modified": [],
-            "deleted": [],
+            "deleted": ["config/deleted_private_key.pem", ".env"],
         }
-    ) == [".env", "config/private_key.pem", "secrets.txt"]
+    ) == [
+        ".env",
+        "config/deleted_private_key.pem",
+        "config/private_key.pem",
+        "secrets.txt",
+    ]
+
+
+def test_bundle_rejects_symlinks_and_outside_targets(tmp_path: Path) -> None:
+    outside = tmp_path.parent / f"{tmp_path.name}-outside.txt"
+    outside.write_text("private target\n", encoding="utf-8")
+    symlink = tmp_path / "notes.txt"
+    symlink.symlink_to(outside)
+
+    blocked = guard.validate_bundle_paths(
+        {"created": ["notes.txt"], "modified": [], "deleted": []},
+        tmp_path,
+    )
+
+    assert blocked == ["outside_repo:notes.txt"] or blocked == ["symlink:notes.txt"]
+
+
+def test_corrupt_checkpoint_is_not_reported_as_verified_resume(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    initialize_repo(tmp_path)
+    runtime_dir = tmp_path / "runtime"
+    checkpoint = guard.create_checkpoint(
+        tmp_path,
+        runtime_dir,
+        session_id="corruption-test",
+        task="Test corruption",
+        completed=[],
+        pending=[],
+        active_issue=5857,
+        active_pr=5857,
+        checkpoint_in_repo=False,
+    )
+    assert checkpoint["created"] is True
+
+    checkpoint_path = Path(checkpoint["path"])
+    checkpoint_path.write_bytes(b"not a valid gzip checkpoint")
+    monkeypatch.setattr(guard, "CONTINUATION_PATH", tmp_path / "NEXT_CONTINUATION_PROMPT.md")
+
+    resume = guard.resume_report(tmp_path, runtime_dir, checkpoint["checkpoint_id"])
+
+    assert resume["resumed"] is False
+    assert resume["reason"] == "checkpoint_failed_validation"
+
+
+def test_reindex_failure_has_missing_safe_reason(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    store = tmp_path / "session-store.db"
+    store.write_bytes(b"")
+    monkeypatch.setattr(guard, "find_local_session_store", lambda _repo: store)
+    monkeypatch.setattr(
+        guard.subprocess,
+        "run",
+        lambda *_args, **_kwargs: subprocess.CompletedProcess([], 1, "", "reindex failed"),
+    )
+
+    result = guard.reindex_session_store(tmp_path, tmp_path / "runtime")
+
+    assert result["reindexed"] is False
+    assert result["reason"] == "reindex_failed"
+
+
+def test_closeout_propagates_required_operation_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(guard, "ROOT", tmp_path)
+    monkeypatch.setattr(guard, "HANDOFF_PATH", tmp_path / ".codex" / "session_handoff.json")
+    monkeypatch.setattr(
+        guard, "CONTINUATION_PATH", tmp_path / ".codex" / "NEXT_CONTINUATION_PROMPT.md"
+    )
+    monkeypatch.setattr(
+        guard,
+        "create_checkpoint",
+        lambda *_args, **_kwargs: {"created": False, "reason": "checkpoint_failed"},
+    )
+
+    exit_code = guard.main(
+        [
+            "closeout",
+            "--no-bundle",
+            "--no-reindex",
+            "--runtime-dir",
+            str(tmp_path / "runtime"),
+        ]
+    )
+
+    assert exit_code == 1
 
 
 def test_supported_and_unsupported_session_sync_settings_are_distinct() -> None:

@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5857 Copilot review remediation (2026-11-25)
+- Reject deleted sensitive paths and symlinked/out-of-repository snapshot targets in the Codespace continuity bundle flow.
+- Perform strict checkpoint validation on resume and return controlled closeout/reindex failure states.
+- Forward custom runtime directories to periodic continuity checkpoints and add adversarial regressions for all remediated findings.
+
 ### Fixed - PR #5857 merge conflict resolution and continuity handoff (2026-11-25)
 - Merge `origin/0D_base_` into the Copilot session-continuity branch and resolve the
   session-handoff, secret-pattern, and AI-review integrity conflicts semantically.
