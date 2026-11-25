@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed - Agentic Codespace relaunch and PR review remediation (2026-11-25)
+- Published exact-SHA routing remediation on PR #5855 and CodeQL remediation on PR #5856.
+- Preserved the cognitive-preflight workflow as a read-only PR gate; no github-actions bot commit or push is permitted by the workflow.
+- Record live exact-SHA AI approvals and WEC `wec:auto-approve` controls as pending exact-check and merge evidence, not as merge claims.
+
 ### Fixed - Unit error logging test namespace (2026-11-25)
 - Correct the `test_error_logging.py` monkeypatch target to `utils.error_logging._ERROR_LOG_PATH`, matching the module imported by the implementation.
 - The five error-log nodes pass locally without changing production error-log behavior.
