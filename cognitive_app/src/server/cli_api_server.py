@@ -2178,9 +2178,9 @@ async def submit_decision(req: DecisionSubmitRequest):
                 _db.commit()
 
             log.info(
-                "Decision submitted: id=%s confidence=%.2f",
-                decision_id,
-                req.confidence_score,
+                "Decision submitted: id=%s confidence=%s",
+                sanitize_for_log(decision_id),
+                sanitize_for_log(f"{req.confidence_score:.2f}"),
             )
 
             return DecisionResponse(
