@@ -85,19 +85,19 @@ class LocalSentenceTransformerProvider:
             from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
 
             logger.info("Loading local embedding model")
-
             self.model = safe_load_sentence_transformer(self.model_name, self.cache_dir)
-
             logger.info("Local embedding model loaded successfully on CPU")
-
-        except ImportError:
+            return
+        except ModuleNotFoundError:
             logger.warning("sentence-transformers not installed")
+        except ImportError:
             raise
         except (OSError, ValueError, TypeError, RuntimeError) as e:
             logger.warning(
                 "Local embedding model failed to initialize; using the offline-safe fallback (%s)",
                 type(e).__name__,
             )
+
         try:
             self.model = TfidfEmbeddingProvider(max_features=384)
         except ImportError:
@@ -132,12 +132,16 @@ class LocalSentenceTransformerProvider:
         """Get embedding dimension."""
         if not self.model:
             raise RuntimeError("Model not loaded")
-        get_dimension = getattr(self.model, "get_dimension", None)
-        if callable(get_dimension):
-            return int(get_dimension())
         get_sentence_dimension = getattr(self.model, "get_sentence_embedding_dimension", None)
         if callable(get_sentence_dimension):
-            return int(get_sentence_dimension())
+            dimension = get_sentence_dimension()
+            if isinstance(dimension, (int, float)):
+                return int(dimension)
+        get_dimension = getattr(self.model, "get_dimension", None)
+        if callable(get_dimension):
+            dimension = get_dimension()
+            if isinstance(dimension, (int, float)):
+                return int(dimension)
         return 384
 
 
@@ -318,16 +322,19 @@ class CachedEmbeddingProvider:
         logger.debug(
             f"Cache miss for key: {cache_key}"
         )  # codeql[py/clear-text-logging-sensitive-data]
-        embeddings = self.provider.encode(texts, **kwargs)
+        embeddings = np.asarray(self.provider.encode(texts, **kwargs))
 
         # Save to cache
         try:
+            self.cache_dir.mkdir(parents=True, exist_ok=True)
             np.savez_compressed(cache_file, embeddings=embeddings)
 
             cache_metadata = {
                 "cache_key": cache_key,
                 "num_texts": len(texts),
-                "embedding_dim": embeddings.shape[1] if len(embeddings) > 0 else 0,
+                "embedding_dim": (
+                    embeddings.shape[1] if embeddings.ndim > 1 else embeddings.shape[0]
+                ),
                 "created_at": datetime.now(UTC).isoformat(),
                 "provider": self.provider.__class__.__name__,
                 **(metadata or {}),

@@ -46,7 +46,7 @@ class SecurityValidator:
         # Pre-compile XSS patterns
         self._xss_patterns = [
             re.compile(
-                r"(?i)<script\b|onerror\s*=|javascript\s*:|innerHTML\s*=|dangerouslySetInnerHTML"
+                r"(?i)(?:<script\b|\bonerror\s*=|\bjavascript\s*:|\binnerHTML\s*=|\bdangerouslySetInnerHTML\b)"
             ),
             re.compile(r"innerHTML\s*="),
             re.compile(r"dangerouslySetInnerHTML"),
@@ -205,7 +205,7 @@ class SecurityValidator:
                 secrets.append(
                     {
                         "type": "high_risk_file",
-                        "secret_type": "file",
+                        "secret_type": "file",  # pragma: allowlist secret
                         "severity": "high",
                         "category": "security",
                         "file": file,
