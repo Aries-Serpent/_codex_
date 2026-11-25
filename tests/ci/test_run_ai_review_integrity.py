@@ -99,6 +99,15 @@ def test_secrets_baseline_is_not_high_risk_source() -> None:
     assert SecretPatterns.should_exclude_file(".secrets.baseline")
 
 
+def test_security_source_files_are_not_high_risk_artifacts() -> None:
+    for filename in (
+        ".github/agents/codex_reviewer/secret_patterns.py",
+        "scripts/ci/secrets_findings_formatter.py",
+        "scripts/github_secrets_sync.py",
+    ):
+        assert not SecretPatterns.is_high_risk_file(filename)
+
+
 def test_load_review_context_rejects_incomplete_file_listing(monkeypatch: Any) -> None:
     def request(_method: str, path: str, _token: str, **_kwargs: Any) -> tuple[int, Any]:
         if path == "/repos/o/r/pulls/1":

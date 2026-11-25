@@ -1,3 +1,17 @@
+## Session: 2026-11-25 Codespace relaunch, PR 5855, and PR 5856
+
+### Agents Used
+
+- Direct execution; no custom agents were invoked.
+
+### Execution and evidence
+
+- PR #5855 routing fix exact head: `2b574932a12a9ecde409510963eb0a2372c30507`; exact-SHA AI APPROVE review `6055975214`.
+- PR #5856 CodeQL fix exact head: `16a6f646255dc9319ede44b217edbe1afeebdd1d`; exact-SHA AI APPROVE review `6055988050`.
+- Both PRs are ready-for-review and carry the `wec:auto-approve` label.
+- 0D freshness passes for both sub-PR heads; required checks remain under live terminalization and no merge is claimed.
+- Cognitive preflight was repaired to avoid github-actions bot commit/push side effects; it remains a read-only checklist and validation gate.
+
 ## Session: Unit error logging namespace batch (2026-11-25)
 
 ### Agents Used

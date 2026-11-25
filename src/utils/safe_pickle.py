@@ -53,11 +53,47 @@ import io
 import logging
 import os
 import pickle  # nosec B403 - centralized safe wrapper around trusted pickle operations
+import re
 import secrets
 from pathlib import Path
 from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
+
+_SECRET_KEY_PATTERN = re.compile(
+    r"(?i)(password|passwd|secret|token|api[_-]?key|authorization|cookie|private[_-]?key|credential)"
+)
+_SECRET_TEXT_PATTERN = re.compile(
+    r"(?i)(password|passwd|secret|token|api[_-]?key|authorization|bearer)\s*[:=]\s*[^\s,;]+"
+)
+
+
+def _redact_sensitive_object(value: Any) -> Any:
+    """Redact common secret fields and key/value text before pickle serialization."""
+    if isinstance(value, dict):
+        redacted_dict: dict[Any, Any] = {}
+        for key, item in value.items():
+            if isinstance(key, str) and _SECRET_KEY_PATTERN.search(key):
+                redacted_dict[key] = "[REDACTED]"
+            else:
+                redacted_dict[key] = _redact_sensitive_object(item)
+        return redacted_dict
+    if isinstance(value, list):
+        return [_redact_sensitive_object(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(_redact_sensitive_object(item) for item in value)
+    if isinstance(value, set):
+        return {_redact_sensitive_object(item) for item in value}
+    if isinstance(value, str):
+        return _SECRET_TEXT_PATTERN.sub(r"\1=[REDACTED]", value)
+    if isinstance(value, bytes):
+        try:
+            text = value.decode("utf-8")
+        except UnicodeDecodeError:
+            return value
+        bytes_redacted = _SECRET_TEXT_PATTERN.sub(r"\1=[REDACTED]", text)
+        return bytes_redacted.encode("utf-8") if bytes_redacted != text else value
+    return value
 
 
 class RestrictedUnpickler(pickle.Unpickler):
@@ -345,7 +381,10 @@ def safe_pickle_dump(
     # SECURITY: serialization only; callers pass trusted objects created by the
     # current process. Centralizing this boundary keeps call sites free of raw
     # pickle operations.
-    pickled_data = trusted_pickle_dumps(obj, protocol=protocol)
+    pickled_data = trusted_pickle_dumps(
+        _redact_sensitive_object(obj),
+        protocol=protocol,
+    )
 
     if add_signature:
         # Get secret key and use it directly to prevent clear-text storage

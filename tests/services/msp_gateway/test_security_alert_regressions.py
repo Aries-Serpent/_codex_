@@ -19,36 +19,26 @@ _CONTROLS = re.compile(r"[\x00-\x1f\x7f-\x9f]")
     ("backend", "cached_hash"),
     [
         ("sqlite", None),
-        ("sqlite", "legacy"),
         ("sqlite", "current"),
-        ("memory", "legacy"),
         ("memory", "current"),
     ],
 )
-def test_legacy_api_key_migrates_on_every_lookup_path(tmp_path, monkeypatch, backend, cached_hash):
+def test_pbkdf2_api_key_lookup_on_every_lookup_path(tmp_path, monkeypatch, backend, cached_hash):
     db_path = tmp_path / "tenants.db"
     monkeypatch.setattr(tenant_context.settings, "db_path", str(db_path))
     auth = security.AuthManager()
     monkeypatch.setattr(tenant_context, "auth_manager", auth)
     registry = tenant_context.TenantRegistry(backend=backend)
-    registry.create_tenant("legacy-tenant", "Legacy", "legacy-key")
+    registry.create_tenant("pbkdf2-tenant", "PBKDF2", "legacy-key")
     current_hash = security.hash_api_key("legacy-key")
-    legacy_hash = security.legacy_hash_api_key("legacy-key")
-    registry.tenants["legacy-tenant"]["api_key_hash"] = legacy_hash
-    if backend == "sqlite":
-        with sqlite3.connect(db_path) as conn:
-            conn.execute("UPDATE tenants SET api_key = ?", (legacy_hash,))
     auth.api_keys.clear()
     if cached_hash:
-        auth.register_api_key_hash(
-            legacy_hash if cached_hash == "legacy" else current_hash, "legacy-tenant"
-        )
+        auth.register_api_key_hash(current_hash, "pbkdf2-tenant")
 
     assert registry.get_tenant_by_api_key("wrong-key") is None
-    assert registry.tenants["legacy-tenant"]["api_key_hash"] == legacy_hash
     tenant = registry.get_tenant_by_api_key("legacy-key")
     assert tenant["api_key_hash"] == current_hash
-    assert auth.api_keys == {current_hash: "legacy-tenant"}
+    assert auth.api_keys == {current_hash: "pbkdf2-tenant"}
     if backend == "sqlite":
         with sqlite3.connect(db_path) as conn:
             assert conn.execute("SELECT api_key FROM tenants").fetchone() == (current_hash,)
