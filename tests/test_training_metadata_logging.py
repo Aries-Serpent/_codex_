@@ -19,7 +19,7 @@ torch = pytest.importorskip("torch")
 
 
 def test_run_functional_training_records_metadata(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, mock_json_serializable
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     monkeypatch.setattr(
         "codex_ml.logging.run_metadata.current_commit", lambda: "deadbeef", raising=False

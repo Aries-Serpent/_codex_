@@ -516,6 +516,8 @@ _TORCH_REQUIRED_TEST_FILES: frozenset[str] = frozenset(
 def _path_requires_torch(path_obj: pathlib.Path) -> bool:
     if _is_training_allowlisted(path_obj):
         return False
+    if path_obj.name == "test_main.py" and "codex_ml" in path_obj.parts:
+        return False
     if path_obj.name == "training" and "tests" in path_obj.parts and path_obj.is_dir():
         return not _TRAINING_TORCH_ALLOWLIST_FILENAMES
     # Exclude test_performance.py from torch requirement (it tests caching/perf utils only)
