@@ -405,9 +405,7 @@ def _require_operation_auth(
         expected = ""
     if _valid_ui_session(request.cookies.get(_UI_SESSION_COOKIE, "")):
         return
-    if not expected:
-        raise HTTPException(status_code=503, detail="Operation auth not configured on server")
-    if creds is None or not secrets.compare_digest(creds.credentials, expected):
+    if creds is None or not expected or not secrets.compare_digest(creds.credentials, expected):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
 
