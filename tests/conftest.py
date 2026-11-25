@@ -277,6 +277,106 @@ def _ensure_project_cwd():
         _os.chdir(_PROJECT_ROOT)
 
 
+@pytest.fixture
+def pool_state_tracker():
+    """Track connection pool size changes across a test."""
+
+    from codex.logging.db_manager import DBManager
+
+    DBManager.close_all_pools()
+    baseline = sum(len(pool) for pool in DBManager._CONNECTION_POOL.values())
+
+    def _pool_size() -> int:
+        return sum(len(pool) for pool in DBManager._CONNECTION_POOL.values())
+
+    def assert_pool_grew():
+        current = _pool_size()
+        assert (
+            current > baseline
+        ), f"Expected pool to grow beyond {baseline}, current size {current}"
+
+    def assert_pool_size(expected: int):
+        current = _pool_size()
+        assert current == expected, f"Expected pool size {expected}, got {current}"
+
+    def assert_pool_empty():
+        current = _pool_size()
+        assert current == 0, f"Expected pool to be empty, size {current}"
+
+    try:
+        yield {
+            "assert_pool_grew": assert_pool_grew,
+            "assert_pool_size": assert_pool_size,
+            "assert_pool_empty": assert_pool_empty,
+        }
+    finally:
+        DBManager.close_all_pools()
+
+
+@pytest.fixture
+def clean_connection_pool():
+    """Ensure connection pools are cleared before and after a test."""
+
+    from codex.logging.db_manager import DBManager
+
+    original = DBManager._POOL_ENABLED
+    DBManager.close_all_pools()
+    try:
+        yield
+    finally:
+        DBManager._POOL_ENABLED = original
+        DBManager.close_all_pools()
+
+
+@pytest.fixture
+def pooling_db_manager(tmp_path, request):
+    """Provide a DBManager instance with pooling enabled and an isolated path."""
+
+    from codex.logging.db_manager import DBManager
+
+    original = DBManager._POOL_ENABLED
+    DBManager._POOL_ENABLED = True
+    DBManager.close_all_pools()
+
+    manager = DBManager(db_path=tmp_path / "pooling.db")
+
+    if request.node.get_closest_marker("pool_disable_reuse"):
+        original_get = manager.get_connection
+
+        def _get_connection_no_reuse(*args, **kwargs):
+            original_pooling_state = DBManager._POOL_ENABLED
+            DBManager._POOL_ENABLED = False
+            try:
+                return original_get(*args, **kwargs)
+            finally:
+                DBManager._POOL_ENABLED = original_pooling_state
+
+        manager.get_connection = _get_connection_no_reuse  # type: ignore[attr-defined]
+
+    try:
+        yield manager
+    finally:
+        DBManager.close_all_pools()
+        DBManager._POOL_ENABLED = original
+
+
+@pytest.fixture(params=[True, False], ids=["pooling_enabled", "pooling_disabled"])
+def pooling_mode(request):
+    """Parametrize tests to run with pooling enabled and disabled."""
+
+    from codex.logging.db_manager import DBManager
+
+    original = DBManager._POOL_ENABLED
+    DBManager.close_all_pools()
+    DBManager._POOL_ENABLED = request.param
+
+    try:
+        yield request.param
+    finally:
+        DBManager.close_all_pools()
+        DBManager._POOL_ENABLED = original
+
+
 @pytest.fixture(autouse=True)
 def _default_subprocess_cwd(monkeypatch):
     """Ensure subprocesses default to running from the project root."""
@@ -415,6 +515,8 @@ _TORCH_REQUIRED_TEST_FILES: frozenset[str] = frozenset(
 
 def _path_requires_torch(path_obj: pathlib.Path) -> bool:
     if _is_training_allowlisted(path_obj):
+        return False
+    if path_obj.name == "test_main.py" and "codex_ml" in path_obj.parts:
         return False
     if path_obj.name == "training" and "tests" in path_obj.parts and path_obj.is_dir():
         return not _TRAINING_TORCH_ALLOWLIST_FILENAMES
