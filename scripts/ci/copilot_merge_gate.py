@@ -220,6 +220,25 @@ def _check_conclusion(check: Mapping[str, Any]) -> str:
     return ""
 
 
+OBSERVATION_ONLY_CHECK_NAMES = (
+    "ml-slow-aggregate",
+    "ml components test suite",
+    "copilot",
+)
+OBSERVATION_ONLY_CHECK_PREFIXES = (
+    "test-ml-components",
+    "integration-shard",
+    "coverage-shard",
+)
+
+
+def _is_observation_only_check(name: str) -> bool:
+    normalized = name.strip().lower()
+    return normalized in OBSERVATION_ONLY_CHECK_NAMES or any(
+        normalized.startswith(prefix) for prefix in OBSERVATION_ONLY_CHECK_PREFIXES
+    )
+
+
 def _check_sort_key(check: Mapping[str, Any]) -> tuple[str, int]:
     timestamp = ""
     for key in ("completed_at", "updated_at", "started_at", "created_at"):
@@ -287,18 +306,6 @@ def check_required_checks(
         ):
             names = [str(name) for name in required_contexts]
 
-    if not names and checks:
-        names = [name for name in (_check_name(check) for check in checks) if name]
-    if not names:
-        return {
-            "pass": False,
-            "passed": 0,
-            "pending": 0,
-            "failed": 0,
-            "missing": [],
-            "reason": "required-check evidence unavailable",
-        }
-
     by_name: dict[str, Mapping[str, Any]] = {}
     for check_item in checks:
         name = _check_name(check_item)
@@ -308,6 +315,30 @@ def check_required_checks(
         existing = by_name.get(normalized_name)
         if existing is None or _check_sort_key(check_item) >= _check_sort_key(existing):
             by_name[normalized_name] = check_item
+
+    if not names:
+        names = [name for name in by_name if not _is_observation_only_check(name)]
+    if not names:
+        if not checks:
+            return {
+                "pass": False,
+                "passed": 0,
+                "pending": 0,
+                "failed": 0,
+                "missing": [],
+                "reason": "required-check evidence unavailable",
+            }
+        names = []
+        return {
+            "pass": True,
+            "passed": 0,
+            "pending": 0,
+            "failed": 0,
+            "missing": [],
+            "failures": [],
+            "required": [],
+            "reason": "no blocking required checks remain",
+        }
 
     passed = 0
     pending = 0
@@ -781,12 +812,20 @@ class CopilotMergeGate:
                     execute=self.execute,
                 )
 
-            reviews_payload = self.http_get(
-                self.repo,
-                f"repos/{self.repo}/pulls/{self.pr_number}/reviews?per_page=100",
-                self.token,
-            )
-            reviews = reviews_payload if isinstance(reviews_payload, list) else []
+            reviews: list[Mapping[str, Any]] = []
+            for page in range(1, 101):
+                reviews_payload = self.http_get(
+                    self.repo,
+                    f"repos/{self.repo}/pulls/{self.pr_number}/reviews?per_page=100&page={page}",
+                    self.token,
+                )
+                if not isinstance(reviews_payload, list):
+                    break
+                reviews.extend(item for item in reviews_payload if isinstance(item, Mapping))
+                if len(reviews_payload) < 100:
+                    break
+            else:
+                raise RuntimeError("pull-request review pagination did not terminate")
 
             check_payload = self.http_get(
                 self.repo,

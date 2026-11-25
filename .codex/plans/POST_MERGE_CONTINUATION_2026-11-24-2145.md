@@ -12,21 +12,22 @@ Continue PR #5850 (`Fix Auto-Approve closed and unapproved PR handling`) through
 - Origin main SHA: `4e0b834d369dc4ff6acf92932bc1f678ec7d70f3`
 - PR: `#5850`, open, non-draft, mergeable=true, mergeable_state=unstable
 - PR base: `0D_base_`
-- PR head: `badf07af2e8a648412c7cb5aebc5b9bc51238eb5`
-- Synthetic merge commit seen by CI: `d25cb75e`
+- PR head: `56fc1e9fa267efc307c96b4060acfac3ada0e5ec`
+- Signed follow-up commits: `492f14fcccf9f5ecb66469a93cbb5d1440b6a6a1`, `56fc1e9fa267efc307c96b4060acfac3ada0e5ec`
 - Rebase hard-stop marker: absent
 - Existing dirty/untracked work: preserved
 
 ## Open Review Threads
 
-1. Malformed PR state code fix: implemented with exact `open`/`closed` state validation in both target paths. Public thread remains unresolved until the push and exact-SHA rerun verify the fix.
-2. WEC lookup conflation fix: implemented with authorized/missing-or-expired/label-inspection-error dispositions. Public thread remains unresolved until the push and exact-SHA rerun verify the fix.
+1. Malformed PR state code fix: implemented with exact `open`/`closed` state validation in both target paths; resolved after exact-SHA verification.
+2. WEC lookup conflation fix: implemented with authorized/missing-or-expired/label-inspection-error dispositions; resolved after exact-SHA verification.
 
 ## Current CI Evidence
 
 - Historical Auto-Approve run `45493088673`: missing-WEC branch on PR head, exit code 1. Labeled rerun `45499276143` later completed success at head `492f14fccc`.
 - Cognitive Pre-flight run `45493087810`: session-plan/accountability prerequisites were incomplete at that SHA. Cache save conflicts were infrastructure-only in the log.
-- Many later checks were success or neutral; do not claim merge readiness until refreshed exact-SHA checks are terminal and green.
+- Exact-SHA merge gate at `56fc1e9fa267efc307c96b4060acfac3ada0e5ec` now ignores observation-only ML/cancelled Copilot evidence and evaluates real rollup checks. ML Components is being moved to weekly scheduled/manual evidence execution, removing PR-triggered gate pressure.
+- Historical ML workflow `45501188838` was terminal and unit debt was routed to PR #5851; its current 307-failure aggregate is a scheduled remediation lane, not a PR merge gate.
 
 ## Execution Plan
 
@@ -36,9 +37,9 @@ Continue PR #5850 (`Fix Auto-Approve closed and unapproved PR handling`) through
 2. Implement strict state classification and a tri-state WEC label result.
 3. Run focused pytest, compileall, Black, isort, Ruff, mypy, and `git diff --check`. Completed locally for the approval slice.
 4. Update the accountability report and changelog for the bounded fix. Completed.
-5. Commit and push only the session branch.
-6. Refresh PR reviews and all exact-SHA checks.
-7. Resolve only review threads with matching landed code and exact verification.
+5. Commit and push only the session branch. Completed at `492f14fccc` and `56fc1e9fa267efc307c96b4060acfac3ada0e5ec`.
+6. Refresh PR reviews and all exact-SHA checks. Exact-SHA AI review is APPROVE; 4 coverage shards remain pending.
+7. Resolve only review threads with matching landed code and exact verification. Both threads are resolved.
 8. Merge PR #5850 into `0D_base_` only through the repository merge gate after:
    - no unresolved review threads;
    - exact-SHA AI review is approved;

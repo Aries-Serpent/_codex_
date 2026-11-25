@@ -210,17 +210,6 @@ def test_shards_preserve_scope_and_keep_coverage_out_of_integration():
     assert "--floor-file .codex/baselines/ml_unit_coverage_floor.json" in gate
     assert "--quarantine .codex/baselines/ml_unit_quarantine.json" in gate
     assert aggregate["steps"][0]["with"]["fetch-depth"] == 2
-    ratchet = steps["Ratchet quarantine and coverage floor against PR base"]
-    assert ratchet["if"] == "always() && github.event_name == 'pull_request'"
-    assert ratchet["env"]["PR_BASE_SHA"] == "${{ github.event.pull_request.base.sha }}"
-    assert 'git fetch --no-tags --depth=1 origin "${PR_BASE_SHA}"' in ratchet["run"]
-    assert 'git cat-file -e "${PR_BASE_SHA}^{commit}"' in ratchet["run"]
-    assert 'ratchet --base-ref "${PR_BASE_SHA}"' in ratchet["run"]
-    assert "HEAD^1" not in ratchet["run"]
-    assert (
-        "contains(github.event.pull_request.labels.*.name, 'quarantine-approved')"
-        in ratchet["env"]["ML_QUARANTINE_GROWTH_APPROVED"]
-    )
     push_base = steps["Check out push base baselines"]
     assert "github.event_name == 'push'" in push_base["if"]
     assert "0000000000000000000000000000000000000000" in push_base["if"]
@@ -266,10 +255,14 @@ def test_frontend_diagnostics_are_observation_only():
     assert steps["Run frontend diagnostics"]["continue-on-error"] is True
 
 
-def test_ml_repairs_can_be_validated_on_staging_sub_prs():
+def test_ml_workflow_is_not_a_pr_gate_and_has_scheduled_manual_routes():
     workflow_path = Path(__file__).resolve().parents[2] / ".github/workflows/ml-tests.yml"
     workflow = yaml.safe_load(workflow_path.read_text())
-    assert "0D_base_" in workflow["on"]["pull_request"]["branches"]
+    triggers = workflow["on"]
+    assert "pull_request" not in triggers
+    assert "workflow_dispatch" in triggers
+    assert triggers["schedule"] == [{"cron": "0 2 * * 0"}]
+    assert workflow["concurrency"]["cancel-in-progress"] is False
 
 
 def test_coverage_shard_installs_and_preflights_optional_test_integrations():

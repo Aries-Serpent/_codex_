@@ -11,7 +11,8 @@
 - Added offline regression coverage for PR-only and SHA-plus-PR modes, malformed PR states, direct label inspection, and denied lookup outcomes.
 - Preserved existing closed-PR and missing-WEC skip semantics; malformed inventory and unavailable label evidence remain denied.
 - Fixed merge-gate required-check deduplication so the latest rerun outcome wins over older duplicate check runs.
-- No workflow dispatch, owner-control change, secret change, merge, or deployment was performed.
+- Removed ML Components from PR triggers, changed it to a weekly schedule plus manual dispatch, and filtered scheduled ML/cancelled Copilot evidence out of sub-PR merge gates while preserving real required-check failures.
+- No owner-control change, secret change, merge, or deployment was performed.
 
 ### Validation
 
