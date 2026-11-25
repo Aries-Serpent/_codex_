@@ -124,7 +124,9 @@ def test_workflow_top_level_permissions_not_read_all(filename: str) -> None:
         f"{filename}: top-level 'permissions: read-all' is too broad. "
         "Use 'permissions: {}' instead and set explicit per-job permissions."
     )
-    assert (top_perms != "write-all", "top_perms is not valid"
+    assert (
+        top_perms != "write-all",
+        "top_perms is not valid",
     ), f"{filename}: top-level 'permissions: write-all' is dangerously broad."
 
 
@@ -338,6 +340,23 @@ def test_container_scan_runs_all_trivy_configurations_for_every_pr() -> None:
         "docker/Dockerfile.cpu",
         "docker/Dockerfile.gpu",
     ]
+
+
+def test_cognitive_preflight_is_read_only_and_never_pushes_docs() -> None:
+    workflow = _load_workflow("agent-auth-delegation.yml")
+    job = workflow["jobs"]["cognitive-preflight"]
+    assert job["permissions"] == {
+        "actions": "read",
+        "contents": "read",
+        "issues": "write",
+        "pull-requests": "write",
+    }
+
+    commands = "\n".join(step.get("run", "") for step in job["steps"])
+    assert "git push" not in commands
+    assert "git commit" not in commands
+    assert "git pull --rebase" not in commands
+    assert "session_wrapup_autofix.py" in commands
 
 
 def test_agent_delegation_requires_protected_environment() -> None:
