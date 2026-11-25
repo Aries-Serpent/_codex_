@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed - Unit telemetry MetricsServer standalone fallback (2026-11-25)
+- Prevent the legacy telemetry server facade from delegating to an optional standalone package before local `_HAS_PROM` and `start_http_server` behavior is applied.
+- Preserve disabled-Prometheus, success, custom/default parameter, and OSError behavior covered by `tests/test_telemetry_gap_fill.py::TestMetricsServer`.
+
 ### Fixed (SN) - PR #5850 Auto-Approve review remediation (2026-11-24)
 - Reject malformed or missing PR states in PR-only and SHA-plus-PR Auto-Approve target paths.
 - Distinguish verified missing/expired WEC labels from unavailable or malformed label-inspection evidence; inspection failures remain denied.

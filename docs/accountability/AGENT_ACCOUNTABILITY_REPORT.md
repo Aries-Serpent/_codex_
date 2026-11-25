@@ -1,3 +1,16 @@
+## Session: Unit telemetry MetricsServer batch (2026-11-25)
+
+### Agents Used
+
+- None — direct execution (no delegated agents).
+
+### Execution and evidence
+
+- Reproduced and verified five `TestMetricsServer` nodes from exact JUnit aggregate evidence.
+- The isolated worktree reproduces all five nodes locally; the source fix removes standalone-package delegation from the legacy server compatibility module so `_HAS_PROM` and `start_http_server` remain authoritative.
+- Whole telemetry gap-fill module passes in the isolated worktree; Black, Ruff, compileall, and `git diff --check` pass.
+- No workflow dispatch, owner-control change, secret change, merge, or deployment was performed.
+
 ## Session: PR #5850 Auto-Approve review remediation (2026-11-24)
 ## Session: PR #5851 connection-pooling pytest fixtures (2026-11-24)
 
