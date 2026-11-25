@@ -25829,3 +25829,14 @@ has not been recorded.
   of `0D_base_`; no issue closure or merge occurred.
 - Fresh exact-head ML/RAG reruns, exact-SHA approval, required checks, and issue
   evidence are still required on the manifest or a subsequent PR head.
+
+---
+## Session: PR #5855 Cognitive Pre-flight repair (2026-11-25)
+
+- Direct execution; no delegated agents were invoked.
+- Reviewed the four Cognitive Pre-flight failures on head
+  `2b574932a12a9ecde409510963eb0a2372c30507`. Each failed the REQ-4
+  accountability-report update check; the CHANGELOG check was skipped.
+- The workflow auto-fix generated a local accountability entry, but publishing
+  it failed with HTTP 403 for `github-actions[bot]`. This entry records the
+  targeted REQ-4 repair; no CHANGELOG update was required by these runs.
