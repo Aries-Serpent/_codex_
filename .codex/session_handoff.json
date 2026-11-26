@@ -1,4 +1,6 @@
 {
+  "artifact_state": "historical",
+  "historical_reason": "Superseded by the 0D/main promotion and merged #5857 continuity state; do not consume this artifact as live handoff state.",
   "active_issue": 5854,
   "active_pr": 5857,
   "branch": "copilot/session-codespace-continuity-20261125",

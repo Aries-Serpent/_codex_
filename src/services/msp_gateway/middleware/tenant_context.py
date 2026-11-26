@@ -17,7 +17,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from utils.log_sanitizer import sanitize_log_input
 
 from ..config import settings
-from ..security import auth_manager, hash_api_key
+from ..security import auth_manager, hash_api_key, legacy_hash_api_key
 
 logger = logging.getLogger(__name__)
 
@@ -224,26 +224,37 @@ class TenantRegistry:
                 auth_manager.revoke_api_key(api_key)
                 return tenant
             current_hash = hash_api_key(api_key)
-            if tenant.get("api_key_hash") == current_hash:
+            legacy_hash = legacy_hash_api_key(api_key)
+            stored_hash = tenant.get("api_key_hash")
+            if stored_hash == current_hash:
                 return tenant
+            if stored_hash != legacy_hash:
+                auth_manager.revoke_api_key_hash(current_hash)
+                auth_manager.revoke_api_key_hash(legacy_hash)
+                return None
             if self.backend != "sqlite":
                 tenant["api_key_hash"] = current_hash
+                auth_manager.revoke_api_key_hash(legacy_hash)
+                auth_manager.register_api_key_hash(current_hash, tenant["tenant_id"])
                 return tenant
 
         # Memory tenants remain addressable after an API key is revoked.
+        current_hash = hash_api_key(api_key)
+        legacy_hash = legacy_hash_api_key(api_key)
         if self.backend != "sqlite":
-            current_hash = hash_api_key(api_key)
             for tenant in self.tenants.values():
-                if tenant.get("api_key_hash") == current_hash:
-                    if tenant.get("active", True):
-                        auth_manager.register_api_key(api_key, tenant["tenant_id"])
-                        return tenant
-                    return None
+                if tenant.get("api_key_hash") in {current_hash, legacy_hash}:
+                    if not tenant.get("active", True):
+                        return None
+                    tenant["api_key_hash"] = current_hash
+                    auth_manager.revoke_api_key_hash(legacy_hash)
+                    auth_manager.register_api_key_hash(current_hash, tenant["tenant_id"])
+                    return tenant
             return None
         if self.backend == "sqlite":
             import json
 
-            pbkdf2_hash = hash_api_key(api_key)
+            pbkdf2_hash = current_hash
             conn = sqlite3.connect(settings.db_path)
             cursor = conn.cursor()
 
@@ -257,6 +268,24 @@ class TenantRegistry:
             )
 
             row = cursor.fetchone()
+            migrated = False
+            if row is None:
+                cursor.execute(
+                    """
+                    SELECT tenant_id, name, api_key, quota_json, policies_json,
+                           metadata_json, active, created_at, updated_at
+                    FROM tenants WHERE api_key = ?
+                """,
+                    (legacy_hash,),
+                )
+                row = cursor.fetchone()
+                if row is not None:
+                    cursor.execute(
+                        "UPDATE tenants SET api_key = ? WHERE tenant_id = ?",
+                        (pbkdf2_hash, row[0]),
+                    )
+                    conn.commit()
+                    migrated = True
             conn.close()
 
             if row:
@@ -275,6 +304,8 @@ class TenantRegistry:
                 }
                 # Cache it
                 self.tenants[tenant_id] = tenant_data
+                if migrated:
+                    auth_manager.revoke_api_key_hash(legacy_hash)
                 if tenant_data["active"]:
                     auth_manager.register_api_key_hash(pbkdf2_hash, tenant_id)
                 else:

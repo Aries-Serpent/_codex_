@@ -18,6 +18,7 @@ import argparse
 import gzip
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -65,19 +66,34 @@ PRIVATE_KEY_BASENAMES = {
     "id_ecdsa_sk",
 }
 SENSITIVE_SUFFIXES = (".pem", ".key", ".p12", ".pfx")
-SENSITIVE_PARTS = ("credential", "private_key", "private-key", "token", "secret")
+SENSITIVE_COMPONENTS = {
+    "credential",
+    "credentials",
+    "private_key",
+    "private-key",
+    "secret",
+    "secrets",
+    "token",
+    "tokens",
+}
+SENSITIVE_NAME_PATTERN = re.compile(
+    r"(?:^|[._-])(?:credentials?|private[-_]key|secrets?|tokens?)(?:[._-]|$)"
+)
 
 
 def _is_sensitive_relative_path(relative_path: str) -> bool:
     lower = relative_path.lower().replace("\\", "/")
-    name = lower.rsplit("/", 1)[-1]
+    components = lower.split("/")
+    name = components[-1]
     if name in PRIVATE_KEY_BASENAMES:
         return True
     if name == ".env":
         return True
     if name.startswith(".env."):
         return "example" not in name
-    if any(part in lower for part in SENSITIVE_PARTS):
+    if any(component in SENSITIVE_COMPONENTS for component in components):
+        return True
+    if SENSITIVE_NAME_PATTERN.search(name):
         return True
     return name.endswith(SENSITIVE_SUFFIXES)
 
@@ -174,7 +190,9 @@ def _snapshot_new_files(repo_root: Path, snapshot_dir: Path, new_files: list[str
     return written
 
 
-def bundle_changes(repo_root: str | Path, output_dir: str | Path, bundle_name: str = "sandbox-git-transfer") -> Path:
+def bundle_changes(
+    repo_root: str | Path, output_dir: str | Path, bundle_name: str = "sandbox-git-transfer"
+) -> Path:
     repo_root = Path(repo_root).resolve()
     output_dir = Path(output_dir).resolve()
     _ensure_git_repo(repo_root)
@@ -212,7 +230,9 @@ def bundle_changes(repo_root: str | Path, output_dir: str | Path, bundle_name: s
         check=False,
     )
     if patch_result.returncode not in (0, 1):
-        raise RuntimeError(f"Failed to generate git diff: {patch_result.stderr.decode(errors='replace') or patch_result.stdout.decode(errors='replace')}")
+        raise RuntimeError(
+            f"Failed to generate git diff: {patch_result.stderr.decode(errors='replace') or patch_result.stdout.decode(errors='replace')}"
+        )
 
     patch_path.write_bytes(patch_result.stdout or b"")
     with gzip.open(gzip_path, "wb") as gz, patch_path.open("rb") as src:
@@ -220,7 +240,9 @@ def bundle_changes(repo_root: str | Path, output_dir: str | Path, bundle_name: s
 
     snapshot_dir.mkdir(parents=True, exist_ok=True)
     snapshot_files = _snapshot_new_files(repo_root, snapshot_dir, new_files)
-    status_path.write_text("\n".join(status_lines) + ("\n" if status_lines else ""), encoding="utf-8")
+    status_path.write_text(
+        "\n".join(status_lines) + ("\n" if status_lines else ""), encoding="utf-8"
+    )
 
     manifest = {
         "bundle_name": bundle_name,
@@ -356,22 +378,44 @@ def apply_bundle(bundle_path: str | Path, repo_root: str | Path) -> Path:
             return repo_root
 
         check_proc = subprocess.run(
-            ["git", "-C", str(repo_root), "apply", "--check", "--binary", "--whitespace=nowarn", str(patch_path)],
+            [
+                "git",
+                "-C",
+                str(repo_root),
+                "apply",
+                "--check",
+                "--binary",
+                "--whitespace=nowarn",
+                str(patch_path),
+            ],
             capture_output=True,
             text=True,
             check=False,
         )
         if check_proc.returncode != 0:
-            raise RuntimeError(f"git apply --check failed: {check_proc.stderr.strip() or check_proc.stdout.strip()}")
+            raise RuntimeError(
+                f"git apply --check failed: {check_proc.stderr.strip() or check_proc.stdout.strip()}"
+            )
 
         apply_proc = subprocess.run(
-            ["git", "-C", str(repo_root), "apply", "--index", "--binary", "--whitespace=nowarn", str(patch_path)],
+            [
+                "git",
+                "-C",
+                str(repo_root),
+                "apply",
+                "--index",
+                "--binary",
+                "--whitespace=nowarn",
+                str(patch_path),
+            ],
             capture_output=True,
             text=True,
             check=False,
         )
         if apply_proc.returncode != 0:
-            raise RuntimeError(f"git apply --index failed: {apply_proc.stderr.strip() or apply_proc.stdout.strip()}")
+            raise RuntimeError(
+                f"git apply --index failed: {apply_proc.stderr.strip() or apply_proc.stdout.strip()}"
+            )
 
         print(f"[OK] Patch applied to: {repo_root}")
         return repo_root
@@ -386,9 +430,15 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    bundle = subparsers.add_parser("bundle", help="Create a compressed patch bundle from the current repo state")
+    bundle = subparsers.add_parser(
+        "bundle", help="Create a compressed patch bundle from the current repo state"
+    )
     bundle.add_argument("--repo-root", default=".", help="Repository root to bundle")
-    bundle.add_argument("--output-dir", default=str(DEFAULT_BUNDLE_DIR), help="Directory to write the bundle archive")
+    bundle.add_argument(
+        "--output-dir",
+        default=str(DEFAULT_BUNDLE_DIR),
+        help="Directory to write the bundle archive",
+    )
     bundle.add_argument("--bundle-name", default="sandbox-git-transfer", help="Bundle file prefix")
 
     verify = subparsers.add_parser("verify", help="Verify a bundle’s checksum before applying it")

@@ -136,6 +136,28 @@ def test_periodic_continuity_checkpoint_interval_parser() -> None:
     )
 
     assert args.continuity_checkpoint_interval_seconds == 900
+    for invalid in ("0", "-1"):
+        with pytest.raises(SystemExit):
+            codespace_keepalive.build_parser().parse_args(
+                ["run", "--continuity-checkpoint-interval-seconds", invalid]
+            )
+
+
+def test_start_daemon_rejects_nonpositive_continuity_interval(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(
+        codespace_keepalive.subprocess,
+        "Popen",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("daemon must not start")),
+    )
+
+    with pytest.raises(ValueError, match="positive"):
+        codespace_keepalive.start_daemon(
+            runtime_dir=tmp_path / "runtime",
+            repo_root=tmp_path,
+            continuity_checkpoint_interval_seconds=0,
+        )
 
 
 def test_status_reports_platform_policy_boundary(tmp_path: Path) -> None:

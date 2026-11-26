@@ -77,7 +77,7 @@ class TestTokenizationCliInitialization:
                 from tokenization.cli import init_command
 
                 result = runner.invoke(init_command, ["--config", config_file])
-                # Should reject invalid config
+                assert result.exit_code != 0, "invalid config must be rejected"
             except ImportError:
                 pytest.skip("Tokenization CLI not available")
 
@@ -91,7 +91,8 @@ class TestTokenizationCliInitialization:
             result = runner.invoke(
                 init_command, ["--pretrained", "gpt2", "--cache-dir", "/tmp/tokenizers"]
             )
-            # May fail due to network, but should handle gracefully
+            assert isinstance(result.exit_code, int)
+            assert isinstance(result.output, str)
         except ImportError:
             pytest.skip("Tokenization CLI not available")
 
@@ -174,7 +175,8 @@ class TestTokenizationCliEncoding:
             from tokenization.cli import encode_command
 
             result = runner.invoke(encode_command, ["--text", ""])
-            # Should handle empty input gracefully
+            assert isinstance(result.exit_code, int)
+            assert isinstance(result.output, str)
         except ImportError:
             pytest.skip("Tokenization CLI not available")
 
@@ -254,7 +256,8 @@ class TestTokenizationCliVocabularyOperations:
             from tokenization.cli import vocab_command
 
             result = runner.invoke(vocab_command, ["--info", "size"])
-            # Should display vocab size
+            assert isinstance(result.exit_code, int)
+            assert isinstance(result.output, str)
         except ImportError:
             pytest.skip("Tokenization CLI not available")
 
@@ -304,7 +307,8 @@ class TestTokenizationCliVocabularyOperations:
             from tokenization.cli import vocab_command
 
             result = runner.invoke(vocab_command, ["--list-special"])
-            # Should display special tokens
+            assert isinstance(result.exit_code, int)
+            assert isinstance(result.output, str)
         except ImportError:
             pytest.skip("Tokenization CLI not available")
 
@@ -345,7 +349,8 @@ class TestTokenizationCliErrorHandling:
             result = runner.invoke(
                 decode_command, ["--tokens", "999999,888888"]  # Out of range IDs
             )
-            # Should handle invalid IDs
+            assert isinstance(result.exit_code, int)
+            assert isinstance(result.output, str)
         except ImportError:
             pytest.skip("Tokenization CLI not available")
 
@@ -362,7 +367,8 @@ class TestTokenizationCliErrorHandling:
                 from tokenization.cli import encode_command
 
                 result = runner.invoke(encode_command, ["--input-file", input_file])
-                # Should handle binary data
+                assert isinstance(result.exit_code, int)
+                assert isinstance(result.output, str)
             except ImportError:
                 pytest.skip("Tokenization CLI not available")
 

@@ -125,8 +125,7 @@ def test_workflow_top_level_permissions_not_read_all(filename: str) -> None:
         "Use 'permissions: {}' instead and set explicit per-job permissions."
     )
     assert (
-        top_perms != "write-all",
-        "top_perms is not valid",
+        top_perms != "write-all"
     ), f"{filename}: top-level 'permissions: write-all' is dangerously broad."
 
 
@@ -357,6 +356,68 @@ def test_cognitive_preflight_is_read_only_and_never_pushes_docs() -> None:
     assert "git commit" not in commands
     assert "git pull --rebase" not in commands
     assert "session_wrapup_autofix.py" in commands
+
+
+def test_workflow_analyzer_reports_omit_secret_identifiers() -> None:
+    analyzer_path = REPO_ROOT / ".github" / "scripts" / "workflow_analyzer.py"
+    spec = importlib.util.spec_from_file_location("workflow_analyzer_for_test", analyzer_path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    analyzer = module.WorkflowAnalyzer()
+    analyzer.workflows = {
+        "sample.yml": {
+            "path": "sample.yml",
+            "name": "sample",
+            "guarded": False,
+            "triggers": ["push"],
+            "jobs": ["test"],
+            "secrets": ["SUPER_SECRET_SENTINEL"],
+            "runners": ["ubuntu-latest"],
+            "actions_used": [],
+            "has_docker": False,
+            "has_uv": False,
+            "has_nox": False,
+            "has_pytest": True,
+        }
+    }
+
+    json_report = analyzer.generate_json_report()
+    markdown_report = analyzer.generate_markdown_report()
+
+    assert "SUPER_SECRET_SENTINEL" not in json_report
+    assert "SUPER_SECRET_SENTINEL" not in markdown_report
+    workflow = json.loads(json_report)["workflows"]["sample.yml"]
+    assert workflow["secret_count"] == 1
+    assert "secrets" not in workflow
+
+
+def test_cognitive_preflight_documentation_checks_bind_to_head_commit() -> None:
+    workflow = _load_workflow("agent-auth-delegation.yml")
+    steps = workflow["jobs"]["cognitive-preflight"]["steps"]
+    commands = {
+        step["name"]: step.get("run", "")
+        for step in steps
+        if step.get("name")
+        in {
+            "Verify Accountability Report updated in last commit",
+            "Verify CHANGELOG.md updated in last commit",
+        }
+    }
+
+    assert set(commands) == {
+        "Verify Accountability Report updated in last commit",
+        "Verify CHANGELOG.md updated in last commit",
+    }
+    assert (
+        "git rev-list --first-parent --no-merges"
+        in commands["Verify Accountability Report updated in last commit"]
+    )
+    assert (
+        "git diff-tree --no-commit-id --name-only -r"
+        in commands["Verify CHANGELOG.md updated in last commit"]
+    )
+    assert "2026-11-25" not in "\n".join(commands.values())
 
 
 def test_agent_delegation_requires_protected_environment() -> None:

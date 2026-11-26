@@ -47,6 +47,23 @@ def test_status_reports_v1_handoff_and_dirty_state(
     assert "work.txt" in report["worktree"]["created"]
 
 
+def test_historical_handoff_is_not_loaded_as_current_state(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    handoff_path = tmp_path / ".codex" / "session_handoff.json"
+    handoff_path.parent.mkdir()
+    handoff_path.write_text(
+        json.dumps({"schema_version": 2, "artifact_state": "historical"}),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(guard, "HANDOFF_PATH", handoff_path)
+
+    handoff, error = guard.load_handoff()
+
+    assert handoff is None
+    assert error == "historical"
+
+
 def test_write_handoff_creates_v2_and_continuation(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

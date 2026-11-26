@@ -82,6 +82,7 @@ def load_review_context(
 
     file_names: list[str] = []
     diff_sections: list[str] = []
+    patchless_files: list[str] = []
     for item in files:
         if not isinstance(item, dict):
             continue
@@ -97,6 +98,31 @@ def load_review_context(
                 f"+++ b/{filename}\n"
                 f"{patch.rstrip()}"
             )
+        else:
+            patchless_files.append(filename)
+
+    if patchless_files:
+        status, full_diff = github_request(
+            "GET",
+            f"/repos/{repo}/pulls/{pr_number}",
+            read_token,
+            accept="application/vnd.github.v3.diff",
+        )
+        if status != 200 or not isinstance(full_diff, str) or not full_diff.strip():
+            raise RuntimeError(f"Full diff unavailable with HTTP {status}")
+        missing = [
+            filename
+            for filename in file_names
+            if (
+                f"diff --git a/{filename} b/{filename}" not in full_diff
+                and f'diff --git "a/{filename}" "b/{filename}"' not in full_diff
+            )
+        ]
+        if missing:
+            raise RuntimeError(
+                "Pull request full diff is incomplete; missing: " + ", ".join(missing)
+            )
+        return pull_request, file_names, full_diff
 
     diff = "\n".join(diff_sections)
     return pull_request, file_names, diff

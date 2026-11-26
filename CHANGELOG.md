@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5868 promotion review remediation (2026-11-26)
+- Fail closed when merge/review evidence is unavailable, including observation-only checks and patchless PR files.
+- Bind accountability and changelog preflight checks to the latest non-merge PR-head commit instead of static dates or whole-file contents.
+- Preserve continuity and compatibility behavior with component-aware sensitivity matching, positive checkpoint intervals, historical handoff exclusion, legacy API-key migration, lossless pickle state, and standalone telemetry delegation.
+- Remove sensitive workflow-report persistence/logging, user-derived confidence logging, redundant checkpoint/merge-gate variables, and unused-result placeholders covered by CodeQL.
+- Add focused regressions for all 24 promotion review findings; the torch-dependent tokenization CLI module is compiled but may be skipped by its existing environment guard.
+- Follow-up: align report consumers with count-only secret metadata, reject stale legacy auth mappings, revoke current and legacy hashes, match exact diff headers, publish the sanitized pickle API, and make all flagged CLI assertions behavioral.
+
 ### Fixed - Evidence-gated organization maintainer workflow approval (2026-11-26)
 - Allow the authenticated organization repository admin who authored the PR to approve Copilot-triggered workflows only with a current-SHA independent AI approval and active WEC grant.
 - Treat `pull_request_review` as an automatic requester event, preserving all ordinary self-approval, stale-label, missing-review, and non-admin denials.

@@ -22,6 +22,15 @@ from typing import Any
 DEFAULT_ACTIVE_MARKER_TTL_SECONDS = 8 * 60 * 60
 DEFAULT_INTERVAL_SECONDS = 60
 DEFAULT_CONTINUITY_CHECKPOINT_INTERVAL_SECONDS = 15 * 60
+
+
+def positive_int(value: str) -> int:
+    parsed = int(value)
+    if parsed <= 0:
+        raise argparse.ArgumentTypeError("value must be positive")
+    return parsed
+
+
 DEFAULT_MAX_DURATION_SECONDS = 8 * 60 * 60
 DEFAULT_SERVICE_URL = "http://127.0.0.1:8765/api/health"
 PID_NAME = "codespace_keepalive.pid"
@@ -200,6 +209,8 @@ def start_daemon(
     service_url: str = DEFAULT_SERVICE_URL,
     continuity_checkpoint_interval_seconds: int = DEFAULT_CONTINUITY_CHECKPOINT_INTERVAL_SECONDS,
 ) -> dict[str, Any]:
+    if continuity_checkpoint_interval_seconds <= 0:
+        raise ValueError("continuity checkpoint interval must be positive")
     runtime_dir.mkdir(parents=True, exist_ok=True)
     pid_file = runtime_dir / PID_NAME
     if pid_file.exists() and pid_is_owned(pid_file, repo_root):
@@ -489,7 +500,7 @@ def build_parser() -> argparse.ArgumentParser:
     start.add_argument("--service-url", default=DEFAULT_SERVICE_URL)
     start.add_argument(
         "--continuity-checkpoint-interval-seconds",
-        type=int,
+        type=positive_int,
         default=DEFAULT_CONTINUITY_CHECKPOINT_INTERVAL_SECONDS,
     )
     status = subparsers.add_parser("status", parents=[common])
@@ -505,7 +516,7 @@ def build_parser() -> argparse.ArgumentParser:
     restart.add_argument("--service-url", default=DEFAULT_SERVICE_URL)
     restart.add_argument(
         "--continuity-checkpoint-interval-seconds",
-        type=int,
+        type=positive_int,
         default=DEFAULT_CONTINUITY_CHECKPOINT_INTERVAL_SECONDS,
     )
     touch = subparsers.add_parser("touch", parents=[common])
@@ -517,7 +528,7 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--service-url", default=DEFAULT_SERVICE_URL)
     run.add_argument(
         "--continuity-checkpoint-interval-seconds",
-        type=int,
+        type=positive_int,
         default=DEFAULT_CONTINUITY_CHECKPOINT_INTERVAL_SECONDS,
     )
     return parser

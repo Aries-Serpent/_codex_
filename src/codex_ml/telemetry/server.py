@@ -18,7 +18,12 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
-from typing import Optional
+from typing import Any
+
+try:
+    from codex_ml_telemetry import start_metrics_server as _standalone_start_metrics_server
+except ImportError:  # pragma: no cover - optional compatibility package
+    _standalone_start_metrics_server = None
 
 try:  # optional dependency
     from prometheus_client import start_http_server
@@ -31,7 +36,7 @@ except ImportError:  # pragma: no cover - optional
 logger = logging.getLogger(__name__)
 
 
-def start_metrics_server(port: int = 8000, addr: str = "127.0.0.1") -> Optional[bool]:
+def start_metrics_server(port: int = 8000, addr: str = "127.0.0.1") -> Any:
     """Start a Prometheus metrics server if ``prometheus_client`` is available.
 
     Returns ``True`` if the server started, ``False`` if the dependency is missing.
@@ -40,6 +45,8 @@ def start_metrics_server(port: int = 8000, addr: str = "127.0.0.1") -> Optional[
     or cluster deployments that require external scraping, explicitly pass
     addr="0.0.0.0".
     """
+    if _standalone_start_metrics_server is not None:
+        return _standalone_start_metrics_server(port, addr)
     if not _HAS_PROM:
         logger.error("prometheus_client is not installed; metrics server unavailable")
         return False

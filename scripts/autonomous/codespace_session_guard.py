@@ -132,6 +132,8 @@ def load_handoff() -> tuple[dict[str, Any] | None, str | None]:
         return None, f"invalid_json:{exc.msg}"
     if not isinstance(payload, dict):
         return None, "invalid_object"
+    if payload.get("artifact_state") == "historical":
+        return None, "historical"
     return payload, None
 
 
@@ -181,7 +183,6 @@ def find_latest_checkpoint(repo: Path, runtime_dir: Path) -> dict[str, Any] | No
     for path in sorted(set(candidates), key=lambda item: item.stat().st_mtime, reverse=True):
         if not path.is_file():
             continue
-        checkpoint_id = path.name.replace("checkpoint_", "").rsplit(".", 1)[0]
         if path.suffix == ".gz":
             checkpoint_id = path.name.replace("checkpoint_", "").removesuffix(".json.gz")
         elif path.suffix == ".zst":

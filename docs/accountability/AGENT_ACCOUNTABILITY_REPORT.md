@@ -1,3 +1,19 @@
+## Session: PR #5868 promotion review remediation (2026-11-26)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Remediated all 24 current promotion review findings across review integrity, continuity, compatibility, security logging, and static-analysis test quality.
+- Merge review now fails closed for observation-only and patchless evidence; REQ-4/REQ-5 bind to the latest non-merge PR-head commit.
+- Bundle sensitivity uses exact path-component/basename matching, keepalive intervals reject non-positive values, and historical handoffs are not consumed as live state.
+- Legacy SHA-256 tenant keys migrate once to the PBKDF2 format, generic pickle serialization remains lossless with a separate sanitized export, and standalone telemetry delegation is preserved.
+- Workflow reports omit secret identifiers, decision logging no longer includes user confidence values, and redundant/unused locals are removed or consumed by assertions.
+- Focused promotion-remediation tests, Black, isort, Ruff, compileall, strict workflow YAML, JSON, focused mypy, and diff checks are recorded in the session's final validation output.
+- Resolved nine exact follow-up findings: count-only workflow report consumers, plural sensitive names, stale cache/revocation protection, dual-hash revocation, exact diff headers, meaningful CLI assertions, and sanitized-pickle export visibility.
+
 ## Session: PR #5857 exact-SHA fourth review remediation (2026-11-26)
 
 ### Agents Used

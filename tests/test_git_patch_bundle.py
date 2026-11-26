@@ -1,8 +1,14 @@
 import subprocess
 from pathlib import Path
 
-from scripts.archive.git_patch_bundle import apply_bundle, bundle_changes, verify_bundle
 import pytest
+
+from scripts.archive.git_patch_bundle import (
+    _is_sensitive_relative_path,
+    apply_bundle,
+    bundle_changes,
+    verify_bundle,
+)
 
 
 def test_git_patch_bundle_round_trip(tmp_path: Path) -> None:
@@ -24,7 +30,9 @@ def test_git_patch_bundle_round_trip(tmp_path: Path) -> None:
     )
 
     target = tmp_path / "target_repo"
-    subprocess.run(["git", "clone", str(source), str(target)], check=True, capture_output=True, text=True)
+    subprocess.run(
+        ["git", "clone", str(source), str(target)], check=True, capture_output=True, text=True
+    )
 
     initial.write_text("after\n", encoding="utf-8")
     new_file = source / "new.txt"
@@ -39,10 +47,24 @@ def test_git_patch_bundle_round_trip(tmp_path: Path) -> None:
 
     apply_bundle(bundle, target)
 
-    assert (target / "tracked.txt").read_text(encoding="utf-8") == "after\n", "Condition must be true"
-    assert (target / "new.txt").read_text(encoding="utf-8") == "brand-new\n", "Condition must be true"
+    assert (target / "tracked.txt").read_text(
+        encoding="utf-8"
+    ) == "after\n", "Condition must be true"
+    assert (target / "new.txt").read_text(
+        encoding="utf-8"
+    ) == "brand-new\n", "Condition must be true"
 
     subprocess.run(["git", "-C", str(target), "status", "--short"], check=True)
+
+
+def test_sensitive_path_matching_does_not_flag_tokenization_paths() -> None:
+    assert not _is_sensitive_relative_path("src/codex_ml/tokenization/tokenizer.py")
+    assert not _is_sensitive_relative_path("tests/tokenization/test_tokenizer.py")
+    assert _is_sensitive_relative_path("config/github_token.txt")
+    assert _is_sensitive_relative_path("config/client_credentials.txt")
+    assert _is_sensitive_relative_path("config/app_secrets.json")
+    assert _is_sensitive_relative_path("config/api_tokens.json")
+    assert _is_sensitive_relative_path("private_key.pem")
 
 
 def test_bundle_refuses_deleted_sensitive_file(tmp_path: Path) -> None:
