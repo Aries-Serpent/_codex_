@@ -80,7 +80,7 @@ def test_keepalive_touch_requires_operation_session(
     client = TestClient(app)
 
     denied = client.post("/api/maintainer/keepalive/touch")
-    assert denied.status_code in {401, 503}
+    assert denied.status_code == 401
 
     established = establish_ui_session(client)
     assert established.status_code == 200
