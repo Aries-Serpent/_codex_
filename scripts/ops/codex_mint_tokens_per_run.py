@@ -231,7 +231,7 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument(
         "--revoke-on-exit",
-        action="store_true",  # codeql[py/weak-crypto]
+        action="store_true",
         help="Revoke the installation token before exiting",
     )
     p.add_argument(
@@ -248,11 +248,8 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def _mask(secret: str, prefix: int = 4, suffix: int = 4) -> str:
-    if not secret:
-        return ""
-    if len(secret) <= prefix + suffix:
-        return "*" * len(secret)
-    return f"{secret[:prefix]}…{secret[-suffix:]}"
+    del prefix, suffix
+    return "[REDACTED]" if secret else ""
 
 
 def _assert_online_allowed() -> None:
@@ -397,11 +394,7 @@ def action_runner_registration_token(
     token = data.get("token", "")
     masked = _mask(token)
     # Security: Never log full tokens, only masked version
-    print(
-       json.dumps(  # codeql[py/clear-text-logging-sensitive-data]
-            {"token_masked": masked, "expires_at": data.get("expires_at")}, indent=2
-        )
-    )
+    print(json.dumps({"token_masked": masked, "expires_at": data.get("expires_at")}, indent=2))
 
 
 # ---------------------------------------------------------------------------
@@ -446,7 +439,7 @@ def main(argv: Iterable[str] | None = None) -> int:
     token, expires_at = _exchange_installation_token(app_jwt, inst_id, body=body)
 
     if args.verbose:
-        print("[info] Installation token minted successfully")  # codeql[py/clear-text-logging-sensitive-data]
+        print("[info] Installation token minted successfully")
 
     session = GitHubSession(token)
 

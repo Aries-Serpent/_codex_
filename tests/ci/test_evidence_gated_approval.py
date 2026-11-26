@@ -110,6 +110,7 @@ def test_review_evidence_must_be_current_and_independent(api, monkeypatch, case)
         ("self", "self-approval"),
         ("bot", "unknown-approver-identity"),
         ("closed", "stale-head-sha"),
+        ("malformed-state", "malformed-pr-state"),
     ],
 )
 def test_negative_authorization(api, case, expected):
@@ -124,6 +125,8 @@ def test_negative_authorization(api, case, expected):
         identity["login"] = "author"
     elif case == "bot":
         identity["type"] = "Bot"
+    elif case == "malformed-state":
+        pr["state"] = None
     else:
         pr["state"] = "closed"
     assert approval._authorize_run("", "o/r", "1", SHA, run) == expected
@@ -143,6 +146,45 @@ def test_author_rerunning_approver_is_denied(api, monkeypatch):
     _, run, _, _ = api
     monkeypatch.setenv("GITHUB_TRIGGERING_ACTOR", "author")
     assert approval._authorize_run("", "o/r", "1", SHA, run) == "self-approval"
+
+
+def test_author_triggered_pull_request_review_is_denied(api, monkeypatch):
+    _, run, _, _ = api
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "pull_request_review")
+    monkeypatch.setenv("GITHUB_ACTOR", "author")
+    monkeypatch.setenv("GITHUB_TRIGGERING_ACTOR", "author")
+    assert approval._authorize_run("", "o/r", "1", SHA, run) == "self-approval"
+
+
+def test_org_admin_author_can_approve_after_distinct_current_ai_review(api, monkeypatch):
+    pr, run, identity, _ = api
+    pr["user"]["login"] = "mbaetiong"
+    identity["login"] = "mbaetiong"
+    run["actor"] = {"login": "Copilot"}
+    run["triggering_actor"] = {"login": "Copilot"}
+    monkeypatch.setenv("GITHUB_ACTOR", "Copilot")
+    monkeypatch.setenv("GITHUB_TRIGGERING_ACTOR", "Copilot")
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "pull_request_review")
+
+    original_gh = approval._gh
+
+    def ai_review(method, path, token, body=None):
+        if path == "/repos/o/r":
+            return 200, {"permissions": {"admin": True}}
+        status, data = original_gh(method, path, token, body)
+        if "/reviews?" in path:
+            data = [
+                {
+                    "user": {"login": "cognitive-brain[bot]", "type": "Bot"},
+                    "author_association": "NONE",
+                    "state": "APPROVED",
+                    "commit_id": SHA,
+                }
+            ]
+        return status, data
+
+    monkeypatch.setattr(approval, "_gh", ai_review)
+    assert approval._authorize_run("", "o/r", "1", SHA, run) == "authorized"
 
 
 @pytest.mark.parametrize(

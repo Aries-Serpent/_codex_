@@ -391,6 +391,48 @@ nohup uvicorn cognitive_app.src.server.cli_api_server:app \
  > .codex/cli_api_server.log 2>&1 &
 ```
 
+## Copilot Session Continuity
+
+The repository uses `scripts/autonomous/codespace_session_guard.py` as the canonical
+local lifecycle for Copilot/Codespace continuity. It creates a v2 handoff in
+`.codex/session_handoff.json`, snapshots repository state and checkpoints, reindexes
+available local session data, and generates `.codex/NEXT_CONTINUATION_PROMPT.md`.
+
+```bash
+# Read continuity state and refresh remote refs
+python scripts/autonomous/codespace_session_guard.py status --refresh --json
+
+# Create a runtime-only periodic checkpoint
+python scripts/autonomous/codespace_session_guard.py checkpoint --runtime-only
+
+# Resume from a verified checkpoint or fall back to cold bootstrap
+python scripts/autonomous/codespace_session_guard.py resume
+
+# Rebuild the repository-local Chronicle index
+python scripts/autonomous/codespace_session_guard.py reindex
+
+# Prepare closeout state without hosted mutation
+python scripts/autonomous/codespace_session_guard.py closeout --no-bundle --no-reindex
+```
+
+`post-create.sh` and `post-start.sh` reconcile continuity status and reindex runtime
+state. The keepalive daemon can create runtime-only checkpoints every 15 minutes;
+it does not rewrite repository handoff data or publish GitHub state. The first
+substantive handoff or closeout command is the point at which repository handoff,
+bundle, and continuation prompt artifacts are refreshed.
+
+VS Code workspace settings enable the supported local Copilot session index:
+
+```json
+{
+  "github.copilot.chat.localIndex.enabled": true
+}
+```
+
+`chat.sessionSync.enabled` is not added unless it is explicitly contributed by the
+installed VS Code/Copilot build. Git, the canonical handoff, verified bundles,
+checkpoints, and live GitHub state remain authoritative over browser chat UI state.
+
 ## Active Session Keepalive
 
 `post-start.sh` owns a single keepalive daemon for Codespaces. The daemon opens

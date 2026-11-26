@@ -11,19 +11,21 @@ Public API:
 
 from __future__ import annotations
 
+import json
 import logging
+import re
+import sys
+import warnings
+from dataclasses import dataclass
+from importlib import import_module as _import_module
+from importlib import invalidate_caches as _invalidate_caches
+from importlib import metadata
+from pathlib import Path
+from typing import Any, Optional
+from urllib.parse import urlparse
+from urllib.request import url2pathname
 
 logger = logging.getLogger(__name__)
-
-import re  # noqa: E402
-import sys  # noqa: E402
-import warnings  # noqa: E402
-from dataclasses import dataclass  # noqa: E402
-from importlib import import_module as _import_module  # noqa: E402
-from importlib import invalidate_caches as _invalidate_caches  # noqa: E402
-from importlib import metadata  # noqa: E402
-from pathlib import Path  # noqa: E402
-from typing import Any, Optional  # noqa: E402
 
 DEFAULT_GROUP = "codex_ml.plugins"
 
@@ -76,6 +78,23 @@ def _activate_editable_distribution(ep: Any) -> None:
     dist = getattr(ep, "dist", None)
     if dist is None:
         return
+
+    try:
+        direct_url_text = dist.read_text("direct_url.json")
+        if direct_url_text:
+            direct_url = json.loads(direct_url_text)
+            dir_info = direct_url.get("dir_info")
+            if isinstance(dir_info, dict) and dir_info.get("editable"):
+                url = direct_url.get("url")
+                if isinstance(url, str):
+                    parsed = urlparse(url)
+                    if parsed.scheme == "file":
+                        source_root = Path(url2pathname(parsed.path)).resolve()
+                        if source_root.is_dir() and str(source_root) not in sys.path:
+                            sys.path.insert(0, str(source_root))
+    except (OSError, AttributeError, TypeError, ValueError) as exc:
+        logger.debug("Failed to activate editable distribution: %s", exc)
+
     try:
         files = dist.files or ()
     except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive

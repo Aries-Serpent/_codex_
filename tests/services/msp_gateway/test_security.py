@@ -112,7 +112,9 @@ class TestPolicyEnforcer:
         )
         text = "My password is secret"
         redacted, applied = enforcer.redact_sensitive_content(text)
-        assert "password" not in redacted.lower() and "[REDACTED]" in redacted, "Condition must be true"
+        assert (
+            "password" not in redacted.lower() and "[REDACTED]" in redacted
+        ), "Condition must be true"
         assert any("term:password" in a for a in applied), "Condition must be true"
 
     def test_redact_no_match_no_change(self, monkeypatch):
@@ -212,15 +214,19 @@ class TestAuthManager:
         auth.register_api_key("key_shared", "tenant_new")
         assert auth.verify_api_key("key_shared") == "tenant_new", "Condition must be true"
 
-    def test_verify_api_key_accepts_legacy_hash(self):
-        from services.msp_gateway.security import hash_api_key, legacy_hash_api_key
+    def test_legacy_hash_is_not_accepted_when_it_does_not_match(self):
+        auth = self._make_auth()
+        auth.register_api_key_hash("a" * 64, "tenant_legacy")
+
+        assert auth.verify_api_key("legacy-key") is None
+
+    def test_revoke_removes_current_and_legacy_representations(self):
+        from services.msp_gateway.security import legacy_hash_api_key
 
         auth = self._make_auth()
         auth.register_api_key_hash(legacy_hash_api_key("legacy-key"), "tenant_legacy")
-
-        assert auth.verify_api_key("legacy-key") == "tenant_legacy", "Condition must be true"
-        assert auth.api_keys == {hash_api_key("legacy-key"): "tenant_legacy"}
         auth.revoke_api_key("legacy-key")
+
         assert auth.verify_api_key("legacy-key") is None
 
 

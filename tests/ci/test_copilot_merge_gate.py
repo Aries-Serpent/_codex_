@@ -70,6 +70,72 @@ def test_required_checks_fail_closed_for_pending_missing_or_failure() -> None:
     assert missing["missing"] == [required[1]]
 
 
+def test_required_checks_use_latest_duplicate_outcome() -> None:
+    name = "Approve independently reviewed pending workflow runs"
+    old = {
+        "name": name,
+        "status": "completed",
+        "conclusion": "failure",
+        "id": 138814799287,
+        "completed_at": "2026-11-24T22:10:57Z",
+    }
+    latest = {
+        "name": name,
+        "status": "completed",
+        "conclusion": "success",
+        "id": 138817911439,
+        "completed_at": "2026-11-24T22:16:55Z",
+    }
+
+    assert gate.check_required_checks([old, latest], [name])["pass"] is True
+    assert gate.check_required_checks([latest, old], [name])["pass"] is True
+
+
+def test_default_required_checks_ignore_observation_only_ml_and_agent_checks() -> None:
+    stale_ml = {
+        "name": "ml-slow-aggregate",
+        "status": "completed",
+        "conclusion": "failure",
+    }
+    cancelled_copilot = {
+        "name": "copilot",
+        "status": "completed",
+        "conclusion": "cancelled",
+    }
+    real_check = {
+        "name": "Workflow Execution Gate",
+        "status": "completed",
+        "conclusion": "success",
+    }
+
+    result = gate.check_required_checks([stale_ml, cancelled_copilot, real_check])
+    assert result["pass"] is True
+    assert result["required"] == ["workflow execution gate"]
+
+
+def test_default_required_checks_still_fail_real_check_failures() -> None:
+    real_check = {
+        "name": "Workflow Execution Gate",
+        "status": "completed",
+        "conclusion": "failure",
+    }
+    result = gate.check_required_checks([real_check])
+    assert result["pass"] is False
+    assert result["failures"] == ["workflow execution gate"]
+
+
+def test_default_required_checks_fail_when_only_observation_checks_remain() -> None:
+    checks = [
+        {"name": "ml-slow-aggregate", "status": "completed", "conclusion": "failure"},
+        {"name": "copilot", "status": "completed", "conclusion": "cancelled"},
+    ]
+
+    result = gate.check_required_checks(checks)
+
+    assert result["pass"] is False
+    assert result["reason"] == "required-check evidence unavailable"
+
+
 def test_branch_freshness_rejects_behind_or_unknown() -> None:
     pr = _pr()
 
@@ -161,6 +227,42 @@ def test_execute_mode_collector_never_calls_mutating_http_verb() -> None:
     assert report["ready"] is True
     assert report["mutations_attempted"] == []
     assert all("/merge" not in path for _, path, _ in calls)
+
+
+def test_merge_gate_paginates_reviews_until_exact_sha_approval() -> None:
+    sha = "1" * 40
+    pr = _pr(sha=sha, base="main", head="0D_base_")
+
+    def fake_get(repo: str, path: str, token: str) -> object:
+        if "/reviews?" in path:
+            if path.endswith("&page=1"):
+                return [_ai_review("2" * 40) for _ in range(100)]
+            return [_ai_review(sha, login="cognitive-brain[bot]")]
+        if "/commits/" in path and path.endswith("/check-runs?per_page=100"):
+            return {"check_runs": _passing_checks()}
+        if "/commits/" in path and path.endswith("/status"):
+            return {"statuses": []}
+        if "/compare/" in path:
+            return {"status": "identical", "behind_by": 0, "ahead_by": 0}
+        if "/pulls/42" in path:
+            return pr
+        return {}
+
+    merge_gate = gate.CopilotMergeGate(
+        repo="Aries-Serpent/_codex_",
+        pr=42,
+        token="test-token",
+        merge_method="merge",
+        mode="promotion",
+        required_checks=[check["name"] for check in _passing_checks()],
+        execute=True,
+        http_get=fake_get,
+    )
+
+    report = merge_gate.evaluate()
+
+    assert report["ready"] is True
+    assert report["ai_review"]["pass"] is True
 
 
 def test_module_reload_does_not_create_mutation_side_effects() -> None:

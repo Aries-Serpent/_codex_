@@ -53,11 +53,47 @@ import io
 import logging
 import os
 import pickle  # nosec B403 - centralized safe wrapper around trusted pickle operations
+import re
 import secrets
 from pathlib import Path
 from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
+
+_SECRET_KEY_PATTERN = re.compile(
+    r"(?i)(password|passwd|secret|token|api[_-]?key|authorization|cookie|private[_-]?key|credential)"
+)
+_SECRET_TEXT_PATTERN = re.compile(
+    r"(?i)(password|passwd|secret|token|api[_-]?key|authorization|bearer)\s*[:=]\s*[^\s,;]+"
+)
+
+
+def _redact_sensitive_object(value: Any) -> Any:
+    """Redact common secret fields and key/value text before pickle serialization."""
+    if isinstance(value, dict):
+        redacted_dict: dict[Any, Any] = {}
+        for key, item in value.items():
+            if isinstance(key, str) and _SECRET_KEY_PATTERN.search(key):
+                redacted_dict[key] = "[REDACTED]"
+            else:
+                redacted_dict[key] = _redact_sensitive_object(item)
+        return redacted_dict
+    if isinstance(value, list):
+        return [_redact_sensitive_object(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(_redact_sensitive_object(item) for item in value)
+    if isinstance(value, set):
+        return {_redact_sensitive_object(item) for item in value}
+    if isinstance(value, str):
+        return _SECRET_TEXT_PATTERN.sub(r"\1=[REDACTED]", value)
+    if isinstance(value, bytes):
+        try:
+            text = value.decode("utf-8")
+        except UnicodeDecodeError:
+            return value
+        bytes_redacted = _SECRET_TEXT_PATTERN.sub(r"\1=[REDACTED]", text)
+        return bytes_redacted.encode("utf-8") if bytes_redacted != text else value
+    return value
 
 
 class RestrictedUnpickler(pickle.Unpickler):
@@ -364,6 +400,24 @@ def safe_pickle_dump(
     logger.debug("Saved pickle to %s (%d bytes)", file_path, len(data))
 
 
+def sanitized_pickle_dump(
+    obj: Any,
+    file_path: str | Path,
+    add_signature: bool = False,
+    secret_key: Optional[bytes] = None,
+    *,
+    protocol: Optional[int] = None,
+) -> None:
+    """Serialize a redacted export; use :func:`safe_pickle_dump` for lossless state."""
+    safe_pickle_dump(
+        _redact_sensitive_object(obj),
+        file_path,
+        add_signature=add_signature,
+        secret_key=secret_key,
+        protocol=protocol,
+    )
+
+
 def _get_secret_key() -> bytes:
     """
     Get secret key for HMAC operations.
@@ -451,6 +505,7 @@ __all__ = [
     "safe_pickle_load",
     "safe_pickle_load_bytes",
     "safe_pickle_dump",
+    "sanitized_pickle_dump",
     "trusted_pickle_dumps",
     "RestrictedUnpickler",
     "suggest_alternatives",

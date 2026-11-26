@@ -2,6 +2,86 @@
 
 ## [Unreleased]
 
+### Fixed - Rule-specific CodeQL aggregation follow-up (2026-11-26)
+- Apply exact CodeQL rule IDs to the migration-only legacy hash lookup and aggregate-only scan-summary storage/output sinks.
+- Skip terminal `action_required` workflow records before approval so stale completed runs cannot produce repeated GitHub 403 helper failures.
+
+### Fixed - Legacy API-key migration CodeQL follow-up (2026-11-26)
+- Restrict the weak-hash CodeQL exception to the legacy SHA-256 lookup used only to locate and immediately migrate stored API keys to PBKDF2.
+
+### Fixed - Final promotion review remediation for PR #5873 (2026-11-26)
+- Preserve best-effort editable distribution activation while logging non-fatal metadata failures for diagnosis.
+
+### Fixed - Final CodeQL gate remediation for PR #5868 (2026-11-26)
+- Persist and print only aggregate security summaries, removing finding identifiers, file/package fields, and workflow secret metadata from generated reports.
+- Use explicit safe workflow-report projections and omitted-secret inventory markers for cross-reference consumers.
+- Isolate the historical SHA-256 tenant-key lookup to one-time PBKDF2 migration and revoke both legacy/current forms while preserving existing compatibility.
+- Deep-sanitize nested workflow job conditions and agent handoff payloads so generated JSON/Markdown contains aggregate metadata only.
+
+### Fixed - PR #5868 promotion review remediation (2026-11-26)
+- Fail closed when merge/review evidence is unavailable, including observation-only checks and patchless PR files.
+- Bind accountability and changelog preflight checks to the latest non-merge PR-head commit instead of static dates or whole-file contents.
+- Preserve continuity and compatibility behavior with component-aware sensitivity matching, positive checkpoint intervals, historical handoff exclusion, legacy API-key migration, lossless pickle state, and standalone telemetry delegation.
+- Remove sensitive workflow-report persistence/logging, user-derived confidence logging, redundant checkpoint/merge-gate variables, and unused-result placeholders covered by CodeQL.
+- Add focused regressions for all 24 promotion review findings; the torch-dependent tokenization CLI module is compiled but may be skipped by its existing environment guard.
+- Follow-up: align report consumers with count-only secret metadata, reject stale legacy auth mappings, revoke current and legacy hashes, match exact diff headers, publish the sanitized pickle API, and make all flagged CLI assertions behavioral.
+
+### Fixed - Evidence-gated organization maintainer workflow approval (2026-11-26)
+- Allow the authenticated organization repository admin who authored the PR to approve Copilot-triggered workflows only with a current-SHA independent AI approval and active WEC grant.
+- Treat `pull_request_review` as an automatic requester event, preserving all ordinary self-approval, stale-label, missing-review, and non-admin denials.
+- Add regressions for organization-owned repositories where the human maintainer is an authenticated MEMBER with actual repository admin permission.
+
+### Fixed - PR #5857 exact-SHA fourth review remediation (2026-11-26)
+- Harden NUL-delimited Git porcelain handling and rename-path decoding.
+- Reject conventional SSH private-key basenames and untrusted snapshot targets.
+- Preserve strict checkpoint validation while falling back from runtime to repository checkpoints.
+- Add bundle and continuity regressions for quoted names, private keys, deleted secrets, symlinks, and checkpoint recovery.
+
+### Fixed - PR #5857 exact-SHA third review remediation (2026-11-25)
+- Parse NUL-delimited Git status records and both rename paths so quoted sensitive names cannot bypass bundle safeguards.
+- Reject conventional SSH private-key basenames and preserve strict checkpoint validation with repository-root fallback.
+- Preserve live exact-SHA rerun and approval gates without claiming merge readiness.
+
+### Fixed - PR #5857 Copilot review remediation (2026-11-25)
+- Parse NUL-delimited Git porcelain filenames and rename endpoints so deleted/sensitive and quoted paths cannot bypass bundle safeguards.
+- Reject conventional SSH private-key basenames and strict-check checkpoint roots before reporting verified recovery.
+- Reject deleted sensitive paths and symlinked/out-of-repository snapshot targets in the Codespace continuity bundle flow.
+- Perform strict checkpoint validation on resume and return controlled closeout/reindex failure states.
+- Forward custom runtime directories to periodic continuity checkpoints and add adversarial regressions for all remediated findings.
+
+### Fixed - PR #5857 merge conflict resolution and continuity handoff (2026-11-25)
+- Merge `origin/0D_base_` into the Copilot session-continuity branch and resolve the
+  session-handoff, secret-pattern, and AI-review integrity conflicts semantically.
+- Preserve live PR #5857 mergeability and exact-SHA check evidence without claiming
+  merge readiness until terminal checks and exact-SHA AI approval pass.
+- Keep the PR draft, preserve 0D/main controls, and add the continuation checkpoint
+  to `.codex/session_handoff.json` and `.codex/NEXT_CONTINUATION_PROMPT.md`.
+
+### Fixed - Agentic Codespace relaunch and PR review remediation (2026-11-25)
+- Published exact-SHA routing remediation on PR #5855 and CodeQL remediation on PR #5856.
+- Preserved the cognitive-preflight workflow as a read-only PR gate; no github-actions bot commit or push is permitted by the workflow.
+- Record live exact-SHA AI approvals and WEC `wec:auto-approve` controls as pending exact-check and merge evidence, not as merge claims.
+
+### Fixed - Unit error logging test namespace (2026-11-25)
+- Correct the `test_error_logging.py` monkeypatch target to `utils.error_logging._ERROR_LOG_PATH`, matching the module imported by the implementation.
+- The five error-log nodes pass locally without changing production error-log behavior.
+
+### Fixed - Unit telemetry MetricsServer standalone fallback (2026-11-25)
+- Prevent the legacy telemetry server facade from delegating to an optional standalone package before local `_HAS_PROM` and `start_http_server` behavior is applied.
+- Preserve disabled-Prometheus, success, custom/default parameter, and OSError behavior covered by `tests/test_telemetry_gap_fill.py::TestMetricsServer`.
+
+### Fixed (SN) - PR #5850 Auto-Approve review remediation (2026-11-24)
+- Reject malformed or missing PR states in PR-only and SHA-plus-PR Auto-Approve target paths.
+- Distinguish verified missing/expired WEC labels from unavailable or malformed label-inspection evidence; inspection failures remain denied.
+- Add focused regressions for closed PRs, malformed states, missing WEC labels, and label lookup/history failures.
+- Dedupe merge-gate required checks by newest timestamp/ID so a historical failed rerun cannot override a later successful rerun.
+- Move ML Components to weekly scheduled/manual evidence execution and remove it from pull-request gate triggers; merge-gate rollups ignore observation-only ML and cancelled Copilot checks while real required checks still fail closed.
+
+### Fixed - PR #5851 pooling fixture restoration (2026-11-24)
+- Restore the `pool_state_tracker`, `clean_connection_pool`, `pooling_db_manager`, and `pooling_mode` pytest fixtures used by connection-pooling tests.
+- Add PEP 660 plugin activation, offline torch/version fallbacks, persistent training metadata, and scoped optional-dependency guards for the remaining missing-module batch.
+- Focused validation: pooling 7/7, 48 prioritized missing-module tests passed, and optional tokenization/HF groups produced only explicit skips.
+
 ### Added - PR #5766 exact ML evidence and resumable closure planset (2026-11-22)
 - Published handoff commit `1212dbbcf52a1a208eb0921265e4a9604575028f` to `0D_base_`; ML run `44971752791` evidence remains at prior campaign head `42073ea3eeee218c3350816017fb92c5c6b2fa21` and is not current-head merge evidence until rerun.
 - Record ML run `44971752791` at prior campaign head `42073ea3eeee218c3350816017fb92c5c6b2fa21`: 1,797 integration tests pass with 0 failures, while 32,258 unit tests report 754 failures/errors and combined coverage is 54.99% against floor 54 and target 70.

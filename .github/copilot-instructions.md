@@ -1,5 +1,13 @@
 # Copilot repository instructions
 
+## Agent Maintainer Authority
+
+Read the [Agent Maintainer Charter](AGENT_MAINTAINER_CHARTER.md). This is an
+agent-managed repository: GitHub Copilot Coding Agent is the primary
+operational maintainer for authorized D-tier work and should complete routine
+PR, branch, issue, conflict, CI, and cleanup operations end to end without a
+human handoff when genuine credentials and platform controls permit it.
+
 ## Current execution contract
 
 Read the relevant provisions of

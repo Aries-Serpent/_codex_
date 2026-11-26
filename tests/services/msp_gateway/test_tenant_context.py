@@ -9,6 +9,7 @@ pytest.importorskip("fastapi")
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
 
+from services.msp_gateway import security
 from services.msp_gateway.middleware import tenant_context as tc_module
 from services.msp_gateway.middleware.tenant_context import TenantContextMiddleware, TenantRegistry
 
@@ -25,7 +26,9 @@ def test_tenant_registry_sqlite_crud(tmp_path: Path, monkeypatch: pytest.MonkeyP
 
     fetched = registry.get_tenant("tenant-a")
     assert fetched is not None and fetched["name"] == "Tenant A", "fetched must be initialized"
-    assert registry.get_tenant_by_api_key("key-a")["tenant_id"] == "tenant-a", "Condition must be true"
+    assert (
+        registry.get_tenant_by_api_key("key-a")["tenant_id"] == "tenant-a"
+    ), "Condition must be true"
 
     updated = registry.update_tenant("tenant-a", name="Tenant Updated", active=False)
     assert updated is not None and updated["active"] is False, "updated must be initialized"
@@ -40,6 +43,65 @@ def test_tenant_registry_sqlite_crud(tmp_path: Path, monkeypatch: pytest.MonkeyP
     row = conn.execute("SELECT name FROM tenants WHERE tenant_id = ?", ("tenant-a",)).fetchone()
     conn.close()
     assert row is not None, "row must be initialized"
+
+
+def test_tenant_registry_migrates_legacy_sha256_api_key(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    db_path = tmp_path / "legacy-tenants.db"
+    monkeypatch.setattr(tc_module.settings, "db_path", str(db_path))
+    monkeypatch.setattr(tc_module, "auth_manager", security.AuthManager())
+
+    registry = TenantRegistry(backend="sqlite")
+    registry.create_tenant("legacy-tenant", "Legacy", "legacy-secret")
+    legacy_hash = security.legacy_hash_api_key("legacy-secret")
+    with sqlite3.connect(db_path) as conn:
+        conn.execute(
+            "UPDATE tenants SET api_key = ? WHERE tenant_id = ?",
+            (legacy_hash, "legacy-tenant"),
+        )
+
+    tc_module.auth_manager.api_keys.clear()
+    registry.tenants.clear()
+
+    tenant = registry.get_tenant_by_api_key("legacy-secret")
+
+    assert tenant is not None
+    assert tenant["tenant_id"] == "legacy-tenant"
+    current_hash = security.hash_api_key("legacy-secret")
+    with sqlite3.connect(db_path) as conn:
+        assert conn.execute(
+            "SELECT api_key FROM tenants WHERE tenant_id = ?", ("legacy-tenant",)
+        ).fetchone() == (current_hash,)
+    assert tc_module.auth_manager.verify_api_key("legacy-secret") == "legacy-tenant"
+
+
+def test_tenant_registry_migrates_cached_legacy_hash(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(tc_module, "auth_manager", security.AuthManager())
+    registry = TenantRegistry(backend="memory")
+    registry.create_tenant("cached-legacy", "Legacy", "legacy-secret")
+    legacy_hash = security.legacy_hash_api_key("legacy-secret")
+    registry.tenants["cached-legacy"]["api_key_hash"] = legacy_hash
+    tc_module.auth_manager.api_keys = {legacy_hash: "cached-legacy"}
+
+    tenant = registry.get_tenant_by_api_key("legacy-secret")
+
+    assert tenant is not None
+    assert tenant["api_key_hash"] == security.hash_api_key("legacy-secret")
+    assert tc_module.auth_manager.verify_api_key("legacy-secret") == "cached-legacy"
+
+
+def test_tenant_registry_rejects_stale_cached_legacy_mapping(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(tc_module, "auth_manager", security.AuthManager())
+    registry = TenantRegistry(backend="memory")
+    registry.create_tenant("stale-tenant", "Stale", "current-secret")
+    legacy_hash = security.legacy_hash_api_key("stale-secret")
+    tc_module.auth_manager.api_keys = {legacy_hash: "stale-tenant"}
+
+    assert registry.get_tenant_by_api_key("stale-secret") is None
+    assert tc_module.auth_manager.verify_api_key("stale-secret") is None
 
 
 def test_tenant_registry_memory_listing() -> None:

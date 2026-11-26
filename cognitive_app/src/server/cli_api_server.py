@@ -405,9 +405,7 @@ def _require_operation_auth(
         expected = ""
     if _valid_ui_session(request.cookies.get(_UI_SESSION_COOKIE, "")):
         return
-    if not expected:
-        raise HTTPException(status_code=503, detail="Operation auth not configured on server")
-    if creds is None or not secrets.compare_digest(creds.credentials, expected):
+    if creds is None or not expected or not secrets.compare_digest(creds.credentials, expected):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
 
@@ -2178,9 +2176,8 @@ async def submit_decision(req: DecisionSubmitRequest):
                 _db.commit()
 
             log.info(
-                "Decision submitted: id=%s confidence=%.2f",
-                decision_id,
-                req.confidence_score,
+                "Decision submitted: id=%s",
+                sanitize_for_log(decision_id),
             )
 
             return DecisionResponse(

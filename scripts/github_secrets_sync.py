@@ -28,8 +28,6 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
-
-
 import argparse
 import hashlib
 import json
@@ -67,9 +65,9 @@ class GitHubSecretsManager:
     """Manages GitHub repository secrets for authentication."""
 
     def __init__(self):
-        self.github_token = os.getenv('GITHUB_TOKEN')
+        self.github_token = os.getenv("GITHUB_TOKEN")
         self.master_key = get_token(required_elevated=True)[0]
-        self.repo_name = os.getenv('GITHUB_REPOSITORY', '')
+        self.repo_name = os.getenv("GITHUB_REPOSITORY", "")
 
         if not self.github_token:
             raise ValueError("GITHUB_TOKEN required")
@@ -79,45 +77,38 @@ class GitHubSecretsManager:
         self.g = Github(self.github_token)
         self.repo = self.g.get_repo(self.repo_name) if self.repo_name else None
 
-        self.backup_dir = Path('.codex') / 'secrets' / 'github_backups'
+        self.backup_dir = Path(".codex") / "secrets" / "github_backups"
         self.backup_dir.mkdir(parents=True, exist_ok=True)
 
     def backup_secrets(self) -> dict[str, str]:
         """Backup current GitHub Secrets."""
         print("Backing up GitHub Secrets...")
 
-        secret_names = [
-            'TOKEN_SECRET_KEY',
-            'GITHUB_OAUTH_CLIENT_SECRET',
-            'SESSION_ENCRYPTION_KEY'
-        ]
+        secret_names = ["TOKEN_SECRET_KEY", "GITHUB_OAUTH_CLIENT_SECRET", "SESSION_ENCRYPTION_KEY"]
 
-        timestamp = datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')
-        backup_file = self.backup_dir / f'github_secrets_backup_{timestamp}.json'
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        backup_file = self.backup_dir / f"github_secrets_backup_{timestamp}.json"
 
-        backup_data = {
-            'timestamp': timestamp,
-            'secrets': {}
-        }
+        backup_data = {"timestamp": timestamp, "secrets": {}}
 
         for name in secret_names:
             value = os.getenv(name)
             if value:
-                backup_data['secrets'][name] = {
-                    'hash': hashlib.sha256(value.encode()).hexdigest(),
-                    'length': len(value)
+                backup_data["secrets"][name] = {
+                    "hash": hashlib.sha256(value.encode()).hexdigest(),
+                    "length": len(value),
                 }
 
-        with open(backup_file, 'w') as f:  # Backup only stores hashes and lengths, not secrets
+        with open(backup_file, "w") as f:  # Backup only stores hashes and lengths, not secrets
             json.dump(backup_data, f, indent=2)
 
         print(f"✓ Backed up {len(backup_data['secrets'])} secrets to: {backup_file}")
-        return {'backup_file': str(backup_file), 'count': len(backup_data['secrets'])}
+        return {"backup_file": str(backup_file), "count": len(backup_data["secrets"])}
 
     def rotate_secrets(self, secret_names: list[str]) -> dict[str, str]:
         """Rotate specified secrets."""
         print(f"Rotating {len(secret_names)} secrets...")
-        results = {'rotated': [], 'failed': []}
+        results = {"rotated": [], "failed": []}
 
         for name in secret_names:
             secret_ref = _secret_ref(name)
@@ -127,19 +118,18 @@ class GitHubSecretsManager:
                 if self.repo:
                     self.repo.create_secret(name, new_value)
                     print("✓ Rotated secret")
-                    results['rotated'].append({'secret_ref': secret_ref, 'status': 'success'})
+                    results["rotated"].append({"secret_ref": secret_ref, "status": "success"})
                 else:
                     print("⚠ Skipped secret rotation (no repo connection)")
-                    results['failed'].append({'secret_ref': secret_ref, 'reason': 'no_repo'})
+                    results["failed"].append({"secret_ref": secret_ref, "reason": "no_repo"})
             except Exception as e:
                 error_reason = _safe_error(e)
-                logger.warning("Secret rotation failed for %s: %s", secret_ref, error_reason)
+                logger.warning("Secret rotation failed: %s", error_reason)
                 print("✗ Failed to rotate secret")
-                results['failed'].append({'secret_ref': secret_ref, 'reason': error_reason})
-
+                results["failed"].append({"secret_ref": secret_ref, "reason": error_reason})
         # Save results
-        results_file = Path('rotation_results.json')
-        with open(results_file, 'w') as f:
+        results_file = Path("rotation_results.json")
+        with open(results_file, "w") as f:
             json.dump(results, f, indent=2)
 
         return results
@@ -148,11 +138,7 @@ class GitHubSecretsManager:
         """Validate that secrets are properly configured."""
         print("Validating GitHub Secrets...")
 
-        required_secrets = [
-            'TOKEN_SECRET_KEY',
-            'GITHUB_TOKEN',
-            'CODEX_MASTER_KEY'
-        ]
+        required_secrets = ["TOKEN_SECRET_KEY", "GITHUB_TOKEN", "CODEX_MASTER_KEY"]
 
         validations = []
         all_valid = True
@@ -162,23 +148,26 @@ class GitHubSecretsManager:
             secret_ref = _secret_ref(name)
             if not value:
                 print("✗ Missing required secret")
-                validations.append({'secret_ref': secret_ref, 'passed': False})
+                validations.append({"secret_ref": secret_ref, "passed": False})
                 all_valid = False
             elif len(value) < 32:
                 print("✗ A required secret is too short")
-                validations.append({'secret_ref': secret_ref, 'passed': False})
+                validations.append({"secret_ref": secret_ref, "passed": False})
                 all_valid = False
             else:
                 print("✓ Secret passed validation")
-                validations.append({'secret_ref': secret_ref, 'passed': True})
+                validations.append({"secret_ref": secret_ref, "passed": True})
 
         # Save validation results
-        with open('rotation_results.json', 'r+') as f:
+        with open("rotation_results.json", "r+") as f:
             data = json.load(f)
-            data['validations'] = validations
-            data['next_rotation_date'] = (datetime.now(timezone.utc).replace(day=1) +
-                                         timedelta(days=32)).replace(day=1).isoformat()
-            data['backup_location'] = str(self.backup_dir)
+            data["validations"] = validations
+            data["next_rotation_date"] = (
+                (datetime.now(timezone.utc).replace(day=1) + timedelta(days=32))
+                .replace(day=1)
+                .isoformat()
+            )
+            data["backup_location"] = str(self.backup_dir)
             f.seek(0)
             json.dump(data, f, indent=2)
             f.truncate()
@@ -193,12 +182,12 @@ class GitHubSecretsManager:
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Manage GitHub Secrets for auth')
-    parser.add_argument('--backup', action='store_true', help='Backup secrets')
-    parser.add_argument('--rotate', action='store_true', help='Rotate secrets')
-    parser.add_argument('--secrets', help='Comma-separated list of secrets to rotate')
-    parser.add_argument('--validate', action='store_true', help='Validate secrets')
-    parser.add_argument('--sync-downstream', action='store_true', help='Sync to downstream systems')
+    parser = argparse.ArgumentParser(description="Manage GitHub Secrets for auth")
+    parser.add_argument("--backup", action="store_true", help="Backup secrets")
+    parser.add_argument("--rotate", action="store_true", help="Rotate secrets")
+    parser.add_argument("--secrets", help="Comma-separated list of secrets to rotate")
+    parser.add_argument("--validate", action="store_true", help="Validate secrets")
+    parser.add_argument("--sync-downstream", action="store_true", help="Sync to downstream systems")
     args = parser.parse_args()
 
     try:
@@ -209,11 +198,17 @@ def main():
             print(json.dumps(result, indent=2))
 
         elif args.rotate:
-            secret_list = args.secrets.split(',') if args.secrets else [
-                'TOKEN_SECRET_KEY', 'GITHUB_OAUTH_CLIENT_SECRET', 'SESSION_ENCRYPTION_KEY'
-            ]
+            secret_list = (
+                args.secrets.split(",")
+                if args.secrets
+                else ["TOKEN_SECRET_KEY", "GITHUB_OAUTH_CLIENT_SECRET", "SESSION_ENCRYPTION_KEY"]
+            )
             result = manager.rotate_secrets(secret_list)
-            print(json.dumps(result, indent=2))
+            public_result = {
+                "rotated": len(result.get("rotated", [])),
+                "failed": len(result.get("failed", [])),
+            }
+            print(json.dumps(public_result, indent=2))
 
         elif args.validate:
             success = manager.validate_secrets()
@@ -230,5 +225,5 @@ def main():
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

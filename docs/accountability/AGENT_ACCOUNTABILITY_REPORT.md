@@ -1,3 +1,208 @@
+## Session: Final CodeQL gate remediation for PR #5868 (2026-11-26)
+## Session: Rule-specific CodeQL aggregation follow-up (2026-11-26)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Corrected the legacy migration annotation to `py/weak-sensitive-data-hashing` and scoped aggregate-only scan-summary sinks to their exact clear-text storage/logging rules.
+- Filtered terminal `action_required` workflow records before approval and added inventory/endpoint regressions so completed runs cannot produce repeated 403 failures.
+- Verified handoff, migration, revocation, and approval behavior with focused tests, Black, Ruff, mypy, and diff checks.
+
+## Session: Legacy API-key migration CodeQL follow-up (2026-11-26)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Added a query-specific CodeQL exception only to the legacy SHA-256 lookup that locates existing records for immediate PBKDF2 migration.
+- Verified current and legacy auth behavior, migration, revocation, focused tests, Black, Ruff, mypy, and diff checks.
+
+## Session: PR #5873 editable-distribution review remediation (2026-11-26)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Removed sensitive finding fields and workflow secret identifiers from persisted/printed security reports while retaining aggregate severity and action counts.
+- Kept legacy SHA-256 API-key validation inside an explicit one-time migration boundary and proved current plus legacy revocation behavior.
+- Verified workflow report consumers, scan summaries, tenant migration, pickle export, and sensitive-data regressions with focused tests, Black, Ruff, compile, and changed-module mypy.
+- Added deep job-condition sanitization and aggregate-only agent handoff persistence so legacy structured data cannot reintroduce secret-derived identifiers.
+- Replaced an empty editable-distribution exception handler with an intentional debug diagnostic while preserving non-fatal behavior.
+- Added a focused regression for unreadable distribution metadata and verified the plugin tests, Black, Ruff, and diff checks.
+
+## Session: PR #5868 promotion review remediation (2026-11-26)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Remediated all 24 current promotion review findings across review integrity, continuity, compatibility, security logging, and static-analysis test quality.
+- Merge review now fails closed for observation-only and patchless evidence; REQ-4/REQ-5 bind to the latest non-merge PR-head commit.
+- Bundle sensitivity uses exact path-component/basename matching, keepalive intervals reject non-positive values, and historical handoffs are not consumed as live state.
+- Legacy SHA-256 tenant keys migrate once to the PBKDF2 format, generic pickle serialization remains lossless with a separate sanitized export, and standalone telemetry delegation is preserved.
+- Workflow reports omit secret identifiers, decision logging no longer includes user confidence values, and redundant/unused locals are removed or consumed by assertions.
+- Focused promotion-remediation tests, Black, isort, Ruff, compileall, strict workflow YAML, JSON, focused mypy, and diff checks are recorded in the session's final validation output.
+- Resolved nine exact follow-up findings: count-only workflow report consumers, plural sensitive names, stale cache/revocation protection, dual-hash revocation, exact diff headers, meaningful CLI assertions, and sanitized-pickle export visibility.
+
+## Session: PR #5857 exact-SHA fourth review remediation (2026-11-26)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Repaired NUL-delimited Git porcelain parsing for quoted filenames and rename endpoints.
+- Extended bundle sensitivity guards for conventional SSH private-key basenames.
+- Added strict repository-root checkpoint fallback without weakening integrity failures.
+- Added patch-bundle tests for quoted paths, deleted sensitive files, private keys, and symlinks.
+- Focused continuity and bundle tests pass; exact-SHA rerun remains external approval evidence.
+
+## Session: PR #5857 exact-SHA third review remediation (2026-11-25)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Resolved the exact-SHA Copilot findings for quoted porcelain filenames, conventional
+  SSH private-key basenames, and runtime-first checkpoint discovery.
+- Worktree status now parses NUL-delimited porcelain records and includes both rename paths.
+- `id_rsa`, `id_dsa`, `id_ecdsa`, `id_ed25519`, `id_ed25519_sk`, and `id_ecdsa_sk` are blocked.
+- Resume continues to repository checkpoints when the runtime checkpoint root is empty,
+  while corrupt checkpoints fail closed with `checkpoint_failed_validation`.
+- Focused continuity tests pass; exact-SHA rerun and review approval remain pending.
+- No merge, issue/PR closure, workflow dispatch, secret mutation, or direct 0D/main push
+  was performed.
+
+## Session: PR #5857 Copilot review remediation (2026-11-25)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Resolved six Copilot review findings in `codespace_session_guard.py` and
+  `codespace_keepalive.py`.
+- Deleted-path sensitivity now includes removed `.env`, private-key, and token-named paths.
+- Symlinked untracked files and resolved targets outside the repository are rejected.
+- Resume now performs strict checkpoint validation and reports
+  `checkpoint_failed_validation` instead of verified recovery.
+- Closeout now propagates checkpoint, bundle, and reindex failures; missing session
+  stores remain an explicit allowed degraded condition.
+- Keepalive now forwards custom runtime directories to periodic guard checkpoints.
+- Added adversarial tests for deleted sensitive paths, symlinks, corrupt checkpoints,
+  reindex failures, closeout failures, custom-runtime discovery, quoted porcelain
+  filenames, SSH private-key basenames, and repository-root checkpoint fallback.
+- Parsed NUL-delimited porcelain status for both rename endpoints and rejected conventional
+  SSH private-key basenames such as `id_rsa` and `id_ed25519`.
+- Focused continuity suite passes 23 tests; Black, isort, Ruff, mypy, compileall,
+  shell syntax, and `git diff --check` pass.
+- No merge, issue closure, workflow dispatch, secret mutation, or direct 0D/main push
+  was performed.
+
+## Session: PR #5857 merge-conflict resolution and Codespace continuity (2026-11-25)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Merged `origin/0D_base_` at `d8c2e69446d64ee60af8dc923bcc93d8408574d2` into
+  `copilot/session-codespace-continuity-20261125` and published merge commit
+  `88d4bed2a5768cb1bc89c21d0eaf6c04b0c3b2ce` through the PR branch.
+- Resolved three merge conflicts: retained canonical v2
+  `.codex/session_handoff.json`, combined source-file secret-classification safeguards,
+  and preserved the 0D source-file integrity regression test.
+- Live PR #5857 mergeability is `true`; GitHub no longer reports merge conflicts.
+- The resolved merge tip was validated with the AI-review integrity and workflow
+  validation suites: 62 focused tests passed.
+- The PR remains draft and merge readiness remains pending because exact-SHA checks,
+  review/approval, and the Cognitive Pre-flight rerun must terminalize at the live head.
+- No issue was closed and no merge, promotion, deployment, direct 0D/main push,
+  workflow dispatch, or secret mutation was performed.
+
+## Session: 2026-11-25 Codespace relaunch, PR 5855, and PR 5856
+
+### Agents Used
+
+- Direct execution; no custom agents were invoked.
+
+### Execution and evidence
+
+- PR #5855 routing fix exact head: `2b574932a12a9ecde409510963eb0a2372c30507`; exact-SHA AI APPROVE review `6055975214`.
+- PR #5856 CodeQL fix exact head: `16a6f646255dc9319ede44b217edbe1afeebdd1d`; exact-SHA AI APPROVE review `6055988050`.
+- Both PRs are ready-for-review and carry the `wec:auto-approve` label.
+- 0D freshness passes for both sub-PR heads; required checks remain under live terminalization and no merge is claimed.
+- Cognitive preflight was repaired to avoid github-actions bot commit/push side effects; it remains a read-only checklist and validation gate.
+
+## Session: Unit error logging namespace batch (2026-11-25)
+
+### Agents Used
+
+- None — direct execution (no delegated agents).
+
+### Execution and evidence
+
+- Reproduced all five `tests/test_error_logging.py` nodes in the isolated worktree.
+- Corrected the monkeypatch namespace from `src.utils.error_logging` to `utils.error_logging`, matching the imported implementation module.
+- Focused module passes `5/5`; Black, Ruff, compileall, and `git diff --check` pass.
+- No workflow dispatch, owner-control change, secret change, merge, or deployment was performed.
+
+## Session: Unit telemetry MetricsServer batch (2026-11-25)
+
+### Agents Used
+
+- None — direct execution (no delegated agents).
+
+### Execution and evidence
+
+- Reproduced and verified five `TestMetricsServer` nodes from exact JUnit aggregate evidence.
+- The isolated worktree reproduces all five nodes locally; the source fix removes standalone-package delegation from the legacy server compatibility module so `_HAS_PROM` and `start_http_server` remain authoritative.
+- Whole telemetry gap-fill module passes in the isolated worktree; Black, Ruff, compileall, and `git diff --check` pass.
+- No workflow dispatch, owner-control change, secret change, merge, or deployment was performed.
+
+## Session: PR #5850 Auto-Approve review remediation (2026-11-24)
+## Session: PR #5851 connection-pooling pytest fixtures (2026-11-24)
+
+### Agents Used
+
+- None — direct execution (no delegated agents).
+
+### Execution and evidence
+
+- Resumed pre-existing PR `#5850` on `copilot/session-autoapprove-postmerge-20261124`.
+- Addressed the two unresolved Copilot review findings by rejecting missing/malformed PR states and separating label-inspection failures from verified missing or expired WEC labels.
+- Added offline regression coverage for PR-only and SHA-plus-PR modes, malformed PR states, direct label inspection, and denied lookup outcomes.
+- Preserved existing closed-PR and missing-WEC skip semantics; malformed inventory and unavailable label evidence remain denied.
+- Fixed merge-gate required-check deduplication so the latest rerun outcome wins over older duplicate check runs.
+- Removed ML Components from PR triggers, changed it to a weekly schedule plus manual dispatch, and filtered scheduled ML/cancelled Copilot evidence out of sub-PR merge gates while preserving real required-check failures.
+- No owner-control change, secret change, merge, or deployment was performed.
+
+### Validation
+
+- Approval integrity, evidence-gated approval, and unified approval hub test modules pass.
+- Black, Ruff, mypy, compileall, and `git diff --check` pass for the changed slice.
+- Exact-SHA hosted review and required checks remain pending; unresolved review threads are not resolved until a matching pushed head is verified.
+- Reproduced the missing `clean_connection_pool` fixture in `tests/test_pooling_advanced.py`.
+- Restored the pooling fixture family in `tests/conftest.py`, including pool cleanup, isolated DBManager state, and parametrized pooling modes.
+- Remediated the missing-module batch with PEP 660 plugin activation, offline torch/version fallbacks, training metadata persistence, and explicit optional-dependency skips.
+- Focused pooling tests pass `7/7`; 48 prioritized missing-module tests pass and optional tokenization/HF tests produce explicit skips.
+- Ruff, Black, compileall, and `git diff --check` pass for the changed support.
+- No workflow dispatch, owner-control change, secret change, merge, or deployment was performed.
+
 ## Session: PR #5766 exact ML evidence and clean wrap-up planset (2026-11-22)
 
 - Refreshed 2026-11-22 PDA accountability for PR #5766 at published handoff head
@@ -25760,3 +25965,14 @@ has not been recorded.
   of `0D_base_`; no issue closure or merge occurred.
 - Fresh exact-head ML/RAG reruns, exact-SHA approval, required checks, and issue
   evidence are still required on the manifest or a subsequent PR head.
+
+---
+## Session: PR #5855 Cognitive Pre-flight repair (2026-11-25)
+
+- Direct execution; no delegated agents were invoked.
+- Reviewed the four Cognitive Pre-flight failures on head
+  `2b574932a12a9ecde409510963eb0a2372c30507`. Each failed the REQ-4
+  accountability-report update check; the CHANGELOG check was skipped.
+- The workflow auto-fix generated a local accountability entry, but publishing
+  it failed with HTTP 403 for `github-actions[bot]`. This entry records the
+  targeted REQ-4 repair; no CHANGELOG update was required by these runs.

@@ -79,16 +79,53 @@ def load_review_context(
     expected_files = pull_request.get("changed_files")
     if not isinstance(expected_files, int) or expected_files != len(files):
         raise RuntimeError("Pull request changed-file listing is incomplete")
-    file_names = [str(item.get("filename", "")) for item in files if item.get("filename")]
-    status, diff = github_request(
-        "GET",
-        f"/repos/{repo}/pulls/{pr_number}",
-        read_token,
-        accept="application/vnd.github.v3.diff",
-    )
-    if status != 200:
-        raise RuntimeError(f"Pull request diff lookup failed with HTTP {status}")
-    return pull_request, file_names, diff if isinstance(diff, str) else ""
+
+    file_names: list[str] = []
+    diff_sections: list[str] = []
+    patchless_files: list[str] = []
+    for item in files:
+        if not isinstance(item, dict):
+            continue
+        filename = str(item.get("filename", "")).strip()
+        if not filename:
+            continue
+        file_names.append(filename)
+        patch = item.get("patch")
+        if isinstance(patch, str) and patch:
+            diff_sections.append(
+                f"diff --git a/{filename} b/{filename}\n"
+                f"--- a/{filename}\n"
+                f"+++ b/{filename}\n"
+                f"{patch.rstrip()}"
+            )
+        else:
+            patchless_files.append(filename)
+
+    if patchless_files:
+        status, full_diff = github_request(
+            "GET",
+            f"/repos/{repo}/pulls/{pr_number}",
+            read_token,
+            accept="application/vnd.github.v3.diff",
+        )
+        if status != 200 or not isinstance(full_diff, str) or not full_diff.strip():
+            raise RuntimeError(f"Full diff unavailable with HTTP {status}")
+        missing = [
+            filename
+            for filename in file_names
+            if (
+                f"diff --git a/{filename} b/{filename}" not in full_diff
+                and f'diff --git "a/{filename}" "b/{filename}"' not in full_diff
+            )
+        ]
+        if missing:
+            raise RuntimeError(
+                "Pull request full diff is incomplete; missing: " + ", ".join(missing)
+            )
+        return pull_request, file_names, full_diff
+
+    diff = "\n".join(diff_sections)
+    return pull_request, file_names, diff
 
 
 def mint_review_token(repo: str) -> tuple[str, int]:

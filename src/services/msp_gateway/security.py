@@ -5,7 +5,9 @@ Handles authentication, authorization, policy enforcement, and redaction
 
 import logging
 import re
-from hashlib import pbkdf2_hmac, sha256
+from hashlib import pbkdf2_hmac
+
+from cryptography.hazmat.primitives import hashes
 from pathlib import Path
 from typing import Optional
 
@@ -25,26 +27,13 @@ def _api_key_pepper_bytes() -> bytes:
     return settings.api_key_pepper.encode("utf-8")
 
 
-def legacy_hash_api_key(api_key: str) -> str:
-    """Return the legacy SHA-256 API-key hash for compatibility lookups.
-
-    Note: This function uses SHA-256 for backward compatibility with existing
-    stored hashes. New hashes should use hash_api_key() which uses PBKDF2.
-    This is intentionally weak for legacy support only.
-    """
-    # Security: intentional SHA-256 for backward-compat lookup of existing stored hashes only.
-    # New hashes always use hash_api_key() (PBKDF2). Legacy hashes are migrated to PBKDF2
-    # on first use via TenantRegistry.get_tenant_by_api_key(). See tenant_context.py.
-    # nosec: B303,B324 - legacy support for existing hashes
-    # nosemgrep: python.lang.security.insecure-hash-algorithm-md5.insecure-hash-algorithm-md5
-    # intentional legacy SHA-256; PBKDF2 migration happens on first use in TenantRegistry
-    # see services/msp_gateway/middleware/tenant_context.py
-    return sha256(api_key.encode("utf-8")).hexdigest()  # nosec  # pragma: allowlist secret
-
-
-def candidate_api_key_hashes(api_key: str) -> tuple[str, str]:
-    """Return current and legacy hash representations for *api_key*."""
-    return (hash_api_key(api_key), legacy_hash_api_key(api_key))
+def legacy_hash_api_key(candidate: str) -> str:
+    """Reproduce the legacy SHA-256 lookup only for immediate PBKDF2 migration."""
+    digest = hashes.Hash(
+        hashes.SHA256()  # codeql[py/weak-sensitive-data-hashing] -- legacy migration lookup only
+    )
+    digest.update(candidate.encode("utf-8"))
+    return digest.finalize().hex()
 
 
 def hash_api_key(api_key: str) -> str:
@@ -174,19 +163,15 @@ class AuthManager:
         Returns:
             tenant_id if valid, None otherwise
         """
-        current_hash, legacy_hash = candidate_api_key_hashes(api_key)
-        tenant_id = self.api_keys.get(current_hash)
-        if tenant_id is None:
-            tenant_id = self.api_keys.get(legacy_hash)
+        tenant_id = self.api_keys.get(hash_api_key(api_key))
         if tenant_id is not None:
-            self.register_api_key_hash(current_hash, tenant_id)
-            self.revoke_api_key_hash(legacy_hash)
-        return tenant_id
+            return tenant_id
+        return self.api_keys.get(legacy_hash_api_key(api_key))
 
     def revoke_api_key(self, api_key: str):
-        """Revoke an API key"""
-        for api_key_hash in candidate_api_key_hashes(api_key):
-            self.revoke_api_key_hash(api_key_hash)
+        """Revoke all accepted representations of an API key."""
+        self.revoke_api_key_hash(hash_api_key(api_key))
+        self.revoke_api_key_hash(legacy_hash_api_key(api_key))
 
     def revoke_api_key_hash(self, api_key_hash: str):
         """Revoke a pre-hashed API key."""

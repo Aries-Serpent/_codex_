@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import json
 import logging
+import threading
 import time
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -32,6 +33,7 @@ ERROR_PATH = Path(".codex/errors.ndjson")
 ROTATE_AFTER = 60 * 60 * 24  # 1 day
 
 LOGGER = logging.getLogger(__name__)
+_LOG_LOCK = threading.Lock()
 
 
 def log_error(step: str, err: str, ctx: str) -> None:
@@ -63,17 +65,18 @@ def log_error(step: str, err: str, ctx: str) -> None:
 def log(msg: str, path: Path = Path("error.log")) -> None:
     """Append ``msg`` to ``path`` and rotate if the file is old."""
     path = Path(path)
-    now = time.time()
-    if path.exists():
-        try:
-            mtime = path.stat().st_mtime
-            if now - mtime > ROTATE_AFTER:
-                rotated = path.with_name(path.name + f".{int(mtime)}")
-                path.rename(rotated)
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
-            type(exc).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            LOGGER.warning("Failed to rotate log %s: %s", path, exc)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as fh:
-        fh.write(msg)
+    with _LOG_LOCK:
+        now = time.time()
+        if path.exists():
+            try:
+                mtime = path.stat().st_mtime
+                if now - mtime > ROTATE_AFTER:
+                    rotated = path.with_name(path.name + f".{int(mtime)}")
+                    path.rename(rotated)
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+                type(exc).__name__
+                logger.debug("Exception: <ERROR_TYPE>")
+                LOGGER.warning("Failed to rotate log %s: %s", path, exc)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as fh:
+            fh.write(msg)

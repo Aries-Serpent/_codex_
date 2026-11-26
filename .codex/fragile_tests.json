@@ -248,8 +248,8 @@
     "transformers"
   ],
   "tests/distributed/test_multigpu.py": [
-    "torch.utils.data.distributed",
-    "torch.utils.data"
+    "torch.utils.data",
+    "torch.utils.data.distributed"
   ],
   "tests/ensemble/test_ensemble_predictor.py": [
     "numpy"
@@ -368,6 +368,9 @@
     "numpy"
   ],
   "tests/quantum_orchestrator/test_orchestrator_physics.py": [
+    "numpy"
+  ],
+  "tests/rag/test_indexer_coverage_branches.py": [
     "numpy"
   ],
   "tests/rag/test_rag_functionality_comprehensive.py": [
