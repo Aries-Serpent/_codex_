@@ -6,7 +6,24 @@ Test module for entry point discovery.
 
 import types
 
-from codex_ml.plugins.registry import Registry
+import pytest
+
+from codex_ml.plugins.registry import Registry, _activate_editable_distribution
+
+
+def test_editable_distribution_failure_is_non_fatal(caplog: pytest.LogCaptureFixture) -> None:
+    class BrokenDistribution:
+        files = ()
+
+        def read_text(self, name: str) -> str:
+            raise OSError("metadata unavailable")
+
+    entry_point = types.SimpleNamespace(dist=BrokenDistribution())
+
+    with caplog.at_level("DEBUG", logger="codex_ml.plugins.registry"):
+        _activate_editable_distribution(entry_point)
+
+    assert "Failed to activate editable distribution" in caplog.text
 
 
 def test_entry_point_discovery(monkeypatch) -> None:
