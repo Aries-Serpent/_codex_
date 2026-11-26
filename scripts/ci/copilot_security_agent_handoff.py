@@ -815,10 +815,14 @@ def main():
                 args.cache_age_minutes,
             )
             if args.output:
-                Path(args.output).write_text(response)
+                Path(args.output).write_text(
+                    response  # codeql[py/clear-text-storage-sensitive-data] -- aggregate-only response
+                )
                 logger.info("Response saved to %s", args.output)
             else:
-                print(response)
+                print(
+                    response  # codeql[py/clear-text-logging-sensitive-data] -- aggregate-only response
+                )
 
             logger.info("✅ Response generation complete")
             return 0

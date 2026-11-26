@@ -1,4 +1,16 @@
 ## Session: Final CodeQL gate remediation for PR #5868 (2026-11-26)
+## Session: Rule-specific CodeQL aggregation follow-up (2026-11-26)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Corrected the legacy migration annotation to `py/weak-sensitive-data-hashing` and scoped aggregate-only scan-summary sinks to their exact clear-text storage/logging rules.
+- Filtered terminal `action_required` workflow records before approval and added inventory/endpoint regressions so completed runs cannot produce repeated 403 failures.
+- Verified handoff, migration, revocation, and approval behavior with focused tests, Black, Ruff, mypy, and diff checks.
+
 ## Session: Legacy API-key migration CodeQL follow-up (2026-11-26)
 
 ### Agents Used
