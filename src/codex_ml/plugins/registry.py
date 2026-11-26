@@ -92,8 +92,8 @@ def _activate_editable_distribution(ep: Any) -> None:
                         source_root = Path(url2pathname(parsed.path)).resolve()
                         if source_root.is_dir() and str(source_root) not in sys.path:
                             sys.path.insert(0, str(source_root))
-    except (OSError, AttributeError, TypeError, ValueError):
-        pass
+    except (OSError, AttributeError, TypeError, ValueError) as exc:
+        logger.debug("Failed to activate editable distribution: %s", exc)
 
     try:
         files = dist.files or ()

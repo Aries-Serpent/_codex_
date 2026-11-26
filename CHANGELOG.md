@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed - Final promotion review remediation for PR #5873 (2026-11-26)
+- Preserve best-effort editable distribution activation while logging non-fatal metadata failures for diagnosis.
+
 ### Fixed - Final CodeQL gate remediation for PR #5868 (2026-11-26)
 - Persist and print only aggregate security summaries, removing finding identifiers, file/package fields, and workflow secret metadata from generated reports.
 - Use explicit safe workflow-report projections and omitted-secret inventory markers for cross-reference consumers.
