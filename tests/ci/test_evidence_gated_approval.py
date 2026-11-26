@@ -148,16 +148,21 @@ def test_author_rerunning_approver_is_denied(api, monkeypatch):
     assert approval._authorize_run("", "o/r", "1", SHA, run) == "self-approval"
 
 
-def test_repository_owner_can_approve_after_distinct_current_ai_review(api, monkeypatch):
+def test_org_admin_author_can_approve_after_distinct_current_ai_review(api, monkeypatch):
     pr, run, identity, _ = api
-    pr["user"]["login"] = "o"
-    identity["login"] = "o"
+    pr["user"]["login"] = "mbaetiong"
+    identity["login"] = "mbaetiong"
     run["actor"] = {"login": "Copilot"}
     run["triggering_actor"] = {"login": "Copilot"}
+    monkeypatch.setenv("GITHUB_ACTOR", "Copilot")
+    monkeypatch.setenv("GITHUB_TRIGGERING_ACTOR", "Copilot")
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "pull_request_review")
 
     original_gh = approval._gh
 
     def ai_review(method, path, token, body=None):
+        if path == "/repos/o/r":
+            return 200, {"permissions": {"admin": True}}
         status, data = original_gh(method, path, token, body)
         if "/reviews?" in path:
             data = [

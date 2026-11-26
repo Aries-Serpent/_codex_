@@ -710,14 +710,20 @@ def _authorize_run(
     }
     if not author or "" in run_actors:
         return "unknown-author-identity"
-    repository_owner = repo.partition("/")[0].casefold()
-    owner_authored_pr = (
-        identity["type"] == "User" and approver == repository_owner and approver == author
-    )
+    repository_admin = False
+    if identity["type"] == "User" and approver == author:
+        repo_status, repository = _gh("GET", f"/repos/{repo}", token)
+        repository_admin = bool(
+            repo_status == 200
+            and isinstance(repository, dict)
+            and (repository.get("permissions") or {}).get("admin") is True
+        )
+    owner_authored_pr = repository_admin and approver == author
     approval_actors = {approver}
     # Automatic events request inspection; they are not the platform approver.
     if identity["type"] != "Bot" and os.environ.get("GITHUB_EVENT_NAME") not in {
         "pull_request_target",
+        "pull_request_review",
         "workflow_run",
         "issue_comment",
         "schedule",
