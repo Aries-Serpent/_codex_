@@ -3,6 +3,12 @@
 **Version:** 2.0 — 2026-10-22
 **Scope:** Repository guidance for authorized agent work, not a grant of GitHub permissions.
 
+For the repository-wide operational contract, read the
+[Agent Maintainer Charter](../.github/AGENT_MAINTAINER_CHARTER.md). GitHub
+Copilot Coding Agent is the primary operational maintainer for authorized
+D-tier work; routine maintenance is intended to complete end to end without a
+human conversational handoff when actual credentials and native controls allow.
+
 ## Authority and task boundaries
 
 This repository has exactly one human owner and maintainer: Marc Baetiong

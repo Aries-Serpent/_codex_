@@ -148,6 +148,32 @@ def test_author_rerunning_approver_is_denied(api, monkeypatch):
     assert approval._authorize_run("", "o/r", "1", SHA, run) == "self-approval"
 
 
+def test_repository_owner_can_approve_after_distinct_current_ai_review(api, monkeypatch):
+    pr, run, identity, _ = api
+    pr["user"]["login"] = "o"
+    identity["login"] = "o"
+    run["actor"] = {"login": "Copilot"}
+    run["triggering_actor"] = {"login": "Copilot"}
+
+    original_gh = approval._gh
+
+    def ai_review(method, path, token, body=None):
+        status, data = original_gh(method, path, token, body)
+        if "/reviews?" in path:
+            data = [
+                {
+                    "user": {"login": "cognitive-brain[bot]", "type": "Bot"},
+                    "author_association": "NONE",
+                    "state": "APPROVED",
+                    "commit_id": SHA,
+                }
+            ]
+        return status, data
+
+    monkeypatch.setattr(approval, "_gh", ai_review)
+    assert approval._authorize_run("", "o/r", "1", SHA, run) == "authorized"
+
+
 @pytest.mark.parametrize(
     "associations", [None, [], [{"number": 2}], [{"number": 1}, {"number": 2}]]
 )

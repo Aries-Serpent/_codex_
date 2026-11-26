@@ -3,6 +3,9 @@
 **Release Status**: v0.3.0 provides stable core functionality; production deployment should review `.codex/COVERAGE_GAP_REPORT.md` and readiness checklists. Selected autonomous operations are enabled in the checked-in configuration but remain policy-scoped, approval-gated, and dependent on environment credentials.
 **Repository Version**: v0.3.0 (`pyproject.toml`); this checkout does not itself establish external release or artifact availability.
 **Documentation truth**: Current repo truth lives in the active repo files under `README.md`, `docs/`, and `mkdocs.yml`. Historical backlog, phase reports, and earlier status pages are archive evidence only; they do not define the current operational state unless explicitly labeled historical.
+
+**Agent-maintained repository**: GitHub Copilot Coding Agent is the primary operational maintainer under D-tier autonomy. Routine authorized PR, branch, issue, CI, and conflict-resolution work is designed for end-to-end agent execution without a conversational handoff. See the [Agent Maintainer Charter](.github/AGENT_MAINTAINER_CHARTER.md); actual credentials and native platform controls remain authoritative.
+
 ![Version](https://img.shields.io/badge/version-0.3.0-brightgreen)
 ![Python](https://img.shields.io/badge/python-%3E%3D3.12-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
