@@ -114,6 +114,30 @@ def test_start_is_idempotent_when_owned_process_exists(
     assert result == {"started": False, "already_running": True, "pid": 12345}
 
 
+def test_periodic_checkpoint_command_passes_custom_runtime_dir(tmp_path: Path) -> None:
+    runtime_dir = tmp_path / "custom-runtime"
+    repo_root = tmp_path / "repo"
+    started_at = datetime(2026, 11, 25, 21, 0, tzinfo=timezone.utc)
+
+    command = codespace_keepalive.periodic_checkpoint_command(
+        runtime_dir=runtime_dir,
+        repo_root=repo_root,
+        started_at=started_at,
+    )
+
+    assert "--runtime-dir" in command
+    assert str(runtime_dir) in command
+    assert "--runtime-only" in command
+
+
+def test_periodic_continuity_checkpoint_interval_parser() -> None:
+    args = codespace_keepalive.build_parser().parse_args(
+        ["run", "--continuity-checkpoint-interval-seconds", "900"]
+    )
+
+    assert args.continuity_checkpoint_interval_seconds == 900
+
+
 def test_status_reports_platform_policy_boundary(tmp_path: Path) -> None:
     status_path = tmp_path / "runtime" / "codespace_keepalive.json"
     status_path.parent.mkdir()

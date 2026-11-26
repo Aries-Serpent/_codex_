@@ -40,6 +40,15 @@ fi
 # shellcheck source=/dev/null
 [ -f "$HOME/.codex_env" ] && source "$HOME/.codex_env"
 
+# Reconcile repository continuity state without mutating the worktree.
+mkdir -p "${CODEX_RUNTIME_DIR:-${CODEX_STATE_DIR:-${HOME}/.codex}/runtime}" "${CODEX_STATE_DIR:-${HOME}/.codex}/sessions"
+if [ -x "${WORKSPACE}/.venv/bin/python" ]; then
+    "${WORKSPACE}/.venv/bin/python" "${WORKSPACE}/scripts/autonomous/codespace_session_guard.py" \
+        status --refresh --json \
+        > "${CODEX_RUNTIME_DIR:-${CODEX_STATE_DIR:-${HOME}/.codex}/runtime}/codespace_session_status.json" \
+        || echo "  ⚠️  Codespace continuity status reconciliation degraded"
+fi
+
 # Normalize Codespaces App secrets for every Copilot Agent shell/process.
 export GITHUB_APP_ID="${GITHUB_APP_ID:-${_GITHUB_APP_ID:-}}"
 export GITHUB_APP_INSTALLATION_ID="${GITHUB_APP_INSTALLATION_ID:-${_GITHUB_APP_INSTALLATION_ID:-}}"

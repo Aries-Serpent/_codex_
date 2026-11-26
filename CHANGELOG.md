@@ -2,6 +2,32 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5857 exact-SHA fourth review remediation (2026-11-26)
+- Harden NUL-delimited Git porcelain handling and rename-path decoding.
+- Reject conventional SSH private-key basenames and untrusted snapshot targets.
+- Preserve strict checkpoint validation while falling back from runtime to repository checkpoints.
+- Add bundle and continuity regressions for quoted names, private keys, deleted secrets, symlinks, and checkpoint recovery.
+
+### Fixed - PR #5857 exact-SHA third review remediation (2026-11-25)
+- Parse NUL-delimited Git status records and both rename paths so quoted sensitive names cannot bypass bundle safeguards.
+- Reject conventional SSH private-key basenames and preserve strict checkpoint validation with repository-root fallback.
+- Preserve live exact-SHA rerun and approval gates without claiming merge readiness.
+
+### Fixed - PR #5857 Copilot review remediation (2026-11-25)
+- Parse NUL-delimited Git porcelain filenames and rename endpoints so deleted/sensitive and quoted paths cannot bypass bundle safeguards.
+- Reject conventional SSH private-key basenames and strict-check checkpoint roots before reporting verified recovery.
+- Reject deleted sensitive paths and symlinked/out-of-repository snapshot targets in the Codespace continuity bundle flow.
+- Perform strict checkpoint validation on resume and return controlled closeout/reindex failure states.
+- Forward custom runtime directories to periodic continuity checkpoints and add adversarial regressions for all remediated findings.
+
+### Fixed - PR #5857 merge conflict resolution and continuity handoff (2026-11-25)
+- Merge `origin/0D_base_` into the Copilot session-continuity branch and resolve the
+  session-handoff, secret-pattern, and AI-review integrity conflicts semantically.
+- Preserve live PR #5857 mergeability and exact-SHA check evidence without claiming
+  merge readiness until terminal checks and exact-SHA AI approval pass.
+- Keep the PR draft, preserve 0D/main controls, and add the continuation checkpoint
+  to `.codex/session_handoff.json` and `.codex/NEXT_CONTINUATION_PROMPT.md`.
+
 ### Fixed - Agentic Codespace relaunch and PR review remediation (2026-11-25)
 - Published exact-SHA routing remediation on PR #5855 and CodeQL remediation on PR #5856.
 - Preserved the cognitive-preflight workflow as a read-only PR gate; no github-actions bot commit or push is permitted by the workflow.

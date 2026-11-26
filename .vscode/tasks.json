@@ -208,6 +208,65 @@
       ]
     },
     {
+      "label": "Codex: continuity status",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "${workspaceFolder}/scripts/autonomous/codespace_session_guard.py",
+        "status",
+        "--refresh",
+        "--json"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: continuity checkpoint",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "${workspaceFolder}/scripts/autonomous/codespace_session_guard.py",
+        "checkpoint",
+        "--runtime-only",
+        "--session-id",
+        "${input:continuitySessionId}",
+        "--task",
+        "${input:continuityTask}"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: continuity resume",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "${workspaceFolder}/scripts/autonomous/codespace_session_guard.py",
+        "resume"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: continuity reindex",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "${workspaceFolder}/scripts/autonomous/codespace_session_guard.py",
+        "reindex"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Codex: continuity closeout",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "${workspaceFolder}/scripts/autonomous/codespace_session_guard.py",
+        "closeout",
+        "--objective",
+        "Prepare verified Codespace closeout and relaunch"
+      ],
+      "problemMatcher": []
+    },
+    {
       "label": "Codex: keepalive start",
       "type": "process",
       "command": "${workspaceFolder}/.venv/bin/python",
@@ -363,6 +422,20 @@
       ],
       "group": "test",
       "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "continuitySessionId",
+      "type": "promptString",
+      "description": "Continuity session ID",
+      "default": "codespace-session"
+    },
+    {
+      "id": "continuityTask",
+      "type": "promptString",
+      "description": "Current continuity task",
+      "default": "Continue repository work"
     }
   ]
 }
