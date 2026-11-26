@@ -710,6 +710,10 @@ def _authorize_run(
     }
     if not author or "" in run_actors:
         return "unknown-author-identity"
+    repository_owner = repo.partition("/")[0].casefold()
+    owner_authored_pr = (
+        identity["type"] == "User" and approver == repository_owner and approver == author
+    )
     approval_actors = {approver}
     # Automatic events request inspection; they are not the platform approver.
     if identity["type"] != "Bot" and os.environ.get("GITHUB_EVENT_NAME") not in {
@@ -719,7 +723,9 @@ def _authorize_run(
         "schedule",
     }:
         approval_actors.update({requester, triggering_requester})
-    if approval_actors & (run_actors | {author}):
+    if approval_actors & run_actors:
+        return "self-approval"
+    if approver == author and not owner_authored_pr:
         return "self-approval"
     label_disposition = _inspect_wec_auto_approve_label(token, repo, pr_number)
     if label_disposition == "label-inspection-error":
@@ -748,13 +754,23 @@ def _authorize_run(
         reviewer not in run_actors | {author}
         and (
             (
-                (review.get("user") or {}).get("type") == "User"
-                and review.get("author_association") in {"OWNER", "MEMBER", "COLLABORATOR"}
+                not owner_authored_pr
+                and (
+                    (
+                        (review.get("user") or {}).get("type") == "User"
+                        and review.get("author_association") in {"OWNER", "MEMBER", "COLLABORATOR"}
+                    )
+                    or (
+                        identity["type"] == "Bot"
+                        and (review.get("user") or {}).get("type") == "Bot"
+                        and (reviewer == approver or reviewer in AI_REVIEWER_BOT_LOGINS)
+                    )
+                )
             )
             or (
-                identity["type"] == "Bot"
+                owner_authored_pr
                 and (review.get("user") or {}).get("type") == "Bot"
-                and (reviewer == approver or reviewer in AI_REVIEWER_BOT_LOGINS)
+                and reviewer in AI_REVIEWER_BOT_LOGINS
             )
         )
         and review.get("state") == "APPROVED"
