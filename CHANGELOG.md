@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed - Evidence-gated organization maintainer workflow approval (2026-11-26)
+- Allow the authenticated organization repository admin who authored the PR to approve Copilot-triggered workflows only with a current-SHA independent AI approval and active WEC grant.
+- Treat `pull_request_review` as an automatic requester event, preserving all ordinary self-approval, stale-label, missing-review, and non-admin denials.
+- Add regressions for organization-owned repositories where the human maintainer is an authenticated MEMBER with actual repository admin permission.
+
 ### Fixed - PR #5857 exact-SHA fourth review remediation (2026-11-26)
 - Harden NUL-delimited Git porcelain handling and rename-path decoding.
 - Reject conventional SSH private-key basenames and untrusted snapshot targets.
