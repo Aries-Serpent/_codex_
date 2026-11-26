@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed - Legacy API-key migration CodeQL follow-up (2026-11-26)
+- Restrict the weak-hash CodeQL exception to the legacy SHA-256 lookup used only to locate and immediately migrate stored API keys to PBKDF2.
+
 ### Fixed - Final promotion review remediation for PR #5873 (2026-11-26)
 - Preserve best-effort editable distribution activation while logging non-fatal metadata failures for diagnosis.
 

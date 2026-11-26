@@ -1,4 +1,15 @@
 ## Session: Final CodeQL gate remediation for PR #5868 (2026-11-26)
+## Session: Legacy API-key migration CodeQL follow-up (2026-11-26)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Added a query-specific CodeQL exception only to the legacy SHA-256 lookup that locates existing records for immediate PBKDF2 migration.
+- Verified current and legacy auth behavior, migration, revocation, focused tests, Black, Ruff, mypy, and diff checks.
+
 ## Session: PR #5873 editable-distribution review remediation (2026-11-26)
 
 ### Agents Used
