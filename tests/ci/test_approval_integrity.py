@@ -432,6 +432,27 @@ def test_complete_run_pagination_preserves_all_identities(offline):
     assert approval._get_action_required_runs("fixture", "o/r", SHA) == runs
 
 
+def test_action_required_inventory_excludes_terminal_runs(offline):
+    install, _ = offline
+    runs = [
+        {"id": 1, "head_sha": SHA, "status": "completed", "conclusion": "action_required"},
+        {"id": 2, "head_sha": SHA, "status": "waiting", "conclusion": "action_required"},
+    ]
+    install(lambda path: (200, {"workflow_runs": runs, "total_count": len(runs)}))
+
+    assert approval._get_action_required_runs("fixture", "o/r", SHA) == [runs[1]]
+
+
+def test_approve_run_skips_terminal_inventory_entry(monkeypatch):
+    monkeypatch.setattr(
+        approval,
+        "_gh",
+        lambda *args: (_ for _ in ()).throw(AssertionError("terminal run reached GitHub")),
+    )
+
+    assert approval._approve_run("fixture", "o/r", {"id": 7, "status": "completed"}) == "skipped"
+
+
 @pytest.mark.parametrize("status,payload", [(403, {}), (200, [None]), (200, [{}])])
 def test_open_pr_inventory_does_not_hide_failure(offline, status, payload):
     install, _ = offline

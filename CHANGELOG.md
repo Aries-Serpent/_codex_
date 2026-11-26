@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed - Rule-specific CodeQL aggregation follow-up (2026-11-26)
+- Apply exact CodeQL rule IDs to the migration-only legacy hash lookup and aggregate-only scan-summary storage/output sinks.
+- Skip terminal `action_required` workflow records before approval so stale completed runs cannot produce repeated GitHub 403 helper failures.
+
 ### Fixed - Legacy API-key migration CodeQL follow-up (2026-11-26)
 - Restrict the weak-hash CodeQL exception to the legacy SHA-256 lookup used only to locate and immediately migrate stored API keys to PBKDF2.
 

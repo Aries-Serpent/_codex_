@@ -505,7 +505,7 @@ def _get_action_required_runs(
             ):
                 raise RuntimeError("Invalid or repeated run inventory identity")
             seen.add(run_id)
-        all_runs.extend(runs)
+        all_runs.extend(run for run in runs if run.get("status") != "completed")
         if _inventory_complete(len(runs), len(seen), total):
             break
     else:
@@ -525,6 +525,9 @@ def _approve_run(
     run_name = run.get("name") or str(run.get("workflow_id", run_id))
     label = f"{run_name} (#{run_id})"
 
+    if run.get("status") == "completed":
+        print(f"  ⏭️  Skipped terminal run: {label}")
+        return "skipped"
     if dry_run:
         print(f"  [DRY] Would approve: {label}")  # codeql[py/clear-text-logging-sensitive-data]
         return "dry-run"

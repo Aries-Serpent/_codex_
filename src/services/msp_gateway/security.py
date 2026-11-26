@@ -30,7 +30,7 @@ def _api_key_pepper_bytes() -> bytes:
 def legacy_hash_api_key(candidate: str) -> str:
     """Reproduce the legacy SHA-256 lookup only for immediate PBKDF2 migration."""
     digest = hashes.Hash(
-        hashes.SHA256()  # codeql[py/weak-cryptographic-algorithm] -- legacy lookup only
+        hashes.SHA256()  # codeql[py/weak-sensitive-data-hashing] -- legacy migration lookup only
     )
     digest.update(candidate.encode("utf-8"))
     return digest.finalize().hex()
