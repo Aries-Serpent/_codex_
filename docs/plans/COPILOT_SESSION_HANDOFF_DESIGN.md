@@ -484,6 +484,23 @@ print(' WEC state injected')
 **Problem:** When `session_access_probe.py` fails, agent doesn't know which API methods are down.
 **Fix:** Emit `::notice` or `::warning` GitHub annotations per method so they appear in the setup log.
 
+### Gap E — Browser/UI Session Loss
+
+**Problem:** VS Code chat UI state is not sufficient recovery authority for a crashed
+browser, rebuilt container, or restored Codespace.
+
+**Implementation:** `scripts/autonomous/codespace_session_guard.py` owns a local
+`status`, `checkpoint`, `resume`, `reindex`, and `closeout` lifecycle. It writes a
+compact v2 `.codex/session_handoff.json`, validates checkpoints, preserves tracked
+and untracked work through the existing patch-bundle helper, and generates a
+machine-readable continuation prompt. Post-create and post-start reconcile runtime
+state; the keepalive daemon performs 15-minute runtime-only checkpoints.
+
+Recovery precedence is live remote Git/issue/PR state, verified patch bundle,
+latest valid local checkpoint, then cold bootstrap. Hosted mutation remains explicit:
+PR/issue updates, merges, deployment, workflow dispatch, and secret changes are not
+performed implicitly by session status or checkpoint commands.
+
 ---
 
 ## 8. Invariant Verification Matrix

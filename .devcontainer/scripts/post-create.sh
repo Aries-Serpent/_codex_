@@ -69,7 +69,14 @@ for RC in "$HOME/.bashrc" "$HOME/.profile" "$HOME/.bash_profile"; do
     fi
 done
 echo "✅ Environment variables written to $PROFILE_SNIPPET"
-
+# Reconcile continuity state and session index after create/rebuild.
+mkdir -p "${CODEX_RUNTIME_DIR:-${HOME}/.codex/runtime}" "${CODEX_SESSION_LOG_DIR:-${HOME}/.codex/sessions}"
+if [ -x "${WORKSPACE}/.venv/bin/python" ]; then
+    "${WORKSPACE}/.venv/bin/python" "${WORKSPACE}/scripts/autonomous/codespace_session_guard.py" \
+        reindex \
+        > "${CODEX_RUNTIME_DIR:-${HOME}/.codex/runtime}/codespace_session_reindex.json" \
+        || echo "  ⚠️  Codespace session reindex degraded"
+fi
 # ── Auth token report ─────────────────────────────────────────────────────────
 # Mirrors "Export Auth Tokens" step.
 # Codespaces secrets are already in the environment — just report what's set.

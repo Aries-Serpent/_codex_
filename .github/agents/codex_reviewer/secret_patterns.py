@@ -182,6 +182,8 @@ class SecretPatterns:
         stem = basename.rsplit(".", 1)[0]
         if basename in cls.HIGH_RISK_FILES or stem in cls.HIGH_RISK_FILES:
             return True
+        if any(token in filename_lower for token in cls.HIGH_RISK_FILES):
+            return True
         return any(basename.endswith(ext) for ext in cls.HIGH_RISK_EXTENSIONS)
 
     @classmethod

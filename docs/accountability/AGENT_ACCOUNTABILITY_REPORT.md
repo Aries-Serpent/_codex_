@@ -1,3 +1,84 @@
+## Session: PR #5857 exact-SHA fourth review remediation (2026-11-26)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Repaired NUL-delimited Git porcelain parsing for quoted filenames and rename endpoints.
+- Extended bundle sensitivity guards for conventional SSH private-key basenames.
+- Added strict repository-root checkpoint fallback without weakening integrity failures.
+- Added patch-bundle tests for quoted paths, deleted sensitive files, private keys, and symlinks.
+- Focused continuity and bundle tests pass; exact-SHA rerun remains external approval evidence.
+
+## Session: PR #5857 exact-SHA third review remediation (2026-11-25)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Resolved the exact-SHA Copilot findings for quoted porcelain filenames, conventional
+  SSH private-key basenames, and runtime-first checkpoint discovery.
+- Worktree status now parses NUL-delimited porcelain records and includes both rename paths.
+- `id_rsa`, `id_dsa`, `id_ecdsa`, `id_ed25519`, `id_ed25519_sk`, and `id_ecdsa_sk` are blocked.
+- Resume continues to repository checkpoints when the runtime checkpoint root is empty,
+  while corrupt checkpoints fail closed with `checkpoint_failed_validation`.
+- Focused continuity tests pass; exact-SHA rerun and review approval remain pending.
+- No merge, issue/PR closure, workflow dispatch, secret mutation, or direct 0D/main push
+  was performed.
+
+## Session: PR #5857 Copilot review remediation (2026-11-25)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Resolved six Copilot review findings in `codespace_session_guard.py` and
+  `codespace_keepalive.py`.
+- Deleted-path sensitivity now includes removed `.env`, private-key, and token-named paths.
+- Symlinked untracked files and resolved targets outside the repository are rejected.
+- Resume now performs strict checkpoint validation and reports
+  `checkpoint_failed_validation` instead of verified recovery.
+- Closeout now propagates checkpoint, bundle, and reindex failures; missing session
+  stores remain an explicit allowed degraded condition.
+- Keepalive now forwards custom runtime directories to periodic guard checkpoints.
+- Added adversarial tests for deleted sensitive paths, symlinks, corrupt checkpoints,
+  reindex failures, closeout failures, custom-runtime discovery, quoted porcelain
+  filenames, SSH private-key basenames, and repository-root checkpoint fallback.
+- Parsed NUL-delimited porcelain status for both rename endpoints and rejected conventional
+  SSH private-key basenames such as `id_rsa` and `id_ed25519`.
+- Focused continuity suite passes 23 tests; Black, isort, Ruff, mypy, compileall,
+  shell syntax, and `git diff --check` pass.
+- No merge, issue closure, workflow dispatch, secret mutation, or direct 0D/main push
+  was performed.
+
+## Session: PR #5857 merge-conflict resolution and Codespace continuity (2026-11-25)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Merged `origin/0D_base_` at `d8c2e69446d64ee60af8dc923bcc93d8408574d2` into
+  `copilot/session-codespace-continuity-20261125` and published merge commit
+  `88d4bed2a5768cb1bc89c21d0eaf6c04b0c3b2ce` through the PR branch.
+- Resolved three merge conflicts: retained canonical v2
+  `.codex/session_handoff.json`, combined source-file secret-classification safeguards,
+  and preserved the 0D source-file integrity regression test.
+- Live PR #5857 mergeability is `true`; GitHub no longer reports merge conflicts.
+- The resolved merge tip was validated with the AI-review integrity and workflow
+  validation suites: 62 focused tests passed.
+- The PR remains draft and merge readiness remains pending because exact-SHA checks,
+  review/approval, and the Cognitive Pre-flight rerun must terminalize at the live head.
+- No issue was closed and no merge, promotion, deployment, direct 0D/main push,
+  workflow dispatch, or secret mutation was performed.
+
 ## Session: 2026-11-25 Codespace relaunch, PR 5855, and PR 5856
 
 ### Agents Used
