@@ -88,6 +88,10 @@ DEFAULT_STALE_DAYS = 30
 DEFAULT_VERY_STALE_DAYS = 90
 
 
+class BranchCleanupLookupError(RuntimeError):
+    """A branch cleanup safety lookup did not return authoritative state."""
+
+
 # ---------------------------------------------------------------------------
 # GitHub API helper
 # ---------------------------------------------------------------------------
@@ -185,11 +189,15 @@ def is_branch_merged(repo: str, token: str, branch: str, base: str) -> bool:
         f"/repos/{repo}/compare/{urllib.parse.quote(base, safe='')}...{urllib.parse.quote(branch, safe='')}",
         token,
     )
-    if data and isinstance(data, dict):
-        status = data.get("status", "")
-        ahead_by = data.get("ahead_by", 1)
-        return status == "behind" or (status == "identical") or (ahead_by == 0)
-    return False
+    if not isinstance(data, dict):
+        raise BranchCleanupLookupError(f"compare state unavailable for {base}...{branch}")
+    status = data.get("status")
+    ahead_by = data.get("ahead_by")
+    if status not in {"ahead", "behind", "diverged", "identical"}:
+        raise BranchCleanupLookupError(f"invalid compare status for {base}...{branch}")
+    if type(ahead_by) is not int:
+        raise BranchCleanupLookupError(f"invalid ahead count for {base}...{branch}")
+    return status in {"behind", "identical"} or ahead_by == 0
 
 
 def find_open_pr(repo: str, token: str, branch: str) -> int | None:
@@ -200,9 +208,19 @@ def find_open_pr(repo: str, token: str, branch: str) -> int | None:
         f"/repos/{repo}/pulls?state=open&head={owner}:{urllib.parse.quote(branch, safe='')}&per_page=1",
         token,
     )
-    if data and isinstance(data, list) and len(data) > 0:
-        return data[0]["number"]
-    return None
+    if not isinstance(data, list):
+        raise BranchCleanupLookupError(f"open PR state unavailable for {branch}")
+    if not data:
+        return None
+    pr_number = data[0].get("number")
+    if type(pr_number) is not int or pr_number <= 0:
+        raise BranchCleanupLookupError(f"invalid open PR response for {branch}")
+    return pr_number
+
+
+def validate_integration_branch(branches: list[dict], base_branch: str) -> bool:
+    """Return whether the selected integration base exists in the fetched inventory."""
+    return any(branch.get("name") == base_branch for branch in branches)
 
 
 def close_pr(repo: str, token: str, pr_number: int) -> bool:
@@ -298,7 +316,20 @@ def classify_branches(
         # Gather metadata
         last_commit_dt = get_branch_last_commit_date(repo, token, name)
         days_since = (now - last_commit_dt).days if last_commit_dt else None
-        merged = is_branch_merged(repo, token, name, integration_branch)
+        try:
+            merged = is_branch_merged(repo, token, name, integration_branch)
+        except BranchCleanupLookupError:
+            result["protected"].append(
+                {
+                    "name": name,
+                    "merged": None,
+                    "days_since_commit": days_since,
+                    "has_target_prefix": any(name.startswith(p) for p in target_prefixes),
+                    "pr_number": None,
+                    "reason": "merge state unknown",
+                }
+            )
+            continue
         has_prefix = any(name.startswith(p) for p in target_prefixes)
 
         branch_info = {
@@ -318,18 +349,17 @@ def classify_branches(
         elif delete_stale and days_since is not None and days_since >= stale_days and merged:
             should_delete = True
             reason = f"stale ({days_since}d since last commit) and merged"
-        elif (
-            delete_stale and days_since is not None and days_since >= very_stale_days and not merged
-        ):
-            # Very stale unmerged branches are force-deleted regardless of merge status
+        elif delete_by_prefix and has_prefix and merged:
             should_delete = True
-            reason = f"very stale ({days_since}d >= {very_stale_days}d threshold) — force-deleting unmerged branch"
-        elif delete_by_prefix and has_prefix and (merged or force_prefix):
-            should_delete = True
-            reason = f"matches target prefix; {'merged' if merged else 'force-prefix set'}"
+            reason = "matches target prefix and is merged"
 
         if should_delete:
-            pr = find_open_pr(repo, token, name)
+            try:
+                pr = find_open_pr(repo, token, name)
+            except RuntimeError:
+                branch_info["reason"] = "open PR state unknown"
+                result["protected"].append(branch_info)
+                continue
             branch_info["pr_number"] = pr
             if pr:
                 branch_info["reason"] = f"open PR #{pr}"
@@ -338,7 +368,7 @@ def classify_branches(
                 branch_info["reason"] = reason
                 result["to_delete"].append(branch_info)
         elif delete_stale and days_since is not None and days_since >= stale_days and not merged:
-            branch_info["reason"] = f"stale ({days_since}d) but NOT merged — warning only"
+            branch_info["reason"] = f"stale ({days_since}d) but NOT merged — preserved"
             result["stale_warn"].append(branch_info)
         else:
             result["clean"].append(branch_info)
@@ -371,6 +401,22 @@ def execute_cleanup(
         if dry_run:
             print(f"{prefix} Would delete '{name}'  ← {b.get('reason', '')}")
         else:
+            try:
+                fresh_pr = find_open_pr(repo, token, name)
+            except RuntimeError:
+                print(
+                    f"  ❌ Open PR state is unknown; preserving branch '{name}'",
+                    file=sys.stderr,
+                )
+                errors += 1
+                continue
+            if fresh_pr:
+                print(
+                    f"  ❌ PR #{fresh_pr} now protects branch '{name}'",
+                    file=sys.stderr,
+                )
+                errors += 1
+                continue
             if delete_branch(repo, token, name):
                 print(f"  ✅ Deleted '{name}'  ← {b.get('reason', '')}")
                 deleted += 1
@@ -522,11 +568,20 @@ def main() -> int:
 
     target_prefixes = [p.strip() for p in args.prefixes.split(",") if p.strip()]
     dry_run = not args.execute
+    if args.force_prefix:
+        print("❌ --force-prefix is disabled; unmerged branches are never deleted", file=sys.stderr)
+        return 2
 
     print(f"\n🔍 Fetching branches for {args.repo}…")
     default_branch = get_default_branch(args.repo, token)
     base_branch = args.base_branch or default_branch
     branches = list_all_branches(args.repo, token)
+    if not validate_integration_branch(branches, base_branch):
+        print(
+            f"❌ Integration branch '{base_branch}' is absent from the fetched branch inventory",
+            file=sys.stderr,
+        )
+        return 2
     print(
         f"   Found {len(branches)} branches. "
         f"Default: '{default_branch}', integration: '{base_branch}'"
