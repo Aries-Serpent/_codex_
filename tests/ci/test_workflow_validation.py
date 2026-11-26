@@ -371,7 +371,12 @@ def test_workflow_analyzer_reports_omit_secret_identifiers() -> None:
             "name": "sample",
             "guarded": False,
             "triggers": ["push"],
-            "jobs": ["test"],
+            "jobs": {
+                "test": {
+                    "if": "secrets.SUPER_SECRET_SENTINEL != ''",
+                    "steps": 1,
+                }
+            },
             "secrets": ["SUPER_SECRET_SENTINEL"],
             "runners": ["ubuntu-latest"],
             "actions_used": [],
@@ -388,8 +393,10 @@ def test_workflow_analyzer_reports_omit_secret_identifiers() -> None:
     assert "SUPER_SECRET_SENTINEL" not in json_report
     assert "SUPER_SECRET_SENTINEL" not in markdown_report
     workflow = json.loads(json_report)["workflows"]["sample.yml"]
-    assert workflow["secret_count"] == 1
+    assert "secret_count" not in workflow
     assert "secrets" not in workflow
+    assert "SUPER_SECRET_SENTINEL" not in json_report
+    assert "SUPER_SECRET_SENTINEL" not in markdown_report
 
 
 def test_cognitive_preflight_documentation_checks_bind_to_head_commit() -> None:

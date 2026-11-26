@@ -74,7 +74,6 @@ class WorkflowAnalyzer:
                 "guarded": is_guarded,
                 "triggers": self._extract_triggers(workflow_data),
                 "jobs": self._extract_jobs(workflow_data),
-                "secret_count": len(self._extract_secrets(content)),
                 "env_vars": self._extract_env_vars(workflow_data),
                 "runners": self._extract_runners(workflow_data),
                 "actions_used": self._extract_actions(workflow_data),
@@ -142,7 +141,6 @@ class WorkflowAnalyzer:
                         "runner": job_config.get("runs-on", "unknown"),
                         "steps": len(job_config.get("steps", [])),
                         "needs": job_config.get("needs", []),
-                        "if": job_config.get("if", None),
                         "timeout": job_config.get("timeout-minutes", None),
                     }
         return jobs_info
@@ -253,14 +251,39 @@ class WorkflowAnalyzer:
 
     def generate_json_report(self) -> str:
         """Generate JSON report without serializing secret identifiers or hashes."""
+        safe_fields = (
+            "path",
+            "name",
+            "guarded",
+            "triggers",
+            "env_vars",
+            "runners",
+            "actions_used",
+            "python_versions",
+            "dependencies",
+            "line_count",
+            "has_docker",
+            "has_uv",
+            "has_nox",
+            "has_pytest",
+        )
         sanitized_workflows = {}
         for name, workflow in self.workflows.items():
-            sanitized = dict(workflow)
-            legacy_secrets = sanitized.pop("secrets", [])
-            sanitized["secret_count"] = max(
-                int(sanitized.get("secret_count", 0)), len(legacy_secrets)
-            )
-            sanitized_workflows[name] = sanitized
+            safe_workflow = {field: workflow.get(field) for field in safe_fields}
+            jobs = workflow.get("jobs", {})
+            if isinstance(jobs, dict):
+                safe_jobs = {}
+                for job_name, job in jobs.items():
+                    if isinstance(job, dict):
+                        steps = job.get("steps", 0)
+                        step_count = len(steps) if isinstance(steps, list) else int(steps or 0)
+                    else:
+                        step_count = 0
+                    safe_jobs[str(job_name)] = {"step_count": step_count}
+            else:
+                safe_jobs = {str(job_name): {"step_count": 0} for job_name in jobs}
+            safe_workflow["jobs"] = safe_jobs
+            sanitized_workflows[name] = safe_workflow
         report = {
             "summary": self.generate_summary(),
             "workflows": sanitized_workflows,
@@ -335,8 +358,6 @@ class WorkflowAnalyzer:
             if len(info["triggers"]) > 2:
                 triggers += "..."
             runner = info["runners"][0] if info["runners"] else "unknown"
-            secrets_count = max(int(info.get("secret_count", 0)), len(info.get("secrets", [])))
-
             deps = []
             if info["has_docker"]:
                 deps.append("Docker")
@@ -352,7 +373,7 @@ class WorkflowAnalyzer:
             priority = self._determine_priority(workflow_name, info)
 
             md.append(
-                f"| {workflow_name} | {status} | {jobs_count} | {triggers} | {runner} | {secrets_count} | {deps_str} | {priority} |"
+                f"| {workflow_name} | {status} | {jobs_count} | {triggers} | {runner} | REDACTED | {deps_str} | {priority} |"
             )
 
         md.append("")

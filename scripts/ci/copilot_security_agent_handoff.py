@@ -53,6 +53,7 @@ except ImportError:  # pragma: no cover - fallback for partial installations
         text = re.sub(r"[\r\n\t\x00-\x1f\x7f]", " ", text)
         return re.sub(
             r"(?i)(token|secret|password|api[_-]?key|authorization|bearer)\s*[:=]\s*[^\s,;]+",
+            r"\1=[REDACTED]",
             text,
         )
 
@@ -225,15 +226,7 @@ def generate_scan_summary_response(
         if severity in severity_counts:
             severity_counts[severity] += 1
 
-    # Count findings by tool
-    tool_counts = {}
-    for finding in findings:
-        tool = sanitize_for_log(finding.get("tool", "Unknown"))
-        tool_counts[tool] = tool_counts.get(tool, 0) + 1
-
-    tools_list = ", ".join(sorted(tool_counts.keys()))
-
-    # Build query description
+    # Build query description without copying finding-derived text into persisted output.
     query_desc = "All findings"
     if query_info:
         if query_info.query_type == "cwe":
@@ -264,7 +257,7 @@ def generate_scan_summary_response(
         "## 🔍 Security Scan Summary\n",
         f"**Repository**: {repo}",
         f"**Query**: {query_desc}",
-        f"**Source**: {len(tool_counts)} tool{'s' if len(tool_counts) != 1 else ''} ({tools_list})",
+        "**Source**: Scanner details omitted from persisted output",
         f"**Scan Time**: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}{cache_indicator}\n",
     ]
 
@@ -296,64 +289,14 @@ def generate_scan_summary_response(
 
     lines.append("")
 
-    # Add top issues
-    top_n = 3
-    sorted_findings = sorted(
-        findings,
-        key=lambda f: (
-            -SEVERITY_LEVELS.get(f.get("severity", "INFO"), 0),
-            -f.get("_recency_score", 0),  # Optional recency score
-        ),
-    )
-
-    top_findings = sorted_findings[:top_n]
-
     lines.extend(
         [
-            f"### Top Issues (showing {len(top_findings)} of {len(findings)})\n",
+            "### Top Issues\n",
+            f"Matched findings: {len(findings)}",
+            "Detailed finding identifiers, paths, packages, and messages are omitted from persisted or printed summaries to prevent sensitive-data disclosure.",
+            "",
         ]
     )
-
-    for idx, finding in enumerate(top_findings, 1):
-        severity = finding.get("severity", "INFO")
-        title = sanitize_for_log(finding.get("title", "Untitled Finding"))
-        cwe = sanitize_for_log(finding.get("cwe_id", ""))
-        tool = sanitize_for_log(finding.get("tool", "Unknown"))
-        file_path = sanitize_for_log(finding.get("file", ""))
-        line_num = sanitize_for_log(finding.get("line", ""))
-        description = sanitize_for_log(finding.get("description", ""))
-
-        # Build finding header
-        severity_emoji = SEVERITY_EMOJI.get(severity, "❓")
-        cwe_str = f"{cwe}: " if cwe else ""
-        lines.append(f"{idx}. **[{severity_emoji} {severity}]** {cwe_str}{title}")
-
-        # Add details
-        if file_path:
-            file_ref = f"`{file_path}`"
-            if line_num:
-                file_ref += f" (line {line_num})"
-            lines.append(f"   - **File**: {file_ref}")
-
-        if finding.get("package"):
-            pkg_ref = finding["package"]
-            if finding.get("version"):
-                pkg_ref += f" v{finding['version']}"
-            lines.append(f"   - **Package**: {pkg_ref}")
-
-        lines.append(f"   - **Tool**: {tool}")
-
-        if description:
-            # Truncate long descriptions
-            if len(description) > 100:
-                description = description[:97] + "..."
-            lines.append(f"   - **Issue**: {description}")
-
-        # Add remediation hint
-        if finding.get("fix_recommendation"):
-            lines.append(f"   - **Fix**: {sanitize_for_log(finding['fix_recommendation'])}")
-
-        lines.append("")
 
     # Recommended agents
     lines.extend(
@@ -409,7 +352,7 @@ class CopilotSecurityAgentHandoff:
     def __init__(self, findings_json: Path):
         """Initialize with findings JSON file path"""
         self.findings_json = findings_json
-        self.findings_data = {}
+        self.findings_data: Dict[str, Any] = {}
         self._load_findings()
 
     def _load_findings(self) -> None:
@@ -433,9 +376,18 @@ class CopilotSecurityAgentHandoff:
 
         logger.info(f"Found {len(agent_findings)} findings for agent {agent_id}")
 
-        # Build agent-specific handoff
+        # Build agent-specific handoff, then replace raw findings with aggregate evidence.
         handoff = self._format_for_agent(agent_id, agent_findings)
-        return handoff
+        return AgentHandoff(
+            agent_id=handoff.agent_id,
+            findings_count=handoff.findings_count,
+            findings=[],
+            summary={
+                "total": handoff.findings_count,
+                "by_severity": self._count_by_severity(agent_findings),
+            },
+            recommendations=handoff.recommendations,
+        )
 
     def _format_for_agent(self, agent_id: str, findings: List[Dict[str, Any]]) -> AgentHandoff:
         """Format findings specific to agent type"""
@@ -453,7 +405,7 @@ class CopilotSecurityAgentHandoff:
     def _format_for_codeql(self, findings: List[Dict[str, Any]]) -> AgentHandoff:
         """Format for CodeQL alert resolution agent"""
         # Group by CWE
-        by_cwe = {}
+        by_cwe: Dict[str, List[Dict[str, Any]]] = {}
         for f in findings:
             cwe = f.get("cwe_id", "UNKNOWN")
             if cwe not in by_cwe:
@@ -487,7 +439,7 @@ class CopilotSecurityAgentHandoff:
     def _format_for_dependency(self, findings: List[Dict[str, Any]]) -> AgentHandoff:
         """Format for dependency security review agent"""
         # Group by package
-        by_package = {}
+        by_package: Dict[str, List[Dict[str, Any]]] = {}
         for f in findings:
             pkg = f.get("package", "UNKNOWN")
             if pkg not in by_package:
@@ -521,7 +473,7 @@ class CopilotSecurityAgentHandoff:
     def _format_for_semgrep(self, findings: List[Dict[str, Any]]) -> AgentHandoff:
         """Format for Semgrep SAST scanner"""
         # Group by rule
-        by_rule = {}
+        by_rule: Dict[str, List[Dict[str, Any]]] = {}
         for f in findings:
             rule = f.get("rule_id", "UNKNOWN")
             if rule not in by_rule:
@@ -614,7 +566,7 @@ class CopilotSecurityAgentHandoff:
 
     def _count_by_tool(self, findings: List[Dict[str, Any]]) -> Dict[str, int]:
         """Count findings by tool"""
-        counts = {}
+        counts: Dict[str, int] = {}
         for f in findings:
             tool = f.get("tool", "unknown")
             counts[tool] = counts.get(tool, 0) + 1
