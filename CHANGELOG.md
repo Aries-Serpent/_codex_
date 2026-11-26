@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Fixed - PR #5857 Copilot review remediation (2026-11-25)
+- Parse NUL-delimited Git porcelain filenames and rename endpoints so deleted/sensitive and quoted paths cannot bypass bundle safeguards.
+- Reject conventional SSH private-key basenames and strict-check checkpoint roots before reporting verified recovery.
 - Reject deleted sensitive paths and symlinked/out-of-repository snapshot targets in the Codespace continuity bundle flow.
 - Perform strict checkpoint validation on resume and return controlled closeout/reindex failure states.
 - Forward custom runtime directories to periodic continuity checkpoints and add adversarial regressions for all remediated findings.

@@ -124,6 +124,32 @@ def test_resume_without_checkpoint_is_cold_bootstrap(
     assert resume["reason"] == "no_verified_checkpoint"
 
 
+def test_worktree_entries_decode_quoted_and_renamed_paths(tmp_path: Path) -> None:
+    initialize_repo(tmp_path)
+    spaced = tmp_path / "my config"
+    spaced.mkdir()
+    secret = spaced / ".env"
+    secret.write_text("SECRET=value\n", encoding="utf-8")
+
+    entries = guard.worktree_entries(tmp_path)
+
+    assert "my config/.env" in entries["created"]
+
+
+def test_worktree_entries_include_deleted_rename_path(tmp_path: Path) -> None:
+    initialize_repo(tmp_path)
+    old = tmp_path / "old.env"
+    old.write_text("SECRET=value\n", encoding="utf-8")
+    git(tmp_path, "add", "old.env")
+    git(tmp_path, "commit", "-q", "-m", "add old env")
+    git(tmp_path, "mv", "old.env", "new.txt")
+
+    entries = guard.worktree_entries(tmp_path)
+
+    assert "old.env" in entries["deleted"]
+    assert "new.txt" in entries["created"]
+
+
 def test_sensitive_bundle_paths_are_refused() -> None:
     assert guard.validate_bundle_paths(
         {
@@ -139,6 +165,18 @@ def test_sensitive_bundle_paths_are_refused() -> None:
     ]
 
 
+def test_conventional_ssh_private_keys_are_sensitive() -> None:
+    for name in (
+        "id_rsa",
+        "id_dsa",
+        "id_ecdsa",
+        "id_ed25519",
+        "id_ed25519_sk",
+        "id_ecdsa_sk",
+    ):
+        assert guard.is_sensitive_path(f".ssh/{name}")
+
+
 def test_bundle_rejects_symlinks_and_outside_targets(tmp_path: Path) -> None:
     outside = tmp_path.parent / f"{tmp_path.name}-outside.txt"
     outside.write_text("private target\n", encoding="utf-8")
@@ -151,6 +189,36 @@ def test_bundle_rejects_symlinks_and_outside_targets(tmp_path: Path) -> None:
     )
 
     assert blocked == ["outside_repo:notes.txt"] or blocked == ["symlink:notes.txt"]
+
+
+def test_repo_checkpoint_is_found_when_runtime_root_is_empty(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    initialize_repo(tmp_path)
+    handoff_dir = tmp_path / ".codex"
+    handoff_dir.mkdir()
+    monkeypatch.setattr(guard, "HANDOFF_PATH", handoff_dir / "session_handoff.json")
+    monkeypatch.setattr(guard, "CONTINUATION_PATH", handoff_dir / "NEXT_CONTINUATION_PROMPT.md")
+    monkeypatch.setattr(guard, "CHECKPOINT_ROOT", tmp_path / ".codex" / "checkpoints")
+
+    checkpoint = guard.create_checkpoint(
+        tmp_path,
+        tmp_path / "runtime-empty",
+        session_id="repo-fallback-test",
+        task="Test repository fallback",
+        completed=[],
+        pending=[],
+        active_issue=5857,
+        active_pr=5857,
+        checkpoint_in_repo=True,
+    )
+    assert checkpoint["created"] is True
+
+    runtime_dir = tmp_path / "runtime-missing"
+    resume = guard.resume_report(tmp_path, runtime_dir, checkpoint["checkpoint_id"])
+
+    assert resume["resumed"] is True
+    assert resume["mode"] == "checkpoint"
 
 
 def test_corrupt_checkpoint_is_not_reported_as_verified_resume(

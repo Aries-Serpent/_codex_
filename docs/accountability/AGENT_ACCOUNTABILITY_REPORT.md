@@ -16,7 +16,10 @@
   stores remain an explicit allowed degraded condition.
 - Keepalive now forwards custom runtime directories to periodic guard checkpoints.
 - Added adversarial tests for deleted sensitive paths, symlinks, corrupt checkpoints,
-  reindex failures, closeout failures, and custom-runtime discovery.
+  reindex failures, closeout failures, custom-runtime discovery, quoted porcelain
+  filenames, SSH private-key basenames, and repository-root checkpoint fallback.
+- Parsed NUL-delimited porcelain status for both rename endpoints and rejected conventional
+  SSH private-key basenames such as `id_rsa` and `id_ed25519`.
 - Focused continuity suite passes 23 tests; Black, isort, Ruff, mypy, compileall,
   shell syntax, and `git diff --check` pass.
 - No merge, issue closure, workflow dispatch, secret mutation, or direct 0D/main push

@@ -29,6 +29,14 @@ SENSITIVE_PATH_PARTS = (
     "secret",
 )
 SENSITIVE_SUFFIXES = (".pem", ".key", ".p12", ".pfx")
+PRIVATE_KEY_BASENAMES = {
+    "id_rsa",
+    "id_dsa",
+    "id_ecdsa",
+    "id_ed25519",
+    "id_ed25519_sk",
+    "id_ecdsa_sk",
+}
 
 
 def utc_timestamp() -> str:
@@ -68,20 +76,40 @@ def atomic_text_write(path: Path, text: str) -> None:
 
 
 def worktree_entries(repo: Path) -> dict[str, list[str]]:
-    result = git(repo, "status", "--porcelain=v1", "--untracked-files=all")
+    result = git(
+        repo,
+        "status",
+        "--porcelain=v1",
+        "-z",
+        "--untracked-files=all",
+    )
     modified: list[str] = []
     created: list[str] = []
     deleted: list[str] = []
     if result.returncode != 0:
         return {"modified": modified, "created": created, "deleted": deleted}
 
-    for line in result.stdout.splitlines():
-        if len(line) < 4:
+    records = result.stdout.split("\0")
+    index = 0
+    while index < len(records):
+        record = records[index]
+        index += 1
+        if len(record) < 4:
             continue
-        code = line[:2]
-        path = line[3:].strip()
+
+        code = record[:2]
+        path = record[3:].strip()
         if not path:
             continue
+
+        if "R" in code or "C" in code:
+            old_path = records[index] if index < len(records) else ""
+            index += 1
+            if old_path:
+                deleted.append(old_path.strip())
+            created.append(path)
+            continue
+
         if "D" in code:
             deleted.append(path)
         elif code.startswith("??") or "A" in code:
@@ -193,6 +221,8 @@ def find_local_session_store(repo: Path) -> Path | None:
 def is_sensitive_path(relative_path: str) -> bool:
     lower = relative_path.lower()
     name = Path(lower).name
+    if name in PRIVATE_KEY_BASENAMES:
+        return True
     if name == ".env":
         return True
     if name.startswith(".env."):
@@ -623,9 +653,26 @@ def resume_report(repo: Path, runtime_dir: Path, checkpoint_id: str | None) -> d
             )
             try:
                 validation = manager.validate_checkpoint(target_id, quick_check=False)
-            except Exception:
-                continue
+            except Exception as exc:
+                return {
+                    "resumed": False,
+                    "mode": "cold_bootstrap",
+                    "checkpoint_id": target_id,
+                    "reason": "checkpoint_failed_validation",
+                    "validation": {
+                        "is_valid": False,
+                        "recoverable": False,
+                        "integrity_score": 0.0,
+                        "errors": [f"{type(exc).__name__}:{exc}"],
+                    },
+                    "continuation_prompt": str(CONTINUATION_PATH),
+                }
             if not validation.is_valid:
+                missing_only = bool(validation.errors) and all(
+                    getattr(error, "category", None) == "missing" for error in validation.errors
+                )
+                if missing_only:
+                    continue
                 errors = [getattr(error, "message", str(error)) for error in validation.errors]
                 return {
                     "resumed": False,
