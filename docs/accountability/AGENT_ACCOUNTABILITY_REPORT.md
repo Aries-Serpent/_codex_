@@ -1,3 +1,17 @@
+## Session: PR #5857 exact-SHA fourth review remediation (2026-11-26)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Repaired NUL-delimited Git porcelain parsing for quoted filenames and rename endpoints.
+- Extended bundle sensitivity guards for conventional SSH private-key basenames.
+- Added strict repository-root checkpoint fallback without weakening integrity failures.
+- Added patch-bundle tests for quoted paths, deleted sensitive files, private keys, and symlinks.
+- Focused continuity and bundle tests pass; exact-SHA rerun remains external approval evidence.
+
 ## Session: PR #5857 exact-SHA third review remediation (2026-11-25)
 
 ### Agents Used

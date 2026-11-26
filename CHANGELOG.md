@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5857 exact-SHA fourth review remediation (2026-11-26)
+- Harden NUL-delimited Git porcelain handling and rename-path decoding.
+- Reject conventional SSH private-key basenames and untrusted snapshot targets.
+- Preserve strict checkpoint validation while falling back from runtime to repository checkpoints.
+- Add bundle and continuity regressions for quoted names, private keys, deleted secrets, symlinks, and checkpoint recovery.
+
 ### Fixed - PR #5857 exact-SHA third review remediation (2026-11-25)
 - Parse NUL-delimited Git status records and both rename paths so quoted sensitive names cannot bypass bundle safeguards.
 - Reject conventional SSH private-key basenames and preserve strict checkpoint validation with repository-root fallback.

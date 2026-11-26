@@ -56,30 +56,116 @@ def _ensure_git_repo(repo_root: Path) -> None:
         raise ValueError(f"Not a git repository: {repo_root}")
 
 
+PRIVATE_KEY_BASENAMES = {
+    "id_rsa",
+    "id_dsa",
+    "id_ecdsa",
+    "id_ed25519",
+    "id_ed25519_sk",
+    "id_ecdsa_sk",
+}
+SENSITIVE_SUFFIXES = (".pem", ".key", ".p12", ".pfx")
+SENSITIVE_PARTS = ("credential", "private_key", "private-key", "token", "secret")
+
+
+def _is_sensitive_relative_path(relative_path: str) -> bool:
+    lower = relative_path.lower().replace("\\", "/")
+    name = lower.rsplit("/", 1)[-1]
+    if name in PRIVATE_KEY_BASENAMES:
+        return True
+    if name == ".env":
+        return True
+    if name.startswith(".env."):
+        return "example" not in name
+    if any(part in lower for part in SENSITIVE_PARTS):
+        return True
+    return name.endswith(SENSITIVE_SUFFIXES)
+
+
 def _status_details(repo_root: Path) -> tuple[list[str], list[str], list[str]]:
-    lines = [line for line in git(repo_root, "status", "--porcelain=v1").splitlines() if line.strip()]
+    result = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(repo_root),
+            "status",
+            "--porcelain=v1",
+            "-z",
+            "--untracked-files=all",
+        ],
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(
+            "git status -z failed in "
+            f"{repo_root}: {result.stderr.decode(errors='replace').strip()}"
+        )
+
+    records = result.stdout.decode("utf-8", errors="surrogateescape").split("\0")
+    lines: list[str] = []
     added_or_new: list[str] = []
     deleted: list[str] = []
 
-    for line in lines:
-        status_code = line[:2]
-        relative_path = line[3:]
-        if status_code.startswith("??"):
+    index = 0
+    while index < len(records):
+        record = records[index]
+        index += 1
+        if len(record) < 4:
+            continue
+
+        status_code = record[:2]
+        relative_path = record[3:].strip()
+        if not relative_path:
+            continue
+
+        if "R" in status_code or "C" in status_code:
+            old_path = records[index] if index < len(records) else ""
+            index += 1
+            if old_path:
+                deleted.append(old_path.strip())
+                if _is_sensitive_relative_path(old_path.strip()):
+                    raise ValueError(f"Sensitive deleted/renamed path refused: {old_path.strip()}")
             added_or_new.append(relative_path)
-        elif status_code.startswith("A") or status_code.startswith("AM"):
+            lines.append(f"{status_code} {old_path} -> {relative_path}")
+        elif status_code.startswith("??"):
             added_or_new.append(relative_path)
+            lines.append(f"{status_code} {relative_path}")
+        elif status_code.startswith("A") or "A" in status_code:
+            added_or_new.append(relative_path)
+            lines.append(f"{status_code} {relative_path}")
         elif "D" in status_code:
             deleted.append(relative_path)
+            lines.append(f"{status_code} {relative_path}")
+        else:
+            lines.append(f"{status_code} {relative_path}")
+
+        if _is_sensitive_relative_path(relative_path):
+            raise ValueError(f"Sensitive path refused: {relative_path}")
+
+        source = repo_root / relative_path
+        if source.is_symlink():
+            raise ValueError(f"Symlink path refused: {relative_path}")
 
     return lines, added_or_new, deleted
 
 
 def _snapshot_new_files(repo_root: Path, snapshot_dir: Path, new_files: list[str]) -> list[str]:
     written: list[str] = []
+    repo_resolved = repo_root.resolve()
     for relative_path in new_files:
         source = repo_root / relative_path
+        if _is_sensitive_relative_path(relative_path):
+            raise ValueError(f"Sensitive path refused: {relative_path}")
+        if source.is_symlink():
+            raise ValueError(f"Symlink path refused: {relative_path}")
         if not source.exists():
             continue
+        try:
+            resolved = source.resolve(strict=True)
+            resolved.relative_to(repo_resolved)
+        except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
+            raise ValueError(f"Snapshot target escapes repository: {relative_path}") from exc
 
         destination = snapshot_dir / relative_path
         destination.parent.mkdir(parents=True, exist_ok=True)
