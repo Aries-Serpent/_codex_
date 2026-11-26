@@ -718,20 +718,28 @@ def _authorize_run(
             and isinstance(repository, dict)
             and (repository.get("permissions") or {}).get("admin") is True
         )
-    owner_authored_pr = repository_admin and approver == author
+    admin_authored_pr = repository_admin and approver == author
     approval_actors = {approver}
-    # Automatic events request inspection; they are not the platform approver.
-    if identity["type"] != "Bot" and os.environ.get("GITHUB_EVENT_NAME") not in {
+    event_name = os.environ.get("GITHUB_EVENT_NAME", "")
+    trusted_automation_actors = {
+        actor.casefold() for actor in COPILOT_BOT_LOGINS | AI_REVIEWER_BOT_LOGINS
+    }
+    automatic_event_is_trusted = event_name in {
         "pull_request_target",
-        "pull_request_review",
         "workflow_run",
         "issue_comment",
         "schedule",
-    }:
+    } or (
+        event_name == "pull_request_review"
+        and bool(run_actors)
+        and run_actors.issubset(trusted_automation_actors)
+    )
+    # Automatic events request inspection; they are not the platform approver.
+    if identity["type"] != "Bot" and not automatic_event_is_trusted:
         approval_actors.update({requester, triggering_requester})
     if approval_actors & run_actors:
         return "self-approval"
-    if approver == author and not owner_authored_pr:
+    if approver == author and not admin_authored_pr:
         return "self-approval"
     label_disposition = _inspect_wec_auto_approve_label(token, repo, pr_number)
     if label_disposition == "label-inspection-error":
@@ -760,7 +768,7 @@ def _authorize_run(
         reviewer not in run_actors | {author}
         and (
             (
-                not owner_authored_pr
+                not admin_authored_pr
                 and (
                     (
                         (review.get("user") or {}).get("type") == "User"
@@ -774,7 +782,7 @@ def _authorize_run(
                 )
             )
             or (
-                owner_authored_pr
+                admin_authored_pr
                 and (review.get("user") or {}).get("type") == "Bot"
                 and reviewer in AI_REVIEWER_BOT_LOGINS
             )

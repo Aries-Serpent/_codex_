@@ -148,6 +148,14 @@ def test_author_rerunning_approver_is_denied(api, monkeypatch):
     assert approval._authorize_run("", "o/r", "1", SHA, run) == "self-approval"
 
 
+def test_author_triggered_pull_request_review_is_denied(api, monkeypatch):
+    _, run, _, _ = api
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "pull_request_review")
+    monkeypatch.setenv("GITHUB_ACTOR", "author")
+    monkeypatch.setenv("GITHUB_TRIGGERING_ACTOR", "author")
+    assert approval._authorize_run("", "o/r", "1", SHA, run) == "self-approval"
+
+
 def test_org_admin_author_can_approve_after_distinct_current_ai_review(api, monkeypatch):
     pr, run, identity, _ = api
     pr["user"]["login"] = "mbaetiong"
