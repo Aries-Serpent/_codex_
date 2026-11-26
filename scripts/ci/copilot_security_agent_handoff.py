@@ -183,6 +183,25 @@ def parse_scan_summary_command(comment_body: str) -> Optional[ScanSummaryQuery]:
     )
 
 
+def _load_aggregate_scan_findings(findings_file: Path) -> List[Dict[str, Any]]:
+    """Load severity-only placeholders without materializing raw findings."""
+    if not findings_file.exists():
+        return []
+    with findings_file.open(encoding="utf-8") as stream:
+        report = json.load(stream)
+    summary = report.get("summary") if isinstance(report, dict) else None
+    severity_summary = summary.get("severity_summary") if isinstance(summary, dict) else None
+    if not isinstance(severity_summary, dict):
+        severity_summary = report.get("severity_summary", {}) if isinstance(report, dict) else {}
+
+    aggregate_findings: List[Dict[str, Any]] = []
+    for severity in SEVERITY_LEVELS:
+        count = severity_summary.get(severity, 0)
+        if type(count) is int and 0 < count <= 1_000_000:
+            aggregate_findings.extend({"severity": severity} for _ in range(count))
+    return aggregate_findings
+
+
 def generate_scan_summary_response(
     findings: List[Dict[str, Any]],
     query_info: Optional[ScanSummaryQuery] = None,
@@ -783,14 +802,15 @@ def main():
                     raw_filters=query_data.get("raw_filters", ""),
                 )
 
-            # Load findings (would need to query via security_findings_api.py)
-            findings = []
+            # Render only aggregate severity counts; raw scanner findings never
+            # cross into the persisted or printed response path.
             findings_file = Path(args.findings_json)
-            if findings_file.exists():
-                data = json.loads(findings_file.read_text())
-                findings = data.get("findings", [])
+            findings = _load_aggregate_scan_findings(findings_file)
+            if query_info and query_info.query_type not in {None, "severity"}:
+                logger.warning("Detail filter omitted from aggregate-only scan summary")
+                query_info = None
 
-            # Filter findings based on query
+            # Filter aggregate findings based on query.
             if query_info and query_info.query_type and query_info.value:
                 filtered_findings = []
                 for finding in findings:

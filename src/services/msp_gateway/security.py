@@ -27,13 +27,18 @@ def _api_key_pepper_bytes() -> bytes:
     return settings.api_key_pepper.encode("utf-8")
 
 
+def _legacy_hash_api_key_bytes(candidate_bytes: bytes) -> str:
+    """Hash pre-encoded legacy API-key bytes for immediate PBKDF2 migration."""
+    if len(candidate_bytes) > 512:
+        raise ValueError("Legacy API key material exceeds the maximum allowed length")
+    digest = hashes.Hash(hashes.SHA256())
+    digest.update(candidate_bytes)
+    return digest.finalize().hex()
+
+
 def legacy_hash_api_key(candidate: str) -> str:
     """Reproduce the legacy SHA-256 lookup only for immediate PBKDF2 migration."""
-    digest = hashes.Hash(
-        hashes.SHA256()  # codeql[py/weak-sensitive-data-hashing] -- legacy migration lookup only
-    )
-    digest.update(candidate.encode("utf-8"))
-    return digest.finalize().hex()
+    return _legacy_hash_api_key_bytes(candidate.encode("utf-8"))
 
 
 def hash_api_key(api_key: str) -> str:

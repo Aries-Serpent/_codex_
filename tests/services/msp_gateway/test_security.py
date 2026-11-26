@@ -214,6 +214,12 @@ class TestAuthManager:
         auth.register_api_key("key_shared", "tenant_new")
         assert auth.verify_api_key("key_shared") == "tenant_new", "Condition must be true"
 
+    def test_legacy_hash_rejects_oversized_material(self):
+        from services.msp_gateway.security import legacy_hash_api_key
+
+        with pytest.raises(ValueError, match="maximum allowed length"):
+            legacy_hash_api_key("x" * 513)
+
     def test_legacy_hash_is_not_accepted_when_it_does_not_match(self):
         auth = self._make_auth()
         auth.register_api_key_hash("a" * 64, "tenant_legacy")
