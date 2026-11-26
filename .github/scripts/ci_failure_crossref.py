@@ -79,7 +79,10 @@ for job_id, failure in ci_failures.items():
             print(f"  - Status: {'Active' if not wf['guarded'] else 'Guarded'}")
             print(f"  - Jobs: {len(wf['jobs'])}")
             print(f"  - Runners: {', '.join(wf['runners'][:2])}")
-            print(f"  - Secret references: {int(wf.get('secret_count', 0))}")
+            if "secret_count" in wf:
+                print(f"  - Secret references: {int(wf['secret_count'])}")
+            else:
+                print("  - Secret references: omitted from report")
             print(
                 f"  - Dependencies: Docker={wf['has_docker']}, uv={wf['has_uv']}, pytest={wf['has_pytest']}"
             )

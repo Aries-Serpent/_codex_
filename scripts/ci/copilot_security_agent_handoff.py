@@ -376,9 +376,18 @@ class CopilotSecurityAgentHandoff:
 
         logger.info(f"Found {len(agent_findings)} findings for agent {agent_id}")
 
-        # Build agent-specific handoff
+        # Build agent-specific handoff, then replace raw findings with aggregate evidence.
         handoff = self._format_for_agent(agent_id, agent_findings)
-        return handoff
+        return AgentHandoff(
+            agent_id=handoff.agent_id,
+            findings_count=handoff.findings_count,
+            findings=[],
+            summary={
+                "total": handoff.findings_count,
+                "by_severity": self._count_by_severity(agent_findings),
+            },
+            recommendations=handoff.recommendations,
+        )
 
     def _format_for_agent(self, agent_id: str, findings: List[Dict[str, Any]]) -> AgentHandoff:
         """Format findings specific to agent type"""

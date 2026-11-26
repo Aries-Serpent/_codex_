@@ -9,6 +9,7 @@
 - Removed sensitive finding fields and workflow secret identifiers from persisted/printed security reports while retaining aggregate severity and action counts.
 - Kept legacy SHA-256 API-key validation inside an explicit one-time migration boundary and proved current plus legacy revocation behavior.
 - Verified workflow report consumers, scan summaries, tenant migration, pickle export, and sensitive-data regressions with focused tests, Black, Ruff, compile, and changed-module mypy.
+- Added deep job-condition sanitization and aggregate-only agent handoff persistence so legacy structured data cannot reintroduce secret-derived identifiers.
 
 ## Session: PR #5868 promotion review remediation (2026-11-26)
 

@@ -141,7 +141,6 @@ class WorkflowAnalyzer:
                         "runner": job_config.get("runs-on", "unknown"),
                         "steps": len(job_config.get("steps", [])),
                         "needs": job_config.get("needs", []),
-                        "if": job_config.get("if", None),
                         "timeout": job_config.get("timeout-minutes", None),
                     }
         return jobs_info
@@ -257,7 +256,6 @@ class WorkflowAnalyzer:
             "name",
             "guarded",
             "triggers",
-            "jobs",
             "env_vars",
             "runners",
             "actions_used",
@@ -269,10 +267,23 @@ class WorkflowAnalyzer:
             "has_nox",
             "has_pytest",
         )
-        sanitized_workflows = {
-            name: {field: workflow.get(field) for field in safe_fields}
-            for name, workflow in self.workflows.items()
-        }
+        sanitized_workflows = {}
+        for name, workflow in self.workflows.items():
+            safe_workflow = {field: workflow.get(field) for field in safe_fields}
+            jobs = workflow.get("jobs", {})
+            if isinstance(jobs, dict):
+                safe_jobs = {}
+                for job_name, job in jobs.items():
+                    if isinstance(job, dict):
+                        steps = job.get("steps", 0)
+                        step_count = len(steps) if isinstance(steps, list) else int(steps or 0)
+                    else:
+                        step_count = 0
+                    safe_jobs[str(job_name)] = {"step_count": step_count}
+            else:
+                safe_jobs = {str(job_name): {"step_count": 0} for job_name in jobs}
+            safe_workflow["jobs"] = safe_jobs
+            sanitized_workflows[name] = safe_workflow
         report = {
             "summary": self.generate_summary(),
             "workflows": sanitized_workflows,

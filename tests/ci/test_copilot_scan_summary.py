@@ -5,9 +5,12 @@ Unit tests for @copilot scan-summary command parsing and response generation.
 Tests the Phase 7 implementation of conversational commands for security findings.
 """
 
+import json
+
 import pytest
 
 from scripts.ci.copilot_security_agent_handoff import (
+    CopilotSecurityAgentHandoff,
     SEVERITY_EMOJI,
     ScanSummaryQuery,
     generate_scan_summary_response,
@@ -388,6 +391,43 @@ class TestGenerateScanSummaryResponse:
 
         assert "src/module.py" not in response
         assert "line 42" not in response
+
+
+class TestAgentHandoffRedaction:
+    def test_saved_handoff_omits_raw_finding_fields(self, tmp_path):
+        source = tmp_path / "findings.json"
+        source.write_text(
+            json.dumps(
+                {
+                    "summary": {"total_findings": 1},
+                    "finding_index": [
+                        {
+                            "agent_assignee": "codeql-alert-resolution-agent",
+                            "severity": "HIGH",
+                            "title": "SECRET_SENTINEL_TITLE",
+                            "file": "SECRET_SENTINEL_FILE.py",
+                            "tool": "SECRET_SENTINEL_TOOL",
+                            "description": "SECRET_SENTINEL_DESCRIPTION",
+                        }
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        handoff = CopilotSecurityAgentHandoff(source)
+        json_output = tmp_path / "handoff.json"
+        markdown_output = tmp_path / "handoff.md"
+
+        handoff.save_handoff("codeql-alert-resolution-agent", str(json_output), format="json")
+        handoff.save_handoff(
+            "codeql-alert-resolution-agent", str(markdown_output), format="markdown"
+        )
+
+        json_text = json_output.read_text(encoding="utf-8")
+        markdown_text = markdown_output.read_text(encoding="utf-8")
+        assert "SECRET_SENTINEL" not in json_text
+        assert "SECRET_SENTINEL" not in markdown_text
+        assert json.loads(json_text)["findings"] == []
 
 
 class TestIntegration:
