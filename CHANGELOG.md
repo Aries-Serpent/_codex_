@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5857 exact-SHA third review remediation (2026-11-25)
+- Parse NUL-delimited Git status records and both rename paths so quoted sensitive names cannot bypass bundle safeguards.
+- Reject conventional SSH private-key basenames and preserve strict checkpoint validation with repository-root fallback.
+- Preserve live exact-SHA rerun and approval gates without claiming merge readiness.
+
 ### Fixed - PR #5857 Copilot review remediation (2026-11-25)
 - Parse NUL-delimited Git porcelain filenames and rename endpoints so deleted/sensitive and quoted paths cannot bypass bundle safeguards.
 - Reject conventional SSH private-key basenames and strict-check checkpoint roots before reporting verified recovery.

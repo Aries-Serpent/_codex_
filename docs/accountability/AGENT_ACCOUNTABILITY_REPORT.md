@@ -1,3 +1,21 @@
+## Session: PR #5857 exact-SHA third review remediation (2026-11-25)
+
+### Agents Used
+
+- Direct execution; no custom agents or subagents were invoked.
+
+### Execution and evidence
+
+- Resolved the exact-SHA Copilot findings for quoted porcelain filenames, conventional
+  SSH private-key basenames, and runtime-first checkpoint discovery.
+- Worktree status now parses NUL-delimited porcelain records and includes both rename paths.
+- `id_rsa`, `id_dsa`, `id_ecdsa`, `id_ed25519`, `id_ed25519_sk`, and `id_ecdsa_sk` are blocked.
+- Resume continues to repository checkpoints when the runtime checkpoint root is empty,
+  while corrupt checkpoints fail closed with `checkpoint_failed_validation`.
+- Focused continuity tests pass; exact-SHA rerun and review approval remain pending.
+- No merge, issue/PR closure, workflow dispatch, secret mutation, or direct 0D/main push
+  was performed.
+
 ## Session: PR #5857 Copilot review remediation (2026-11-25)
 
 ### Agents Used
