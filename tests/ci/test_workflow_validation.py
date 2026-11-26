@@ -388,7 +388,7 @@ def test_workflow_analyzer_reports_omit_secret_identifiers() -> None:
     assert "SUPER_SECRET_SENTINEL" not in json_report
     assert "SUPER_SECRET_SENTINEL" not in markdown_report
     workflow = json.loads(json_report)["workflows"]["sample.yml"]
-    assert workflow["secret_count"] == 1
+    assert "secret_count" not in workflow
     assert "secrets" not in workflow
 
 

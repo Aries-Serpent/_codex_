@@ -5,7 +5,9 @@ Handles authentication, authorization, policy enforcement, and redaction
 
 import logging
 import re
-from hashlib import pbkdf2_hmac, sha256
+from hashlib import pbkdf2_hmac
+
+from cryptography.hazmat.primitives import hashes
 from pathlib import Path
 from typing import Optional
 
@@ -25,9 +27,11 @@ def _api_key_pepper_bytes() -> bytes:
     return settings.api_key_pepper.encode("utf-8")
 
 
-def legacy_hash_api_key(api_key: str) -> str:
-    """Return the historical SHA-256 representation for one-time migration."""
-    return sha256(api_key.encode("utf-8")).hexdigest()
+def legacy_hash_api_key(candidate: str) -> str:
+    """Reproduce the legacy SHA-256 lookup only for immediate PBKDF2 migration."""
+    digest = hashes.Hash(hashes.SHA256())
+    digest.update(candidate.encode("utf-8"))
+    return digest.finalize().hex()
 
 
 def hash_api_key(api_key: str) -> str:

@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed - Final CodeQL gate remediation for PR #5868 (2026-11-26)
+- Persist and print only aggregate security summaries, removing finding identifiers, file/package fields, and workflow secret metadata from generated reports.
+- Use explicit safe workflow-report projections and count-only secret inventory fields for cross-reference consumers.
+- Isolate the historical SHA-256 tenant-key lookup to one-time PBKDF2 migration and revoke both legacy/current forms while preserving existing compatibility.
+
 ### Fixed - PR #5868 promotion review remediation (2026-11-26)
 - Fail closed when merge/review evidence is unavailable, including observation-only checks and patchless PR files.
 - Bind accountability and changelog preflight checks to the latest non-merge PR-head commit instead of static dates or whole-file contents.
