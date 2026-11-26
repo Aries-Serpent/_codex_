@@ -124,6 +124,18 @@ def test_default_required_checks_still_fail_real_check_failures() -> None:
     assert result["failures"] == ["workflow execution gate"]
 
 
+def test_default_required_checks_fail_when_only_observation_checks_remain() -> None:
+    checks = [
+        {"name": "ml-slow-aggregate", "status": "completed", "conclusion": "failure"},
+        {"name": "copilot", "status": "completed", "conclusion": "cancelled"},
+    ]
+
+    result = gate.check_required_checks(checks)
+
+    assert result["pass"] is False
+    assert result["reason"] == "required-check evidence unavailable"
+
+
 def test_branch_freshness_rejects_behind_or_unknown() -> None:
     pr = _pr()
 

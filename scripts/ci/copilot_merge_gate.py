@@ -319,25 +319,13 @@ def check_required_checks(
     if not names:
         names = [name for name in by_name if not _is_observation_only_check(name)]
     if not names:
-        if not checks:
-            return {
-                "pass": False,
-                "passed": 0,
-                "pending": 0,
-                "failed": 0,
-                "missing": [],
-                "reason": "required-check evidence unavailable",
-            }
-        names = []
         return {
-            "pass": True,
+            "pass": False,
             "passed": 0,
             "pending": 0,
             "failed": 0,
             "missing": [],
-            "failures": [],
-            "required": [],
-            "reason": "no blocking required checks remain",
+            "reason": "required-check evidence unavailable",
         }
 
     passed = 0

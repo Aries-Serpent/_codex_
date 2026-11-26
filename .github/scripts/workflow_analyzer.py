@@ -4,7 +4,6 @@ Comprehensive GitHub Actions Workflow Analyzer
 Analyzes all workflows in .github/workflows/ and cross-references with CI failure reports.
 """
 
-import hashlib
 import json
 import re
 from collections import defaultdict
@@ -75,10 +74,7 @@ class WorkflowAnalyzer:
                 "guarded": is_guarded,
                 "triggers": self._extract_triggers(workflow_data),
                 "jobs": self._extract_jobs(workflow_data),
-                "secrets": [
-                    hashlib.sha256(s.encode()).hexdigest()[:16]
-                    for s in self._extract_secrets(content)
-                ],
+                "secret_count": len(self._extract_secrets(content)),
                 "env_vars": self._extract_env_vars(workflow_data),
                 "runners": self._extract_runners(workflow_data),
                 "actions_used": self._extract_actions(workflow_data),
@@ -239,12 +235,10 @@ class WorkflowAnalyzer:
 
         all_runners = set()
         all_actions = set()
-        all_secrets = set()
 
         for workflow in self.workflows.values():
             all_runners.update(workflow["runners"])
             all_actions.update(workflow["actions_used"])
-            all_secrets.update(workflow["secrets"])
 
         return {
             "total_workflows": active_count + disabled_count,
@@ -254,15 +248,22 @@ class WorkflowAnalyzer:
             "parse_errors": len(self.errors),
             "unique_runners": sorted(list(all_runners)),
             "unique_actions": sorted(list(all_actions)),
-            "unique_secrets": sorted(list(all_secrets)),
-            "secrets_count": len(all_secrets),
+            "secret_inventory": "omitted",
         }
 
     def generate_json_report(self) -> str:
-        """Generate JSON report."""
+        """Generate JSON report without serializing secret identifiers or hashes."""
+        sanitized_workflows = {}
+        for name, workflow in self.workflows.items():
+            sanitized = dict(workflow)
+            legacy_secrets = sanitized.pop("secrets", [])
+            sanitized["secret_count"] = max(
+                int(sanitized.get("secret_count", 0)), len(legacy_secrets)
+            )
+            sanitized_workflows[name] = sanitized
         report = {
             "summary": self.generate_summary(),
-            "workflows": self.workflows,
+            "workflows": sanitized_workflows,
             "disabled": self.disabled_workflows,
             "errors": self.errors,
         }
@@ -291,7 +292,7 @@ class WorkflowAnalyzer:
             f"- **Archived Workflows**: {summary['disabled_workflows']} (.disabled, .alt, .tombstone)"
         )
         md.append(f"- **Parse Errors**: {summary['parse_errors']}")
-        md.append(f"- **Unique Secrets**: {summary['secrets_count']}")
+        md.append("- **Secret Identifiers**: omitted from generated reports")
         md.append("")
 
         # Runner Types
@@ -334,7 +335,7 @@ class WorkflowAnalyzer:
             if len(info["triggers"]) > 2:
                 triggers += "..."
             runner = info["runners"][0] if info["runners"] else "unknown"
-            secrets_count = len(info["secrets"])
+            secrets_count = max(int(info.get("secret_count", 0)), len(info.get("secrets", [])))
 
             deps = []
             if info["has_docker"]:
@@ -374,20 +375,7 @@ class WorkflowAnalyzer:
         # Secrets Usage
         md.append("## 🔐 Secrets Usage Analysis")
         md.append("")
-        secret_usage = defaultdict(list)
-        for workflow_name, info in self.workflows.items():
-            for secret in info["secrets"]:
-                secret_usage[secret].append(workflow_name)
-
-        md.append("| Secret Name | Used In | Count |")
-        md.append("|-------------|---------|-------|")
-        for secret in sorted(secret_usage.keys()):
-            workflows = secret_usage[secret]
-            count = len(workflows)
-            workflows_str = ", ".join(workflows[:3])
-            if count > 3:
-                workflows_str += f", ... (+{count-3} more)"
-            md.append(f"| `{secret}` | {workflows_str} | {count} |")
+        md.append("Secret identifiers are intentionally omitted from generated reports.")
         md.append("")
 
         # Resource Requirements by Category

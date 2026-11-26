@@ -69,9 +69,11 @@ def test_load_review_context_paginates_all_changed_files(monkeypatch: Any) -> No
         if path == "/repos/o/r/pulls/1":
             return 200, pull_request(changed_files=101)
         if path.endswith("page=1"):
-            return 200, [{"filename": f"file-{index}.py"} for index in range(100)]
+            return 200, [
+                {"filename": f"file-{index}.py", "patch": f"+file-{index}"} for index in range(100)
+            ]
         if path.endswith("page=2"):
-            return 200, [{"filename": "file-100.py"}]
+            return 200, [{"filename": "file-100.py", "patch": "+file-100"}]
         raise AssertionError(f"unexpected path: {path}")
 
     monkeypatch.setattr(run_ai_review, "github_request", request)
@@ -145,6 +147,44 @@ def test_load_review_context_uses_file_patches_without_diff_media(monkeypatch: A
     assert "+++ b/src/example.py" in diff
     assert "-old" in diff
     assert "+new" in diff
+
+
+def test_load_review_context_falls_back_to_full_diff_for_patchless_file(
+    monkeypatch: Any,
+) -> None:
+    full_diff = "diff --git a/assets/model.bin b/assets/model.bin\nBinary files differ\n"
+
+    def request(_method: str, path: str, _token: str, **kwargs: Any) -> tuple[int, Any]:
+        if path == "/repos/o/r/pulls/1" and "diff" not in kwargs.get("accept", ""):
+            return 200, pull_request(changed_files=1)
+        if path.endswith("page=1"):
+            return 200, [{"filename": "assets/model.bin", "patch": None}]
+        if path == "/repos/o/r/pulls/1" and "diff" in kwargs.get("accept", ""):
+            return 200, full_diff
+        raise AssertionError(f"unexpected path: {path}; {kwargs}")
+
+    monkeypatch.setattr(run_ai_review, "github_request", request)
+
+    _pr, names, diff = run_ai_review.load_review_context("o/r", 1, "read-token")
+
+    assert names == ["assets/model.bin"]
+    assert diff == full_diff
+
+
+def test_load_review_context_rejects_incomplete_full_diff(monkeypatch: Any) -> None:
+    def request(_method: str, path: str, _token: str, **kwargs: Any) -> tuple[int, Any]:
+        if path == "/repos/o/r/pulls/1" and "diff" not in kwargs.get("accept", ""):
+            return 200, pull_request(changed_files=1)
+        if path.endswith("page=1"):
+            return 200, [{"filename": "assets/model.bin", "patch": None}]
+        if path == "/repos/o/r/pulls/1" and "diff" in kwargs.get("accept", ""):
+            return 200, "diff --git a/other.txt b/other.txt\n"
+        raise AssertionError(f"unexpected path: {path}; {kwargs}")
+
+    monkeypatch.setattr(run_ai_review, "github_request", request)
+
+    with pytest.raises(RuntimeError, match="full diff is incomplete"):
+        run_ai_review.load_review_context("o/r", 1, "read-token")
 
 
 def test_python_quality_analysis_is_substantive() -> None:

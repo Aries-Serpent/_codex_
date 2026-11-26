@@ -532,24 +532,32 @@ jobs:
       id: accountability_check
       env:
         GITHUB_ACTOR: ${{ github.actor }}
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       run: |
+        set -euo pipefail
         REPORT="docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
-        if [ -s "$REPORT" ] && grep -q "2026-11-25" "$REPORT"; then
-          echo "PASS: $REPORT contains current 2026-11-25 evidence"
+        HEAD_SHA="${PR_HEAD_SHA:-${GITHUB_SHA}}"
+        CURRENT_COMMIT="$(git rev-list --first-parent --no-merges -n 1 "$HEAD_SHA")"
+        if [ -n "$CURRENT_COMMIT" ] && git diff-tree --no-commit-id --name-only -r "$CURRENT_COMMIT" | grep -Fxq "$REPORT"; then
+          echo "PASS: $REPORT changed in latest non-merge PR commit $CURRENT_COMMIT"
         else
-          echo "FAIL: $REPORT missing current session evidence"
+          echo "FAIL: $REPORT was not updated in the latest non-merge PR commit"
           exit 1
         fi
     - name: Verify CHANGELOG.md updated in last commit
       id: changelog_check
       env:
         GITHUB_ACTOR: ${{ github.actor }}
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       run: |
+        set -euo pipefail
         CHANGELOG="CHANGELOG.md"
-        if [ -s "$CHANGELOG" ] && grep -q "Unreleased" "$CHANGELOG"; then
-          echo "PASS: $CHANGELOG contains an Unreleased section"
+        HEAD_SHA="${PR_HEAD_SHA:-${GITHUB_SHA}}"
+        CURRENT_COMMIT="$(git rev-list --first-parent --no-merges -n 1 "$HEAD_SHA")"
+        if [ -n "$CURRENT_COMMIT" ] && git diff-tree --no-commit-id --name-only -r "$CURRENT_COMMIT" | grep -Fxq "$CHANGELOG"; then
+          echo "PASS: $CHANGELOG changed in latest non-merge PR commit $CURRENT_COMMIT"
         else
-          echo "FAIL: $CHANGELOG missing Unreleased section"
+          echo "FAIL: $CHANGELOG was not updated in the latest non-merge PR commit"
           exit 1
         fi
     - name: 'Auto-fix: self-heal accountability report and CHANGELOG (REQ-4/5)'

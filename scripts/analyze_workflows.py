@@ -59,9 +59,7 @@ class WorkflowAnalyzer:
         print("🔍 Scanning workflows directory...")
 
         if not self.workflows_dir.exists():
-            print(
-                f"❌ Workflows directory not found: {self.workflows_dir}"
-            )
+            print(f"❌ Workflows directory not found: {self.workflows_dir}")
             return
 
         # Find all YAML files
@@ -77,9 +75,7 @@ class WorkflowAnalyzer:
                     self.workflows.append(workflow_info)
             except Exception as e:
                 error_type = type(e).__name__
-                print(
-                    f"⚠️  Error analyzing {workflow_file.name}: {error_type}"
-                )
+                print(f"⚠️  Error analyzing {workflow_file.name}: {error_type}")
 
     def analyze_workflow(self, workflow_file: Path) -> Optional[WorkflowInfo]:
         """Analyze a single workflow file."""
@@ -193,9 +189,7 @@ class WorkflowAnalyzer:
 
         except Exception as e:
             error_type = type(e).__name__
-            print(
-                f"❌ Error processing {workflow_file.name}: {error_type}"
-            )
+            print(f"❌ Error processing {workflow_file.name}: {error_type}")
             return None
 
     def load_failure_patterns(self) -> None:
@@ -241,9 +235,7 @@ class WorkflowAnalyzer:
                     "365 bare pass statements",
                 ]
 
-        print(
-            f"✅ Loaded {len(self.failure_patterns)} failure pattern categories"
-        )
+        print(f"✅ Loaded {len(self.failure_patterns)} failure pattern categories")
 
     def cross_reference_failures(self) -> None:
         """Cross-reference workflows with known failure patterns."""
@@ -326,9 +318,7 @@ class WorkflowAnalyzer:
         print("\nResources:")
         print(f"  🖥️  Self-hosted runners: {summary['self_hosted']}")
         print(f"  🐳 Docker required:     {summary['docker_required']}")
-        # Security: extract count as plain int to break CodeQL taint on 'secrets_used' key
-        _secrets_count: int = int(summary["secrets_used"])
-        print(f"  🔑 Unique secrets:      {_secrets_count}")
+        print("  🔑 Secret inventory:     REDACTED")
         print(f"  🔧 Unique actions:      {summary['unique_actions']}")
         print("\nFailure Pattern Categories:")
         for category, patterns in self.failure_patterns.items():

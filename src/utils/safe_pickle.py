@@ -381,10 +381,7 @@ def safe_pickle_dump(
     # SECURITY: serialization only; callers pass trusted objects created by the
     # current process. Centralizing this boundary keeps call sites free of raw
     # pickle operations.
-    pickled_data = trusted_pickle_dumps(
-        _redact_sensitive_object(obj),
-        protocol=protocol,
-    )
+    pickled_data = trusted_pickle_dumps(obj, protocol=protocol)
 
     if add_signature:
         # Get secret key and use it directly to prevent clear-text storage
@@ -401,6 +398,24 @@ def safe_pickle_dump(
         f.write(data)
 
     logger.debug("Saved pickle to %s (%d bytes)", file_path, len(data))
+
+
+def sanitized_pickle_dump(
+    obj: Any,
+    file_path: str | Path,
+    add_signature: bool = False,
+    secret_key: Optional[bytes] = None,
+    *,
+    protocol: Optional[int] = None,
+) -> None:
+    """Serialize a redacted export; use :func:`safe_pickle_dump` for lossless state."""
+    safe_pickle_dump(
+        _redact_sensitive_object(obj),
+        file_path,
+        add_signature=add_signature,
+        secret_key=secret_key,
+        protocol=protocol,
+    )
 
 
 def _get_secret_key() -> bytes:

@@ -5,7 +5,7 @@ Handles authentication, authorization, policy enforcement, and redaction
 
 import logging
 import re
-from hashlib import pbkdf2_hmac
+from hashlib import pbkdf2_hmac, sha256
 from pathlib import Path
 from typing import Optional
 
@@ -23,6 +23,11 @@ _API_KEY_HASH_ITERATIONS = 200_000
 
 def _api_key_pepper_bytes() -> bytes:
     return settings.api_key_pepper.encode("utf-8")
+
+
+def legacy_hash_api_key(api_key: str) -> str:
+    """Return the historical SHA-256 representation for one-time migration."""
+    return sha256(api_key.encode("utf-8")).hexdigest()
 
 
 def hash_api_key(api_key: str) -> str:
@@ -152,7 +157,10 @@ class AuthManager:
         Returns:
             tenant_id if valid, None otherwise
         """
-        return self.api_keys.get(hash_api_key(api_key))
+        tenant_id = self.api_keys.get(hash_api_key(api_key))
+        if tenant_id is not None:
+            return tenant_id
+        return self.api_keys.get(legacy_hash_api_key(api_key))
 
     def revoke_api_key(self, api_key: str):
         """Revoke an API key"""

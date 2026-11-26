@@ -76,9 +76,7 @@ for job_id, failure in ci_failures.items():
         if wf_name in workflow_data["workflows"]:
             wf = workflow_data["workflows"][wf_name]
             print(f"- **{wf_name}**")
-            print(
-                f"  - Status: {'Active' if not wf['guarded'] else 'Guarded'}"
-            )
+            print(f"  - Status: {'Active' if not wf['guarded'] else 'Guarded'}")
             print(f"  - Jobs: {len(wf['jobs'])}")
             print(f"  - Runners: {', '.join(wf['runners'][:2])}")
             print(f"  - Secrets: {len(wf['secrets'])}")
@@ -139,13 +137,9 @@ for wf_name in priority_workflows:
         else:
             action = "Monitor"
 
-        print(
-            f"| {wf_name} | {status} | 🔴 Critical | {issues_str} | {action} |"
-        )
+        print(f"| {wf_name} | {status} | 🔴 Critical | {issues_str} | {action} |")
     elif wf_name in workflow_data["errors"]:
-        print(
-            f"| {wf_name} | ⚠️ Error | 🔴 Critical | Parse Error | 🔥 URGENT FIX |"
-        )
+        print(f"| {wf_name} | ⚠️ Error | 🔴 Critical | Parse Error | 🔥 URGENT FIX |")
 
 print()
 
@@ -177,10 +171,7 @@ print("**Runners**:")
 for runner, count in sorted(runner_usage.items(), key=lambda x: x[1], reverse=True)[:5]:
     print(f"- `{runner}`: {count} critical workflows")
 
-print("\n**Most Common Secrets**:")
-for secret, count in sorted(secrets_usage.items(), key=lambda x: x[1], reverse=True)[:5]:
-    print("- `[REDACTED_SECRET_NAME]`: %d critical workflows" % count)
-
+print("\n**Most Common Secrets**: redacted from generated output")
 print()
 print("\n## Recommended Action Plan\n")
 print("1. **IMMEDIATE** (Fix within hours):")
