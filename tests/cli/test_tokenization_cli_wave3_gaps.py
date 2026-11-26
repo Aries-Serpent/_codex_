@@ -77,7 +77,7 @@ class TestTokenizationCliInitialization:
                 from tokenization.cli import init_command
 
                 result = runner.invoke(init_command, ["--config", config_file])
-                assert result.exit_code is not None, "exit_code must be initialized"
+                assert result.exit_code != 0, "invalid config must be rejected"
             except ImportError:
                 pytest.skip("Tokenization CLI not available")
 
@@ -91,7 +91,8 @@ class TestTokenizationCliInitialization:
             result = runner.invoke(
                 init_command, ["--pretrained", "gpt2", "--cache-dir", "/tmp/tokenizers"]
             )
-            assert result.exit_code is not None, "exit_code must be initialized"
+            assert isinstance(result.exit_code, int)
+            assert isinstance(result.output, str)
         except ImportError:
             pytest.skip("Tokenization CLI not available")
 
@@ -174,7 +175,8 @@ class TestTokenizationCliEncoding:
             from tokenization.cli import encode_command
 
             result = runner.invoke(encode_command, ["--text", ""])
-            assert result.exit_code is not None, "exit_code must be initialized"
+            assert isinstance(result.exit_code, int)
+            assert isinstance(result.output, str)
         except ImportError:
             pytest.skip("Tokenization CLI not available")
 
@@ -254,7 +256,8 @@ class TestTokenizationCliVocabularyOperations:
             from tokenization.cli import vocab_command
 
             result = runner.invoke(vocab_command, ["--info", "size"])
-            assert result.exit_code is not None, "exit_code must be initialized"
+            assert isinstance(result.exit_code, int)
+            assert isinstance(result.output, str)
         except ImportError:
             pytest.skip("Tokenization CLI not available")
 
@@ -304,7 +307,8 @@ class TestTokenizationCliVocabularyOperations:
             from tokenization.cli import vocab_command
 
             result = runner.invoke(vocab_command, ["--list-special"])
-            assert result.exit_code is not None, "exit_code must be initialized"
+            assert isinstance(result.exit_code, int)
+            assert isinstance(result.output, str)
         except ImportError:
             pytest.skip("Tokenization CLI not available")
 
@@ -345,7 +349,8 @@ class TestTokenizationCliErrorHandling:
             result = runner.invoke(
                 decode_command, ["--tokens", "999999,888888"]  # Out of range IDs
             )
-            assert result.exit_code is not None, "exit_code must be initialized"
+            assert isinstance(result.exit_code, int)
+            assert isinstance(result.output, str)
         except ImportError:
             pytest.skip("Tokenization CLI not available")
 
@@ -362,7 +367,8 @@ class TestTokenizationCliErrorHandling:
                 from tokenization.cli import encode_command
 
                 result = runner.invoke(encode_command, ["--input-file", input_file])
-                assert result.exit_code is not None, "exit_code must be initialized"
+                assert isinstance(result.exit_code, int)
+                assert isinstance(result.output, str)
             except ImportError:
                 pytest.skip("Tokenization CLI not available")
 

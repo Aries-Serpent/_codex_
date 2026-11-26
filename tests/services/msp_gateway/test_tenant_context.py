@@ -91,6 +91,19 @@ def test_tenant_registry_migrates_cached_legacy_hash(monkeypatch: pytest.MonkeyP
     assert tc_module.auth_manager.verify_api_key("legacy-secret") == "cached-legacy"
 
 
+def test_tenant_registry_rejects_stale_cached_legacy_mapping(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(tc_module, "auth_manager", security.AuthManager())
+    registry = TenantRegistry(backend="memory")
+    registry.create_tenant("stale-tenant", "Stale", "current-secret")
+    legacy_hash = security.legacy_hash_api_key("stale-secret")
+    tc_module.auth_manager.api_keys = {legacy_hash: "stale-tenant"}
+
+    assert registry.get_tenant_by_api_key("stale-secret") is None
+    assert tc_module.auth_manager.verify_api_key("stale-secret") is None
+
+
 def test_tenant_registry_memory_listing() -> None:
     registry = TenantRegistry(backend="memory")
     registry.create_tenant(

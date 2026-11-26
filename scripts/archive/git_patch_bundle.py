@@ -77,7 +77,7 @@ SENSITIVE_COMPONENTS = {
     "tokens",
 }
 SENSITIVE_NAME_PATTERN = re.compile(
-    r"(?:^|[._-])(?:credential|private[-_]key|secret|token)(?:[._-]|$)"
+    r"(?:^|[._-])(?:credentials?|private[-_]key|secrets?|tokens?)(?:[._-]|$)"
 )
 
 

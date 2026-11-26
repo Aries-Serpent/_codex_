@@ -288,7 +288,7 @@ class WorkflowAnalyzer:
                         "python_versions": list(w.resources.python_versions),
                         "docker_required": w.resources.docker_required,
                         "self_hosted": w.resources.self_hosted,
-                        "secrets": list(w.resources.secrets),
+                        "secret_count": len(w.resources.secrets),
                         "actions_used": list(w.resources.actions_used),
                         "runners": list(w.resources.runners),
                     },

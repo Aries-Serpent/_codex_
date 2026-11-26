@@ -79,7 +79,7 @@ for job_id, failure in ci_failures.items():
             print(f"  - Status: {'Active' if not wf['guarded'] else 'Guarded'}")
             print(f"  - Jobs: {len(wf['jobs'])}")
             print(f"  - Runners: {', '.join(wf['runners'][:2])}")
-            print(f"  - Secrets: {len(wf['secrets'])}")
+            print(f"  - Secret references: {int(wf.get('secret_count', 0))}")
             print(
                 f"  - Dependencies: Docker={wf['has_docker']}, uv={wf['has_uv']}, pytest={wf['has_pytest']}"
             )
@@ -155,7 +155,6 @@ critical_workflows = [
 ]
 
 runner_usage = {}
-secrets_usage = {}
 
 for wf_name in critical_workflows[:20]:  # Top 20
     if wf_name in workflow_data["workflows"]:
@@ -163,9 +162,6 @@ for wf_name in critical_workflows[:20]:  # Top 20
 
         for runner in wf["runners"]:
             runner_usage[runner] = runner_usage.get(runner, 0) + 1
-
-        for secret in wf["secrets"]:
-            secrets_usage[secret] = secrets_usage.get(secret, 0) + 1
 
 print("**Runners**:")
 for runner, count in sorted(runner_usage.items(), key=lambda x: x[1], reverse=True)[:5]:

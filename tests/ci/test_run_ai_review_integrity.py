@@ -178,7 +178,7 @@ def test_load_review_context_rejects_incomplete_full_diff(monkeypatch: Any) -> N
         if path.endswith("page=1"):
             return 200, [{"filename": "assets/model.bin", "patch": None}]
         if path == "/repos/o/r/pulls/1" and "diff" in kwargs.get("accept", ""):
-            return 200, "diff --git a/other.txt b/other.txt\n"
+            return 200, "diff --git a/assets/model.bin.pyc b/assets/model.bin.pyc\n"
         raise AssertionError(f"unexpected path: {path}; {kwargs}")
 
     monkeypatch.setattr(run_ai_review, "github_request", request)

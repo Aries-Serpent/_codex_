@@ -505,6 +505,7 @@ __all__ = [
     "safe_pickle_load",
     "safe_pickle_load_bytes",
     "safe_pickle_dump",
+    "sanitized_pickle_dump",
     "trusted_pickle_dumps",
     "RestrictedUnpickler",
     "suggest_alternatives",

@@ -387,7 +387,9 @@ def test_workflow_analyzer_reports_omit_secret_identifiers() -> None:
 
     assert "SUPER_SECRET_SENTINEL" not in json_report
     assert "SUPER_SECRET_SENTINEL" not in markdown_report
-    assert json.loads(json_report)["workflows"]["sample.yml"]["secret_count"] == 1
+    workflow = json.loads(json_report)["workflows"]["sample.yml"]
+    assert workflow["secret_count"] == 1
+    assert "secrets" not in workflow
 
 
 def test_cognitive_preflight_documentation_checks_bind_to_head_commit() -> None:

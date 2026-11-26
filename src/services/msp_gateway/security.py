@@ -163,8 +163,9 @@ class AuthManager:
         return self.api_keys.get(legacy_hash_api_key(api_key))
 
     def revoke_api_key(self, api_key: str):
-        """Revoke an API key"""
+        """Revoke all accepted representations of an API key."""
         self.revoke_api_key_hash(hash_api_key(api_key))
+        self.revoke_api_key_hash(legacy_hash_api_key(api_key))
 
     def revoke_api_key_hash(self, api_key_hash: str):
         """Revoke a pre-hashed API key."""

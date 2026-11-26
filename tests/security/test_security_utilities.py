@@ -44,6 +44,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
+import utils.safe_pickle as safe_pickle_module
 from utils.safe_pickle import (
     RestrictedUnpickler,
     safe_pickle_dump,
@@ -115,6 +116,9 @@ class TestSafePickle:
             assert loaded == data, "Data must not be empty"
         finally:
             os.unlink(temp_path)
+
+    def test_sanitized_pickle_dump_is_public(self):
+        assert "sanitized_pickle_dump" in safe_pickle_module.__all__
 
     def test_safe_pickle_dump_preserves_secret_named_fields(self, tmp_path):
         file_path = tmp_path / "lossless.pkl"

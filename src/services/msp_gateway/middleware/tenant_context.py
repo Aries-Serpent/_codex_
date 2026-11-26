@@ -224,10 +224,15 @@ class TenantRegistry:
                 auth_manager.revoke_api_key(api_key)
                 return tenant
             current_hash = hash_api_key(api_key)
-            if tenant.get("api_key_hash") == current_hash:
+            legacy_hash = legacy_hash_api_key(api_key)
+            stored_hash = tenant.get("api_key_hash")
+            if stored_hash == current_hash:
                 return tenant
+            if stored_hash != legacy_hash:
+                auth_manager.revoke_api_key_hash(current_hash)
+                auth_manager.revoke_api_key_hash(legacy_hash)
+                return None
             if self.backend != "sqlite":
-                legacy_hash = legacy_hash_api_key(api_key)
                 tenant["api_key_hash"] = current_hash
                 auth_manager.revoke_api_key_hash(legacy_hash)
                 auth_manager.register_api_key_hash(current_hash, tenant["tenant_id"])

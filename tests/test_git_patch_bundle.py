@@ -61,6 +61,9 @@ def test_sensitive_path_matching_does_not_flag_tokenization_paths() -> None:
     assert not _is_sensitive_relative_path("src/codex_ml/tokenization/tokenizer.py")
     assert not _is_sensitive_relative_path("tests/tokenization/test_tokenizer.py")
     assert _is_sensitive_relative_path("config/github_token.txt")
+    assert _is_sensitive_relative_path("config/client_credentials.txt")
+    assert _is_sensitive_relative_path("config/app_secrets.json")
+    assert _is_sensitive_relative_path("config/api_tokens.json")
     assert _is_sensitive_relative_path("private_key.pem")
 
 

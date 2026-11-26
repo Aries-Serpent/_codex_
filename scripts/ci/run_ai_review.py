@@ -110,7 +110,14 @@ def load_review_context(
         )
         if status != 200 or not isinstance(full_diff, str) or not full_diff.strip():
             raise RuntimeError(f"Full diff unavailable with HTTP {status}")
-        missing = [filename for filename in file_names if filename not in full_diff]
+        missing = [
+            filename
+            for filename in file_names
+            if (
+                f"diff --git a/{filename} b/{filename}" not in full_diff
+                and f'diff --git "a/{filename}" "b/{filename}"' not in full_diff
+            )
+        ]
         if missing:
             raise RuntimeError(
                 "Pull request full diff is incomplete; missing: " + ", ".join(missing)
