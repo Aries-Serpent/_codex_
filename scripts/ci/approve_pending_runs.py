@@ -686,7 +686,7 @@ def _authorize_run(
     status, current_run = _gh("GET", f"/repos/{repo}/actions/runs/{run['id']}", token)
     if status != 200 or not isinstance(current_run, dict):
         return "unknown-run"
-    if current_run.get("head_sha") != head_sha or run.get("head_sha") != head_sha:
+    if current_run.get("head_sha") != head_sha:
         return "stale-head-sha"
     if current_run.get("conclusion") != "action_required":
         return "run-not-action-required"

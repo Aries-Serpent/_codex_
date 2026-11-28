@@ -64,6 +64,14 @@ def test_independent_current_labelled_run_authorized(api):
     assert all(method == "GET" for method, _ in calls)
 
 
+def test_authorization_revalidates_stale_inventory_head(api):
+    _, current_run, _, _ = api
+    inventory_run = deepcopy(current_run)
+    inventory_run["head_sha"] = "b" * 40
+
+    assert approval._authorize_run("", "o/r", "1", SHA, inventory_run) == "authorized"
+
+
 def test_label_alone_does_not_establish_review(api, monkeypatch):
     _, run, _, _ = api
     gh = approval._gh

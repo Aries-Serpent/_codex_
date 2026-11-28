@@ -12,6 +12,7 @@ import pytest
 from scripts.ci.copilot_security_agent_handoff import (
     CopilotSecurityAgentHandoff,
     SEVERITY_EMOJI,
+    _load_aggregate_scan_findings,
     ScanSummaryQuery,
     generate_scan_summary_response,
     parse_scan_summary_command,
@@ -428,6 +429,31 @@ class TestAgentHandoffRedaction:
         assert "SECRET_SENTINEL" not in json_text
         assert "SECRET_SENTINEL" not in markdown_text
         assert json.loads(json_text)["findings"] == []
+
+    def test_scan_summary_loader_uses_only_severity_aggregates(self, tmp_path):
+        source = tmp_path / "findings.json"
+        source.write_text(
+            json.dumps(
+                {
+                    "summary": {
+                        "total_findings": 2,
+                        "severity_summary": {"HIGH": 2, "LOW": 0},
+                    },
+                    "findings": [{"severity": "HIGH", "title": "SECRET_SENTINEL_FINDING"}],
+                    "finding_index": [
+                        {"severity": "HIGH", "description": "SECRET_SENTINEL_DETAIL"}
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        findings = _load_aggregate_scan_findings(source)
+        response = generate_scan_summary_response(findings)
+
+        assert findings == [{"severity": "HIGH"}, {"severity": "HIGH"}]
+        assert "SECRET_SENTINEL" not in response
+        assert "HIGH | 2 |" in response
 
 
 class TestIntegration:
